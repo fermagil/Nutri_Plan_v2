@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Dietético Personalizado - NutriPlan v2</title>
+	  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.4.0/html-docx.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+
+
+    <style>
+    /* --- General Styles --- */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        color: #212529;
+        line-height: 1.6;
+        font-size: 16px;
+        padding-bottom: 80px;
+    }
+
+    /* --- Header & Navigation --- */
+    header {
+        background-color: #ffffff;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid #dee2e6;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        box-sizing: border-box;
+    }
+
+    .logo a {
+        color: #4CAF50;
+        text-decoration: none;
+        font-size: 1.75em;
+        font-weight: 600;
+    }
+
+    nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; }
+    nav ul li { margin-left: 25px; }
+    nav ul li a {
+        text-decoration: none;
+        color: #495057;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+    nav ul li a:hover, nav ul li a.active {
+        background-color: #e9f5e9;
+        color: #388e3c;
+    }
+    nav ul li a.active {
+        background-color: #c8e6c9;
+        color: #2e7d32;
+        font-weight: 600;
+    }
+
+    /* --- Main Content & Sections --- */
+    main {
+        padding: 30px 10px;
+        max-width: 750px;
+        margin: 20px auto;
+        padding-top: 100px; /* Adjusted for fixed header */
+        padding-bottom: 40px;
+        box-sizing: border-box;
+    }
+    h1, h2, h3, h4 { color: #388E3C; margin-bottom: 20px; font-weight: 600; }
+    h1 { font-size: 2.2em; text-align: center; margin-bottom: 30px;}
+    h2 { font-size: 1.8em; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px;}
+    h3 { font-size: 1.5em; }
+    h4 { font-size: 1.2em; color: #1B5E20; margin-top: 25px; }
+    section {
+        background-color: #ffffff;
+        padding: 25px 30px;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e0e0e0;
+        box-sizing: border-box;
+    }
+    .intro-section {
+        box-shadow: none;
+        border: none;
+        background-color: transparent; /* Make intro background transparent */
+        padding-top: 0;
+        margin-bottom: 15px;
+    }
+
+    /* --- Forms & Inputs --- */
+    label { display: block; margin-bottom: 8px; font-weight: 500; color: #343a40; }
+    select, input[type="number"], input[type="text"], button { width: 100%; padding: 12px 15px; margin-bottom: 18px; border: 1px solid #ced4da; border-radius: 5px; box-sizing: border-box; font-size: 1em; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+    input[type="number"]:focus, select:focus { border-color: #80bdff; outline: 0; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
+    input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
+    button { background-color: #5cb85c; color: white; cursor: pointer; font-weight: 500; border: none; transition: background-color 0.3s ease, transform 0.1s ease; border-radius: 5px; }
+    button:hover { background-color: #4cae4c; transform: translateY(-1px); }
+    button:disabled { background-color: #cccccc; cursor: not-allowed; transform: none; }
+
+    /* --- Plan Steps & Results --- */
+    #plan-container { display: grid; grid-template-columns: 1fr; gap: 25px; }
+    .plan-step { border: 1px solid #e0e0e0; padding: 20px; border-radius: 6px; background-color: #fdfdfd; }
+    .plan-step p { color: #495057; margin-bottom: 15px; }
+
+    /* Results divs styling */
+    #calorie-result, #weight-goal-result, #energy-balance-result, #macro-result, #meal-result, #time-estimation-result, #step-5-results { /* Updated ID */
+        margin-top: 20px; padding: 18px; background-color: #e9f5e9; border: 1px solid #c8e6c9; border-radius: 5px; line-height: 1.7; color: #1B5E20;
+        min-height: 30px;
+    }
+    #calorie-result p, #weight-goal-result p, #time-estimation-result p { margin-bottom: 10px; }
+    #calorie-result strong, #weight-goal-result strong, #time-estimation-result strong { color: #388E3C; }
+
+    #macro-result ul, #meal-result ul { padding-left: 25px; margin-top: 10px; }
+    #macro-result li, #meal-result li { margin-bottom: 10px; color: #333; }
+    #macro-result strong, #meal-result strong { color: #388E3C; }
+    #meal-result h3 { margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #c8e6c9; padding-bottom: 10px; }
+    #meal-result .plan-step { background-color: #f5fbf5 !important; border: 1px solid #d4eed5; }
+    #meal-result h4 { margin-bottom: 10px; }
+
+    /* Chart Containers */
+    #chart-container, #weight-chart-container, #time-estimation-chart-container {
+        margin-top: 20px;
+        padding: 0;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        width: 95%;
+        height: 350px;
+        position: center;
+        display: none; /* Initially hidden */
+        box-sizing: border-box;
+    }
+    #chart-container canvas, #weight-chart-container canvas, #time-estimation-chart-container canvas {
+        display: block;
+        width: 95% !important;
+        height: 100% !important;
+    }
+
+    /* Percentage inputs section styling */
+    #macro-percentage-inputs, #meal-percentage-inputs { margin-top: 20px; margin-bottom: 15px; padding: 15px; border: 1px dashed #ced4da; border-radius: 4px; background-color: #f8f9fa; }
+    #macro-percentage-inputs > label, #meal-percentage-inputs > label { font-weight: 600; margin-bottom: 15px; display: block; }
+    #macro-percentage-inputs div, #meal-percentage-inputs div { display: flex; align-items: center; margin-bottom: 10px; }
+    #macro-percentage-inputs div label, #meal-percentage-inputs div label { width: 130px; margin-right: 10px; margin-bottom: 0; font-weight: normal; text-align: right; color: #495057; }
+    #macro-percentage-inputs div input, #meal-percentage-inputs div input { flex-grow: 1; margin-bottom: 0; padding: 8px 10px; max-width: 100px; }
+    #macro-percentage-inputs div span, #meal-percentage-inputs div span { margin-left: 8px; font-weight: 500; }
+    #macro-percentage-total, #meal-percentage-total { font-size: 1.1em; text-align: center; margin-top: 15px; font-weight: bold; min-height: 1.2em; }
+
+    /* Notes & Monitoring Section specific styling */
+    .notes-section, .monitoring-section {
+        margin-top: 25px;
+        padding-top: 15px;
+        border-top: 1px dashed #a5d6a7;
+    }
+    .notes-section h4, .monitoring-section h4 {
+        margin-bottom: 10px;
+        color: #388E3C;
+    }
+    .notes-section ul, .monitoring-section ul {
+        list-style: disc;
+        padding-left: 20px;
+        margin: 0;
+    }
+    .notes-section li, .monitoring-section li {
+        margin-bottom: 8px;
+        color: #1B5E20;
+    }
+    .notes-section li strong, .monitoring-section li strong {
+        color: #1B5E20;
+    }
+    .monitoring-section h5 {
+        color: #388E3C;
+        font-weight: 600;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        font-size: 1.1em;
+    }
+    .monitoring-section ul ul {
+        list-style: circle;
+        margin-top: 5px;
+        margin-left: 15px;
+    }
+    .monitoring-section ul ul li {
+        color: #333;
+    }
+
+    /* Detailed Cycle Table Styling (Step 5 - Auto) */
+    #detailed-cycle-table-container {
+        margin-top: 20px;
+        overflow-x: auto; /* Allow horizontal scroll on small screens */
+    }
+    #detailed-cycle-table {
+        width: 85%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.9em;
+        min-width: 600px; /* Minimum width before scroll appears */
+    }
+    #detailed-cycle-table th, #detailed-cycle-table td {
+        border: 1px solid #c8e6c9;
+        padding: 8px 10px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    #detailed-cycle-table th {
+        background-color: #dcedc8;
+        color: #1B5E20;
+        font-weight: 600;
+        white-space: nowrap; /* Prevent header text wrapping */
+    }
+    #detailed-cycle-table tr:nth-child(even) {
+        background-color: #f1f8e9;
+    }
+    #detailed-cycle-table td {
+        color: #333;
+    }
+    #detailed-cycle-table td:nth-child(2), /* Fase */
+    #detailed-cycle-table td:nth-child(4) { /* Peso */
+        text-align: left;
+    }
+    #detailed-cycle-table .phase-deficit {
+        color: #c62828; /* Red for deficit */
+    }
+    #detailed-cycle-table .phase-surplus {
+        color: #2e7d32; /* Dark green for surplus */
+    }
+    #detailed-cycle-table .phase-break {
+        background-color: #fff9c4; /* Light yellow for break */
+        color: #5f4300; /* Dark yellow text */
+    }
+
+    /* Error message styling */
+    .error-message {
+        color: #c62828; /* Red */
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    /* Info message styling */
+    .info-message {
+        color: #0275d8; /* Blue */
+        font-style: italic;
+        margin-top: 10px;
+    }
+
+    /* --- Footer --- */
+    footer {
+        background-color: #e9ecef;
+        text-align: center;
+        padding: 25px 20px;
+        color: #6c757d;
+        border-top: 1px solid #dee2e6;
+        margin-top: 40px;
+        font-size: 0.9em;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1000px) {
+        main {
+            max-width: 90%;
+            padding: 20px 10px; /* Slightly more padding */
+            padding-top: 90px; /* Adjust for header */
+            padding-bottom: 30px;
+        }
+        section {
+            padding: 20px 15px;
+            margin-bottom: 20px;
+        }
+        #chart-container, #weight-chart-container, #time-estimation-chart-container {
+            height: 300px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        header {
+            padding: 10px 15px;
+            flex-direction: column;
+            align-items: flex-start; /* Align logo left */
+            position: static; /* Header scrolls with content */
+            width: 100%;
+        }
+        .logo a {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        nav ul {
+            justify-content: flex-start; /* Align nav items left */
+            flex-wrap: wrap;
+        }
+        nav ul li {
+            margin: 5px 10px 5px 0; /* Adjust nav item margin */
+        }
+        main {
+            padding-top: 20px; /* Less top padding when header scrolls */
+        }
+        #macro-percentage-inputs div, #meal-percentage-inputs div {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #macro-percentage-inputs div label, #meal-percentage-inputs div label {
+            width: auto;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+        #macro-percentage-inputs div input, #meal-percentage-inputs div input {
+            max-width: none; /* Allow inputs to fill width */
+        }
+        #detailed-cycle-table, #hyperprotein-cycle-table { /* Apply to both tables */
+            min-width: 400px;
+            font-size: 0.85em;
+        }
+        #detailed-cycle-table th, #detailed-cycle-table td,
+        #hyperprotein-cycle-table th, #hyperprotein-cycle-table td {
+            padding: 6px 8px;
+			vertical-align: top;
+			white-space: pre-line;
+			line-height: 1.5;
+			
+        }
+			
+    }
+
+    @media (max-width: 480px) {
+        nav ul li a {
+            padding: 6px 8px;
+            font-size: 0.9em;
+        }
+        h1 { font-size: 1.8em; }
+        h2 { font-size: 1.5em; }
+        h3 { font-size: 1.3em; }
+        #detailed-cycle-table, #hyperprotein-cycle-table { /* Apply to both tables */
+            font-size: 0.8em; /* Smaller font for very small screens */
+        }
+        #detailed-cycle-table th, #detailed-cycle-table td,
+        #hyperprotein-cycle-table th, #hyperprotein-cycle-table td {
+            padding: 5px 6px;
+        }
+    }
+	  /* Styling for the hyperprotein cycle table (Step 7 - Manual) */
+    #hyperprotein-cycle-table-container {
+        margin-top: 20px;
+        overflow-x: auto; /* Allow horizontal scroll on small screens */
+    }
+    #hyperprotein-cycle-table {
+        width: 90%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.9em;
+        min-width: 600px; /* Minimum width before scroll appears */
+    }
+    #hyperprotein-cycle-table th, #hyperprotein-cycle-table td {
+        border: 1px solid #c8e6c9;
+        padding: 8px 10px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    #hyperprotein-cycle-table th {
+        background-color: #dcedc8;
+        color: #1B5E20;
+        font-weight: 600;
+        white-space: nowrap; /* Prevent header text wrapping */
+    }
+    #hyperprotein-cycle-table tr:nth-child(even) {
+        background-color: #f1f8e9;
+    }
+    #hyperprotein-cycle-table td {
+        color: #333;
+    }
+    #hyperprotein-cycle-table td:nth-child(2), /* Fase */
+    #hyperprotein-cycle-table td:nth-child(7) { /* Notas */
+        text-align: left;
+    }
+    #hyperprotein-cycle-table .phase-hyperprotein {
+        color: #0275d8; /* Blue for hyperprotein */
+    }
+    #hyperprotein-cycle-table .phase-break {
+        background-color: #fff9c4; /* Light yellow for break */
+        color: #5f4300; /* Dark yellow text */
+    }
+	#hyperprotein-cycle-table th:nth-child(6),
+			#hyperprotein-cycle-table td:nth-child(6) {
+			width: 200px;
+			min-width: 200px;
+			white-space: pre-line;
+			vertical-align: top;
+			line-height: 1.5;
+		}
+</style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><a href="#">NutriPlan_v2</a></div>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#" class="active">Planificación Avanzada</a></li>
+                <li><a href="#plato">Plato Saludable</a></li>
+            </ul>
+        </nav>
+    </header>
+	
+    <main>
+        <section>
+            <h1>Crea tu Plan Dietético Personalizado</h1>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px auto; color: #495057;">
+                Sigue estos pasos guiados para obtener una estimación de tus necesidades nutricionales y generar un plan de comidas orientativo.
+                Antes de utilizar los datos obtenidos con esta herramienta, consulta con su Dietista-Nutricionista.
+            </p>
+			
+            <div id="plan-container">
+
+                <div class="plan-step" id="step-1">
+                    <h2>1. Calcula tus Necesidades y Balance Energético</h2>
+                    <p>Introduce tus datos básicos para estimar tu Gasto Energético Total (GET) y, si lo deseas, tu ingesta actual para ver tu balance energético.</p>
+                    <form id="calorie-form">
+                        <label for="age">Edad (años):</label>
+                         <input type="number" id="age" name="age" required min="1" max="120">
+
+                        <label for="gender">Género Biológico:</label>
+                        <select id="gender" name="gender">
+                            <option value="male">Masculino</option>
+                            <option value="female">Femenino</option>
+                        </select>
+
+                        <label for="weight">Peso Actual (kg):</label>
+                        <input type="number" id="weight" name="weight" required min="1" step="0.1">
+
+                        <label for="height">Altura (m):</label>
+                        <input type="number" id="height" name="height" step="0.01" required min="0.5" max="3" placeholder="Ej: 1.75">
+
+                        <label for="activity">Nivel de Actividad Física Semanal:</label>
+                        <select id="activity" name="activity">
+                            <option value="sedentary">Sedentario</option>
+                            <option value="light">Ligero (1-3 días/sem)</option>
+                            <option value="moderate">Moderado (3-5 días/sem)</option>
+                            <option value="active">Activo (6-7 días/sem)</option>
+                            <option value="very_active">Muy Activo (Intenso/Diario)</option>
+                        </select>
+
+                        <label for="estimated-intake">Tu Ingesta Calórica Estimada Actual (kcal/día, opcional):</label>
+                        <input type="number" id="estimated-intake" name="estimated-intake" min="0" step="1" placeholder="Si la conoces, ej: 2100">
+
+                        <button type="submit">Calcular GET y Balance</button>
+                    </form>
+                    <div id="calorie-result"></div>
+                    <div id="energy-balance-result"></div>
+                </div>
+
+                <div class="plan-step" id="step-2">
+                    <h2>2. Establece tu Objetivo de Peso y Composición Corporal</h2>
+                    <p>Define tu objetivo de composición corporal (% grasa). Puedes estimar tu % de grasa actual con básculas de bioimpedancia o calculadoras online.</p>
+                    <p><em>Si no conoces tu % de grasa actual, puedes usar una <a href="https://www.calculator.net/body-fat-calculator.html" target="_blank" rel="noopener noreferrer">calculadora online</a> (en inglés) o buscar alternativas en español.</em></p>
+                    <form id="weight-goal-form">
+                        <label for="current-fat-percentage">Grasa Corporal Actual (%):</label>
+                        <input type="number" id="current-fat-percentage" name="current-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 25">
+
+                        <label for="target-fat-percentage">Grasa Corporal Objetivo (%):</label>
+                        <input type="number" id="target-fat-percentage" name="target-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 15">
+
+                        <label for="desired-lean-mass-gain">Ganancia de Masa Magra/Muscular Deseada (kg, opcional):</label>
+                        <input type="number" id="desired-lean-mass-gain" name="desired-lean-mass-gain" step="0.1" min="0" placeholder="Ej: 2 (Dejar en blanco o 0 si no buscas ganar músculo)">
+
+                        <label for="is-athlete">¿Te consideras deportista/atleta?</label>
+                        <select id="is-athlete" name="is-athlete">
+                            <option value="no">No</option>
+                            <option value="yes">Sí</option>
+                        </select>
+
+                        <button type="submit" id="calculate-goal-button" disabled>Calcular Objetivo y Recomendaciones</button>
+                    </form>
+                    <div id="weight-goal-result">
+                        <p class="info-message">Completa el Paso 1 para habilitar este cálculo.</p>
+                        <div id="weight-chart-container">
+                            <canvas id="weightEvolutionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plan-step" id="step-3">
+                    <h2>3. Calcula tus Macronutrientes</h2>
+                    <p>Define tu objetivo calórico (basado en tu GET y si quieres perder, mantener o ganar peso) y distribuye los macronutrientes.</p>
+					<p>Se recomienda para perdida de peso gradual y sostenible reducir un aporte calorico de ente un 10-20% de tu GET, el calculo automatico lo realiza sobre un 10%. Para ganacia de peso la recomendación seria un aumento del GET entre un 5%-15%, el calculo automatico lo realiza sobre un 5%.</p>
+					<p>Tu ingesta objetivo por dia puede variar en función de tus necesadidaes personales de AF y de los ciclos de carga-descarga proteica en un plan de perdida de peso.</p>
+                     <form id="macro-form">
+                        <label for="goal-calories">Calorías Objetivo Diarias (kcal):</label>
+                        <input type="number" id="goal-calories" name="goal-calories" required min="500" placeholder="Introduce las kcal calculadas o deseadas">
+
+                        <div id="macro-percentage-inputs">
+                            <label>Distribución de Macronutrientes (% del total calórico):</label>
+                            <div>
+                                <label for="protein-percentage">Proteína (%):</label>
+                                <input type="number" id="protein-percentage" name="protein-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
+                            </div>
+                            <div>
+                                <label for="carb-percentage">Carbohidratos (%):</label>
+                                <input type="number" id="carb-percentage" name="carb-percentage" value="40" min="10" max="80" step="1"> <span>%</span>
+                            </div>
+                            <div>
+                                <label for="fat-percentage">Grasas (%):</label>
+                                <input type="number" id="fat-percentage" name="fat-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
+                            </div>
+                             <p id="macro-percentage-total"></p>
+                        </div>
+
+                        <button type="submit" id="calculate-macros-button" disabled>Calcular Gramos de Macronutrientes</button>
+                    </form>
+                    <div id="macro-result">
+                        <p class="info-message">Completa los Pasos 1 y 2 para habilitar este cálculo.</p>
+                    </div>
+                    <div id="chart-container">
+                        <canvas id="macroChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="plan-step" id="step-4">
+                     <h2>4. Genera tu Plan de Comidas Orientativo</h2>
+                     <p>Distribuye tus macronutrientes calculados en diferentes comidas a lo largo del día.</p>
+                     <form id="meal-form">
+                         <div id="meal-percentage-inputs">
+                             <label>Distribución de Calorías por Comida (% del total diario):</label>
+                             <div><label for="breakfast-perc">Desayuno:</label><input type="number" id="breakfast-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
+                             <div><label for="snack1-perc">Media Mañana:</label><input type="number" id="snack1-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
+                             <div><label for="lunch-perc">Almuerzo:</label><input type="number" id="lunch-perc" value="30" min="0" max="100" step="1"><span>%</span></div>
+                             <div><label for="snack2-perc">Merienda:</label><input type="number" id="snack2-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
+                             <div><label for="dinner-perc">Cena:</label><input type="number" id="dinner-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
+                             <p id="meal-percentage-total"></p>
+                         </div>
+                         <button type="submit" id="generate-meals-button" disabled>Generar Distribución por Comida</button>
+                     </form>
+                     <div id="meal-result">
+                         <p class="info-message">Completa el Paso 3 para habilitar este cálculo.</p>
+                     </div>
+                </div>
+
+                <div class="plan-step" id="step-5"> <h2>5. Tabla de Ciclos y Breaks (Automática)</h2>
+                    <p>Esta tabla muestra una estructura detallada y orientativa de ciclos de carga-descarga proteica, incluyendo fases de déficit o superávit y descansos (breaks) a mantenimiento. Los valores se basan en los cálculos automáticos de los Pasos 1, 2 y 3.</p>
+                    <div id="step-5-results"> <div id="detailed-cycle-table-container">
+                             <p class="info-message"><em>Completa los Pasos 1, 2 y 3 para generar esta tabla.</em></p>
+                             </div>
+                    </div>
+                </div>
+
+                <div class="plan-step" id="step-6"> <h2>6. Estimación de Tiempo (Manual y Opcional)</h2>
+                    <p>Estima cuánto tiempo podría llevarte alcanzar un cambio de peso específico basándote en un déficit o superávit calórico semanal <strong>que tú definas</strong>. Este cálculo es independiente de la tabla automática del Paso 5 y se usa para la tabla manual del Paso 7.</p>
+                    <form id="time-estimation-form">
+                        <label for="weight-change-goal">Cambio de Peso Total Deseado (kg):</label>
+                        <input type="number" id="weight-change-goal" name="weight-change-goal" step="0.1" required placeholder="Ej: -10 para perder, 5 para ganar">
+
+                        <label for="weekly-calorie-diff">Diferencia Calórica Semanal Estimada (kcal):</label>
+                        <input type="number" id="weekly-calorie-diff" name="weekly-calorie-diff" step="100" required placeholder="Ej: -3500 para perder 0.5kg/sem, 2000 para ganar">
+                        <small>Nota: Se estima que 7700 kcal equivalen a 1 kg de grasa corporal. Para perdida gradual y sostenible no se aconseja perdidas de mas de 0.5kg/sem (3500kcal/sem). Para ganacia no se aconseja ganacias de mas de 0.3kg/sem (2000Kcal/sem) </small>
+
+                        <button type="submit" id="estimate-time-button" disabled>Estimar Tiempo</button>
+                    </form>
+                    <div id="time-estimation-result">
+                         <p class="info-message">Completa el Paso 1 para habilitar esta estimación.</p>
+                    </div>
+                    <div id="time-estimation-chart-container">
+						<canvas id="timeEstimationChart"></canvas>
+					</div>
+                </div>
+
+                <section id="step-7" class="plan-step">
+                    <h2>7. Tabla de Ciclos Hiperproteicos (Manual)</h2>
+                    <p>Esta tabla organiza ciclos hiperproteicos (Consumo alto, entre 30-40%) y breaks (Consumo moderado, entre 15-25%), cuya duración se basa en la estimación temporal manual del Paso 6. La cantidad de proteína objetivo para cada fase se calcula aplicando porcentajes específicos sobre las Kcal/día asignadas (un porcentaje más alto para la fase hiperproteica (35%) y uno más bajo para la fase de break(20%)).".</p>
+					<p>la velocidad de perdida indicada en kg/semana está basada en el ajuste constante de deficit calorico semanal, señalado en el paso 6. Para la fase hiperproteica se mantiene ese ritmo de perdida semanal y se reduduce a la mitad en la fase de Descanso. El progreso real puede variar.</p>
+                    <div id="hyperprotein-cycle-table-container">
+                        <p id="hyperprotein-info-message" class="info-message">Completa el Paso 6 para generar esta tabla.</p>
+                        <table id="hyperprotein-cycle-table" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Ciclo</th>
+                                    <th>Fase</th>
+                                    <th>Semanas</th>
+                                    <th>Peso (kg) <br>(Inicio → Fin)</th>
+									<th>Kcal/día/AF</th>
+                                    <th>Proteínas (g/kg)</th>
+                                    <th>Notas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hyperprotein-cycle-table-body">
+                                </tbody>
+                        </table>
+                        <div id="hyperprotein-note-container"></div> </div>
+                     <button id="generate-hyperprotein-button" onclick="generateHyperproteinCycles()" style="margin-top: 15px;" disabled>
+                        Generar Tabla de Ciclos Hiperproteicos (Manual)
+                    </button>
+                </section>
+
+            </div> 
+			<div><button id="download-pdf-btn" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
+				
+				
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 NutriPlan - Herramienta de planificación dietética orientativa. Consulta siempre a un profesional.</p>
+    </footer>
+
+    <script>
+        // --- Global variables ---
+        // Basic user data
+        let userAge = null;
+        let userGender = 'male';
+        let userHeightCm = null;
+        let userActivityLevel = 'sedentary';
+        let currentWeightKg = null;
+
+        // Calculated values from Step 1 & 2
+        let calculatedBMR = null;
+        let calculatedTDEE = null; // Total Daily Energy Expenditure (GET) from Step 1 (includes 1.1 buffer)
+        let targetWeightKgGlobal = null;
+        let goalTypeGlobal = 'maintenance'; // 'loss', 'gain', 'maintenance'
+        let estimatedWeeksGlobal = 0; // Automatically estimated weeks from Step 2 (for Step 5 table)
+        let targetWeeklyRateKgGlobal = 0; // Automatically estimated weekly rate from Step 2 (for Step 5 table)
+
+        // Calculated values from Step 3
+        let calculatedMacros = { proteinGrams: 0, carbGrams: 0, fatGrams: 0, goalCalories: 0 };
+
+        // Calculated values from Step 6 (Manual Estimation)
+        let estimatedWeeksManualGlobal = null; // Weeks from manual estimation
+        let weightChangeGoalManualGlobal = null; // Weight change goal from manual estimation
+        let weeklyCalorieDiffManualGlobal = null; // Weekly calorie diff from manual estimation
+
+        // Chart instances
+        let macroChartInstance = null;
+        let weightEvolutionChartInstance = null; // For Step 2 chart
+        let timeEstimationChartInstance = null; // For Step 6 chart
+
+        // Activity multipliers (defined globally for reuse)
+        //const activityMultipliers = { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, very_active: 2.3 };
+		//const activityMultipliers = userGender === 'male' ? [1.2, 1.56, 1.78, 2.1, 2.3] : [1.2, 1.55, 1.64, 1.82, 2];
+		const activityMultipliers = userGender === 'male' 
+		? { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, very_active: 2.3 }
+		: { sedentary: 1.2, light: 1.55, moderate: 1.64, active: 1.82, very_active: 2 };
+        // --- Wait for the DOM to be fully loaded ---
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- DOM Element References ---
+            // Forms
+            const calorieForm = document.getElementById('calorie-form');
+            const weightGoalForm = document.getElementById('weight-goal-form');
+            const macroForm = document.getElementById('macro-form');
+            const mealForm = document.getElementById('meal-form');
+            const timeEstimationForm = document.getElementById('time-estimation-form');
+            // Buttons
+            const calculateGoalButton = document.getElementById('calculate-goal-button');
+            const calculateMacrosButton = document.getElementById('calculate-macros-button');
+            const generateMealsButton = document.getElementById('generate-meals-button');
+            const estimateTimeButton = document.getElementById('estimate-time-button');
+            const generateHyperproteinButton = document.getElementById('generate-hyperprotein-button'); // Reference to the button
+            const savePdfButton = document.getElementById('save-pdf-button');
+            // Percentage Inputs (for live update listeners)
+            const macroPercentageInputs = document.querySelectorAll('#macro-percentage-inputs input[type="number"]');
+            const mealPercentageInputs = document.querySelectorAll('#meal-percentage-inputs input[type="number"]');
+            // Result Divs
+            const calorieResultDiv = document.getElementById('calorie-result');
+            const energyBalanceResultDiv = document.getElementById('energy-balance-result');
+            const weightGoalResultDiv = document.getElementById('weight-goal-result');
+            const weightChartContainer = document.getElementById('weight-chart-container');
+            const macroResultDiv = document.getElementById('macro-result');
+            const chartContainer = document.getElementById('chart-container'); // For macro chart
+            const mealResultDiv = document.getElementById('meal-result');
+            const timeEstimationResultDiv = document.getElementById('time-estimation-result');
+            const timeChartContainer = document.getElementById('time-estimation-chart-container'); // For manual estimation chart
+            const step5TableContainer = document.getElementById('detailed-cycle-table-container'); // Auto table container (Step 5)
+            // Step 7 Elements
+            const hyperproteinTableContainer = document.getElementById('hyperprotein-cycle-table-container');
+            const hyperproteinTable = document.getElementById('hyperprotein-cycle-table');
+            const hyperproteinTableBody = document.getElementById('hyperprotein-cycle-table-body');
+            const hyperproteinInfoMessage = document.getElementById('hyperprotein-info-message');
+            const hyperproteinNoteContainer = document.getElementById('hyperprotein-note-container');
+            // Percentage Total Displays
+            const macroPercentageTotalDiv = document.getElementById('macro-percentage-total');
+            const mealPercentageTotalDiv = document.getElementById('meal-percentage-total');
+            // Input Fields to Update
+            const goalCaloriesInput = document.getElementById('goal-calories');
+            const proteinPercentageInput = document.getElementById('protein-percentage');
+            const carbPercentageInput = document.getElementById('carb-percentage');
+            const fatPercentageInput = document.getElementById('fat-percentage');
+
+
+            // --- Utility Functions ---
+            /**
+             * Displays an error message in a specified container.
+             * @param {HTMLElement} container - The DOM element to display the message in.
+             * @param {string} message - The error message text.
+             */
+            function displayError(container, message) {
+                if (container) {
+                    container.innerHTML = `<p class="error-message">${message}</p>`;
+                } else {
+                    console.error("Error container not found for message:", message);
+                }
+            }
+
+            /**
+             * Displays an informational message in a specified container.
+             * @param {HTMLElement} container - The DOM element to display the message in.
+             * @param {string} message - The info message text.
+             */
+            function displayInfo(container, message) {
+                if (container) {
+                    container.innerHTML = `<p class="info-message">${message}</p>`;
+                } else {
+                     console.error("Info container not found for message:", message);
+                }
+            }
+
+            /**
+             * Clears the content of a specified container.
+             * @param {HTMLElement} container - The DOM element to clear.
+             */
+            function clearContainer(container) {
+                if (container) {
+                    container.innerHTML = '';
+                }
+            }
+
+            /**
+             * Updates the enabled/disabled state of buttons based on completed steps.
+             */
+            function updateButtonStates() {
+                const step1Done = calculatedTDEE !== null && currentWeightKg !== null;
+                const step2Done = step1Done && targetWeightKgGlobal !== null;
+                const step3Done = step2Done && calculatedMacros.goalCalories > 0;
+                const step6Done = step1Done && estimatedWeeksManualGlobal !== null && estimatedWeeksManualGlobal > 0; // Step 6 (Manual Estimation) is done
+
+                // Enable/disable step buttons
+                if (calculateGoalButton) calculateGoalButton.disabled = !step1Done;
+                if (calculateMacrosButton) calculateMacrosButton.disabled = !step2Done;
+                if (generateMealsButton) generateMealsButton.disabled = !step3Done;
+                if (estimateTimeButton) estimateTimeButton.disabled = !step1Done; // Step 6 only needs Step 1
+                if (generateHyperproteinButton) generateHyperproteinButton.disabled = !step6Done; // Step 7 needs Step 6
+
+                // Enable/disable PDF button if at least Step 1 is done
+                if (savePdfButton) savePdfButton.disabled = !step1Done;
+            }
+
+            // --- Step 1: Calculate TDEE and Energy Balance ---
+            function calculateCalories() {
+                // Clear previous results
+                clearContainer(calorieResultDiv);
+                clearContainer(energyBalanceResultDiv);
+
+                // Get values from form
+                userAge = parseInt(calorieForm.elements['age'].value);
+                userGender = calorieForm.elements['gender'].value;
+                currentWeightKg = parseFloat(calorieForm.elements['weight'].value);
+                const heightM = parseFloat(calorieForm.elements['height'].value);
+                userActivityLevel = calorieForm.elements['activity'].value;
+                const estimatedIntake = parseInt(calorieForm.elements['estimated-intake'].value) || null;
+
+                // Basic validation
+                if (isNaN(userAge) || isNaN(currentWeightKg) || isNaN(heightM) || userAge <= 0 || currentWeightKg <= 0 || heightM <= 0) {
+                    displayError(calorieResultDiv, 'Por favor, introduce valores válidos para edad, peso y altura.');
+                    calculatedTDEE = null; // Reset calculated values on error
+                    calculatedBMR = null;
+                    resetStep2onwards(); // Reset subsequent steps on error
+                    updateButtonStates(); // Update button states
+                    return;
+                }
+                userHeightCm = heightM * 100; // Store height in cm
+
+                // Calculate BMR (Harris-Benedict Revised)
+                if (userGender === 'male') {
+                    calculatedBMR = (10 * currentWeightKg) + (6.25 * userHeightCm) - (5 * userAge) + 5;
+                } else {
+                    calculatedBMR = (10 * currentWeightKg) + (6.25 * userHeightCm) - (5 * userAge) - 161;
+                }
+
+                // Calculate TDEE (Added 10% buffer as per original code)
+                calculatedTDEE = calculatedBMR * activityMultipliers[userActivityLevel] * 1.1; // Including 10% buffer
+
+                // Display TDEE results
+                calorieResultDiv.innerHTML = `
+                    <h3>Resultados del Gasto Energético:</h3>
+                    <p>Tu Tasa Metabólica Basal (TMB) estimada es: <strong>${calculatedBMR.toFixed(0)} kcal/día</strong>.</p>
+                    <p>Tu Gasto Energético Total (GET/TDEE) estimado (con buffer +10%) es: <strong>${calculatedTDEE.toFixed(0)} kcal/día</strong>.</p>
+                    <p>Este es el número aproximado de calorías que tu cuerpo quema diariamente, incluyendo un margen.</p>`;
+
+                // Display Energy Balance if intake provided
+                if (estimatedIntake && estimatedIntake > 0) {
+                    const balance = estimatedIntake - calculatedTDEE;
+                    let balanceInterpretation = '';
+                    if (balance > 100) {
+                        balanceInterpretation = `Estás en un <strong>superávit calórico</strong> de aproximadamente <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una ganancia de peso.`;
+                    } else if (balance < -100) {
+                        balanceInterpretation = `Estás en un <strong>déficit calórico</strong> de aproximadamente <strong>${Math.abs(balance).toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una pérdida de peso.`;
+                    } else {
+                        balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
+                    }
+                    energyBalanceResultDiv.innerHTML = `
+                        <h3>Balance Energético Estimado:</h3>
+                        <p>Tu ingesta estimada (${estimatedIntake} kcal) comparada con tu GET con buffer (${calculatedTDEE.toFixed(0)} kcal):</p>
+                        <p>${balanceInterpretation}</p>`;
+                } else {
+                    clearContainer(energyBalanceResultDiv); // Clear if no intake provided
+                }
+
+                // Reset subsequent steps as Step 1 results changed
+                resetStep2onwards();
+                updateButtonStates(); // Enable next step button
+            }
+
+
+            // --- Step 2: Calculate Weight Goal and Recommendations ---
+            function calculateWeightGoal() {
+                clearContainer(weightGoalResultDiv); // Clear previous results
+                if(weightChartContainer) weightChartContainer.style.display = 'none'; // Hide chart initially
+
+                // Destroy previous weight chart instance
+                if (weightEvolutionChartInstance) {
+                    weightEvolutionChartInstance.destroy();
+                    weightEvolutionChartInstance = null;
+                }
+
+                // Check prerequisite
+                if (!currentWeightKg || !calculatedTDEE) {
+                    displayError(weightGoalResultDiv, 'Error: Completa el Paso 1 antes de calcular el objetivo de peso.');
+                    updateButtonStates();
+                    return;
+                }
+
+                // Get values from form
+                const currentFatPerc = parseFloat(weightGoalForm.elements['current-fat-percentage'].value);
+                const targetFatPerc = parseFloat(weightGoalForm.elements['target-fat-percentage'].value);
+                const desiredLeanGainKg = parseFloat(weightGoalForm.elements['desired-lean-mass-gain'].value) || 0;
+                const isAthlete = weightGoalForm.elements['is-athlete'].value === 'yes';
+
+                // Validate inputs
+                if (isNaN(currentFatPerc) || isNaN(targetFatPerc) || currentFatPerc <= 0 || targetFatPerc <= 0 || targetFatPerc >= 100 || currentFatPerc >= 100) {
+                    displayError(weightGoalResultDiv, 'Por favor, introduce porcentajes de grasa válidos (mayores que 0 y menores que 100).');
+                    targetWeightKgGlobal = null; // Reset global value on error
+                    resetStep3onwards(); // Reset subsequent steps
+                    updateButtonStates();
+                    return;
+                }
+
+                // --- Calculations ---
+                const currentFatMassKg = currentWeightKg * (currentFatPerc / 100);
+                const currentLeanMassKg = currentWeightKg - currentFatMassKg;
+                const targetLeanMassKg = currentLeanMassKg + desiredLeanGainKg;
+
+                // Calculate target weight based on target lean mass and target fat percentage
+                targetWeightKgGlobal = targetLeanMassKg / (1 - (targetFatPerc / 100));
+
+                if (targetWeightKgGlobal <= 0 || !isFinite(targetWeightKgGlobal) || targetWeightKgGlobal > 500) { // Added upper sanity check
+                    displayError(weightGoalResultDiv, 'No se pudo calcular un peso objetivo válido con los datos introducidos. Revisa los porcentajes y la ganancia magra deseada.');
+                    targetWeightKgGlobal = null; // Reset global value
+                    resetStep3onwards(); // Reset subsequent steps
+                    updateButtonStates();
+                    return;
+                }
+
+                const targetFatMassKg = targetWeightKgGlobal * (targetFatPerc / 100);
+                const fatMassToLoseGainKg = currentFatMassKg - targetFatMassKg;
+                const totalWeightChangeKg = targetWeightKgGlobal - currentWeightKg; // Target - Current
+
+                // --- Determine Goal Type ---
+                goalTypeGlobal = 'maintenance'; // Default to maintenance
+                if (totalWeightChangeKg < -0.1) { // Weight loss threshold
+                    goalTypeGlobal = 'loss';
+                } else if (totalWeightChangeKg > 0.1) { // Weight gain threshold
+                    goalTypeGlobal = 'gain';
+                }
+
+                // --- Automatic Calculation of Estimated Weeks & Rate (for Step 5 table) ---
+                estimatedWeeksGlobal = 0;
+                targetWeeklyRateKgGlobal = 0;
+                let targetWeeklyRatePerc = 0;
+
+                if (goalTypeGlobal === 'loss') {
+                    targetWeeklyRatePerc = 0.004; // Target 0.40% loss per week
+                    targetWeeklyRateKgGlobal = currentWeightKg * targetWeeklyRatePerc;
+                    targetWeeklyRateKgGlobal = Math.max(targetWeeklyRateKgGlobal, 0.2); // Min 0.2 kg/week
+                    targetWeeklyRateKgGlobal = Math.min(targetWeeklyRateKgGlobal, currentWeightKg * 0.01, 1.2); // Max 1% or 1.2 kg/week
+                    if (targetWeeklyRateKgGlobal > 0) { // Avoid division by zero
+                       estimatedWeeksGlobal = Math.abs(totalWeightChangeKg) / targetWeeklyRateKgGlobal;
+                    }
+                } else if (goalTypeGlobal === 'gain') {
+                    targetWeeklyRatePerc = 0.003; // Target 0.3% gain per week
+                    targetWeeklyRateKgGlobal = currentWeightKg * targetWeeklyRatePerc;
+                    targetWeeklyRateKgGlobal = Math.max(targetWeeklyRateKgGlobal, 0.1); // Min 0.1 kg/week
+                    targetWeeklyRateKgGlobal = Math.min(targetWeeklyRateKgGlobal, currentWeightKg * 0.005, 0.6); // Max 0.5% or 0.6 kg/week
+                     if (targetWeeklyRateKgGlobal > 0) { // Avoid division by zero
+                        estimatedWeeksGlobal = totalWeightChangeKg / targetWeeklyRateKgGlobal;
+                    }
+                }
+                // No calculations needed for maintenance
+
+                estimatedWeeksGlobal = Math.max(0, Math.round(estimatedWeeksGlobal));
+
+                // --- Muscle Mass Assessment ---
+                const currentLeanMassPerc = (currentLeanMassKg / currentWeightKg) * 100;
+                let muscleAssessmentHTML = `<div class="notes-section"><h4>Evaluación de Masa Muscular (Basada en Masa Magra)</h4>`;
+                muscleAssessmentHTML += `<p>Tu <strong>Masa Magra Estimada</strong> es: <strong>${currentLeanMassKg.toFixed(1)} kg</strong> (<strong>${currentLeanMassPerc.toFixed(1)}%</strong> de tu peso corporal).</p>`;
+                muscleAssessmentHTML += `<p><em>(Recuerda: La masa magra incluye músculo, hueso, agua y órganos. Es un indicador indirecto de la masa muscular.)</em></p>`;
+
+                const ranges = { // General ranges for LEAN MASS %
+                    male: { nonAthlete: [60, 85], athlete: [70, 90] },
+                    female: { nonAthlete: [50, 75], athlete: [60, 85] }
+                };
+                const relevantRange = isAthlete ? ranges[userGender].athlete : ranges[userGender].nonAthlete;
+
+                muscleAssessmentHTML += `<p>Comparación con rangos generales de <strong>% Masa Magra</strong> para tu perfil (${isAthlete ? 'deportista' : 'no deportista'}):</p>`;
+                if (currentLeanMassPerc < relevantRange[0]) {
+                    muscleAssessmentHTML += `<p>Tu porcentaje de masa magra estimada (${currentLeanMassPerc.toFixed(1)}%) está <strong>por debajo</strong> del rango general (${relevantRange[0]}-${relevantRange[1]}%). `;
+                    muscleAssessmentHTML += `<strong>Se recomienda un enfoque en la ganancia de masa muscular</strong>. `;
+                    if (desiredLeanGainKg > 0) {
+                        muscleAssessmentHTML += `Tu objetivo de ganar ${desiredLeanGainKg} kg está alineado con esta recomendación.`;
+                    } else {
+                        muscleAssessmentHTML += `<strong>Podría ser beneficioso considerar un objetivo de ganancia de masa magra/muscular</strong>.`;
+                    }
+                } else if (currentLeanMassPerc > relevantRange[1]) {
+                    muscleAssessmentHTML += `<p>Tu porcentaje de masa magra estimada (${currentLeanMassPerc.toFixed(1)}%) está <strong>por encima</strong> del rango general (${relevantRange[0]}-${relevantRange[1]}%). ¡Excelente!</p>`;
+                } else {
+                    muscleAssessmentHTML += `<p>Tu porcentaje de masa magra estimada (${currentLeanMassPerc.toFixed(1)}%) está <strong>dentro</strong> del rango general (${relevantRange[0]}-${relevantRange[1]}%).`;
+                    if (desiredLeanGainKg > 0) {
+                        muscleAssessmentHTML += ` Tu objetivo de ganar ${desiredLeanGainKg} kg adicionales te ayudará a progresar.`;
+                    }
+                    muscleAssessmentHTML += `</p>`;
+                }
+                muscleAssessmentHTML += `</div>`;
+
+
+                // --- Display Initial Results ---
+                let resultsHTML = `<h3>Resultados del Objetivo de Composición Corporal:</h3>`;
+                resultsHTML += `<p><strong>Peso Actual:</strong> ${currentWeightKg.toFixed(2)} kg</p>`;
+                resultsHTML += `<p><strong>Masa Grasa Actual:</strong> ${currentFatMassKg.toFixed(2)} kg (${currentFatPerc}%)</p>`;
+                resultsHTML += `<p><strong>Masa Magra Actual (Estimada):</strong> ${currentLeanMassKg.toFixed(1)} kg (${currentLeanMassPerc.toFixed(1)}%)</p>`;
+                resultsHTML += `<hr style="border: 0; border-top: 1px dashed #a5d6a7; margin: 15px 0;">`;
+                resultsHTML += `<p><strong>Peso Objetivo Calculado:</strong> ${targetWeightKgGlobal.toFixed(2)} kg</p>`;
+                resultsHTML += `<p><strong>Masa Grasa Objetivo:</strong> ${targetFatMassKg.toFixed(2)} kg (${targetFatPerc}%)</p>`;
+                resultsHTML += `<p><strong>Masa Magra Objetivo (Estimada):</strong> ${targetLeanMassKg.toFixed(1)} kg (Incluye ${desiredLeanGainKg} kg de ganancia deseada)</p>`;
+
+                if (fatMassToLoseGainKg > 0) {
+                    resultsHTML += `<p><strong>Grasa a Perder:</strong> ${fatMassToLoseGainKg.toFixed(2)} kg</p>`;
+                } else if (fatMassToLoseGainKg < 0) {
+                    resultsHTML += `<p><strong>Grasa a Ganar:</strong> ${Math.abs(fatMassToLoseGainKg).toFixed(2)} kg</p>`;
+                } else {
+                    resultsHTML += `<p><strong>Grasa a Perder/Ganar:</strong> 0 kg</p>`;
+                }
+
+                // Display total weight change and rate
+                if (goalTypeGlobal === 'loss') {
+                    resultsHTML += `<p><strong>Pérdida de Peso Neta Total:</strong> ${Math.abs(totalWeightChangeKg).toFixed(2)} kg</p>`;
+                    resultsHTML += `<p><strong>Ritmo Semanal Objetivo Estimado (Auto):</strong> ~<strong>${targetWeeklyRateKgGlobal.toFixed(2)} kg/semana</strong> (~<strong>${(targetWeeklyRatePerc * 100).toFixed(1)}%</strong> del peso corporal)</p>`;
+                } else if (goalTypeGlobal === 'gain') {
+                    resultsHTML += `<p><strong>Ganancia de Peso Neta Total:</strong> ${totalWeightChangeKg.toFixed(2)} kg</p>`;
+                    resultsHTML += `<p><strong>Ritmo Semanal Objetivo Estimado (Auto):</strong> Ganancia de ~<strong>${targetWeeklyRateKgGlobal.toFixed(2)} kg/semana</strong> (~<strong>${(targetWeeklyRatePerc * 100).toFixed(1)}%</strong> del peso corporal)</p>`;
+                } else {
+                    resultsHTML += `<p><strong>Cambio de Peso Neto Total:</strong> 0 kg</p>`;
+                    resultsHTML += `<p><strong>Ritmo Semanal Objetivo Estimado (Auto):</strong> Mantenimiento</p>`;
+                }
+
+                if (goalTypeGlobal !== 'maintenance' && estimatedWeeksGlobal > 0) {
+                    resultsHTML += `<p><strong>Duración Estimada del Plan (Auto - para Tabla Paso 5):</strong> Aproximadamente <strong>${estimatedWeeksGlobal} semanas</strong> (~${(estimatedWeeksGlobal / 4.3).toFixed(1)} meses)</p>`;
+                }
+
+                // --- Muscle Assessment Display ---
+                resultsHTML += muscleAssessmentHTML;
+
+                // --- General Recommendations Notes Section ---
+                resultsHTML += `<div class="notes-section"><h4>Notas y Recomendaciones Generales:</h4><ul>`;
+                const tdeeString = calculatedTDEE ? calculatedTDEE.toFixed(0) + ' kcal' : '(calcula GET en Paso 1)';
+                if (goalTypeGlobal === 'loss') {
+                    const deficit = Math.min(600, Math.max(400, targetWeeklyRateKgGlobal * 7700 / 7));
+                    resultsHTML += `<li><strong>Déficit Calórico Sugerido:</strong> Para el ritmo objetivo, un déficit de ~<strong>${deficit.toFixed(0)} kcal/día</strong> respecto a tu GET (${tdeeString}) podría ser adecuado. Ajusta según progreso.</li>`;
+                    resultsHTML += `<li><strong>Proteína Alta:</strong> Consume entre <strong>1.8 - 2.4 g/kg</strong> de peso corporal para preservar músculo.</li>`;
+                    resultsHTML += `<li><strong>Ritmo Sostenible:</strong> El objetivo es perder ~<strong>${(targetWeeklyRatePerc * 100).toFixed(1)}% del peso/semana</strong>.</li>`;
+                } else if (goalTypeGlobal === 'gain') {
+                    const surplus = Math.min(500, Math.max(250, targetWeeklyRateKgGlobal * 7700 / 7));
+                    resultsHTML += `<li><strong>Superávit Calórico Sugerido:</strong> Para el ritmo objetivo, un superávit de ~<strong>${surplus.toFixed(0)} kcal/día</strong> sobre tu GET (${tdeeString}) podría ser adecuado. Ajusta según progreso.</li>`;
+                    resultsHTML += `<li><strong>Proteína Adecuada:</strong> Consume entre <strong>1.6 - 2.2 g/kg</strong> de peso corporal para apoyar la ganancia muscular.</li>`;
+                    resultsHTML += `<li><strong>Ganancia Gradual:</strong> El objetivo es ganar ~<strong>${(targetWeeklyRatePerc * 100).toFixed(1)}% del peso/semana</strong>.</li>`;
+                } else {
+                    resultsHTML += `<li><strong>Mantenimiento Calórico:</strong> Intenta consumir calorías cercanas a tu GET (${tdeeString}).</li>`;
+                    resultsHTML += `<li><strong>Proteína:</strong> Un consumo de <strong>1.2 - 1.8 g/kg</strong> de peso corporal suele ser adecuado.</li>`;
+                }
+                resultsHTML += `<li><strong>Entrenamiento de Fuerza:</strong> Es <strong>crucial</strong>. Incluye <strong>2-3 sesiones/semana</strong> si eres principiante y tu nivel de AF es Leve o Sedentario. Si eres activo incluye <strong>3-5 sesiones/semana</strong> .</li>`;
+                if (goalTypeGlobal === 'loss' && estimatedWeeksGlobal > 8) {
+                    resultsHTML += `<li><strong>Descansos (Diet Breaks):</strong> Considera <strong>1-2 semanas a mantenimiento</strong> cada 6-12 semanas de déficit (ver Tabla Paso 5).</li>`;
+                }
+                resultsHTML += `<li><strong>Monitorización:</strong> Pésate regularmente y ajusta tu ingesta según resultados.</li>`;
+                resultsHTML += `</ul></div>`;
+
+                // --- Monitoring & Adjustments Section ---
+                resultsHTML += generateMonitoringHTML();
+
+                // --- Display results ---
+                weightGoalResultDiv.innerHTML = resultsHTML;
+
+                // --- Generate and Display Weight Evolution Chart (Based on Auto Estimation) ---
+                if (goalTypeGlobal !== 'maintenance' && estimatedWeeksGlobal > 1 && weightChartContainer) {
+                    generateWeightEvolutionChart(currentWeightKg, targetWeightKgGlobal, estimatedWeeksGlobal);
+                    weightChartContainer.style.display = 'block';
+                }
+
+                // --- Calcular y rellenar Calorías Objetivo en Paso 3 ---
+                if (calculatedTDEE && goalCaloriesInput) {
+                    let suggestedGoalCalories = calculatedTDEE; // Default to maintenance (using the buffered TDEE from Step 1)
+                    if (goalTypeGlobal === 'loss') {
+                        suggestedGoalCalories = calculatedTDEE * 0.90; // Apply deficit to buffered TDEE
+                    } else if (goalTypeGlobal === 'gain') {
+                        suggestedGoalCalories = calculatedTDEE * 1.10; // Apply surplus to buffered TDEE
+                    }
+                    goalCaloriesInput.value = Math.round(suggestedGoalCalories);
+                    console.log(`Set Goal Calories (Step 3) to: ${goalCaloriesInput.value} based on goalType: ${goalTypeGlobal}`);
+                } else {
+                    console.warn("Could not set goal calories automatically. TDEE or input field missing.");
+                    if (goalCaloriesInput) goalCaloriesInput.value = '';
+                }
+
+                // --- Ajustar Porcentajes de Macros por Defecto en Paso 3 ---
+                if (proteinPercentageInput && carbPercentageInput && fatPercentageInput) {
+                    if (goalTypeGlobal === 'loss') {
+                        proteinPercentageInput.value = 30;
+                        carbPercentageInput.value = 40;
+                        fatPercentageInput.value = 30;
+                        console.log("Set default macros for LOSS: P:30 C:40 F:30");
+                    } else if (goalTypeGlobal === 'gain') {
+                        proteinPercentageInput.value = 25;
+                        carbPercentageInput.value = 50;
+                        fatPercentageInput.value = 25;
+                        console.log("Set default macros for GAIN: P:25 C:50 F:25");
+                    } else { // Maintenance
+                        proteinPercentageInput.value = 20;
+                        carbPercentageInput.value = 50;
+                        fatPercentageInput.value = 30;
+                        console.log("Set default macros for MAINTENANCE: P:20 C:50 F:30");
+                    }
+                    // Actualizar el total mostrado inmediatamente después de cambiar los valores
+                    adjustMacroPercentages();
+                } else {
+                    console.warn("Could not set default macro percentages. Input fields missing.");
+                }
+
+                // Reset subsequent steps as Step 2 results changed
+                resetStep3onwards();
+                updateButtonStates(); // Enable next step button
+            }
+
+            // --- Helper Function to Generate Weight Evolution Chart (Step 2) ---
+            function generateWeightEvolutionChart(startWeight, endWeight, weeks) {
+                if (!weightChartContainer) return; // Exit if container not found
+                weightChartContainer.innerHTML = '<canvas id="weightEvolutionChart"></canvas>'; // Ensure canvas exists
+                const ctx = document.getElementById('weightEvolutionChart')?.getContext('2d');
+                if (!ctx) {
+                     console.error("Failed to get canvas context for weightEvolutionChart");
+                     return;
+                }
+
+                // Destroy previous instance if exists
+                if (weightEvolutionChartInstance) { weightEvolutionChartInstance.destroy(); }
+
+                const labels = Array.from({ length: weeks + 1 }, (_, i) => `Sem ${i}`);
+                const weightData = Array.from({ length: weeks + 1 }, (_, i) => {
+                    // Linear interpolation between start and end weight
+                    return startWeight + (endWeight - startWeight) * (i / weeks);
+                });
+
+                weightEvolutionChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Peso Estimado (kg) - Auto',
+                            data: weightData,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            fill: true,
+                            tension: 0.1 }]
+                        },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true },
+                            title: { display: true, text: `Evolución Estimada del Peso (${weeks} Semanas - Auto)` },
+                            tooltip: { callbacks: { label: function(context) { return `Semana ${context.dataIndex}: ${context.parsed.y.toFixed(2)} kg`; } } }
+                            },
+                        scales: {
+                            y: { title: { display: true, text: 'Peso (kg)' }, ticks: { callback: function(value) { return value.toFixed(1); } } },
+                            x: { title: { display: true, text: 'Semanas' } }
+                            }
+                        }
+                });
+            }
+
+            // --- Helper Function to Generate Monitoring Info HTML ---
+            function generateMonitoringHTML() {
+                // Static content, can be adjusted if needed
+                let monitoringHTML = `<div class="monitoring-section"><h4>Monitorización y Ajustes Sugeridos</h4><h5>Análisis de Sangre</h5><ul><li><strong>Frecuencia:</strong> Cada 12-16 semanas (aproximadamente cada 2-3 ciclos).</li><li><strong>Parámetros a evaluar:</strong><ul><li>Función renal: Creatinina y TFG.</li><li>Función hepática: ALT, AST, bilirrubina.</li><li>Colesterol: Total, LDL, HDL, triglicéridos.</li></ul></li><li><strong>Momentos clave sugeridos (ejemplo para ~55 semanas):</strong><ul><li>Inicio (semana 0).</li><li>Mitad del plan (~semana 28).</li><li>Final (~semana 55).</li></ul><em>Ajusta estos momentos a la duración real de tu plan.</em></li></ul><h5>Reevaluación de Composición Corporal</h5><ul><li><strong>Frecuencia:</strong> Cada 8-12 semanas, idealmente al final de cada ciclo completo.</li><li><strong>Momentos sugeridos (ejemplo para ~55 semanas con ciclos de 7 sem):</strong><ul><li>Semana 7 (final Ciclo 1).</li><li>Semana 21 (final Ciclo 3).</li><li>Semana 35 (final Ciclo 5).</li><li>Semana 49 (final Ciclo 7).</li></ul><em>Ajusta estos momentos a la duración real de tu plan y tus ciclos.</em></li><li><strong>Método:</strong> Bioimpedancia o DEXA.</li><li><strong>Ajustes:</strong> Recalcular GET y ajustar calorías/macros según nuevo peso/composición.</li></ul></div>`;
+                return monitoringHTML;
+            }
+
+            // --- Step 3: Calculate Macronutrients ---
+            function calculateMacros() {
+                clearContainer(macroResultDiv);
+                if(chartContainer) chartContainer.style.display = 'none'; // Hide macro chart
+                clearContainer(step5TableContainer); // Clear previous auto table (Step 5)
+                displayInfo(step5TableContainer, '<em>Calculando tabla de ciclos automática...</em>'); // Show loading message for auto table
+
+                if (macroChartInstance) { macroChartInstance.destroy(); macroChartInstance = null; }
+
+                // Check prerequisites
+                if (!calculatedTDEE || !targetWeightKgGlobal) {
+                    displayError(macroResultDiv, 'Error: Completa los Pasos 1 y 2 antes de calcular macronutrientes.');
+                    displayError(step5TableContainer, '<em>Error: Completa los Pasos 1 y 2 para generar la tabla de ciclos automática.</em>');
+                    updateButtonStates();
+                    return;
+                }
+
+                // Get values from form (using the potentially pre-filled values)
+                const goalCalories = parseInt(goalCaloriesInput.value);
+                const proteinPerc = parseInt(proteinPercentageInput.value);
+                const carbPerc = parseInt(carbPercentageInput.value);
+                const fatPerc = parseInt(fatPercentageInput.value);
+
+                // Validate inputs
+                if (isNaN(goalCalories) || goalCalories <= 0) {
+                    displayError(macroResultDiv, 'Por favor, introduce un objetivo calórico válido.');
+                    displayError(step5TableContainer, '<em>Error: Necesitas un objetivo calórico válido para generar la tabla de ciclos automática.</em>');
+                    calculatedMacros = { proteinGrams: 0, carbGrams: 0, fatGrams: 0, goalCalories: 0 }; // Reset macros
+                    resetStep4onwards(); // Reset subsequent steps
+                    resetStep5Table(); // Reset Step 5 table
+                    updateButtonStates();
+                    return;
+                }
+                if (isNaN(proteinPerc) || isNaN(carbPerc) || isNaN(fatPerc) || proteinPerc < 0 || carbPerc < 0 || fatPerc < 0) {
+                    displayError(macroResultDiv, 'Por favor, introduce porcentajes válidos para los macronutrientes.');
+                    displayError(step5TableContainer, '<em>Error: Necesitas porcentajes de macros válidos para generar la tabla de ciclos automática.</em>');
+                    calculatedMacros = { proteinGrams: 0, carbGrams: 0, fatGrams: 0, goalCalories: 0 }; // Reset macros
+                    resetStep4onwards(); // Reset subsequent steps
+                    resetStep5Table(); // Reset Step 5 table
+                    updateButtonStates();
+                    return;
+                }
+
+                const totalPercentage = proteinPerc + carbPerc + fatPerc;
+                adjustMacroPercentages(); // Update total display
+
+                if (totalPercentage !== 100) {
+                    displayError(macroResultDiv, `La suma de los porcentajes debe ser 100%. Actualmente es ${totalPercentage}%.`);
+                    displayError(step5TableContainer, '<em>Error: La suma de porcentajes de macros debe ser 100% para generar la tabla de ciclos automática.</em>');
+                    calculatedMacros = { proteinGrams: 0, carbGrams: 0, fatGrams: 0, goalCalories: 0 }; // Reset macros
+                    resetStep4onwards(); // Reset subsequent steps
+                    resetStep5Table(); // Reset Step 5 table
+                    updateButtonStates();
+                    return;
+                }
+
+                // Calculate grams
+                const proteinGrams = (goalCalories * (proteinPerc / 100)) / 4;
+                const carbGrams = (goalCalories * (carbPerc / 100)) / 4;
+                const fatGrams = (goalCalories * (fatPerc / 100)) / 9;
+
+                // Store calculated macros globally
+                calculatedMacros = { proteinGrams, carbGrams, fatGrams, goalCalories };
+
+                // Display macro results
+                macroResultDiv.innerHTML = `<h3>Distribución de Macronutrientes:</h3><p>Para un objetivo de <strong>${goalCalories} kcal/día</strong>:</p><ul><li><strong>Proteínas:</strong> ${proteinGrams.toFixed(1)} g (${proteinPerc}%)</li><li><strong>Carbohidratos:</strong> ${carbGrams.toFixed(1)} g (${carbPerc}%)</li><li><strong>Grasas:</strong> ${fatGrams.toFixed(1)} g (${fatPerc}%)</li></ul>`;
+
+                // Generate and display macro chart
+                if (chartContainer) {
+                    chartContainer.style.display = 'block';
+                    chartContainer.innerHTML = '<canvas id="macroChart"></canvas>'; // Ensure canvas exists
+                    const ctx = document.getElementById('macroChart')?.getContext('2d');
+                    if (ctx) {
+    macroChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Proteínas (g)', 'Carbohidratos (g)', 'Grasas (g)'],
+            datasets: [{
+                label: 'Gramos por Macronutriente',
+                data: [proteinGrams.toFixed(1), carbGrams.toFixed(1), fatGrams.toFixed(1)],
+                backgroundColor: [
+                    'rgba(46, 125, 50, 0.7)', // #2e7d32 (verde bosque oscuro para proteínas)
+                    'rgba(52, 199, 89, 0.7)', // #34c759 (verde manzana para carbohidratos)
+                    'rgba(32, 201, 151, 0.7)' // #20c997 (verde teal para grasas)
+                ],
+                borderColor: [
+                    'rgba(46, 125, 50, 1)', // #2e7d32
+                    'rgba(52, 199, 89, 1)', // #34c759
+                    'rgba(32, 201, 151, 1)' // #20c997
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                title: {
+                    display: true,
+                    text: `Distribución de Macronutrientes (${goalCalories} kcal)`
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.parsed + ' g';
+                                const dataIndex = context.dataIndex;
+                                const percentages = [proteinPerc, carbPerc, fatPerc];
+                                if (dataIndex < percentages.length) {
+                                    label += ` (${percentages[dataIndex]}%)`;
+                                }
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+} else {
+    console.error("Failed to get canvas context for macroChart");
+}
+                }
+
+                // --- Generate Detailed Cycle Table (Step 5 - Auto) ---
+                if (goalTypeGlobal !== 'maintenance' && estimatedWeeksGlobal > 0 && currentWeightKg && targetWeightKgGlobal && calculatedTDEE) {
+                    generateDetailedCycleTable(estimatedWeeksGlobal, currentWeightKg, targetWeightKgGlobal, calculatedTDEE, calculatedMacros.goalCalories, calculatedMacros, goalTypeGlobal, targetWeeklyRateKgGlobal);
+                } else if (goalTypeGlobal === 'maintenance') {
+                    displayInfo(step5TableContainer, '<em>No se requiere tabla de ciclos automática para un objetivo de mantenimiento.</em>');
+                } else {
+                    displayError(step5TableContainer, '<em>Faltan datos de Pasos 1 o 2 para generar la tabla de ciclos automática.</em>');
+                    console.error("Missing data for detailed (auto) cycle table generation:", { estimatedWeeksGlobal, currentWeightKg, targetWeightKgGlobal, calculatedTDEE, goalTypeGlobal });
+                }
+
+                // Reset subsequent steps as Step 3 results changed
+                resetStep4onwards();
+                updateButtonStates(); // Enable next step button
+            }
+
+            // Helper function to adjust and display macro percentages total
+            function adjustMacroPercentages() {
+                if (!macroPercentageTotalDiv || !proteinPercentageInput || !carbPercentageInput || !fatPercentageInput) return; // Check if elements exist
+                const p = parseInt(proteinPercentageInput.value) || 0;
+                const c = parseInt(carbPercentageInput.value) || 0;
+                const f = parseInt(fatPercentageInput.value) || 0;
+                const total = p + c + f;
+                macroPercentageTotalDiv.textContent = `Total: ${total}%`;
+                macroPercentageTotalDiv.style.color = total === 100 ? '#388E3C' : '#c62828';
+            }
+
+            // --- Step 4: Generate Meal Plan ---
+            function generateMealPlan() {
+                clearContainer(mealResultDiv);
+
+                // Check prerequisite
+                if (calculatedMacros.goalCalories === 0) {
+                    displayError(mealResultDiv, 'Por favor, calcula primero tus macronutrientes en el Paso 3.');
+                    updateButtonStates();
+                    return;
+                }
+
+                // Get percentages from form
+                const mealPercentages = {
+                    breakfast: parseInt(mealForm.elements['breakfast-perc'].value) || 0,
+                    snack1: parseInt(mealForm.elements['snack1-perc'].value) || 0,
+                    lunch: parseInt(mealForm.elements['lunch-perc'].value) || 0,
+                    snack2: parseInt(mealForm.elements['snack2-perc'].value) || 0,
+                    dinner: parseInt(mealForm.elements['dinner-perc'].value) || 0
+                };
+                const totalMealPerc = Object.values(mealPercentages).reduce((sum, perc) => sum + perc, 0);
+
+                adjustMealPercentages(); // Update total display
+
+                if (totalMealPerc !== 100) {
+                    displayError(mealResultDiv, `La suma de los porcentajes de comida debe ser 100%. Actualmente es ${totalMealPerc}%.`);
+                    return;
+                }
+
+                const { proteinGrams, carbGrams, fatGrams, goalCalories } = calculatedMacros;
+                let mealPlanHTML = `<h3>Distribución Orientativa por Comida:</h3><p>Basado en ${goalCalories} kcal, ${proteinGrams.toFixed(1)}g Proteína, ${carbGrams.toFixed(1)}g Carbs, ${fatGrams.toFixed(1)}g Grasa.</p>`;
+
+                // Calculate and display macros per meal
+                for (const [mealName, percentage] of Object.entries(mealPercentages)) {
+                    if (percentage > 0) {
+                        const mealCalories = goalCalories * (percentage / 100);
+                        const mealProtein = proteinGrams * (percentage / 100);
+                        const mealCarbs = carbGrams * (percentage / 100);
+                        const mealFat = fatGrams * (percentage / 100);
+                        const displayName = mealName.charAt(0).toUpperCase() + mealName.slice(1).replace('snack1', 'Media Mañana').replace('snack2', 'Merienda');
+
+                        mealPlanHTML += `
+                            <div class="plan-step" style="margin-bottom: 15px; padding: 15px; background-color: #f5fbf5 !important; border: 1px solid #d4eed5;">
+                                <h4>${displayName} (${percentage}%)</h4>
+                                <ul>
+                                    <li><strong>Calorías:</strong> ~${mealCalories.toFixed(0)} kcal</li>
+                                    <li><strong>Proteínas:</strong> ~${mealProtein.toFixed(1)} g</li>
+                                    <li><strong>Carbohidratos:</strong> ~${mealCarbs.toFixed(1)} g</li>
+                                    <li><strong>Grasas:</strong> ~${mealFat.toFixed(1)} g</li>
+                                </ul>
+                            </div>`;
+                    }
+                }
+                mealPlanHTML += `<p style="margin-top: 15px; font-style: italic;">Nota: Esta es una distribución matemática. Los alimentos específicos determinarán los macros exactos de cada comida. Consulta a un profesional para crear un plan de comidas detallado.</p>`;
+                mealResultDiv.innerHTML = mealPlanHTML;
+                updateButtonStates(); // No state changes expected here, but good practice
+            }
+
+            // Helper function to adjust and display meal percentages total
+            function adjustMealPercentages() {
+                 if (!mealPercentageTotalDiv) return;
+                 const percentages = [
+                    parseInt(mealForm.elements['breakfast-perc'].value) || 0,
+                    parseInt(mealForm.elements['snack1-perc'].value) || 0,
+                    parseInt(mealForm.elements['lunch-perc'].value) || 0,
+                    parseInt(mealForm.elements['snack2-perc'].value) || 0,
+                    parseInt(mealForm.elements['dinner-perc'].value) || 0
+                 ];
+                 const total = percentages.reduce((sum, perc) => sum + perc, 0);
+                 mealPercentageTotalDiv.textContent = `Total: ${total}%`;
+                 mealPercentageTotalDiv.style.color = total === 100 ? '#388E3C' : '#c62828';
+            }
+
+
+            // --- Step 5 Helper Function to Generate Detailed Cycle Table (Auto) ---
+            function generateDetailedCycleTable(totalWeeks, startWeight, endWeight, initialTDEE, phaseCalories, phaseMacros, goalType, weeklyRateKg) {
+    const step6TableContainer = document.getElementById('detailed-cycle-table-container');
+    clearContainer(step6TableContainer);
+
+    if (goalType === 'maintenance' || totalWeeks <= 0) {
+        displayInfo(step6TableContainer, '<em>No se requiere tabla de ciclos para un objetivo de mantenimiento o duración cero.</em>');
+        return;
+    }
+    if (!initialTDEE || !phaseCalories || !phaseMacros || !phaseMacros.proteinGrams || weeklyRateKg === undefined || !userAge || !userHeightCm) {
+        displayError(step6TableContainer, '<em>Faltan datos necesarios (TDEE, Calorías/Macros Objetivo, Ritmo Semanal, Datos Usuario) para generar la tabla de ciclos. Asegúrate de completar los pasos 1, 2 y 3.</em>');
+        console.error("Missing data for detailed table:", {initialTDEE, phaseCalories, phaseMacros, weeklyRateKg, userAge, userHeightCm});
+        return;
+    }
+
+    const phaseWeeksPerCycle = 6;
+    const breakWeeksPerCycle = 1;
+    const cycleDuration = phaseWeeksPerCycle + breakWeeksPerCycle;
+    const numFullCycles = Math.floor(totalWeeks / cycleDuration);
+    const remainingPhaseWeeks = totalWeeks % cycleDuration;
+
+    const activityMultipliers = userGender === 'male' ? [1.2, 1.56, 1.78, 2.1, 2.3] : [1.2, 1.55, 1.64, 1.82, 2];
+
+    const macroForm = document.getElementById('macro-form');
+    const proteinPerc = parseInt(macroForm.elements['protein-percentage'].value);
+    const carbPerc = parseInt(macroForm.elements['carb-percentage'].value);
+    const fatPerc = parseInt(macroForm.elements['fat-percentage'].value);
+
+    let tableHTML = `
+        <table id="detailed-cycle-table">
+            <thead>
+                <tr>
+                    <th>Ciclo</th>
+                    <th>Fase</th>
+                    <th>Semnanas</th>
+                    <th>Peso(kg) <br>(Inicio→Fin)</th>
+                    <th>Calorias/día/AF</th>
+                    <th>Proteína(g)</th>
+                    <th>Carbs(g)</th>
+                    <th>Grasas(g)</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+    let currentWeek = 0;
+    let currentCycleWeight = startWeight;
+    const phaseLabel = goalType === 'loss' ? 'Déficit' : 'Superávit';
+    const phaseClass = goalType === 'loss' ? 'phase-deficit' : 'phase-surplus';
+    const weeklyWeightChange = goalType === 'loss' ? -Math.abs(weeklyRateKg) : Math.abs(weeklyRateKg);
+
+    for (let i = 1; i <= numFullCycles; i++) {
+        let weightAtEndOfPhase = currentCycleWeight + (phaseWeeksPerCycle * weeklyWeightChange);
+        weightAtEndOfPhase = (goalType === 'loss') ? Math.max(weightAtEndOfPhase, endWeight) : Math.min(weightAtEndOfPhase, endWeight);
+
+        let bmr;
+        if (userGender === 'male') {
+            bmr = (10 * currentCycleWeight) + (6.25 * userHeightCm) - (5 * userAge) + 5;
+        } else {
+            bmr = (10 * currentCycleWeight) + (6.25 * userHeightCm) - (5 * userAge) - 161;
+        }
+
+        const tdeeAF = activityMultipliers.map(multiplier => bmr * multiplier * 1.1);
+        const caloriesAF = tdeeAF.map(tdee => {
+            if (goalType === 'loss') return Math.round(tdee * 0.90);
+            else if (goalType === 'gain') return Math.round(tdee * 1.1);
+            else return Math.round(tdee);
+        });
+
+        const macrosAF = caloriesAF.map(cal => {
+            const proteinGrams = (cal * (proteinPerc / 100)) / 4;
+            const carbGrams = (cal * (carbPerc / 100)) / 4;
+            const fatGrams = (cal * (fatPerc / 100)) / 9;
+            return { proteinGrams, carbGrams, fatGrams };
+        });
+
+        // Formatear calorías y macros como lista vertical
+        const caloriesStr = caloriesAF.map((cal, index) => `${index}: ${cal} kcal`).join('<br>');
+        const proteinStr = macrosAF.map((macro, index) => `${index}: ${macro.proteinGrams.toFixed(0)} g`).join('<br>');
+        const carbsStr = macrosAF.map((macro, index) => `${index}: ${macro.carbGrams.toFixed(0)} g`).join('<br>');
+        const fatsStr = macrosAF.map((macro, index) => `${index}: ${macro.fatGrams.toFixed(0)} g`).join('<br>');
+
+        tableHTML += `<tr class="${phaseClass}">
+            <td>${i}</td>
+            <td>${phaseLabel}</td>
+            <td>${phaseWeeksPerCycle}</td>
+            <td>${currentCycleWeight.toFixed(1)} → ${weightAtEndOfPhase.toFixed(1)}</td>
+            <td>${caloriesStr}</td>
+            <td>${proteinStr}</td>
+            <td>${carbsStr}</td>
+            <td>${fatsStr}</td>
+        </tr>`;
+
+        currentCycleWeight = weightAtEndOfPhase;
+        currentWeek += phaseWeeksPerCycle;
+
+        if ((goalType === 'loss' && currentCycleWeight <= endWeight) || (goalType === 'gain' && currentCycleWeight >= endWeight)) break;
+
+        let breakBMR;
+        if (userGender === 'male') {
+            breakBMR = (10 * currentCycleWeight) + (6.25 * userHeightCm) - (5 * userAge) + 5;
+        } else {
+            breakBMR = (10 * currentCycleWeight) + (6.25 * userHeightCm) - (5 * userAge) - 161;
+        }
+
+        const breakTDEEAF = activityMultipliers.map(multiplier => breakBMR * multiplier * 1.1);
+        //const breakCaloriesAF = breakTDEEAF.map(tdee => Math.round(tdee));
+		const breakCaloriesAF = breakTDEEAF.map(tdee => {
+            if (goalType === 'loss') return Math.round(tdee * 0.95);
+            else if (goalType === 'gain') return Math.round(tdee * 1.1);
+            else return Math.round(tdee);
+        });
+        const breakMacrosAF = breakCaloriesAF.map(cal => {
+            const proteinGrams = (cal * (proteinPerc / 100)) / 4;
+            const carbGrams = (cal * (carbPerc / 100)) / 4;
+            const fatGrams = (cal * (fatPerc / 100)) / 9;
+            return { proteinGrams, carbGrams, fatGrams };
+        });
+
+        // Formatear calorías y macros de break como lista vertical
+        const breakCaloriesStr = breakCaloriesAF.map((cal, index) => `${index}: ${cal} kcal`).join('<br>');
+        const breakProteinStr = breakMacrosAF.map((macro, index) => `${index}: ${macro.proteinGrams.toFixed(0)} g`).join('<br>');
+        const breakCarbsStr = breakMacrosAF.map((macro, index) => `${index}: ${macro.carbGrams.toFixed(0)} g`).join('<br>');
+        const breakFatsStr = breakMacrosAF.map((macro, index) => `${index}: ${macro.fatGrams.toFixed(0)} g`).join('<br>');
+
+        tableHTML += `<tr class="phase-break">
+            <td>${i}</td>
+            <td>Break (Mantenimiento)</td>
+            <td>${breakWeeksPerCycle}</td>
+            <td>~ ${currentCycleWeight.toFixed(1)}</td>
+            <td>${breakCaloriesStr}</td>
+            <td>${breakProteinStr}</td>
+            <td>${breakCarbsStr}</td>
+            <td>${breakFatsStr}</td>
+        </tr>`;
+
+        currentWeek += breakWeeksPerCycle;
+
+        if ((goalType === 'loss' && currentCycleWeight <= endWeight) || (goalType === 'gain' && currentCycleWeight >= endWeight)) break;
+    }
+
+    if (remainingPhaseWeeks > 0 && ((goalType === 'loss' && currentCycleWeight > endWeight) || (goalType === 'gain' && currentCycleWeight < endWeight))) {
+        let weightAtEndFinal = currentCycleWeight + (remainingPhaseWeeks * weeklyWeightChange);
+        weightAtEndFinal = (goalType === 'loss') ? Math.max(weightAtEndFinal, endWeight) : Math.min(weightAtEndFinal, endWeight);
+
+        let bmrFinal;
+        if (userGender === 'male') {
+            bmrFinal = (10 * currentCycleWeight) + (6.25 * userHeightCm) - (5 * userAge) + 5;
+        } else {
+            bmrFinal = (10 * currentCycleWeight) + (6.25 * userHeightCm) - (5 * userAge) - 161;
+        }
+
+        const tdeeAFFinal = activityMultipliers.map(multiplier => bmrFinal * multiplier* 1.1);
+        const caloriesAFFinal = tdeeAFFinal.map(tdee => {
+            if (goalType === 'loss') return Math.round(tdee * 0.90);
+            else if (goalType === 'gain') return Math.round(tdee * 1.1);
+            else return Math.round(tdee);
+        });
+
+        const macrosAFFinal = caloriesAFFinal.map(cal => {
+            const proteinGrams = (cal * (proteinPerc / 100)) / 4;
+            const carbGrams = (cal * (carbPerc / 100)) / 4;
+            const fatGrams = (cal * (fatPerc / 100)) / 9;
+            return { proteinGrams, carbGrams, fatGrams };
+        });
+
+        // Formatear calorías y macros finales como lista vertical
+        const caloriesStrFinal = caloriesAFFinal.map((cal, index) => `${index}: ${cal} kcal`).join('<br>');
+        const proteinStrFinal = macrosAFFinal.map((macro, index) => `${index}: ${macro.proteinGrams.toFixed(0)} g`).join('<br>');
+        const carbsStrFinal = macrosAFFinal.map((macro, index) => `${index}: ${macro.carbGrams.toFixed(0)} g`).join('<br>');
+        const fatsStrFinal = macrosAFFinal.map((macro, index) => `${index}: ${macro.fatGrams.toFixed(0)} g`).join('<br>');
+
+        tableHTML += `<tr class="${phaseClass}">
+            <td>${numFullCycles + 1}</td>
+            <td>${phaseLabel} (Final)</td>
+            <td>${remainingPhaseWeeks}</td>
+            <td>${currentCycleWeight.toFixed(1)} → ${weightAtEndFinal.toFixed(1)}</td>
+            <td>${caloriesStrFinal}</td>
+            <td>${proteinStrFinal}</td>
+            <td>${carbsStrFinal}</td>
+            <td>${fatsStrFinal}</td>
+        </tr>`;
+    }
+
+    tableHTML += `</tbody></table>`;
+    tableHTML += `<p style="font-size: 0.9em; font-style: italic; margin-top: 10px;">Nota: Esta tabla es una simulación basada en los cálculos automáticos de los Pasos 1-3. Las calorías y macros se ajustan según el nivel de actividad física (AF: 0=Sedentario, 1=Leve, 2=Moderado, 3=Intenso). El progreso real puede variar. Ajusta según sea necesario y consulta a un profesional.</p>`;
+
+    step6TableContainer.innerHTML = tableHTML;
+}
+
+
+            // --- Step 6: Estimate Time (Manual Calculation) ---
+            function estimateTimeManually() {
+                clearContainer(timeEstimationResultDiv); // Clear previous text results
+                if (timeChartContainer) timeChartContainer.style.display = 'none'; // Hide chart initially
+                resetStep7(); // Reset manual cycle table when re-estimating time
+
+                // Destroy previous chart instance
+                if (timeEstimationChartInstance) {
+                    timeEstimationChartInstance.destroy();
+                    timeEstimationChartInstance = null;
+                }
+
+                // Reset global variables for this step
+                estimatedWeeksManualGlobal = null;
+                weightChangeGoalManualGlobal = null;
+                weeklyCalorieDiffManualGlobal = null;
+
+                // Check prerequisite
+                if (!currentWeightKg) {
+                    displayError(timeEstimationResultDiv, 'Error: Completa el Paso 1 antes de realizar esta estimación.');
+                    updateButtonStates();
+                    return;
+                }
+
+                // Get values from form
+                const weightChangeGoal = parseFloat(timeEstimationForm.elements['weight-change-goal'].value);
+                const weeklyCalorieDiff = parseInt(timeEstimationForm.elements['weekly-calorie-diff'].value);
+
+                // Debug: Log input values
+                console.log("Step 6 Inputs - weightChangeGoal:", weightChangeGoal, "weeklyCalorieDiff:", weeklyCalorieDiff, "currentWeightKg:", currentWeightKg);
+
+                // Validate inputs
+                if (isNaN(weightChangeGoal)) {
+                     displayError(timeEstimationResultDiv, 'Por favor, introduce un cambio de peso deseado válido.');
+                     updateButtonStates();
+                     return;
+                }
+                 if (isNaN(weeklyCalorieDiff) || weeklyCalorieDiff === 0) {
+                    displayError(timeEstimationResultDiv, 'Por favor, introduce una diferencia calórica semanal válida y distinta de cero.');
+                    updateButtonStates();
+                    return;
+                }
+                if ((weightChangeGoal > 0 && weeklyCalorieDiff < 0) || (weightChangeGoal < 0 && weeklyCalorieDiff > 0)) {
+                    displayError(timeEstimationResultDiv, 'El signo del cambio de peso (+ para ganar, - para perder) debe coincidir con el signo de la diferencia calórica (+ superávit, - déficit).');
+                    updateButtonStates();
+                    return;
+                }
+
+                // Estimate time
+                const kcalPerKg = 7700;
+                const totalKcalChangeNeeded = Math.abs(weightChangeGoal) * kcalPerKg;
+                const dailyAdjustmentAbs = Math.abs(weeklyCalorieDiff) / 7; // Convert weekly to daily
+                let estimatedWeeksManual = 0;
+                if (dailyAdjustmentAbs > 0) { // Avoid division by zero
+                    const daysNeeded = totalKcalChangeNeeded / dailyAdjustmentAbs;
+                    estimatedWeeksManual = Math.ceil(daysNeeded / 7); // Round up to nearest week
+                }
+
+
+                // Handle maintenance case (no time needed)
+                if (weightChangeGoal === 0) {
+                    estimatedWeeksManual = 0;
+                }
+
+                // Debug: Log calculation results
+                console.log("Step 6 Calculation - totalKcalChangeNeeded:", totalKcalChangeNeeded, "dailyAdjustmentAbs:", dailyAdjustmentAbs, "estimatedWeeksManual:", estimatedWeeksManual);
+
+                // Store results globally if valid
+                if (isFinite(estimatedWeeksManual)) {
+                    estimatedWeeksManualGlobal = estimatedWeeksManual;
+                    weightChangeGoalManualGlobal = weightChangeGoal;
+                    weeklyCalorieDiffManualGlobal = weeklyCalorieDiff;
+                } else {
+                    // Reset globals if calculation failed
+                    estimatedWeeksManualGlobal = null;
+                    weightChangeGoalManualGlobal = null;
+                    weeklyCalorieDiffManualGlobal = null;
+                }
+
+
+                // Display result text
+                let resultHTML = `<h3>Estimación de Tiempo (Manual):</h3>`;
+                resultHTML += `<p>Para un cambio de peso de <strong>${weightChangeGoal} kg</strong> con una diferencia calórica semanal de <strong>${weeklyCalorieDiff} kcal</strong>:</p>`;
+
+                if (isFinite(estimatedWeeksManual) && estimatedWeeksManual > 0) {
+                    const weeklyRate = Math.abs(weightChangeGoal) / estimatedWeeksManual;
+                    const targetWeight = currentWeightKg + weightChangeGoal;
+                    resultHTML += `<p>Tiempo estimado para alcanzar <strong>${targetWeight.toFixed(1)} kg</strong>: <strong>${estimatedWeeksManual} semanas</strong> (aproximadamente ${(estimatedWeeksManual / 4.3).toFixed(1)} meses).</p>`;
+                    resultHTML += `<p><small>(Tasa aprox.: ${weeklyRate.toFixed(2)} kg/semana. Estimación teórica basada en un ajuste constante de ${weeklyCalorieDiff} kcal/semana. El progreso real puede variar).</small></p>`;
+                    resultHTML += `<p style="font-style: italic;">Nota: Esta estimación se usará para generar la tabla de ciclos hiperproteicos manual del Paso 7.</p>`;
+                } else if (weightChangeGoal === 0) {
+                    resultHTML += `<p>El cambio de peso deseado es 0 kg (mantenimiento). No se requiere estimación de tiempo.</p>`;
+                } else {
+                    resultHTML += `<p>No se pudo calcular el tiempo estimado con los valores proporcionados (diferencia calórica semanal podría ser demasiado pequeña o cero).</p>`;
+                }
+
+                timeEstimationResultDiv.innerHTML = resultHTML; // Display text first
+
+                // --- Generate and Display Time Estimation Chart (Based on Manual Input) ---
+                if (isFinite(estimatedWeeksManual) && estimatedWeeksManual > 0 && weightChangeGoal !== 0 && timeChartContainer) {
+                    const startWeight = currentWeightKg;
+                    const endWeight = startWeight + weightChangeGoal;
+                    const maxWeeksToShow = 104; // Limit chart to 2 years max
+                    const actualWeeks = Math.min(estimatedWeeksManual, maxWeeksToShow); // Weeks to actually show on chart
+
+                    // Debug: Log chart data preparation
+                    console.log("Step 6 Chart - startWeight:", startWeight, "endWeight:", endWeight, "actualWeeks:", actualWeeks);
+
+                    // Generate labels and data for the chart
+                    const chartLabels = [];
+                    const chartData = [];
+                    for (let w = 0; w <= actualWeeks; w++) {
+                        // Show labels less frequently for longer durations
+                        let showLabel = false;
+                        if (actualWeeks <= 20) showLabel = true; // Show all labels up to 20 weeks
+                        else if (actualWeeks <= 52) showLabel = (w % 2 === 0); // Show every 2 weeks up to 1 year
+                        else showLabel = (w % 4 === 0); // Show every 4 weeks beyond 1 year
+
+                        chartLabels.push(showLabel ? `Sem ${w}` : '');
+
+                        const projectedWeight = startWeight + (weightChangeGoal * (w / estimatedWeeksManual));
+                        // Ensure weight doesn't overshoot the target in the chart data
+                        const finalWeight = (weightChangeGoal < 0)
+                            ? Math.max(projectedWeight, endWeight)
+                            : Math.min(projectedWeight, endWeight);
+                        chartData.push(finalWeight.toFixed(1));
+                    }
+
+                    // Ensure the final point is exactly the target weight if within maxWeeksToShow
+                    if (estimatedWeeksManual <= maxWeeksToShow && parseFloat(chartData[chartData.length - 1]) !== endWeight.toFixed(1)) {
+                        chartData[actualWeeks] = endWeight.toFixed(1);
+                        chartLabels[actualWeeks] = `Sem ${actualWeeks}`; // Make sure last label is shown
+                    }
+
+                    // Debug: Log chart data
+                    console.log("Step 6 Chart Data - labels:", chartLabels.length, "data:", chartData.length);
+
+                    // Ensure the canvas exists
+                    timeChartContainer.innerHTML = '<canvas id="timeEstimationChart"></canvas>'; // Recreate canvas
+                    const ctx = document.getElementById('timeEstimationChart')?.getContext('2d');
+                    if (!ctx) {
+                        console.error("Failed to get canvas context for timeEstimationChart");
+                        displayError(timeEstimationResultDiv, "Error: No se pudo renderizar el gráfico.");
+                        updateButtonStates();
+                        return;
+                    }
+
+                    try {
+                        timeEstimationChartInstance = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: chartLabels,
+                                datasets: [{
+                                    label: 'Peso Proyectado (kg)',
+                                    data: chartData,
+                                    borderColor: '#388E3C', // Green color from the theme
+                                    backgroundColor: 'rgba(56, 142, 60, 0.1)', // Light green fill
+                                    fill: true,
+                                    tension: 0.1,
+                                    pointRadius: 2, // Smaller points
+                                    pointHoverRadius: 4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: true, position: 'top' },
+                                    title: {
+                                        display: true,
+                                        text: `Proyección de Peso desde ${startWeight.toFixed(1)} kg hacia ${endWeight.toFixed(1)} kg`,
+                                        font: { size: 16 },
+                                        color: '#388E3C'
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            // Find the actual week number for the tooltip
+                                            title: function(tooltipItems) {
+                                                 // Find the first non-empty label before or at the current index
+                                                 let weekNum = '?';
+                                                 const dataIndex = tooltipItems[0].dataIndex;
+                                                 for (let i = dataIndex; i >= 0; i--) {
+                                                     const label = chartLabels[i];
+                                                     if (label && label.startsWith('Sem ')) {
+                                                         weekNum = label.substring(4);
+                                                         break;
+                                                     }
+                                                 }
+                                                 // If not found going back, try forward (less likely needed)
+                                                  if (weekNum === '?') {
+                                                     for (let i = dataIndex; i < chartLabels.length; i++) {
+                                                         const label = chartLabels[i];
+                                                          if (label && label.startsWith('Sem ')) {
+                                                             weekNum = label.substring(4);
+                                                             break;
+                                                          }
+                                                     }
+                                                 }
+                                                 return `Semana ${weekNum}`;
+                                            },
+                                            label: function(context) {
+                                                return `Peso: ${context.parsed.y} kg`;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        title: { display: true, text: 'Peso (kg)', color: '#1B5E20' },
+                                        ticks: { color: '#1B5E20', callback: function(value) { return value.toFixed(1); } },
+                                        // Dynamic range with padding
+                                        min: Math.min(startWeight, endWeight) - 2, // Smaller padding
+                                        max: Math.max(startWeight, endWeight) + 2
+                                    },
+                                    x: {
+                                        title: { display: true, text: 'Semanas', color: '#1B5E20' },
+                                        ticks: { color: '#1B5E20', maxRotation: 0, minRotation: 0 } // Keep labels horizontal
+                                    }
+                                }
+                            }
+                        });
+                        timeChartContainer.style.display = 'block'; // Show chart container
+                        console.log("Step 6 Chart rendered successfully");
+                    } catch (error) {
+                        console.error("Error rendering Step 6 chart:", error);
+                        displayError(timeEstimationResultDiv, "Error al renderizar el gráfico de estimación.");
+                    }
+                } else {
+                    if (timeChartContainer) timeChartContainer.style.display = 'none'; // Hide container if no valid chart data
+                    console.log("Step 6 Chart not rendered - conditions not met:", {
+                        isFinite: isFinite(estimatedWeeksManual),
+                        estimatedWeeksManual: estimatedWeeksManual,
+                        weightChangeGoal: weightChangeGoal,
+                        timeChartContainerExists: !!timeChartContainer
+                    });
+                }
+                updateButtonStates(); // Update button states after calculation
+            }
+
+
+            // --- Step 7: Generate Hyperprotein Cycle Table (Manual) ---
+            // Function definition moved outside DOMContentLoaded for onclick
+
+            // --- PDF Generation ---
+            function guardarComoPDF() {
+                if (!calculatedTDEE) {
+                    alert("Por favor, completa al menos el Paso 1 (Cálculo de Necesidades) antes de generar el PDF.");
+                    return;
+                }
+
+                const mainElement = document.querySelector('main');
+                const headerElement = document.querySelector('header');
+                const footerElement = document.querySelector('footer');
+                const allButtons = document.querySelectorAll('button'); // Select all buttons
+
+                // Store original display styles
+                const originalDisplays = new Map();
+                const elementsToHide = [headerElement, footerElement, ...allButtons];
+                elementsToHide.forEach(el => {
+                    if (el) {
+                        originalDisplays.set(el, el.style.display);
+                        el.style.display = 'none';
+                    }
+                });
+
+
+                // Temporarily make chart containers visible if they have content
+                const chartContainers = document.querySelectorAll('#chart-container, #weight-chart-container, #time-estimation-chart-container');
+                chartContainers.forEach(container => {
+                    if (container) {
+                        originalDisplays.set(container, container.style.display);
+                        // Only make visible if it actually contains a chart canvas
+                        if (container.querySelector('canvas') && container.style.display === 'none') {
+                            container.style.display = 'block';
+                        }
+                    }
+                });
+
+                // Make tables visible if they have content
+                const tableContainers = document.querySelectorAll('#detailed-cycle-table-container, #hyperprotein-cycle-table-container');
+                 tableContainers.forEach(container => {
+                     if (container) {
+                         const table = container.querySelector('table');
+                         // Check if table exists and is not already visible but has rows
+                         if (table) {
+                             originalDisplays.set(table, table.style.display);
+                             if (table.style.display === 'none' && table.querySelector('tbody tr')) {
+                                 table.style.display = 'table'; // Make visible for PDF
+                             }
+                         }
+                     }
+                 });
+
+
+                const opt = {
+                    margin: [15, 10, 15, 10], // top, left, bottom, left margins in mm
+                    filename: 'NutriPlan_Plan_Dietetico_Personalizado.pdf',
+                    image: { type: 'jpeg', quality: 0.95 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        // Try to capture full width/height
+                        windowWidth: mainElement.scrollWidth,
+                        windowHeight: mainElement.scrollHeight
+                        },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'], before: '.plan-step' } // Try to avoid breaking inside steps
+                };
+
+                console.log("Generating PDF...");
+                html2pdf().from(mainElement).set(opt).save().then(() => {
+                    console.log("PDF generated successfully.");
+                    // Restore original display styles
+                    originalDisplays.forEach((display, element) => {
+                        if (element) {
+                            element.style.display = display;
+                        }
+                    });
+                }).catch(err => {
+                    console.error("Error generating PDF:", err);
+                    alert("Hubo un error al generar el PDF. Revisa la consola del navegador (F12) para más detalles.");
+                    // Restore original display styles even on error
+                     originalDisplays.forEach((display, element) => {
+                        if (element) {
+                            element.style.display = display;
+                        }
+                    });
+                });
+            }
+
+            // --- Reset Functions ---
+            /** Resets Step 2 results and dependent steps */
+            function resetStep2onwards() {
+                clearContainer(weightGoalResultDiv);
+                displayInfo(weightGoalResultDiv, 'Completa el Paso 1 para habilitar este cálculo.');
+                if(weightChartContainer) weightChartContainer.style.display = 'none';
+                if (weightEvolutionChartInstance) { weightEvolutionChartInstance.destroy(); weightEvolutionChartInstance = null; }
+                targetWeightKgGlobal = null;
+                goalTypeGlobal = 'maintenance';
+                estimatedWeeksGlobal = 0;
+                targetWeeklyRateKgGlobal = 0;
+                if (goalCaloriesInput) goalCaloriesInput.value = ''; // Clear goal calories input
+                // Reset macro percentages to default initial values
+                if (proteinPercentageInput) proteinPercentageInput.value = 30;
+                if (carbPercentageInput) carbPercentageInput.value = 40;
+                if (fatPercentageInput) fatPercentageInput.value = 30;
+                adjustMacroPercentages(); // Update total display
+                resetStep3onwards(); // Also reset subsequent steps
+            }
+
+            /** Resets Step 3 results and dependent steps */
+            function resetStep3onwards() {
+                clearContainer(macroResultDiv);
+                displayInfo(macroResultDiv, 'Completa los Pasos 1 y 2 para habilitar este cálculo.');
+                if(chartContainer) chartContainer.style.display = 'none'; // Hide macro chart
+                if (macroChartInstance) { macroChartInstance.destroy(); macroChartInstance = null; }
+                calculatedMacros = { proteinGrams: 0, carbGrams: 0, fatGrams: 0, goalCalories: 0 };
+                resetStep4onwards(); // Also reset subsequent steps
+                resetStep5Table(); // Reset Step 5 table
+            }
+
+            /** Resets Step 4 results */
+            function resetStep4onwards() {
+                clearContainer(mealResultDiv);
+                displayInfo(mealResultDiv, 'Completa el Paso 3 para habilitar este cálculo.');
+            }
+
+             /** Resets Step 5 (Auto Table) results */
+            function resetStep5Table() {
+                clearContainer(step5TableContainer);
+                displayInfo(step5TableContainer, '<em>Completa los Pasos 1, 2 y 3 para generar esta tabla automática.</em>');
+            }
+
+            /** Resets Step 6 (Manual Estimation) results */
+            function resetStep6() {
+                clearContainer(timeEstimationResultDiv);
+                displayInfo(timeEstimationResultDiv, 'Completa el Paso 1 para habilitar esta estimación.');
+                if(timeChartContainer) timeChartContainer.style.display = 'none';
+                if (timeEstimationChartInstance) { timeEstimationChartInstance.destroy(); timeEstimationChartInstance = null; }
+                // Reset related globals
+                estimatedWeeksManualGlobal = null;
+                weightChangeGoalManualGlobal = null;
+                weeklyCalorieDiffManualGlobal = null;
+                resetStep7(); // Reset manual table as well
+                updateButtonStates(); // Update button states after reset
+            }
+
+            /** Resets Step 7 (Manual Table) results */
+            function resetStep7() {
+                if (hyperproteinTableBody) hyperproteinTableBody.innerHTML = '';
+                if (hyperproteinTable) hyperproteinTable.style.display = 'none';
+                if (hyperproteinInfoMessage) hyperproteinInfoMessage.style.display = 'block';
+                if (hyperproteinInfoMessage) hyperproteinInfoMessage.innerHTML = '<em>Completa el Paso 6 para generar esta tabla.</em>';
+                if (hyperproteinNoteContainer) hyperproteinNoteContainer.innerHTML = ''; // Clear the note
+                // Button state is handled by updateButtonStates called in resetStep6
+            }
+
+
+            // --- Event Listeners Setup ---
+            if (calorieForm) {
+                calorieForm.addEventListener('submit', (event) => {
+                    event.preventDefault(); // Prevent default form submission
+                    calculateCalories();
+                });
+            }
+             if (weightGoalForm) {
+                weightGoalForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    calculateWeightGoal();
+                });
+            }
+             if (macroForm) {
+                macroForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    calculateMacros();
+                });
+            }
+            if (mealForm) {
+                 mealForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    generateMealPlan();
+                });
+            }
+             if (timeEstimationForm) {
+                 timeEstimationForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    estimateTimeManually();
+                });
+            }
+             if (savePdfButton) {
+                 savePdfButton.addEventListener('click', guardarComoPDF);
+             }
+
+             // Listeners for live percentage updates
+             if(proteinPercentageInput && carbPercentageInput && fatPercentageInput) { // Check if elements exist before adding listeners
+                 proteinPercentageInput.addEventListener('input', adjustMacroPercentages);
+                 carbPercentageInput.addEventListener('input', adjustMacroPercentages);
+                 fatPercentageInput.addEventListener('input', adjustMacroPercentages);
+             }
+             if(mealPercentageInputs) {
+                 mealPercentageInputs.forEach(input => {
+                     input.addEventListener('input', adjustMealPercentages);
+                 });
+             }
+
+
+            // --- Initial Setup Calls ---
+            adjustMacroPercentages(); // Initial calculation for macro total
+            adjustMealPercentages();  // Initial calculation for meal total
+            updateButtonStates();     // Set initial button disabled states
+
+        }); // End of DOMContentLoaded listener
+
+
+        // --- Step 7: Generate Hyperprotein Cycle Table (Manual) ---
+        // Needs to be globally accessible for the onclick attribute
+        /**
+ * Generates a hyperprotein cycle table based on manual estimations from Step 6.
+ * Requires global variables from Step 1 (user data) and Step 6 (manual estimation).
+ */
+/**
+ * Generates a hyperprotein cycle table based on manual estimations from Step 6.
+ * Shows Kcal/day and protein intake for all activity levels (0: Sedentary, 1: Light, 2: Moderate, 3: Active, 4: Very Active).
+ */
+/**
+ * Generates a hyperprotein cycle table based on manual estimations from Step 6.
+ * Shows Kcal/day and protein intake (g and g/kg) for all activity levels (0: Sedentary, 1: Light, 2: Moderate, 3: Active, 4: Very Active).
+ * Table columns: Ciclo, Fase, Semanas, Peso (kg), Kcal/día/AF, Proteínas (g/kg), Ajuste Calórico.
+ */
+/**
+ * Generates a hyperprotein cycle table based on manual estimations from Step 6.
+ * Shows Kcal/day and protein intake (g and g/kg) for all activity levels (0: Sedentary, 1: Light, 2: Moderate, 3: Active, 4: Very Active).
+ * Limits protein intake to a maximum of 2.5 g/kg of body weight.
+ * Table columns: Ciclo, Fase, Semanas, Peso (kg), Kcal/día/AF, Proteínas (g/kg), Notas.
+ */
+function generateHyperproteinCycles() {
+    // DOM references
+    const tableContainer = document.getElementById('hyperprotein-cycle-table-container');
+    const table = document.getElementById('hyperprotein-cycle-table');
+    const tableBody = document.getElementById('hyperprotein-cycle-table-body');
+    const infoMessage = document.getElementById('hyperprotein-info-message');
+    const noteContainer = document.getElementById('hyperprotein-note-container');
+
+    // Clear previous content
+    if (tableBody) tableBody.innerHTML = '';
+    if (table) table.style.display = 'none';
+    if (infoMessage) infoMessage.style.display = 'block';
+    if (noteContainer) noteContainer.innerHTML = '';
+
+    // Validate prerequisites
+    if (!currentWeightKg || !userAge || !userHeightCm || !userGender || !userActivityLevel ||
+        estimatedWeeksManualGlobal === null || estimatedWeeksManualGlobal <= 0 ||
+        weightChangeGoalManualGlobal === null || weeklyCalorieDiffManualGlobal === null ||
+        isNaN(weeklyCalorieDiffManualGlobal) || weeklyCalorieDiffManualGlobal === 0) {
+        if (infoMessage) {
+            infoMessage.innerHTML = '<em>Completa el Paso 6 (Estimación Manual) con valores válidos (tiempo > 0 semanas, diferencia calórica distinta de cero) y asegúrate de haber completado el Paso 1.</em>';
+        }
+        console.warn("Prerequisites for Step 7 not met:", {
+            currentWeightKg, userAge, userHeightCm, userGender, userActivityLevel,
+            estimatedWeeksManualGlobal, weightChangeGoalManualGlobal, weeklyCalorieDiffManualGlobal
+        });
+        return;
+    }
+
+    // Additional input validations
+    if (currentWeightKg <= 0 || isNaN(currentWeightKg)) {
+        if (infoMessage) infoMessage.innerHTML = '<em>El peso actual debe ser un valor positivo válido.</em>';
+        return;
+    }
+    if (Math.abs(weightChangeGoalManualGlobal) < 0.1 && goalType !== 'maintenance') {
+        if (infoMessage) infoMessage.innerHTML = '<em>El cambio de peso debe ser significativo para generar ciclos.</em>';
+        return;
+    }
+
+    // Define activity multipliers based on current userGender
+    const activityMultipliers = userGender === 'male'
+        ? { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, very_active: 2.3 }
+        : { sedentary: 1.2, light: 1.55, moderate: 1.64, active: 1.82, very_active: 2 };
+
+    // Map activity levels to indices
+    const activityLevels = ['sedentary', 'light', 'moderate', 'active', 'very_active'];
+
+    // Validate activity level
+    if (!activityMultipliers[userActivityLevel]) {
+        if (infoMessage) infoMessage.innerHTML = '<em>Nivel de actividad no válido.</em>';
+        console.error("Invalid activity level:", userActivityLevel);
+        return;
+    }
+
+    // Use stored global values
+    const totalWeeks = estimatedWeeksManualGlobal;
+    const weightChangeGoal = weightChangeGoalManualGlobal;
+    const weeklyCalorieDiff = weeklyCalorieDiffManualGlobal;
+    const goalType = weightChangeGoal < 0 ? 'loss' : (weightChangeGoal > 0 ? 'gain' : 'maintenance');
+
+    if (goalType === 'maintenance') {
+        if (infoMessage) infoMessage.innerHTML = '<em>No se requiere tabla de ciclos hiperproteicos para un objetivo de mantenimiento.</em>';
+        return;
+    }
+
+    // Calculate weekly weight change
+    const weeklyRateKg = weightChangeGoal / totalWeeks;
+    const dailyCalorieDiff = weeklyCalorieDiff / 7;
+    const dailyCalorieDiffBreak = (weeklyCalorieDiff * 0.5) / 7; // Reduced deficit for break phase
+
+    // Cycle configuration
+    const phaseWeeksPerCycle = 4;
+    const breakWeeksPerCycle = 1;
+    const cycleDuration = phaseWeeksPerCycle + breakWeeksPerCycle;
+
+    let currentWeek = 0;
+    let currentWeight = currentWeightKg;
+    let cycleCount = 1;
+
+    console.log("Generating Step 7 Table:", { totalWeeks, weightChangeGoal, weeklyCalorieDiff, weeklyRateKg, goalType, dailyCalorieDiff, dailyCalorieDiffBreak });
+
+    // Helper function to round to nearest multiple
+    const roundToNearest = (value, multiple) => Math.round(value / multiple) * multiple;
+
+    // Helper function to format calories and proteins for all activity levels
+    const formatCaloriesAndProteins = (bmr, calorieDiff, proteinPercentage, weight) => {
+        const calories = activityLevels.map((level, index) => {
+            const tdee = bmr * activityMultipliers[level] + calorieDiff;
+            return roundToNearest(tdee, 10);
+        });
+        const proteins = calories.map(kcal => {
+            let proteinGrams = roundToNearest((kcal * proteinPercentage) / 4, 1);
+            // Limit gPerKg to 2.5 g/kg
+            const maxProteinGrams = weight > 0 ? roundToNearest(2.5 * weight, 1) : proteinGrams;
+            if (weight > 0 && proteinGrams / weight > 2.5) {
+                proteinGrams = maxProteinGrams;
+            }
+            return proteinGrams;
+        });
+        const proteinsText = proteins.map((g, index) => {
+            const gPerKg = weight > 0 ? (g / weight).toFixed(1) : '0.0';
+            return `${index}: ${g} g / ${gPerKg} g/kg`;
+        }).join('<br>');
+        return { calories, proteinsText };
+    };
+
+    while (currentWeek < totalWeeks) {
+        // --- Hyperprotein Phase ---
+        const phaseDuration = Math.min(phaseWeeksPerCycle, totalWeeks - currentWeek);
+        if (phaseDuration <= 0) break;
+
+        const phaseWeightChange = weeklyRateKg * phaseDuration;
+        let phaseEndWeight = currentWeight + phaseWeightChange;
+        phaseEndWeight = goalType === 'loss'
+            ? Math.max(phaseEndWeight, currentWeightKg + weightChangeGoal)
+            : Math.min(phaseEndWeight, currentWeightKg + weightChangeGoal);
+
+        // Calculate BMR
+        let phaseStartBMR;
+        if (userGender === 'male') {
+            phaseStartBMR = (10 * currentWeight) + (6.25 * userHeightCm) - (5 * userAge) + 5;
+        } else {
+            phaseStartBMR = (10 * currentWeight) + (6.25 * userHeightCm) - (5 * userAge) - 161;
+        }
+
+        // Calculate calories and proteins for all activity levels
+        const { calories: phaseCalories, proteinsText: phaseProteinsText } = formatCaloriesAndProteins(phaseStartBMR, dailyCalorieDiff, 0.35, currentWeight);
+
+        // Validate calorie range
+        if (phaseCalories.some(kcal => kcal < 1000 || kcal > 5000)) {
+            if (infoMessage) infoMessage.innerHTML = '<em>Las calorías calculadas para la fase hiperproteica no son realistas. Revisa la diferencia calórica semanal.</em>';
+            console.warn("Unrealistic phase calories:", phaseCalories);
+            return;
+        }
+
+        // Format calories for display
+        const phaseCaloriesText = phaseCalories.map((kcal, index) => `${index}: ${kcal} kcal`).join('<br>');
+
+        const hyperproteinRow = document.createElement('tr');
+        hyperproteinRow.classList.add('phase-hyperprotein');
+        hyperproteinRow.innerHTML = `
+            <td>${cycleCount}</td>
+            <td>Hiperproteico</td>
+            <td>${phaseDuration}</td>
+            <td>${currentWeight.toFixed(1)} → ${phaseEndWeight.toFixed(1)}</td>
+            <td>${phaseCaloriesText}</td>
+            <td>${phaseProteinsText}</td>
+            <td>${goalType === 'loss' ? `Déficit (${dailyCalorieDiff.toFixed(0)} kcal/d)` : `Superávit (+${dailyCalorieDiff.toFixed(0)} kcal/d)`}</td>
+        `;
+        if (tableBody) tableBody.appendChild(hyperproteinRow);
+
+        currentWeek += phaseDuration;
+        currentWeight = phaseEndWeight;
+
+        // Exit if target weight reached (tolerance 0.05)
+        if ((goalType === 'loss' && currentWeight <= currentWeightKg + weightChangeGoal + 0.05) ||
+            (goalType === 'gain' && currentWeight >= currentWeightKg + weightChangeGoal - 0.05)) {
+            break;
+        }
+
+        // --- Break Phase ---
+        if (currentWeek < totalWeeks) {
+            const breakDuration = Math.min(breakWeeksPerCycle, totalWeeks - currentWeek);
+            if (breakDuration <= 0) break;
+
+            let breakBMR;
+            if (userGender === 'male') {
+                breakBMR = (10 * currentWeight) + (6.25 * userHeightCm) - (5 * userAge) + 5;
+            } else {
+                breakBMR = (10 * currentWeight) + (6.25 * userHeightCm) - (5 * userAge) - 161;
+            }
+
+            // Calculate calories and proteins for all activity levels
+            const { calories: breakCalories, proteinsText: breakProteinsText } = formatCaloriesAndProteins(breakBMR, dailyCalorieDiffBreak, 0.25, currentWeight);
+
+            // Validate calorie range
+            if (breakCalories.some(kcal => kcal < 1000 || kcal > 5000)) {
+                if (infoMessage) infoMessage.innerHTML = '<em>Las calorías calculadas para la fase de break no son realistas. Revisa los datos de entrada.</em>';
+                console.warn("Unrealistic break calories:", breakCalories);
+                return;
+            }
+
+            // Format calories for display
+            const breakCaloriesText = breakCalories.map((kcal, index) => `${kcal} kcal`).join('<br>');
+
+            const breakRow = document.createElement('tr');
+            breakRow.classList.add('phase-break');
+            breakRow.innerHTML = `
+                <td>${cycleCount}</td>
+                <td>Break (Pérdida Reducida)</td>
+                <td>${breakDuration}</td>
+                <td>~ ${currentWeight.toFixed(1)}</td>
+                <td>${breakCaloriesText}</td>
+                <td>${breakProteinsText}</td>
+                <td>Déficit reducido (${dailyCalorieDiffBreak.toFixed(0)} kcal/d)</td>
+            `;
+            if (tableBody) tableBody.appendChild(breakRow);
+
+            // Update weight for reduced loss in break phase
+            const breakWeightChange = (weeklyRateKg * 0.5) * breakDuration;
+            currentWeight += breakWeightChange;
+
+            currentWeek += breakDuration;
+            cycleCount++;
+        }
+
+        // Exit if target weight reached during break
+        if ((goalType === 'loss' && currentWeight <= currentWeightKg + weightChangeGoal + 0.05) ||
+            (goalType === 'gain' && currentWeight >= currentWeightKg + weightChangeGoal - 0.05)) {
+            break;
+        }
+    }
+
+    // Correct final weight display directly
+    if (tableBody && tableBody.lastElementChild) {
+        const lastRowCells = tableBody.lastElementChild.cells;
+        if (lastRowCells && lastRowCells.length > 3) {
+            const weightCell = lastRowCells[3];
+            const finalTargetWeight = currentWeightKg + weightChangeGoal;
+            const currentText = weightCell.textContent;
+            const startWeightMatch = currentText.match(/^(-?\d+\.\d)/); // Match start weight
+            if (startWeightMatch && Math.abs(currentWeight - finalTargetWeight) > 0.05) {
+                weightCell.innerHTML = `${startWeightMatch[1]} → ${finalTargetWeight.toFixed(1)}`;
+                console.log(`Corrected final weight display to ${finalTargetWeight.toFixed(1)}`);
+            }
+        }
+    }
+
+    // Show table and hide info message
+    if (table) table.style.display = 'table';
+    if (infoMessage) infoMessage.style.display = 'none';
+
+    // Add note
+    if (noteContainer) {
+        const note = document.createElement('p');
+        note.style.fontSize = '0.9em';
+        note.style.fontStyle = 'italic';
+        note.style.marginTop = '10px';
+        note.textContent = 'Nota: Esta tabla es una simulación basada en la estimación manual del Paso 6. Las calorías y proteínas se muestran para todos los niveles de actividad (0: Sedentario, 1: Leve, 2: Moderado, 3: Activo, 4: Muy Activo). Proteínas limitadas a un máximo de 2.5 g/kg. Ajusta según progreso real y consulta a un profesional.';
+        noteContainer.appendChild(note);
+    }
+}
+
+    
+	
+
+
+
+
+// FUNCIONALIDAD PDF
+document.getElementById("download-pdf-btn").addEventListener("click", async function () {
+    // Convertir gráficos a imágenes
+    const charts = document.querySelectorAll('canvas');
+    const promises = Array.from(charts).map(chart => {
+        return new Promise(resolve => {
+            const image = new Image();
+            image.src = chart.toDataURL();
+            image.onload = () => {
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.style.maxWidth = '90%';
+                chart.parentNode.replaceChild(img, chart);
+                resolve();
+            };
+        });
+    });
+
+    await Promise.all(promises);
+
+    const opt = {
+        margin: [5, 5, 5, 5],
+        filename: 'Plan_Nutricional.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { 
+            scale: 2,
+            scrollY: 0,
+            useCORS: true,
+            allowTaint: true,
+            logging: true
+        },
+        jsPDF: { 
+            unit: 'mm', 
+            format: 'a4', 
+            orientation: 'portrait' 
+        },
+        pagebreak: { mode: 'avoid-all' }
+    };
+
+    const element = document.documentElement;
+    html2pdf().set(opt).from(element).save().then(() => {
+        // Restaurar los canvas después de la exportación
+        charts.forEach((chart, index) => {
+            const img = chart.parentNode.querySelector('img');
+            if(img) img.replaceWith(chart);
+        });
+    });
+});
+
+ // --- PDF Generation ---
+            function guardarComoPDF2() {
+                if (!calculatedTDEE) {
+                    alert("Por favor, completa al menos el Paso 1 (Cálculo de Necesidades) antes de generar el PDF.");
+                    return;
+                }
+
+                const mainElement = document.querySelector('main');
+                const headerElement = document.querySelector('header');
+                const footerElement = document.querySelector('footer');
+                const allButtons = document.querySelectorAll('button'); // Select all buttons
+
+                // Hide elements not needed in PDF
+                if (headerElement) headerElement.style.display = 'none';
+                if (footerElement) footerElement.style.display = 'none';
+                allButtons.forEach(btn => btn.style.display = 'none');
+
+                // Temporarily make chart containers visible if they have content
+                const chartContainers = document.querySelectorAll('#chart-container, #weight-chart-container, #time-estimation-chart-container');
+                const originalDisplayStyles = [];
+                chartContainers.forEach(container => {
+                    originalDisplayStyles.push(container.style.display);
+                    if (container.querySelector('canvas') && container.style.display === 'none') {
+                        container.style.display = 'block';
+                    }
+                });
+
+                const opt = {
+                    margin: [15, 10, 15, 10],
+                    filename: 'NutriPlan_Plan_Dietetico_Personalizado.pdf',
+                    image: { type: 'jpeg', quality: 0.95 },
+                    html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: mainElement.scrollWidth, windowHeight: mainElement.scrollHeight },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'], before: '.plan-step' }
+                };
+
+                console.log("Generating PDF...");
+                html2pdf().from(mainElement).set(opt).save().then(() => {
+                    console.log("PDF generated successfully.");
+                    // Restore visibility
+                    if (headerElement) headerElement.style.display = 'flex';
+                    if (footerElement) footerElement.style.display = 'block';
+                    allButtons.forEach(btn => btn.style.display = 'block');
+                    chartContainers.forEach((container, index) => { container.style.display = originalDisplayStyles[index]; });
+                }).catch(err => {
+                    console.error("Error generating PDF:", err);
+                    alert("Hubo un error al generar el PDF. Revisa la consola del navegador (F12) para más detalles.");
+                    // Restore visibility even on error
+                    if (headerElement) headerElement.style.display = 'flex';
+                    if (footerElement) footerElement.style.display = 'block';
+                    allButtons.forEach(btn => btn.style.display = 'block');
+                    chartContainers.forEach((container, index) => { container.style.display = originalDisplayStyles[index]; });
+                });
+            }
+</script>
+
+</body>
+</html>

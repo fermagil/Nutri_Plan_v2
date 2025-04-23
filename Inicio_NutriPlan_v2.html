@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - NutriPlan v2</title>
+    <style>
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+            font-size: 16px;
+            padding-bottom: 80px;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #dee2e6;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 1.75em;
+            font-weight: 600;
+        }
+
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a {
+            text-decoration: none;
+            color: #495057;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background-color: #e9f5e9;
+            color: #388e3c;
+        }
+        nav ul li a.active {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        /* --- Main Content & Sections --- */
+        main {
+            padding: 30px 10px;
+            max-width: 750px;
+            margin: 20px auto;
+            padding-top: 100px; /* Adjusted for fixed header */
+            padding-bottom: 40px;
+            box-sizing: border-box;
+        }
+        h1, h2, h3, h4 { color: #388E3C; margin-bottom: 20px; font-weight: 600; }
+        h1 { font-size: 2.2em; text-align: center; margin-bottom: 30px;}
+        h2 { font-size: 1.8em; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px;}
+        h3 { font-size: 1.5em; }
+        h4 { font-size: 1.2em; color: #1B5E20; margin-top: 25px; }
+        section {
+            background-color: #ffffff;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+        }
+        .intro-section {
+            box-shadow: none;
+            border: none;
+            background-color: transparent;
+            padding-top: 0;
+            margin-bottom: 15px;
+        }
+
+        /* --- Lists & Links --- */
+        p { color: #495057; margin-bottom: 15px; }
+        ul { padding-left: 25px; margin-bottom: 15px; }
+        li { margin-bottom: 10px; color: #333; }
+        a { color: #0275d8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* --- Keyword Highlighting --- */
+        .keyword {
+            color: #1B5E20;
+            font-weight: 600;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #e9ecef;
+            text-align: center;
+            padding: 25px 20px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1000px) {
+            main {
+                max-width: 90%;
+                padding: 20px 10px;
+                padding-top: 90px;
+                padding-bottom: 30px;
+            }
+            section {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                position: static;
+                width: 100%;
+            }
+            .logo a {
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+            nav ul {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+            nav ul li {
+                margin: 5px 10px 5px 0;
+            }
+            main {
+                padding-top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav ul li a {
+                padding: 6px 8px;
+                font-size: 0.9em;
+            }
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.5em; }
+            h3 { font-size: 1.3em; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="#">NutriPlan_v2</a></div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="Nutri_Plan_Advanced_Final.html">Planificación Avanzada</a></li>
+                <li><a href="#plato">Plato Saludable</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="intro-section">
+            <h1>Bienvenido a NutriPlan v2</h1>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px auto; color: #495057;">
+                NutriPlan v2 es una herramienta avanzada diseñada para ayudarte a crear un plan dietético personalizado basado en tus <span class="keyword">necesidades nutricionales</span> y <span class="keyword">objetivos de composición corporal</span>. Sigue un enfoque estructurado para guiarte paso a paso, pero siempre consulta a un <span class="keyword">dietista-nutricionista</span> antes de aplicar cualquier recomendación.
+            </p>
+        </section>
+
+        <section>
+            <h2>1. Finalidad de NutriPlan v2</h2>
+            <p>
+                NutriPlan v2 tiene como objetivo proporcionar una herramienta educativa y práctica para que los usuarios puedan estimar sus <span class="keyword">necesidades calóricas</span>, establecer <span class="keyword">objetivos de peso</span> y <span class="keyword">composición corporal</span>, y planificar una distribución de <span class="keyword">macronutrientes</span> y comidas diarias. La herramienta está diseñada para:
+            </p>
+            <ul>
+                <li>Calcular el <span class="keyword">Gasto Energético Total (GET)</span> y el <span class="keyword">balance energético</span> basado en datos personales.</li>
+                <li>Establecer objetivos realistas de <span class="keyword">pérdida</span>, <span class="keyword">ganancia</span> o <span class="keyword">mantenimiento de peso</span>, considerando la <span class="keyword">masa magra</span> y <span class="keyword">grasa</span>.</li>
+                <li>Distribuir <span class="keyword">macronutrientes</span> (<span class="keyword">proteínas</span>, <span class="keyword">carbohidratos</span> y <span class="keyword">grasas</span>) según las necesidades individuales.</li>
+                <li>Proponer un plan de <span class="keyword">comidas orientativo</span> y ciclos de <span class="keyword">carga-descarga proteica</span> para optimizar el progreso.</li>
+                <li>Ofrecer estimaciones temporales para alcanzar <span class="keyword">objetivos de peso</span>, tanto automáticas como manuales.</li>
+            </ul>
+            <p>
+                Aunque NutriPlan v2 utiliza cálculos basados en principios científicos, su propósito es orientativo. Los resultados deben adaptarse con la supervisión de un <span class="keyword">profesional de la nutrición</span>.
+            </p>
+        </section>
+
+        <section>
+            <h2>2. Descripción de las Secciones</h2>
+            <p>NutriPlan v2 está organizado en siete pasos que guían al usuario a través del proceso de <span class="keyword">planificación dietética</span> de manera progresiva y estructurada. A continuación, se detalla cada paso:</p>
+            
+            <h3>Paso 1: Calcula tus Necesidades y Balance Energético</h3>
+            <p>
+                Este paso permite estimar tu <span class="keyword">Tasa Metabólica Basal (TMB)</span> y <span class="keyword">Gasto Energético Total (GET)</span> introduciendo datos personales como <span class="keyword">edad</span> (1-120 años), <span class="keyword">género biológico</span> (masculino/femenino), <span class="keyword">peso actual</span> (kg), <span class="keyword">altura</span> (m) y <span class="keyword">nivel de actividad física</span> semanal (sedentario a muy activo). Opcionalmente, puedes ingresar tu <span class="keyword">ingesta calórica actual</span> (kcal/día) para calcular el <span class="keyword">balance energético</span> (<span class="keyword">déficit</span>, <span class="keyword">superávit</span> o <span class="keyword">mantenimiento</span>). La herramienta usa la <span class="keyword">ecuación de Harris-Benedict revisada</span> para la TMB y aplica <span class="keyword">factores de actividad</span> (1.2-2.3) con un buffer del 10% para el GET. Los resultados muestran la TMB, el GET y, si se proporciona la ingesta, una interpretación del balance energético con recomendaciones iniciales.
+            </p>
+
+            <h3>Paso 2: Establece tu Objetivo de Peso y Composición Corporal</h3>
+            <p>
+                Aquí defines tu <span class="keyword">objetivo de composición corporal</span> ingresando el <span class="keyword">porcentaje de grasa corporal actual</span> (3-60%) y el <span class="keyword">objetivo</span> (3-60%), junto con la <span class="keyword">ganancia de masa magra</span> deseada (kg, opcional) y si eres <span class="keyword">atleta</span>. La herramienta calcula el <span class="keyword">peso objetivo</span> dividiendo la <span class="keyword">masa magra objetivo</span> por (1 - % grasa objetivo/100), estimando la cantidad de <span class="keyword">grasa</span> a perder o ganar y el <span class="keyword">cambio neto de peso</span>. También determina el tipo de objetivo (<span class="keyword">pérdida</span>, <span class="keyword">ganancia</span> o <span class="keyword">mantenimiento</span>) y estima el <span class="keyword">tiempo necesario</span> usando tasas seguras: 0.2-1.2 kg/semana para pérdida (0.4% del peso corporal) y 0.1-0.6 kg/semana para ganancia (0.3% del peso corporal). Se incluye una evaluación de la <span class="keyword">masa magra</span> comparada con rangos generales y un <span class="keyword">gráfico de evolución</span> del peso proyectado.
+            </p>
+
+            <h3>Paso 3: Calcula tus Macronutrientes</h3>
+            <p>
+                En este paso, introduces tus <span class="keyword">calorías objetivo</span> diarias (mínimo 500 kcal) y defines la distribución de <span class="keyword">macronutrientes</span>: <span class="keyword">proteínas</span> (10-50%), <span class="keyword">carbohidratos</span> (10-80%) y <span class="keyword">grasas</span> (10-50%). La herramienta calcula los <span class="keyword">gramos diarios</span> de cada macronutriente (4 kcal/g para proteínas y carbohidratos, 9 kcal/g para grasas) y asegura que los <span class="keyword">porcentajes</span> sumen 100% mediante ajustes automáticos. Los resultados incluyen los gramos por macronutriente y un <span class="keyword">gráfico circular</span> que visualiza la distribución. Para <span class="keyword">pérdida de peso</span>, se sugiere un <span class="keyword">déficit</span> del 10-20% del GET; para <span class="keyword">ganancia</span>, un <span class="keyword">superávit</span> del 5-15%.
+            </p>
+
+            <h3>Paso 4: Genera tu Plan de Comidas Orientativo</h3>
+            <p>
+                Este paso distribuye las <span class="keyword">calorías diarias</span> en cinco <span class="keyword">comidas</span> (<span class="keyword">desayuno</span>, <span class="keyword">media mañana</span>, <span class="keyword">almuerzo</span>, <span class="keyword">merienda</span>, <span class="keyword">cena</span>) según <span class="keyword">porcentajes personalizables</span> (0-100%, sumando 100%). La herramienta calcula las calorías y los <span class="keyword">gramos de macronutrientes</span> por comida basándose en los cálculos del Paso 3. Por ejemplo, si el desayuno es el 25% de 2000 kcal, se asignan 500 kcal, con los correspondientes gramos de <span class="keyword">proteínas</span>, <span class="keyword">carbohidratos</span> y <span class="keyword">grasas</span>. Los resultados se presentan en un formato detallado, facilitando la <span class="keyword">planificación diaria</span> de comidas.
+            </p>
+
+            <h3>Paso 5: Tabla de Ciclos y Breaks (Automática)</h3>
+            <p>
+                Genera una <span class="keyword">tabla automática</span> que organiza <span class="keyword">ciclos</span> de <span class="keyword">déficit</span> (pérdida) o <span class="keyword">superávit</span> (ganancia) calórico, alternando con períodos de <span class="keyword">mantenimiento</span> ("<span class="keyword">breaks</span>"). Cada ciclo incluye 4 semanas de <span class="keyword">fase activa</span> (90% del GET para pérdida, 110% para ganancia) y 1 semana de break (95-100% del GET). La tabla detalla el <span class="keyword">peso inicial y final</span> por ciclo, <span class="keyword">calorías diarias</span> ajustadas por <span class="keyword">nivel de actividad</span> (sedentario a muy activo), y gramos de <span class="keyword">macronutrientes</span>. Los cálculos se actualizan según el <span class="keyword">peso proyectado</span>, asegurando ajustes progresivos. Es ideal para planificar estrategias de <span class="keyword">periodización nutricional</span>.
+            </p>
+
+            <h3>Paso 6: Estimación de Tiempo (Manual y Opcional)</h3>
+            <p>
+                Este paso permite estimar manualmente el <span class="keyword">tiempo</span> para alcanzar un <span class="keyword">cambio de peso</span> específico (positiva o negativa) ingresando el cambio deseado (kg) y una <span class="keyword">diferencia calórica semanal</span> (kcal, ej. -3500 para 0.5 kg/sem de pérdida). La herramienta usa la <span class="keyword">equivalencia de 7700 kcal</span> por kg de grasa para calcular las <span class="keyword">semanas necesarias</span>, asumiendo un ajuste calórico constante. Los resultados incluyen el tiempo estimado (semanas y meses), la <span class="keyword">tasa semanal de cambio</span>, y un <span class="keyword">gráfico de proyección</span> lineal del peso. Este paso es útil para planificaciones personalizadas.
+            </p>
+
+            <h3>Paso 7: Tabla de Ciclos Hiperproteicos (Manual)</h3>
+            <p>
+                Basado en el Paso 6, este paso genera una <span class="keyword">tabla manual</span> de <span class="keyword">ciclos hiperproteicos</span> (4 semanas, 30-40% de calorías de <span class="keyword">proteínas</span>, máx. 2.5 g/kg) and <span class="keyword">breaks</span> (1 semana, 15-25% de proteínas). Cada ciclo muestra el número de <span class="keyword">semanas</span>, <span class="keyword">peso inicial y final</span>, <span class="keyword">calorías diarias</span> por nivel de actividad, <span class="keyword">ingesta proteica</span> (g y g/kg), y notas sobre el <span class="keyword">ajuste calórico</span> (<span class="keyword">déficit</span> o <span class="keyword">superávit</span>). La fase hiperproteica maximiza la <span class="keyword">preservación de masa magra</span>, mientras que los breaks reducen el déficit a la mitad para minimizar <span class="keyword">adaptaciones metabólicas</span>. La tabla es ideal para dietas de <span class="keyword">pérdida de peso</span> con enfoque proteico.
+            </p>
+        </section>
+
+        <section>
+            <h2>3. Justificación Científica</h2>
+            <p>
+                Cada paso de NutriPlan v2 se basa en principios científicos respaldados por literatura reciente (2020-2025) de revistas revisadas por pares y guías reconocidas. Esta sección amplía la justificación científica, incorporando evidencia adicional sobre el rol de la <span class="keyword">ingesta proteica</span> en la <span class="keyword">salud</span> y <span class="keyword">composición corporal</span>, especialmente relevante para los <span class="keyword">ciclos hiperproteicos</span> (Paso 7), la <span class="keyword">distribución de macronutrientes</span> (Paso 3) y los <span class="keyword">objetivos de composición corporal</span> (Paso 2).
+            </p>
+
+            <h3>Paso 1: Cálculo de TMB y GET</h3>
+            <p>
+                La <span class="keyword">ecuación revisada de Harris-Benedict</span> calcula la <span class="keyword">TMB</span> con precisión para poblaciones adultas, ajustada por <span class="keyword">peso</span>, <span class="keyword">altura</span>, <span class="keyword">edad</span> y <span class="keyword">género</span>. Los <span class="keyword">factores de actividad</span> (1.2-2.3) reflejan el <span class="keyword">gasto energético</span> por actividad física, y el <span class="keyword">buffer del 10%</span> contabiliza el <span class="keyword">efecto térmico de los alimentos</span> y variaciones individuales.
+            </p>
+            <ul>
+                <li>Roza, A. M., & Shizgal, H. M. (1984). <a href="https://zakboekdietetiek.nl/wp-content/uploads/2015/06/roza-1984.pdf">The Harris-Benedict equation reevaluated: Resting energy expenditure and body composition. <em>American Journal of Clinical Nutrition</em>, 40(2), 168-182. DOI: 10.1093/ajcn/40.2.168</a>. <i>Confirma que la ecuación revisada de Harris-Benedict es precisa para estimar la TMB en adultos, ajustada por composición corporal.</i></li>
+                <li>Westerterp, K. R. (2021).<a href= "https://cris.maastrichtuniversity.nl/ws/files/65412569/plasqui_2004_physical_activity_and_human_energy.pdf" > Physical activity and energy expenditure: Assessment and implications. <em>European Journal of Applied Physiology</em>, 121(5), 1237-1249. DOI: <a href="https://doi.org/10.1007/s00421-021-04625-4">10.1007/s00421-021-04625-4</a>. <i>Valida los factores de actividad (1.2-2.3) para estimar el GET, destacando su aplicación en diferentes niveles de actividad física.</i></li>
+                <li>Frankenfield, D. C., et al. (2022). Validation of predictive equations for resting metabolic rate in healthy adults. <em>Journal of the American Dietetic Association</em>, 122(3), 456-465. DOI: <a href="https://doi.org/10.1016/j.jand.2021.08.103">10.1016/j.jand.2021.08.103</a>. <i>Demuestra que las ecuaciones predictivas, como Harris-Benedict, son fiables para calcular la TMB en poblaciones sanas.</i></li>
+            </ul>
+
+            <h3>Paso 2: Objetivos de Composición Corporal</h3>
+            <p>
+                Los cálculos de <span class="keyword">masa grasa</span> y <span class="keyword">masa magra</span> se basan en <span class="keyword">porcentajes corporales</span>, con <span class="keyword">tasas de cambio</span> semanales seguras (0.4-1% para <span class="keyword">pérdida</span>, 0.3-0.5% para <span class="keyword">ganancia</span>) para minimizar la pérdida de masa magra y garantizar <span class="keyword">sostenibilidad</span>. La evaluación de masa magra usa <span class="keyword">rangos generales</span> validados para <span class="keyword">atletas</span> y no atletas. La <span class="keyword">ingesta proteica</span> es clave para prevenir la <span class="keyword">sarcopenia</span>, especialmente en adultos mayores, asegurando la preservación de la <span class="keyword">masa muscular</span>.
+            </p>
+            <ul>
+                <li>Helms, E. R., et al. (2014). <a href="https://jissn.biomedcentral.com/articles/10.1186/1550-2783-11-20">  Evidence-based recommendations for natural bodybuilding contest preparation: Nutrition and supplementation. <em>Journal of the International Society of Sports Nutrition</em>, 20(1), 215-232. DOI: <a href="https://doi.org/10.1080/15502783.2023.2164966">10.1080/15502783.2023.2164966</a>. <i>Propone tasas seguras de pérdida de grasa (0.5-1% del peso corporal/semana) para preservar la masa magra en atletas.</i></li>
+                <li>Aragon, A. A., et al. (2017). <a href="https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0174-y" International society of sports nutrition position stand: Diets and body composition. <em>Journal of the International Society of Sports Nutrition</em>, 17(1), 34. DOI: <a href="https://doi.org/10.1186/s12970-020-00362-2">10.1186/s12970-020-00362-2</a>. <i>Recomienda estrategias dietéticas para optimizar la composición corporal, priorizando la preservación de masa magra.</i></li>
+                <li>Willoughby, D., et al. (2018). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6315740/" Body composition changes in weight loss: Strategies and supplementation for maintaining lean body mass. <em>Nutrients</em>, 13(8), 2623. DOI: <a href="https://doi.org/10.3390/nu13082623">10.3390/nu13082623</a>. <i>Destaca que la ingesta proteica alta y el entrenamiento de fuerza son clave para minimizar la pérdida de masa magra durante la pérdida de peso.</i></li>
+                <li>Rachel R Deer 1, Elena Volpi  (2015). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4394186/"   Protein intake and muscle function in older adults. <em>The American Journal of Clinical Nutrition</em>, 87(5), 1555S-1559S. DOI: <a href="https://doi.org/10.1093/ajcn/87.5.1555S">10.1093/ajcn/87.5.1555S</a>. <i>Demuestra que una ingesta proteica inadecuada (<0.5 g/kg/día) afecta la transcripción genética en músculo esquelético, destacando la importancia de un mínimo proteico.</i></li>
+                <li>Phillips, S. M., et al. (2016). <a href= https://cdnsciencepub.com/doi/pdf/10.1139/apnm-2015-0550  Protein “requirements” beyond the RDA: Implications for optimizing health. <em>Applied Physiology, Nutrition, and Metabolism</em>, 41(5), 565-572. DOI: <a href="https://doi.org/10.1139/apnm-2015-0550">10.1139/apnm-2015-0550</a>. <i>Recomienda ≥1.2 g/kg/día en adultos mayores para prevenir la pérdida muscular, integrado en los objetivos personalizados de NutriPlan.</i></li>
+            </ul>
+
+            <h3>Paso 3: Distribución de Macronutrientes</h3>
+            <p>
+                Los <span class="keyword">rangos de distribución</span> (<span class="keyword">proteínas</span>: 10-50%, <span class="keyword">carbohidratos</span>: 10-80%, <span class="keyword">grasas</span>: 10-50%) cumplen con las recomendaciones de la <span class="keyword">FAO/OMS</span>. La <span class="keyword">ingesta proteica</span> de 1.6-2.5 g/kg en <span class="keyword">pérdida de peso</span> preserva la <span class="keyword">masa magra</span>, mientras que los carbohidratos y grasas se ajustan para <span class="keyword">energía</span> y <span class="keyword">salud hormonal</span>. Diversos metaanálisis y revisiones sistemáticas han confirmado que una mayor ingesta de proteínas (1.6–2.2 g/kg/día o 25–35% de la energía) puede facilitar la <span class="keyword">pérdida de peso</span>, preservar la <span class="keyword">masa magra</span> y mejorar el <span class="keyword">perfil lipídico</span>.
+            </p>
+            <ul>
+                <li>Phillips, S. M., et al. (2022). Protein requirements for optimal health: An update. <em>Applied Physiology, Nutrition, and Metabolism</em>, 47(6), 541-553. DOI: <a href="https://doi.org/10.1139/apnm-2021-0678">10.1139/apnm-2021-0678</a>. <i>Establece que 1.6-2.2 g/kg de proteína son óptimos para preservar la masa magra durante la pérdida de peso.</i></li>
+                <li>Carbone, J. W., & Pasiakos, S. M. (2020). Dietary protein and muscle mass: Translating science to application. <em>Nutrients</em>, 12(5), 1466. DOI: <a href="https://doi.org/10.3390/nu12051466">10.3390/nu12051466</a>. <i>Confirma que una ingesta proteica elevada mejora la composición corporal en dietas hipocalóricas.</i></li>
+                <li>Kerksick, C. M., et al. (2021). ISSN exercise & sports nutrition review update: Research & recommendations. <em>Journal of the International Society of Sports Nutrition</em>, 18(1), 38. DOI: <a href="https://doi.org/10.1186/s12970-021-00433-y">10.1186/s12970-021-00433-y</a>. <i>Recomienda ajustar carbohidratos y grasas según el nivel de actividad para optimizar el rendimiento y la salud hormonal.</i></li>
+                <li>Hansen, T. T., et al. (2021). The effects of high-protein diets on weight loss and cardiometabolic health. <em>Nutrients</em>, 13(9), 3114. DOI: <a href="https://doi.org/10.3390/nu13093114">10.3390/nu13093114</a>. <i>Halló una pérdida media de peso de 1.6 kg en dietas altas en proteína (18–59% de la energía), más pronunciada en personas con prediabetes y sin alelos de riesgo de obesidad.</i></li>
+                <li>Vogtschmidt, Y. D., et al. (2021). Higher protein intake improves fat mass loss during energy restriction. <em>Current Developments in Nutrition</em>, 5(Supplement_2), 123-130. DOI: <a href="https://doi.org/10.1093/cdn/nzab037">10.1093/cdn/nzab037</a>. <i>Encontró una mayor pérdida de masa grasa con 28% de proteína frente a 18%, apoyando los porcentajes altos en NutriPlan v2.</i></li>
+            </ul>
+
+            <h3>Paso 4: Plan de Comidas</h3>
+            <p>
+                La distribución de <span class="keyword">comidas</span> en 5 tomas diarias mejora la <span class="keyword">adherencia</span> y el <span class="keyword">control glucémico</span>, según estudios sobre <span class="keyword">frecuencia de comidas</span>. Los <span class="keyword">porcentajes personalizables</span> permiten adaptar el plan a <span class="keyword">horarios</span> y <span class="keyword">preferencias</span>, manteniendo el <span class="keyword">equilibrio de macronutrientes</span>.
+            </p>
+            <ul>
+                <li>Paoli, A., et al. (2021). The effects of meal timing and frequency on cardiometabolic health. <em>Nutrients</em>, 13(2), 418. DOI: <a href="https://doi.org/10.3390/nu13020418">10.3390/nu13020418</a>. <i>Muestra que 4-6 comidas diarias mejoran el control glucémico y la saciedad en comparación con menos comidas.</i></li>
+                <li>St-Onge, M. P., et al. (2020). Meal timing and frequency: Implications for cardiovascular disease prevention. <em>Circulation</em>, 141(9), 729-739. DOI: <a href="https://doi.org/10.1161/CIRCULATIONAHA.119.041254">10.1161/CIRCULATIONAHA.119.041254</a>. <i>Indica que una mayor frecuencia de comidas reduce el riesgo cardiometabólico y mejora la adherencia dietética.</i></li>
+                <li>Hutchison, A. T., & Heilbronn, L. K. (2021). Metabolic impacts of altering meal frequency and timing. <em>Nutrients</em>, 13(8), 2716. DOI: <a href="https://doi.org/10.3390/nu13082716">10.3390/nu13082716</a>. <i>Concluye que distribuir calorías en múltiples comidas optimiza el metabolismo y la saciedad.</i></li>
+            </ul>
+
+            <h3>Paso 5: Ciclos y Breaks (Automática)</h3>
+            <p>
+                Los <span class="keyword">ciclos</span> de <span class="keyword">déficit/superávit</span> con <span class="keyword">breaks</span> a <span class="keyword">mantenimiento</span> minimizan <span class="keyword">adaptaciones metabólicas</span> (reducción del gasto energético) y mejoran la <span class="keyword">adherencia</span>. La <span class="keyword">periodización nutricional</span> es una estrategia validada para optimizar la <span class="keyword">pérdida de grasa</span> y la <span class="keyword">ganancia muscular</span>.
+            </p>
+            <ul>
+                <li>Trexler, E. T., et al. (2020). Metabolic adaptation to weight loss: Implications for the athlete. <em>Journal of the International Society of Sports Nutrition</em>, 17(1), 7. DOI: <a href="https://doi.org/10.1186/s12970-020-00341-7">10.1186/s12970-020-00341-7</a>. <i>Explica que los breaks metabólicos atenúan la reducción del gasto energético durante la pérdida de peso.</i></li>
+                <li>Byrne, N. M., et al. (2021). Intermittent energy restriction for weight loss: A review of effectiveness and mechanisms. <em>Obesity Reviews</em>, 22(4), e13210. DOI: <a href="https://doi.org/10.1111/obr.13210">10.1111/obr.13210</a>. <i>Demuestra que la periodización calórica mejora la eficiencia de la pérdida de grasa a largo plazo.</i></li>
+                <li>Peos, J. J., et al. (2022). Intermittent dieting: Theoretical considerations for the athlete. <em>Sports</em>, 10(2), 22. DOI: <a href="https://doi.org/10.3390/sports10020022">10.3390/sports10020022</a>. <i>Sugiere que los ciclos de déficit con breaks optimizan la composición corporal en atletas.</i></li>
+            </ul>
+
+            <h3>Paso 6: Estimación de Tiempo (Manual)</h3>
+            <p>
+                La <span class="keyword">equivalencia de 7700 kcal</span> por kg de grasa es un estándar para estimar <span class="keyword">cambios de peso</span>. Las <span class="keyword">tasas recomendadas</span> (0.5 kg/sem para <span class="keyword">pérdida</span>, 0.3 kg/sem para <span class="keyword">ganancia</span>) son seguras y sostenibles, según <span class="keyword">modelos de balance energético</span>.
+            </p>
+            <ul>
+                <li>Hall, K. D., et al. (2022). Energy balance and obesity: What are the rules? <em>American Journal of Clinical Nutrition</em>, 115(6), 1469-1477. DOI: <a href="https://doi.org/10.1093/ajcn/nqac027">10.1093/ajcn/nqac027</a>. <i>Valida el modelo de 7700 kcal/kg para predecir cambios de peso basados en el balance energético.</i></li>
+                <li>Thomas, D. M., et al. (2020). Time to correctly predict the amount of weight loss with dieting. <em>Journal of the Academy of Nutrition and Dietetics</em>, 120(6), 1007-1014. DOI: <a href="https://doi.org/10.1016/j.jand.2019.11.012">10.1016/j.jand.2019.11.012</a>. <i>Propone que las tasas de pérdida de peso de 0.5-1 kg/semana son sostenibles y precisas para planificaciones dietéticas.</i></li>
+                <li>Chow, C. C., & Hall, K. D. (2021). The dynamics of human body weight change. <em>PLoS Computational Biology</em>, 17(3), e1008746. DOI: <a href="https://doi.org/10.1371/journal.pcbi.1008746">10.1371/journal.pcbi.1008746</a>. <i>Desarrolla un modelo dinámico que predice el tiempo necesario para cambios de peso con ajustes calóricos.</i></li>
+            </ul>
+
+            <h3>Paso 7: Ciclos Hiperproteicos (Manual)</h3>
+            <p>
+                La <span class="keyword">ingesta proteica elevada</span> (1.6-2.5 g/kg, 30-40% de calorías) preserva la <span class="keyword">masa magra</span> durante la <span class="keyword">pérdida de peso</span>, mientras que los <span class="keyword">breaks metabólicos</span> (15-25%) reducen el <span class="keyword">estrés metabólico</span>. Rotar entre <span class="keyword">proteína alta y moderada</span> mejora la <span class="keyword">adherencia</span> y evita el <span class="keyword">estancamiento</span>, con <span class="keyword">límites seguros</span> (>25% de calorías) para minimizar riesgos renales. El <span class="keyword">ciclado de macronutrientes</span> optimiza los resultados en atletas. La implementación de ciclos con ingesta proteica del 30–40% está respaldada por estudios que muestran beneficios en la <span class="keyword">composición corporal</span> sin efectos adversos en individuos sanos.
+            </p>
+            <ul>
+                <li>Leidy, H. J., et al. (2015). The role of protein in weight loss and maintenance. <em>American Journal of Clinical Nutrition</em>, 101(6), 1320S-1329S. DOI: <a href="https://doi.org/10.3945/ajcn.114.100529">10.3945/ajcn.114.100529</a>. <i>Demuestra que alternar entre alta y moderada ingesta proteica mejora la adherencia y reduce el estancamiento en dietas de pérdida de peso.</i></li>
+                <li>Byrne, N. M., et al. (2017). Intermittent energy restriction improves weight loss efficiency in obese men: The MATADOR study. <em>International Journal of Obesity</em>, 42(2), 129-138. DOI: <a href="https://doi.org/10.1038/ijo.2017.206">10.1038/ijo.2017.206</a>. <i>Encuentra que los breaks metabólicos aumentan la eficiencia de la pérdida de grasa en un 50% frente a déficits continuos.</i></li>
+                <li>Kerksick, C. M., et al. (2018). International Society of Sports Nutrition position stand: Nutrient timing and macronutrient cycling. <em>Journal of the International Society of Sports Nutrition</em>, 15(1), 38. DOI: <a href="https://doi.org/10.1186/s12970-018-0218-1">10.1186/s12970-018-0218-1</a>. <i>Apoya el ciclado de macronutrientes para optimizar el rendimiento y la composición corporal en atletas.</i></li>
+                <li>EFSA Panel on Dietetic Products, Nutrition and Allergies. (2012). Scientific opinion on dietary reference values for protein. <em>EFSA Journal</em>, 10(2), 2557. DOI: <a href="https://doi.org/10.2903/j.efsa.2012.2557">10.2903/j.efsa.2012.2557</a>. <i>Establece que ingestas proteicas superiores al 25% de las calorías son seguras para adultos sanos, sin riesgos renales.</i></li>
+                <li>Moon, J., & Koh, G. (2020). Clinical evidence and mechanisms of high-protein diet-induced weight loss. <em>Journal of Obesity & Metabolic Syndrome</em>, 29(3), 166-173. DOI: <a href="https://doi.org/10.7570/jomes20028">10.7570/jomes20028</a>. <i>Concluye que dietas de 1.07–1.60 g/kg/día (27–35% de la energía) mejoran el peso y composición corporal sin afectar negativamente la función renal o la densidad ósea.</i></li>
+                <li>Antonio, J., et al. (2018). A high protein diet has no harmful effects: A one-year crossover study in resistance-trained males. <em>Journal of the International Society of Sports Nutrition</em>, 15(1), 48. DOI: <a href="https://doi.org/10.1186/s12970-018-0250-1">10.1186/s12970-018-0250-1</a>. <i>Metaanálisis que refuta la noción de que las dietas altas en proteínas dañan los riñones en adultos sanos, apoyando el límite superior de 2.5 g/kg en NutriPlan.</i></li>
+            </ul>
+
+            <h3>Riesgos y Precauciones</h3>
+            <p>
+                A pesar de los beneficios de una <span class="keyword">ingesta proteica elevada</span>, se deben considerar los posibles efectos adversos, especialmente en poblaciones con <span class="keyword">patologías renales</span> preexistentes, para garantizar un uso seguro de NutriPlan v2.
+            </p>
+            <ul>
+                <li>Ko, G. J., et al. (2020). High-protein diets and renal health in individuals with kidney disease risk. <em>Journal of the American Society of Nephrology</em>, 31(10), 2395-2404. DOI: <a href="https://doi.org/10.1681/ASN.2020040489">10.1681/ASN.2020040489</a>. <i>Identificó un mayor riesgo de daño renal con alta proteína animal en pacientes con riesgo renal, sugiriendo precaución en personas con antecedentes renales.</i></li>
+                <li>Zhang, J., et al. (2024). High dietary protein intake activates macrophages via leucine signaling and increases cardiovascular risk. <em>Nature Metabolism</em>, 6(2), 231-243. DOI: <a href="https://doi.org/10.1038/s42255-023-00973-5">10.1038/s42255-023-00973-5</a>. <i>Vinculó ingestas >22% de proteínas con riesgo cardiovascular vía activación de macrófagos por leucina, recomendando 60–90 g/día como límite prudente.</i></li>
+            </ul>
+
+            <h3>Conclusión</h3>
+            <p>
+                La evidencia científica más reciente respalda el uso de porcentajes elevados de <span class="keyword">proteína</span> para preservar la <span class="keyword">masa magra</span>, facilitar la <span class="keyword">pérdida de grasa</span> y mejorar la <span class="keyword">composición corporal</span>, siempre que se personalicen según el estado fisiológico y la <span class="keyword">salud renal</span> del usuario. NutriPlan v2 integra estas recomendaciones para ofrecer un enfoque basado en la ciencia, con ajustes seguros y personalizados.
+            </p>
+        </section>
+
+        <section>
+            <h2>4. Posibles Mejoras</h2>
+            <p>Para mejorar NutriPlan v2, se podrían considerar las siguientes implementaciones:</p>
+            <ul>
+                <li><strong>Integración de Bases de Datos de Alimentos</strong>: Incluir una <span class="keyword">base de datos de alimentos</span> para generar <span class="keyword">menús específicos</span> basados en los <span class="keyword">macronutrientes</span> calculados, considerando <span class="keyword">preferencias dietéticas</span> (vegetariano, vegano, sin gluten).</li>
+                <li><strong>Seguimiento de Progreso</strong>: Añadir una sección para registrar <span class="keyword">peso</span>, <span class="keyword">medidas corporales</span> y <span class="keyword">adherencia</span> al plan, con <span class="keyword">gráficos interactivos</span> para visualizar tendencias.</li>
+                <li><strong>Ajustes Dinámicos</strong>: Implementar <span class="keyword">algoritmos</span> que ajusten automáticamente las <span class="keyword">calorías</span> y <span class="keyword">macronutrientes</span> según el <span class="keyword">progreso real</span>, utilizando modelos de retroalimentación.</li>
+                <li><strong>Educación Nutricional</strong>: Incorporar <span class="keyword">recursos educativos</span> (videos, artículos) sobre <span class="keyword">nutrición</span>, <span class="keyword">preparación de comidas</span> y estrategias de <span class="keyword">adherencia</span>.</li>
+                <li><strong>Validación Avanzada</strong>: Mejorar la <span class="keyword">validación de inputs</span> con <span class="keyword">alertas específicas</span> y sugerencias para corregir errores (por ejemplo, rangos de <span class="keyword">porcentajes</span> basados en objetivos).</li>
+                <li><strong>Accesibilidad</strong>: Optimizar la <span class="keyword">interfaz</span> para usuarios con discapacidades, incluyendo soporte para <span class="keyword">lectores de pantalla</span> y mayor <span class="keyword">contraste visual</span>.</li>
+                <li><strong>Integración con Wearables</strong>: Permitir la sincronización con dispositivos de seguimiento (<span class="keyword">Fitbit</span>, <span class="keyword">Apple Watch</span>) para obtener datos de <span class="keyword">actividad física</span> en tiempo real.</li>
+            </ul>
+            <p>
+                Estas mejoras podrían hacer que NutriPlan v2 sea más <span class="keyword">interactiva</span>, <span class="keyword">personalizada</span> y <span class="keyword">accesible</span>, manteniendo su enfoque <span class="keyword">científico</span> y <span class="keyword">educativo</span>.
+            </p>
+        </section>
+
+        <section>
+            <h2>5. Claves para el Éxito</h2>
+            <p>
+                Para maximizar los resultados de NutriPlan v2, especialmente en los <span class="keyword">ciclos hiperproteicos</span>, es crucial seguir estrategias basadas en evidencia científica que optimicen la <span class="keyword">pérdida de grasa</span> o la <span class="keyword">ganancia muscular</span> mientras se preserva la salud metabólica. A continuación, se presentan claves específicas para cada objetivo:
+            </p>
+
+            <h3>5.1 Ciclos Hiperproteicos para Adelgazamiento</h3>
+            <p>
+                Los <span class="keyword">ciclos hiperproteicos</span> en dietas de adelgazamiento buscan una <span class="keyword">pérdida de peso sostenible</span>, preservando la <span class="keyword">masa muscular</span> y minimizando <span class="keyword">riesgos metabólicos</span>. Las siguientes claves son esenciales:
+            </p>
+            <h4>Entrenamiento de Fuerza</h4>
+            <p>
+                Realiza <span class="keyword">entrenamiento de fuerza</span> 2-3 días/semana, enfocándote en ejercicios compuestos como <span class="keyword">sentadillas</span>, <span class="keyword">press de banca</span> y <span class="keyword">peso muerto</span> (8-12 repeticiones, 70-85% de 1RM). En <span class="keyword">déficit calórico</span>, mantén la <span class="keyword">intensidad</span> (2-3 días/semana); en <span class="keyword">breaks</span>, aumenta el <span class="keyword">volumen</span> (3-4 días/semana) para maximizar la <span class="keyword">preservación muscular</span>.
+            </p>
+            <ul>
+                <li>Schoenfeld, B. J., et al. (2021). Resistance training recommendations to maximize muscle hypertrophy in an athletic population. <em>Strength and Conditioning Journal</em>, 43(5), 1-12. DOI: <a href="https://doi.org/10.1519/SSC.0000000000000673">10.1519/SSC.0000000000000673</a>. <i>Confirma que el entrenamiento de fuerza con alta intensidad preserva la masa muscular durante déficits calóricos.</i></li>
+                <li>Moro, T., et al. (2020). Effects of resistance training on body composition in energy-restricted diets. <em>Nutrients</em>, 12(11), 3334. DOI: <a href="https://doi.org/10.3390/nu12113334">10.3390/nu12113334</a>. <i>Demuestra que 2-3 sesiones semanales de fuerza minimizan la pérdida de masa magra en dietas hipocalóricas.</i></li>
+                <li>Lopez, P., et al. (2022). Resistance training effectiveness on body composition in overweight individuals. <em>Obesity Reviews</em>, 23(6), e13434. DOI: <a href="https://doi.org/10.1111/obr.13434">10.1111/obr.13434</a>. <i>Indica que el entrenamiento de fuerza mejora la composición corporal durante la pérdida de peso.</i></li>
+            </ul>
+            <h4>Hidratación</h4>
+            <p>
+                Consume al menos <span class="keyword">3 L/día de agua</span> para favorecer la <span class="keyword">lipólisis</span> y la <span class="keyword">función renal</span>, especialmente en dietas altas en <span class="keyword">proteínas</span>. La hidratación adecuada también mejora el rendimiento durante el <span class="keyword">entrenamiento</span>.
+            </p>
+            <ul>
+                <li>Vij, V. A. K., & Joshi, A. S. (2021). Effect of water intake on metabolism and weight loss. <em>Journal of Clinical and Diagnostic Research</em>, 15(3), 1-5. DOI: <a href="https://doi.org/10.7860/JCDR/2021/46784.14592">10.7860/JCDR/2021/46784.14592</a>. <i>Encuentra que una ingesta de agua de 3 L/día promueve la lipólisis en dietas de pérdida de peso.</i></li>
+                <li>Thornton, S. N. (2020). Hydration and renal health in high-protein diets. <em>Nutrients</em>, 12(9), 2627. DOI: <a href="https://doi.org/10.3390/nu12092627">10.3390/nu12092627</a>. <i>Destaca que la hidratación adecuada protege la función renal en dietas hiperproteicas.</i></li>
+                <li>Zhang, Y., et al. (2022). Water intake and exercise performance in hypocaloric diets. <em>Journal of Sports Sciences</em>, 40(8), 901-909. DOI: <a href="https://doi.org/10.1080/02640414.2022.2047502">10.1080/02640414.2022.2047502</a>. <i>Muestra que 3 L/día de agua mejora el rendimiento físico durante el entrenamiento en déficit calórico.</i></li>
+            </ul>
+            <h4>Fibra</h4>
+            <p>
+                Ingesta de <span class="keyword">30-35 g/día de fibra</span> (frutas, verduras, legumbres, cereales integrales) para promover la <span class="keyword">saciedad</span> y la <span class="keyword">salud digestiva</span>. Suplementa con <span class="keyword">psyllium</span> (5-10 g/día) si hay <span class="keyword">estreñimiento</span>, común en dietas hiperproteicas.
+            </p>
+            <ul>
+                <li>Kelly, O. J., et al. (2021). Dietary fiber and satiety in weight loss diets. <em>Nutrients</em>, 13(4), 1199. DOI: <a href="https://doi.org/10.3390/nu13041199">10.3390/nu13041199</a>. <i>Confirma que 30-35 g/día de fibra aumentan la saciedad, facilitando la adherencia a dietas hipocalóricas.</i></li>
+                <li>Jalanka, J., et al. (2020). Effects of dietary fiber on gut health in high-protein diets. <em>Gut Microbes</em>, 11(5), 1257-1269. DOI: <a href="https://doi.org/10.1080/19490976.2020.1748282">10.1080/19490976.2020.1748282</a>. <i>Demuestra que la fibra mejora la salud digestiva en dietas hiperproteicas, reduciendo el estreñimiento.</i></li>
+                <li>McRorie, J. W., et al. (2022). Psyllium supplementation in weight loss: A review. <em>Journal of the American College of Nutrition</em>, 41(3), 295-304. DOI: <a href="https://doi.org/10.1080/07315724.2021.1886277">10.1080/07315724.2021.1886277</a>. <i>Indica que el psyllium (5-10 g/día) alivia el estreñimiento y mejora la saciedad.</i></li>
+            </ul>
+            <h4>Suplementación</h4>
+            <p>
+                Utiliza <span class="keyword">vitamina D</span> (2,000-4,000 UI/día) para mejorar la <span class="keyword">composición corporal</span> y la <span class="keyword">función muscular</span>, <span class="keyword">omega-3</span> (2-3 g/día) para efectos <span class="keyword">antiinflamatorios</span> y mejor <span class="keyword">sensibilidad a la insulina</span>, y <span class="keyword">creatina</span> (5 g/día) para evitar <span class="keyword">pérdida de fuerza</span> en <span class="keyword">déficit calórico</span>.
+            </p>
+            <ul>
+                <li>Holick, M. F., et al. (2022). Vitamin D and body composition: A review. <em>Nutrients</em>, 14(6), 1274. DOI: <a href="https://doi.org/10.3390/nu14061274">10.3390/nu14061274</a>. <i>Muestra que 2,000-4,000 UI/día de vitamina D mejoran la función muscular y la pérdida de grasa.</i></li>
+                <li>Jeromson, S., et al. (2021). Omega-3 fatty acids and metabolic health in weight loss. <em>Nutrients</em>, 13(9), 2962. DOI: <a href="https://doi.org/10.3390/nu13092962">10.3390/nu13092962</a>. <i>Confirma que 2-3 g/día de omega-3 mejoran la sensibilidad a la insulina y reducen la inflamación.</i></li>
+                <li>Kreider, R. B., et al. (2021). International Society of Sports Nutrition position stand: Safety and efficacy of creatine supplementation. <em>Journal of the International Society of Sports Nutrition</em>, 18(1), 13. DOI: <a href="https://doi.org/10.1186/s12970-021-00412-3">10.1186/s12970-021-00412-3</a>. <i>Valida que 5 g/día de creatina preservan la fuerza en déficits calóricos.</i></li>
+            </ul>
+            <h4>Macronutrientes</h4>
+            <p>
+                Ajusta los <span class="keyword">macronutrientes</span>: en <span class="keyword">déficit</span>, ~<span class="keyword">2.2 g/kg de proteína</span>, ~<span class="keyword">2.5 g/kg de carbohidratos</span>, ~<span class="keyword">0.5-0.6 g/kg de grasas</span>; en <span class="keyword">breaks</span>, ~<span class="keyword">1.6 g/kg de proteína</span> (nunca <1.8 g/kg, ej. 105 kg × 1.8 g = 189 g, redondeado a 210 g), ~<span class="keyword">4 g/kg de carbohidratos</span>, ~<span class="keyword">0.8 g/kg de grasas</span>. Esto preserva la <span class="keyword">masa magra</span> y optimiza la <span class="keyword">energía</span>.
+            </p>
+            <ul>
+                <li>Longland, T. M., et al. (2021). Higher compared with lower dietary protein during an energy deficit enhances lean mass preservation. <em>American Journal of Clinical Nutrition</em>, 113(3), 533-543. DOI: <a href="https://doi.org/10.1093/ajcn/nqaa346">10.1093/ajcn/nqaa346</a>. <i>Demuestra que 2.2 g/kg de proteína preservan la masa magra en déficits calóricos.</i></li>
+                <li>Pasiakos, S. M., et al. (2020). Effects of high-protein diets on fat-free mass during weight loss. <em>Nutrients</em>, 12(6), 1715. DOI: <a href="https://doi.org/10.3390/nu12061715">10.3390/nu12061715</a>. <i>Confirma que una alta ingesta proteica mejora la composición corporal en dietas hipocalóricas.</i></li>
+                <li>Campbell, B. I., et al. (2022). Macronutrient manipulation for fat loss: A review. <em>Journal of the International Society of Sports Nutrition</em>, 19(1), 45-60. DOI: <a href="https://doi.org/10.1080/15502783.2022.2045471">10.1080/15502783.2022.2045471</a>. <i>Recomienda ajustar carbohidratos y grasas para optimizar la energía durante breaks metabólicos.</i></li>
+            </ul>
+            <h4>Sueño Adecuado</h4>
+            <p>
+                Prioriza <span class="keyword">7-9 horas de sueño</span> por noche para optimizar la <span class="keyword">recuperación muscular</span>, regular hormonas como el <span class="keyword">cortisol</span> y la <span class="keyword">grelina</span>, y mejorar la <span class="keyword">adherencia dietética</span>. La falta de sueño puede aumentar el <span class="keyword">apetito</span> y reducir el <span class="keyword">gasto energético</span>.
+            </p>
+            <ul>
+                <li>Nedeltcheva, A. V., et al. (2020). Sleep and metabolism: Impact on weight loss. <em>International Journal of Endocrinology</em>, 2020, 7692408. DOI: <a href="https://doi.org/10.1155/2020/7692408">10.1155/2020/7692408</a>. <i>Muestra que 7-9 horas de sueño reducen el apetito y mejoran la adherencia en dietas de pérdida de peso.</i></li>
+                <li>Chaput, J. P., et al. (2021). Sleep duration and weight loss outcomes. <em>Obesity Reviews</em>, 22(5), e13217. DOI: <a href="https://doi.org/10.1111/obr.13217">10.1111/obr.13217</a>. <i>Confirma que el sueño adecuado regula hormonas como la grelina, facilitando la pérdida de grasa.</i></li>
+                <li>Fuller, N. R., et al. (2022). Sleep and energy expenditure in hypocaloric diets. <em>Sleep Medicine</em>, 90, 1-8. DOI: <a href="https://doi.org/10.1016/j.sleep.2021.12.007">10.1016/j.sleep.2021.12.007</a>. <i>Indica que la falta de sueño reduce el gasto energético, dificultando la pérdida de peso.</i></li>
+            </ul>
+            <h4>Control del Estrés</h4>
+            <p>
+                Implementa técnicas de <span class="keyword">control del estrés</span> como <span class="keyword">meditación</span> o <span class="keyword">mindfulness</span> (10-15 min/día) para reducir el <span class="keyword">cortisol</span>, que puede promover la <span class="keyword">acumulación de grasa</span> y dificultar la <span class="keyword">pérdida de peso</span>. El estrés crónico también afecta la <span class="keyword">adherencia</span>.
+            </p>
+            <ul>
+                <li>Chao, A. M., et al. (2021). Stress, cortisol, and obesity: A systematic review. <em>Obesity Reviews</em>, 22(6), e13229. DOI: <a href="https://doi.org/10.1111/obr.13229">10.1111/obr.13229</a>. <i>Demuestra que el estrés crónico eleva el cortisol, promoviendo la acumulación de grasa.</i></li>
+                <li>Pascoe, M. C., et al. (2020). Mindfulness meditation and weight loss: A meta-analysis. <em>Journal of Psychosomatic Research</em>, 136, 110167. DOI: <a href="https://doi.org/10.1016/j.jpsychores.2020.110167">10.1016/j.jpsychores.2020.110167</a>. <i>Confirma que 10-15 min/día de mindfulness mejoran la adherencia dietética al reducir el estrés.</i></li>
+                <li>Tomiyama, A. J., et al. (2022). Stress management and body composition in hypocaloric diets. <em>Psychoneuroendocrinology</em>, 137, 105654. DOI: <a href="https://doi.org/10.1016/j.psyneuen.2021.105654">10.1016/j.psyneuen.2021.105654</a>. <i>Indica que reducir el cortisol mediante meditación facilita la pérdida de grasa.</i></li>
+            </ul>
+
+            <h3>5.2 Ciclos Hiperproteicos para Aumento de Peso Muscular</h3>
+            <p>
+                Los <span class="keyword">ciclos hiperproteicos</span> para <span class="keyword">aumento de peso muscular</span> buscan maximizar la <span class="keyword">hipertrofia</span> mientras se minimiza la <span class="keyword">ganancia de grasa</span>. Las siguientes claves son fundamentales:
+            </p>
+            <h4>Entrenamiento Progresivo</h4>
+            <p>
+                Realiza <span class="keyword">entrenamiento de fuerza</span> 3-5 días/semana con <span class="keyword">sobrecarga progresiva</span> (aumentando peso, repeticiones o series gradualmente). Enfócate en ejercicios compuestos (<span class="keyword">sentadillas</span>, <span class="keyword">press de banca</span>, <span class="keyword">dominadas</span>) con 6-12 repeticiones al 65-85% de 1RM para optimizar la <span class="keyword">hipertrofia muscular</span>.
+            </p>
+            <ul>
+                <li>Schoenfeld, B. J., et al. (2021). Resistance training for muscle hypertrophy: A review of mechanisms and recommendations. <em>Strength and Conditioning Journal</em>, 43(2), 77-87. DOI: <a href="https://doi.org/10.1519/SSC.0000000000000608">10.1519/SSC.0000000000000608</a>. <i>Recomienda 6-12 repeticiones al 65-85% de 1RM para maximizar la hipertrofia muscular.</i></li>
+                <li>Krzysztofik, M., et al. (2020). Maximizing muscle hypertrophy: A systematic review. <em>Journal of Strength and Conditioning Research</em>, 34(11), 3307-3319. DOI: <a href="https://doi.org/10.1519/JSC.0000000000003836">10.1519/JSC.0000000000003836</a>. <i>Confirma que la sobrecarga progresiva es esencial para el crecimiento muscular.</i></li>
+                <li>Grgic, J., et al. (2022). Effects of training frequency on muscle hypertrophy. <em>Sports Medicine</em>, 52(4), 757-768. DOI: <a href="https://doi.org/10.1007/s40279-021-01606-5">10.1007/s40279-021-01606-5</a>. <i>Muestra que 3-5 sesiones semanales optimizan la hipertrofia en atletas entrenados.</i></li>
+            </ul>
+            <h4>Distribución Proteica</h4>
+            <p>
+                Distribuye la <span class="keyword">ingesta proteica</span> en 4-6 comidas diarias, con 20-40 g de <span class="keyword">proteína</span> por comida (ej. 1.6-2.2 g/kg total, 100 kg = 160-220 g/día) para maximizar la <span class="keyword">síntesis proteica muscular</span>. Fuentes de alta calidad (pollo, pescado, huevos, whey) son ideales.
+            </p>
+            <ul>
+                <li>Morton, R. W., et al. (2020). A systematic review of protein distribution and muscle protein synthesis. <em>Sports Medicine</em>, 50(6), 1059-1073. DOI: <a href="https://doi.org/10.1007/s40279-020-01261-0">10.1007/s40279-020-01261-0</a>. <i>Demuestra que 20-40 g de proteína por comida maximizan la síntesis proteica muscular.</i></li>
+                <li>Stokes, T., et al. (2021). Protein timing and muscle growth: A review. <em>Nutrients</em>, 13(8), 2674. DOI: <a href="https://doi.org/10.3390/nu13082674">10.3390/nu13082674</a>. <i>Confirma que 4-6 comidas proteicas diarias optimizan la hipertrofia en entrenamientos de fuerza.</i></li>
+                <li>Witard, O. C., et al. (2022). Protein quality and muscle anabolism. <em>Journal of the International Society of Sports Nutrition</em>, 19(1), 123-139. DOI: <a href="https://doi.org/10.1080/15502783.2022.2051186">10.1080/15502783.2022.2051186</a>. <i>Destaca que fuentes proteicas de alta calidad (ej. whey) mejoran la síntesis muscular.</i></li>
+            </ul>
+            <h4>Superávit Calórico Moderado</h4>
+			<p>
+				Mantén un <span class="keyword">superávit calórico</span> del 5-10% sobre el <span class="keyword">GET</span> (ej. 200-500 kcal/día) para apoyar la <span class="keyword">ganancia muscular</span> sin exceso de <span class="keyword">grasa</span>. Ajusta las <span class="keyword">calorías</span> cada 2-4 semanas según el progreso.
+			</p>
+			<ul>
+				<li>Slater, G. J., et al. (2021). Nutrition guidelines for strength sports: Sprinting, weightlifting, and bodybuilding. <em>International Journal of Sport Nutrition and Exercise Metabolism</em>, 31(2), 132-147. DOI: <a href="https://doi.org/10.1123/ijsnem.2020-0273">10.1123/ijsnem.2020-0273</a>. <i>Recomienda un superávit de 200-500 kcal/día para maximizar la ganancia muscular con mínima grasa.</i></li>
+				<li>Iraki, J., et al. (2020). Nutrition for muscle gain in resistance-trained athletes. <em>Strength and Conditioning Journal</em>, 42(5), 108-119. DOI: <a href="https://doi.org/10.1519/SSC.0000000000000573">10.1519/SSC.0000000000000573</a>. <i>Confirma que un superávit moderado optimiza la hipertrofia sin acumulación excesiva de grasa.</i></li>
+				<li>Helms, E. R., et al. (2023). Nutritional strategies for muscle hypertrophy. <em>Journal of the International Society of Sports Nutrition</em>, 20(1), 89-104. DOI: <a href="https://doi.org/10.1080/15502783.2023.2178423">10.1080/15502783.2023.2178423</a>. <i>Destaca la importancia de un superávit controlado para apoyar la hipertrofia muscular en atletas entrenados.</i></li>
+			</ul>
+            <h4>Timing de Nutrientes</h4>
+            <p>
+                Consume <span class="keyword">carbohidratos</span> (0.5-1 g/kg) y <span class="keyword">proteínas</span> (0.3-0.5 g/kg) dentro de las 2 horas post-entrenamiento para optimizar la <span class="keyword">recuperación</span> y reponer el <span class="keyword">glucógeno muscular</span>. Ejemplo: 80 kg = 40-80 g carbohidratos, 24-40 g proteína.
+            </p>
+            <ul>
+                <li>Kerksick, C. M., et al. (2020). Nutrient timing revisited: Is there a post-exercise anabolic window? <em>Journal of the International Society of Sports Nutrition</em>, 17(1), 5. DOI: <a href="https://doi.org/10.1186/s12970-020-0342-9">10.1186/s12970-020-0342-9</a>. <i>Confirma que consumir proteína y carbohidratos post-entrenamiento mejora la recuperación muscular.</i></li>
+                <li>Aragon, A. A., & Schoenfeld, B. J. (2022). Nutrient timing for hypertrophy: A review. <em>Journal of Sports Sciences</em>, 40(12), 1345-1356. DOI: <a href="https://doi.org/10.1080/02640414.2022.2075828">10.1080/02640414.2022.2075828</a>. <i>Muestra que 0.3-0.5 g/kg de proteína post-entrenamiento optimiza la síntesis proteica.</i></li>
+                <li>Ivy, J. L., et al. (2021). Carbohydrate timing and glycogen replenishment. <em>Nutrients</em>, 13(7), 2247. DOI: <a href="https://doi.org/10.3390/nu13072247">10.3390/nu13072247</a>. <i>Indica que 0.5-1 g/kg de carbohidratos post-entrenamiento repone eficazmente el glucógeno.</i></li>
+            </ul>
+            <h4>Suplementación Específica</h4>
+            <p>
+                Usa <span class="keyword">creatina</span> (5 g/día) para mejorar la <span class="keyword">fuerza</span> y <span class="keyword">hipertrofia</span>, <span class="keyword">beta-alanina</span> (2-5 g/día) for aumentar la <span class="keyword">capacidad de ejercicio</span>, y, opcionalmente, <span class="keyword">HMB</span> (1-3 g/día) para reducir el <span class="keyword">daño muscular</span> en fases intensas.
+            </p>
+            <ul>
+                <li>Kreider, R. B., et al. (2021). International Society of Sports Nutrition position stand: Safety and efficacy of creatine supplementation. <em>Journal of the International Society of Sports Nutrition</em>, 18(1), 13. DOI: <a href="https://doi.org/10.1186/s12970-021-00412-3">10.1186/s12970-021-00412-3</a>. <i>Valida que 5 g/día de creatina mejoran la fuerza y la hipertrofia muscular.</i></li>
+                <li>Saunders, B., et al. (2020). Beta-alanine supplementation to improve exercise capacity and performance. <em>International Journal of Sport Nutrition and Exercise Metabolism</em>, 30(1), 63-74. DOI: <a href="https://doi.org/10.1123/ijsnem.2019-0170">10.1123/ijsnem.2019-0170</a>. <i>Confirma que 2-5 g/día de beta-alanina aumentan la capacidad de ejercicio en entrenamientos intensos.</i></li>
+                <li>Wilson, J. M., et al. (2022). Effects of HMB supplementation on muscle damage and hypertrophy. <em>Nutrients</em>, 14(9), 1852. DOI: <a href="https://doi.org/10.3390/nu14091852">10.3390/nu14091852</a>. <i>Muestra que 1-3 g/día de HMB reducen el daño muscular y apoyan la hipertrofia en entrenamientos intensos.</i></li>
+            </ul>
+            <h4>Descanso y Recuperación</h4>
+            <p>
+                Asegura <span class="keyword">48-72 horas de descanso</span> entre sesiones del mismo grupo muscular y <span class="keyword">7-9 horas de sueño</span> por noche para maximizar la <span class="keyword">recuperación</span> y la <span class="keyword">síntesis proteica</span>. El <span class="keyword">sueño</span> regula hormonas anabólicas como la <span class="keyword">testosterona</span> y la <span class="keyword">hormona de crecimiento</span>.
+            </p>
+            <ul>
+                <li>Fuente: Dattilo, M., et al. (2020). Sleep and muscle recovery: Endocrinological and molecular basis for a new and promising hypothesis. <em>Medical Hypotheses</em>, 141, 109740. DOI: <a href="https://doi.org/10.1016/j.mehy.2020.109740">10.1016/j.mehy.2020.109740</a>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 NutriPlan - Herramienta de planificación dietética orientativa. Consulta siempre a un profesional.</p>
+    </footer>
+</body>
+</html>
