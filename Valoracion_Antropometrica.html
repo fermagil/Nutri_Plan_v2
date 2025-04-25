@@ -801,162 +801,266 @@
         };
 			// Nueva función para generar la explicación detallada del somatotipo
         const generateSomatotypeExplanation = (results, cliente) => {
-            const { endomorfia, mesomorfia, ectomorfia } = results;
-            const { sexo = 'no especificado', edad = 'no especificada', esDeportista = false } = cliente || {};
+    const { endomorfia, mesomorfia, ectomorfia } = results;
+    const { sexo = 'no especificado', edad = 'no especificada', esDeportista = false } = cliente || {};
 
-            // Determinar si el somatotipo es equilibrado o dominante
-            const maxScore = Math.max(endomorfia, mesomorfia, ectomorfia);
-            const minScore = Math.min(endomorfia, mesomorfia, ectomorfia);
-            const isBalanced = (maxScore - minScore) <= 2; // Consideramos equilibrado si la diferencia entre el máximo y el mínimo es <= 2
-            let dominantType = '';
-            if (!isBalanced) {
-                if (maxScore === endomorfia) dominantType = 'Endomorfo';
-                else if (maxScore === mesomorfia) dominantType = 'Mesomorfo';
-                else dominantType = 'Ectomorfo';
-            }
+    // Determinar si el somatotipo es equilibrado o dominante
+    const maxScore = Math.max(endomorfia, mesomorfia, ectomorfia);
+    const minScore = Math.min(endomorfia, mesomorfia, ectomorfia);
+    const isBalanced = (maxScore - minScore) <= 2; // Consideramos equilibrado si la diferencia entre el máximo y el mínimo es <= 2
+    let dominantType = '';
+    if (!isBalanced) {
+        if (maxScore === endomorfia) dominantType = 'Endomorfo';
+        else if (maxScore === mesomorfia) dominantType = 'Mesomorfo';
+        else dominantType = 'Ectomorfo';
+    }
 
-            // Generar la explicación
-            let explanation = `
-                <h3>Medición del Somatotipo</h3>
-                <p>Tu somatotipo, calculado mediante el método Heath-Carter, es <strong>${formatResult(endomorfia, 1)}-${formatResult(mesomorfia, 1)}-${formatResult(ectomorfia, 1)}</strong>. Esto indica:</p>
-                <ul>
-                    <li><strong>Endomorfia (${formatResult(endomorfia, 1)})</strong>: Representa la tendencia a almacenar grasa corporal. Una puntuación alta (cercana a 7 o más) indica una constitución más redondeada con mayor grasa corporal.</li>
-                    <li><strong>Mesomorfia (${formatResult(mesomorfia, 1)})</strong>: Representa la muscularidad y fuerza. Una puntuación alta indica una constitución atlética, con facilidad para ganar músculo.</li>
-                    <li><strong>Ectomorfia (${formatResult(ectomorfia, 1)})</strong>: Representa la delgadez y estructura ósea ligera. Una puntuación alta indica un cuerpo delgado, con poca grasa y músculo.</li>
-                </ul>
-            `;
+    // Generar la explicación
+    let explanation = `
+        <h3>Medición del Somatotipo</h3>
+        <p>Tu somatotipo, calculado mediante el método Heath-Carter, es <strong>${formatResult(endomorfia, 1)}-${formatResult(mesomorfia, 1)}-${formatResult(ectomorfia, 1)}</strong>. Esto indica:</p>
+        <ul>
+            <li><strong>Endomorfia (${formatResult(endomorfia, 1)})</strong>: Representa la tendencia a almacenar grasa corporal. Una puntuación alta (cercana a 7 o más) indica una constitución más redondeada con mayor grasa corporal.</li>
+            <li><strong>Mesomorfia (${formatResult(mesomorfia, 1)})</strong>: Representa la muscularidad y fuerza. Una puntuación alta indica una constitución atlética, con facilidad para ganar músculo.</li>
+            <li><strong>Ectomorfia (${formatResult(ectomorfia, 1)})</strong>: Representa la delgadez y estructura ósea ligera. Una puntuación alta indica un cuerpo delgado, con poca grasa y músculo.</li>
+        </ul>
+    `;
 
-            // Clasificación del somatotipo
-				const dominantColor = dominantType === 'Endomorfo' ? '#f8d7da' :
-                      dominantType === 'Mesomorfo' ? '#d1ecf1' : '#d4edda';
+    // Clasificación del somatotipo
+    const dominantColor = dominantType === 'Endomorfo' ? '#f8d7da' :
+          dominantType === 'Mesomorfo' ? '#d1ecf1' : '#d4edda';
 
-				const dominantEmoji = dominantType === 'Endomorfo' ? '🍩' :
-                      dominantType === 'Mesomorfo' ? '💪' : '🏃‍♂️';
-					  
-            if (isBalanced) {
-                explanation += `
-					
-                    <p>Tu somatotipo es <strong>equilibrado</strong>, lo que significa que no tienes un componente claramente dominante. Esto indica una constitución relativamente balanceada entre grasa, muscularidad y delgadez.</p>
-                `;
-            } else {
-                explanation += `
-                    <p>Tu somatotipo es <strong>${dominantType} dominante</strong>, ya que tu puntuación más alta es en ${dominantType.toLowerCase()} (${maxScore}). Esto sugiere que tu constitución tiende hacia las siguientes características:</p>
-                `;
-                if (dominantType === 'Endomorfo') {
-                    explanation += `
-                        <p><strong>Características de un Endomorfo</strong>: Cuerpo más redondeado, facilidad para ganar grasa, estructura ósea generalmente más ancha. Los deportistas no suelen pertenecer a esta categoría, pero con dieta y ejercicio puedes moverte hacia un perfil más mesomórfico.</p>
-                    `;
-                } else if (dominantType === 'Mesomorfo') {
-                    explanation += `
-                        <p><strong>Características de un Mesomorfo</strong>: Complexión atlética, hombros anchos, facilidad para ganar músculo y fuerza. Los mesomorfos suelen destacar en deportes que requieren potencia y agilidad, como levantamiento de pesas o lanzamiento de peso.</p>
-                    `;
-                } else {
-                    explanation += `
-                        <p><strong>Características de un Ectomorfo</strong>: Cuerpo delgado, extremidades largas, poca grasa y músculo, dificultad para ganar peso. Los ectomorfos suelen destacar en deportes de resistencia, como corredores de largas distancias o jugadores de baloncesto.</p>
-                    `;
-                }
-            }
-			
-						// Clasificación avanzada del tipo combinado
-				const e = endomorfia;
-				const m = mesomorfia;
-				const ec = ectomorfia;
-
-				const sorted = [
-					{ type: 'Endomorfo', value: e },
-					{ type: 'Mesomorfo', value: m },
-					{ type: 'Ectomorfo', value: ec }
-				].sort((a, b) => b.value - a.value);
-
-				const [first, second] = sorted;
-				let advancedType = '';
-
-				if (first.type === 'Mesomorfo') {
-					if (second.type === 'Endomorfo' && m > 5 && e > 3) {
-						advancedType = 'Meso endomórfico';
-					} else if (second.type === 'Ectomorfo' && m > 5 && ec > 3) {
-						advancedType = 'Meso ectomórfico';
-					} else {
-						advancedType = 'Mesomorfo balanceado';
-					}
-				} else if (first.type === 'Endomorfo') {
-					if (second.type === 'Mesomorfo' && e >= m && e > 5) {
-						advancedType = 'Endo mesomórfico';
-					} else if (second.type === 'Mesomorfo') {
-						advancedType = 'Endomorfo mesomorfo';
-					} else if (second.type === 'Ectomorfo') {
-						advancedType = 'Endo ectomórfico';
-					} else {
-						advancedType = 'Endomorfo balanceado';
-					}
-				} else if (first.type === 'Ectomorfo') {
-					if (second.type === 'Mesomorfo' && ec >= m && ec > 5) {
-						advancedType = 'Ecto mesomórfico';
-					} else if (second.type === 'Mesomorfo') {
-						advancedType = 'Ectomorfo mesomorfo';
-					} else if (second.type === 'Endomorfo') {
-						advancedType = 'Ecto endomórfico';
-					} else {
-						advancedType = 'Ectomorfo balanceado';
-					}
-
-					// Zona intermedia especial
-					if (Math.abs(e - ec) < 1.5 && m < 2 && e > 3 && ec > 3) {
-						advancedType = 'Ectomorfo endomorfo (zona intermedia inferior)';
-					}
-				}
-
-				explanation += `
-					<div style="background-color:#e8f5e9; border-left:4px solid #388e3c; padding:12px 16px; margin:16px 0; border-radius:5px;">
-						<p style="margin:0;"><strong>📊 Clasificación avanzada:</strong> Tu somatotipo se identifica como <strong style="color:#2e7d32;">${advancedType}</strong>, reflejando un perfil combinado entre <strong>${first.type}</strong> y <strong>${second.type}</strong>.</p>
-					</div>
-				`;
-	
-            // Personalización según sexo, edad y si es deportista
-            explanation += `<h4>Consideraciones Personalizadas</h4>`;
-            if (sexo !== 'no especificado') {
-                if (sexo.toLowerCase() === 'masculino') {
-                    explanation += `<p><strong>Sexo (Masculino)</strong>: Los hombres tienden a tener puntuaciones más altas de mesomorfia debido a niveles más altos de testosterona, lo que facilita el desarrollo muscular. Tu mesomorfia de ${formatResult(mesomorfia, 1)} refleja ${mesomorfia >= 5 ? 'una buena predisposición para ganar músculo' : 'una muscularidad moderada o baja'}.</p>`;
-                } else if (sexo.toLowerCase() === 'femenino') {
-                    explanation += `<p><strong>Sexo (Femenino)</strong>: Las mujeres tienden a tener puntuaciones más altas de endomorfia debido a una mayor proporción de grasa corporal esencial. Tu endomorfia de ${formatResult(endomorfia, 1)} indica ${endomorfia >= 5 ? 'una tendencia a almacenar más grasa' : 'un nivel de grasa corporal relativamente bajo para una mujer'}.</p>`;
-                }
-            }
-
-            if (edad !== 'no especificada') {
-                explanation += `<p><strong>Edad (${edad} años)</strong>: La edad puede influir en tu somatotipo. A medida que envejecemos, el metabolismo puede ralentizarse, aumentando la endomorfia. Además, la pérdida de masa muscular con la edad puede reducir la mesomorfia. Tu edad (${edad}) sugiere que ${edad >= 40 ? 'puedes estar experimentando cambios en tu composición corporal que favorecen la endomorfia' : 'tu somatotipo puede ser más estable y reflejar tu genética y estilo de vida actual'}.</p>`;
-            }
-
-            explanation += `<p><strong>¿Deportista? (${esDeportista ? 'Sí' : 'No'})</strong>: `;
-            if (esDeportista) {
-                if (dominantType === 'Mesomorfo') {
-                    explanation += `Como deportista con un somatotipo mesomorfo dominante, tienes una ventaja natural para deportes que requieren fuerza y potencia, como levantamiento de pesas o deportes de equipo. Tu mesomorfia de ${formatResult(mesomorfia, 1)} es ideal para estas actividades.</p>`;
-                } else if (dominantType === 'Ectomorfo') {
-                    explanation += `Como deportista con un somatotipo ectomorfo dominante, probablemente destacas en deportes de resistencia como running o ciclismo, donde tu ectomorfia de ${formatResult(ectomorfia, 1)} te da una ventaja en eficiencia y agilidad.</p>`;
-                } else {
-                    explanation += `Aunque tienes un somatotipo endomorfo dominante, participas en actividades deportivas, lo cual es excelente. Con un enfoque en dieta y entrenamiento, puedes reducir tu endomorfia (${formatResult(endomorfia, 1)}) y moverte hacia un perfil más mesomórfico, mejorando tu rendimiento.</p>`;
-                }
-            } else {
-                explanation += `No eres deportista, pero tu somatotipo (${dominantType.toLowerCase()} dominante) puede guiarte si decides iniciar una actividad física. `;
-                if (dominantType === 'Endomorfo') {
-                    explanation += `Con tu endomorfia de ${formatResult(endomorfia, 1)}, podrías beneficiarte de ejercicios cardiovasculares y control de dieta para reducir grasa corporal.</p>`;
-                } else if (dominantType === 'Mesomorfo') {
-                    explanation += `Tu mesomorfia de ${formatResult(mesomorfia, 1)} indica que podrías tener éxito en actividades que desarrollen fuerza y músculo, como entrenamiento con pesas.</p>`;
-                } else {
-                    explanation += `Tu ectomorfia de ${formatResult(ectomorfia, 1)} sugiere que podrías destacar en actividades de resistencia como running, y podrías enfocarte en ganar masa muscular si ese es tu objetivo.</p>`;
-                }
-            }
-
-
-
-            // Información adicional sobre el somatotipo
+    const dominantEmoji = dominantType === 'Endomorfo' ? '🍩' :
+          dominantType === 'Mesomorfo' ? '💪' : '🏃‍♂️';
+          
+    if (isBalanced) {
+        explanation += `
+            <p>Tu somatotipo es <strong>equilibrado</strong>, lo que significa que no tienes un componente claramente dominante. Esto indica una constitución relativamente balanceada entre grasa, muscularidad y delgadez.</p>
+        `;
+    } else {
+        explanation += `
+            <p>Tu somatotipo es <strong>${dominantType} dominante</strong>, ya que tu puntuación más alta es en ${dominantType.toLowerCase()} (${maxScore}). Esto sugiere que tu constitución tiende hacia las siguientes características:</p>
+        `;
+        if (dominantType === 'Endomorfo') {
             explanation += `
-                <h4>Notas Adicionales</h4>
-                <p>El somatotipo no es fijo y puede cambiar con la edad, la nutrición y el entrenamiento, aunque la estructura ósea subyacente (más relacionada con la ectomorfia y mesomorfia) tiende a ser más estable. La determinación precisa del somatotipo requiere mediciones antropométricas específicas (pliegues cutáneos, perímetros de miembros, diámetros óseos, peso, altura) realizadas por un profesional y el uso de fórmulas específicas (método Heath-Carter).</p>
-                <p>Estos "tipos" son tendencias generales y no categorías rígidas. La mayoría de las personas son una mezcla de los tres componentes, y tu somatotipo refleja cómo se combinan estos en tu cuerpo.</p>
+                <p><strong>Características de un Endomorfo</strong>: Cuerpo más redondeado, facilidad para ganar grasa, estructura ósea generalmente más ancha. Los deportistas no suelen pertenecer a esta categoría, pero con dieta y ejercicio puedes moverte hacia un perfil más mesomórfico.</p>
             `;
+        } else if (dominantType === 'Mesomorfo') {
+            explanation += `
+                <p><strong>Características de un Mesomorfo</strong>: Complexión atlética, hombros anchos, facilidad para ganar músculo y fuerza. Los mesomorfos suelen destacar en deportes que requieren potencia y agilidad, como levantamiento de pesas o lanzamiento de peso.</p>
+            `;
+        } else {
+            explanation += `
+                <p><strong>Características de un Ectomorfo</strong>: Cuerpo delgado, extremidades largas, poca grasa y músculo, dificultad para ganar peso. Los ectomorfos suelen destacar en deportes de resistencia, como corredores de largas distancias o jugadores de baloncesto.</p>
+            `;
+        }
+    }
 
-            return explanation;
-        };
+    // Clasificación avanzada del tipo combinado
+    const e = endomorfia;
+    const m = mesomorfia;
+    const ec = ectomorfia;
+
+    const sorted = [
+        { type: 'Endomorfo', value: e },
+        { type: 'Mesomorfo', value: m },
+        { type: 'Ectomorfo', value: ec }
+    ].sort((a, b) => b.value - a.value);
+
+    const [first, second] = sorted;
+    let advancedType = '';
+
+    if (first.type === 'Mesomorfo') {
+        if (second.type === 'Endomorfo' && m > 5 && e > 3) {
+            advancedType = 'Meso endomórfico';
+        } else if (second.type === 'Ectomorfo' && m > 5 && ec > 3) {
+            advancedType = 'Meso ectomórfico';
+        } else {
+            advancedType = 'Mesomorfo balanceado';
+        }
+    } else if (first.type === 'Endomorfo') {
+        if (second.type === 'Mesomorfo' && e >= m && e > 5) {
+            advancedType = 'Endo mesomórfico';
+        } else if (second.type === 'Mesomorfo') {
+            advancedType = 'Endomorfo mesomorfo';
+        } else if (second.type === 'Ectomorfo') {
+            advancedType = 'Endo ectomórfico';
+        } else {
+            advancedType = 'Endomorfo balanceado';
+        }
+    } else if (first.type === 'Ectomorfo') {
+        if (second.type === 'Mesomorfo' && ec >= m && ec > 5) {
+            advancedType = 'Ecto mesomórfico';
+        } else if (second.type === 'Mesomorfo') {
+            advancedType = 'Ectomorfo mesomorfo';
+        } else if (second.type === 'Endomorfo') {
+            advancedType = 'Ecto endomórfico';
+        } else {
+            advancedType = 'Ectomorfo balanceado';
+        }
+
+        // Zona intermedia especial
+        if (Math.abs(e - ec) < 1.5 && m < 2 && e > 3 && ec > 3) {
+            advancedType = 'Ectomorfo endomorfo (zona intermedia inferior)';
+        }
+    }
+
+    explanation += `
+        <div style="background-color:#e8f5e9; border-left:4px solid #388e3c; padding:12px 16px; margin:16px 0; border-radius:5px;">
+            <p style="margin:0;"><strong>📊 Clasificación avanzada:</strong> Tu somatotipo se identifica como <strong style="color:#2e7d32;">${advancedType}</strong>, reflejando un perfil combinado entre <strong>${first.type}</strong> y <strong>${second.type}</strong>.</p>
+        </div>
+    `;
+
+    // Personalización según sexo, edad y si es deportista
+    explanation += `<h4>Consideraciones Personalizadas</h4>`;
+    if (sexo !== 'no especificado') {
+        if (sexo.toLowerCase() === 'masculino') {
+            explanation += `<p><strong>Sexo (Masculino)</strong>: Los hombres tienden a tener puntuaciones más altas de mesomorfia debido a niveles más altos de testosterona, lo que facilita el desarrollo muscular. Tu mesomorfia de ${formatResult(mesomorfia, 1)} refleja ${mesomorfia >= 5 ? 'una buena predisposición para ganar músculo' : 'una muscularidad moderada o baja'}.</p>`;
+        } else if (sexo.toLowerCase() === 'femenino') {
+            explanation += `<p><strong>Sexo (Femenino)</strong>: Las mujeres tienden a tener puntuaciones más altas de endomorfia debido a una mayor proporción de grasa corporal esencial. Tu endomorfia de ${formatResult(endomorfia, 1)} indica ${endomorfia >= 5 ? 'una tendencia a almacenar más grasa' : 'un nivel de grasa corporal relativamente bajo para una mujer'}.</p>`;
+        }
+    }
+
+    if (edad !== 'no especificada') {
+        explanation += `<p><strong>Edad (${edad} años)</strong>: La edad puede influir en tu somatotipo. A medida que envejecemos, el metabolismo puede ralentizarse, aumentando la endomorfia. Además, la pérdida de masa muscular con la edad puede reducir la mesomorfia. Tu edad (${edad}) sugiere que ${edad >= 40 ? 'puedes estar experimentando cambios en tu composición corporal que favorecen la endomorfia' : 'tu somatotipo puede ser más estable y reflejar tu genética y estilo de vida actual'}.</p>`;
+    }
+
+    explanation += `<p><strong>¿Deportista? (${esDeportista ? 'Sí' : 'No'})</strong>: `;
+    if (esDeportista) {
+        if (dominantType === 'Mesomorfo') {
+            explanation += `Como deportista con un somatotipo mesomorfo dominante, tienes una ventaja natural para deportes que requieren fuerza y potencia, como levantamiento de pesas o deportes de equipo. Tu mesomorfia de ${formatResult(mesomorfia, 1)} es ideal para estas actividades.</p>`;
+        } else if (dominantType === 'Ectomorfo') {
+            explanation += `Como deportista con un somatotipo ectomorfo dominante, probablemente destacas en deportes de resistencia como running o ciclismo, donde tu ectomorfia de ${formatResult(ectomorfia, 1)} te da una ventaja en eficiencia y agilidad.</p>`;
+        } else {
+            explanation += `Aunque tienes un somatotipo endomorfo dominante, participas en actividades deportivas, lo cual es excelente. Con un enfoque en dieta y entrenamiento, puedes reducir tu endomorfia (${formatResult(endomorfia, 1)}) y moverte hacia un perfil más mesomórfico, mejorando tu rendimiento.</p>`;
+        }
+    } else {
+        explanation += `No eres deportista, pero tu somatotipo (${dominantType.toLowerCase()} dominante) puede guiarte si decides iniciar una actividad física. `;
+        if (dominantType === 'Endomorfo') {
+            explanation += `Con tu endomorfia de ${formatResult(endomorfia, 1)}, podrías beneficiarte de ejercicios cardiovasculares y control de dieta para reducir grasa corporal.</p>`;
+        } else if (dominantType === 'Mesomorfo') {
+            explanation += `Tu mesomorfia de ${formatResult(mesomorfia, 1)} indica que podrías tener éxito en actividades que desarrollen fuerza y músculo, como entrenamiento con pesas.</p>`;
+        } else {
+            explanation += `Tu ectomorfia de ${formatResult(ectomorfia, 1)} sugiere que podrías destacar en actividades de resistencia como running, y podrías enfocarte en ganar masa muscular si ese es tu objetivo.</p>`;
+        }
+    }
+
+    // Información adicional sobre el somatotipo
+    explanation += `
+        <h4>Notas Adicionales</h4>
+        <p>El somatotipo no es fijo y puede cambiar con la edad, la nutrición y el entrenamiento, aunque la estructura ósea subyacente (más relacionada con la ectomorfia y mesomorfia) tiende a ser más estable. La determinación precisa del somatotipo requiere mediciones antropométricas específicas (pliegues cutáneos, perímetros de miembros, diámetros óseos, peso, altura) realizadas por un profesional y el uso de fórmulas específicas (método Heath-Carter).</p>
+        <p>Estos "tipos" son tendencias generales y no categorías rígidas. La mayoría de las personas son una mezcla de los tres componentes, y tu somatotipo refleja cómo se combinan estos en tu cuerpo.</p>
+    `;
+
+    // Nueva sección: Categorías de Predominancia Física
+    explanation += `<h4>Categorías de Predominancia Física y Recomendaciones</h4>`;
+
+    // Definir las categorías de predominancia física
+    const categories = [
+        {
+            category: 'Fuerza Máxima / Potencia',
+            sports: 'Halterofilia, Powerlifting, Lanzamiento de Peso',
+            somatotype: { endo: 2.5, meso: 7.0, ecto: 1.0 },
+            somatotypeDesc: 'Bajo/Moderado en adiposidad (Endo), extremadamente alto en músculo (Meso), bajo en linealidad (Ecto). Maximiza palanca y masa muscular.',
+            diet: 'Dieta hipercalórica controlada, muy alta en proteínas (2.0-2.5 g/kg+), carbohidratos adecuados (5-7 g/kg), timing de nutrientes. Puede permitirse más grasa (% endo) si beneficia la fuerza absoluta.'
+        },
+        {
+            category: 'Fuerza Potencia',
+            sports: 'Velocista (100/200m), Saltador (Longitud, Triple, Altura), Lanzador (Jabalina, Disco)',
+            somatotype: { endo: 2.0, meso: 5.5, ecto: 2.5 },
+            somatotypeDesc: 'Bajo en adiposidad (Endo), muy alto en músculo relativo (Meso), bajo/moderado en linealidad (Ecto). Físico explosivo y definido.',
+            diet: 'Aporte proteico alto (1.8-2.2 g/kg), carbohidratos suficientes (5-7 g/kg), bajo % graso mantenido. Foco en recuperación muscular. Hidratación esencial.'
+        },
+        {
+            category: 'Fuerza Resistencia',
+            sports: 'Remo, Lucha Olímpica, Judo, Natación (200m estilos/libre)',
+            somatotype: { endo: 3.0, meso: 5.5, ecto: 2.0 },
+            somatotypeDesc: 'Bajo/Moderado en adiposidad (Endo, variable), alto/muy alto en músculo (Meso), bajo/moderado en linealidad (Ecto). Fuerza sostenida.',
+            diet: 'Carbohidratos y proteínas balanceados-altos (CHO: 6-8 g/kg, PRO: 1.7-2.2 g/kg). Buena hidratación, posible manejo de peso en lucha/judo.'
+        },
+        {
+            category: 'Fuerza Resistencia / Resistencia',
+            sports: 'Natación (400m, 1500m), Ciclismo en Pista (Persecución), Piragüismo/Kayak (500m, 1000m)',
+            somatotype: { endo: 2.5, meso: 4.5, ecto: 3.5 },
+            somatotypeDesc: 'Bajo en adiposidad (Endo), buen músculo (Meso), moderado/alto en linealidad (Ecto). Eficiencia y potencia sostenida.',
+            diet: 'Carbohidratos altos (7-10 g/kg), proteínas moderadas (1.5-1.8 g/kg), énfasis en recuperación, hidratación y electrolitos. Gestión del % graso.'
+        },
+        {
+            category: 'Larga Resistencia',
+            sports: 'Corredor (Maratón, Ultramaratón), Triatlón (Olímpico, Ironman), Ciclismo de Ruta (Grandes Vueltas)',
+            somatotype: { endo: 1.5, meso: 3.5, ecto: 4.5 },
+            somatotypeDesc: 'Muy bajo en adiposidad (Endo), bajo en músculo (Meso), muy alto en linealidad (Ecto). Maximiza eficiencia energética y disipación de calor.',
+            diet: 'Dieta muy alta en carbohidratos (8-12+ g/kg), proteína suficiente (1.2-1.7 g/kg), énfasis extremo en hidratación, electrolitos y nutrición intra-ejercicio. Control estricto de peso y composición.'
+        },
+        {
+            category: 'Mixto / Equipo',
+            sports: 'Fútbol, Baloncesto, Rugby, Balonmano, Voleibol, Hockey (Hierba/Hielo)',
+            somatotype: { endo: 3.0, meso: 4.5, ecto: 3.0 },
+            somatotypeDesc: 'Variable, pero generalmente: bajo/moderado Endo, buen Meso, moderado Ecto. Perfiles versátiles.',
+            diet: 'Carbohidratos periodizados (5-9 g/kg), proteína moderada-alta (1.6-2.0 g/kg), control % graso, hidratación, recuperación. Varía mucho por posición.'
+        },
+        {
+            category: 'Mixto (Potencia, Agilidad, Resistencia)',
+            sports: 'Tenis, Bádminton, Boxeo, Esgrima, Gimnasia Artística',
+            somatotype: { endo: 2.0, meso: 4.5, ecto: 3.5 },
+            somatotypeDesc: 'Bajo Endo, buen Meso (muy alto en Gimnasia), mod/alto Ecto (variable). Combinación de cualidades.',
+            diet: 'Carbohidratos para energía y resistencia (6-8 g/kg), proteína para recuperación/potencia (1.6-2.0 g/kg), hidratación y nutrición intra-esfuerzo. Muy bajo % graso en Gimnasia. Control de peso en Boxeo.'
+        }
+    ];
+
+    // Calcular la categoría más cercana al somatotipo del usuario usando distancia euclidiana
+    let closestCategory = null;
+    let minDistance = Infinity;
+    categories.forEach(cat => {
+        const distance = Math.sqrt(
+            Math.pow(endomorfia - cat.somatotype.endo, 2) +
+            Math.pow(mesomorfia - cat.somatotype.meso, 2) +
+            Math.pow(ectomorfia - cat.somatotype.ecto, 2)
+        );
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestCategory = cat;
+        }
+    });
+
+    // Introducción a la categoría más cercana
+    explanation += `
+        <p>Basado en tu somatotipo (${formatResult(endomorfia, 1)}-${formatResult(mesomorfia, 1)}-${formatResult(ectomorfia, 1)}), tu perfil se asemeja más a la categoría de <strong>${closestCategory.category}</strong>. Esto sugiere que podrías destacar en deportes como ${closestCategory.sports}, y tu dieta y entrenamiento podrían ajustarse según las recomendaciones para este perfil. A continuación, se presenta una tabla con las categorías de predominancia física, sus somatotipos típicos y consideraciones dietéticas:</p>
+    `;
+
+    // Generar la tabla
+    explanation += `
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9em;">
+            <thead>
+                <tr style="background-color: #e9f5e9; color: #2e7d32;">
+                    <th style="border: 1px solid #c8e6c9; padding: 10px; text-align: left;">Categoría</th>
+                    <th style="border: 1px solid #c8e6c9; padding: 10px; text-align: left;">Deportes Ejemplo</th>
+                    <th style="border: 1px solid #c8e6c9; padding: 10px; text-align: left;">Somatotipo Típico (Endo-Meso-Ecto)</th>
+                    <th style="border: 1px solid #c8e6c9; padding: 10px; text-align: left;">Explicación del Somatotipo</th>
+                    <th style="border: 1px solid #c8e6c9; padding: 10px; text-align: left;">Consideraciones Dietéticas</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    categories.forEach(cat => {
+        const isClosest = cat.category === closestCategory.category;
+        explanation += `
+            <tr style="${isClosest ? 'background-color: #f1f8f1; font-weight: bold;' : ''}">
+                <td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.category}</td>
+                <td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.sports}</td>
+                <td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.somatotype.endo}-${cat.somatotype.meso}-${cat.somatotype.ecto}</td>
+                <td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.somatotypeDesc}</td>
+                <td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.diet}</td>
+            </tr>
+        `;
+    });
+    explanation += `
+            </tbody>
+        </table>
+    `;
+
+    return explanation;
+};
 			
 			
         // Function to generate explanations and suggestions
