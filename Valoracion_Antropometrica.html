@@ -1,0 +1,2261 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <title>Valoración Antropométrica con Resultados</title>
+    <style>
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+            font-size: 16px;
+            padding-bottom: 80px;
+        }
+
+        header {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 1.75em;
+            font-weight: 600;
+        }
+
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a {
+            text-decoration: none;
+            color: #495057;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background-color: #e9f5e9;
+            color: #388e3c;
+        }
+        nav ul li a.active {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        main {
+            padding: 30px 15px;
+            max-width: 900px;
+            margin: 20px auto;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            box-sizing: border-box;
+        }
+        h1, h2, h3 {
+            color: #388E3C;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        h1 { font-size: 2.2em; text-align: center; margin-bottom: 30px;}
+        h2 { font-size: 1.8em; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px;}
+        h3 { font-size: 1.5em; margin-top: 25px; }
+
+        section.data-section {
+            background-color: #ffffff;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #343a40;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input:focus, select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        input.optional-input {
+             border-left: 3px solid #ffc107;
+        }
+        input.optional-input:focus {
+             border-color: #80bdff;
+             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+             border-left: 3px solid #ffc107;
+        }
+
+        button {
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #4cae4c;
+            transform: translateY(-1px);
+        }
+
+        .form-grid, .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px 25px;
+        }
+
+        .form-group, .result-item {
+            margin-bottom: 5px;
+        }
+
+        .result-item label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .result-item span {
+            font-weight: 500;
+            color: #212529;
+            display: inline-block;
+            min-width: 50px;
+            margin-left: 5px;
+        }
+        .result-item .unit {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-left: 3px;
+        }
+        .result-item small {
+            display: block;
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-top: -2px;
+        }
+
+        #explanation-section {
+            background-color: #f1f8f1;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+            box-sizing: border-box;
+        }
+        #explanation-section p {
+            margin: 10px 0;
+            color: #343a40;
+        }
+        #explanation-section ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        #explanation-section ul li {
+            margin-bottom: 8px;
+        }
+        #explanation-section strong {
+            color: #2e7d32;
+        }
+
+        footer {
+            background-color: #e9ecef;
+            text-align: center;
+            padding: 25px 20px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                position: static;
+            }
+            .logo a { font-size: 1.5em; margin-bottom: 10px; }
+            nav ul { justify-content: flex-start; flex-wrap: wrap; }
+            nav ul li { margin: 5px 10px 5px 0; }
+            main { padding-top: 20px; max-width: 95%; }
+            .form-grid, .results-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.5em; }
+            h3 { font-size: 1.3em; }
+            input[type="text"], input[type="number"], input[type="date"], select { padding: 10px 12px; }
+        }
+        #explanation-section canvas {
+            max-width: 100%;
+            margin: 10px auto;
+            display: block;
+        }
+        /* Contenedor para gráficos */
+        .chart-container {
+					max-width: 6000px; /* Keep the max-width for consistency */
+					width: 100%;
+					margin: 20px auto; /* Center with more spacing */
+					padding: 15px; /* Increased padding for a cleaner look */
+					background-color: #ffffff; /* White background */
+					border-radius: 10px; /* Softer, modern rounded corners */
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+					border: 1px solid #e0e0e0; /* Light border for definition */
+					box-sizing: border-box;
+					transition: transform 0.2s ease; /* Smooth hover effect */
+				}
+
+				.chart-container:hover {
+					transform: translateY(-3px); /* Slight lift on hover for interactivity */
+				}
+
+				/* Ensure canvas is responsive */
+				.chart-container canvas {
+					width: 100% !important;
+					height: 400px !important; /* Match the height you set earlier */
+				}
+				.chart-container:has(#weight-chart) { 
+					max-width: 800px;
+				.chart-container:has(#imc-chart) { 
+					max-width: 800px;
+				.chart-container:has(#icc-chart) { 
+					max-width: 800px;
+				.chart-container:has(#bodyfat-chart) { 
+					max-width: 800px;
+				/* Adjust the explanation section */
+				#explanation-section {
+					max-width: 900px;
+					margin: 0 auto;
+					background-color: #f8f9fa; /* Slightly off-white for contrast */
+					border-radius: 10px;
+					border: 1px solid #c8e6c9; /* Green border to tie in the theme */
+			}
+			.chart-container:has(#somatotype-image) {
+				max-width: 500px; /* Ajustar según el tamaño de la imagen */
+				max-height: 800px;
+				position: relative;
+			}
+			.chart-container img#somatotype-image {
+				display: block;
+				width: 100%;
+				height: auto;
+			}
+			.chart-container canvas#somatotype-point-canvas {
+				position: absolute;
+				top: 0;
+				left: 0;
+				pointer-events: none; /* Evitar que el canvas interfiera con interacciones */
+				}
+							/* Estilos específicos para la sección de Medidas Antropométricas */
+				section.data-section.anthropometric-section {
+					padding: 15px 20px; /* Reducir padding (original: 25px 30px) */
+					margin-bottom: 20px; /* Reducir margen inferior (original: 30px) */
+				}
+
+				section.data-section.anthropometric-section h2 {
+					font-size: 1.6em; /* Reducir tamaño (original: 1.8em) */
+					margin-bottom: 12px; /* Reducir margen (original: 20px) */
+				}
+
+				section.data-section.anthropometric-section h3 {
+					font-size: 1.3em; /* Reducir tamaño (original: 1.5em) */
+					margin-top: 15px; /* Reducir margen superior (original: 25px) */
+					margin-bottom: 8px; /* Añadir margen inferior más pequeño */
+				}
+
+				section.data-section.anthropometric-section small {
+					margin-bottom: 8px; /* Reducir margen (original: 15px) */
+					font-size: 0.75em; /* Hacer texto más pequeño */
+				}
+
+				section.data-section.anthropometric-section .form-grid {
+					gap: 10px 15px; /* Reducir espacio entre elementos (original: 20px 25px) */
+				}
+
+				section.data-section.anthropometric-section .form-group {
+					margin-bottom: 2px; /* Reducir margen (original: 5px) */
+				}
+
+				section.data-section.anthropometric-section label {
+					margin-bottom: 4px; /* Reducir margen (original: 8px) */
+					font-size: 0.9em; /* Hacer texto más pequeño */
+				}
+
+				section.data-section.anthropometric-section input[type="number"] {
+					padding: 8px 10px; /* Reducir padding (original: 12px 15px) */
+					margin-bottom: 10px; /* Reducir margen (original: 18px) */
+					font-size: 0.9em; /* Hacer texto más pequeño */
+					border-radius: 4px; /* Ligeramente más pequeño (original: 5px) */
+				}
+
+				/* Ajustar responsividad para pantallas pequeñas */
+				@media (max-width: 768px) {
+					section.data-section.anthropometric-section {
+						padding: 10px 15px;
+					}
+					section.data-section.anthropometric-section .form-grid {
+						gap: 8px 10px;
+					}
+					section.data-section.anthropometric-section input[type="number"] {
+						padding: 6px 8px;
+					}
+				}
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo"><a href="#">NutriApp</a></div>
+        <nav>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#" class="active">Valoración Antropométrica</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Valoración Antropométrica</h1>
+
+        <form id="anthropometry-form">
+            <section class="data-section">
+                <h2>Datos Personales</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" id="fecha" name="fecha">
+                    </div>
+                    <div class="form-group">
+                        <label for="genero">Género:</label>
+                        <select id="genero" name="genero" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="femenino">Femenino</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edad">Edad (años):</label>
+                        <input type="number" id="edad" name="edad" min="1" placeholder="Años cumplidos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Peso Actual (kg):</label>
+                        <input type="number" id="peso" name="peso" step="0.1" min="0" placeholder="Ej: 70.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="altura">Altura (cm):</label>
+                        <input type="number" id="altura" name="altura" step="0.1" min="0" placeholder="Ej: 175.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="es_deportista">¿Es deportista?</label>
+                        <select id="es_deportista" name="es_deportista" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="grasa_actual_conocida">% Grasa Actual (Opcional):</label>
+                        <input type="number" id="grasa_actual_conocida" name="grasa_actual_conocida" step="0.1" min="0" max="70" placeholder="Si lo conoce, ej: 15.5" class="optional-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="grasa_deseada">% Grasa Deseado (Opcional):</label>
+                        <input type="number" id="grasa_deseada" name="grasa_deseada" step="0.1" min="3" max="50" placeholder="Objetivo, ej: 12.0" class="optional-input">
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <h2>Medidas Antropométricas</h2>
+                <small style="display:block; margin-bottom: 15px; color: #6c757d;">Introduzca las medidas para calcular el % de grasa si no lo proporcionó. Los pliegues son opcionales si proporciona circunferencias.</small>
+                <h3>Pliegues (mm)</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="pliegue_tricipital">P. tricipital:</label>
+                        <input type="number" id="pliegue_tricipital" name="pliegue_tricipital" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_subescapular">P. Subescapular:</label>
+                        <input type="number" id="pliegue_subescapular" name="pliegue_subescapular" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_suprailiaco">P. Suprailiaco:</label>
+                        <input type="number" id="pliegue_suprailiaco" name="pliegue_suprailiaco" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_bicipital">P. Bicipital:</label>
+                        <input type="number" id="pliegue_bicipital" name="pliegue_bicipital" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_pantorrilla">P. Pantorrilla:</label>
+                        <input type="number" id="pliegue_pantorrilla" name="pliegue_pantorrilla" step="0.1" min="0" placeholder="mm">
+                    </div>
+                </div>
+
+                <h3>Circunferencias (cm)</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="circ_cintura">Cintura:</label>
+                        <input type="number" id="circ_cintura" name="circ_cintura" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_cadera">Cadera:</label>
+                        <input type="number" id="circ_cadera" name="circ_cadera" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_cuello">Cuello:</label>
+                        <input type="number" id="circ_cuello" name="circ_cuello" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_pantorrilla">Pantorrilla:</label>
+                        <input type="number" id="circ_pantorrilla" name="circ_pantorrilla" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_brazo">Brazo (relajado):</label>
+                        <input type="number" id="circ_brazo" name="circ_brazo" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_brazo_contraido">Brazo contraído:</label>
+                        <input type="number" id="circ_brazo_contraido" name="circ_brazo_contraido" step="0.1" min="0" placeholder="cm">
+                    </div>
+                </div>
+
+                <h3>Diámetros (cm)</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="diam_humero">Húmero:</label>
+                        <input type="number" id="diam_humero" name="diam_humero" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="diam_femur">Fémur:</label>
+                        <input type="number" id="diam_femur" name="diam_femur" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="diam_muneca">Muñeca:</label>
+                        <input type="number" id="diam_muneca" name="diam_muneca" step="0.1" min="0" placeholder="cm">
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section" id="results-section">
+                <h2>Resultados</h2>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <label>Índice de Masa Corporal (IMC):</label>
+                        <span id="result-imc">---</span><span class="unit">kg/m²</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Índice Cintura-Cadera (ICC):</label>
+                        <span id="result-icc">---</span>
+                    </div>
+                    <div class="result-item">
+                        <label>% Grasa Corporal Actual:</label>
+                        <span id="result-grasa-pct-actual">---</span><span class="unit">%</span>
+                        <small id="grasa-pct-actual-source">(No calculado)</small>
+                    </div>
+                    <div class="result-item">
+                        <label>% Grasa Corporal Deseado:</label>
+                        <span id="result-grasa-pct-deseado">---</span><span class="unit">%</span>
+                        <small id="grasa-pct-deseado-source">(No estimado)</small>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Grasa:</label>
+                        <span id="result-masa-grasa">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Magra (MLG):</label>
+                        <span id="result-mlg">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Área Muscular Brazo (AMB):</label>
+                        <span id="result-amb">---</span><span class="unit">cm²</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Ósea:</label>
+                        <span id="result-masa-osea">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Residual:</label>
+                        <span id="result-masa-residual">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Peso Ideal (según % Grasa):</label>
+                        <span id="result-peso-ideal">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Peso a Perder/Ganar:</label>
+                        <span id="result-peso-objetivo">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Endomorfia:</label>
+                        <span id="result-endomorfia">---</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Mesomorfia:</label>
+                        <span id="result-mesomorfia">---</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Ectomorfia:</label>
+                        <span id="result-ectomorfia">---</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Muscular Total (Est.):</label>
+                        <span id="result-mmt">---</span><span class="unit">kg</span>
+                        <small>(Basado en AMB)</small>
+                    </div>
+                </div>
+				<div style="text-align: center;">
+					<button type="submit">Calcular Resultados</button>
+				</div>
+            </section>
+
+            <section class="data-section" id="explanation-section" style="display: none;">
+                <h2>Explicación de los Resultados y Sugerencias</h2>
+                <div id="explanation-content"></div>
+            </section>
+			<section class="data-section" id="logic-section">
+    <h2>Lógica de Cálculos y Autores</h2>
+    <div id="logic-content">
+        <h3>¿Cómo funciona la herramienta?</h3>
+        <p>Esta herramienta de valoración de la composición corporal utiliza <strong>mediciones antropométricas</strong> (pliegues cutáneos, circunferencias, diámetros óseos, peso y altura) para estimar parámetros clave como el porcentaje de grasa corporal, masa magra, masa muscular, masa ósea, masa residual, somatotipo, e índices como el IMC (Índice de Masa Corporal) y el ICC (Índice Cintura-Cadera). Los cálculos se basan en ecuaciones validadas científicamente, seleccionadas según la edad, género y nivel de actividad física (deportista o no deportista) del usuario.</p>
+        <p>El proceso general es el siguiente:</p>
+        <ul>
+            <li><strong>Recopilación de datos:</strong> El usuario ingresa datos personales (edad, género, peso, altura, etc.) y medidas antropométricas opcionales (pliegues, circunferencias, diámetros).</li>
+            <li><strong>Selección de ecuaciones:</strong> Según los datos proporcionados, la herramienta elige la ecuación más adecuada para cada cálculo, priorizando métodos específicos para niños, adultos, deportistas o población general.</li>
+            <li><strong>Cálculos:</strong> Se aplican las ecuaciones para estimar los parámetros de composición corporal, como el porcentaje de grasa, masa muscular, etc.</li>
+            <li><strong>Interpretación:</strong> Los resultados se presentan con explicaciones, gráficos y sugerencias personalizadas basadas en los valores calculados y las características del usuario (por ejemplo, si es deportista).</li>
+        </ul>
+
+        <h3>Métodos y Autores</h3>
+        <p>Los cálculos se basan en métodos antropométricos ampliamente aceptados, desarrollados por investigadores reconocidos. A continuación, se describen los principales métodos utilizados:</p>
+        <ul>
+            <li><strong>Índice de Masa Corporal (IMC):</strong> Calculado como peso (kg) ÷ altura² (m). Es un indicador general de salud, aunque no distingue entre grasa y músculo. Desarrollado por Adolphe Quetelet en el siglo XIX.</li>
+            <li><strong>Índice Cintura-Cadera (ICC):</strong> Calculado como circunferencia de cintura ÷ circunferencia de cadera. Evalúa la distribución de grasa y el riesgo cardiovascular. Popularizado por estudios epidemiológicos en salud pública.</li>
+            <li><strong>Porcentaje de Grasa Corporal:</strong>
+                <ul>
+                    <li><strong>Slaughter (1988):</strong> Utilizado para niños y adolescentes (6-17 años). Usa pliegues tricipital y de pantorrilla. Específico para poblaciones jóvenes debido a diferencias en la densidad corporal.</li>
+                    <li><strong>Jackson-Pollock (1978, 1980):</strong> Usado para adultos deportistas. Emplea tres pliegues (tricipital, subescapular, suprailíaco) y considera la edad. Adecuado para poblaciones con baja grasa corporal.</li>
+                    <li><strong>Durnin-Womersley (1974):</strong> Usado para adultos no deportistas. Utiliza cuatro pliegues (bicipital, tricipital, subescapular, suprailíaco) y ajusta según edad y género. Ideal para población general.</li>
+                    <li><strong>Método de Circunferencias:</strong> Basado en circunferencias de cintura, cadera, cuello y altura. Desarrollado por el Departamento de Defensa de EE.UU. para estimaciones rápidas sin pliegues.</li>
+                </ul>
+            </li>
+            <li><strong>Masa Ósea:</strong> Calculada con la fórmula de Rocha (1975), que usa altura y diámetros óseos (muñeca, fémur). Estima la masa del esqueleto.</li>
+            <li><strong>Masa Residual:</strong> Estimada como un porcentaje fijo del peso corporal (24% hombres, 21% mujeres), según estudios de composición corporal.</li>
+            <li><strong>Área Muscular del Brazo (AMB):</strong> Calculada a partir de la circunferencia del brazo y el pliegue tricipital, con correcciones por edad y género. Basada en trabajos de Frisancho (1990).</li>
+            <li><strong>Masa Muscular Total (MMT):</strong> Estimada a partir del AMB y la altura, según ecuaciones de Martin et al. (1990).</li>
+            <li><strong>Somatotipo (Heath-Carter):</strong> Calcula endomorfia (grasa), mesomorfia (muscularidad) y ectomorfia (delgadez) usando pliegues, circunferencias, diámetros, peso y altura. Desarrollado por Heath y Carter (1967, 1990).</li>
+        </ul>
+
+        <h3>Estimaciones y Predicciones Indirectas</h3>
+        <p>Las mediciones antropométricas son métodos <strong>indirectos</strong>, ya que no miden directamente los tejidos corporales (grasa, músculo, hueso), sino que los estiman mediante ecuaciones basadas en correlaciones estadísticas. Por ejemplo:</p>
+        <ul>
+            <li>El porcentaje de grasa se calcula a partir de pliegues o circunferencias, que se relacionan con la densidad corporal y, posteriormente, con la grasa mediante fórmulas empíricas.</li>
+            <li>La masa muscular total se estima a partir del área muscular del brazo, asumiendo que es representativa del cuerpo entero.</li>
+            <li>El somatotipo clasifica la constitución corporal en tres componentes, pero depende de la precisión de múltiples medidas antropométricas.</li>
+        </ul>
+        <p>Las predicciones, como el <strong>peso ideal</strong> o el <strong>peso a ganar/perder</strong>, se derivan del porcentaje de grasa deseado y la masa magra actual. Estas estimaciones asumen que la pérdida o ganancia de peso será principalmente grasa, lo cual depende de la dieta y el ejercicio. La proyección de peso (gráfica de evolución) usa tasas de cambio estándar (0.5 kg/semana para pérdida, 0.35 kg/semana para ganancia), basadas en recomendaciones de salud.</p>
+
+        <h3>Fiabilidad de la Herramienta</h3>
+        <p>La fiabilidad de esta herramienta depende de varios factores:</p>
+        <ul>
+            <li><strong>Precisión de las medidas:</strong> Los pliegues cutáneos, circunferencias y diámetros deben medirse con instrumentos calibrados (calibre, cinta métrica) y por personal capacitado. Errores en la técnica pueden afectar los resultados.</li>
+            <li><strong>Validez de las ecuaciones:</strong> Las ecuaciones usadas (Slaughter, Jackson-Pollock, etc.) fueron validadas en poblaciones específicas. Su precisión puede variar en individuos con características atípicas (por ejemplo, atletas de élite, personas con obesidad extrema).</li>
+            <li><strong>Limitaciones de los métodos indirectos:</strong> Comparados con técnicas directas como DEXA (absorciometría de rayos X) o resonancia magnética, los métodos antropométricos son menos precisos, pero más accesibles y económicos.</li>
+            <li><strong>Variabilidad individual:</strong> Factores como hidratación, edad, etnia y nivel de entrenamiento pueden influir en los resultados, ya que las ecuaciones se basan en promedios poblacionales.</li>
+        </ul>
+        <p>En general, esta herramienta ofrece estimaciones <strong>fiables para fines de evaluación general</strong>, planificación de objetivos y monitoreo de cambios en la composición corporal. Sin embargo, los resultados deben interpretarse con cautela y, preferiblemente, complementarse con otras evaluaciones (por ejemplo, análisis de sangre, pruebas de rendimiento físico) y la supervisión de profesionales (nutricionistas, entrenadores).</p>
+
+        <h3>Limitaciones</h3>
+        <ul>
+            <li><strong>Errores humanos:</strong> Mediciones imprecisas o datos ingresados incorrectamente pueden generar resultados erróneos.</li>
+            <li><strong>Poblaciones específicas:</strong> Las ecuaciones pueden no ser adecuadas para niños menores de 6 años, ancianos, o personas con condiciones médicas que alteren la composición corporal.</li>
+            <li><strong>Suposiciones:</strong> Las predicciones asumen cambios lineales en el peso y composición, lo cual no siempre ocurre en la práctica debido a factores metabólicos, hormonales o de adherencia.</li>
+        </ul>
+
+        <h3>Conclusión</h3>
+        <p>Esta herramienta proporciona una evaluación integral de la composición corporal basada en métodos antropométricos validados. Aunque las estimaciones son indirectas y tienen limitaciones, son útiles para establecer objetivos, monitorear progreso y guiar decisiones sobre dieta y ejercicio. Para resultados más precisos, se recomienda realizar las mediciones con equipos adecuados, seguir protocolos estandarizados y consultar a profesionales de la salud.</p>
+        <p><strong>Nota:</strong> Los resultados son estimaciones y no reemplazan un diagnóstico médico. Consulta a un nutricionista, médico o entrenador para un plan personalizado.</p>
+    </div>
+</section>
+           
+        </form>
+
+    </main>
+
+    <footer>
+        <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
+    </footer>
+
+    <script>
+		const ChartAnnotation = window['chartjs-plugin-annotation'];
+        const form = document.getElementById('anthropometry-form');
+        const resultElements = {
+            imc: document.getElementById('result-imc'),
+            icc: document.getElementById('result-icc'),
+            grasaPctActual: document.getElementById('result-grasa-pct-actual'),
+            grasaPctActualSource: document.getElementById('grasa-pct-actual-source'),
+            grasaPctDeseado: document.getElementById('result-grasa-pct-deseado'),
+            grasaPctDeseadoSource: document.getElementById('grasa-pct-deseado-source'),
+            masaGrasa: document.getElementById('result-masa-grasa'),
+            mlg: document.getElementById('result-mlg'),
+            amb: document.getElementById('result-amb'),
+            masaOsea: document.getElementById('result-masa-osea'),
+            masaResidual: document.getElementById('result-masa-residual'),
+            pesoIdeal: document.getElementById('result-peso-ideal'),
+            pesoObjetivo: document.getElementById('result-peso-objetivo'),
+            endomorfia: document.getElementById('result-endomorfia'),
+            mesomorfia: document.getElementById('result-mesomorfia'),
+            ectomorfia: document.getElementById('result-ectomorfia'),
+            mmt: document.getElementById('result-mmt'),
+        };
+        const explanationSection = document.getElementById('explanation-section');
+        const explanationContent = document.getElementById('explanation-content');
+
+        // Function to safely parse float, returns NaN if invalid
+        const parseFloatSafe = (value) => {
+            console.log(`Parsing value for ${value}:`, value);
+            const num = parseFloat(value);
+            return isNaN(num) ? NaN : num;
+        };
+
+        // Function to format numbers
+        const formatResult = (value, decimals = 1) => {
+            if (isNaN(value) || value === null || value === undefined) {
+                return '---';
+            }
+            return value.toFixed(decimals);
+        };
+
+        // Function to estimate target body fat percentage
+        const estimateTargetBodyFat = (gender, isAthlete) => {
+            console.log(`Estimating target body fat for gender: ${gender}, isAthlete: ${isAthlete}`);
+            if (gender === 'masculino') {
+                return isAthlete ? 10 : 18;
+            } else if (gender === 'femenino') {
+                return isAthlete ? 18 : 25;
+            }
+            return NaN;
+        };
+
+        // Function to calculate % Body Fat using Slaughter (ages 6-17)
+        const calculateSlaughterBodyFat = (data) => {
+            console.log('Calculating Slaughter Body Fat');
+            if (data.pliegue_tricipital && data.pliegue_pantorrilla && data.genero) {
+                const sumPliegues = data.pliegue_tricipital + data.pliegue_pantorrilla;
+                console.log(`Sum of skinfolds: ${sumPliegues}`);
+                if (data.genero === 'masculino') {
+                    return 0.735 * sumPliegues + 1.0;
+                } else if (data.genero === 'femenino') {
+                    return 0.610 * sumPliegues + 5.1;
+                }
+            }
+            console.warn('Slaughter: Missing skinfolds or gender');
+            return NaN;
+        };
+
+        // Function to calculate % Body Fat using Jackson-Pollock (3 skinfolds, adults, athletes)
+        const calculateJacksonPollockBodyFat = (data) => {
+            console.log('Calculating Jackson-Pollock Body Fat');
+            if (data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_suprailiaco && data.edad && data.genero) {
+                const sumPliegues = data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
+                console.log(`Sum of skinfolds: ${sumPliegues}, Age: ${data.edad}, Gender: ${data.genero}`);
+                if (sumPliegues < 10) {
+                    console.warn('Sum of skinfolds too low (< 10 mm), may produce unreliable results');
+                    return NaN;
+                }
+                let dc;
+                if (data.genero === 'masculino') {
+                    dc = 1.10938 - (0.0008267 * sumPliegues) + (0.0000016 * sumPliegues * sumPliegues) - (0.0002574 * data.edad);
+                } else if (data.genero === 'femenino') {
+                    dc = 1.0994921 - (0.0009929 * sumPliegues) + (0.0000023 * sumPliegues * sumPliegues) - (0.0001392 * data.edad);
+                }
+                if (dc) {
+                    console.log(`Body density: ${dc}`);
+                    const bodyFat = (495 / dc) - 450;
+                    console.log(`Calculated % Body Fat: ${bodyFat}`);
+                    return bodyFat;
+                }
+            }
+            console.warn('Jackson-Pollock: Missing skinfolds, age, or gender');
+            return NaN;
+        };
+
+        // Function to calculate % Body Fat using Circumferences (adults)
+        const calculateCircumferenceBodyFat = (data) => {
+            console.log('Calculating Circumference-Based Body Fat');
+            if (data.circ_cintura && data.circ_cadera && data.circ_cuello && data.altura && data.genero) {
+                console.log(`Circumferences: Cintura=${data.circ_cintura}, Cadera=${data.circ_cadera}, Cuello=${data.circ_cuello}, Altura=${data.altura}, Gender=${data.genero}`);
+                let dc;
+                if (data.genero === 'masculino') {
+                    const logWaistNeck = Math.log10(data.circ_cintura - data.circ_cuello);
+                    const logHeight = Math.log10(data.altura);
+                    dc = 1.0324 - (0.19077 * logWaistNeck) + (0.15456 * logHeight);
+                } else if (data.genero === 'femenino') {
+                    const logWaistHipNeck = Math.log10(data.circ_cintura + data.circ_cadera - data.circ_cuello);
+                    const logHeight = Math.log10(data.altura);
+                    dc = 1.29579 - (0.35004 * logWaistHipNeck) + (0.22100 * logHeight);
+                }
+                if (dc) {
+                    console.log(`Body density: ${dc}`);
+                    const bodyFat = (495 / dc) - 450;
+                    console.log(`Calculated % Body Fat: ${bodyFat}`);
+                    return bodyFat;
+                }
+            }
+            console.warn('Circumference Method: Missing cintura, cadera, cuello, altura, or gender');
+            return NaN;
+        };
+
+        // Function to calculate % Body Fat using Durnin-Womersley (4 skinfolds, adults, general population)
+        const calculateDurninWomersleyBodyFat = (data) => {
+            console.log('Calculating Durnin-Womersley Body Fat');
+            if (data.pliegue_bicipital && data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_suprailiaco && data.edad && data.genero) {
+                const sumPliegues = data.pliegue_bicipital + data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
+                console.log(`Sum of skinfolds: ${sumPliegues}, Age: ${data.edad}`);
+                const constants = {
+                    masculino: {
+                        '17-19': { c: 1.1620, m: 0.0630 },
+                        '20-29': { c: 1.1631, m: 0.0632 },
+                        '30-39': { c: 1.1422, m: 0.0544 },
+                        '40-49': { c: 1.1620, m: 0.0700 },
+                        '50+': { c: 1.1715, m: 0.0779 }
+                    },
+                    femenino: {
+                        '17-19': { c: 1.1549, m: 0.0678 },
+                        '20-29': { c: 1.1599, m: 0.0717 },
+                        '30-39': { c: 1.1423, m: 0.0632 },
+                        '40-49': { c: 1.1333, m: 0.0612 },
+                        '50+': { c: 1.1339, m: 0.0645 }
+                    }
+                };
+                let ageRange;
+                if (data.edad <= 19) ageRange = '17-19';
+                else if (data.edad <= 29) ageRange = '20-29';
+                else if (data.edad <= 39) ageRange = '30-39';
+                else if (data.edad <= 49) ageRange = '40-49';
+                else ageRange = '50+';
+                
+                const { c, m } = constants[data.genero][ageRange] || {};
+                if (c && m) {
+                    const dc = c - (m * Math.log10(sumPliegues));
+                    console.log(`Body density: ${dc}`);
+                    const bodyFat = (495 / dc) - 450;
+                    console.log(`Calculated % Body Fat: ${bodyFat}`);
+                    return bodyFat;
+                }
+            }
+            console.warn('Durnin-Womersley: Missing skinfolds, age, or gender');
+            return NaN;
+        };
+			// Nueva función para generar la explicación detallada del somatotipo
+        const generateSomatotypeExplanation = (results, cliente) => {
+            const { endomorfia, mesomorfia, ectomorfia } = results;
+            const { sexo = 'no especificado', edad = 'no especificada', esDeportista = false } = cliente || {};
+
+            // Determinar si el somatotipo es equilibrado o dominante
+            const maxScore = Math.max(endomorfia, mesomorfia, ectomorfia);
+            const minScore = Math.min(endomorfia, mesomorfia, ectomorfia);
+            const isBalanced = (maxScore - minScore) <= 2; // Consideramos equilibrado si la diferencia entre el máximo y el mínimo es <= 2
+            let dominantType = '';
+            if (!isBalanced) {
+                if (maxScore === endomorfia) dominantType = 'Endomorfo';
+                else if (maxScore === mesomorfia) dominantType = 'Mesomorfo';
+                else dominantType = 'Ectomorfo';
+            }
+
+            // Generar la explicación
+            let explanation = `
+                <h3>Medición del Somatotipo</h3>
+                <p>Tu somatotipo, calculado mediante el método Heath-Carter, es <strong>${formatResult(endomorfia, 1)}-${formatResult(mesomorfia, 1)}-${formatResult(ectomorfia, 1)}</strong>. Esto indica:</p>
+                <ul>
+                    <li><strong>Endomorfia (${formatResult(endomorfia, 1)})</strong>: Representa la tendencia a almacenar grasa corporal. Una puntuación alta (cercana a 7 o más) indica una constitución más redondeada con mayor grasa corporal.</li>
+                    <li><strong>Mesomorfia (${formatResult(mesomorfia, 1)})</strong>: Representa la muscularidad y fuerza. Una puntuación alta indica una constitución atlética, con facilidad para ganar músculo.</li>
+                    <li><strong>Ectomorfia (${formatResult(ectomorfia, 1)})</strong>: Representa la delgadez y estructura ósea ligera. Una puntuación alta indica un cuerpo delgado, con poca grasa y músculo.</li>
+                </ul>
+            `;
+
+            // Clasificación del somatotipo
+				const dominantColor = dominantType === 'Endomorfo' ? '#f8d7da' :
+                      dominantType === 'Mesomorfo' ? '#d1ecf1' : '#d4edda';
+
+				const dominantEmoji = dominantType === 'Endomorfo' ? '🍩' :
+                      dominantType === 'Mesomorfo' ? '💪' : '🏃‍♂️';
+					  
+            if (isBalanced) {
+                explanation += `
+					
+                    <p>Tu somatotipo es <strong>equilibrado</strong>, lo que significa que no tienes un componente claramente dominante. Esto indica una constitución relativamente balanceada entre grasa, muscularidad y delgadez.</p>
+                `;
+            } else {
+                explanation += `
+                    <p>Tu somatotipo es <strong>${dominantType} dominante</strong>, ya que tu puntuación más alta es en ${dominantType.toLowerCase()} (${maxScore}). Esto sugiere que tu constitución tiende hacia las siguientes características:</p>
+                `;
+                if (dominantType === 'Endomorfo') {
+                    explanation += `
+                        <p><strong>Características de un Endomorfo</strong>: Cuerpo más redondeado, facilidad para ganar grasa, estructura ósea generalmente más ancha. Los deportistas no suelen pertenecer a esta categoría, pero con dieta y ejercicio puedes moverte hacia un perfil más mesomórfico.</p>
+                    `;
+                } else if (dominantType === 'Mesomorfo') {
+                    explanation += `
+                        <p><strong>Características de un Mesomorfo</strong>: Complexión atlética, hombros anchos, facilidad para ganar músculo y fuerza. Los mesomorfos suelen destacar en deportes que requieren potencia y agilidad, como levantamiento de pesas o lanzamiento de peso.</p>
+                    `;
+                } else {
+                    explanation += `
+                        <p><strong>Características de un Ectomorfo</strong>: Cuerpo delgado, extremidades largas, poca grasa y músculo, dificultad para ganar peso. Los ectomorfos suelen destacar en deportes de resistencia, como corredores de largas distancias o jugadores de baloncesto.</p>
+                    `;
+                }
+            }
+			
+						// Clasificación avanzada del tipo combinado
+				const e = endomorfia;
+				const m = mesomorfia;
+				const ec = ectomorfia;
+
+				const sorted = [
+					{ type: 'Endomorfo', value: e },
+					{ type: 'Mesomorfo', value: m },
+					{ type: 'Ectomorfo', value: ec }
+				].sort((a, b) => b.value - a.value);
+
+				const [first, second] = sorted;
+				let advancedType = '';
+
+				if (first.type === 'Mesomorfo') {
+					if (second.type === 'Endomorfo' && m > 5 && e > 3) {
+						advancedType = 'Meso endomórfico';
+					} else if (second.type === 'Ectomorfo' && m > 5 && ec > 3) {
+						advancedType = 'Meso ectomórfico';
+					} else {
+						advancedType = 'Mesomorfo balanceado';
+					}
+				} else if (first.type === 'Endomorfo') {
+					if (second.type === 'Mesomorfo' && e >= m && e > 5) {
+						advancedType = 'Endo mesomórfico';
+					} else if (second.type === 'Mesomorfo') {
+						advancedType = 'Endomorfo mesomorfo';
+					} else if (second.type === 'Ectomorfo') {
+						advancedType = 'Endo ectomórfico';
+					} else {
+						advancedType = 'Endomorfo balanceado';
+					}
+				} else if (first.type === 'Ectomorfo') {
+					if (second.type === 'Mesomorfo' && ec >= m && ec > 5) {
+						advancedType = 'Ecto mesomórfico';
+					} else if (second.type === 'Mesomorfo') {
+						advancedType = 'Ectomorfo mesomorfo';
+					} else if (second.type === 'Endomorfo') {
+						advancedType = 'Ecto endomórfico';
+					} else {
+						advancedType = 'Ectomorfo balanceado';
+					}
+
+					// Zona intermedia especial
+					if (Math.abs(e - ec) < 1.5 && m < 2 && e > 3 && ec > 3) {
+						advancedType = 'Ectomorfo endomorfo (zona intermedia inferior)';
+					}
+				}
+
+				explanation += `
+					<div style="background-color:#e8f5e9; border-left:4px solid #388e3c; padding:12px 16px; margin:16px 0; border-radius:5px;">
+						<p style="margin:0;"><strong>📊 Clasificación avanzada:</strong> Tu somatotipo se identifica como <strong style="color:#2e7d32;">${advancedType}</strong>, reflejando un perfil combinado entre <strong>${first.type}</strong> y <strong>${second.type}</strong>.</p>
+					</div>
+				`;
+	
+            // Personalización según sexo, edad y si es deportista
+            explanation += `<h4>Consideraciones Personalizadas</h4>`;
+            if (sexo !== 'no especificado') {
+                if (sexo.toLowerCase() === 'masculino') {
+                    explanation += `<p><strong>Sexo (Masculino)</strong>: Los hombres tienden a tener puntuaciones más altas de mesomorfia debido a niveles más altos de testosterona, lo que facilita el desarrollo muscular. Tu mesomorfia de ${formatResult(mesomorfia, 1)} refleja ${mesomorfia >= 5 ? 'una buena predisposición para ganar músculo' : 'una muscularidad moderada o baja'}.</p>`;
+                } else if (sexo.toLowerCase() === 'femenino') {
+                    explanation += `<p><strong>Sexo (Femenino)</strong>: Las mujeres tienden a tener puntuaciones más altas de endomorfia debido a una mayor proporción de grasa corporal esencial. Tu endomorfia de ${formatResult(endomorfia, 1)} indica ${endomorfia >= 5 ? 'una tendencia a almacenar más grasa' : 'un nivel de grasa corporal relativamente bajo para una mujer'}.</p>`;
+                }
+            }
+
+            if (edad !== 'no especificada') {
+                explanation += `<p><strong>Edad (${edad} años)</strong>: La edad puede influir en tu somatotipo. A medida que envejecemos, el metabolismo puede ralentizarse, aumentando la endomorfia. Además, la pérdida de masa muscular con la edad puede reducir la mesomorfia. Tu edad (${edad}) sugiere que ${edad >= 40 ? 'puedes estar experimentando cambios en tu composición corporal que favorecen la endomorfia' : 'tu somatotipo puede ser más estable y reflejar tu genética y estilo de vida actual'}.</p>`;
+            }
+
+            explanation += `<p><strong>¿Deportista? (${esDeportista ? 'Sí' : 'No'})</strong>: `;
+            if (esDeportista) {
+                if (dominantType === 'Mesomorfo') {
+                    explanation += `Como deportista con un somatotipo mesomorfo dominante, tienes una ventaja natural para deportes que requieren fuerza y potencia, como levantamiento de pesas o deportes de equipo. Tu mesomorfia de ${formatResult(mesomorfia, 1)} es ideal para estas actividades.</p>`;
+                } else if (dominantType === 'Ectomorfo') {
+                    explanation += `Como deportista con un somatotipo ectomorfo dominante, probablemente destacas en deportes de resistencia como running o ciclismo, donde tu ectomorfia de ${formatResult(ectomorfia, 1)} te da una ventaja en eficiencia y agilidad.</p>`;
+                } else {
+                    explanation += `Aunque tienes un somatotipo endomorfo dominante, participas en actividades deportivas, lo cual es excelente. Con un enfoque en dieta y entrenamiento, puedes reducir tu endomorfia (${formatResult(endomorfia, 1)}) y moverte hacia un perfil más mesomórfico, mejorando tu rendimiento.</p>`;
+                }
+            } else {
+                explanation += `No eres deportista, pero tu somatotipo (${dominantType.toLowerCase()} dominante) puede guiarte si decides iniciar una actividad física. `;
+                if (dominantType === 'Endomorfo') {
+                    explanation += `Con tu endomorfia de ${formatResult(endomorfia, 1)}, podrías beneficiarte de ejercicios cardiovasculares y control de dieta para reducir grasa corporal.</p>`;
+                } else if (dominantType === 'Mesomorfo') {
+                    explanation += `Tu mesomorfia de ${formatResult(mesomorfia, 1)} indica que podrías tener éxito en actividades que desarrollen fuerza y músculo, como entrenamiento con pesas.</p>`;
+                } else {
+                    explanation += `Tu ectomorfia de ${formatResult(ectomorfia, 1)} sugiere que podrías destacar en actividades de resistencia como running, y podrías enfocarte en ganar masa muscular si ese es tu objetivo.</p>`;
+                }
+            }
+
+
+
+            // Información adicional sobre el somatotipo
+            explanation += `
+                <h4>Notas Adicionales</h4>
+                <p>El somatotipo no es fijo y puede cambiar con la edad, la nutrición y el entrenamiento, aunque la estructura ósea subyacente (más relacionada con la ectomorfia y mesomorfia) tiende a ser más estable. La determinación precisa del somatotipo requiere mediciones antropométricas específicas (pliegues cutáneos, perímetros de miembros, diámetros óseos, peso, altura) realizadas por un profesional y el uso de fórmulas específicas (método Heath-Carter).</p>
+                <p>Estos "tipos" son tendencias generales y no categorías rígidas. La mayoría de las personas son una mezcla de los tres componentes, y tu somatotipo refleja cómo se combinan estos en tu cuerpo.</p>
+            `;
+
+            return explanation;
+        };
+			
+			
+        // Function to generate explanations and suggestions
+        const generateExplanationsAndSuggestions = (data, results) => {
+            const isAthlete = data.es_deportista === 'si';
+            const gender = data.genero;
+            let content = '';
+
+            // Explicación de Resultados
+            content += '<h3>Explicación de los Resultados</h3>';
+
+            // IMC
+            content += '<p><strong>Índice de Masa Corporal (IMC):</strong> Mide la relación entre tu peso y altura. ';
+            if (!isNaN(results.imc)) {
+                content += 'Tu IMC es ' + formatResult(results.imc, 1) + ' kg/m². ';
+                if (results.imc < 18.5) {
+                    content += 'Estás en rango de bajo peso. Esto puede indicar necesidad de ganancia de peso, especialmente si no eres deportista. ';
+                } else if (results.imc >= 18.5 && results.imc < 25) {
+                    content += 'Estás en un rango saludable. Ideal para mantenimiento. ';
+                } else if (results.imc >= 25 && results.imc < 30) {
+                    content += 'Estás en sobrepeso. Podrías beneficiarte de una pérdida de grasa. ';
+                } else {
+                    content += 'Estás en rango de obesidad. Se recomienda pérdida de grasa para mejorar la salud. ';
+                }
+                if (isAthlete) {
+                    content += 'Nota: Los deportistas pueden tener un IMC más alto debido a mayor masa muscular, así que evalúa junto con el % de grasa. ';
+                }
+                content += 'Rangos saludables (OMS): 18.5-24.9 kg/m². ';
+                content += '<div class="chart-container "><canvas id="imc-chart" width="440" height="400" style="display: block; box-sizing: border-box; height: 400px; width: 440px;"></canvas></div>';
+            } else {
+                content += 'No calculado. ';
+            }
+            content += '</p>';
+
+            // ICC
+            content += '<p><strong>Índice Cintura-Cadera (ICC):</strong> Indica la distribución de grasa y riesgo cardiovascular. ';
+            if (!isNaN(results.icc)) {
+                content += 'Tu ICC es ' + formatResult(results.icc, 2) + '. ';
+                if (gender === 'masculino') {
+                    content += results.icc > 0.9 ? 'Un ICC > 0.9 sugiere mayor riesgo cardiovascular. Considera reducir grasa abdominal. ' : 'Un ICC ≤ 0.9 es saludable. ';
+                } else {
+                    content += results.icc > 0.85 ? 'Un ICC > 0.85 sugiere mayor riesgo cardiovascular. Considera reducir grasa abdominal. ' : 'Un ICC ≤ 0.85 es saludable. ';
+                }
+                content += '<div class="chart-container "><canvas id="icc-chart" width="440" height="400" style="display: block; box-sizing: border-box; height: 400px; width: 440px;"></canvas></div>';
+            } else {
+                content += 'No calculado. ';
+            }
+            content += gender === 'masculino' ? 'Rango saludable: ≤ 0.9 (hombres). ' : 'Rango saludable: ≤ 0.85 (mujeres). ';
+            content += '</p>';
+
+            // % Grasa Corporal Actual
+            content += '<p><strong>% Grasa Corporal Actual:</strong> Representa el porcentaje de tu peso que es grasa. ';
+            if (!isNaN(results.grasaPctActual)) {
+                content += 'Tu % de grasa es ' + formatResult(results.grasaPctActual, 1) + '%. ';
+                if (gender === 'masculino') {
+                    if (isAthlete) {
+                        if (results.grasaPctActual < 6) content += 'Muy bajo (<6%). Puede afectar la salud hormonal. ';
+                        else if (results.grasaPctActual <= 12) content += 'Óptimo para deportistas (6-12%). Ideal para rendimiento. ';
+                        else if (results.grasaPctActual <= 18) content += 'Aceptable (12-18%). Podrías reducir grasa para mejorar rendimiento. ';
+                        else content += 'Alto (>18%). Recomendable reducir grasa para salud y rendimiento. ';
+                    } else {
+                        if (results.grasaPctActual < 8) content += 'Muy bajo (<8%). Puede afectar la salud. ';
+                        else if (results.grasaPctActual <= 20) content += 'Saludable (8-20%). Bueno para mantenimiento. ';
+                        else if (results.grasaPctActual <= 25) content += 'Moderado (20-25%). Considera pérdida de grasa. ';
+                        else content += 'Alto (>25%). Recomendable reducir grasa para salud. ';
+                    }
+                } else {
+                    if (isAthlete) {
+                        if (results.grasaPctActual < 14) content += 'Muy bajo (<14%). Puede afectar la salud hormonal. ';
+                        else if (results.grasaPctActual <= 20) content += 'Óptimo para deportistas (14-20%). Ideal para rendimiento. ';
+                        else if (results.grasaPctActual <= 25) content += 'Aceptable (20-25%). Podrías reducir grasa para mejorar rendimiento. ';
+                        else content += 'Alto (>25%). Recomendable reducir grasa para salud y rendimiento. ';
+                    } else {
+                        if (results.grasaPctActual < 16) content += 'Muy bajo (<16%). Puede afectar la salud. ';
+                        else if (results.grasaPctActual <= 30) content += 'Saludable (16-30%). Bueno para mantenimiento. ';
+                        else if (results.grasaPctActual <= 35) content += 'Moderado (30-35%). Considera pérdida de grasa. ';
+                        else content += 'Alto (>35%). Recomendable reducir grasa para salud. ';
+                    }
+                }
+                content += '<div class="chart-container "><canvas id="bodyfat-chart" width="440" height="400" style="display: block; box-sizing: border-box; height: 400px; width: 440px;"></canvas></div>';
+            } else {
+                content += 'No calculado. ';
+            }
+            content += gender === 'masculino' ? (isAthlete ? 'Rango óptimo deportistas: 6-12%. Saludable no deportistas: 8-20%. ' : 'Rango saludable: 8-20%. ') : (isAthlete ? 'Rango óptimo deportistas: 14-20%. Saludable no deportistas: 16-30%. ' : 'Rango saludable: 16-30%. ');
+            content += '</p>';
+
+            // % Grasa Corporal Deseado
+				content += '<p><strong>% Grasa Corporal Deseado:</strong> Porcentaje de grasa ideal según tu género y nivel de actividad. ';
+				if (!isNaN(results.grasaPctDeseado)) {
+					content += 'Tu % de grasa corporal deseado es ' + formatResult(results.grasaPctDeseado, 1) + '%. ';
+					content += 'Tu % de grasa actual es ' + formatResult(results.grasaPctActual, 1) + '%. ';
+					if (gender === 'masculino') {
+						if (isAthlete) {
+							if (results.grasaPctDeseado >= 6 && results.grasaPctDeseado <= 15) {
+								content += 'Este valor está dentro del rango saludable para deportistas hombres (6-15%). ';
+							} else if (results.grasaPctDeseado < 6) {
+								content += 'Este valor está por debajo del rango saludable para deportistas hombres (6-15%). Esto puede ser peligroso para tu salud hormonal e inmunológica; consulta a un profesional. ';
+							} else {
+								content += 'Este valor está por encima del rango saludable para deportistas hombres (6-15%). Podrías beneficiarte de reducir tu grasa corporal para mejorar el rendimiento. ';
+							}
+						} else {
+							if (results.grasaPctDeseado >= 10 && results.grasaPctDeseado <= 20) {
+								content += 'Este valor está dentro del rango saludable para hombres no deportistas (10-20%). ';
+							} else if (results.grasaPctDeseado < 10) {
+								content += 'Este valor está por debajo del rango saludable para hombres no deportistas (10-20%). Esto puede afectar tu salud hormonal e inmunológica; consulta a un profesional. ';
+							} else {
+								content += 'Este valor está por encima del rango saludable para hombres no deportistas (10-20%). Considera reducir tu grasa corporal para mejorar tu salud general. ';
+							}
+						}
+					} else {
+						if (isAthlete) {
+							if (results.grasaPctDeseado >= 12 && results.grasaPctDeseado <= 22) {
+								content += 'Este valor está dentro del rango saludable para deportistas mujeres (12-22%). ';
+							} else if (results.grasaPctDeseado < 12) {
+								content += 'Este valor está por debajo del rango saludable para deportistas mujeres (12-22%). Esto puede ser peligroso para tu salud hormonal e inmunológica; consulta a un profesional. ';
+							} else {
+								content += 'Este valor está por encima del rango saludable para deportistas mujeres (12-22%). Podrías beneficiarte de reducir tu grasa corporal para mejorar el rendimiento. ';
+							}
+						} else {
+							if (results.grasaPctDeseado >= 18 && results.grasaPctDeseado <= 28) {
+								content += 'Este valor está dentro del rango saludable para mujeres no deportistas (18-28%). ';
+							} else if (results.grasaPctDeseado < 18) {
+								content += 'Este valor está por debajo del rango saludable para mujeres no deportistas (18-28%). Esto puede afectar tu salud hormonal e inmunológica; consulta a un profesional. ';
+							} else {
+								content += 'Estás por encima del rango saludable para mujeres no deportistas (18-28%). Considera reducir tu grasa corporal para mejorar tu salud general. ';
+							}
+						}
+					}
+					content += 'Mantener un porcentaje de grasa corporal saludable es crucial porque la grasa es necesaria para la regulación hormonal, el almacenamiento de energía y la salud general. Un porcentaje demasiado bajo puede interrumpir las funciones hormonales y debilitar el sistema inmunológico, mientras que un porcentaje demasiado alto aumenta el riesgo de enfermedades cardiovasculares y trastornos metabólicos. ';
+				} else {
+					content += 'No calculado. ';
+				}
+				content += '</p>';
+
+            // Masa Grasa
+				content += '<p><strong>Masa Grasa:</strong> Peso de la grasa en tu cuerpo. ';
+				if (!isNaN(results.masaGrasa)) {
+					const fatPercentage = (results.masaGrasa / data.peso) * 100;
+					content += 'Tu masa grasa es ' + formatResult(results.masaGrasa, 1) + ' kg, que representa ' + formatResult(fatPercentage, 1) + '% de tu peso corporal. ';
+					if (gender === 'masculino') {
+						if (isAthlete) {
+							if (fatPercentage >= 6 && fatPercentage <= 15) {
+								content += 'Estás en un rango saludable para deportistas hombres (6-15% del peso corporal). ';
+							} else if (fatPercentage < 6) {
+								content += 'Estás por debajo del rango saludable para deportistas hombres (6-15% del peso corporal). Esto puede ser peligroso para tu salud; consulta a un profesional. ';
+							} else {
+								content += 'Estás por encima del rango saludable para deportistas hombres (6-15% del peso corporal). Podrías beneficiarte de reducir tu masa grasa para mejorar el rendimiento. ';
+							}
+						} else {
+							if (fatPercentage >= 10 && fatPercentage <= 20) {
+								content += 'Estás en un rango saludable para hombres no deportistas (10-20% del peso corporal). ';
+							} else if (fatPercentage < 10) {
+								content += 'Estás por debajo del rango saludable para hombres no deportistas (10-20% del peso corporal). Esto puede afectar tu salud; consulta a un profesional. ';
+							} else {
+								content += 'Estás por encima del rango saludable para hombres no deportistas (10-20% del peso corporal). Considera reducir tu masa grasa para mejorar tu salud. ';
+							}
+						}
+					} else {
+						if (isAthlete) {
+							if (fatPercentage >= 12 && fatPercentage <= 22) {
+								content += 'Estás en un rango saludable para deportistas mujeres (12-22% del peso corporal). ';
+							} else if (fatPercentage < 12) {
+								content += 'Estás por debajo del rango saludable para deportistas mujeres (12-22% del peso corporal). Esto puede ser peligroso para tu salud; consulta a un profesional. ';
+							} else {
+								content += 'Estás por encima del rango saludable para deportistas mujeres (12-22% del peso corporal). Podrías beneficiarte de reducir tu masa grasa para mejorar el rendimiento. ';
+							}
+						} else {
+							if (fatPercentage >= 18 && fatPercentage <= 28) {
+								content += 'Estás en un rango saludable para mujeres no deportistas (18-28% del peso corporal). ';
+							} else if (fatPercentage < 18) {
+								content += 'Estás por debajo del rango saludable para mujeres no deportistas (18-28% del peso corporal). Esto puede afectar tu salud; consulta a un profesional. ';
+							} else {
+								content += 'Estás por encima del rango saludable para mujeres no deportistas (18-28% del peso corporal). Considera reducir tu masa grasa para mejorar tu salud. ';
+							}
+						}
+					}
+					content += 'La masa grasa es importante porque proporciona energía, aislamiento térmico y amortiguación para los órganos, pero debe estar equilibrada. Un exceso de masa grasa contribuye a riesgos cardiovasculares y metabólicos, mientras que una cantidad insuficiente puede afectar funciones fisiológicas como la regulación hormonal. ';
+				} else {
+					content += 'No calculado. ';
+				}
+				content += '</p>';
+
+            // Masa Magra (MLG)
+            // Masa Magra (MLG)
+				content += '<p><strong>Masa Magra (MLG):</strong> Peso de tu cuerpo sin grasa (músculos, órganos, huesos, etc.). ';
+				if (!isNaN(results.mlg)) {
+					content += 'Tu masa magra es ' + formatResult(results.mlg, 1) + ' kg, que representa ' + formatResult((results.mlg / data.peso) * 100, 1) + '% de tu peso corporal. ';
+					if (gender === 'masculino') {
+						if (isAthlete) {
+							if (results.mlg / data.peso >= 0.80 && results.mlg / data.peso <= 0.90) {
+								content += 'Estás en un rango saludable para deportistas hombres (80-90% del peso corporal). ';
+							} else if (results.mlg / data.peso < 0.80) {
+								content += 'Estás por debajo del rango saludable para deportistas hombres (80-90% del peso corporal). Considera aumentar tu masa muscular. ';
+							} else {
+								content += 'Estás por encima del rango saludable para deportistas hombres (80-90% del peso corporal). Esto puede ser normal dependiendo de tu deporte, pero evalúa con un profesional. ';
+							}
+						} else {
+							if (results.mlg / data.peso >= 0.75 && results.mlg / data.peso <= 0.85) {
+								content += 'Estás en un rango saludable para hombres no deportistas (75-85% del peso corporal). ';
+							} else if (results.mlg / data.peso < 0.75) {
+								content += 'Estás por debajo del rango saludable para hombres no deportistas (75-85% del peso corporal). Considera aumentar tu masa muscular para mejorar tu salud. ';
+							} else {
+								content += 'Estás por encima del rango saludable para hombres no deportistas (75-85% del peso corporal). Esto puede indicar un exceso de masa muscular; evalúa con un profesional. ';
+							}
+						}
+					} else {
+						if (isAthlete) {
+							if (results.mlg / data.peso >= 0.70 && results.mlg / data.peso <= 0.80) {
+								content += 'Estás en un rango saludable para deportistas mujeres (70-80% del peso corporal). ';
+							} else if (results.mlg / data.peso < 0.70) {
+								content += 'Estás por debajo del rango saludable para deportistas mujeres (70-80% del peso corporal). Considera aumentar tu masa muscular. ';
+							} else {
+								content += 'Estás por encima del rango saludable para deportistas mujeres (70-80% del peso corporal). Esto puede ser normal dependiendo de tu deporte, pero evalúa con un profesional. ';
+							}
+						} else {
+							if (results.mlg / data.peso >= 0.65 && results.mlg / data.peso <= 0.75) {
+								content += 'Estás en un rango saludable para mujeres no deportistas (65-75% del peso corporal). ';
+							} else if (results.mlg / data.peso < 0.65) {
+								content += 'Estás por debajo del rango saludable para mujeres no deportistas (65-75% del peso corporal). Considera aumentar tu masa muscular para mejorar tu salud. ';
+							} else {
+								content += 'Estás por encima del rango saludable para mujeres no deportistas (65-75% del peso corporal). Esto puede indicar un exceso de masa muscular; evalúa con un profesional. ';
+							}
+						}
+					}
+					content += 'Mantener una MLG saludable es crucial porque incluye músculos, órganos y agua, soportando el metabolismo, la fuerza y la salud general. Una MLG baja puede causar debilidad y problemas metabólicos, mientras que una MLG excesivamente alta en no deportistas podría indicar desequilibrios o sobreentrenamiento. ';
+				} else {
+					content += 'No calculado. ';
+				}
+				content += '</p>';
+
+            // Área Muscular Brazo (AMB)
+            // Área Muscular Brazo (AMB)
+				content += '<p><strong>Área Muscular Brazo (AMB):</strong> Estimación de la masa muscular en tu brazo. ';
+				if (!isNaN(results.amb)) {
+					content += 'Tu AMB es ' + formatResult(results.amb, 1) + ' cm². ';
+					if (gender === 'masculino') {
+						if (isAthlete) {
+							if (results.amb >= 50 && results.amb <= 70) {
+								content += 'Estás en un rango saludable para deportistas hombres (50-70 cm²). ';
+							} else if (results.amb < 50) {
+								content += 'Estás por debajo del rango saludable para deportistas hombres (50-70 cm²). Podrías beneficiarte de entrenamiento de fuerza para el tren superior. ';
+							} else {
+								content += 'Estás por encima del rango saludable para deportistas hombres (50-70 cm²). Esto puede ser normal para ciertos deportes, pero evalúa con un profesional. ';
+							}
+						} else {
+							if (results.amb >= 30 && results.amb <= 50) {
+								content += 'Estás en un rango saludable para hombres no deportistas (30-50 cm²). ';
+							} else if (results.amb < 30) {
+								content += 'Estás por debajo del rango saludable para hombres no deportistas (30-50 cm²). Considera entrenamiento de fuerza para mejorar tu musculatura. ';
+							} else {
+								content += 'Estás por encima del rango saludable para hombres no deportistas (30-50 cm²). Esto puede indicar un enfoque desproporcionado en el tren superior; evalúa con un profesional. ';
+							}
+						}
+					} else {
+						if (isAthlete) {
+							if (results.amb >= 40 && results.amb <= 60) {
+								content += 'Estás en un rango saludable para deportistas mujeres (40-60 cm²). ';
+							} else if (results.amb < 40) {
+								content += 'Estás por debajo del rango saludable para deportistas mujeres (40-60 cm²). Podrías beneficiarte de entrenamiento de fuerza para el tren superior. ';
+							} else {
+								content += 'Estás por encima del rango saludable para deportistas mujeres (40-60 cm²). Esto puede ser normal para ciertos deportes, pero evalúa con un profesional. ';
+							}
+						} else {
+							if (results.amb >= 20 && results.amb <= 40) {
+								content += 'Estás en un rango saludable para mujeres no deportistas (20-40 cm²). ';
+							} else if (results.amb < 20) {
+								content += 'Estás por debajo del rango saludable para mujeres no deportistas (20-40 cm²). Considera entrenamiento de fuerza para mejorar tu musculatura. ';
+							} else {
+								content += 'Estás por encima del rango saludable para mujeres no deportistas (20-40 cm²). Esto puede indicar un enfoque desproporcionado en el tren superior; evalúa con un profesional. ';
+							}
+						}
+					}
+					content += 'Un AMB saludable es importante porque refleja la masa muscular del tren superior, esencial para la fuerza funcional y las actividades diarias. Un AMB bajo puede indicar pérdida muscular, mientras que un valor muy alto en no deportistas podría sugerir un entrenamiento desproporcionado. ';
+				} else {
+					content += 'No calculado. ';
+				}
+				content += '</p>';
+
+            // Masa Ósea
+            // Masa Ósea
+			content += '<p><strong>Masa Ósea:</strong> Peso estimado de tus huesos. ';
+			if (!isNaN(results.masaOsea)) {
+				content += 'Tu masa ósea es ' + formatResult(results.masaOsea, 1) + ' kg, que representa ' + formatResult((results.masaOsea / data.peso) * 100, 1) + '% de tu peso corporal. ';
+				if (gender === 'masculino') {
+					if (results.masaOsea / data.peso >= 0.12 && results.masaOsea / data.peso <= 0.15) {
+						content += 'Estás en un rango saludable para hombres (12-15% del peso corporal). ';
+					} else if (results.masaOsea / data.peso < 0.12) {
+						content += 'Estás por debajo del rango saludable para hombres (12-15% del peso corporal). Esto puede aumentar el riesgo de osteoporosis; consulta a un profesional. ';
+					} else {
+						content += 'Estás por encima del rango saludable para hombres (12-15% del peso corporal). Esto es raro y podría indicar un trastorno óseo; consulta a un profesional. ';
+					}
+				} else {
+					if (results.masaOsea / data.peso >= 0.10 && results.masaOsea / data.peso <= 0.13) {
+						content += 'Estás en un rango saludable para mujeres (10-13% del peso corporal). ';
+					} else if (results.masaOsea / data.peso < 0.10) {
+						content += 'Estás por debajo del rango saludable para mujeres (10-13% del peso corporal). Esto puede aumentar el riesgo de osteoporosis; consulta a un profesional. ';
+					} else {
+						content += 'Estás por encima del rango saludable para mujeres (10-13% del peso corporal). Esto es raro y podría indicar un trastorno óseo; consulta a un profesional. ';
+					}
+				}
+				content += 'Una masa ósea saludable es crucial para la integridad estructural del cuerpo y para prevenir osteoporosis. Una masa ósea baja aumenta el riesgo de fracturas, mientras que valores excesivamente altos, aunque raros, podrían indicar problemas óseos. ';
+			} else {
+				content += 'No calculado. ';
+			}
+			content += '</p>';
+
+            // Masa Residual
+            content += '<p><strong>Masa Residual:</strong> Peso de órganos, líquidos y tejidos no grasos ni musculares. ';
+            if (!isNaN(results.masaResidual)) {
+                content += 'Tu masa residual es ' + formatResult(results.masaResidual, 1) + ' kg. Representa ~24% (hombres) o ~21% (mujeres) del peso. ';
+            } else {
+                content += 'No calculado. ';
+            }
+            content += '</p>';
+
+            // Peso Ideal
+            content += '<p><strong>Peso Ideal:</strong> Peso estimado para alcanzar tu % de grasa deseado. ';
+            if (!isNaN(results.pesoIdeal)) {
+                content += 'Tu peso ideal es ' + formatResult(results.pesoIdeal, 1) + ' kg. ';
+                content += 'Es un objetivo basado en tu composición corporal deseada. ';
+                content += '<div class="chart-container"><canvas id="weight-chart" width="440" height="400" style="display: block; box-sizing: border-box; height: 400px; width: 440px;"></canvas></div>';
+            } else {
+                content += 'No calculado. ';
+            }
+            content += '</p>';
+
+            // Peso a Perder/Ganar
+            content += '<p><strong>Peso a Perder/Ganar:</strong> Diferencia entre tu peso ideal y el actual. ';
+            if (!isNaN(results.pesoObjetivo)) {
+                content += 'Tu peso actual es ' + formatResult(data.peso, 1) + ' kg y tu peso ideal es ' + formatResult(results.pesoIdeal, 1) + ' kg. ';
+                if (results.pesoObjetivo > 0) {
+                    content += 'Necesitas ganar ' + formatResult(results.pesoObjetivo, 1) + ' kg. Enfócate en ganar masa magra (músculo). ';
+                } else if (results.pesoObjetivo < 0) {
+                    content += 'Necesitas perder ' + formatResult(Math.abs(results.pesoObjetivo), 1) + ' kg. Enfócate en reducir grasa. ';
+                } else {
+                    content += 'Estás en tu peso ideal. ';
+                }
+            } else {
+                content += 'No calculado. ';
+            }
+            content += '</p>';
+
+           
+            // Somatotipo
+			
+				if (!isNaN(results.endomorfia) && !isNaN(results.mesomorfia) && !isNaN(results.ectomorfia)) {
+					content += '<p><strong>Somatotipo (Endomorfia, Mesomorfia, Ectomorfia):</strong> Tu somatotipo es ' + formatResult(results.endomorfia, 1) + '-' + formatResult(results.mesomorfia, 1) + '-' + formatResult(results.ectomorfia, 1) + '. ';
+					let dominant = '';
+					if (results.endomorfia > results.mesomorfia && results.endomorfia > results.ectomorfia) {
+						dominant = 'endomorfo';
+						content += 'Esto indica que tu componente dominante es Endomorfo, lo que sugiere una mayor facilidad para acumular grasa. ';
+					} else if (results.mesomorfia > results.endomorfia && results.mesomorfia > results.ectomorfia) {
+						dominant = 'mesomorfo';
+						content += 'Esto indica que tu componente dominante es Mesomorfo, lo que sugiere una mayor facilidad para desarrollar musculatura. ';
+					} else {
+						dominant = 'ectomorfo';
+						content += 'Esto indica que tu componente dominante es Ectomorfo, lo que sugiere una constitución más delgada y dificultad para ganar peso. ';
+					}
+					content += 'El somatotipo refleja tu predisposición genética y puede guiar tus estrategias de dieta y ejercicio. ';
+					// Recomendaciones específicas según el somatotipo dominante
+					content += 'Dado que tu componente dominante es ' + dominant + ', considera las siguientes recomendaciones específicas: ';
+					if (dominant === 'ectomorfo') {
+						content += 'Como ectomorfo, tu prioridad debería ser ganar masa muscular. Aumenta tu ingesta calórica con alimentos ricos en proteínas y carbohidratos complejos (como avena, arroz y batatas), y entrena con pesos pesados y pocas repeticiones (6-8 repeticiones por serie). ';
+					} else if (dominant === 'mesomorfo') {
+						content += 'Como mesomorfo, tienes una ventaja para desarrollar músculo y mantener un físico equilibrado. Mantén una dieta balanceada y un entrenamiento variado, alternando entre fuerza y resistencia para maximizar tu potencial. ';
+					} else {
+						content += 'Como endomorfo, tu enfoque debería ser controlar la grasa corporal. Incorpora más actividad cardiovascular (como caminar rápido o ciclismo) y asegúrate de mantener un déficit calórico moderado mientras consumes suficiente proteína para preservar tu masa muscular. ';
+					}
+					content += 'Independientemente de tu somatotipo, la clave es la consistencia y la personalización: ajusta tu plan según tus objetivos, nivel de actividad y respuesta corporal, y consulta a un profesional si necesitas orientación específica. ';
+					// Añadir la imagen estática con un canvas superpuesto para el punto
+					content += '</p><div class="chart-container" style="position: relative;"><img id="somatotype-image" src="images/somatotype-chart.png" alt="Carta de Somatotipo" style="width: 100%; height: auto;"><canvas id="somatotype-point-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas></div>';
+				}
+            // Masa Muscular Total (MMT)
+            
+			content += '<p><strong>Masa Muscular Total (Est.):</strong> Estimación de tu musculatura total. ';
+			if (!isNaN(results.mmt)) {
+				content += 'Tu MMT es ' + formatResult(results.mmt, 1) + ' kg, que representa ' + formatResult((results.mmt / data.peso) * 100, 1) + '% de tu peso corporal. ';
+				if (gender === 'masculino') {
+					if (isAthlete) {
+						if (results.mmt / data.peso >= 0.45 && results.mmt / data.peso <= 0.55) {
+							content += 'Estás en un rango saludable para deportistas hombres (45-55% del peso corporal). ';
+						} else if (results.mmt / data.peso < 0.45) {
+							content += 'Estás por debajo del rango saludable para deportistas hombres (45-55% del peso corporal). Considera aumentar tu masa muscular para mejorar el rendimiento. ';
+						} else {
+							content += 'Estás por encima del rango saludable para deportistas hombres (45-55% del peso corporal). Esto puede ser normal para ciertos deportes, pero evalúa con un profesional. ';
+						}
+					} else {
+						if (results.mmt / data.peso >= 0.38 && results.mmt / data.peso <= 0.48) {
+							content += 'Estás en un rango saludable para hombres no deportistas (38-48% del peso corporal). ';
+						} else if (results.mmt / data.peso < 0.38) {
+							content += 'Estás por debajo del rango saludable para hombres no deportistas (38-48% del peso corporal). Considera entrenamiento de fuerza para mejorar tu salud. ';
+						} else {
+							content += 'Estás por encima del rango saludable para hombres no deportistas (38-48% del peso corporal). Esto puede indicar un exceso de masa muscular; evalúa con un profesional. ';
+						}
+					}
+				} else {
+					if (isAthlete) {
+						if (results.mmt / data.peso >= 0.35 && results.mmt / data.peso <= 0.45) {
+							content += 'Estás en un rango saludable para deportistas mujeres (35-45% del peso corporal). ';
+						} else if (results.mmt / data.peso < 0.35) {
+							content += 'Estás por debajo del rango saludable para deportistas mujeres (35-45% del peso corporal). Considera aumentar tu masa muscular para mejorar el rendimiento. ';
+						} else {
+							content += 'Estás por encima del rango saludable para deportistas mujeres (35-45% del peso corporal). Esto puede ser normal para ciertos deportes, pero evalúa con un profesional. ';
+						}
+					} else {
+						if (results.mmt / data.peso >= 0.30 && results.mmt / data.peso <= 0.40) {
+							content += 'Estás en un rango saludable para mujeres no deportistas (30-40% del peso corporal). ';
+						} else if (results.mmt / data.peso < 0.30) {
+							content += 'Estás por debajo del rango saludable para mujeres no deportistas (30-40% del peso corporal). Considera entrenamiento de fuerza para mejorar tu salud. ';
+						} else {
+							content += 'Estás por encima del rango saludable para mujeres no deportistas (30-40% del peso corporal). Esto puede indicar un exceso de masa muscular; evalúa con un profesional. ';
+						}
+					}
+				}
+				content += 'Una MMT saludable es esencial porque representa la masa muscular esquelética, clave para el movimiento, el metabolismo y la sensibilidad a la insulina. Una MMT baja puede llevar a fragilidad y problemas metabólicos, mientras que un valor muy alto en no deportistas podría indicar sobreentrenamiento. ';
+			} else {
+				content += 'No calculado. ';
+			}
+			content += '</p>';
+
+            // Sugerencias
+            content += '<h3>Sugerencias para Mejorar tu Composición Corporal</h3>';
+            let goal = '';
+            if (!isNaN(results.pesoObjetivo)) {
+                if (results.pesoObjetivo < -2) {
+                    goal = 'perdida';
+                    content += '<p><strong>Objetivo: Pérdida de grasa</strong></p>';
+                    content += '<ul>';
+                    content += '<li><strong>Dieta:</strong> Crea un déficit calórico moderado (300-500 kcal menos por día). Prioriza proteínas (2 g/kg de peso), vegetales, y grasas saludables. Reduce carbohidratos refinados.</li>';
+                    content += '<li><strong>Ejercicio:</strong> Combina cardio (3-4 veces/semana, 30 min) y entrenamiento de fuerza (3-5 veces/semana) para preservar músculo. ';
+                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Mantén un déficit pequeño para no afectar el rendimiento. Incluye ejercicios específicos para tu deporte.</li>';
+                    content += '<li><strong>Hábitos:</strong> Duerme 7-8 horas, controla el estrés, y mantén una hidratación adecuada.</li>';
+                    content += '</ul>';
+                } else if (results.pesoObjetivo > 2) {
+                    goal = 'ganancia';
+                    content += '<p><strong>Objetivo: Ganancia muscular</strong></p>';
+                    content += '<ul>';
+                    content += '<li><strong>Dieta:</strong> Crea un superávit calórico moderado (300-500 kcal más por día). Aumenta proteínas (2-2.5 g/kg de peso) y carbohidratos complejos.</li>';
+                    content += '<li><strong>Ejercicio:</strong> Enfócate en entrenamiento de fuerza progresivo (4-5 veces/semana). Incluye ejercicios compuestos (sentadillas, peso muerto, press).</li>';
+                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Ajusta el superávit según demandas energéticas de tu deporte. Considera suplementos como creatina tras consultar un profesional.</li>';
+                    content += '<li><strong>Hábitos:</strong> Descansa lo suficiente (7-8 horas) y optimiza la recuperación con estiramientos o masajes.</li>';
+                    content += '</ul>';
+                } else {
+                    goal = 'mantenimiento';
+                    content += '<p><strong>Objetivo: Mantenimiento</strong></p>';
+                    content += '<ul>';
+                    content += '<li><strong>Dieta:</strong> Mantén un balance calórico. Consume proteínas adecuadas (1.6-2 g/kg), carbohidratos y grasas balanceados.</li>';
+                    content += '<li><strong>Ejercicio:</strong> Realiza entrenamiento de fuerza (3-4 veces/semana) y algo de cardio (2-3 veces/semana) para mantener salud y composición.</li>';
+                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Ajusta la dieta y entrenamiento según las demandas de tu deporte para optimizar rendimiento.</li>';
+                    content += '<li><strong>Hábitos:</strong> Prioriza sueño, hidratación, y manejo del estrés.</li>';
+                    content += '</ul>';
+                }
+            } else {
+                content += '<p><strong>Sin datos suficientes para sugerencias específicas.</strong> Completa más medidas para obtener recomendaciones personalizadas.</p>';
+                content += '<ul>';
+                content += '<li><strong>Dieta:</strong> Sigue una alimentación equilibrada con proteínas, carbohidratos complejos, grasas saludables y vegetales.</li>';
+                content += '<li><strong>Ejercicio:</strong> Incluye fuerza y cardio moderados (3-5 veces/semana).</li>';
+                content += '<li><strong>Hábitos:</strong> Duerme 7-8 horas, hidrátate y reduce el estrés.</li>';
+                content += '</ul>';
+            }
+
+            // Explicación personalizada de somatotipo (reemplazo del bloque anterior)
+			if (!isNaN(results.endomorfia) && !isNaN(results.mesomorfia) && !isNaN(results.ectomorfia)) {
+				const cliente = {
+					sexo: data.genero,
+					edad: data.edad,
+					esDeportista: data.es_deportista === 'si'
+				};
+				content += generateSomatotypeExplanation(results, cliente);
+			}
+
+
+            content += '<p><strong>Nota:</strong> Consulta a un nutricionista y/o entrenador personal para un plan personalizado. Los cambios deben ser graduales y supervisados.</p>';
+
+            // Generar gráficas después de insertar el contenido
+            setTimeout(() => {
+		console.log('Elemento #imc-chart:', document.getElementById('imc-chart'));
+
+		// Modern Chart.js Global Defaults for consistency
+		Chart.defaults.font.family = '"Inter", sans-serif';
+		Chart.defaults.font.size = 14;
+		Chart.defaults.color = '#343a40'; // Dark text for labels
+
+		// Gráfica de IMC
+	   // Gráfica de IMC
+	if (!isNaN(results.imc)) {
+		const canvasIMC = document.getElementById('imc-chart');
+		if (!canvasIMC) {
+			console.error('Canvas #imc-chart no encontrado');
+		} else {
+        const ctxIMC = canvasIMC.getContext('2d');
+        new Chart(ctxIMC, {
+            type: 'bar',
+            data: {
+                labels: ['Bajo peso (<18.5)', 'Normal (18.5-24.9)', 'Sobrepeso (25-29.9)', 'Obesidad (≥30)'],
+                datasets: [
+                    {
+                        label: 'Rangos IMC',
+                        data: [18.5, 24.9, 29.9, 40],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.3)', // Softer red
+                            'rgba(40, 167, 69, 0.3)', // Green from weight chart
+                            'rgba(255, 206, 86, 0.3)', // Softer yellow
+                            'rgba(255, 99, 132, 0.5)', // Stronger red
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            '#28a745', // Green border
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 99, 132, 1)',
+                        ],
+                        borderWidth: 1,
+                        barThickness: 40,
+                    },
+                    {
+                        label: 'Tu IMC',
+                        data: [0, 0, 0, 0].map((_, i) => {
+                            if (i === 0 && results.imc < 18.5) return results.imc;
+                            if (i === 1 && results.imc >= 18.5 && results.imc < 25) return results.imc;
+                            if (i === 2 && results.imc >= 25 && results.imc < 30) return results.imc;
+                            if (i === 3 && results.imc >= 30) return results.imc;
+                            return 0;
+                        }),
+                        backgroundColor: '#007bff', // Modern blue for user data
+                        borderColor: '#0056b3',
+                        borderWidth: 1,
+                        barThickness: 20,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 50,
+                        title: { display: true, text: 'IMC (kg/m²)' },
+                        grid: { color: '#e0e0e0' },
+                    },
+                    x: {
+                        title: { display: true, text: 'Categorías' },
+                        grid: { display: false },
+                    },
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { padding: 20 } },
+                    title: {
+                        display: true,
+                        text: 'Índice de Masa Corporal (IMC)',
+                        padding: 20,
+                        font: { size: 18, weight: '600' },
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(52, 58, 64, 0.9)', // Match styling with other charts
+                        titleFont: { size: 14, weight: '600' },
+                        bodyFont: { size: 12 },
+                        padding: 12,
+                        cornerRadius: 6,
+                        borderColor: '#007bff', // Match the bar color
+                        borderWidth: 1,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return `Categoría: ${tooltipItems[0].label}`;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                if (value === 0) return ''; // Hide tooltip for zero values (non-user bars)
+                                return `IMC: ${value.toFixed(1)} kg/m²`;
+                            },
+                        },
+                    }, // Added comma here
+                }, // Properly closed plugins object
+            }, // Properly closed options object
+        }); // Properly closed new Chart
+    }
+}
+
+    // Gráfica de ICC
+    if (!isNaN(results.icc)) {
+        const canvasICC = document.getElementById('icc-chart');
+        if (!canvasICC) {
+            console.error('Canvas #icc-chart no encontrado');
+        } else {
+            const ctxICC = canvasICC.getContext('2d');
+            const threshold = gender === 'masculino' ? 0.9 : 0.85;
+            new Chart(ctxICC, {
+                type: 'bar',
+                data: {
+                    labels: ['Saludable (≤' + threshold + ')', 'Riesgo (>' + threshold + ')'],
+                    datasets: [
+                        {
+                            label: 'Rangos ICC',
+                            data: [threshold, 1.5],
+                            backgroundColor: ['rgba(40, 167, 69, 0.3)', 'rgba(255, 99, 132, 0.3)'],
+                            borderColor: ['#28a745', 'rgba(255, 99, 132, 1)'],
+                            borderWidth: 1,
+                            barThickness: 40,
+                        },
+                        {
+                            label: 'Tu ICC',
+                            data: [
+                                results.icc <= threshold ? results.icc : 0,
+                                results.icc > threshold ? results.icc : 0,
+                            ],
+                            backgroundColor: '#007bff',
+                            borderColor: '#0056b3',
+                            borderWidth: 1,
+                            barThickness: 20,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 2,
+                            title: { display: true, text: 'ICC' },
+                            grid: { color: '#e0e0e0' },
+                        },
+                        x: {
+                            title: { display: true, text: 'Categorías' },
+                            grid: { display: false },
+                        },
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { padding: 20 } },
+                        title: {
+                            display: true,
+                            text: 'Índice Cintura-Cadera (ICC)',
+                            padding: 20,
+                            font: { size: 18, weight: '600' },
+                        },
+                        tooltip: {
+                            backgroundColor: '#343a40',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                        },
+                    },
+                },
+            });
+        }
+    }
+
+    // Gráfica de % Grasa Corporal
+    if (!isNaN(results.grasaPctActual)) {
+        const canvasBodyFat = document.getElementById('bodyfat-chart');
+        if (!canvasBodyFat) {
+            console.error('Canvas #bodyfat-chart no encontrado');
+        } else {
+            const ctxBodyFat = canvasBodyFat.getContext('2d');
+            let labels, ranges, colors;
+            if (gender === 'masculino') {
+                if (isAthlete) {
+                    labels = ['Muy bajo (<6%)', 'Óptimo (6-12%)', 'Aceptable (12-18%)', 'Alto (>18%)'];
+                    ranges = [6, 12, 18, 50];
+                    colors = [
+                        'rgba(255, 99, 132, 0.3)',
+                        'rgba(40, 167, 69, 0.3)',
+                        'rgba(255, 206, 86, 0.3)',
+                        'rgba(255, 99, 132, 0.5)',
+                    ];
+                } else {
+                    labels = ['Muy bajo (<8%)', 'Saludable (8-20%)', 'Moderado (20-25%)', 'Alto (>25%)'];
+                    ranges = [8, 20, 25, 50];
+                    colors = [
+                        'rgba(255, 99, 132, 0.3)',
+                        'rgba(40, 167, 69, 0.3)',
+                        'rgba(255, 206, 86, 0.3)',
+                        'rgba(255, 99, 132, 0.5)',
+                    ];
+                }
+            } else {
+                if (isAthlete) {
+                    labels = ['Muy bajo (<14%)', 'Óptimo (14-20%)', 'Aceptable (20-25%)', 'Alto (>25%)'];
+                    ranges = [14, 20, 25, 50];
+                    colors = [
+                        'rgba(255, 99, 132, 0.3)',
+                        'rgba(40, 167, 69, 0.3)',
+                        'rgba(255, 206, 86, 0.3)',
+                        'rgba(255, 99, 132, 0.5)',
+                    ];
+                } else {
+                    labels = ['Muy bajo (<16%)', 'Saludable (16-30%)', 'Moderado (30-35%)', 'Alto (>35%)'];
+                    ranges = [16, 30, 35, 50];
+                    colors = [
+                        'rgba(255, 99, 132, 0.3)',
+                        'rgba(40, 167, 69, 0.3)',
+                        'rgba(255, 206, 86, 0.3)',
+                        'rgba(255, 99, 132, 0.5)',
+                    ];
+                }
+            }
+            new Chart(ctxBodyFat, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Rangos % Grasa',
+                            data: ranges,
+                            backgroundColor: colors,
+                            borderColor: colors.map(color => color.replace('0.3', '1').replace('0.5', '1')),
+                            borderWidth: 1,
+                            barThickness: 40,
+                        },
+                        {
+                            label: 'Tu % Grasa',
+                            data: labels.map((_, i) => {
+                                if (i === 0 && results.grasaPctActual < ranges[0]) return results.grasaPctActual;
+                                if (i === 1 && results.grasaPctActual >= ranges[0] && results.grasaPctActual <= ranges[1]) return results.grasaPctActual;
+                                if (i === 2 && results.grasaPctActual > ranges[1] && results.grasaPctActual <= ranges[2]) return results.grasaPctActual;
+                                if (i === 3 && results.grasaPctActual > ranges[2]) return results.grasaPctActual;
+                                return 0;
+                            }),
+                            backgroundColor: '#007bff',
+                            borderColor: '#0056b3',
+                            borderWidth: 1,
+                            barThickness: 20,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 60,
+                            title: { display: true, text: '% Grasa Corporal' },
+                            grid: { color: '#e0e0e0' },
+                        },
+                        x: {
+                            title: { display: true, text: 'Categorías' },
+                            grid: { display: false },
+                        },
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { padding: 20 } },
+                        title: {
+                            display: true,
+                            text: 'Porcentaje de Grasa Corporal',
+                            padding: 20,
+                            font: { size: 18, weight: '600' },
+                        },
+                        tooltip: {
+                            backgroundColor: '#343a40',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                        },
+                    },
+                },
+            });
+        }
+    }
+
+    // Gráfica de evolución de peso (adapted from generateWeightEvolutionChart)
+// Gráfica de evolución de peso (adapted from generateWeightEvolutionChart)
+if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
+    const canvasWeight = document.getElementById('weight-chart');
+    if (!canvasWeight) {
+        console.error('Canvas #weight-chart no encontrado');
+    } else {
+        const ctxWeight = canvasWeight.getContext('2d');
+        const weightDiff = results.pesoIdeal - data.peso;
+        const isWeightLoss = weightDiff < 0;
+        const weeklyRate = isWeightLoss ? -0.5 : 0.35;
+        const totalWeeks = Math.ceil(Math.abs(weightDiff) / Math.abs(weeklyRate));
+
+        // Create an array of all weeks (0 to totalWeeks)
+        const allWeeks = Array.from({ length: totalWeeks + 1 }, (_, i) => i);
+
+        // Calculate weight for each week
+        const weightData = allWeeks.map(week => {
+            return data.peso + (weeklyRate * week);
+        });
+
+        // Define intervals for x-axis labels (e.g., 0, 6, 12, ...)
+        const intervals = [0];
+        for (let week = 6; week <= totalWeeks; week += 6) {
+            intervals.push(week);
+        }
+        if (!intervals.includes(totalWeeks)) {
+            intervals.push(totalWeeks);
+        }
+
+        // Create labels array: show label only at intervals, empty string otherwise
+        const labels = allWeeks.map(week => (intervals.includes(week) ? `Sem ${week}` : ''));
+
+        new Chart(ctxWeight, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Peso Proyectado (kg)',
+                        data: weightData,
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#28a745',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        tension: 0.3,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: Math.min(data.peso, results.pesoIdeal) - 2,
+                        max: Math.max(data.peso, results.pesoIdeal) + 2,
+                        title: { display: true, text: 'Peso (kg)' },
+                        grid: { color: '#e0e0e0' },
+                        ticks: {
+                            stepSize: 2,
+                            callback: function(value) {
+                                return value.toFixed(1);
+                            },
+                        },
+                    },
+                    x: {
+                        title: { display: true, text: 'Semanas' },
+                        grid: { display: false },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                // Only show the label if it's not an empty string
+                                return labels[index] || '';
+                            },
+                        },
+                    },
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { padding: 20 } },
+                    title: {
+                        display: true,
+                        text: `Proyección de Peso desde ${formatResult(data.peso, 1)} kg hacia ${formatResult(results.pesoIdeal, 1)} kg`,
+                        padding: 20,
+                        font: { size: 18, weight: '600' },
+                    },
+                    tooltip: {
+                        enabled: true,
+                        mode: 'nearest', // Show tooltip for the nearest point
+                        intersect: false, // Allow tooltip to show even when not directly over a point
+                        backgroundColor: 'rgba(52, 58, 64, 0.9)',
+                        titleFont: { size: 14, weight: '600' },
+                        bodyFont: { size: 12 },
+                        padding: 12,
+                        cornerRadius: 6,
+                        borderColor: '#28a745',
+                        borderWidth: 1,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const week = allWeeks[tooltipItems[0].dataIndex];
+                                return `Semana ${week}`;
+                            },
+                            label: function(context) {
+                                return `Peso: ${context.parsed.y.toFixed(1)} kg`;
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    }
+}
+		
+		
+		// Gráfica de Somatotipo
+/// Dentro del setTimeout en generateExplanationsAndSuggestions, reemplazar la gráfica de somatotipo
+// Gráfica de Somatotipo - Dibujar un punto sobre la imagen
+// Gráfica de Somatotipo - Dibujar un punto sobre la imagen
+// Gráfica de Somatotipo - Dibujar un punto y ejes graduados sobre la imagen
+// Gráfica de Somatotipo - Dibujar un punto y ejes graduados sobre la imagen
+if (!isNaN(results.endomorfia) && !isNaN(results.mesomorfia) && !isNaN(results.ectomorfia)) {
+    const canvasSomatotype = document.getElementById('somatotype-point-canvas');
+    const imgSomatotype = document.getElementById('somatotype-image');
+
+    if (!canvasSomatotype || !imgSomatotype) {
+        console.error('Canvas #somatotype-point-canvas o imagen #somatotype-image no encontrado');
+    } else {
+        // Esperar a que la imagen se cargue para obtener sus dimensiones
+        imgSomatotype.onload = () => {
+            const ctxSomatotype = canvasSomatotype.getContext('2d');
+
+            // Ajustar las dimensiones del canvas para que coincidan con la imagen
+            canvasSomatotype.width = imgSomatotype.width;
+            canvasSomatotype.height = imgSomatotype.height;
+
+            // Limpiar el canvas antes de dibujar
+            ctxSomatotype.clearRect(0, 0, canvasSomatotype.width, canvasSomatotype.height);
+
+            // Definir el área del gráfico (triángulo) en píxeles
+            const chartWidth = 400; // Ancho del triángulo en píxeles
+            const chartHeight = 400; // Alto del triángulo en píxeles
+            const chartOffsetX = (imgSomatotype.width - chartWidth) / 2; // Centrar el triángulo en la imagen
+            const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
+
+            // Debugging: Verificar dimensiones
+            console.log(`Image Dimensions: width=${imgSomatotype.width}, height=${imgSomatotype.height}`);
+            console.log(`Canvas Dimensions: width=${canvasSomatotype.width}, height=${canvasSomatotype.height}`);
+            console.log(`Chart Area: offsetX=${chartOffsetX}, offsetY=${chartOffsetY}, width=${chartWidth}, height=${chartHeight}`);
+
+            // Calcular las coordenadas x, y en el sistema del triángulo
+            const x = results.ectomorfia - results.endomorfia; // Rango esperado: [-8, 8]
+            const y = 2 * results.mesomorfia - (results.endomorfia + results.ectomorfia); // Rango esperado: [-10, 14]
+
+            // Limitar x y y dentro de los rangos esperados
+            const xClamped = Math.min(Math.max(x, -8), 8);
+            const yClamped = Math.min(Math.max(y, -10), 14);
+
+            // Calcular el centro del gráfico (donde x = 0, y = 0)
+            const centerX = chartOffsetX + chartWidth / 2; // Centro horizontal del gráfico
+            const centerY = chartOffsetY + chartHeight / 2; // Centro vertical del gráfico (y=0 estará aquí)
+
+            // Ajustar la posición del eje X (un poco más abajo)
+            const xAxisY = centerY + 80; // Mover el eje X 80 píxeles más abajo
+
+            // Mapear las coordenadas del triángulo a píxeles en el canvas
+            const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth; // Mapear x de [-8, 8] a [0, chartWidth]
+            const pixelY = xAxisY - (yClamped / 14) * (chartHeight / 2); // Mapear y de [-10, 14] con y=0 en xAxisY
+
+            // Debugging: Verificar las coordenadas calculadas
+            console.log(`Somatotype Coordinates: x=${x}, y=${y}`);
+            console.log(`Clamped Coordinates: xClamped=${xClamped}, yClamped=${yClamped}`);
+            console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+            console.log(`Chart Center: centerX=${centerX}, centerY=${centerY}, xAxisY=${xAxisY}`);
+
+            // Verificar que el punto esté dentro del área del gráfico
+            if (pixelX < chartOffsetX || pixelX > chartOffsetX + chartWidth || pixelY < chartOffsetY || pixelY > chartOffsetY + chartHeight) {
+                console.warn('El punto está fuera del área del gráfico:', { pixelX, pixelY });
+            } else {
+                console.log('El punto está dentro del área del gráfico:', { pixelX, pixelY });
+            }
+
+            // Dibujar el punto
+            ctxSomatotype.beginPath();
+            ctxSomatotype.arc(pixelX, pixelY, 8, 0, 2 * Math.PI); // Radio de 8 píxeles
+            ctxSomatotype.fillStyle = '#007bff'; // Color azul
+            ctxSomatotype.fill();
+            ctxSomatotype.strokeStyle = '#0056b3';
+            ctxSomatotype.lineWidth = 2;
+            ctxSomatotype.stroke();
+
+            // Añadir una etiqueta con los valores del somatotipo
+            ctxSomatotype.font = ' bold 14px Inter, sans-serif';
+            ctxSomatotype.fillStyle = '#000000';
+            ctxSomatotype.textAlign = 'center';
+            ctxSomatotype.fillText(
+                `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
+                pixelX,
+                pixelY - 15 // Posicionar la etiqueta 10 píxeles arriba del punto
+            );
+
+            // Dibujar el eje X
+            ctxSomatotype.beginPath();
+            ctxSomatotype.moveTo(chartOffsetX, xAxisY);
+            ctxSomatotype.lineTo(chartOffsetX + chartWidth, xAxisY);
+            ctxSomatotype.strokeStyle = '#000000';
+            ctxSomatotype.lineWidth = 1;
+            ctxSomatotype.stroke();
+
+            // Graduaciones del eje X (cada 2 unidades, de -8 a 8)
+            ctxSomatotype.font = '12px Inter, sans-serif';
+            ctxSomatotype.fillStyle = '#000000';
+            ctxSomatotype.textAlign = 'center';
+            for (let i = -8; i <= 8; i += 2) {
+                const xPos = chartOffsetX + ((i + 8) / 16) * chartWidth; // Mapear i de [-8, 8] a píxeles
+                // Marca de graduación
+                ctxSomatotype.beginPath();
+                ctxSomatotype.moveTo(xPos, xAxisY - 5);
+                ctxSomatotype.lineTo(xPos, xAxisY + 5);
+                ctxSomatotype.stroke();
+                // Etiqueta
+                ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 20);
+            }
+            // Etiqueta del eje X
+            ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 40);
+
+            // Dibujar el eje Y (a la derecha del gráfico)
+            const yAxisX = chartOffsetX + chartWidth + 50; // 50 píxeles a la derecha del gráfico
+            ctxSomatotype.beginPath();
+            ctxSomatotype.moveTo(yAxisX, chartOffsetY);
+            ctxSomatotype.lineTo(yAxisX, chartOffsetY + chartHeight);
+            ctxSomatotype.strokeStyle = '#000000';
+            ctxSomatotype.lineWidth = 1;
+            ctxSomatotype.stroke();
+
+            // Graduaciones del eje Y (cada 2 unidades, de -10 a 14, con y=0 en xAxisY)
+            ctxSomatotype.textAlign = 'center';
+            for (let i = -10; i <= 16; i += 2) {
+                const yPos = xAxisY - (i / 11) * (chartHeight / 2); // Mapear i con y=0 en xAxisY
+                // Marca de graduación
+                ctxSomatotype.beginPath();
+                ctxSomatotype.moveTo(yAxisX - 5, yPos);
+                ctxSomatotype.lineTo(yAxisX + 5, yPos);
+                ctxSomatotype.stroke();
+                // Etiqueta
+                ctxSomatotype.fillText(i.toString(), yAxisX + 20, yPos + 5);
+            }
+            // Etiqueta del eje Y (rotada 90 grados)
+            ctxSomatotype.save();
+            ctxSomatotype.translate(yAxisX + 40, chartOffsetY + chartHeight / 2);
+            ctxSomatotype.rotate(-Math.PI / 2);
+            ctxSomatotype.fillText('Mesomorfia', 0, 0);
+            ctxSomatotype.restore();
+        };
+
+        // Si la imagen ya está cargada (por ejemplo, si está en caché), disparar el evento onload manualmente
+        if (imgSomatotype.complete) {
+            imgSomatotype.onload();
+        }
+    }
+}
+}, 100);
+
+            return content;
+    };
+
+        // Form submission handler
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            console.log('Form submitted');
+
+            // --- 1. Get Data ---
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                const numericFields = ['edad', 'peso', 'altura', 'pliegue_tricipital', 'pliegue_subescapular', 'pliegue_suprailiaco', 'pliegue_bicipital', 'pliegue_pantorrilla', 'circ_cintura', 'circ_cadera', 'circ_cuello', 'circ_pantorrilla', 'circ_brazo', 'circ_brazo_contraido', 'diam_humero', 'diam_femur', 'diam_muneca', 'grasa_actual_conocida', 'grasa_deseada'];
+                if (numericFields.includes(key)) {
+                    data[key] = parseFloatSafe(value);
+                } else {
+                    data[key] = value;
+                }
+            });
+
+            console.log('Datos introducidos:', data);
+
+            // --- 2. Perform Calculations ---
+            const results = {};
+            const alturaM = data.altura ? data.altura / 100 : NaN;
+
+            // Reset results display
+            Object.values(resultElements).forEach(el => {
+                if (el.tagName === 'SPAN') el.textContent = '---';
+                if (el.tagName === 'SMALL') el.textContent = '(No calculado/estimado)';
+            });
+            explanationSection.style.display = 'none';
+            explanationContent.innerHTML = '';
+
+            // Check for essential data
+            if (!data.peso || !data.altura || !data.genero || !data.edad || !data.es_deportista) {
+                alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
+                console.error('Missing required fields');
+                return;
+            }
+
+            try {
+                // --- Calculate Actual Body Fat % ---
+                let actualBodyFatPct = NaN;
+                let actualBodyFatSource = "(No calculado)";
+                if (!isNaN(data.grasa_actual_conocida)) {
+                    actualBodyFatPct = data.grasa_actual_conocida;
+                    actualBodyFatSource = "(Proporcionado)";
+                    console.log("Usando % Grasa Actual proporcionado:", actualBodyFatPct);
+                } else {
+                    if (data.edad < 6) {
+                        console.warn("Edad < 6 años: No hay ecuación adecuada para calcular % Grasa.");
+                        actualBodyFatSource = "(No calculado: Edad < 6 años)";
+                    } else if (data.edad >= 6 && data.edad <= 17) {
+                        actualBodyFatPct = calculateSlaughterBodyFat(data);
+                        if (!isNaN(actualBodyFatPct)) {
+                            actualBodyFatSource = "(Calculado: Slaughter)";
+                            console.log("Calculando % Grasa Actual (Slaughter):", actualBodyFatPct);
+                        }
+                    } else {
+                        if (data.es_deportista === 'si') {
+                            actualBodyFatPct = calculateJacksonPollockBodyFat(data);
+                            if (!isNaN(actualBodyFatPct)) {
+                                actualBodyFatSource = "(Calculado: Jackson-Pollock)";
+                                console.log("Calculando % Grasa Actual (Jackson-Pollock):", actualBodyFatPct);
+                            } else {
+                                actualBodyFatPct = calculateCircumferenceBodyFat(data);
+                                if (!isNaN(actualBodyFatPct)) {
+                                    actualBodyFatSource = "(Calculado: Circunferencias)";
+                                    console.log("Calculando % Grasa Actual (Circunferencias):", actualBodyFatPct);
+                                }
+                            }
+                        } else {
+                            actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
+                            if (!isNaN(actualBodyFatPct)) {
+                                actualBodyFatSource = "(Calculado: Durnin-Womersley)";
+                                console.log("Calculando % Grasa Actual (Durnin-Womersley):", actualBodyFatPct);
+                            } else {
+                                actualBodyFatPct = calculateCircumferenceBodyFat(data);
+                                if (!isNaN(actualBodyFatPct)) {
+                                    actualBodyFatSource = "(Calculado: Circunferencias)";
+                                    console.log("Calculando % Grasa Actual (Circunferencias):", actualBodyFatPct);
+                                }
+                            }
+                        }
+                    }
+                }
+                results.grasaPctActual = actualBodyFatPct;
+
+                // --- Calculate Desired Body Fat % ---
+                let desiredBodyFatPct = NaN;
+                let desiredBodyFatSource = "(No estimado)";
+                if (!isNaN(data.grasa_deseada)) {
+                    desiredBodyFatPct = data.grasa_deseada;
+                    desiredBodyFatSource = "(Proporcionado)";
+                    console.log("Usando % Grasa Deseado proporcionado:", desiredBodyFatPct);
+                } else {
+                    const isAthlete = data.es_deportista === 'si';
+                    desiredBodyFatPct = estimateTargetBodyFat(data.genero, isAthlete);
+                    if (!isNaN(desiredBodyFatPct)) {
+                        desiredBodyFatSource = "(Estimado)";
+                        console.log("Estimando % Grasa Deseado:", desiredBodyFatPct);
+                    }
+                }
+                results.grasaPctDeseado = desiredBodyFatPct;
+
+                // --- Other Calculations ---
+                if (!isNaN(results.grasaPctActual)) {
+                    results.masaGrasa = (results.grasaPctActual / 100) * data.peso;
+                    results.mlg = data.peso - results.masaGrasa;
+                    console.log(`Masa Grasa: ${results.masaGrasa}, MLG: ${results.mlg}`);
+                } else {
+                    results.masaGrasa = NaN;
+                    results.mlg = NaN;
+                }
+
+                if (!isNaN(results.mlg) && !isNaN(results.grasaPctDeseado)) {
+                    results.pesoIdeal = results.mlg / (1 - (results.grasaPctDeseado / 100));
+                    console.log("Peso Ideal:", results.pesoIdeal);
+                } else {
+                    results.pesoIdeal = NaN;
+                }
+
+                if (data.peso && !isNaN(results.pesoIdeal)) {
+                    results.pesoObjetivo = results.pesoIdeal - data.peso;
+                    console.log("Peso Objetivo:", results.pesoObjetivo);
+                } else {
+                    results.pesoObjetivo = NaN;
+                }
+
+                // IMC
+                if (alturaM > 0) {
+                    results.imc = data.peso / (alturaM * alturaM);
+                    console.log("IMC:", results.imc);
+                } else {
+                    results.imc = NaN;
+                }
+
+                // ICC
+                if (data.circ_cadera > 0 && data.circ_cintura) {
+                    results.icc = data.circ_cintura / data.circ_cadera;
+                    console.log("ICC:", results.icc);
+                } else {
+                    results.icc = NaN;
+                }
+
+            // Área Muscular del Brazo (AMB) cm²
+            if (data.circ_brazo && data.pliegue_tricipital && data.edad && data.genero) {
+                try {
+                    const tricepsCm = data.pliegue_tricipital / 10;
+                    const term = data.circ_brazo - (Math.PI * tricepsCm);
+                    const baseAMB = (term * term) / (4 * Math.PI);
+                    if (data.edad < 18) {
+                        results.amb = baseAMB;
+                    } else if (data.genero === 'femenino') {
+                        results.amb = baseAMB - 6.5;
+                    } else if (data.genero === 'masculino') {
+                        results.amb = baseAMB - 10;
+                    }
+                    console.log("AMB:", results.amb);
+                } catch (e) {
+                    console.error("Error calculating AMB:", e);
+                    results.amb = NaN;
+                }
+            } else {
+                results.amb = NaN;
+                console.warn("Missing data for AMB");
+            }
+
+            // Masa Muscular Total (MMT)
+            if (data.altura && !isNaN(results.amb)) {
+                try {
+                    results.mmt = data.altura * (0.0264 + (0.0029 * results.amb));
+                    console.log("MMT:", results.mmt);
+                } catch (e) {
+                    console.error("Error calculating MMT:", e);
+                    results.mmt = NaN;
+                }
+            } else {
+                results.mmt = NaN;
+                console.warn("Missing data for MMT");
+            }
+
+            // Masa Ósea (kg) - Formula de Rocha
+            if (alturaM && data.diam_muneca && data.diam_femur) {
+                try {
+                    const diamMunecaM = data.diam_muneca / 100;
+                    const diamFemurM = data.diam_femur / 100;
+                    results.masaOsea = 3.02 * Math.pow(alturaM * alturaM * diamMunecaM * diamFemurM * 400, 0.712);
+                    console.log("Masa Ósea:", results.masaOsea);
+                } catch (e) {
+                    console.error("Error calculating Masa Ósea:", e);
+                    results.masaOsea = NaN;
+                }
+            } else {
+                results.masaOsea = NaN;
+            }
+
+            // Masa Residual (kg)
+            if (data.peso && data.genero) {
+                const factor = data.genero === 'masculino' ? 0.24 : 0.21;
+                results.masaResidual = data.peso * factor;
+                console.log("Masa Residual:", results.masaResidual);
+            } else {
+                results.masaResidual = NaN;
+            }
+
+            // Somatotipo (Heath-Carter)
+            if (data.altura && data.peso && data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_suprailiaco && data.diam_humero && data.diam_femur && data.circ_brazo_contraido && data.circ_pantorrilla) {
+                try {
+                    const sum3Pliegues = data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
+                    const X = sum3Pliegues * (170.18 / data.altura);
+                    results.endomorfia = -0.7182 + 0.1451 * X - 0.00068 * (X**2) + 0.0000014 * (X**3);
+
+                    const pliegueTricepsCm = data.pliegue_tricipital / 10;
+                    const plieguePantorrillaCm = data.pliegue_pantorrilla / 10;
+                    const circBrazoCorregido = data.circ_brazo_contraido - pliegueTricepsCm;
+                    const circPantorrillaCorregida = data.circ_pantorrilla - plieguePantorrillaCm;
+                    results.mesomorfia = (0.858 * data.diam_humero + 0.601 * data.diam_femur + 0.188 * circBrazoCorregido + 0.161 * circPantorrillaCorregida) - (0.131 * data.altura) + 4.5;
+
+                    const HWR = data.altura / Math.pow(data.peso, 1/3);
+                    if (HWR > 40.75) { results.ectomorfia = 0.732 * HWR - 28.58; }
+                    else if (HWR >= 38.25) { results.ectomorfia = 0.463 * HWR - 17.63; }
+                    else { results.ectomorfia = 0.1; }
+
+                    results.endomorfia = Math.max(0.1, results.endomorfia);
+                    results.mesomorfia = Math.max(0.1, results.mesomorfia);
+                    results.ectomorfia = Math.max(0.1, results.ectomorfia);
+                    console.log(`Somatotipo: Endomorfia=${results.endomorfia}, Mesomorfia=${results.mesomorfia}, Ectomorfia=${results.ectomorfia}`);
+                } catch (e) {
+                    console.error("Error calculating Somatotype:", e);
+                    results.endomorfia = NaN;
+                    results.mesomorfia = NaN;
+                    results.ectomorfia = NaN;
+                }
+            } else {
+                results.endomorfia = NaN;
+                results.mesomorfia = NaN;
+                results.ectomorfia = NaN;
+            }
+
+            // --- 3. Update Display ---
+            console.log('Updating display with results:', results);
+            resultElements.imc.textContent = formatResult(results.imc, 1);
+            resultElements.icc.textContent = formatResult(results.icc, 2);
+            resultElements.grasaPctActual.textContent = formatResult(results.grasaPctActual, 1);
+            resultElements.grasaPctActualSource.textContent = actualBodyFatSource;
+            resultElements.grasaPctDeseado.textContent = formatResult(results.grasaPctDeseado, 1);
+            resultElements.grasaPctDeseadoSource.textContent = desiredBodyFatSource;
+            resultElements.masaGrasa.textContent = formatResult(results.masaGrasa, 1);
+            resultElements.mlg.textContent = formatResult(results.mlg, 1);
+            resultElements.amb.textContent = formatResult(results.amb, 1);
+            resultElements.masaOsea.textContent = formatResult(results.masaOsea, 1);
+            resultElements.masaResidual.textContent = formatResult(results.masaResidual, 1);
+            resultElements.pesoIdeal.textContent = formatResult(results.pesoIdeal, 1);
+            resultElements.pesoObjetivo.textContent = !isNaN(results.pesoObjetivo) ? `${results.pesoObjetivo > 0 ? '+' : ''}${formatResult(results.pesoObjetivo, 1)}` : '---';
+            resultElements.endomorfia.textContent = formatResult(results.endomorfia, 1);
+            resultElements.mesomorfia.textContent = formatResult(results.mesomorfia, 1);
+            resultElements.ectomorfia.textContent = formatResult(results.ectomorfia, 1);
+            resultElements.mmt.textContent = formatResult(results.mmt, 1);
+
+            // Generate and display explanations and suggestions
+            explanationContent.innerHTML = generateExplanationsAndSuggestions(data, results);
+            explanationSection.style.display = 'block';
+
+            console.log('Display updated');
+            alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones.');
+        } catch (e) {
+            console.error('Error during calculations:', e);
+            alert('Ocurrió un error al realizar los cálculos. Verifica los datos ingresados.');
+        }
+    });
+
+    // Initialize results display on page load
+    console.log('Initializing results display');
+    Object.values(resultElements).forEach(el => {
+        if (el.tagName === 'SPAN') el.textContent = '---';
+        if (el.tagName === 'SMALL') el.textContent = '(No calculado/estimado)';
+    });
+    explanationSection.style.display = 'none';
+</script>
+</body>
+</html>
