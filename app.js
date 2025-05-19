@@ -200,13 +200,7 @@ nuevoClienteBtn.addEventListener('click', () => {
     console.log('Explanation section hidden');
   }
   // Limpiar gráficos
-  ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
-    const canvas = document.getElementById(canvasId);
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-  });
+  
 });
 
 // Guardar datos
