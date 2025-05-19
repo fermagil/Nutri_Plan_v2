@@ -208,6 +208,20 @@ buscarClienteInput.addEventListener('input', async () => {
   }
 });
 
+// Cargar fechas de tomas al seleccionar un cliente
+clientesResultados.addEventListener('change', async () => {
+  const clienteId = clientesResultados.value;
+  console.log('Cliente seleccionado:', clienteId);
+  if (clienteId) {
+    currentClienteId = clienteId;
+    await cargarFechasTomas(clienteId);
+  } else {
+    console.log('No cliente seleccionado, limpiando fechas');
+    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+    currentClienteId = null;
+  }
+});
+
 // Limpiar y ocultar secciones para nuevo cliente
 nuevoClienteBtn.addEventListener('click', () => {
   console.log('Nuevo Cliente clicked');
@@ -229,8 +243,7 @@ nuevoClienteBtn.addEventListener('click', () => {
     explanationSection.style.display = 'none';
     console.log('Explanation section hidden');
   }
-  // Limpiar gráficos
-  ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
+  // Lim  ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
     const canvas = document.getElementById(canvasId);
     if (canvas) {
       const ctx = canvas.getContext('2d');
@@ -299,7 +312,7 @@ guardarDatosBtn.addEventListener('click', async () => {
     if (!currentClienteId) {
       const clienteRef = await addDoc(collection(db, 'clientes'), {
         nombre,
-        nombreLowercase: normalizeText(nombre), // Normalizar sin acentos
+        nombreLowercase: normalizeText(nombre),
         genero: data.genero,
         fecha_creacion: new Date(),
         created_by: currentUser.uid,
@@ -320,22 +333,51 @@ guardarDatosBtn.addEventListener('click', async () => {
 
 // Cargar fechas de tomas
 async function cargarFechasTomas(clienteId) {
-  if (!clienteId) return;
+  if (!clienteId) {
+    console.log('No clienteId provided, skipping cargarFechasTomas');
+    return;
+  }
+  console.log('Loading tomas for clienteId:', clienteId);
   seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
   const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
   try {
     const querySnapshot = await getDocs(q);
     console.log('Tomas query snapshot size:', querySnapshot.size);
-    querySnapshot.forEach(doc => {
-      const option = document.createElement('option');
-      option.value = doc.id;
-      const fecha = doc.data().fecha.toDate ? doc.data().fecha.toDate().toLocaleString() : new Date(doc.data().fecha).toLocaleString();
-      option.textContent = fecha;
-      seleccionarFecha.appendChild(option);
-    });
     if (querySnapshot.empty) {
       console.log('No tomas found for cliente:', clienteId);
+      seleccionarFecha.innerHTML = '<option value="">No hay tomas disponibles</option>';
+      return;
     }
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      console.log('Toma found:', doc.id, 'Fecha:', data.fecha);
+      const option = document.createElement('option');
+      option.value = doc.id;
+      let fechaStr = 'Fecha inválida';
+      try {
+        if (data.fecha && data.fecha.toDate) {
+          fechaStr = data.fecha.toDate().toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        } else if (data.fecha) {
+          fechaStr = new Date(data.fecha).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+      } catch (error) {
+        console.warn('Error formatting fecha for toma:', doc.id, error);
+      }
+      option.textContent = fechaStr;
+      seleccionarFecha.appendChild(option);
+    });
   } catch (error) {
     console.error('Error fetching tomas:', error.code, error.message);
     alert('Error al cargar fechas: ' + error.message);
