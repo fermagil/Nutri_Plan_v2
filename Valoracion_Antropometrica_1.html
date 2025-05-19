@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valoración Antropométrica con Resultados</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+            font-size: 16px;
+            padding-bottom: 80px;
+        }
+
+        header {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 1.75em;
+            font-weight: 600;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #495057;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: #e9f5e9;
+            color: #388e3c;
+        }
+
+        nav ul li a.active {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        #auth-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        #user-info {
+            font-size: 16px;
+            color: #333;
+        }
+
+        #login-btn,
+        #logout-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #login-btn {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        #logout-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        main {
+            padding: 30px 15px;
+            max-width: 900px;
+            margin: 20px auto;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            box-sizing: border-box;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #388E3C;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #a5d6a7;
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            font-size: 1.5em;
+            margin-top: 25px;
+        }
+
+        section.data-section {
+            background-color: #ffffff;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+        }
+
+        p {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        a {
+            color: #0275d8;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #343a40;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        input.optional-input {
+            border-left: 3px solid #ffc107;
+        }
+
+        input.optional-input:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            border-left: 3px solid #ffc107;
+        }
+
+        button {
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+            transform: translateY(-1px);
+        }
+
+        .form-grid,
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px 25px;
+        }
+
+        .form-group,
+        .result-item {
+            margin-bottom: 5px;
+        }
+
+        .result-item label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .result-item span {
+            font-weight: 500;
+            color: #212529;
+            display: inline-block;
+            min-width: 50px;
+            margin-left: 5px;
+        }
+
+        .result-item .unit {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-left: 3px;
+        }
+
+        .result-item small {
+            display: block;
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-top: -2px;
+        }
+
+        #explanation-section {
+            background-color: #f1f8f1;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+            box-sizing: border-box;
+        }
+
+        #explanation-section p {
+            margin: 10px 0;
+            color: #343a40;
+        }
+
+        #explanation-section ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        #explanation-section ul li {
+            margin-bottom: 8px;
+        }
+
+        #explanation-section strong {
+            color: #2e7d32;
+        }
+
+        footer {
+            background-color: #e9ecef;
+            text-align: center;
+            padding: 25px 20px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                position: static;
+            }
+
+            .logo a {
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+
+            nav ul {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 5px 10px 5px 0;
+            }
+
+            main {
+                padding-top: 20px;
+                max-width: 95%;
+            }
+
+            .form-grid,
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            h3 {
+                font-size: 1.3em;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            select {
+                padding: 10px 12px;
+            }
+        }
+
+        #explanation-section canvas {
+            max-width: 100%;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .chart-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+            transition: transform 0.2s ease;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-3px);
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+
+        .chart-container:has(#weight-chart),
+        .chart-container:has(#imc-chart),
+        .chart-container:has(#icc-chart),
+        .chart-container:has(#bodyfat-chart),
+        .chart-container:has(#typology-char) {
+            max-width: 800px;
+        }
+
+        #explanation-section {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .chart-container:has(#somatotype-image) {
+            max-width: 500px;
+            max-height: 800px;
+            position: relative;
+        }
+
+        .chart-container img#somatotype-image {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .chart-container canvas#somatotype-point-canvas,
+        .chart-container canvas#typology-point-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        #typology-chart-wrapper {
+            border: 2px solid white;
+            padding: 10px;
+            background-color: #f8f9fa;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #typology-chart {
+            width: 100%;
+            height: 400px;
+        }
+
+        section.data-section.anthropometric-section {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        section.data-section.anthropometric-section h2 {
+            font-size: 1.6em;
+            margin-bottom: 12px;
+        }
+
+        section.data-section.anthropometric-section h3 {
+            font-size: 1.3em;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        section.data-section.anthropometric-section small {
+            margin-bottom: 8px;
+            font-size: 0.75em;
+        }
+
+        section.data-section.anthropometric-section .form-grid {
+            gap: 10px 15px;
+        }
+
+        section.data-section.anthropometric-section .form-group {
+            margin-bottom: 2px;
+        }
+
+        section.data-section.anthropometric-section label {
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+
+        section.data-section.anthropometric-section input[type="number"] {
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            border-radius: 4px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #212529;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            line-height: 1.4;
+            pointer-events: none;
+            display: none;
+            z-index: 10;
+            white-space: nowrap;
+            border: 1px solid #ced4da;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-container {
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px;
+            background-color: #f1f8f1;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+            color: #343a40;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            section.data-section.anthropometric-section {
+                padding: 10px 15px;
+            }
+
+            section.data-section.anthropometric-section .form-grid {
+                gap: 8px 10px;
+            }
+
+            section.data-section.anthropometric-section input[type="number"] {
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="#">NutriPlan_v2</a></div>
+        <div id="auth-controls">
+            <span id="user-info"> </span>
+            <button id="login-btn">Iniciar Sesión con Google</button>
+            <button id="logout-btn" style="display: none;">Cerrar Sesión</button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#" class="active">Valoración Antropométrica</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Valoración Antropométrica</h1>
+        <form id="anthropometry-form" style="display: none;">
+            <section class="data-section">
+                <h2>Datos Personales</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="buscar_cliente">Buscar Cliente:</label>
+                        <input type="text" id="buscar_cliente" placeholder="Escribe el nombre del cliente">
+                        <button type="button" id="nuevo_cliente">Nuevo Cliente</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="seleccionar_fecha">Fecha de Toma:</label>
+                        <select id="seleccionar_fecha" name="seleccionar_fecha">
+                            <option value="">Seleccionar fecha...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" id="fecha" name="fecha">
+                    </div>
+                    <div class="form-group">
+                        <label for="genero">Género:</label>
+                        <select id="genero" name="genero" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="femenino">Femenino</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edad">Edad (años):</label>
+                        <input type="number" id="edad" name="edad" min="1" placeholder="Años cumplidos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Peso Actual (kg):</label>
+                        <input type="number" id="peso" name="peso" step="0.1" min="0" placeholder="Ej: 70.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="altura">Altura (cm):</label>
+                        <input type="number" id="altura" name="altura" step="0.1" min="0" placeholder="Ej: 175.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="es_deportista">¿Eres deportista? <small>(3/5 veces/sem)</small></label>
+                        <select id="es_deportista" name="es_deportista" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="grasa_actual_conocida">% Grasa Actual (Opcional):</label>
+                        <input type="number" id="grasa_actual_conocida" name="grasa_actual_conocida" step="0.1" min="0" max="70" placeholder="Si lo conoce, ej: 15.5" class="optional-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="grasa_deseada">% Grasa Deseado (Opcional):</label>
+                        <input type="number" id="grasa_deseada" name="grasa_deseada" step="0.1" min="3" max="50" placeholder="Objetivo, ej: 12.0" class="optional-input">
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section anthropometric-section">
+                <h2>Medidas Antropométricas</h2>
+                <small style="display:block; margin-bottom: 15px; color: #6c757d;">Introduzca las medidas para calcular el % de grasa si no lo proporcionó. Los pliegues son opcionales si proporciona circunferencias.</small>
+                <h3>Pliegues (mm)</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="pliegue_tricipital">P. tricipital:</label>
+                        <input type="number" id="pliegue_tricipital" name="pliegue_tricipital" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_subescapular">P. Subescapular:</label>
+                        <input type="number" id="pliegue_subescapular" name="pliegue_subescapular" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_suprailiaco">P. Suprailiaco:</label>
+                        <input type="number" id="pliegue_suprailiaco" name="pliegue_suprailiaco" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_bicipital">P. Bicipital:</label>
+                        <input type="number" id="pliegue_bicipital" name="pliegue_bicipital" step="0.1" min="0" placeholder="mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="pliegue_pantorrilla">P. Pantorrilla:</label>
+                        <input type="number" id="pliegue_pantorrilla" name="pliegue_pantorrilla" step="0.1" min="0" placeholder="mm">
+                    </div>
+                </div>
+
+                <h3>Circunferencias (cm)</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="circ_cintura">Cintura:</label>
+                        <input type="number" id="circ_cintura" name="circ_cintura" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_cadera">Cadera:</label>
+                        <input type="number" id="circ_cadera" name="circ_cadera" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_cuello">Cuello:</label>
+                        <input type="number" id="circ_cuello" name="circ_cuello" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_pantorrilla">Pantorrilla:</label>
+                        <input type="number" id="circ_pantorrilla" name="circ_pantorrilla" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_brazo">Brazo (relajado):</label>
+                        <input type="number" id="circ_brazo" name="circ_brazo" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="circ_brazo_contraido">Brazo contraído:</label>
+                        <input type="number" id="circ_brazo_contraido" name="circ_brazo_contraido" step="0.1" min="0" placeholder="cm">
+                    </div>
+                </div>
+
+                <h3>Diámetros (cm)</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="diam_humero">Húmero:</label>
+                        <input type="number" id="diam_humero" name="diam_humero" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="diam_femur">Fémur:</label>
+                        <input type="number" id="diam_femur" name="diam_femur" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="diam_muneca">Muñeca:</label>
+                        <input type="number" id="diam_muneca" name="diam_muneca" step="0.1" min="0" placeholder="cm">
+                    </div>
+                    <div style="text-align: center;">
+                        <button type="submit">Calcular Resultados</button>
+                        <button type="button" id="guardar_datos" style="display: none;">Guardar Datos</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section" id="results-section">
+                <h2>Resultados</h2>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <label>Edad Metabólica:</label>
+                        <span id="result-edadmetabolica">---</span>
+                        <span class="unit">años</span>
+                        <small id="edadmetabolica-source">(No calculado)</small>
+                    </div>
+                    <div class="result-item">
+                        <label>Índice de Masa Corporal (IMC):</label>
+                        <span id="result-imc">---</span><span class="unit">kg/m²</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Índice Cintura-Cadera (ICC):</label>
+                        <span id="result-icc">---</span>
+                    </div>
+                    <div class="result-item">
+                        <label>% Grasa Corporal Actual:</label>
+                        <span id="result-grasa-pct-actual">---</span><span class="unit">%</span>
+                        <small id="grasa-pct-actual-source">(No calculado)</small>
+                    </div>
+                    <div class="result-item">
+                        <label>% Grasa Corporal Deseado:</label>
+                        <span id="result-grasa-pct-deseado">---</span><span class="unit">%</span>
+                        <small id="grasa-pct-deseado-source">(No estimado)</small>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Grasa:</label>
+                        <span id="result-masa-grasa">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Magra (MLG):</label>
+                        <span id="result-mlg">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Índice de Masa Libre de Grasa (IMLG):</label>
+                        <span id="result-imlg">---</span><span class="unit">kg/m²</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Índice de Masa Grasa (IMG):</label>
+                        <span id="result-img">---</span><span class="unit">kg/m²</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Tipología del Cuerpo:</label>
+                        <span id="result-tipologia">---</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Área Muscular Brazo (AMB):</label>
+                        <span id="result-amb">---</span><span class="unit">cm²</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Ósea:</label>
+                        <span id="result-masa-osea">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Residual:</label>
+                        <span id="result-masa-residual">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Peso Ideal (según % Grasa):</label>
+                        <span id="result-peso-ideal">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Peso a Perder/Ganar:</label>
+                        <span id="result-peso-objetivo">---</span><span class="unit">kg</span>
+                    </div>
+                    <div class="result-item">
+                        <label>Somatotipo:</label>
+                        <span id="result-somatotipo">---</span>
+                        <small>(Endo: Meso: Ecto)</small>
+                    </div>
+                    <div class="result-item">
+                        <label>Masa Muscular Total (Est.):</label>
+                        <span id="result-mmt">---</span><span class="unit">kg</span>
+                        <small>(Basado en AMB)</small>
+                    </div>
+                </div>
+                
+            </section>
+
+            <section class="data-section" id="explanation-section" style="display: none;">
+                <h2>Explicación de los Resultados y Sugerencias</h2>
+                <div id="explanation-content"></div>
+            </section>
+        </form>
+    </main>
+
+    <footer>
+        <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+            authDomain: "nutriplanv2.firebaseapp.com",
+            projectId: "nutriplanv2",
+            storageBucket: "nutriplanv2.firebasestorage.app",
+            messagingSenderId: "653707489758",
+            appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+            measurementId: "G-NWER69E8B6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.firestoreDb = db;
+    </script>
+    <script type="module" src="app.js"></script>
+    <script type="module" src="calculations.js"></script>
+</body>
+</html>
