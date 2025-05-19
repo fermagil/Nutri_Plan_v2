@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, limit } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -19,7 +19,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Exportar instancias para uso en otros módulos
+// Exportar instancias
 export { app, db, auth, provider };
 
 // Referencias al formulario y elementos
@@ -45,48 +45,47 @@ if (!clientesResultados) {
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
-    await signInWithRedirect(auth, provider);
+    console.log('Initiating signInWithPopup');
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log('Usuario autenticado:', user.displayName, user.email, user.uid);
+    userInfo.textContent = `Bienvenido, ${user.displayName}`;
+    return user;
   } catch (error) {
+    console.error('Sign-in error:', error.code, error.message);
     let errorMessage;
     switch (error.code) {
+      case 'auth/popup-closed-by-user':
+        errorMessage = 'La ventana de inicio de sesión fue cerrada. Por favor, intenta de nuevo.';
+        break;
       case 'auth/network-request-failed':
         errorMessage = 'Error de red. Verifica tu conexión e intenta de nuevo.';
+        break;
+      case 'auth/cancelled-popup-request':
+        errorMessage = 'Se canceló la solicitud de inicio de sesión.';
+        break;
+      case 'auth/unauthorized-domain':
+        errorMessage = 'Dominio no autorizado. Verifica la configuración en Firebase.';
         break;
       default:
         errorMessage = `Error al iniciar sesión: ${error.message}`;
     }
-    console.error('Error al iniciar sesión:', error);
     alert(errorMessage);
     throw error;
   }
 }
 
-// Manejar resultado del redirect
-getRedirectResult(auth)
-  .then((result) => {
-    console.log('Redirect result:', result);
-    if (result) {
-      const user = result.user;
-      console.log('Usuario autenticado:', user.displayName, user.email);
-      userInfo.textContent = `Bienvenido, ${user.displayName}`;
-    } else {
-      console.log('No redirect result');
-    }
-  })
-  .catch((error) => {
-    console.error('Redirect error:', error.code, error.message);
-    alert('Error en el inicio de sesión: ' + error.message);
-  });
-
 // Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
+    console.log('Auth state: User signed in', user.displayName, user.email);
     userInfo.textContent = `Bienvenido, ${user.displayName}`;
     loginBtn.style.display = 'none';
     logoutBtn.style.display = 'inline-block';
     form.style.display = 'block';
   } else {
+    console.log('Auth state: No user signed in');
     userInfo.textContent = 'Por favor, inicia sesión';
     loginBtn.style.display = 'inline-block';
     logoutBtn.style.display = 'none';
@@ -99,6 +98,7 @@ onAuthStateChanged(auth, (user) => {
 
 // Iniciar sesión con Google al hacer clic en el botón
 loginBtn.addEventListener('click', async () => {
+  console.log('Login button clicked');
   await signInWithGoogle();
 });
 
