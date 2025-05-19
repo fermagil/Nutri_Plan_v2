@@ -170,7 +170,7 @@ logoutBtn.addEventListener('click', async () => {
 // Búsqueda de clientes
 buscarClienteInput.addEventListener('input', async () => {
   if (!currentUser) {
-    console.log('No user Moderator, skipping search');
+    console.log('No user authenticated, skipping search');
     return;
   }
   const searchTerm = normalizeText(buscarClienteInput.value);
@@ -350,7 +350,7 @@ async function cargarFechasTomas(clienteId) {
     console.log('No clienteId provided, skipping cargarFechasTomas');
     return;
   }
-  console.log('Loading tomas for clienteId:', clienteId); // Corregido: clientId -> clienteId
+  console.log('Loading tomas for clienteId:', clienteId);
   seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
   const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
   try {
@@ -450,6 +450,7 @@ async function cargarDatosToma(clienteId, tomaId) {
     // Poblar resultados
     if (data.resultados) {
       const resultados = data.resultados;
+      console.log('Claves disponibles en resultados:', Object.keys(resultados));
 
       // Mapear claves de resultados a IDs de elementos
       const resultMappings = {
