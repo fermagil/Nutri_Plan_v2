@@ -447,11 +447,68 @@ async function cargarDatosToma(clienteId, tomaId) {
     document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
     document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
 
+    // Poblar resultados
+    if (data.resultados) {
+      const resultados = data.resultados;
+
+      // Mapear claves de resultados a IDs de elementos
+      const resultMappings = {
+        'imc': { id: 'result-imc', unit: 'kg/m²', format: (v) => v.toFixed(1) },
+        'icc': { id: 'result-icc', unit: '', format: (v) => v.toFixed(2) },
+        '% Grasa Corporal Actual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => v.toFixed(1) },
+        'Masa Grasa': { id: 'result-masa-grasa', unit: 'kg', format: (v) => v.toFixed(1) },
+        'Masa Magra (MLG)': { id: 'result-mlg', unit: 'kg', format: (v) => v.toFixed(1) },
+        'Índice de Masa Libre de Grasa (IMLG)': { id: 'result-imlg', unit: 'kg/m²', format: (v) => v.toFixed(1) },
+        'Índice de Masa Grasa (IMG)': { id: 'result-img', unit: 'kg/m²', format: (v) => v.toFixed(1) },
+        'Tipología del Cuerpo': { id: 'result-tipologia', unit: '', format: (v) => v },
+        'Área Muscular Brazo (AMB)': { id: 'result-amb', unit: 'cm²', format: (v) => v.toFixed(0) },
+        'Masa Ósea': { id: 'result-masa-osea', unit: 'kg', format: (v) => v.toFixed(1) },
+        'Masa Residual': { id: 'result-masa-residual', unit: 'kg', format: (v) => v.toFixed(1) },
+        'Peso Ideal (según % Grasa)': { id: 'result-peso-ideal', unit: 'kg', format: (v) => v.toFixed(1) },
+        'Peso a Perder/Ganar': { id: 'result-peso-objetivo', unit: 'kg', format: (v) => v.toFixed(1) },
+        'Somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => v },
+        'Masa Muscular Total (Est.)': { id: 'result-mmt', unit: 'kg', format: (v) => v.toFixed(1) },
+        'Edad Metabólica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => v.toFixed(0) }
+      };
+
+      // Asignar valores a los elementos de resultados
+      Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
+        const element = document.getElementById(id);
+        if (element) {
+          const value = resultados[key];
+          if (value !== undefined && value !== null) {
+            element.textContent = `${format(value)} ${unit}`.trim();
+          } else {
+            console.warn(`No se encontró valor para ${key} en resultados`);
+            element.textContent = '---';
+          }
+        } else {
+          console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
+        }
+      });
+
+      // Campos estáticos para fuentes
+      const grasaSource = document.getElementById('result-grasa-pct-actual-source');
+      if (grasaSource) grasaSource.textContent = '(Calculado: Durnin-Womersley)';
+      const edadSource = document.getElementById('result-edadmetabolica-source');
+      if (edadSource) edadSource.textContent = '(Estimado según edad)';
+    } else {
+      console.log('No hay resultados en la toma');
+      resultElementIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = '---';
+      });
+    }
+
     // Mostrar botón de guardar si es necesario
     guardarDatosBtn.style.display = 'inline-block';
   } catch (error) {
     console.error('Error al cargar datos de la toma:', error.code, error.message);
     alert('Error al cargar los datos: ' + error.message);
     form.reset();
+    resultElementIds.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = '---';
+    });
   }
 }
