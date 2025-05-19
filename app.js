@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, limit } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -45,22 +45,12 @@ if (!clientesResultados) {
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    console.log('Usuario autenticado:', user.displayName, user.email);
-    userInfo.textContent = `Bienvenido, ${user.displayName}`;
-    return user;
+    await signInWithRedirect(auth, provider); // Use Redirect instead of Popup
   } catch (error) {
     let errorMessage;
     switch (error.code) {
-      case 'auth/popup-closed-by-user':
-        errorMessage = 'La ventana de inicio de sesión fue cerrada. Por favor, intenta de nuevo.';
-        break;
       case 'auth/network-request-failed':
         errorMessage = 'Error de red. Verifica tu conexión e intenta de nuevo.';
-        break;
-      case 'auth/cancelled-popup-request':
-        errorMessage = 'Se canceló la solicitud de inicio de sesión.';
         break;
       default:
         errorMessage = `Error al iniciar sesión: ${error.message}`;
@@ -70,6 +60,19 @@ async function signInWithGoogle() {
     throw error;
   }
 }
+/ Handle redirect result
+getRedirectResult(auth)
+  .then((result) => {
+    if (result) {
+      const user = result.user;
+      console.log('Usuario autenticado:', user.displayName, user.email);
+      userInfo.textContent = `Bienvenido, ${user.displayName}`;
+    }
+  })
+  .catch((error) => {
+    console.error('Error en redirect:', error);
+    alert('Error en el inicio de sesión: ' + error.message);
+  });
 
 // Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
@@ -89,6 +92,7 @@ onAuthStateChanged(auth, (user) => {
     currentClienteId = null;
   }
 });
+
 
 // Iniciar sesión con Google al hacer clic en el botón
 loginBtn.addEventListener('click', async () => {
