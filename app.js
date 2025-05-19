@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, limit } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -19,7 +19,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Exportar instancias
+// Exportar instancias para uso en otros módulos
 export { app, db, auth, provider };
 
 // Referencias al formulario y elementos
@@ -34,6 +34,30 @@ const userInfo = document.getElementById('user-info');
 let currentClienteId = null;
 let currentUser = null;
 
+// Lista de elementos de resultados
+const resultElementIds = [
+  'result-imc',
+  'result-icc',
+  'result-grasa-pct-actual',
+  'result-grasa-pct-actual-source',
+  'result-grasa-pct-deseado',
+  'result-grasa-pct-deseado-source',
+  'result-masa-grasa',
+  'result-mlg',
+  'result-amb',
+  'result-masa-osea',
+  'result-masa-residual',
+  'result-peso-ideal',
+  'result-peso-objetivo',
+  'result-mmt',
+  'result-imlg',
+  'result-img',
+  'result-tipologia',
+  'result-edadmetabolica',
+  'result-edadmetabolica-source',
+  'result-somatotipo'
+];
+
 // Crear select para resultados de búsqueda
 let clientesResultados = document.getElementById('clientes_resultados');
 if (!clientesResultados) {
@@ -45,24 +69,15 @@ if (!clientesResultados) {
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
-    console.log('Initiating signInWithPopup');
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    console.log('Usuario autenticado:', user.displayName, user.email, user.uid);
-    userInfo.textContent = `Bienvenido, ${user.displayName}`;
-    return user;
+    console.log('Initiating signInWithRedirect');
+    await signInWithRedirect(auth, provider);
+    console.log('Redirect initiated');
   } catch (error) {
     console.error('Sign-in error:', error.code, error.message);
     let errorMessage;
     switch (error.code) {
-      case 'auth/popup-closed-by-user':
-        errorMessage = 'La ventana de inicio de sesión fue cerrada. Por favor, intenta de nuevo.';
-        break;
       case 'auth/network-request-failed':
         errorMessage = 'Error de red. Verifica tu conexión e intenta de nuevo.';
-        break;
-      case 'auth/cancelled-popup-request':
-        errorMessage = 'Se canceló la solicitud de inicio de sesión.';
         break;
       case 'auth/unauthorized-domain':
         errorMessage = 'Dominio no autorizado. Verifica la configuración en Firebase.';
@@ -74,6 +89,34 @@ async function signInWithGoogle() {
     throw error;
   }
 }
+
+// Manejar resultado del redirect
+getRedirectResult(auth)
+  .then((result) => {
+    console.log('Redirect result:', result);
+    if (result) {
+      const user = result.user;
+      console.log('Usuario autenticado:', user.displayName, user.email, user.uid);
+      userInfo.textContent = `Bienvenido, ${user.displayName}`;
+    } else {
+      console.log('No redirect result');
+    }
+  })
+  .catch((error) => {
+    console.error('Redirect error:', error.code, error.message);
+    let errorMessage;
+    switch (error.code) {
+      case 'auth/unauthorized-domain':
+        errorMessage = 'Dominio no autorizado. Verifica la configuración en Firebase.';
+        break;
+      case 'auth/invalid-credential':
+        errorMessage = 'Credenciales inválidas. Intenta de nuevo.';
+        break;
+      default:
+        errorMessage = `Error en el redirect: ${error.message}`;
+    }
+    alert(errorMessage);
+  });
 
 // Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
@@ -135,91 +178,36 @@ buscarClienteInput.addEventListener('input', async () => {
   });
 });
 
-clientesResultados.addEventListener('change', async () => {
-  if (!currentUser) return;
-  currentClienteId = clientesResultados.value;
-  if (currentClienteId) {
-    await cargarFechasTomas(currentClienteId);
-    await cargarDatosUltimaToma(currentClienteId);
-  }
-});
-
-// Nuevo cliente
+// Limpiar y ocultar secciones para nuevo cliente
 nuevoClienteBtn.addEventListener('click', () => {
-  if (!currentUser) return;
+  console.log('Nuevo Cliente clicked');
   currentClienteId = null;
   form.reset();
+  buscarClienteInput.value = '';
+  clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
+  clientesResultados.style.display = 'none';
   seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
   guardarDatosBtn.style.display = 'none';
-  clientesResultados.style.display = 'none';
-  document.getElementById('nombre').focus();
-});
-
-// Cargar fechas de tomas
-async function cargarFechasTomas(clienteId) {
-  if (!currentUser) return;
-  const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
-  const querySnapshot = await getDocs(q);
-  let options = '<option value="">Seleccionar fecha...</option>';
-  querySnapshot.forEach(doc => {
-    const fecha = doc.data().fecha.toDate().toISOString().split('T')[0];
-    options += `<option value="${doc.id}">${fecha}</option>`;
+  // Limpiar sección de resultados
+  resultElementIds.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = '---';
   });
-  seleccionarFecha.innerHTML = options;
-}
-
-// Poblar formulario
-async function populateForm(data) {
-  document.getElementById('nombre').value = data.nombre || '';
-  document.getElementById('fecha').value = data.fecha?.toDate().toISOString().split('T')[0] || '';
-  document.getElementById('genero').value = data.genero || '';
-  document.getElementById('edad').value = data.edad || '';
-  document.getElementById('peso').value = data.peso || '';
-  document.getElementById('altura').value = data.altura || '';
-  document.getElementById('es_deportista').value = data.es_deportista || '';
-  document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
-  document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
-  if (data.medidas) {
-    document.getElementById('pliegue_tricipital').value = data.medidas.pliegues?.tricipital || '';
-    document.getElementById('pliegue_subescapular').value = data.medidas.pliegues?.subescapular || '';
-    document.getElementById('pliegue_suprailiaco').value = data.medidas.pliegues?.suprailiaco || '';
-    document.getElementById('pliegue_bicipital').value = data.medidas.pliegues?.bicipital || '';
-    document.getElementById('pliegue_pantorrilla').value = data.medidas.pliegues?.pantorrilla || '';
-    document.getElementById('circ_cintura').value = data.medidas.circunferencias?.cintura || '';
-    document.getElementById('circ_cadera').value = data.medidas.circunferencias?.cadera || '';
-    document.getElementById('circ_cuello').value = data.medidas.circunferencias?.cuello || '';
-    document.getElementById('circ_pantorrilla').value = data.medidas.circunferencias?.pantorrilla || '';
-    document.getElementById('circ_brazo').value = data.medidas.circunferencias?.brazo || '';
-    document.getElementById('circ_brazo_contraido').value = data.medidas.circunferencias?.brazo_contraido || '';
-    document.getElementById('diam_humero').value = data.medidas.diametros?.humero || '';
-    document.getElementById('diam_femur').value = data.medidas.diametros?.femur || '';
-    document.getElementById('diam_muneca').value = data.medidas.diametros?.muneca || '';
+  // Ocultar sección de explicación
+  const explanationSection = document.getElementById('explanation-section');
+  if (explanationSection) {
+    explanationSection.style.display = 'none';
+    console.log('Explanation section hidden');
   }
-  if (data.resultados) {
-    console.log('Resultados:', data.resultados);
-  }
-}
-
-// Cargar datos de una toma
-seleccionarFecha.addEventListener('change', async () => {
-  if (!currentUser || !currentClienteId || !seleccionarFecha.value) return;
-  const tomaDoc = await getDoc(doc(db, `clientes/${currentClienteId}/tomas`, seleccionarFecha.value));
-  if (tomaDoc.exists()) {
-    await populateForm(tomaDoc.data());
-  }
+  // Limpiar gráficos
+  ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
+    const canvas = document.getElementById(canvasId);
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  });
 });
-
-// Cargar datos de la última toma
-async function cargarDatosUltimaToma(clienteId) {
-  if (!currentUser) return;
-  const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'), limit(1));
-  const querySnapshot = await getDocs(q);
-  if (!querySnapshot.empty) {
-    const tomaDoc = querySnapshot.docs[0];
-    seleccionarFecha.value = tomaDoc.id;
-    await populateForm(tomaDoc.data());
-  }
-}
 
 // Guardar datos
 guardarDatosBtn.addEventListener('click', async () => {
@@ -274,11 +262,10 @@ guardarDatosBtn.addEventListener('click', async () => {
         muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
       },
     },
-    resultados: {
-      imc: parseFloat((peso / (altura / 100) ** 2).toFixed(2)),
-    },
+    resultados: window.calculatedResults || {} // Usar resultados calculados de calculations.js
   };
   try {
+    console.log('Datos a guardar:', JSON.stringify(data, null, 2));
     if (!currentClienteId) {
       const clienteRef = await addDoc(collection(db, 'clientes'), {
         nombre,
@@ -288,7 +275,8 @@ guardarDatosBtn.addEventListener('click', async () => {
       });
       currentClienteId = clienteRef.id;
     }
-    await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
+    const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
+    console.log('Documento guardado con ID:', tomaRef.id);
     alert('Datos guardados exitosamente.');
     await cargarFechasTomas(currentClienteId);
     guardarDatosBtn.style.display = 'none';
@@ -297,3 +285,18 @@ guardarDatosBtn.addEventListener('click', async () => {
     alert('Error al guardar los datos: ' + error.message);
   }
 });
+
+// Cargar fechas de tomas (función auxiliar, asumida del código original)
+async function cargarFechasTomas(clienteId) {
+  if (!clienteId) return;
+  seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+  const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach(doc => {
+    const option = document.createElement('option');
+    option.value = doc.id;
+    const fecha = doc.data().fecha.toDate ? doc.data().fecha.toDate().toLocaleString() : new Date(doc.data().fecha).toLocaleString();
+    option.textContent = fecha;
+    seleccionarFecha.appendChild(option);
+  });
+}
