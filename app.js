@@ -159,23 +159,43 @@ logoutBtn.addEventListener('click', async () => {
 
 // Búsqueda de clientes
 buscarClienteInput.addEventListener('input', async () => {
-  if (!currentUser) return;
+  if (!currentUser) {
+    console.log('No user authenticated, skipping search');
+    return;
+  }
   const searchTerm = buscarClienteInput.value.trim().toLowerCase();
+  console.log('Search term:', searchTerm);
   clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
   if (searchTerm.length < 2) {
     seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
     clientesResultados.style.display = 'none';
+    console.log('Search term too short (< 2), hiding resultados');
     return;
   }
   clientesResultados.style.display = 'block';
-  const q = query(collection(db, 'clientes'), where('nombre', '>=', searchTerm), where('nombre', '<=', searchTerm + '\uf8ff'));
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach(doc => {
-    const option = document.createElement('option');
-    option.value = doc.id;
-    option.textContent = doc.data().nombre;
-    clientesResultados.appendChild(option);
-  });
+  console.log('Executing Firestore query for clientes');
+  const q = query(collection(db, 'clientes'), 
+    where('nombreLowercase', '>=', searchTerm), 
+    where('nombreLowercase', '<=', searchTerm + '\uf8ff'));
+  try {
+    const querySnapshot = await getDocs(q);
+    console.log('Query snapshot size:', querySnapshot.size);
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      console.log('Found client:', doc.id, data.nombre);
+      const option = document.createElement('option');
+      option.value = doc.id;
+      option.textContent = data.nombre;
+      clientesResultados.appendChild(option);
+    });
+    if (querySnapshot.empty) {
+      console.log('No clients found for search term:', searchTerm);
+      clientesResultados.innerHTML = '<option value="">No se encontraron clientes...</option>';
+    }
+  } catch (error) {
+    console.error('Error fetching clients:', error.code, error.message);
+    alert('Error al buscar clientes: ' + error.message);
+  }
 });
 
 // Limpiar y ocultar secciones para nuevo cliente
@@ -200,7 +220,13 @@ nuevoClienteBtn.addEventListener('click', () => {
     console.log('Explanation section hidden');
   }
   // Limpiar gráficos
-  
+  ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
+    const canvas = document.getElementById(canvasId);
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  });
 });
 
 // Guardar datos
@@ -256,18 +282,20 @@ guardarDatosBtn.addEventListener('click', async () => {
         muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
       },
     },
-    resultados: window.calculatedResults || {} // Usar resultados calculados de calculations.js
+    resultados: window.calculatedResults || {}
   };
   try {
     console.log('Datos a guardar:', JSON.stringify(data, null, 2));
     if (!currentClienteId) {
       const clienteRef = await addDoc(collection(db, 'clientes'), {
         nombre,
+        nombreLowercase: nombre.toLowerCase(), // Añadir campo para búsqueda
         genero: data.genero,
         fecha_creacion: new Date(),
         created_by: currentUser.uid,
       });
       currentClienteId = clienteRef.id;
+      console.log('Cliente creado con ID:', currentClienteId);
     }
     const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
     console.log('Documento guardado con ID:', tomaRef.id);
@@ -280,17 +308,26 @@ guardarDatosBtn.addEventListener('click', async () => {
   }
 });
 
-// Cargar fechas de tomas (función auxiliar, asumida del código original)
+// Cargar fechas de tomas
 async function cargarFechasTomas(clienteId) {
   if (!clienteId) return;
   seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
   const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach(doc => {
-    const option = document.createElement('option');
-    option.value = doc.id;
-    const fecha = doc.data().fecha.toDate ? doc.data().fecha.toDate().toLocaleString() : new Date(doc.data().fecha).toLocaleString();
-    option.textContent = fecha;
-    seleccionarFecha.appendChild(option);
-  });
+  try {
+    const querySnapshot = await getDocs(q);
+    console.log('Tomas query snapshot size:', querySnapshot.size);
+    querySnapshot.forEach(doc => {
+      const option = document.createElement('option');
+      option.value = doc.id;
+      const fecha = doc.data().fecha.toDate ? doc.data().fecha.toDate().toLocaleString() : new Date(doc.data().fecha).toLocaleString();
+      option.textContent = fecha;
+      seleccionarFecha.appendChild(option);
+    });
+    if (querySnapshot.empty) {
+      console.log('No tomas found for cliente:', clienteId);
+    }
+  } catch (error) {
+    console.error('Error fetching tomas:', error.code, error.message);
+    alert('Error al cargar fechas: ' + error.message);
+  }
 }
