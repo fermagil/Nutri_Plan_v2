@@ -170,7 +170,7 @@ logoutBtn.addEventListener('click', async () => {
 // Búsqueda de clientes
 buscarClienteInput.addEventListener('input', async () => {
   if (!currentUser) {
-    console.log('No user authenticated, skipping search');
+    console.log('No user Moderator, skipping search');
     return;
   }
   const searchTerm = normalizeText(buscarClienteInput.value);
@@ -350,7 +350,7 @@ async function cargarFechasTomas(clienteId) {
     console.log('No clienteId provided, skipping cargarFechasTomas');
     return;
   }
-  console.log('Loading tomas for clienteId:', clientId);
+  console.log('Loading tomas for clienteId:', clienteId); // Corregido: clientId -> clienteId
   seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
   const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
   try {
