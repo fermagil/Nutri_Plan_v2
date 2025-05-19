@@ -76,6 +76,14 @@ const normalizeText = (text) => {
     .trim();
 };
 
+// Función para convertir cadenas numéricas a números
+const toNumber = (value) => {
+  if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+    return parseFloat(value);
+  }
+  return value;
+};
+
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
@@ -454,22 +462,22 @@ async function cargarDatosToma(clienteId, tomaId) {
 
       // Mapear claves de resultados a IDs de elementos
       const resultMappings = {
-        'imc': { id: 'result-imc', unit: 'kg/m²', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' ? v.toFixed(2) : '---' },
-        '% Grasa Corporal Actual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Masa Grasa': { id: 'result-masa-grasa', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Masa Magra (MLG)': { id: 'result-mlg', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Índice de Masa Libre de Grasa (IMLG)': { id: 'result-imlg', unit: 'kg/m²', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Índice de Masa Grasa (IMG)': { id: 'result-img', unit: 'kg/m²', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Tipología del Cuerpo': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
-        'Área Muscular Brazo (AMB)': { id: 'result-amb', unit: 'cm²', format: (v) => typeof v === 'number' ? v.toFixed(0) : '---' },
-        'Masa Ósea': { id: 'result-masa-osea', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Masa Residual': { id: 'result-masa-residual', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Peso Ideal (según % Grasa)': { id: 'result-peso-ideal', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Peso a Perder/Ganar': { id: 'result-peso-objetivo', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => v || '---' },
-        'Masa Muscular Total (Est.)': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
-        'Edad Metabólica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' ? v.toFixed(0) : '---' }
+        'imc': { id: 'result-imc', unit: 'kg/m²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+        'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'masaGrasa': { id: 'result-masa-grasa', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'mlg': { id: 'result-mlg', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'imlg': { id: 'result-imlg', unit: 'kg/m²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'img': { id: 'result-img', unit: 'kg/m²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
+        'amb': { id: 'result-amb', unit: 'cm²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+        'masaOsea': { id: 'result-masa-osea', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'masaResidual': { id: 'result-masa-residual', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'pesoIdeal': { id: 'result-peso-ideal', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'pesoObjetivo': { id: 'result-peso-objetivo', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
+        'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'edadmetabolica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' }
       };
 
       // Asignar valores a los elementos de resultados
@@ -490,9 +498,9 @@ async function cargarDatosToma(clienteId, tomaId) {
 
       // Campos estáticos para fuentes
       const grasaSource = document.getElementById('result-grasa-pct-actual-source');
-      if (grasaSource) grasaSource.textContent = '(Calculado: Durnin-Womersley)';
+      if (grasaSource) grasaSource.textContent = resultados.grasaPctActualSource || '(Calculado: Durnin-Womersley)';
       const edadSource = document.getElementById('result-edadmetabolica-source');
-      if (edadSource) edadSource.textContent = '(Estimado según edad)';
+      if (edadSource) edadSource.textContent = resultados.edadmetabolicaSource || '(Estimado según edad)';
     } else {
       console.log('No hay resultados en la toma');
       resultElementIds.forEach(id => {
