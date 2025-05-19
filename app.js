@@ -54,7 +54,7 @@ const resultElementIds = [
   'result-img',
   'result-tipologia',
   'result-edadmetabolica',
-  'result-edadmetabolica-source',
+  'edadmetabolica-source',
   'result-somatotipo'
 ];
 
