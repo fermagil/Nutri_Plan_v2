@@ -3798,7 +3798,36 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						results.mesomorfia = NaN;
 						results.ectomorfia = NaN;
 					}
-
+					// Store results for app.js
+					    window.calculatedResults = {
+					      imc: formatResult(results.imc, 1),
+					      icc: formatResult(results.icc, 2),
+					      grasaPctActual: formatResult(results.grasaPctActual, 1),
+					      grasaPctActualSource: actualBodyFatSource || '(No calculado)',
+					      grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
+					      grasaPctDeseadoSource: desiredBodyFatSource || '(No estimado)',
+					      masaGrasa: formatResult(results.masaGrasa, 1),
+					      mlg: formatResult(results.mlg, 1),
+					      amb: formatResult(results.amb, 1),
+					      masaOsea: formatResult(results.masaOsea, 1),
+					      masaResidual: formatResult(results.masaResidual, 1),
+					      pesoIdeal: formatResult(results.pesoIdeal, 1),
+					      pesoObjetivo: formatResult(results.pesoObjetivo, 1),
+					      mmt: formatResult(results.mmt, 1),
+					      imlg: formatResult(results.imlg, 1),
+					      img: formatResult(results.img, 1),
+					      tipologia: results.tipologia || 'Indefinido',
+					      edadmetabolica: formatResult(results.edadmetabolica, 1),
+					      edadmetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
+					      somatotipo: {
+					        endomorphy: formatResult(results.endomorfia, 1),
+					        mesomorphy: formatResult(results.mesomorfia, 1),
+					        ectomorphy: formatResult(results.ectomorfia, 1),
+					        formatted: results.endomorfia && !isNaN(results.endomorfia) ? 
+					          `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
+					      }
+					    };
+					    console.log('Resultados calculados:', window.calculatedResults);
 					// --- 3. Update Display ---
 					try {
 						if (!resultElements || typeof resultElements !== 'object') {
