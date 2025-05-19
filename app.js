@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, limit } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 // Configuración de Firebase
@@ -222,6 +222,18 @@ clientesResultados.addEventListener('change', async () => {
   }
 });
 
+// Cargar datos de la toma seleccionada
+seleccionarFecha.addEventListener('change', async () => {
+  const tomaId = seleccionarFecha.value;
+  console.log('Toma seleccionada:', tomaId);
+  if (tomaId && currentClienteId) {
+    await cargarDatosToma(currentClienteId, tomaId);
+  } else {
+    console.log('No toma seleccionada o no clienteId, limpiando formulario');
+    form.reset();
+  }
+});
+
 // Limpiar y ocultar secciones para nuevo cliente
 nuevoClienteBtn.addEventListener('click', () => {
   console.log('Nuevo Cliente clicked');
@@ -382,5 +394,64 @@ async function cargarFechasTomas(clienteId) {
   } catch (error) {
     console.error('Error fetching tomas:', error.code, error.message);
     alert('Error al cargar fechas: ' + error.message);
+  }
+}
+
+// Cargar datos de la toma seleccionada en el formulario
+async function cargarDatosToma(clienteId, tomaId) {
+  if (!clienteId || !tomaId) {
+    console.log('Falta clienteId o tomaId, limpiando formulario');
+    form.reset();
+    return;
+  }
+  console.log('Cargando datos de toma:', tomaId, 'para cliente:', clienteId);
+  try {
+    const tomaRef = doc(db, `clientes/${clienteId}/tomas`, tomaId);
+    const tomaSnap = await getDoc(tomaRef);
+    if (!tomaSnap.exists()) {
+      console.log('Toma no encontrada:', tomaId);
+      alert('La toma seleccionada no existe.');
+      form.reset();
+      return;
+    }
+    const data = tomaSnap.data();
+    console.log('Datos de la toma:', JSON.stringify(data, null, 2));
+
+    // Poblar campos del formulario
+    document.getElementById('nombre').value = data.nombre || '';
+    document.getElementById('genero').value = data.genero || '';
+    document.getElementById('edad').value = data.edad || '';
+    document.getElementById('peso').value = data.peso || '';
+    document.getElementById('altura').value = data.altura || '';
+    document.getElementById('es_deportista').value = data.es_deportista || '';
+    document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
+    document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
+
+    // Poblar medidas.pliegues
+    document.getElementById('pliegue_tricipital').value = data.medidas?.pliegues?.tricipital || '';
+    document.getElementById('pliegue_subescapular').value = data.medidas?.pliegues?.subescapular || '';
+    document.getElementById('pliegue_suprailiaco').value = data.medidas?.pliegues?.suprailiaco || '';
+    document.getElementById('pliegue_bicipital').value = data.medidas?.pliegues?.bicipital || '';
+    document.getElementById('pliegue_pantorrilla').value = data.medidas?.pliegues?.pantorrilla || '';
+
+    // Poblar medidas.circunferencias
+    document.getElementById('circ_cintura').value = data.medidas?.circunferencias?.cintura || '';
+    document.getElementById('circ_cadera').value = data.medidas?.circunferencias?.cadera || '';
+    document.getElementById('circ_cuello').value = data.medidas?.circunferencias?.cuello || '';
+    document.getElementById('circ_pantorrilla').value = data.medidas?.circunferencias?.pantorrilla || '';
+    document.getElementById('circ_brazo').value = data.medidas?.circunferencias?.brazo || '';
+    document.getElementById('circ_brazo_contraido').value = data.medidas?.circunferencias?.brazo_contraido || '';
+
+    // Poblar medidas.diametros
+    document.getElementById('diam_humero').value = data.medidas?.diametros?.humero || '';
+    document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
+    document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
+
+    // Mostrar botón de guardar si es necesario
+    guardarDatosBtn.style.display = 'inline-block';
+  } catch (error) {
+    console.error('Error al cargar datos de la toma:', error.code, error.message);
+    alert('Error al cargar los datos: ' + error.message);
+    form.reset();
   }
 }
