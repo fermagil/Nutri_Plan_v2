@@ -350,7 +350,7 @@ async function cargarFechasTomas(clienteId) {
     console.log('No clienteId provided, skipping cargarFechasTomas');
     return;
   }
-  console.log('Loading tomas for clienteId:', clienteId);
+  console.log('Loading tomas for clienteId:', clientId);
   seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
   const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
   try {
@@ -453,22 +453,22 @@ async function cargarDatosToma(clienteId, tomaId) {
 
       // Mapear claves de resultados a IDs de elementos
       const resultMappings = {
-        'imc': { id: 'result-imc', unit: 'kg/m²', format: (v) => v.toFixed(1) },
-        'icc': { id: 'result-icc', unit: '', format: (v) => v.toFixed(2) },
-        '% Grasa Corporal Actual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => v.toFixed(1) },
-        'Masa Grasa': { id: 'result-masa-grasa', unit: 'kg', format: (v) => v.toFixed(1) },
-        'Masa Magra (MLG)': { id: 'result-mlg', unit: 'kg', format: (v) => v.toFixed(1) },
-        'Índice de Masa Libre de Grasa (IMLG)': { id: 'result-imlg', unit: 'kg/m²', format: (v) => v.toFixed(1) },
-        'Índice de Masa Grasa (IMG)': { id: 'result-img', unit: 'kg/m²', format: (v) => v.toFixed(1) },
-        'Tipología del Cuerpo': { id: 'result-tipologia', unit: '', format: (v) => v },
-        'Área Muscular Brazo (AMB)': { id: 'result-amb', unit: 'cm²', format: (v) => v.toFixed(0) },
-        'Masa Ósea': { id: 'result-masa-osea', unit: 'kg', format: (v) => v.toFixed(1) },
-        'Masa Residual': { id: 'result-masa-residual', unit: 'kg', format: (v) => v.toFixed(1) },
-        'Peso Ideal (según % Grasa)': { id: 'result-peso-ideal', unit: 'kg', format: (v) => v.toFixed(1) },
-        'Peso a Perder/Ganar': { id: 'result-peso-objetivo', unit: 'kg', format: (v) => v.toFixed(1) },
-        'Somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => v },
-        'Masa Muscular Total (Est.)': { id: 'result-mmt', unit: 'kg', format: (v) => v.toFixed(1) },
-        'Edad Metabólica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => v.toFixed(0) }
+        'imc': { id: 'result-imc', unit: 'kg/m²', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' ? v.toFixed(2) : '---' },
+        '% Grasa Corporal Actual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Masa Grasa': { id: 'result-masa-grasa', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Masa Magra (MLG)': { id: 'result-mlg', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Índice de Masa Libre de Grasa (IMLG)': { id: 'result-imlg', unit: 'kg/m²', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Índice de Masa Grasa (IMG)': { id: 'result-img', unit: 'kg/m²', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Tipología del Cuerpo': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
+        'Área Muscular Brazo (AMB)': { id: 'result-amb', unit: 'cm²', format: (v) => typeof v === 'number' ? v.toFixed(0) : '---' },
+        'Masa Ósea': { id: 'result-masa-osea', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Masa Residual': { id: 'result-masa-residual', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Peso Ideal (según % Grasa)': { id: 'result-peso-ideal', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Peso a Perder/Ganar': { id: 'result-peso-objetivo', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => v || '---' },
+        'Masa Muscular Total (Est.)': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' ? v.toFixed(1) : '---' },
+        'Edad Metabólica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' ? v.toFixed(0) : '---' }
       };
 
       // Asignar valores a los elementos de resultados
@@ -503,7 +503,7 @@ async function cargarDatosToma(clienteId, tomaId) {
     // Mostrar botón de guardar si es necesario
     guardarDatosBtn.style.display = 'inline-block';
   } catch (error) {
-    console.error('Error al cargar datos de la toma:', error.code, error.message);
+    console.error('Error al cargar datos de la toma:', error);
     alert('Error al cargar los datos: ' + error.message);
     form.reset();
     resultElementIds.forEach(id => {
