@@ -478,7 +478,10 @@ async function cargarDatosToma(clienteId, tomaId) {
         'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
         'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'edadmetabolica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-        'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' }
+        'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
+        'tipologia': { id: 'eresult-tipologia', unit: '', format: (v) => v || '---' },
+        'imlg': { id: 'result-imlg', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'img': { id: 'result-img', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' }
       };
 
       // Asignar valores a los elementos de resultados
