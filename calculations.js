@@ -3403,7 +3403,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			form.addEventListener('submit', function (event) {
 				event.preventDefault();
 				console.log('Form submitted');
-
+			// Show Guardar Datos button
+			    const guardarDatosBtn = document.getElementById('guardar_datos');
+			    if (guardarDatosBtn) {
+			      guardarDatosBtn.style.display = 'inline-block';
+			      console.log('Guardar Datos button displayed');
+			    } else {
+			      console.error('Guardar Datos button not found');
+			    }
 				// --- 1. Get Data ---
 				const formData = new FormData(form);
 				const data = {};
@@ -3871,7 +3878,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					alert(`Error en los cálculos: ${e.message}. Verifica los datos ingresados.`);
 				}
 			});
-
+				
 			// Initialize results display on page load
 			document.addEventListener('DOMContentLoaded', () => {
 				console.log('Inicializando visualización de resultados');
