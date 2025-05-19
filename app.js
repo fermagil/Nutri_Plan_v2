@@ -39,9 +39,9 @@ const resultElementIds = [
   'result-imc',
   'result-icc',
   'result-grasa-pct-actual',
-  'result-grasa-pct-actual-source',
+  'grasa-pct-actual-source',
   'result-grasa-pct-deseado',
-  'result-grasa-pct-deseado-source',
+  'grasa-pct-deseado-source',
   'result-masa-grasa',
   'result-mlg',
   'result-amb',
@@ -465,9 +465,9 @@ async function cargarDatosToma(clienteId, tomaId) {
         'imc': { id: 'result-imc', unit: 'kg/m²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
         'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'grasaPctActualSource': { id: 'result-grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
+        'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
         'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'grasaPctDeseadoSource': { id: 'result-grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
+        'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
         'masaGrasa': { id: 'result-masa-grasa', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'mlg': { id: 'result-mlg', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'amb': { id: 'result-amb', unit: 'cm²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
@@ -478,7 +478,7 @@ async function cargarDatosToma(clienteId, tomaId) {
         'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
         'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'edadmetabolica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-        'edadmetabolicaSource': { id: 'result-edadmetabolica-source', unit: '', format: (v) => v || '---' }
+        'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' }
       };
 
       // Asignar valores a los elementos de resultados
