@@ -6,7 +6,6 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 const firebaseConfig = {
   apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
   authDomain: "nutriplanv2.firebaseapp.com",
-  databaseURL: "https://nutriplanv2-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "nutriplanv2",
   storageBucket: "nutriplanv2.firebasestorage.app",
   messagingSenderId: "653707489758",
@@ -19,6 +18,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+
+// Exportar instancias para uso en otros módulos
+export { app, db, auth, provider };
 
 // Referencias al formulario y elementos
 const form = document.getElementById('anthropometry-form');
@@ -43,15 +45,12 @@ if (!clientesResultados) {
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
-    // Iniciar sesión con Google usando popup
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     console.log('Usuario autenticado:', user.displayName, user.email);
-    // Mostrar mensaje de bienvenida
     userInfo.textContent = `Bienvenido, ${user.displayName}`;
     return user;
   } catch (error) {
-    // Manejo de errores específicos
     let errorMessage;
     switch (error.code) {
       case 'auth/popup-closed-by-user':
@@ -76,13 +75,11 @@ async function signInWithGoogle() {
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
-    // Usuario autenticado
     userInfo.textContent = `Bienvenido, ${user.displayName}`;
     loginBtn.style.display = 'none';
     logoutBtn.style.display = 'inline-block';
     form.style.display = 'block';
   } else {
-    // No hay usuario autenticado
     userInfo.textContent = 'Por favor, inicia sesión';
     loginBtn.style.display = 'inline-block';
     logoutBtn.style.display = 'none';
