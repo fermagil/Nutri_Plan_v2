@@ -465,11 +465,11 @@ async function cargarDatosToma(clienteId, tomaId) {
         'imc': { id: 'result-imc', unit: 'kg/m²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
         'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'grasaPctActualSource': { id: 'result-grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
+        'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+        'grasaPctDeseadoSource': { id: 'result-grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
         'masaGrasa': { id: 'result-masa-grasa', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'mlg': { id: 'result-mlg', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'imlg': { id: 'result-imlg', unit: 'kg/m²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'img': { id: 'result-img', unit: 'kg/m²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
         'amb': { id: 'result-amb', unit: 'cm²', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
         'masaOsea': { id: 'result-masa-osea', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'masaResidual': { id: 'result-masa-residual', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
@@ -477,7 +477,8 @@ async function cargarDatosToma(clienteId, tomaId) {
         'pesoObjetivo': { id: 'result-peso-objetivo', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
         'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
         'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'edadmetabolica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' }
+        'edadmetabolica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+        'edadmetabolicaSource': { id: 'result-edadmetabolica-source', unit: '', format: (v) => v || '---' }
       };
 
       // Asignar valores a los elementos de resultados
@@ -495,12 +496,6 @@ async function cargarDatosToma(clienteId, tomaId) {
           console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
         }
       });
-
-      // Campos estáticos para fuentes
-      const grasaSource = document.getElementById('result-grasa-pct-actual-source');
-      if (grasaSource) grasaSource.textContent = resultados.grasaPctActualSource || '(Calculado: Durnin-Womersley)';
-      const edadSource = document.getElementById('result-edadmetabolica-source');
-      if (edadSource) edadSource.textContent = resultados.edadmetabolicaSource || '(Estimado según edad)';
     } else {
       console.log('No hay resultados en la toma');
       resultElementIds.forEach(id => {
