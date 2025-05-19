@@ -66,6 +66,16 @@ if (!clientesResultados) {
   buscarClienteInput.insertAdjacentElement('afterend', clientesResultados);
 }
 
+// Función para normalizar texto (eliminar acentos y caracteres especiales)
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim();
+};
+
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
@@ -163,8 +173,8 @@ buscarClienteInput.addEventListener('input', async () => {
     console.log('No user authenticated, skipping search');
     return;
   }
-  const searchTerm = buscarClienteInput.value.trim().toLowerCase();
-  console.log('Search term:', searchTerm);
+  const searchTerm = normalizeText(buscarClienteInput.value);
+  console.log('Normalized search term:', searchTerm);
   clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
   if (searchTerm.length < 2) {
     seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
@@ -182,7 +192,7 @@ buscarClienteInput.addEventListener('input', async () => {
     console.log('Query snapshot size:', querySnapshot.size);
     querySnapshot.forEach(doc => {
       const data = doc.data();
-      console.log('Found client:', doc.id, data.nombre);
+      console.log('Found client:', doc.id, data.nombre, 'nombreLowercase:', data.nombreLowercase);
       const option = document.createElement('option');
       option.value = doc.id;
       option.textContent = data.nombre;
@@ -289,7 +299,7 @@ guardarDatosBtn.addEventListener('click', async () => {
     if (!currentClienteId) {
       const clienteRef = await addDoc(collection(db, 'clientes'), {
         nombre,
-        nombreLowercase: nombre.toLowerCase(), // Añadir campo para búsqueda
+        nombreLowercase: normalizeText(nombre), // Normalizar sin acentos
         genero: data.genero,
         fecha_creacion: new Date(),
         created_by: currentUser.uid,
