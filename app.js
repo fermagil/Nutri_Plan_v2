@@ -45,7 +45,7 @@ if (!clientesResultados) {
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
-    await signInWithRedirect(auth, provider); // Use Redirect instead of Popup
+    await signInWithRedirect(auth, provider);
   } catch (error) {
     let errorMessage;
     switch (error.code) {
@@ -60,17 +60,21 @@ async function signInWithGoogle() {
     throw error;
   }
 }
-/ Handle redirect result
+
+// Manejar resultado del redirect
 getRedirectResult(auth)
   .then((result) => {
+    console.log('Redirect result:', result);
     if (result) {
       const user = result.user;
       console.log('Usuario autenticado:', user.displayName, user.email);
       userInfo.textContent = `Bienvenido, ${user.displayName}`;
+    } else {
+      console.log('No redirect result');
     }
   })
   .catch((error) => {
-    console.error('Error en redirect:', error);
+    console.error('Redirect error:', error.code, error.message);
     alert('Error en el inicio de sesión: ' + error.message);
   });
 
@@ -92,7 +96,6 @@ onAuthStateChanged(auth, (user) => {
     currentClienteId = null;
   }
 });
-
 
 // Iniciar sesión con Google al hacer clic en el botón
 loginBtn.addEventListener('click', async () => {
