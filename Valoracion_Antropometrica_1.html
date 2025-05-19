@@ -390,7 +390,7 @@
         .chart-container:has(#imc-chart),
         .chart-container:has(#icc-chart),
         .chart-container:has(#bodyfat-chart),
-        .chart-container:has(#typology-char) {
+        .chart-container:has(#typology-chart) {
             max-width: 800px;
         }
 
@@ -540,7 +540,7 @@
     <header>
         <div class="logo"><a href="#">NutriPlan_v2</a></div>
         <div id="auth-controls">
-            <span id="user-info"> </span>
+            <span id="user-info">Log In</span>
             <button id="login-btn">Iniciar Sesión con Google</button>
             <button id="logout-btn" style="display: none;">Cerrar Sesión</button>
         </div>
@@ -770,7 +770,7 @@
                         <small>(Basado en AMB)</small>
                     </div>
                 </div>
-                
+               
             </section>
 
             <section class="data-section" id="explanation-section" style="display: none;">
@@ -784,24 +784,6 @@
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-            authDomain: "nutriplanv2.firebaseapp.com",
-            projectId: "nutriplanv2",
-            storageBucket: "nutriplanv2.firebasestorage.app",
-            messagingSenderId: "653707489758",
-            appId: "1:653707489758:web:9133d1d1620825c385ed4f",
-            measurementId: "G-NWER69E8B6"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        window.firestoreDb = db;
-    </script>
     <script type="module" src="app.js"></script>
     <script type="module" src="calculations.js"></script>
 </body>
