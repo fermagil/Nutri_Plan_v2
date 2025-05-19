@@ -3399,7 +3399,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	};
 
 			// Wait for DOM to load
-			document.addEventListener('DOMContentLoaded', () => {
+		document.addEventListener('DOMContentLoaded', () => {
 			  if (!window.Chart) {
 			    console.error('Chart.js not loaded');
 			    return;
@@ -3895,4 +3895,4 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
         guardarDatosBtn.style.display = 'inline-block';
     }
     alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones.');
-
+}
