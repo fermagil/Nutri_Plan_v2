@@ -95,15 +95,7 @@
             font-size: 14px;
         }
 
-        #login-btn {
-            background-color: #4285f4;
-            color: white;
-        }
-
-        #logout-btn {
-            background-color: #dc3545;
-            color: white;
-        }
+       
 
         main {
             padding: 30px 15px;
@@ -534,17 +526,95 @@
                 padding: 6px 8px;
             }
         }
+        .login-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 25px 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+        }
+
+        .login-container input[type="email"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-container input:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px 20px;
+            margin-top: 10px;
+        }
+
+        .login-container #login-btn {
+            background-color: #4285f4;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-container #login-btn img {
+            height: 20px;
+        }
+
+        .login-container .divider {
+            text-align: center;
+            margin: 20px 0;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 30px;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            z-index: 1000;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #343a40;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .dropdown a:hover {
+            background-color: #e9f5e9;
+            color: #388e3c;
+        }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo"><a href="#">NutriPlan_v2</a></div>
-        <div id="auth-controls">
-            <span id="user-info">Log In</span>
-            <button id="login-btn">Iniciar Sesión con Google</button>
-            <button id="logout-btn" style="display: none;">Cerrar Sesión</button>
+        <div class="logo"><a href="#" id="logo">NutriPlan_v2</a></div>
+        <div class="dropdown" id="dropdown">
+            <a href="#" onclick="logout()">Cerrar Sesión</a>
         </div>
-        <nav>
+        <nav id="nav-menu" style="display: none;">
             <ul>
                 <li><a href="#">Inicio</a></li>
                 <li><a href="#" class="active">Valoración Antropométrica</a></li>
@@ -553,7 +623,17 @@
     </header>
 
     <main>
-        <h1>Valoración Antropométrica</h1>
+        <h1>Valoración Antropométrica App</h1>
+        <div class="login-container" id="login-container">
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="button" onclick="login()">Login</button>
+            <div class="divider">o</div>
+            <button id="login-btn">
+                <img src="https://www.google.com/favicon.ico" alt="Google Icon">
+                Iniciar Sesión con Google
+            </button>
+        </div>
         <form id="anthropometry-form" style="display: none;">
             <section class="data-section">
                 <h2>Datos Personales</h2>
@@ -783,7 +863,48 @@
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
+    <script type="module">
+        import { signInWithGoogle, logout } from './app.js';
 
+        // Toggle dropdown on logo click
+        document.getElementById('logo').addEventListener('click', function(event) {
+            event.preventDefault();
+            const dropdown = document.getElementById('dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close dropdown if clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdown');
+            const logo = document.getElementById('logo');
+            if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Mock email/password login function
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            if (email && password) {
+                alert('Login exitoso');
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('anthropometry-form').style.display = 'block';
+                document.getElementById('nav-menu').style.display = 'flex';
+                // Clear email and password fields
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            } else {
+                alert('Por favor, ingrese email y contraseña');
+            }
+        }
+
+        // Attach Google Sign-In handler
+        document.getElementById('login-btn').addEventListener('click', signInWithGoogle);
+
+        // Expose logout to global scope for dropdown
+        window.logout = logout;
+    </script>
     <script type="module" src="app.js"></script>
     <script type="module" src="calculations.js"></script>
 </body>
