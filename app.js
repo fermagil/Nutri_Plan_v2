@@ -484,37 +484,28 @@ async function cargarFechasTomas(clienteId) {
 				'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' }
 			  };
 
-			  // Asignar valores a los elementos de resultados
-			  Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
-				const element = document.getElementById(id);
-				if (element) {
-				  const value = resultados[key];
-				  if (value !== undefined && value !== null) {
-					element.textContent = `${format(value)} ${unit}`.trim();
-				  } else {
-					console.warn(`No se encontró valor para ${key} en resultados`);
-					element.textContent = '---';
-				  }
-				} else {
-				  console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
-				}
-			  });
-			} else {
-			  console.log('No hay resultados en la toma');
-			  resultElementIds.forEach(id => {
-				const element = document.getElementById(id);
-				if (element) element.textContent = '---';
-			  });
-			}
-		} catch (error) {
-			console.error('Error al cargar datos de la toma:', error);
-			alert('Error al cargar los datos: ' + error.message);
-			form.reset();
-			resultElementIds.forEach(id => {
-			  const element = document.getElementById(id);
-			  if (element) element.textContent = '---';
-			});
-		  }
+			 // Asignar valores a los elementos de resultados
+      Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
+        const element = document.getElementById(id);
+        if (element) {
+          const value = resultados[key];
+          if (value !== undefined && value !== null) {
+            element.textContent = `${format(value)} ${unit}`.trim();
+          } else {
+            console.warn(`No se encontró valor para ${key} en resultados`);
+            element.textContent = '---';
+          }
+        } else {
+          console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
+        }
+      });
+    } else {
+      console.log('No hay resultados en la toma');
+      resultElementIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = '---';
+      });
+    }
 
 		// Asegurarse de que el botón Guardar Datos esté oculto
 		    if (guardarDatosBtn && guardarDatosBtn.style.display !== 'none') {
