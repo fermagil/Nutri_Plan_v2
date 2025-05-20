@@ -4,13 +4,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 
 // Configuración de Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-  authDomain: "nutriplanv2.firebaseapp.com",
-  projectId: "nutriplanv2",
-  storageBucket: "nutriplanv2.firebasestorage.app",
-  messagingSenderId: "653707489758",
-  appId: "1:653707489758:web:9133d1d1620825c385ed4f",
-  measurementId: "G-NWER69E8B6"
+    apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+    authDomain: "nutriplanv2.firebaseapp.com",
+    projectId: "nutriplanv2",
+    storageBucket: "nutriplanv2.firebasestorage.app",
+    messagingSenderId: "653707489758",
+    appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+    measurementId: "G-NWER69E8B6"
 };
 
 // Inicializa Firebase, Firestore y Auth
@@ -66,100 +66,107 @@ export async function logout() {
         alert('Error al cerrar sesión: ' + error.message);
     }
 }
+
 // Referencias al formulario y elementos
 const form = document.getElementById('anthropometry-form');
 const buscarClienteInput = document.getElementById('buscar_cliente');
 const nuevoClienteBtn = document.getElementById('nuevo_cliente');
 const seleccionarFecha = document.getElementById('seleccionar_fecha');
 const guardarDatosBtn = document.getElementById('guardar_datos');
-const loginBtn = document.getElementById('login-btn');
-const logoutBtn = document.getElementById('logout-btn');
-const userInfo = document.getElementById('user-info');
 let currentClienteId = null;
 let currentUser = null;
 
 // Lista de elementos de resultados
 const resultElementIds = [
-  'result-imc',
-  'result-icc',
-  'result-grasa-pct-actual',
-  'grasa-pct-actual-source',
-  'result-grasa-pct-deseado',
-  'grasa-pct-deseado-source',
-  'result-masa-grasa',
-  'result-mlg',
-  'result-amb',
-  'result-masa-osea',
-  'result-masa-residual',
-  'result-peso-ideal',
-  'result-peso-objetivo',
-  'result-mmt',
-  'result-imlg',
-  'result-img',
-  'result-tipologia',
-  'result-edadmetabolica',
-  'edadmetabolica-source',
-  'result-somatotipo'
+    'result-imc',
+    'result-icc',
+    'result-grasa-pct-actual',
+    'grasa-pct-actual-source',
+    'result-grasa-pct-deseado',
+    'grasa-pct-deseado-source',
+    'result-masa-grasa',
+    'result-mlg',
+    'result-amb',
+    'result-masa-osea',
+    'result-masa-residual',
+    'result-peso-ideal',
+    'result-peso-objetivo',
+    'result-mmt',
+    'result-imlg',
+    'result-img',
+    'result-tipologia',
+    'result-edadmetabolica',
+    'edadmetabolica-source',
+    'result-somatotipo'
 ];
 
 // Crear select para resultados de búsqueda
 let clientesResultados = document.getElementById('clientes_resultados');
 if (!clientesResultados) {
-  clientesResultados = document.createElement('select');
-  clientesResultados.id = 'clientes_resultados';
-  buscarClienteInput.insertAdjacentElement('afterend', clientesResultados);
+    clientesResultados = document.createElement('select');
+    clientesResultados.id = 'clientes_resultados';
+    buscarClienteInput.insertAdjacentElement('afterend', clientesResultados);
 }
 
 // Función para normalizar texto (eliminar acentos y caracteres especiales)
 const normalizeText = (text) => {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s]/g, '')
-    .trim();
+    return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s]/g, '')
+        .trim();
 };
 
 // Función para convertir cadenas numéricas a números
 const toNumber = (value) => {
-  if (typeof value === 'string' && !isNaN(parseFloat(value))) {
-    return parseFloat(value);
-  }
-  return value;
+    if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+        return parseFloat(value);
+    }
+    return value;
 };
 
-// Función para iniciar sesión con Google
-async function signInWithGoogle() {
-  try {
-    console.log('Initiating signInWithPopup');
-    provider.setCustomParameters({
-      prompt: 'select_account' // Force account selection
-    });
-    const result = await signInWithPopup(auth, provider);
-    console.log('Popup result:', result.user.displayName, result.user.email, result.user.uid);
-    userInfo.textContent = `Bienvenido, ${result.user.displayName}`;
-  } catch (error) {
-    console.error('Sign-in error:', error.code, error.message, error);
-    let errorMessage;
-    switch (error.code) {
-      case 'auth/network-request-failed':
-        errorMessage = 'Error de red. Verifica tu conexión e intenta de nuevo.';
-        break;
-      case 'auth/unauthorized-domain':
-        errorMessage = 'Dominio no autorizado. Contacta al administrador.';
-        break;
-      case 'auth/popup-blocked':
-        errorMessage = 'El inicio de sesión fue bloqueado por el navegador. Permite las ventanas emergentes.';
-        break;
-      case 'auth/popup-closed-by-user':
-        errorMessage = 'Ventana de inicio de sesión cerrada por el usuario.';
-        break;
-      default:
-        errorMessage = `Error al iniciar sesión: ${error.message}`;
+// Mock email/password login function
+function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    if (email && password) {
+        alert('Login exitoso');
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('anthropometry-form').style.display = 'block';
+        document.getElementById('nav-menu').style.display = 'flex';
+        // Clear email and password fields
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+    } else {
+        alert('Por favor, ingrese email y contraseña');
     }
-    alert(errorMessage);
-    throw error;
-  }
+}
+
+// Initialize UI event listeners
+function initializeUI() {
+    // Toggle dropdown on logo click
+    document.getElementById('logo').addEventListener('click', function(event) {
+        event.preventDefault();
+        const dropdown = document.getElementById('dropdown');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Close dropdown if clicking outside
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('dropdown');
+        const logo = document.getElementById('logo');
+        if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // Attach login handlers
+    document.getElementById('email-login-btn').addEventListener('click', login);
+    document.getElementById('login-btn').addEventListener('click', signInWithGoogle);
+
+    // Expose logout to global scope for dropdown
+    window.logout = logout;
 }
 
 // Manejar estado de autenticación
@@ -185,351 +192,354 @@ onAuthStateChanged(auth, (user) => {
 
 // Búsqueda de clientes
 buscarClienteInput.addEventListener('input', async () => {
-  if (!currentUser) {
-    console.log('No user authenticated, skipping search');
-    return;
-  }
-  const searchTerm = normalizeText(buscarClienteInput.value);
-  console.log('Normalized search term:', searchTerm);
-  clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
-  if (searchTerm.length < 2) {
-    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-    clientesResultados.style.display = 'none';
-    console.log('Search term too short (< 2), hiding resultados');
-    return;
-  }
-  clientesResultados.style.display = 'block';
-  console.log('Executing Firestore query for clientes');
-  const q = query(collection(db, 'clientes'), 
-    where('nombreLowercase', '>=', searchTerm), 
-    where('nombreLowercase', '<=', searchTerm + '\uf8ff'));
-  try {
-    const querySnapshot = await getDocs(q);
-    console.log('Query snapshot size:', querySnapshot.size);
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      console.log('Found client:', doc.id, data.nombre, 'nombreLowercase:', data.nombreLowercase);
-      const option = document.createElement('option');
-      option.value = doc.id;
-      option.textContent = data.nombre;
-      clientesResultados.appendChild(option);
-    });
-    if (querySnapshot.empty) {
-      console.log('No clients found for search term:', searchTerm);
-      clientesResultados.innerHTML = '<option value="">No se encontraron clientes...</option>';
+    if (!currentUser) {
+        console.log('No user authenticated, skipping search');
+        return;
     }
-  } catch (error) {
-    console.error('Error fetching clients:', error.code, error.message);
-    alert('Error al buscar clientes: ' + error.message);
-  }
+    const searchTerm = normalizeText(buscarClienteInput.value);
+    console.log('Normalized search term:', searchTerm);
+    clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
+    if (searchTerm.length < 2) {
+        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+        clientesResultados.style.display = 'none';
+        console.log('Search term too short (< 2), hiding resultados');
+        return;
+    }
+    clientesResultados.style.display = 'block';
+    console.log('Executing Firestore query for clientes');
+    const q = query(collection(db, 'clientes'), 
+        where('nombreLowercase', '>=', searchTerm), 
+        where('nombreLowercase', '<=', searchTerm + '\uf8ff'));
+    try {
+        const querySnapshot = await getDocs(q);
+        console.log('Query snapshot size:', querySnapshot.size);
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            console.log('Found client:', doc.id, data.nombre, 'nombreLowercase:', data.nombreLowercase);
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.textContent = data.nombre;
+            clientesResultados.appendChild(option);
+        });
+        if (querySnapshot.empty) {
+            console.log('No clients found for search term:', searchTerm);
+            clientesResultados.innerHTML = '<option value="">No se encontraron clientes...</option>';
+        }
+    } catch (error) {
+        console.error('Error fetching clients:', error.code, error.message);
+        alert('Error al buscar clientes: ' + error.message);
+    }
 });
 
 // Cargar fechas de tomas al seleccionar un cliente
 clientesResultados.addEventListener('change', async () => {
-  const clienteId = clientesResultados.value;
-  console.log('Cliente seleccionado:', clienteId);
-  if (clienteId) {
-    currentClienteId = clienteId;
-    await cargarFechasTomas(clienteId);
-  } else {
-    console.log('No cliente seleccionado, limpiando fechas');
-    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-    currentClienteId = null;
-  }
+    const clienteId = clientesResultados.value;
+    console.log('Cliente seleccionado:', clienteId);
+    if (clienteId) {
+        currentClienteId = clienteId;
+        await cargarFechasTomas(clienteId);
+    } else {
+        console.log('No cliente seleccionado, limpiando fechas');
+        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+        currentClienteId = null;
+    }
 });
 
 // Cargar datos de la toma seleccionada
 seleccionarFecha.addEventListener('change', async () => {
-  const tomaId = seleccionarFecha.value;
-  console.log('Toma seleccionada:', tomaId);
-  if (tomaId && currentClienteId) {
-    await cargarDatosToma(currentClienteId, tomaId);
-  } else {
-    console.log('No toma seleccionada o no clienteId, limpiando formulario');
-    form.reset();
-  }
+    const tomaId = seleccionarFecha.value;
+    console.log('Toma seleccionada:', tomaId);
+    if (tomaId && currentClienteId) {
+        await cargarDatosToma(currentClienteId, tomaId);
+    } else {
+        console.log('No toma seleccionada o no clienteId, limpiando formulario');
+        form.reset();
+    }
 });
 
 // Limpiar y ocultar secciones para nuevo cliente
 nuevoClienteBtn.addEventListener('click', () => {
-  console.log('Nuevo Cliente clicked');
-  currentClienteId = null;
-  form.reset();
-  buscarClienteInput.value = '';
-  clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
-  clientesResultados.style.display = 'none';
-  seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-  guardarDatosBtn.style.display = 'none';
-  // Limpiar sección de resultados
-  resultElementIds.forEach(id => {
-    const element = document.getElementById(id);
-    if (element) element.textContent = '---';
-  });
-  // Ocultar sección de explicación
-  const explanationSection = document.getElementById('explanation-section');
-  if (explanationSection) {
-    explanationSection.style.display = 'none';
-    console.log('Explanation section hidden');
-  }
-  // Limpiar gráficos
-  ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
-    const canvas = document.getElementById(canvasId);
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log('Nuevo Cliente clicked');
+    currentClienteId = null;
+    form.reset();
+    buscarClienteInput.value = '';
+    clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
+    clientesResultados.style.display = 'none';
+    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+    guardarDatosBtn.style.display = 'none';
+    // Limpiar sección de resultados
+    resultElementIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = '---';
+    });
+    // Ocultar sección de explicación
+    const explanationSection = document.getElementById('explanation-section');
+    if (explanationSection) {
+        explanationSection.style.display = 'none';
+        console.log('Explanation section hidden');
     }
-  });
+    // Limpiar gráficos
+    ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    });
 });
 
 // Guardar datos
 guardarDatosBtn.addEventListener('click', async () => {
-  if (!currentUser) {
-    alert('Por favor, inicia sesión para guardar datos.');
-    return;
-  }
-  const nombre = document.getElementById('nombre').value.trim();
-  const peso = document.getElementById('peso').value;
-  const altura = document.getElementById('altura').value;
-  if (!nombre) {
-    alert('Por favor, ingrese el nombre del cliente.');
-    return;
-  }
-  if (!peso || isNaN(peso) || peso <= 0) {
-    alert('Por favor, ingrese un peso válido.');
-    return;
-  }
-  if (!altura || isNaN(altura) || altura <= 0) {
-    alert('Por favor, ingrese una altura válida.');
-    return;
-  }
-  const data = {
-    nombre,
-    genero: document.getElementById('genero').value || null,
-    fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
-    edad: parseInt(document.getElementById('edad').value) || null,
-    peso: parseFloat(peso),
-    altura: parseFloat(altura),
-    es_deportista: document.getElementById('es_deportista').value || null,
-    grasa_actual_conocida: parseFloat(document.getElementById('grasa_actual_conocida').value) || null,
-    grasa_deseada: parseFloat(document.getElementById('grasa_deseada').value) || null,
-    medidas: {
-      pliegues: {
-        tricipital: parseFloat(document.getElementById('pliegue_tricipital').value) || null,
-        subescapular: parseFloat(document.getElementById('pliegue_subescapular').value) || null,
-        suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
-        bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
-        pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
-      },
-      circunferencias: {
-        cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
-        cadera: parseFloat(document.getElementById('circ_cadera').value) || null,
-        cuello: parseFloat(document.getElementById('circ_cuello').value) || null,
-        pantorrilla: parseFloat(document.getElementById('circ_pantorrilla').value) || null,
-        brazo: parseFloat(document.getElementById('circ_brazo').value) || null,
-        brazo_contraido: parseFloat(document.getElementById('circ_brazo_contraido').value) || null,
-      },
-      diametros: {
-        humero: parseFloat(document.getElementById('diam_humero').value) || null,
-        femur: parseFloat(document.getElementById('diam_femur').value) || null,
-        muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
-      },
-    },
-    resultados: window.calculatedResults || {}
-  };
-  try {
-    console.log('Datos a guardar:', JSON.stringify(data, null, 2));
-    if (!currentClienteId) {
-      const clienteRef = await addDoc(collection(db, 'clientes'), {
-        nombre,
-        nombreLowercase: normalizeText(nombre),
-        genero: data.genero,
-        fecha_creacion: new Date(),
-        created_by: currentUser.uid,
-      });
-      currentClienteId = clienteRef.id;
-      console.log('Cliente creado con ID:', currentClienteId);
+    if (!currentUser) {
+        alert('Por favor, inicia sesión para guardar datos.');
+        return;
     }
-    const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
-    console.log('Documento guardado con ID:', tomaRef.id);
-    alert('Datos guardados exitosamente.');
-    await cargarFechasTomas(currentClienteId);
-    guardarDatosBtn.style.display = 'none';
-  } catch (error) {
-    console.error('Error al guardar:', error);
-    alert('Error al guardar los datos: ' + error.message);
-  }
+    const nombre = document.getElementById('nombre').value.trim();
+    const peso = document.getElementById('peso').value;
+    const altura = document.getElementById('altura').value;
+    if (!nombre) {
+        alert('Por favor, ingrese el nombre del cliente.');
+        return;
+    }
+    if (!peso || isNaN(peso) || peso <= 0) {
+        alert('Por favor, ingrese un peso válido.');
+        return;
+    }
+    if (!altura || isNaN(altura) || altura <= 0) {
+        alert('Por favor, ingrese una altura válida.');
+        return;
+    }
+    const data = {
+        nombre,
+        genero: document.getElementById('genero').value || null,
+        fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
+        edad: parseInt(document.getElementById('edad').value) || null,
+        peso: parseFloat(peso),
+        altura: parseFloat(altura),
+        es_deportista: document.getElementById('es_deportista').value || null,
+        grasa_actual_conocida: parseFloat(document.getElementById('grasa_actual_conocida').value) || null,
+        grasa_deseada: parseFloat(document.getElementById('grasa_deseada').value) || null,
+        medidas: {
+            pliegues: {
+                tricipital: parseFloat(document.getElementById('pliegue_tricipital').value) || null,
+                subescapular: parseFloat(document.getElementById('pliegue_subescapular').value) || null,
+                suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
+                bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
+                pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
+            },
+            circunferencias: {
+                cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
+                cadera: parseFloat(document.getElementById('circ_cadera').value) || null,
+                cuello: parseFloat(document.getElementById('circ_cuello').value) || null,
+                pantorrilla: parseFloat(document.getElementById('circ_pantorrilla').value) || null,
+                brazo: parseFloat(document.getElementById('circ_brazo').value) || null,
+                brazo_contraido: parseFloat(document.getElementById('circ_brazo_contraido').value) || null,
+            },
+            diametros: {
+                humero: parseFloat(document.getElementById('diam_humero').value) || null,
+                femur: parseFloat(document.getElementById('diam_femur').value) || null,
+                muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
+            },
+        },
+        resultados: window.calculatedResults || {}
+    };
+    try {
+        console.log('Datos a guardar:', JSON.stringify(data, null, 2));
+        if (!currentClienteId) {
+            const clienteRef = await addDoc(collection(db, 'clientes'), {
+                nombre,
+                nombreLowercase: normalizeText(nombre),
+                genero: data.genero,
+                fecha_creacion: new Date(),
+                created_by: currentUser.uid,
+            });
+            currentClienteId = clienteRef.id;
+            console.log('Cliente creado con ID:', currentClienteId);
+        }
+        const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
+        console.log('Documento guardado con ID:', tomaRef.id);
+        alert('Datos guardados exitosamente.');
+        await cargarFechasTomas(currentClienteId);
+        guardarDatosBtn.style.display = 'none';
+    } catch (error) {
+        console.error('Error al guardar:', error);
+        alert('Error al guardar los datos: ' + error.message);
+    }
 });
 
 // Cargar fechas de tomas
 async function cargarFechasTomas(clienteId) {
-  if (!clienteId) {
-    console.log('No clienteId provided, skipping cargarFechasTomas');
-    return;
-  }
-  console.log('Loading tomas for clienteId:', clienteId);
-  seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-  const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
-  try {
-    const querySnapshot = await getDocs(q);
-    console.log('Tomas query snapshot size:', querySnapshot.size);
-    if (querySnapshot.empty) {
-      console.log('No tomas found for cliente:', clienteId);
-      seleccionarFecha.innerHTML = '<option value="">No hay tomas disponibles</option>';
-      return;
+    if (!clienteId) {
+        console.log('No clienteId provided, skipping cargarFechasTomas');
+        return;
     }
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      console.log('Toma found:', doc.id, 'Fecha:', data.fecha);
-      const option = document.createElement('option');
-      option.value = doc.id;
-      let fechaStr = 'Fecha inválida';
-      try {
-        if (data.fecha && data.fecha.toDate) {
-          fechaStr = data.fecha.toDate().toLocaleString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
-        } else if (data.fecha) {
-          fechaStr = new Date(data.fecha).toLocaleString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
+    console.log('Loading tomas for clienteId:', clienteId);
+    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+    const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'desc'));
+    try {
+        const querySnapshot = await getDocs(q);
+        console.log('Tomas query snapshot size:', querySnapshot.size);
+        if (querySnapshot.empty) {
+            console.log('No tomas found for cliente:', clienteId);
+            seleccionarFecha.innerHTML = '<option value="">No hay tomas disponibles</option>';
+            return;
         }
-      } catch (error) {
-        console.warn('Error formatting fecha for toma:', doc.id, error);
-      }
-      option.textContent = fechaStr;
-      seleccionarFecha.appendChild(option);
-    });
-  } catch (error) {
-    console.error('Error fetching tomas:', error.code, error.message);
-    alert('Error al cargar fechas: ' + error.message);
-  }
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            console.log('Toma found:', doc.id, 'Fecha:', data.fecha);
+            const option = document.createElement('option');
+            option.value = doc.id;
+            let fechaStr = 'Fecha inválida';
+            try {
+                if (data.fecha && data.fecha.toDate) {
+                    fechaStr = data.fecha.toDate().toLocaleString('es-ES', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } else if (data.fecha) {
+                    fechaStr = new Date(data.fecha).toLocaleString('es-ES', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            } catch (error) {
+                console.warn('Error formatting fecha for toma:', doc.id, error);
+            }
+            option.textContent = fechaStr;
+            seleccionarFecha.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error fetching tomas:', error.code, error.message);
+        alert('Error al cargar fechas: ' + error.message);
+    }
 }
 
-	// Cargar datos de la toma seleccionada en el formulario
-	async function cargarDatosToma(clienteId, tomaId) {
-	  if (!clienteId || !tomaId) {
-		console.log('Falta clienteId o tomaId, limpiando formulario');
-		form.reset();
-		return;
-	  }
-	  console.log('Cargando datos de toma:', tomaId, 'para cliente:', clienteId);
-	  try {
-		const tomaRef = doc(db, `clientes/${clienteId}/tomas`, tomaId);
-		const tomaSnap = await getDoc(tomaRef);
-		if (!tomaSnap.exists()) {
-		  console.log('Toma no encontrada:', tomaId);
-		  alert('La toma seleccionada no existe.');
-		  form.reset();
-		  return;
-		}
-		const data = tomaSnap.data();
-		console.log('Datos de la toma:', JSON.stringify(data, null, 2));
-
-		// Poblar campos del formulario
-		document.getElementById('nombre').value = data.nombre || '';
-		document.getElementById('genero').value = data.genero || '';
-		document.getElementById('edad').value = data.edad || '';
-		document.getElementById('peso').value = data.peso || '';
-		document.getElementById('altura').value = data.altura || '';
-		document.getElementById('es_deportista').value = data.es_deportista || '';
-		document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
-		document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
-
-		// Poblar medidas.pliegues
-		document.getElementById('pliegue_tricipital').value = data.medidas?.pliegues?.tricipital || '';
-		document.getElementById('pliegue_subescapular').value = data.medidas?.pliegues?.subescapular || '';
-		document.getElementById('pliegue_suprailiaco').value = data.medidas?.pliegues?.suprailiaco || '';
-		document.getElementById('pliegue_bicipital').value = data.medidas?.pliegues?.bicipital || '';
-		document.getElementById('pliegue_pantorrilla').value = data.medidas?.pliegues?.pantorrilla || '';
-
-		// Poblar medidas.circunferencias
-		document.getElementById('circ_cintura').value = data.medidas?.circunferencias?.cintura || '';
-		document.getElementById('circ_cadera').value = data.medidas?.circunferencias?.cadera || '';
-		document.getElementById('circ_cuello').value = data.medidas?.circunferencias?.cuello || '';
-		document.getElementById('circ_pantorrilla').value = data.medidas?.circunferencias?.pantorrilla || '';
-		document.getElementById('circ_brazo').value = data.medidas?.circunferencias?.brazo || '';
-		document.getElementById('circ_brazo_contraido').value = data.medidas?.circunferencias?.brazo_contraido || '';
-
-		// Poblar medidas.diametros
-		document.getElementById('diam_humero').value = data.medidas?.diametros?.humero || '';
-		document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
-		document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
-
-			// Poblar resultados
-			if (data.resultados) {
-			  const resultados = data.resultados;
-			  console.log('Claves disponibles en resultados:', Object.keys(resultados));
-
-			  // Mapear claves de resultados a IDs de elementos
-			  const resultMappings = {
-				'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-				'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
-				'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
-				'masaGrasa': { id: 'result-masa-grasa', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'mlg': { id: 'result-mlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-				'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
-				'mmt': { id: 'result-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-				'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
-				'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
-				'imlg': { id: 'result-imlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-				'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' }
-			  };
-
-			 // Asignar valores a los elementos de resultados
-      Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
-        const element = document.getElementById(id);
-        if (element) {
-          const value = resultados[key];
-          if (value !== undefined && value !== null) {
-            element.textContent = `${format(value)} ${unit}`.trim();
-          } else {
-            console.warn(`No se encontró valor para ${key} en resultados`);
-            element.textContent = '---';
-          }
-        } else {
-          console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
+// Cargar datos de la toma seleccionada en el formulario
+async function cargarDatosToma(clienteId, tomaId) {
+    if (!clienteId || !tomaId) {
+        console.log('Falta clienteId o tomaId, limpiando formulario');
+        form.reset();
+        return;
+    }
+    console.log('Cargando datos de toma:', tomaId, 'para cliente:', clienteId);
+    try {
+        const tomaRef = doc(db, `clientes/${clienteId}/tomas`, tomaId);
+        const tomaSnap = await getDoc(tomaRef);
+        if (!tomaSnap.exists()) {
+            console.log('Toma no encontrada:', tomaId);
+            alert('La toma seleccionada no existe.');
+            form.reset();
+            return;
         }
-      });
-    } else {
-      console.log('No hay resultados en la toma');
-      resultElementIds.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = '---';
-      });
-    }
+        const data = tomaSnap.data();
+        console.log('Datos de la toma:', JSON.stringify(data, null, 2));
 
-		// Asegurarse de que el botón Guardar Datos esté oculto
-		    if (guardarDatosBtn && guardarDatosBtn.style.display !== 'none') {
-		      guardarDatosBtn.style.display = 'none';
-		      console.log('Botón Guardar Datos ocultado al cargar toma');
-		    }
-		  } catch (error) {
-		    console.error('Error al cargar datos de la toma:', error);
-		    alert('Error al cargar los datos: ' + error.message);
-		    form.reset();
-		    resultElementIds.forEach(id => {
-		      const element = document.getElementById(id);
-		      if (element) element.textContent = '---';
-		    });
-	}
+        // Poblar campos del formulario
+        document.getElementById('nombre').value = data.nombre || '';
+        document.getElementById('genero').value = data.genero || '';
+        document.getElementById('edad').value = data.edad || '';
+        document.getElementById('peso').value = data.peso || '';
+        document.getElementById('altura').value = data.altura || '';
+        document.getElementById('es_deportista').value = data.es_deportista || '';
+        document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
+        document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
 
+        // Poblar medidas.pliegues
+        document.getElementById('pliegue_tricipital').value = data.medidas?.pliegues?.tricipital || '';
+        document.getElementById('pliegue_subescapular').value = data.medidas?.pliegues?.subescapular || '';
+        document.getElementById('pliegue_suprailiaco').value = data.medidas?.pliegues?.suprailiaco || '';
+        document.getElementById('pliegue_bicipital').value = data.medidas?.pliegues?.bicipital || '';
+        document.getElementById('pliegue_pantorrilla').value = data.medidas?.pliegues?.pantorrilla || '';
+
+        // Poblar medidas.circunferencias
+        document.getElementById('circ_cintura').value = data.medidas?.circunferencias?.cintura || '';
+        document.getElementById('circ_cadera').value = data.medidas?.circunferencias?.cadera || '';
+        document.getElementById('circ_cuello').value = data.medidas?.circunferencias?.cuello || '';
+        document.getElementById('circ_pantorrilla').value = data.medidas?.circunferencias?.pantorrilla || '';
+        document.getElementById('circ_brazo').value = data.medidas?.circunferencias?.brazo || '';
+        document.getElementById('circ_brazo_contraido').value = data.medidas?.circunferencias?.brazo_contraido || '';
+
+        // Poblar medidas.diametros
+        document.getElementById('diam_humero').value = data.medidas?.diametros?.humero || '';
+        document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
+        document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
+
+        // Poblar resultados
+        if (data.resultados) {
+            const resultados = data.resultados;
+            console.log('Claves disponibles en resultados:', Object.keys(resultados));
+
+            // Mapear claves de resultados a IDs de elementos
+            const resultMappings = {
+                'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+                'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
+                'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
+                'masaGrasa': { id: 'result-masa-grasa', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'mlg': { id: 'result-mlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
+                'mmt': { id: 'result-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
+                'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
+                'imlg': { id: 'result-imlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' }
+            };
+
+            // Asignar valores a los elementos de resultados
+            Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const value = resultados[key];
+                    if (value !== undefined && value !== null) {
+                        element.textContent = `${format(value)} ${unit}`.trim();
+                    } else {
+                        console.warn(`No se encontró valor para ${key} en resultados`);
+                        element.textContent = '---';
+                    }
+                } else {
+                    console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
+                }
+            });
+        } else {
+            console.log('No hay resultados en la toma');
+            resultElementIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = '---';
+            });
+        }
+
+        // Asegurarse de que el botón Guardar Datos esté oculto
+        if (guardarDatosBtn && guardarDatosBtn.style.display !== 'none') {
+            guardarDatosBtn.style.display = 'none';
+            console.log('Botón Guardar Datos ocultado al cargar toma');
+        }
+    } catch (error) {
+        console.error('Error al cargar datos de la toma:', error);
+        alert('Error al cargar los datos: ' + error.message);
+        form.reset();
+        resultElementIds.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = '---';
+        });
     }
+}
+
+// Initialize UI when DOM is ready
+document.addEventListener('DOMContentLoaded', initializeUI);
+
 
   
