@@ -517,4 +517,19 @@ async function cargarFechasTomas(clienteId) {
 		  }
     }
 
-   
+   // Manejar clic en Calcular Resultados
+if (calcularResultadosBtn) {
+  calcularResultadosBtn.addEventListener('click', () => {
+    console.log('Calcular Resultados clicked');
+    // Asumimos que la lógica de cálculo está en otro script y genera window.calculatedResults
+    if (window.calculatedResults) {
+      console.log('Resultados calculados:', window.calculatedResults);
+      guardarDatosBtn.style.display = 'inline-block';
+    } else {
+      console.warn('No se encontraron resultados calculados');
+      guardarDatosBtn.style.display = 'none';
+    }
+  });
+} else {
+  console.warn('Botón Calcular Resultados no encontrado. Asegúrate que el ID sea "calcular_resultados".');
+}
