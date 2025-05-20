@@ -87,12 +87,13 @@ const toNumber = (value) => {
 // Función para iniciar sesión con Google
 async function signInWithGoogle() {
   try {
-    console.log('Initiating signInWithRedirect');
+    console.log('Initiating signInWithPopup');
     provider.setCustomParameters({
       prompt: 'select_account' // Force account selection
     });
-    await signInWithRedirect(auth, provider);
-    console.log('Redirect initiated');
+    const result = await signInWithPopup(auth, provider);
+    console.log('Popup result:', result.user.displayName, result.user.email, result.user.uid);
+    userInfo.textContent = `Bienvenido, ${result.user.displayName}`;
   } catch (error) {
     console.error('Sign-in error:', error.code, error.message, error);
     let errorMessage;
@@ -106,6 +107,9 @@ async function signInWithGoogle() {
       case 'auth/popup-blocked':
         errorMessage = 'El inicio de sesión fue bloqueado por el navegador. Permite las ventanas emergentes.';
         break;
+      case 'auth/popup-closed-by-user':
+        errorMessage = 'Ventana de inicio de sesión cerrada por el usuario.';
+        break;
       default:
         errorMessage = `Error al iniciar sesión: ${error.message}`;
     }
@@ -113,43 +117,6 @@ async function signInWithGoogle() {
     throw error;
   }
 }
-
-// Manejar resultado del redirect
-getRedirectResult(auth)
-  .then((result) => {
-    console.log('Redirect result:', result);
-    if (result) {
-      const user = result.user;
-      console.log('Usuario autenticado:', user.displayName, user.email, user.uid);
-      userInfo.textContent = `Bienvenido, ${user.displayName}`;
-    } else {
-      console.log('No redirect result');
-      if (localStorage.getItem('authRedirectAttempted')) {
-        console.warn('Redirect attempted but no result. Possible user cancellation or configuration issue.');
-        alert('No se pudo completar el inicio de sesión. Verifica la configuración o intenta de nuevo.');
-        localStorage.removeItem('authRedirectAttempted');
-      }
-    }
-  })
-  .catch((error) => {
-    console.error('Redirect error:', error.code, error.message, error);
-    let errorMessage;
-    switch (error.code) {
-      case 'auth/unauthorized-domain':
-        errorMessage = 'Dominio no autorizado. Contacta al administrador.';
-        break;
-      case 'auth/invalid-credential':
-        errorMessage = 'Credenciales inválidas. Intenta de nuevo.';
-        break;
-      case 'auth/user-cancelled':
-        errorMessage = 'Inicio de sesión cancelado por el usuario.';
-        break;
-      default:
-        errorMessage = `Error en el redirect: ${error.message}`;
-    }
-    alert(errorMessage);
-    localStorage.removeItem('authRedirectAttempted');
-  });
 
 // Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
@@ -175,7 +142,6 @@ onAuthStateChanged(auth, (user) => {
 // Iniciar sesión con Google al hacer clic en el botón
 loginBtn.addEventListener('click', async () => {
   console.log('Login button clicked');
-  localStorage.setItem('authRedirectAttempted', 'true');
   await signInWithGoogle();
 });
 
