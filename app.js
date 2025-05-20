@@ -405,107 +405,116 @@ async function cargarFechasTomas(clienteId) {
   }
 }
 
-// Cargar datos de la toma seleccionada en el formulario
-async function cargarDatosToma(clienteId, tomaId) {
-  if (!clienteId || !tomaId) {
-    console.log('Falta clienteId o tomaId, limpiando formulario');
-    form.reset();
-    return;
-  }
-  console.log('Cargando datos de toma:', tomaId, 'para cliente:', clienteId);
-  try {
-    const tomaRef = doc(db, `clientes/${clienteId}/tomas`, tomaId);
-    const tomaSnap = await getDoc(tomaRef);
-    if (!tomaSnap.exists()) {
-      console.log('Toma no encontrada:', tomaId);
-      alert('La toma seleccionada no existe.');
-      form.reset();
-      return;
+	// Cargar datos de la toma seleccionada en el formulario
+	async function cargarDatosToma(clienteId, tomaId) {
+	  if (!clienteId || !tomaId) {
+		console.log('Falta clienteId o tomaId, limpiando formulario');
+		form.reset();
+		return;
+	  }
+	  console.log('Cargando datos de toma:', tomaId, 'para cliente:', clienteId);
+	  try {
+		const tomaRef = doc(db, `clientes/${clienteId}/tomas`, tomaId);
+		const tomaSnap = await getDoc(tomaRef);
+		if (!tomaSnap.exists()) {
+		  console.log('Toma no encontrada:', tomaId);
+		  alert('La toma seleccionada no existe.');
+		  form.reset();
+		  return;
+		}
+		const data = tomaSnap.data();
+		console.log('Datos de la toma:', JSON.stringify(data, null, 2));
+
+		// Poblar campos del formulario
+		document.getElementById('nombre').value = data.nombre || '';
+		document.getElementById('genero').value = data.genero || '';
+		document.getElementById('edad').value = data.edad || '';
+		document.getElementById('peso').value = data.peso || '';
+		document.getElementById('altura').value = data.altura || '';
+		document.getElementById('es_deportista').value = data.es_deportista || '';
+		document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
+		document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
+
+		// Poblar medidas.pliegues
+		document.getElementById('pliegue_tricipital').value = data.medidas?.pliegues?.tricipital || '';
+		document.getElementById('pliegue_subescapular').value = data.medidas?.pliegues?.subescapular || '';
+		document.getElementById('pliegue_suprailiaco').value = data.medidas?.pliegues?.suprailiaco || '';
+		document.getElementById('pliegue_bicipital').value = data.medidas?.pliegues?.bicipital || '';
+		document.getElementById('pliegue_pantorrilla').value = data.medidas?.pliegues?.pantorrilla || '';
+
+		// Poblar medidas.circunferencias
+		document.getElementById('circ_cintura').value = data.medidas?.circunferencias?.cintura || '';
+		document.getElementById('circ_cadera').value = data.medidas?.circunferencias?.cadera || '';
+		document.getElementById('circ_cuello').value = data.medidas?.circunferencias?.cuello || '';
+		document.getElementById('circ_pantorrilla').value = data.medidas?.circunferencias?.pantorrilla || '';
+		document.getElementById('circ_brazo').value = data.medidas?.circunferencias?.brazo || '';
+		document.getElementById('circ_brazo_contraido').value = data.medidas?.circunferencias?.brazo_contraido || '';
+
+		// Poblar medidas.diametros
+		document.getElementById('diam_humero').value = data.medidas?.diametros?.humero || '';
+		document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
+		document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
+
+			// Poblar resultados
+			if (data.resultados) {
+			  const resultados = data.resultados;
+			  console.log('Claves disponibles en resultados:', Object.keys(resultados));
+
+			  // Mapear claves de resultados a IDs de elementos
+			  const resultMappings = {
+				'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+				'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
+				'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
+				'masaGrasa': { id: 'result-masa-grasa', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'mlg': { id: 'result-mlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+				'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
+				'mmt': { id: 'result-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+				'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
+				'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
+				'imlg': { id: 'result-imlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+				'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' }
+			  };
+
+			  // Asignar valores a los elementos de resultados
+			  Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
+				const element = document.getElementById(id);
+				if (element) {
+				  const value = resultados[key];
+				  if (value !== undefined && value !== null) {
+					element.textContent = `${format(value)} ${unit}`.trim();
+				  } else {
+					console.warn(`No se encontró valor para ${key} en resultados`);
+					element.textContent = '---';
+				  }
+				} else {
+				  console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
+				}
+			  });
+			} else {
+			  console.log('No hay resultados en la toma');
+			  resultElementIds.forEach(id => {
+				const element = document.getElementById(id);
+				if (element) element.textContent = '---';
+			  });
+			}
+		} catch (error) {
+			console.error('Error al cargar datos de la toma:', error);
+			alert('Error al cargar los datos: ' + error.message);
+			form.reset();
+			resultElementIds.forEach(id => {
+			  const element = document.getElementById(id);
+			  if (element) element.textContent = '---';
+			});
+		  }
     }
-    const data = tomaSnap.data();
-    console.log('Datos de la toma:', JSON.stringify(data, null, 2));
-
-    // Poblar campos del formulario
-    document.getElementById('nombre').value = data.nombre || '';
-    document.getElementById('genero').value = data.genero || '';
-    document.getElementById('edad').value = data.edad || '';
-    document.getElementById('peso').value = data.peso || '';
-    document.getElementById('altura').value = data.altura || '';
-    document.getElementById('es_deportista').value = data.es_deportista || '';
-    document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
-    document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
-
-    // Poblar medidas.pliegues
-    document.getElementById('pliegue_tricipital').value = data.medidas?.pliegues?.tricipital || '';
-    document.getElementById('pliegue_subescapular').value = data.medidas?.pliegues?.subescapular || '';
-    document.getElementById('pliegue_suprailiaco').value = data.medidas?.pliegues?.suprailiaco || '';
-    document.getElementById('pliegue_bicipital').value = data.medidas?.pliegues?.bicipital || '';
-    document.getElementById('pliegue_pantorrilla').value = data.medidas?.pliegues?.pantorrilla || '';
-
-    // Poblar medidas.circunferencias
-    document.getElementById('circ_cintura').value = data.medidas?.circunferencias?.cintura || '';
-    document.getElementById('circ_cadera').value = data.medidas?.circunferencias?.cadera || '';
-    document.getElementById('circ_cuello').value = data.medidas?.circunferencias?.cuello || '';
-    document.getElementById('circ_pantorrilla').value = data.medidas?.circunferencias?.pantorrilla || '';
-    document.getElementById('circ_brazo').value = data.medidas?.circunferencias?.brazo || '';
-    document.getElementById('circ_brazo_contraido').value = data.medidas?.circunferencias?.brazo_contraido || '';
-
-    // Poblar medidas.diametros
-    document.getElementById('diam_humero').value = data.medidas?.diametros?.humero || '';
-    document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
-    document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
-
-    // Poblar resultados
-    if (data.resultados) {
-      const resultados = data.resultados;
-      console.log('Claves disponibles en resultados:', Object.keys(resultados));
-
-      // Mapear claves de resultados a IDs de elementos
-      const resultMappings = {
-        'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-        'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
-        'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
-        'masaGrasa': { id: 'result-masa-grasa', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'mlg': { id: 'result-mlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-        'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
-        'mmt': { id: 'result-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-        'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
-        'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
-        'imlg': { id: 'result-imlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-        'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' }
-      };
-
-      // Asignar valores a los elementos de resultados
-      Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
-        const element = document.getElementById(id);
-        if (element) {
-          const value = resultados[key];
-          if (value !== undefined && value !== null) {
-            element.textContent = `${format(value)} ${unit}`.trim();
-          } else {
-            console.warn(`No se encontró valor para ${key} en resultados`);
-            element.textContent = '---';
-          }
-        } else {
-          console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
-        }
-      });
-    } else {
-      console.log('No hay resultados en la toma');
-      resultElementIds.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = '---';
-      });
-    }
-  
 
    
