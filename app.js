@@ -506,6 +506,6 @@ async function cargarDatosToma(clienteId, tomaId) {
         if (element) element.textContent = '---';
       });
     }
-  }
+  
 
    
