@@ -88,17 +88,23 @@ const toNumber = (value) => {
 async function signInWithGoogle() {
   try {
     console.log('Initiating signInWithRedirect');
+    provider.setCustomParameters({
+      prompt: 'select_account' // Force account selection
+    });
     await signInWithRedirect(auth, provider);
     console.log('Redirect initiated');
   } catch (error) {
-    console.error('Sign-in error:', error.code, error.message);
+    console.error('Sign-in error:', error.code, error.message, error);
     let errorMessage;
     switch (error.code) {
       case 'auth/network-request-failed':
         errorMessage = 'Error de red. Verifica tu conexión e intenta de nuevo.';
         break;
       case 'auth/unauthorized-domain':
-        errorMessage = 'Dominio no autorizado. Verifica la configuración en Firebase.';
+        errorMessage = 'Dominio no autorizado. Contacta al administrador.';
+        break;
+      case 'auth/popup-blocked':
+        errorMessage = 'El inicio de sesión fue bloqueado por el navegador. Permite las ventanas emergentes.';
         break;
       default:
         errorMessage = `Error al iniciar sesión: ${error.message}`;
@@ -118,22 +124,31 @@ getRedirectResult(auth)
       userInfo.textContent = `Bienvenido, ${user.displayName}`;
     } else {
       console.log('No redirect result');
+      if (localStorage.getItem('authRedirectAttempted')) {
+        console.warn('Redirect attempted but no result. Possible user cancellation or configuration issue.');
+        alert('No se pudo completar el inicio de sesión. Verifica la configuración o intenta de nuevo.');
+        localStorage.removeItem('authRedirectAttempted');
+      }
     }
   })
   .catch((error) => {
-    console.error('Redirect error:', error.code, error.message);
+    console.error('Redirect error:', error.code, error.message, error);
     let errorMessage;
     switch (error.code) {
       case 'auth/unauthorized-domain':
-        errorMessage = 'Dominio no autorizado. Verifica la configuración en Firebase.';
+        errorMessage = 'Dominio no autorizado. Contacta al administrador.';
         break;
       case 'auth/invalid-credential':
         errorMessage = 'Credenciales inválidas. Intenta de nuevo.';
+        break;
+      case 'auth/user-cancelled':
+        errorMessage = 'Inicio de sesión cancelado por el usuario.';
         break;
       default:
         errorMessage = `Error en el redirect: ${error.message}`;
     }
     alert(errorMessage);
+    localStorage.removeItem('authRedirectAttempted');
   });
 
 // Manejar estado de autenticación
@@ -160,6 +175,7 @@ onAuthStateChanged(auth, (user) => {
 // Iniciar sesión con Google al hacer clic en el botón
 loginBtn.addEventListener('click', async () => {
   console.log('Login button clicked');
+  localStorage.setItem('authRedirectAttempted', 'true');
   await signInWithGoogle();
 });
 
