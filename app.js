@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -127,19 +127,55 @@ const toNumber = (value) => {
 };
 
 // Mock email/password login function
-function login() {
+async function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    if (email && password) {
-        alert('Login exitoso');
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('anthropometry-form').style.display = 'block';
-        document.getElementById('nav-menu').style.display = 'flex';
-        // Clear email and password fields
+    const loginContainer = document.getElementById('login-container');
+    const errorDiv = document.createElement('div');
+    errorDiv.id = 'login-error';
+    errorDiv.style.color = 'red';
+    errorDiv.style.marginBottom = '10px';
+    errorDiv.style.fontSize = '14px';
+
+    // Remove any existing error message
+    const existingError = document.getElementById('login-error');
+    if (existingError) existingError.remove();
+
+    if (!email || !password) {
+        errorDiv.textContent = 'Por favor, ingrese email y contraseña';
+        loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
+        setTimeout(() => errorDiv.remove(), 5000);
+        return;
+    }
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
         document.getElementById('email').value = '';
         document.getElementById('password').value = '';
-    } else {
-        alert('Por favor, ingrese email y contraseña');
+        // UI updates handled by onAuthStateChanged
+    } catch (error) {
+        console.error('Email login error:', error.code, error.message);
+        let errorMessage;
+        switch (error.code) {
+            case 'auth/invalid-email':
+                errorMessage = 'Correo electrónico inválido.';
+                break;
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+                errorMessage = 'Correo o contraseña incorrectos.';
+                break;
+            case 'auth/too-many-requests':
+                errorMessage = 'Demasiados intentos. Intenta de nuevo más tarde.';
+                break;
+            case 'auth/user-disabled':
+                errorMessage = 'Esta cuenta ha sido deshabilitada.';
+                break;
+            default:
+                errorMessage = `Error al iniciar sesión: ${error.message}`;
+        }
+        errorDiv.textContent = errorMessage;
+        loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
+        setTimeout(() => errorDiv.remove(), 5000);
     }
 }
 
