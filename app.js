@@ -515,6 +515,22 @@ async function cargarFechasTomas(clienteId) {
 			  if (element) element.textContent = '---';
 			});
 		  }
+
+		// Asegurarse de que el botón Guardar Datos esté oculto
+		    if (guardarDatosBtn && guardarDatosBtn.style.display !== 'none') {
+		      guardarDatosBtn.style.display = 'none';
+		      console.log('Botón Guardar Datos ocultado al cargar toma');
+		    }
+		  } catch (error) {
+		    console.error('Error al cargar datos de la toma:', error);
+		    alert('Error al cargar los datos: ' + error.message);
+		    form.reset();
+		    resultElementIds.forEach(id => {
+		      const element = document.getElementById(id);
+		      if (element) element.textContent = '---';
+		    });
+	}
+
     }
 
   // Asegurarse de que el DOM esté cargado antes de acceder a elementos
