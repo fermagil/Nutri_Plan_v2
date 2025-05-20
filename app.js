@@ -22,6 +22,50 @@ const provider = new GoogleAuthProvider();
 // Exportar instancias para uso en otros módulos
 export { app, db, auth, provider };
 
+// Exportar funciones de autenticación
+export async function signInWithGoogle() {
+    try {
+        console.log('Initiating signInWithPopup');
+        provider.setCustomParameters({
+            prompt: 'select_account' // Force account selection
+        });
+        const result = await signInWithPopup(auth, provider);
+        console.log('Popup result:', result.user.displayName, result.user.email, result.user.uid);
+        // UI updates handled in onAuthStateChanged
+    } catch (error) {
+        console.error('Sign-in error:', error.code, error.message, error);
+        let errorMessage;
+        switch (error.code) {
+            case 'auth/network-request-failed':
+                errorMessage = 'Error de red. Verifica tu conexión e intenta de nuevo.';
+                break;
+            case 'auth/unauthorized-domain':
+                errorMessage = 'Dominio no autorizado. Contacta al administrador.';
+                break;
+            case 'auth/popup-blocked':
+                errorMessage = 'El inicio de sesión fue bloqueado por el navegador. Permite las ventanas emergentes.';
+                break;
+            case 'auth/popup-closed-by-user':
+                errorMessage = 'Ventana de inicio de sesión cerrada por el usuario.';
+                break;
+            default:
+                errorMessage = `Error al iniciar sesión: ${error.message}`;
+        }
+        alert(errorMessage);
+        throw error;
+    }
+}
+
+export async function logout() {
+    try {
+        await signOut(auth);
+        console.log('Sesión cerrada');
+        alert('Has cerrado sesión exitosamente.');
+    } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+        alert('Error al cerrar sesión: ' + error.message);
+    }
+}
 // Referencias al formulario y elementos
 const form = document.getElementById('anthropometry-form');
 const buscarClienteInput = document.getElementById('buscar_cliente');
@@ -120,41 +164,23 @@ async function signInWithGoogle() {
 
 // Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-  if (user) {
-    console.log('Auth state: User signed in', user.displayName, user.email);
-    userInfo.textContent = `Bienvenido, ${user.displayName}`;
-    loginBtn.style.display = 'none';
-    logoutBtn.style.display = 'inline-block';
-    form.style.display = 'block';
-  } else {
-    console.log('Auth state: No user signed in');
-    userInfo.textContent = 'Por favor, inicia sesión';
-    loginBtn.style.display = 'inline-block';
-    logoutBtn.style.display = 'none';
-    form.style.display = 'none';
-    clientesResultados.style.display = 'none';
-    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-    currentClienteId = null;
-  }
-});
-
-// Iniciar sesión con Google al hacer clic en el botón
-loginBtn.addEventListener('click', async () => {
-  console.log('Login button clicked');
-  await signInWithGoogle();
-});
-
-// Cerrar sesión
-logoutBtn.addEventListener('click', async () => {
-  try {
-    await signOut(auth);
-    console.log('Sesión cerrada');
-    alert('Has cerrado sesión exitosamente.');
-  } catch (error) {
-    console.error('Error al cerrar sesión:', error);
-    alert('Error al cerrar sesión: ' + error.message);
-  }
+    currentUser = user;
+    const loginContainer = document.getElementById('login-container');
+    const navMenu = document.getElementById('nav-menu');
+    if (user) {
+        console.log('Auth state: User signed in', user.displayName, user.email);
+        loginContainer.style.display = 'none';
+        form.style.display = 'block';
+        navMenu.style.display = 'flex';
+    } else {
+        console.log('Auth state: No user signed in');
+        loginContainer.style.display = 'block';
+        form.style.display = 'none';
+        navMenu.style.display = 'none';
+        clientesResultados.style.display = 'none';
+        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+        currentClienteId = null;
+    }
 });
 
 // Búsqueda de clientes
