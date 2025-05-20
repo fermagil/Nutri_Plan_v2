@@ -863,49 +863,7 @@
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
-    <script type="module">
-        import { signInWithGoogle, logout } from './app.js';
-
-        // Toggle dropdown on logo click
-        document.getElementById('logo').addEventListener('click', function(event) {
-            event.preventDefault();
-            const dropdown = document.getElementById('dropdown');
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        });
-
-        // Close dropdown if clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('dropdown');
-            const logo = document.getElementById('logo');
-            if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
-
-        // Mock email/password login function
-        function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            if (email && password) {
-                alert('Login exitoso');
-                document.getElementById('login-container').style.display = 'none';
-                document.getElementById('anthropometry-form').style.display = 'block';
-                document.getElementById('nav-menu').style.display = 'flex';
-                // Clear email and password fields
-                document.getElementById('email').value = '';
-                document.getElementById('password').value = '';
-            } else {
-                alert('Por favor, ingrese email y contraseña');
-            }
-        }
-
-        // Attach Google Sign-In handler
-        document.getElementById('email-login-btn').addEventListener('click', login);
-    document.getElementById('login-btn').addEventListener('click', signInWithGoogle);
-
-        // Expose logout to global scope for dropdown
-        window.logout = logout;
-    </script>
+  
     <script type="module" src="app.js"></script>
     <script type="module" src="calculations.js"></script>
 </body>
