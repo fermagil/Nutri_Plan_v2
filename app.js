@@ -152,6 +152,14 @@ async function login() {
         await signInWithEmailAndPassword(auth, email, password);
         document.getElementById('email').value = '';
         document.getElementById('password').value = '';
+        // Show success message
+        const successDiv = document.createElement('div');
+        successDiv.style.color = 'green';
+        successDiv.style.marginBottom = '10px';
+        successDiv.style.fontSize = '14px';
+        successDiv.textContent = 'Inicio de sesión exitoso';
+        loginContainer.insertBefore(successDiv, loginContainer.firstChild);
+        setTimeout(() => successDiv.remove(), 3000);
         // UI updates handled by onAuthStateChanged
     } catch (error) {
         console.error('Email login error:', error.code, error.message);
