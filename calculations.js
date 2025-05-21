@@ -4041,6 +4041,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            const pliegueTricipital = Number(data.pliegue_tricipital);
 			            const age = Number(data.edad);
 			            const isAthlete = data.es_deportista === 'si';
+				    const gender = data.genero ? data.genero.toLowerCase() : '';
+				    // Log gender for debugging
+				        console.log('Gender for AMB calculation:', gender);
+				
+				        // Validate gender early
+				        if (!['masculino', 'femenino'].includes(gender)) {
+				            throw new Error('Género no válido: debe ser "masculino" o "femenino"');
+				        }
 			
 			            if (circBrazo < 20 || circBrazo > 50) throw new Error('Circunferencia del brazo debe estar entre 20 y 50 cm');
 			            if (pliegueTricipital < 2 || pliegueTricipital > 40) throw new Error('Pliegue tricipital debe estar entre 2 y 40 mm');
@@ -4052,9 +4060,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            const baseAMB = (term * term) / (4 * Math.PI);
 			
 			            let correction = 0;
-			            if (data.genero === 'masculino') {
+			            if (gender === 'masculino') {
 			                correction = isAthlete ? (age < 40 ? 8 : age < 60 ? 7 : 6) : (age < 40 ? 10 : age < 60 ? 9 : 8);
-			            } else if (data.genero === 'femenino') {
+			            } else if (gender === 'femenino') {
 			                correction = isAthlete ? (age < 40 ? 5 : age < 60 ? 4.5 : 4) : (age < 40 ? 6.5 : age < 60 ? 6 : 5.5);
 			            }
 			
@@ -4138,25 +4146,32 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	                    else if (age <= 64) ageRange = '60-64';
 	                    else if (age <= 70) ageRange = '65-70';
 	                    else ageRange = '70+';
-	
+
+				// Verify ambRanges[gender]
+			        if (!ambRanges[gender]) {
+			            throw new Error(`No se encontraron rangos de AMB para el género "${gender}"`);
+			        }
 	                    // Select ranges
-	                    const ranges = isAthlete ? ambRanges[genero].athlete[ageRange] : ambRanges[genero].general[ageRange];
-	
+	                    const ranges = isAthlete ? ambRanges[gender].athlete[ageRange] : ambRanges[gender].general[ageRange];
+				// Verify ranges
+			        if (!ranges) {
+			            throw new Error(`No se encontraron rangos de AMB para el rango de edad "${ageRange}" y género "${gender}"`);
+			        }
 	                    // Set ambSource
-	                    results.ambSource = formatAmbSource(results.amb, ranges, isAthlete, genero, ageRange);
-	
-	                    console.log('AMB calculado:', { amb: results.amb, ambSource: results.ambSource });
-                } catch (e) {
-                    console.error('Error calculando AMB:', e.message);
-                    results.amb = NaN;
-                    results.ambSource = 'Error: ' + e.message;
-                    content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-                }
-	            } else {
-	                results.amb = NaN;
-	                results.ambSource = '(No calculado: Datos insuficientes)';
-	                content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
-	            }
+		        results.ambSource = formatAmbSource(results.amb, ranges, isAthlete, gender, ageRange);
+		
+		        console.log('AMB calculado:', { amb: results.amb, ambSource: results.ambSource });
+		    } catch (e) {
+		        console.error('Error calculando AMB:', e.message);
+		        results.amb = NaN;
+		        results.ambSource = 'Error: ' + e.message;
+		        content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+		    }
+		} else {
+		    results.amb = NaN;
+		    results.ambSource = '(No calculado: Datos insuficientes)';
+		    content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
+		}
 
 		// MMT Calculation
 		
