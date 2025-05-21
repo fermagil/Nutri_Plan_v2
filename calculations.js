@@ -3834,6 +3834,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    if (form) {
 					        form.reset(); // Clear form inputs
 					        console.log('Form reset on page load to prevent auto-submission');
+					        // Asegurarse de que el botón esté oculto al cargar la página
+					        if (guardarDatosBtn) {
+					            guardarDatosBtn.style.display = 'none';
+					        }
 					    }
 					});
 					// --- 3. Update Display ---
@@ -3929,9 +3933,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			});
 			
 			// After successful calculations
-    const guardarDatosBtn = document.getElementById('guardar_datos');
-    if (guardarDatosBtn) {
-        guardarDatosBtn.style.display = 'inline-block';
-    }
+			const guardarDatosBtn = document.getElementById('guardar_datos');
+			if (guardarDatosBtn) {
+			    // Verificar si window.calculatedResults es null o está vacío
+			    if (!window.calculatedResults || Object.keys(window.calculatedResults).length === 0) {
+			        guardarDatosBtn.style.display = 'none'; // Ocultar botón si no hay resultados
+			    } else {
+			        guardarDatosBtn.style.display = 'inline-block'; // Mostrar botón si hay resultados
+			    }
+			}
     //alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones_1.');
 
