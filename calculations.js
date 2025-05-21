@@ -3695,6 +3695,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 			console.log('resultElements:', resultElements);
 			console.log('imcSource element:', resultElements.imcSource);
+
+
 			// Form submission handler
 			form.addEventListener('submit', function (event) {
 				event.preventDefault();
@@ -3791,6 +3793,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    }
 					    return result;
 					}
+					// Función para formatear iccSource
+				        function formatIccSource(iccSource) {
+				            if (!iccSource || typeof iccSource !== 'object') {
+				                return '(No calculado)';
+				            }
+				            return `${iccSource.clasificacion} - ${iccSource.riesgo}`;
+				        }
 				
 				try {
 					// --- Calculate IMC ---
@@ -3812,23 +3821,23 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            content += `<p><strong>IMC:</strong> No calculado debido a datos insuficientes.</p>`;
 				        }
 					// --- Calculate ICC ---
-			            if (data.circ_cintura > 0 && data.circ_cadera > 0 && data.genero) {
-			                try {
-			                    const iccResults = calculateICC(data);
-			                    results.icc = iccResults.icc;
-			                    results.iccSource = iccResults.iccSource;
-			                    console.log('ICC calculado:', results.icc, results.iccSource);
-			                } catch (e) {
-			                    console.error('Error calculando ICC:', e.message);
-			                    results.icc = NaN;
-			                    results.iccSource = { clasificacion: 'Error', riesgo: e.message };
-			                    content += `<p><strong>Error en ICC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-			                }
-			            } else {
-			                results.icc = NaN;
-			                results.iccSource = { clasificacion: 'No calculado', riesgo: 'Datos insuficientes' };
-			                content += `<p><strong>ICC:</strong> No calculado debido a datos insuficientes.</p>`;
-			            }
+				            if (data.circ_cintura > 0 && data.circ_cadera > 0 && data.genero) {
+				                try {
+				                    const iccResults = calculateICC(data);
+				                    results.icc = iccResults.icc;
+				                    results.iccSource = iccResults.iccSource;
+				                    console.log('ICC calculado:', results.icc, results.iccSource);
+				                } catch (e) {
+				                    console.error('Error calculando ICC:', e.message);
+				                    results.icc = NaN;
+				                    results.iccSource = { clasificacion: 'Error', riesgo: e.message };
+				                    content += `<p><strong>Error en ICC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+				                }
+				            } else {
+				                results.icc = NaN;
+				                results.iccSource = { clasificacion: 'No calculado', riesgo: 'Datos insuficientes' };
+				                content += `<p><strong>ICC:</strong> No calculado debido a datos insuficientes.</p>`;
+				            }
 					// --- Calculate Actual Body Fat % ---
 					let actualBodyFatPct = NaN;
 					let actualBodyFatSource = '(No calculado)';
@@ -4210,6 +4219,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    }
 						
 				                // Update ICC
+				                
 				                updateElement('icc', results.icc, 2);
 				                if (resultElements.iccSource) {
 				                    resultElements.iccSource.textContent = formatIccSource(results.iccSource);
