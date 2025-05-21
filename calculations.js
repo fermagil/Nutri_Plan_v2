@@ -3912,7 +3912,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
 						results.img = bodyCompResults.img;
 						results.imgSource = bodyCompResults.imgCategory || '(No calculado)';
-						results.tipologia = bodyCompResults.tipologia;  || 'Indefinido';
+						results.tipologia = bodyCompResults.tipologia  || 'Indefinido';
 						console.log('IMLG, IMG, Tipología:', {
 							imlg: results.imlg,
 							imlgSource: results.imlgSource,
