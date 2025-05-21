@@ -53,221 +53,231 @@ import { auth } from './app.js';
             return value.toFixed(decimals);
         };
 		
-		// Calcular IMC
-			const alturaMetros = altura / 100; // Convertir altura a metros
-			const imc = peso / (alturaMetros * alturaMetros);
-			// Verificar que la edad sea mayor o igual a 5 años
-			if (edad < 5) {
-			    throw new Error('El cálculo de IMC es para personas de 5 años o más');
-			}
-		
-		
-		// Inicializar objeto de resultado
-		let imcSource = {};
-		
-		// Lógica para adultos (≥18 años)
-		if (edad >= 18) {
-		    if (imc < 16.0) {
-		        imcSource = {
-		            clasificacion: 'Delgadez severa',
-		            riesgo: 'Alto riesgo de desnutrición'
-		        };
-		    } else if (imc >= 16.0 && imc <= 16.9) {
-		        imcSource = {
-		            clasificacion: 'Delgadez moderada',
-		            riesgo: 'Riesgo de desnutrición'
-		        };
-		    } else if (imc >= 17.0 && imc <= 18.4) {
-		        imcSource = {
-		            clasificacion: 'Delgadez leve',
-		            riesgo: 'Riesgo leve'
-		        };
-		    } else if (imc >= 18.5 && imc <= 24.9) {
-		        imcSource = {
-		            clasificacion: 'Normal',
-		            riesgo: 'Riesgo mínimo'
-		        };
-		    } else if (imc >= 25.0 && imc <= 29.9) {
-		        imcSource = {
-		            clasificacion: 'Sobrepeso',
-		            riesgo: 'Riesgo moderado'
-		        };
-		    } else if (imc >= 30.0 && imc <= 34.9) {
-		        imcSource = {
-		            clasificacion: 'Obesidad grado I',
-		            riesgo: 'Alto riesgo'
-		        };
-		    } else if (imc >= 35.0 && imc <= 39.9) {
-		        imcSource = {
-		            clasificacion: 'Obesidad grado II',
-		            riesgo: 'Riesgo muy alto de cánceres'
-		        };
-		    } else if (imc >= 40.0) {
-		        imcSource = {
-		            clasificacion: 'Obesidad grado III (mórbida)',
-		            riesgo: 'Riesgo extremadamente alto'
-		        };
-		    }
-		} else {
-		    // Lógica para pediátrico (5 a <18 años)
-		    
-		    // Verificar rango de altura (85 a 175 cm)
-		    if (altura < 85 || altura > 175) {
-		        throw new Error('La altura debe estar entre 85 y 175 cm según las tablas pediátricas');
-		    }
-		
-		    // Convertir edad a meses para mayor precisión
-		    const edadMeses = Math.floor(edad * 12);
-		
-		    // Tablas de IMC para la edad (OMS 2007)
-		    const imcTablasNiñas = {
-		        "5:1": { zMinus3: 11.8, zMinus2: 12.6, zPlus1: 16.9, zPlus2: 18.9 },
-		        "5:6": { zMinus3: 11.7, zMinus2: 12.6, zPlus1: 16.9, zPlus2: 19.0 },
-		        "6:0": { zMinus3: 11.7, zMinus2: 12.6, zPlus1: 17.0, zPlus2: 19.2 },
-		        "6:6": { zMinus3: 11.7, zMinus2: 12.6, zPlus1: 17.1, zPlus2: 19.5 },
-		        "7:0": { zMinus3: 11.8, zMinus2: 12.6, zPlus1: 17.3, zPlus2: 19.8 },
-		        "7:6": { zMinus3: 11.8, zMinus2: 12.7, zPlus1: 17.5, zPlus2: 20.1 },
-		        "8:0": { zMinus3: 11.9, zMinus2: 12.8, zPlus1: 17.7, zPlus2: 20.6 },
-		        "8:6": { zMinus3: 12.0, zMinus2: 12.9, zPlus1: 18.0, zPlus2: 21.0 },
-		        "9:0": { zMinus3: 12.1, zMinus2: 13.0, zPlus1: 18.3, zPlus2: 21.5 },
-		        "9:6": { zMinus3: 12.2, zMinus2: 13.2, zPlus1: 18.7, zPlus2: 22.0 },
-		        "10:0": { zMinus3: 12.4, zMinus2: 13.4, zPlus1: 19.0, zPlus2: 22.6 },
-		        "10:6": { zMinus3: 12.5, zMinus2: 13.6, zPlus1: 19.4, zPlus2: 23.1 },
-		        "11:0": { zMinus3: 12.7, zMinus2: 13.8, zPlus1: 19.9, zPlus2: 23.7 },
-		        "11:6": { zMinus3: 12.9, zMinus2: 14.0, zPlus1: 20.3, zPlus2: 24.3 },
-		        "12:0": { zMinus3: 13.2, zMinus2: 14.3, zPlus1: 20.8, zPlus2: 25.0 },
-		        "12:6": { zMinus3: 13.4, zMinus2: 14.6, zPlus1: 21.3, zPlus2: 25.6 },
-		        "13:0": { zMinus3: 13.6, zMinus2: 14.8, zPlus1: 21.8, zPlus2: 26.2 },
-		        "13:6": { zMinus3: 13.8, zMinus2: 15.1, zPlus1: 22.3, zPlus2: 26.8 },
-		        "14:0": { zMinus3: 14.0, zMinus2: 15.3, zPlus1: 22.7, zPlus2: 27.3 },
-		        "14:6": { zMinus3: 14.2, zMinus2: 15.6, zPlus1: 23.1, zPlus2: 27.8 },
-		        "15:0": { zMinus3: 14.4, zMinus2: 15.8, zPlus1: 23.5, zPlus2: 28.2 },
-		        "15:6": { zMinus3: 14.5, zMinus2: 15.9, zPlus1: 23.8, zPlus2: 28.6 },
-		        "16:0": { zMinus3: 14.6, zMinus2: 16.1, zPlus1: 24.1, zPlus2: 28.9 },
-		        "16:6": { zMinus3: 14.7, zMinus2: 16.2, zPlus1: 24.3, zPlus2: 29.1 },
-		        "17:0": { zMinus3: 14.7, zMinus2: 16.3, zPlus1: 24.5, zPlus2: 29.3 },
-		        "17:6": { zMinus3: 14.7, zMinus2: 16.3, zPlus1: 24.6, zPlus2: 29.4 },
-		        "18:0": { zMinus3: 14.7, zMinus2: 16.3, zPlus1: 24.8, zPlus2: 29.5 }
-		    };
-		
-		    const imcTablasNiños = {
-		        "5:1": { zMinus3: 12.1, zMinus2: 12.9, zPlus1: 16.6, zPlus2: 18.3 },
-		        "5:6": { zMinus3: 12.1, zMinus2: 12.9, zPlus1: 16.7, zPlus2: 18.4 },
-		        "6:0": { zMinus3: 12.1, zMinus2: 12.9, zPlus1: 16.8, zPlus2: 18.5 },
-		        "6:6": { zMinus3: 12.2, zMinus2: 13.0, zPlus1: 16.9, zPlus2: 18.7 },
-		        "7:0": { zMinus3: 12.3, zMinus2: 13.0, zPlus1: 17.0, zPlus2: 19.0 },
-		        "7:6": { zMinus3: 12.3, zMinus2: 13.1, zPlus1: 17.2, zPlus2: 19.3 },
-		        "8:0": { zMinus3: 12.4, zMinus2: 13.2, zPlus1: 17.4, zPlus2: 19.7 },
-		        "8:6": { zMinus3: 12.5, zMinus2: 13.3, zPlus1: 17.7, zPlus2: 20.1 },
-		        "9:0": { zMinus3: 12.6, zMinus2: 13.4, zPlus1: 17.9, zPlus2: 20.5 },
-		        "9:6": { zMinus3: 12.7, zMinus2: 13.5, zPlus1: 18.2, zPlus2: 20.9 },
-		        "10:0": { zMinus3: 12.8, zMinus2: 13.6, zPlus1: 18.5, zPlus2: 21.4 },
-		        "10:6": { zMinus3: 12.9, zMinus2: 13.8, zPlus1: 18.8, zPlus2: 21.9 },
-		        "11:0": { zMinus3: 13.1, zMinus2: 14.0, zPlus1: 19.2, zPlus2: 22.5 },
-		        "11:6": { zMinus3: 13.2, zMinus2: 14.1, zPlus1: 19.5, zPlus2: 23.0 },
-		        "12:0": { zMinus3: 13.4, zMinus2: 14.4, zPlus1: 19.9, zPlus2: 23.6 },
-		        "12:6": { zMinus3: 13.6, zMinus2: 14.6, zPlus1: 20.4, zPlus2: 24.2 },
-		        "13:0": { zMinus3: 13.8, zMinus2: 14.8, zPlus1: 20.8, zPlus2: 24.8 },
-		        "13:6": { zMinus3: 14.0, zMinus2: 15.1, zPlus1: 21.3, zPlus2: 25.3 },
-		        "14:0": { zMinus3: 14.3, zMinus2: 15.4, zPlus1: 21.8, zPlus2: 25.9 },
-		        "14:6": { zMinus3: 14.5, zMinus2: 15.6, zPlus1: 22.2, zPlus2: 26.5 },
-		        "15:0": { zMinus3: 14.7, zMinus2: 15.9, zPlus1: 22.7, zPlus2: 27.0 },
-		        "15:6": { zMinus3: 14.9, zMinus2: 16.2, zPlus1: 23.1, zPlus2: 27.4 },
-		        "16:0": { zMinus3: 15.1, zMinus2: 16.4, zPlus1: 23.5, zPlus2: 27.9 },
-		        "16:6": { zMinus3: 15.3, zMinus2: 16.6, zPlus1: 23.9, zPlus2: 28.3 },
-		        "17:0": { zMinus3: 15.4, zMinus2: 16.8, zPlus1: 24.3, zPlus2: 28.6 },
-		        "17:6": { zMinus3: 15.6, zMinus2: 17.0, zPlus1: 24.6, zPlus2: 29.0 },
-		        "18:0": { zMinus3: 15.7, zMinus2: 17.2, zPlus1: 24.9, zPlus2: 29.2 }
-		    };
-		
-		    // Validar peso según tablas de estatura (como referencia)
-		    function validarPesoPorEstatura(altura, peso) {
-		        const alturaEntera = Math.round(altura);
-		        if (alturaEntera >= 85 && alturaEntera <= 114) {
-		            return peso >= 10 && peso <= 37; // Rango de la tabla 85-114 cm
-		        } else if (alturaEntera >= 115 && alturaEntera <= 144) {
-		            return peso >= 12 && peso <= 44; // Rango de la tabla 115-144 cm
-		        } else if (alturaEntera >= 145 && alturaEntera <= 175) {
-		            return peso >= 19 && peso <= 52; // Rango de la tabla 145-175 cm
-		        }
-		        return false;
-		    }
-		
-		    // Validar peso
-		    if (!validarPesoPorEstatura(altura, peso)) {
-		        throw new Error('El peso está fuera del rango esperado para la altura según las tablas pediátricas');
-		    }
-		
-		    // Obtener límites de IMC según edad y sexo
-		    function getIMCLimits(genero, edadMeses) {
-		        const edadAnios = Math.floor(edadMeses / 12);
-		        const mesesRestantes = edadMeses % 12;
-		        const key1 = `${edadAnios}:${mesesRestantes >= 6 ? 6 : 0}`;
-		        const key2 = mesesRestantes >= 6 ? `${edadAnios + 1}:0` : `${edadAnios}:6`;
-		
-		        const tabla = genero.toLowerCase() === 'femenino' ? imcTablasNiñas : imcTablasNiños;
-		        const limites1 = tabla[key1] || tabla[`${edadAnios}:0`];
-		        const limites2 = tabla[key2] || tabla[`${edadAnios + 1}:0`];
-		
-		        if (!limites1 || !limites2) {
-		            throw new Error('Edad fuera del rango de las tablas OMS');
-		        }
-		
-		        // Interpolación lineal para valores intermedios
-		        const factor = mesesRestantes >= 6 ? (mesesRestantes - 6) / 6 : mesesRestantes / 6;
-		        return {
-		            zMinus3: limites1.zMinus3 + (limites2.zMinus3 - limites1.zMinus3) * factor,
-		            zMinus2: limites1.zMinus2 + (limites2.zMinus2 - limites1.zMinus2) * factor,
-		            zPlus1: limites1.zPlus1 + (limites2.zPlus1 - limites1.zPlus1) * factor,
-		            zPlus2: limites1.zPlus2 + (limites2.zPlus2 - limites1.zPlus2) * factor
-		        };
-		    }
-		
-		    const imcLimits = getIMCLimits(genero, edadMeses);
-		
-		    // Determinar clasificación según OMS pediátrica
-		    if (imc < imcLimits.zMinus3) {
-		        imcSource = {
-		            clasificacion: 'Desnutrición severa',
-		            riesgo: 'Alto riesgo de desnutrición',
-		            percentil: '<0.1'
-		        };
-		    } else if (imc >= imcLimits.zMinus3 && imc < imcLimits.zMinus2) {
-		        imcSource = {
-		            clasificacion: 'Desnutrición moderada',
-		            riesgo: 'Riesgo de desnutrición',
-		            percentil: '0.1-2.3'
-		        };
-		    } else if (imc >= imcLimits.zMinus2 && imc <= imcLimits.zPlus1) {
-		        imcSource = {
-		            clasificacion: 'Normal',
-		            riesgo: 'Riesgo mínimo',
-		            percentil: '2.3-84.1'
-		        };
-		    } else if (imc > imcLimits.zPlus1 && imc <= imcLimits.zPlus2) {
-		        imcSource = {
-		            clasificacion: 'Sobrepeso',
-		            riesgo: 'Riesgo moderado',
-		            percentil: '84.1-97.7'
-		        };
-		    } else if (imc > imcLimits.zPlus2) {
-		        imcSource = {
-		            clasificacion: 'Obesidad',
-		            riesgo: 'Alto riesgo de enfermedades metabólicas',
-		            percentil: '>97.7'
-		        };
-		    }
-		}
-		
-		// Agregar el valor numérico del IMC al objeto
-		imcSource.imc = imc.toFixed(2); // Redondear a 2 decimales
-		
-		// Considerar si es deportista
-		if (esDeportista) {
-		    imcSource.nota = 'Nota: En deportistas, el IMC puede no reflejar con precisión la composición corporal debido a mayor masa muscular';
-		}
-		
-		return imcSource;
+		function calculateIMC(data) {
+    let { genero, edad, peso, altura, esDeportista, pliegues, porcentajeGrasa, cintura } = data;
+
+    // Verificar datos obligatorios
+    if (!genero || !edad || !peso || !altura) {
+        throw new Error('Faltan datos obligatorios: genero, edad, peso, altura');
+    }
+
+    // Verificar que la edad sea mayor o igual a 5 años
+    if (edad < 5) {
+        throw new Error('El cálculo de IMC es para personas de 5 años o más');
+    }
+
+    // Calcular IMC
+    const alturaMetros = altura / 100; // Convertir altura a metros
+    const imc = peso / (alturaMetros * alturaMetros);
+
+    // Inicializar objeto de resultado
+    let imcSource = {};
+
+    // Lógica para adultos (≥18 años)
+    if (edad >= 18) {
+        if (imc < 16.0) {
+            imcSource = {
+                clasificacion: 'Delgadez severa',
+                riesgo: 'Alto riesgo de desnutrición'
+            };
+        } else if (imc >= 16.0 && imc <= 16.9) {
+            imcSource = {
+                clasificacion: 'Delgadez moderada',
+                riesgo: 'Riesgo de desnutrición'
+            };
+        } else if (imc >= 17.0 && imc <= 18.4) {
+            imcSource = {
+                clasificacion: 'Delgadez leve',
+                riesgo: 'Riesgo leve'
+            };
+        } else if (imc >= 18.5 && imc <= 24.9) {
+            imcSource = {
+                clasificacion: 'Normal',
+                riesgo: 'Riesgo mínimo'
+            };
+        } else if (imc >= 25.0 && imc <= 29.9) {
+            imcSource = {
+                clasificacion: 'Sobrepeso',
+                riesgo: 'Riesgo moderado'
+            };
+        } else if (imc >= 30.0 && imc <= 34.9) {
+            imcSource = {
+                clasificacion: 'Obesidad grado I',
+                riesgo: 'Alto riesgo'
+            };
+        } else if (imc >= 35.0 && imc <= 39.9) {
+            imcSource = {
+                clasificacion: 'Obesidad grado II',
+                riesgo: 'Riesgo muy alto de cánceres'
+            };
+        } else if (imc >= 40.0) {
+            imcSource = {
+                clasificacion: 'Obesidad grado III (mórbida)',
+                riesgo: 'Riesgo extremadamente alto'
+            };
+        }
+    } else {
+        // Lógica para pediátrico (5 a <18 años)
+
+        // Verificar rango de altura (85 a 175 cm)
+        if (altura < 85 || altura > 175) {
+            throw new Error('La altura debe estar entre 85 y 175 cm según las tablas pediátricas');
+        }
+
+        // Convertir edad a meses para mayor precisión
+        const edadMeses = Math.floor(edad * 12);
+
+        // Tablas de IMC para la edad (OMS 2007)
+        const imcTablasNiñas = {
+            "5:1": { zMinus3: 11.8, zMinus2: 12.6, zPlus1: 16.9, zPlus2: 18.9 },
+            "5:6": { zMinus3: 11.7, zMinus2: 12.6, zPlus1: 16.9, zPlus2: 19.0 },
+            "6:0": { zMinus3: 11.7, zMinus2: 12.6, zPlus1: 17.0, zPlus2: 19.2 },
+            "6:6": { zMinus3: 11.7, zMinus2: 12.6, zPlus1: 17.1, zPlus2: 19.5 },
+            "7:0": { zMinus3: 11.8, zMinus2: 12.6, zPlus1: 17.3, zPlus2: 19.8 },
+            "7:6": { zMinus3: 11.8, zMinus2: 12.7, zPlus1: 17.5, zPlus2: 20.1 },
+            "8:0": { zMinus3: 11.9, zMinus2: 12.8, zPlus1: 17.7, zPlus2: 20.6 },
+            "8:6": { zMinus3: 12.0, zMinus2: 12.9, zPlus1: 18.0, zPlus2: 21.0 },
+            "9:0": { zMinus3: 12.1, zMinus2: 13.0, zPlus1: 18.3, zPlus2: 21.5 },
+            "9:6": { zMinus3: 12.2, zMinus2: 13.2, zPlus1: 18.7, zPlus2: 22.0 },
+            "10:0": { zMinus3: 12.4, zMinus2: 13.4, zPlus1: 19.0, zPlus2: 22.6 },
+            "10:6": { zMinus3: 12.5, zMinus2: 13.6, zPlus1: 19.4, zPlus2: 23.1 },
+            "11:0": { zMinus3: 12.7, zMinus2: 13.8, zPlus1: 19.9, zPlus2: 23.7 },
+            "11:6": { zMinus3: 12.9, zMinus2: 14.0, zPlus1: 20.3, zPlus2: 24.3 },
+            "12:0": { zMinus3: 13.2, zMinus2: 14.3, zPlus1: 20.8, zPlus2: 25.0 },
+            "12:6": { zMinus3: 13.4, zMinus2: 14.6, zPlus1: 21.3, zPlus2: 25.6 },
+            "13:0": { zMinus3: 13.6, zMinus2: 14.8, zPlus1: 21.8, zPlus2: 26.2 },
+            "13:6": { zMinus3: 13.8, zMinus2: 15.1, zPlus1: 22.3, zPlus2: 26.8 },
+            "14:0": { zMinus3: 14.0, zMinus2: 15.3, zPlus1: 22.7, zPlus2: 27.3 },
+            "14:6": { zMinus3: 14.2, zMinus2: 15.6, zPlus1: 23.1, zPlus2: 27.8 },
+            "15:0": { zMinus3: 14.4, zMinus2: 15.8, zPlus1: 23.5, zPlus2: 28.2 },
+            "15:6": { zMinus3: 14.5, zMinus2: 15.9, zPlus1: 23.8, zPlus2: 28.6 },
+            "16:0": { zMinus3: 14.6, zMinus2: 16.1, zPlus1: 24.1, zPlus2: 28.9 },
+            "16:6": { zMinus3: 14.7, zMinus2: 16.2, zPlus1: 24.3, zPlus2: 29.1 },
+            "17:0": { zMinus3: 14.7, zMinus2: 16.3, zPlus1: 24.5, zPlus2: 29.3 },
+            "17:6": { zMinus3: 14.7, zMinus2: 16.3, zPlus1: 24.6, zPlus2: 29.4 },
+            "18:0": { zMinus3: 14.7, zMinus2: 16.3, zPlus1: 24.8, zPlus2: 29.5 }
+        };
+
+        const imcTablasNiños = {
+            "5:1": { zMinus3: 12.1, zMinus2: 12.9, zPlus1: 16.6, zPlus2: 18.3 },
+            "5:6": { zMinus3: 12.1, zMinus2: 12.9, zPlus1: 16.7, zPlus2: 18.4 },
+            "6:0": { zMinus3: 12.1, zMinus2: 12.9, zPlus1: 16.8, zPlus2: 18.5 },
+            "6:6": { zMinus3: 12.2, zMinus2: 13.0, zPlus1: 16.9, zPlus2: 18.7 },
+            "7:0": { zMinus3: 12.3, zMinus2: 13.0, zPlus1: 17.0, zPlus2: 19.0 },
+            "7:6": { zMinus3: 12.3, zMinus2: 13.1, zPlus1: 17.2, zPlus2: 19.3 },
+            "8:0": { zMinus3: 12.4, zMinus2: 13.2, zPlus1: 17.4, zPlus2: 19.7 },
+            "8:6": { zMinus3: 12.5, zMinus2: 13.3, zPlus1: 17.7, zPlus2: 20.1 },
+            "9:0": { zMinus3: 12.6, zMinus2: 13.4, zPlus1: 17.9, zPlus2: 20.5 },
+            "9:6": { zMinus3: 12.7, zMinus2: 13.5, zPlus1: 18.2, zPlus2: 20.9 },
+            "10:0": { zMinus3: 12.8, zMinus2: 13.6, zPlus1: 18.5, zPlus2: 21.4 },
+            "10:6": { zMinus3: 12.9, zMinus2: 13.8, zPlus1: 18.8, zPlus2: 21.9 },
+            "11:0": { zMinus3: 13.1, zMinus2: 14.0, zPlus1: 19.2, zPlus2: 22.5 },
+            "11:6": { zMinus3: 13.2, zMinus2: 14.1, zPlus1: 19.5, zPlus2: 23.0 },
+            "12:0": { zMinus3: 13.4, zMinus2: 14.4, zPlus1: 19.9, zPlus2: 23.6 },
+            "12:6": { zMinus3: 13.6, zMinus2: 14.6, zPlus1: 20.4, zPlus2: 24.2 },
+            "13:0": { zMinus3: 13.8, zMinus2: 14.8, zPlus1: 20.8, zPlus2: 24.8 },
+            "13:6": { zMinus3: 14.0, zMinus2: 15.1, zPlus1: 21.3, zPlus2: 25.3 },
+            "14:0": { zMinus3: 14.3, zMinus2: 15.4, zPlus1: 21.8, zPlus2: 25.9 },
+            "14:6": { zMinus3: 14.5, zMinus2: 15.6, zPlus1: 22.2, zPlus2: 26.5 },
+            "15:0": { zMinus3: 14.7, zMinus2: 15.9, zPlus1: 22.7, zPlus2: 27.0 },
+            "15:6": { zMinus3: 14.9, zMinus2: 16.2, zPlus1: 23.1, zPlus2: 27.4 },
+            "16:0": { zMinus3: 15.1, zMinus2: 16.4, zPlus1: 23.5, zPlus2: 27.9 },
+            "16:6": { zMinus3: 15.3, zMinus2: 16.6, zPlus1: 23.9, zPlus2: 28.3 },
+            "17:0": { zMinus3: 15.4, zMinus2: 16.8, zPlus1: 24.3, zPlus2: 28.6 },
+            "17:6": { zMinus3: 15.6, zMinus2: 17.0, zPlus1: 24.6, zPlus2: 29.0 },
+            "18:0": { zMinus3: 15.7, zMinus2: 17.2, zPlus1: 24.9, zPlus2: 29.2 }
+        };
+
+        // Validar peso según tablas de estatura (como referencia)
+        function validarPesoPorEstatura(altura, peso) {
+            const alturaEntera = Math.round(altura);
+            if (alturaEntera >= 85 && alturaEntera <= 114) {
+                return peso >= 10 && peso <= 37; // Rango de la tabla 85-114 cm
+            } else if (alturaEntera >= 115 && alturaEntera <= 144) {
+                return peso >= 12 && peso <= 44; // Rango de la tabla 115-144 cm
+            } else if (alturaEntera >= 145 && alturaEntera <= 175) {
+                return peso >= 19 && peso <= 52; // Rango de la tabla 145-175 cm
+            }
+            return false;
+        }
+
+        // Validar peso
+        if (!validarPesoPorEstatura(altura, peso)) {
+            throw new Error('El peso está fuera del rango esperado para la altura según las tablas pediátricas');
+        }
+
+        // Obtener límites de IMC según edad y sexo
+        function getIMCLimits(genero, edadMeses) {
+            const edadAnios = Math.floor(edadMeses / 12);
+            const mesesRestantes = edadMeses % 12;
+            const key1 = `${edadAnios}:${mesesRestantes >= 6 ? 6 : 0}`;
+            const key2 = mesesRestantes >= 6 ? `${edadAnios + 1}:0` : `${edadAnios}:6`;
+
+            const tabla = genero.toLowerCase() === 'femenino' ? imcTablasNiñas : imcTablasNiños;
+            const limites1 = tabla[key1] || tabla[`${edadAnios}:0`];
+            const limites2 = tabla[key2] || tabla[`${edadAnios + 1}:0`];
+
+            if (!limites1 || !limites2) {
+                throw new Error('Edad fuera del rango de las tablas OMS');
+            }
+
+            // Interpolación lineal para valores intermedios
+            const factor = mesesRestantes >= 6 ? (mesesRestantes - 6) / 6 : mesesRestantes / 6;
+            return {
+                zMinus3: limites1.zMinus3 + (limites2.zMinus3 - limites1.zMinus3) * factor,
+                zMinus2: limites1.zMinus2 + (limites2.zMinus2 - limites1.zMinus2) * factor,
+                zPlus1: limites1.zPlus1 + (limites2.zPlus1 - limites1.zPlus1) * factor,
+                zPlus2: limites1.zPlus2 + (limites2.zPlus2 - limites1.zPlus2) * factor
+            };
+        }
+
+        const imcLimits = getIMCLimits(genero, edadMeses);
+
+        // Determinar clasificación según OMS pediátrica
+        if (imc < imcLimits.zMinus3) {
+            imcSource = {
+                clasificacion: 'Desnutrición severa',
+                riesgo: 'Alto riesgo de desnutrición',
+                percentil: '<0.1'
+            };
+        } else if (imc >= imcLimits.zMinus3 && imc < imcLimits.zMinus2) {
+            imcSource = {
+                clasificacion: 'Desnutrición moderada',
+                riesgo: 'Riesgo de desnutrición',
+                percentil: '0.1-2.3'
+            };
+        } else if (imc >= imcLimits.zMinus2 && imc <= imcLimits.zPlus1) {
+            imcSource = {
+                clasificacion: 'Normal',
+                riesgo: 'Riesgo mínimo',
+                percentil: '2.3-84.1'
+            };
+        } else if (imc > imcLimits.zPlus1 && imc <= imcLimits.zPlus2) {
+            imcSource = {
+                clasificacion: 'Sobrepeso',
+                riesgo: 'Riesgo moderado',
+                percentil: '84.1-97.7'
+            };
+        } else if (imc > imcLimits.zPlus2) {
+            imcSource = {
+                clasificacion: 'Obesidad',
+                riesgo: 'Alto riesgo de enfermedades metabólicas',
+                percentil: '>97.7'
+            };
+        }
+    }
+
+    // Agregar el valor numérico del IMC al objeto
+    imcSource.imc = imc.toFixed(2); // Redondear a 2 decimales
+
+    // Considerar si es deportista
+    if (esDeportista) {
+        imcSource.nota = 'Nota: En deportistas, el IMC puede no reflejar con precisión la composición corporal debido a mayor masa muscular';
+    }
+
+    // Devolver objeto con imc y imcSource
+    return { imc, imcSource };
+}
 
 			// Function to estimate metabolic Age
 			function calculateMetabolicAge(data) {
@@ -277,13 +287,6 @@ import { auth } from './app.js';
 			if (!genero || !edad || !peso || !altura) {
 				throw new Error('Faltan datos obligatorios: genero, edad, peso, altura');
 			}
-
-			
-
-
-
-
-
 				
 			// Validación para culturistas: forzar esDeportista = true si % grasa es bajo e IMC es alto
 			let grasaEval;
@@ -3700,7 +3703,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					console.error('Missing required fields', { peso: data.peso, altura: data.altura, genero: data.genero, edad: data.edad, es_deportista: data.es_deportista });
 					return;
 				}
-				
+					// Función para formatear números (si no está definida)
+					function formatResult(value, precision = 1) {
+					    return Number.isFinite(value) ? value.toFixed(precision) : '---';
+					}
 					// Función para formatear el objeto imcSource en una cadena legible
 					function formatImcSource(imcSource) {
 					    if (!imcSource || typeof imcSource !== 'object') {
@@ -3716,6 +3722,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    }
 					    return result;
 					}
+				
 				try {
 					// --- Calculate Actual Body Fat % ---
 					let actualBodyFatPct = NaN;
@@ -3863,43 +3870,53 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					} else {
 						results.icc = NaN;
 					}
-
+					// Calcular IMC usando la función calculateIMC
+					 if (!isNaN(alturaM) &&  data.peso && data.edad && data.genero) {
+        				try {
+            				    const results = calculateIMC(data);
+					 } catch (e) {
+					            console.error('Error calculando IMC:', e.message);
+					            results.imc = NaN;
+					            content += `<p><strong>Error en IMC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+					        }
+					   
+					  
 					// Calculate Área Muscular Brazo (AMB)
 					// AMB Calculation
 			
 			if (data.circ_brazo && data.pliegue_tricipital && data.edad && data.genero) {
 				try {
-            const circBrazo = Number(data.circ_brazo);
-            const pliegueTricipital = Number(data.pliegue_tricipital);
-            const age = Number(data.edad);
-            const isAthlete = data.es_deportista === 'si';
-
-            if (circBrazo < 20 || circBrazo > 50) throw new Error('Circunferencia del brazo debe estar entre 20 y 50 cm');
-            if (pliegueTricipital < 2 || pliegueTricipital > 40) throw new Error('Pliegue tricipital debe estar entre 2 y 40 mm');
-            if (age < 18) throw new Error('Edad debe ser mayor o igual a 18 años');
-            if (!['masculino', 'femenino'].includes(data.genero)) throw new Error('Género no válido');
-
-            const tricepsCm = pliegueTricipital / 10;
-            const term = circBrazo - Math.PI * tricepsCm;
-            const baseAMB = (term * term) / (4 * Math.PI);
-
-            let correction = 0;
-            if (data.genero === 'masculino') {
-                correction = isAthlete ? (age < 40 ? 8 : age < 60 ? 7 : 6) : (age < 40 ? 10 : age < 60 ? 9 : 8);
-            } else if (data.genero === 'femenino') {
-                correction = isAthlete ? (age < 40 ? 5 : age < 60 ? 4.5 : 4) : (age < 40 ? 6.5 : age < 60 ? 6 : 5.5);
-            }
-
-            results.amb = Math.max(baseAMB - correction, 0);
-        } catch (e) {
-            console.error('Error calculando AMB:', e.message);
-            results.amb = NaN;
-            content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-        }
-    } else {
-        results.amb = NaN;
-        content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
-    }
+			            const circBrazo = Number(data.circ_brazo);
+			            const pliegueTricipital = Number(data.pliegue_tricipital);
+			            const age = Number(data.edad);
+			            const isAthlete = data.es_deportista === 'si';
+			
+			            if (circBrazo < 20 || circBrazo > 50) throw new Error('Circunferencia del brazo debe estar entre 20 y 50 cm');
+			            if (pliegueTricipital < 2 || pliegueTricipital > 40) throw new Error('Pliegue tricipital debe estar entre 2 y 40 mm');
+			            if (age < 18) throw new Error('Edad debe ser mayor o igual a 18 años');
+			            if (!['masculino', 'femenino'].includes(data.genero)) throw new Error('Género no válido');
+			
+			            const tricepsCm = pliegueTricipital / 10;
+			            const term = circBrazo - Math.PI * tricepsCm;
+			            const baseAMB = (term * term) / (4 * Math.PI);
+			
+			            let correction = 0;
+			            if (data.genero === 'masculino') {
+			                correction = isAthlete ? (age < 40 ? 8 : age < 60 ? 7 : 6) : (age < 40 ? 10 : age < 60 ? 9 : 8);
+			            } else if (data.genero === 'femenino') {
+			                correction = isAthlete ? (age < 40 ? 5 : age < 60 ? 4.5 : 4) : (age < 40 ? 6.5 : age < 60 ? 6 : 5.5);
+			            }
+			
+			            results.amb = Math.max(baseAMB - correction, 0);
+			        } catch (e) {
+			            console.error('Error calculando AMB:', e.message);
+			            results.amb = NaN;
+			            content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			        }
+			    } else {
+			        results.amb = NaN;
+			        content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
+			    }
     
 
 		// MMT Calculation
@@ -4108,6 +4125,16 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    } else {
 						        console.warn('Elemento imc-source no encontrado en resultElements');
 						    }
+						} catch (error) {
+				                console.error('Error al actualizar la visualización:', error.message);
+				                if (resultElements['result-imc']) {
+				                    resultElements['result-imc'].textContent = '---';
+				                }
+				                if (resultElements['imc-source']) {
+				                    resultElements['imc-source'].textContent = '(Error en el cálculo)';
+				                }
+				            }
+				        
 						
 						updateElement('icc', results.icc, 2);
 						if (resultElements.iccSource) {
