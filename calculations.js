@@ -3916,7 +3916,17 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				}
 			});
 				
-			
+			// Initialize results display on page load
+			document.addEventListener('DOMContentLoaded', () => {
+				console.log('Inicializando visualización de resultados');
+				console.log('resultElements:', resultElements);
+				resetResultElements(resultElements);
+				if (explanationSection) {
+					explanationSection.style.display = 'none';
+				} else {
+					console.error('explanationSection no encontrado');
+				}
+			});
 			
 			// After successful calculations
     const guardarDatosBtn = document.getElementById('guardar_datos');
