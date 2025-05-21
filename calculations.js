@@ -311,30 +311,30 @@ import { auth } from './app.js';
 			    if (genero === 'masculino') {
 			        if (icc < 0.78) {
 			            clasificacion = 'Ginoide';
-			            riesgo = 'Bajo';
+			            riesgo = 'Riesgo Bajo';
 			        } else if (icc >= 0.78 && icc <= 0.94) {
 			            clasificacion = 'Normal';
-			            riesgo = 'Bajo';
+			            riesgo = 'Riesgo Bajo';
 			        } else if (icc > 0.94 && icc < 1.0) {
 			            clasificacion = 'Androide';
-			            riesgo = 'Alto';
+			            riesgo = 'Riesgo Alto';
 			        } else { // icc >= 1.0
 			            clasificacion = 'Androide';
-			            riesgo = 'Muy Alto';
+			            riesgo = 'Riesgo Muy Alto';
 			        }
 			    } else { // femenino
 			        if (icc < 0.71) {
 			            clasificacion = 'Ginoide';
-			            riesgo = 'Bajo';
+			            riesgo = 'Riesgo Bajo';
 			        } else if (icc >= 0.71 && icc <= 0.84) {
 			            clasificacion = 'Normal';
-			            riesgo = 'Bajo';
+			            riesgo = 'Riesgo Bajo';
 			        } else if (icc > 0.84 && icc < 1.0) {
 			            clasificacion = 'Androide';
-			            riesgo = 'Alto';
+			            riesgo = 'Riesgo Alto';
 			        } else { // icc >= 1.0
 			            clasificacion = 'Androide';
-			            riesgo = 'Muy Alto';
+			            riesgo = 'Riesgo Muy Alto';
 			        }
 			    }
 			
