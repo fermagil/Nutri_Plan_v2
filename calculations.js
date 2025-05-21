@@ -3933,5 +3933,5 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
     if (guardarDatosBtn) {
         guardarDatosBtn.style.display = 'inline-block';
     }
-    alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones.');
+    alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones_1.');
 
