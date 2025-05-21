@@ -4115,12 +4115,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						};
 
 						// Update IMC
-						updateElement('imc', results.imc, 1);
-						// Actualizar imcSource
+						    updateElement('result-imc', results.imc, 1);
 						    if (resultElements['imc-source']) {
-						        resultElements['imc-source'].textContent = formatImcSource(result);
+						        resultElements['imc-source'].textContent = formatImcSource(results.imcSource);
 						    } else {
-						        console.warn('Elemento imc-source no encontrado en resultElements');
+						        console.warn('Elemento imc-source no encontrado en resultElements. Verifica el HTML para id="imc-source".');
 						    }
 						
 				                
