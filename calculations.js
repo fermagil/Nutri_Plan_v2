@@ -4140,10 +4140,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	                    else ageRange = '70+';
 	
 	                    // Select ranges
-	                    const ranges = isAthlete ? ambRanges[gender].athlete[ageRange] : ambRanges[gender].general[ageRange];
+	                    const ranges = isAthlete ? ambRanges[genero].athlete[ageRange] : ambRanges[genero].general[ageRange];
 	
 	                    // Set ambSource
-	                    results.ambSource = formatAmbSource(results.amb, ranges, isAthlete, gender, ageRange);
+	                    results.ambSource = formatAmbSource(results.amb, ranges, isAthlete, genero, ageRange);
 	
 	                    console.log('AMB calculado:', { amb: results.amb, ambSource: results.ambSource });
                 } catch (e) {
