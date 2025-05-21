@@ -3625,7 +3625,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		});
 	};
 
-			
+			console.log('resultElements:', resultElements);
+			console.log('imcSource element:', resultElements.imcSource);
 			// Form submission handler
 			form.addEventListener('submit', function (event) {
 				event.preventDefault();
@@ -3729,7 +3730,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            try {
 				                const imcResults = calculateIMC(data); // Use a different variable to avoid shadowing
 				                results.imc = imcResults.imc;
-				                results.imcSource = result;
+				                results.imcSource = imcResults.imcSource;
 				                console.log('IMC calculado:', results.imc, results.imcSource);
 				            } catch (e) {
 				                console.error('Error calculando IMC:', e.message);
@@ -4115,12 +4116,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						};
 
 						// Update IMC
-						    updateElement('result-imc', results.imc, 1);
-						    if (resultElements['imc-source']) {
-						        resultElements['imc-source'].textContent = formatImcSource(results.imcSource);
-						    } else {
-						        console.warn('Elemento imc-source no encontrado en resultElements. Verifica el HTML para id="imc-source".');
-						    }
+					    updateElement('imc', results.imc, 1); // Matches resultElements.imc
+					    if (resultElements.imcSource) { // Use imcSource to match resultElements
+					        resultElements.imcSource.textContent = formatImcSource(results.imcSource);
+					    } else {
+					        console.warn('Elemento imcSource no encontrado en resultElements. Verifica que resultElements.imcSource esté definido y que el HTML tenga id="imc-source".');
+					    }
 						
 				                
 				        
