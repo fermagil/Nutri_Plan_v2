@@ -134,27 +134,7 @@ const toNumber = (value) => {
 
 
 
-// Initialize UI event listeners
-function initializeUI() {
-    // Toggle dropdown on logo click
-    document.getElementById('logo').addEventListener('click', function(event) {
-        event.preventDefault();
-        const dropdown = document.getElementById('dropdown');
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    });
 
-    // Close dropdown if clicking outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById('dropdown');
-        const logo = document.getElementById('logo');
-        if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
-
-    // Expose logout to global scope for dropdown
-    window.logout = logout;
-}
 
 // Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
