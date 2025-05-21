@@ -3729,7 +3729,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            try {
 				                const imcResults = calculateIMC(data); // Use a different variable to avoid shadowing
 				                results.imc = imcResults.imc;
-				                results.imcSource = imcResults.imcSource;
+				                results.imcSource = result;
 				                console.log('IMC calculado:', results.imc, results.imcSource);
 				            } catch (e) {
 				                console.error('Error calculando IMC:', e.message);
