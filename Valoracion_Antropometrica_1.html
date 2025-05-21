@@ -203,37 +203,53 @@
             border-left: 3px solid #ffc107;
         }
 
-       /* Estilos generales para los botones */
-		button {
-		    background-color: #5cb85c;
-		    color: white;
-		    cursor: pointer;
-		    font-weight: 500;
-		    border: none;
-		    transition: background-color 0.3s ease, transform 0.1s ease;
-		    border-radius: 5px;
-		    padding: 12px 20px;
-		    font-size: 1em;
-		}
-		
-		/* Estilos específicos para la clase .button */
-		.button {
-		    min-width: 150px; /* Ancho mínimo para uniformidad */
-		}
-		
-		/* Efecto hover */
-		button:hover {
-		    background-color: #4cae4c;
-		    transform: translateY(-1px);
-		}
-		
-		/* Media query para pantallas pequeñas */
-		@media (max-width: 600px) {
-		    .button {
-		        padding: 10px 16px; /* Ligeramente más pequeño para pantallas pequeñas */
-		        min-width: 120px; /* Ancho mínimo reducido */
-		    }
-		}
+       /* Estilos para la sección */
+.anthropometric-section {
+    width: 100%; /* Asegura que la sección ocupe todo el ancho disponible */
+    max-width: 1200px; /* Opcional: limita el ancho máximo */
+    margin: 0 auto; /* Centra la sección en la página */
+    padding: 20px; /* Espaciado interno */
+}
+
+/* Estilos para el form-grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Estilos generales para los botones */
+button {
+    background-color: #5cb85c;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    border-radius: 5px;
+    padding: 12px 20px;
+    font-size: 1em;
+}
+
+/* Estilos específicos para la clase .button */
+.button {
+    min-width: 150px; /* Ancho mínimo para uniformidad */
+}
+
+/* Efecto hover */
+button:hover {
+    background-color: #4cae4c;
+    transform: translateY(-1px);
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+    .button {
+        padding: 10px 16px; /* Ligeramente más pequeño */
+        min-width: 120px; /* Ancho mínimo reducido */
+    }
+}
 
         .form-grid,
         .results-grid {
@@ -773,10 +789,10 @@
                         <label for="diam_muneca">Muñeca:</label>
                         <input type="number" id="diam_muneca" name="diam_muneca" step="0.1" min="0" placeholder="cm">
                     </div>
-                       <div style="display: flex; justify-content: center; gap: 10px;">
-			    <button type="submit" id="calcular_resultados" class="button">Calcular Resultados</button>
-			    <button type="button" id="guardar_datos" class="button" style="display: none;">Guardar Datos</button>
-		     </div>
+                       <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+		        <button type="submit" id="calcular_resultados" class="button">Calcular Resultados</button>
+		        <button type="button" id="guardar_datos" class="button" style="display: none;">Guardar Datos</button>
+		    </div>
                 </div>
             </section>
 
