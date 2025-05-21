@@ -4118,7 +4118,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						updateElement('imc', results.imc, 1);
 						// Actualizar imcSource
 						    if (resultElements['imc-source']) {
-						        resultElements['imc-source'].textContent = formatImcSource(results.imcSource);
+						        resultElements['imc-source'].textContent = formatImcSource(result);
 						    } else {
 						        console.warn('Elemento imc-source no encontrado en resultElements');
 						    }
