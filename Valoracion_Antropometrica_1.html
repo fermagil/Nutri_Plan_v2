@@ -203,23 +203,41 @@
             border-left: 3px solid #ffc107;
         }
 
-        button {
-            background-color: #5cb85c;
-            color: white;
-            cursor: pointer;
-            font-weight: 500;
-            border: none;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            border-radius: 5px;
-            padding: 12px 20px;
-            font-size: 1em;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #4cae4c;
-            transform: translateY(-1px);
-        }
+       /* Estilos generales para los botones */
+		button {
+		    background-color: #5cb85c;
+		    color: white;
+		    cursor: pointer;
+		    font-weight: 500;
+		    border: none;
+		    transition: background-color 0.3s ease, transform 0.1s ease;
+		    border-radius: 5px;
+		    padding: 12px 20px;
+		    font-size: 1em;
+		}
+		
+		/* Estilos específicos para la clase .button */
+		.button {
+		    display: inline-block;
+		    margin: 0 5px; /* Espaciado horizontal entre botones */
+		    min-width: 150px; /* Ancho mínimo para uniformidad */
+		}
+		
+		/* Efecto hover */
+		button:hover {
+		    background-color: #4cae4c;
+		    transform: translateY(-1px);
+		}
+		
+		/* Media query para pantallas pequeñas */
+		@media (max-width: 600px) {
+		    .button {
+		        display: inline-block; /* Mantiene los botones en línea */
+		        margin: 0 5px; /* Mantiene el espaciado horizontal */
+		        padding: 10px 16px; /* Ligeramente más pequeño para pantallas pequeñas */
+		        min-width: 120px; /* Ancho mínimo reducido */
+		    }
+		}
 
         .form-grid,
         .results-grid {
@@ -606,22 +624,7 @@
             background-color: #e9f5e9;
             color: #388e3c;
         }
-	   .button {
-	    display: inline-block;
-	    margin: 0 5px;
-	    padding: 10px 20px; /* Ajusta el padding */
-	    min-width: 150px; /* Asegura un ancho mínimo */
-	}
-	
-	/* Opcional: Media query para pantallas pequeñas */
-	@media (max-width: 600px) {
-	    .button {
-	        display: inline-block; /* Mantiene los botones en línea */
-	        margin: 0 5px; /* Mantiene el espaciado horizontal */
-	        padding: 8px 16px; /* Opcional: reduce el padding para pantallas pequeñas */
-	        min-width: 120px; /* Opcional: reduce el ancho mínimo */
-	    }
-	}
+	   
     </style>
 </head>
 <body>
