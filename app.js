@@ -136,26 +136,7 @@ const toNumber = (value) => {
 
 
 
-// Manejar estado de autenticación
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    const loginContainer = document.getElementById('login-container');
-    const navMenu = document.getElementById('nav-menu');
-    if (user) {
-        console.log('Auth state: User signed in', user.displayName, user.email);
-        loginContainer.style.display = 'none';
-        form.style.display = 'block';
-        navMenu.style.display = 'flex';
-    } else {
-        console.log('Auth state: No user signed in');
-        loginContainer.style.display = 'block';
-        form.style.display = 'none';
-        navMenu.style.display = 'none';
-        clientesResultados.style.display = 'none';
-        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-        currentClienteId = null;
-    }
-});
+
 
 // Búsqueda de clientes
 buscarClienteInput.addEventListener('input', async () => {
