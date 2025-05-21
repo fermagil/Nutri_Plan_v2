@@ -53,18 +53,7 @@ import { auth } from './app.js';
             return value.toFixed(decimals);
         };
 		
-		
-
-			// Function to estimate metabolic Age
-			function calculateMetabolicAge(data) {
-			let { genero, edad, peso, altura, esDeportista, pliegues, porcentajeGrasa, cintura } = data;
-
-			// Verificar datos obligatorios
-			if (!genero || !edad || !peso || !altura) {
-				throw new Error('Faltan datos obligatorios: genero, edad, peso, altura');
-			}
-
-			// Calcular IMC
+		// Calcular IMC
 			const alturaMetros = altura / 100; // Convertir altura a metros
 			const imc = peso / (alturaMetros * alturaMetros);
 			// Verificar que la edad sea mayor o igual a 5 años
@@ -279,6 +268,17 @@ import { auth } from './app.js';
 		}
 		
 		return imcSource;
+
+			// Function to estimate metabolic Age
+			function calculateMetabolicAge(data) {
+			let { genero, edad, peso, altura, esDeportista, pliegues, porcentajeGrasa, cintura } = data;
+
+			// Verificar datos obligatorios
+			if (!genero || !edad || !peso || !altura) {
+				throw new Error('Faltan datos obligatorios: genero, edad, peso, altura');
+			}
+
+			
 
 
 
