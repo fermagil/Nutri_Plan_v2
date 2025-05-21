@@ -4108,9 +4108,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    } else {
 						        console.warn('Elemento imc-source no encontrado en resultElements');
 						    }
-						} catch (error) {
-						    console.error('Error al actualizar la visualización:', error.message);
-						}
+						
 						updateElement('icc', results.icc, 2);
 						if (resultElements.iccSource) {
 							resultElements.iccSource.textContent = results.iccSource|| '(No calculado)';
