@@ -3,13 +3,17 @@ import { auth } from './app.js';
 			const form = document.getElementById('anthropometry-form');
 			const resultElements = {
 				imc: document.getElementById('result-imc'),
+				imcSource:document.getElementById('imc-source'),
 				icc: document.getElementById('result-icc'),
+				iccSource:document.getElementById('icc-source'),
 				grasaPctActual: document.getElementById('result-grasa-pct-actual'),
 				grasaPctActualSource: document.getElementById('grasa-pct-actual-source'),
 				grasaPctDeseado: document.getElementById('result-grasa-pct-deseado'),
 				grasaPctDeseadoSource: document.getElementById('grasa-pct-deseado-source'),
 				masaGrasa: document.getElementById('result-masa-grasa'),
+				masaGrasaSource:document.getElementById('masa-grasa-source'),
 				mlg: document.getElementById('result-mlg'),
+				mlgSource:document.getElementById('mlg-source'),
 				amb: document.getElementById('result-amb'),
 				masaOsea: document.getElementById('result-masa-osea'),
 				masaResidual: document.getElementById('result-masa-residual'),
@@ -20,8 +24,11 @@ import { auth } from './app.js';
 				//ectomorfia: document.getElementById('result-ectomorfia'),
 				mmt: document.getElementById('result-mmt'),
 				imlg: document.getElementById('result-imlg'),
+				imlgSource:document.getElementById('imlg-source'),
 				img: document.getElementById('result-img'),
+				imgSource:document.getElementById('img-source'),
 				tipologia: document.getElementById('result-tipologia'),
+				tipologiaSource:document.getElementById('tipologia-source'),
 				edadmetabolica: document.getElementById('result-edadmetabolica'),
 				edadmetabolicaSource: document.getElementById('edadmetabolica-source'),
 				resultSomatotipo: document.getElementById('result-somatotipo')
@@ -3801,22 +3808,30 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					// Store results for app.js
 					    window.calculatedResults = {
 					      imc: formatResult(results.imc, 1),
+					      imcSource: results.imcSource || '(No calculado)',
 					      icc: formatResult(results.icc, 2),
+					      iccSource: results.iccSource || '(No calculado)',
 					      grasaPctActual: formatResult(results.grasaPctActual, 1),
 					      grasaPctActualSource: actualBodyFatSource || '(No calculado)',
 					      grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
 					      grasaPctDeseadoSource: desiredBodyFatSource || '(No estimado)',
 					      masaGrasa: formatResult(results.masaGrasa, 1),
+					      masaGrasaSource: results.masaGrasaSource || '(No calculado)',
 					      mlg: formatResult(results.mlg, 1),
+					      mlgSource: results.mlgSource || '(No calculado)',
 					      amb: formatResult(results.amb, 1),
 					      masaOsea: formatResult(results.masaOsea, 1),
+					      masaOseaSource: results.masaOseaSource || '(No calculado)',
 					      masaResidual: formatResult(results.masaResidual, 1),
 					      pesoIdeal: formatResult(results.pesoIdeal, 1),
 					      pesoObjetivo: formatResult(results.pesoObjetivo, 1),
 					      mmt: formatResult(results.mmt, 1),
 					      imlg: formatResult(results.imlg, 1),
+					      imlgSource: results.imlgSource || '(No calculado)',
 					      img: formatResult(results.img, 1),
+					      imgSource: results.imgSource || '(No calculado)',
 					      tipologia: results.tipologia || 'Indefinido',
+					      tipologiaimgSource: results.tipologiaSource || '(No calculado)',
 					      edadmetabolica: formatResult(results.edadmetabolica, 1),
 					      edadmetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
 					      somatotipo: {
@@ -3855,7 +3870,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						};
 
 						updateElement('imc', results.imc, 1);
+						if (resultElements.imcSource) {
+							resultElements.imcSource.textContent = results.imcSource|| '(No calculado)';
+						}
 						updateElement('icc', results.icc, 2);
+						if (resultElements.iccSource) {
+							resultElements.iccSource.textContent = results.iccSource|| '(No calculado)';
+						}
 						updateElement('grasaPctActual', results.grasaPctActual, 1);
 						if (resultElements.grasaPctActualSource) {
 							resultElements.grasaPctActualSource.textContent = actualBodyFatSource || '(No calculado)';
@@ -3865,7 +3886,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							resultElements.grasaPctDeseadoSource.textContent = desiredBodyFatSource || '(No estimado)';
 						}
 						updateElement('masaGrasa', results.masaGrasa, 1);
+						if (resultElements.masaGrasaSource) {
+							resultElements.masaGrasaSource.textContent = results.masaGrasaSource|| '(No calculado)';
+						}
 						updateElement('mlg', results.mlg, 1);
+						if (resultElements.mlgSource) {
+							resultElements.mlgSource.textContent = results.mlgSource|| '(No calculado)';
+						}
 						updateElement('amb', results.amb, 1);
 						updateElement('masaOsea', results.masaOsea, 1);
 						updateElement('masaResidual', results.masaResidual, 1);
@@ -3877,7 +3904,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						}
 						updateElement('mmt', results.mmt, 1);
 						updateElement('imlg', results.imlg, 1);
+						if (resultElements.imlgSource) {
+							resultElements.imlgSource.textContent = results.imlgSource|| '(No calculado)';
+						}
 						updateElement('img', results.img, 1);
+						if (resultElements.imgSource) {
+							resultElements.imgSource.textContent = results.imgGrasaSource|| '(No calculado)';
+						}
 						if (resultElements.tipologia) {
 							resultElements.tipologia.textContent = results.tipologia || 'Indefinido';
 						}
