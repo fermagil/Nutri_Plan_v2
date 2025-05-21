@@ -818,13 +818,13 @@ import { auth } from './app.js';
     if (sexo.toLowerCase() === 'masculino') {
         // IMLG para hombres
         if (imlg < 18) {
-            imlgCategory = 'Bajo';
+            imlgCategory = 'Nivel Bajo';
             imlgRangeDesc = 'Posiblemente indica baja masa muscular o desnutrición.';
         } else if (imlg >= 18 && imlg <= 20) {
             imlgCategory = 'Normal/Promedio';
             imlgRangeDesc = 'Nivel típico de masa magra para la población general.';
         } else if (imlg > 20 && imlg <= 25) {
-            imlgCategory = 'Bueno/Alto';
+            imlgCategory = 'Nivel Bueno/Alto';
             imlgRangeDesc = 'Asociado con mayor masa muscular, típico de hombres atléticos.';
         } else {
             imlgCategory = 'Extremo';
@@ -833,7 +833,7 @@ import { auth } from './app.js';
 
         // IMG para hombres
         if (img < 4) {
-            imgCategory = 'Bajo';
+            imgCategory = 'Nivel Bajo';
             imgRangeDesc = 'Posiblemente indica muy poca grasa corporal.';
         } else if (img >= 4 && img <= 6) {
             imgCategory = 'Normal/Saludable';
@@ -848,22 +848,22 @@ import { auth } from './app.js';
     } else if (sexo.toLowerCase() === 'femenino') {
         // IMLG para mujeres
         if (imlg < 15) {
-            imlgCategory = 'Bajo';
+            imlgCategory = 'Nivel Bajo';
             imlgRangeDesc = 'Posiblemente indica baja masa muscular o desnutrición.';
         } else if (imlg >= 15 && imlg <= 17) {
             imlgCategory = 'Normal/Promedio';
             imlgRangeDesc = 'Nivel típico de masa magra para la población general.';
         } else if (imlg > 17 && imlg <= 22) {
-            imlgCategory = 'Bueno/Alto';
+            imlgCategory = 'Nivel Bueno/Alto';
             imlgRangeDesc = 'Asociado con mayor masa muscular, típico de mujeres atléticas.';
         } else {
-            imlgCategory = 'Extremo';
+            imlgCategory = 'Nivel Extremo > 22';
             imlgRangeDesc = 'Excede el límite superior típico (22).';
         }
 
         // IMG para mujeres
         if (img < 6) {
-            imgCategory = 'Bajo';
+            imgCategory = 'Nivel Bajo';
             imgRangeDesc = 'Posiblemente indica muy poca grasa corporal.';
         } else if (img >= 6 && img <= 9) {
             imgCategory = 'Normal/Saludable';
@@ -878,21 +878,21 @@ import { auth } from './app.js';
     } else {
         // Rangos genéricos
         if (imlg < 16.5) {
-            imlgCategory = 'Bajo';
+            imlgCategory = 'Nivel Bajo';
             imlgRangeDesc = 'Posiblemente indica baja masa muscular o desnutrición.';
         } else if (imlg >= 16.5 && imlg <= 19) {
             imlgCategory = 'Normal/Promedio';
             imlgRangeDesc = 'Nivel típico de masa magra.';
         } else if (imlg > 19 && imlg <= 23) {
-            imlgCategory = 'Bueno/Alto';
+            imlgCategory = 'Nivel Bueno/Alto';
             imlgRangeDesc = 'Asociado con mayor masa muscular.';
         } else {
-            imlgCategory = 'Extremo';
+            imlgCategory = 'Nivel Extremo';
             imlgRangeDesc = 'Excede los límites superiores típicos.';
         }
 
         if (img < 5) {
-            imgCategory = 'Bajo';
+            imgCategory = 'Nivel Bajo';
             imgRangeDesc = 'Posiblemente indica muy poca grasa corporal.';
         } else if (img >= 5 && img <= 7.5) {
             imgCategory = 'Normal/Saludable';
@@ -3909,22 +3909,38 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						);
 
 						results.imlg = bodyCompResults.imlg;
+						results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
 						results.img = bodyCompResults.img;
-						results.tipologia = bodyCompResults.tipologia;
+						results.imgSource = bodyCompResults.imgCategory || '(No calculado)';
+						results.tipologia = bodyCompResults.tipologia;  || 'Indefinido';
 						console.log('IMLG, IMG, Tipología:', {
 							imlg: results.imlg,
+							imlgSource: results.imlgSource,
 							img: results.img,
+							imgSource: results.imgSource,
 							tipologia: results.tipologia
 						});
+					} catch (e) {
+			                    console.error('Error calculando IMLG, IMG y Tipología:', e.message);
+			                    results.imlg = NaN;
+			                    results.imlgSource = 'Error: ' + e.message;
+			                    results.img = NaN;
+			                    results.imgSource = 'Error: ' + e.message;
+			                    results.tipologia = 'Indefinido';
+			                    content += `<p><strong>Error en IMLG e IMG:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                 }		
 					} else {
 						results.imlg = NaN;
+						results.imlgSource = '(No calculado: Datos insuficientes)';
 						results.img = NaN;
+						results.imgSource = '(No calculado: Datos insuficientes)';
 						results.tipologia = 'Indefinido';
 						console.warn('No se pudieron calcular IMLG, IMG y Tipología: datos insuficientes', {
 							peso: data.peso,
 							alturaM,
 							actualBodyFatPct
 						});
+						content += `<p><strong>IMLG e IMG:</strong> No calculado debido a datos insuficientes.</p>`;
 					}
 
 					// --- Calculate Metabolic Age ---
@@ -4226,7 +4242,25 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                } else {
 				                    console.warn('Elemento iccSource no encontrado en resultElements. Verifica que resultElements.iccSource esté definido y que el HTML tenga id="icc-source".');
 				                }
-				        
+
+						// Update IMLG and IMG
+				                updateElement('imlg', results.imlg, 1);
+				                if (resultElements.imlgSource) {
+				                    resultElements.imlgSource.textContent = results.imlgSource || '(No calculado)';
+				                } else {
+				                    console.warn('Elemento imlgSource no encontrado en resultElements. Verifica que resultElements.imlgSource esté definido y que el HTML tenga id="imlg-source".');
+				                }
+				                updateElement('img', results.img, 1);
+				                if (resultElements.imgSource) {
+				                    resultElements.imgSource.textContent = results.imgSource || '(No calculado)';
+				                } else {
+				                    console.warn('Elemento imgSource no encontrado en resultElements. Verifica que resultElements.imgSource esté definido y que el HTML tenga id="img-source".');
+				                }
+																
+						if (resultElements.tipologia) {
+							resultElements.tipologia.textContent = results.tipologia || 'Indefinido';
+						}
+						
 						// Update other results
 						
 						updateElement('grasaPctActual', results.grasaPctActual, 1);
@@ -4255,17 +4289,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								: '---';
 						}
 						updateElement('mmt', results.mmt, 1);
-						updateElement('imlg', results.imlg, 1);
-						if (resultElements.imlgSource) {
-							resultElements.imlgSource.textContent = results.imlgSource|| '(No calculado)';
-						}
-						updateElement('img', results.img, 1);
-						if (resultElements.imgSource) {
-							resultElements.imgSource.textContent = results.imgGrasaSource|| '(No calculado)';
-						}
-						if (resultElements.tipologia) {
-							resultElements.tipologia.textContent = results.tipologia || 'Indefinido';
-						}
+						
 						updateElement('edadmetabolica', results.edadmetabolica, 1);
 						if (resultElements.edadmetabolicaSource) {
 							resultElements.edadmetabolicaSource.textContent = results.edadmetabolicaSource || '(No calculado)';
