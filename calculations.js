@@ -3499,19 +3499,19 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						} else if (data.edad >= 6 && data.edad <= 17) {
 							actualBodyFatPct = calculateSlaughterBodyFat(data);
 							if (!isNaN(actualBodyFatPct)) {
-								actualBodyFatSource = '(Calculado: Slaughter)';
+								actualBodyFatSource = '(Calculado: Slaughter, >6 años <= 17 años)';
 								console.log('Calculando % Grasa Actual (Slaughter):', actualBodyFatPct);
 							}
 						} else {
 							actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
 							if (!isNaN(actualBodyFatPct)) {
-								actualBodyFatSource = '(Calculado: Durnin-Womersley)';
+								actualBodyFatSource = '(Calculado: Durnin-Womersley adultos no deportistas)';
 								console.log('Calculando % Grasa Actual (Durnin-Womersley):', actualBodyFatPct);
 							} else {
 								actualBodyFatPct = calculateCircumferenceBodyFat(data);
 								if (!isNaN(actualBodyFatPct)) {
 									actualBodyFatSource = '(Calculado: Circunferencias)';
-									console.log('Calculando % Grasa Actual (Circunferencias):', actualBodyFatPct);
+									console.log('Calculando % Grasa Actual (Circunferencias US Navy):', actualBodyFatPct);
 								} else {
 									console.warn('No se pudo calcular % Grasa Actual: datos insuficientes');
 								}
@@ -3531,7 +3531,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						const isAthlete = data.es_deportista === 'si';
 						desiredBodyFatPct = estimateTargetBodyFat(data.genero, isAthlete, Number(data.edad));
 						if (!isNaN(desiredBodyFatPct)) {
-							desiredBodyFatSource = '(Estimado según edad)';
+							desiredBodyFatSource = '(Estimado según edad, sexo y nivel AF)';
 							console.log('Estimando % Grasa Deseado:', desiredBodyFatPct);
 						}
 					}
