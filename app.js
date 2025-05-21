@@ -85,13 +85,17 @@ let currentUser = null;
 // Lista de elementos de resultados
 const resultElementIds = [
     'result-imc',
+    'imc-source',
     'result-icc',
+    'icc-source',
     'result-grasa-pct-actual',
     'grasa-pct-actual-source',
     'result-grasa-pct-deseado',
     'grasa-pct-deseado-source',
     'result-masa-grasa',
+    'masa-grasa-source',
     'result-mlg',
+    'mlg-source',
     'result-amb',
     'result-masa-osea',
     'result-masa-residual',
@@ -99,8 +103,11 @@ const resultElementIds = [
     'result-peso-objetivo',
     'result-mmt',
     'result-imlg',
+    'imlg-source',
     'result-img',
+    'img-source',
     'result-tipologia',
+    'tipologia-source',
     'result-edadmetabolica',
     'edadmetabolica-source',
     'result-somatotipo'
@@ -445,13 +452,17 @@ async function cargarDatosToma(clienteId, tomaId) {
             // Mapear claves de resultados a IDs de elementos
             const resultMappings = {
                 'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
                 'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+                'iccSource': { id: 'icc-source', unit: '', format: (v) => v || '---' },
                 'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
                 'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
                 'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
                 'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
                 'masaGrasa': { id: 'result-masa-grasa', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaGrasaSource': { id: 'masaGrasa-source', unit: '', format: (v) => v || '---' },
                 'mlg': { id: 'result-mlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'mlgSource': { id: 'mlg-source', unit: '', format: (v) => v || '---' },
                 'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
                 'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
                 'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
@@ -462,8 +473,11 @@ async function cargarDatosToma(clienteId, tomaId) {
                 'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
                 'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
                 'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
+                'tipologiaSource': { id: 'tipologia-source', unit: '', format: (v) => v || '---' },
                 'imlg': { id: 'result-imlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' }
+                'imlgSource': { id: 'imlg-source', unit: '', format: (v) => v || '---' },
+                'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'imgSource': { id: 'img-source', unit: '', format: (v) => v || '---' },
             };
 
             // Asignar valores a los elementos de resultados
