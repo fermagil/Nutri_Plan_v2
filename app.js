@@ -133,7 +133,7 @@ const toNumber = (value) => {
 };
 
 
-/ Manejar estado de autenticación
+// Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
     //const loginContainer = document.getElementById('login-container');
