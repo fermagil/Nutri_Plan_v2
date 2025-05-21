@@ -281,7 +281,7 @@ import { auth } from './app.js';
 
 			// Function to estimate metabolic Age
 			function calculateMetabolicAge(data) {
-			let { genero, edad, peso, altura, esDeportista, pliegues, porcentajeGrasa, cintura } = data;
+			let { genero, edad, peso, altura, esDeportista, pliegues, porcentajeGrasa, cintura,imc } = data;
 
 			// Verificar datos obligatorios
 			if (!genero || !edad || !peso || !altura) {
