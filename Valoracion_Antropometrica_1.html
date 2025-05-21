@@ -218,8 +218,6 @@
 		
 		/* Estilos específicos para la clase .button */
 		.button {
-		    display: inline-block;
-		    margin: 0 5px; /* Espaciado horizontal entre botones */
 		    min-width: 150px; /* Ancho mínimo para uniformidad */
 		}
 		
@@ -232,8 +230,6 @@
 		/* Media query para pantallas pequeñas */
 		@media (max-width: 600px) {
 		    .button {
-		        display: inline-block; /* Mantiene los botones en línea */
-		        margin: 0 5px; /* Mantiene el espaciado horizontal */
 		        padding: 10px 16px; /* Ligeramente más pequeño para pantallas pequeñas */
 		        min-width: 120px; /* Ancho mínimo reducido */
 		    }
@@ -777,10 +773,10 @@
                         <label for="diam_muneca">Muñeca:</label>
                         <input type="number" id="diam_muneca" name="diam_muneca" step="0.1" min="0" placeholder="cm">
                     </div>
-                       <div style="text-align: center;">
+                       <div style="display: flex; justify-content: center; gap: 10px;">
 			    <button type="submit" id="calcular_resultados" class="button">Calcular Resultados</button>
 			    <button type="button" id="guardar_datos" class="button" style="display: none;">Guardar Datos</button>
-		      </div>
+		     </div>
                 </div>
             </section>
 
