@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signOut,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -22,39 +22,7 @@ const provider = new GoogleAuthProvider();
 // Exportar instancias para uso en otros módulos
 export { app, db, auth, provider };
 
-// Exportar funciones de autenticación
-export async function signInWithGoogle() {
-    try {
-        console.log('Initiating signInWithPopup');
-        provider.setCustomParameters({
-            prompt: 'select_account' // Force account selection
-        });
-        const result = await signInWithPopup(auth, provider);
-        console.log('Popup result:', result.user.displayName, result.user.email, result.user.uid);
-        // UI updates handled in onAuthStateChanged
-    } catch (error) {
-        console.error('Sign-in error:', error.code, error.message, error);
-        let errorMessage;
-        switch (error.code) {
-            case 'auth/network-request-failed':
-                errorMessage = 'Error de red. Verifica tu conexión e intenta de nuevo.';
-                break;
-            case 'auth/unauthorized-domain':
-                errorMessage = 'Dominio no autorizado. Contacta al administrador.';
-                break;
-            case 'auth/popup-blocked':
-                errorMessage = 'El inicio de sesión fue bloqueado por el navegador. Permite las ventanas emergentes.';
-                break;
-            case 'auth/popup-closed-by-user':
-                errorMessage = 'Ventana de inicio de sesión cerrada por el usuario.';
-                break;
-            default:
-                errorMessage = `Error al iniciar sesión: ${error.message}`;
-        }
-        alert(errorMessage);
-        throw error;
-    }
-}
+
 
 export async function logout() {
     try {
@@ -126,66 +94,7 @@ const toNumber = (value) => {
     return value;
 };
 
-// Mock email/password login function
-async function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const loginContainer = document.getElementById('login-container');
-    const errorDiv = document.createElement('div');
-    errorDiv.id = 'login-error';
-    errorDiv.style.color = 'red';
-    errorDiv.style.marginBottom = '10px';
-    errorDiv.style.fontSize = '14px';
 
-    // Remove any existing error message
-    const existingError = document.getElementById('login-error');
-    if (existingError) existingError.remove();
-
-    if (!email || !password) {
-        errorDiv.textContent = 'Por favor, ingrese email y contraseña';
-        loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
-        setTimeout(() => errorDiv.remove(), 5000);
-        return;
-    }
-
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-        document.getElementById('email').value = '';
-        document.getElementById('password').value = '';
-        // Show success message
-        const successDiv = document.createElement('div');
-        successDiv.style.color = 'green';
-        successDiv.style.marginBottom = '10px';
-        successDiv.style.fontSize = '14px';
-        successDiv.textContent = 'Inicio de sesión exitoso';
-        loginContainer.insertBefore(successDiv, loginContainer.firstChild);
-        setTimeout(() => successDiv.remove(), 3000);
-        // UI updates handled by onAuthStateChanged
-    } catch (error) {
-        console.error('Email login error:', error.code, error.message);
-        let errorMessage;
-        switch (error.code) {
-            case 'auth/invalid-email':
-                errorMessage = 'Correo electrónico inválido.';
-                break;
-            case 'auth/user-not-found':
-            case 'auth/wrong-password':
-                errorMessage = 'Correo o contraseña incorrectos.';
-                break;
-            case 'auth/too-many-requests':
-                errorMessage = 'Demasiados intentos. Intenta de nuevo más tarde.';
-                break;
-            case 'auth/user-disabled':
-                errorMessage = 'Esta cuenta ha sido deshabilitada.';
-                break;
-            default:
-                errorMessage = `Error al iniciar sesión: ${error.message}`;
-        }
-        errorDiv.textContent = errorMessage;
-        loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
-        setTimeout(() => errorDiv.remove(), 5000);
-    }
-}
 
 // Initialize UI event listeners
 function initializeUI() {
@@ -204,10 +113,6 @@ function initializeUI() {
             dropdown.style.display = 'none';
         }
     });
-
-    // Attach login handlers
-    document.getElementById('email-login-btn').addEventListener('click', login);
-    document.getElementById('login-btn').addEventListener('click', signInWithGoogle);
 
     // Expose logout to global scope for dropdown
     window.logout = logout;
