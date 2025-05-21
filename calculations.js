@@ -3801,7 +3801,33 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            }
 				            return `${iccSource.clasificacion} - ${iccSource.riesgo}`;
 				        }
-				
+					// Nueva función para formatear ambSource
+				        function formatAmbSource(amb, ranges, isAthlete, gender, ageRange) {
+				            if (!ranges || isNaN(amb)) {
+				                return '(No calculado)';
+				            }
+				            if (isAthlete) {
+				                if (amb < ranges.P50) {
+				                    return `Dxt Recreativo percentil <50 (${ranges.P50} cm²)`;
+				                } else if (amb >= ranges.P50 && amb < ranges.P75) {
+				                    return `Dxt Recreativo/Competitivo Percentil 50 (${ranges.P50} cm²)`;
+				                } else if (amb >= ranges.P75 && amb < ranges.P90) {
+				                    return `Dxt Competitivo Percentil 75 (${ranges.P75} cm²)`;
+				                } else {
+				                    return `Dxt Fuerza/Elite Percentil >90 (${ranges.P90} cm²)`;
+				                }
+				            } else {
+				                if (amb < ranges.P5) {
+				                    return `Muy bajo percentil <5 (${ranges.P5} cm²)`;
+				                } else if (amb >= ranges.P5 && amb < ranges.P50) {
+				                    return `Bajo-Medio Percentiles 5–50 (${ranges.P5}–${ranges.P50} cm²)`;
+				                } else if (amb >= ranges.P50 && amb < ranges.P95) {
+				                    return `Medio-Alto Percentil >50  (${ranges.P50}–${ranges.P95} cm²)`;
+				                } else {
+				                    return `Muy Alto  percentil >95 (${ranges.P95} cm²)`;
+				                }
+				            }
+				        }
 				try {
 					// --- Calculate IMC ---
 				        if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
@@ -4009,7 +4035,6 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					  
 					// Calculate Área Muscular Brazo (AMB)
 					
-			
 				if (data.circ_brazo && data.pliegue_tricipital && data.edad && data.genero) {
 				try {
 			            const circBrazo = Number(data.circ_brazo);
@@ -4034,16 +4059,104 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            }
 			
 			            results.amb = Math.max(baseAMB - correction, 0);
-			        } catch (e) {
-			            console.error('Error calculando AMB:', e.message);
-			            results.amb = NaN;
-			            content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-			        }
-			    } else {
-			        results.amb = NaN;
-			        content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
-			    }
-    
+			       
+    				// Define AMB reference ranges
+	                    const ambRanges = {
+	                        masculino: {
+	                            general: {
+	                                '18-20': { P5: 23.4, P50: 30.4, P95: 39.6 },
+	                                '21-24': { P5: 23.6, P50: 30.6, P95: 39.8 },
+	                                '25-29': { P5: 23.8, P50: 31.0, P95: 40.0 },
+	                                '30-34': { P5: 23.5, P50: 30.6, P95: 39.8 },
+	                                '35-39': { P5: 22.9, P50: 29.9, P95: 39.0 },
+	                                '40-44': { P5: 22.6, P50: 29.5, P95: 38.5 },
+	                                '45-49': { P5: 21.8, P50: 28.5, P95: 37.3 },
+	                                '50-54': { P5: 21.2, P50: 27.9, P95: 36.5 },
+	                                '55-59': { P5: 20.6, P50: 27.1, P95: 35.5 },
+	                                '60-64': { P5: 20.2, P50: 26.4, P95: 34.7 },
+	                                '65-70': { P5: 19.0, P50: 25.0, P95: 33.0 },
+	                                '70+': { P5: 16.5, P50: 21.9, P95: 29.0 }
+	                            },
+	                            athlete: {
+	                                '18-20': { P50: 30.5, P75: 34.5, P90: 40.5 },
+	                                '21-24': { P50: 30.8, P75: 34.8, P90: 41.0 },
+	                                '25-29': { P50: 31.2, P75: 35.2, P90: 41.5 },
+	                                '30-34': { P50: 30.8, P75: 34.7, P90: 41.0 },
+	                                '35-39': { P50: 30.0, P75: 33.8, P90: 40.0 },
+	                                '40-44': { P50: 29.6, P75: 33.3, P90: 39.5 },
+	                                '45-49': { P50: 28.7, P75: 32.1, P90: 38.3 },
+	                                '50-54': { P50: 28.1, P75: 31.5, P90: 37.5 },
+	                                '55-59': { P50: 27.2, P75: 30.5, P90: 36.4 },
+	                                '60-64': { P50: 26.5, P75: 29.7, P90: 35.5 },
+	                                '65-70': { P50: 25.0, P75: 28.2, P90: 34.0 },
+	                                '70+': { P50: 21.9, P75: 25.2, P90: 30.0 }
+	                            }
+	                        },
+	                        femenino: {
+	                            general: {
+	                                '18-20': { P5: 17.7, P50: 22.6, P95: 28.8 },
+	                                '21-24': { P5: 17.9, P50: 22.8, P95: 29.1 },
+	                                '25-29': { P5: 18.0, P50: 23.2, P95: 29.8 },
+	                                '30-34': { P5: 17.8, P50: 22.9, P95: 29.4 },
+	                                '35-39': { P5: 17.3, P50: 22.4, P95: 29.0 },
+	                                '40-44': { P5: 17.1, P50: 22.2, P95: 28.8 },
+	                                '45-49': { P5: 16.6, P50: 21.8, P95: 28.4 },
+	                                '50-54': { P5: 16.3, P50: 21.4, P95: 27.9 },
+	                                '55-59': { P5: 15.8, P50: 21.0, P95: 27.4 },
+	                                '60-64': { P5: 15.4, P50: 20.5, P95: 26.8 },
+	                                '65-70': { P5: 14.7, P50: 19.5, P95: 25.6 },
+	                                '70+': { P5: 13.2, P50: 17.7, P95: 23.5 }
+	                            },
+	                            athlete: {
+	                                '18-20': { P50: 22.7, P75: 25.8, P90: 30.5 },
+	                                '21-24': { P50: 22.9, P75: 26.0, P90: 31.0 },
+	                                '25-29': { P50: 23.3, P75: 26.5, P90: 31.5 },
+	                                '30-34': { P50: 23.0, P75: 26.2, P90: 31.0 },
+	                                '35-39': { P50: 22.5, P75: 25.5, P90: 30.2 },
+	                                '40-44': { P50: 22.2, P75: 25.1, P90: 29.7 },
+	                                '45-49': { P50: 21.8, P75: 24.6, P90: 29.0 },
+	                                '50-54': { P50: 21.4, P75: 24.1, P90: 28.4 },
+	                                '55-59': { P50: 21.0, P75: 23.6, P90: 27.8 },
+	                                '60-64': { P50: 20.5, P75: 22.9, P90: 27.0 },
+	                                '65-70': { P50: 19.5, P75: 21.8, P90: 25.6 },
+	                                '70+': { P50: 17.7, P75: 20.0, P90: 24.0 }
+	                            }
+	                        }
+	                    };
+
+	                    // Determine age range
+	                    let ageRange;
+	                    if (age >= 18 && age <= 20) ageRange = '18-20';
+	                    else if (age <= 24) ageRange = '21-24';
+	                    else if (age <= 29) ageRange = '25-29';
+	                    else if (age <= 34) ageRange = '30-34';
+	                    else if (age <= 39) ageRange = '35-39';
+	                    else if (age <= 44) ageRange = '40-44';
+	                    else if (age <= 49) ageRange = '45-49';
+	                    else if (age <= 54) ageRange = '50-54';
+	                    else if (age <= 59) ageRange = '55-59';
+	                    else if (age <= 64) ageRange = '60-64';
+	                    else if (age <= 70) ageRange = '65-70';
+	                    else ageRange = '70+';
+	
+	                    // Select ranges
+	                    const ranges = isAthlete ? ambRanges[gender].athlete[ageRange] : ambRanges[gender].general[ageRange];
+	
+	                    // Set ambSource
+	                    results.ambSource = formatAmbSource(results.amb, ranges, isAthlete, gender, ageRange);
+	
+	                    console.log('AMB calculado:', { amb: results.amb, ambSource: results.ambSource });
+                } catch (e) {
+                    console.error('Error calculando AMB:', e.message);
+                    results.amb = NaN;
+                    results.ambSource = 'Error: ' + e.message;
+                    content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+                }
+	            } else {
+	                results.amb = NaN;
+	                results.ambSource = '(No calculado: Datos insuficientes)';
+	                content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
+	            }
 
 		// MMT Calculation
 		
@@ -4191,6 +4304,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      mlg: formatResult(results.mlg, 1),
 					      mlgSource: results.mlgSource || '(No calculado)',
 					      amb: formatResult(results.amb, 1),
+					      ambSource: results.ambSource || '(No calculado)',
 					      masaOsea: formatResult(results.masaOsea, 1),
 					      masaOseaSource: results.masaOseaSource || '(No calculado)',
 					      masaResidual: formatResult(results.masaResidual, 1),
@@ -4281,7 +4395,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						if (resultElements.mlgSource) {
 							resultElements.mlgSource.textContent = results.mlgSource|| '(No calculado)';
 						}
-						updateElement('amb', results.amb, 1);
+						// Update AMB
+				                updateElement('amb', results.amb, 1);
+				                if (resultElements.ambSource) {
+				                    resultElements.ambSource.textContent = results.ambSource || '(No calculado)';
+				                } else {
+				                    console.warn('Elemento ambSource no encontrado en resultElements. Verifica que resultElements.ambSource esté definido y que el HTML tenga id="amb-source".');
+				                }
 						updateElement('masaOsea', results.masaOsea, 1);
 						updateElement('masaResidual', results.masaResidual, 1);
 						updateElement('pesoIdeal', results.pesoIdeal, 1);
