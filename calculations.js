@@ -15,6 +15,7 @@ import { auth } from './app.js';
 				mlg: document.getElementById('result-mlg'),
 				mlgSource:document.getElementById('mlg-source'),
 				amb: document.getElementById('result-amb'),
+				ambSource:document.getElementById('amb-source'),
 				masaOsea: document.getElementById('result-masa-osea'),
 				masaResidual: document.getElementById('result-masa-residual'),
 				pesoIdeal: document.getElementById('result-peso-ideal'),
