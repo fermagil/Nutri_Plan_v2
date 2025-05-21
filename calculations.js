@@ -3724,6 +3724,24 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					}
 				
 				try {
+					// --- Calculate IMC ---
+				        if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
+				            try {
+				                const imcResults = calculateIMC(data); // Use a different variable to avoid shadowing
+				                results.imc = imcResults.imc;
+				                results.imcSource = imcResults.imcSource;
+				                console.log('IMC calculado:', results.imc, results.imcSource);
+				            } catch (e) {
+				                console.error('Error calculando IMC:', e.message);
+				                results.imc = NaN;
+				                results.imcSource = { clasificacion: 'Error', riesgo: e.message };
+				                content += `<p><strong>Error en IMC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+				            }
+				        } else {
+				            results.imc = NaN;
+				            results.imcSource = { clasificacion: 'No calculado', riesgo: 'Datos insuficientes' };
+				            content += `<p><strong>IMC:</strong> No calculado debido a datos insuficientes.</p>`;
+				        }
 					// --- Calculate Actual Body Fat % ---
 					let actualBodyFatPct = NaN;
 					let actualBodyFatSource = '(No calculado)';
@@ -3758,6 +3776,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						}
 					}
 					results.grasaPctActual = actualBodyFatPct;
+					results.grasaPctActualSource = actualBodyFatSource;
 
 					// --- Calculate Desired Body Fat % ---
 					let desiredBodyFatPct = NaN;
@@ -3775,7 +3794,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						}
 					}
 					results.grasaPctDeseado = desiredBodyFatPct;
-
+					results.grasaPctDeseadoSource = desiredBodyFatSource;
+					
 					// --- Calculate IMLG, IMG, and Tipología ---
 					let bodyCompResults = null;
 					if (data.peso && !isNaN(alturaM) && !isNaN(actualBodyFatPct)) {
@@ -3870,21 +3890,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					} else {
 						results.icc = NaN;
 					}
-					// Calcular IMC usando la función calculateIMC
-					 if (!isNaN(alturaM) &&  data.peso && data.edad && data.genero) {
-        				try {
-            				    const results = calculateIMC(data);
-					 } catch (e) {
-					            console.error('Error calculando IMC:', e.message);
-					            results.imc = NaN;
-					            content += `<p><strong>Error en IMC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-					        }
+					
 					   
 					  
 					// Calculate Área Muscular Brazo (AMB)
-					// AMB Calculation
+					
 			
-			if (data.circ_brazo && data.pliegue_tricipital && data.edad && data.genero) {
+				if (data.circ_brazo && data.pliegue_tricipital && data.edad && data.genero) {
 				try {
 			            const circBrazo = Number(data.circ_brazo);
 			            const pliegueTricipital = Number(data.pliegue_tricipital);
@@ -3922,85 +3934,81 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		// MMT Calculation
 		
 		if (!isNaN(alturaM) && !isNaN(results.amb) && data.edad && ['masculino', 'femenino'].includes(data.genero)) {
-        try {
-            const alturaCm = Number(data.altura);
-            const amb = Number(results.amb);
-            const edad = Number(data.edad);
-
-            if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
-            if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
-            if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
-
-            const sportType = data.tipo_deporte || 'general';
-            let ambMultiplier = 0.0029;
-            if (data.es_deportista === 'si') {
-                switch (sportType) {
-                    case 'fuerza': ambMultiplier = 0.0030; break;
-                    case 'resistencia': ambMultiplier = 0.0028; break;
-                    case 'estetico': ambMultiplier = 0.00285; break;
-                    default: ambMultiplier = 0.0029;
-                }
+		        try {
+		            const alturaCm = Number(data.altura);
+		            const amb = Number(results.amb);
+		            const edad = Number(data.edad);
+		
+		            if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
+		            if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
+		            if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
+		
+		            const sportType = data.tipo_deporte || 'general';
+		            let ambMultiplier = 0.0029;
+		            if (data.es_deportista === 'si') {
+		                switch (sportType) {
+		                    case 'fuerza': ambMultiplier = 0.0030; break;
+		                    case 'resistencia': ambMultiplier = 0.0028; break;
+		                    case 'estetico': ambMultiplier = 0.00285; break;
+		                    default: ambMultiplier = 0.0029;
+		                }
 			} else { // No es deportista
-					ambMultiplier = 0.0024;
-				}
-			
-
-            
-
-            results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
-            results.mmtSportType = sportType;
-        } catch (e) {
-            console.error('Error calculando MMT:', e.message);
-            results.mmt = NaN;
-            content += `<p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-        }
-    } else {
-        results.mmt = NaN;
-        content += `<p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>`;
-    }
+				ambMultiplier = 0.0024;
+			}
+					
+		            results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
+		            results.mmtSportType = sportType;
+		        } catch (e) {
+		            console.error('Error calculando MMT:', e.message);
+		            results.mmt = NaN;
+		            content += `<p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+		        }
+		    } else {
+		        results.mmt = NaN;
+		        content += `<p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>`;
+		    }
     
 
-    // Masa Ósea Calculation
-   
-    if (!isNaN(alturaM) && data.diam_muneca && data.diam_femur && data.peso && data.edad && data.genero) {
-        try {
-            const diamMuneca = Number(data.diam_muneca);
-            const diamFemur = Number(data.diam_femur);
-            const peso = Number(data.peso);
-            const age = Number(data.edad);
-            const isAthlete = data.es_deportista === 'si';
-
-            if (diamMuneca < 4 || diamMuneca > 10) throw new Error('Diámetro de muñeca debe estar entre 4 y 10 cm');
-            if (diamFemur < 6 || diamFemur > 12) throw new Error('Diámetro de fémur debe estar entre 6 y 12 cm');
-            if (peso < 30 || peso > 150) throw new Error('Peso debe estar entre 30 y 150 kg');
-            if (age < 15) throw new Error('Edad debe ser mayor o igual a 15 años');
-
-            const diamMunecaM = diamMuneca / 100;
-            const diamFemurM = diamFemur / 100;
-            let masaOsea = 3.02 * Math.pow(alturaM * alturaM * diamMunecaM * diamFemurM * 400, 0.712);
-            if (isAthlete) masaOsea *= 1.05;
-            results.masaOsea = Number(masaOsea.toFixed(1));
-        } catch (e) {
-            console.error('Error calculando Masa Ósea:', e.message);
-            results.masaOsea = NaN;
-            content += `<p><strong>Error en Masa Ósea:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-        }
-    } else {
-        results.masaOsea = NaN;
-        content += '<p><strong>Masa Ósea:</strong> No calculado debido a datos insuficientes.</p>';
-    }
+		    // Masa Ósea Calculation
+		   
+		    if (!isNaN(alturaM) && data.diam_muneca && data.diam_femur && data.peso && data.edad && data.genero) {
+		        try {
+		            const diamMuneca = Number(data.diam_muneca);
+		            const diamFemur = Number(data.diam_femur);
+		            const peso = Number(data.peso);
+		            const age = Number(data.edad);
+		            const isAthlete = data.es_deportista === 'si';
+		
+		            if (diamMuneca < 4 || diamMuneca > 10) throw new Error('Diámetro de muñeca debe estar entre 4 y 10 cm');
+		            if (diamFemur < 6 || diamFemur > 12) throw new Error('Diámetro de fémur debe estar entre 6 y 12 cm');
+		            if (peso < 30 || peso > 150) throw new Error('Peso debe estar entre 30 y 150 kg');
+		            if (age < 15) throw new Error('Edad debe ser mayor o igual a 15 años');
+		
+		            const diamMunecaM = diamMuneca / 100;
+		            const diamFemurM = diamFemur / 100;
+		            let masaOsea = 3.02 * Math.pow(alturaM * alturaM * diamMunecaM * diamFemurM * 400, 0.712);
+		            if (isAthlete) masaOsea *= 1.05;
+		            results.masaOsea = Number(masaOsea.toFixed(1));
+		        } catch (e) {
+		            console.error('Error calculando Masa Ósea:', e.message);
+		            results.masaOsea = NaN;
+		            content += `<p><strong>Error en Masa Ósea:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+		        }
+		    } else {
+		        results.masaOsea = NaN;
+		        content += '<p><strong>Masa Ósea:</strong> No calculado debido a datos insuficientes.</p>';
+		    }
     
 
-    // Masa Residual Calculation
+		    // Masa Residual Calculation
+		    
+		    if (data.peso && data.genero) {
+		        const factor = data.genero === 'masculino' ? 0.24 : 0.21;
+		        results.masaResidual = data.peso * factor;
+		    } else {
+		        results.masaResidual = NaN;
+		    }
     
-    if (data.peso && data.genero) {
-        const factor = data.genero === 'masculino' ? 0.24 : 0.21;
-        results.masaResidual = data.peso * factor;
-    } else {
-        results.masaResidual = NaN;
-    }
-    
-
 					// Calculate Somatotipo
 					if (
 						data.altura &&
@@ -4057,7 +4065,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					// Store results for app.js
 					    window.calculatedResults = {
 					      imc: formatResult(results.imc, 1),
-					      imcSource: formatImcSource(results.imcSource) || '(No calculado)',
+					      imcSource: formatImcSource(results.imcSource),
 					      icc: formatResult(results.icc, 2),
 					      iccSource: results.iccSource || '(No calculado)',
 					      grasaPctActual: formatResult(results.grasaPctActual, 1),
@@ -4092,24 +4100,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      }
 					    };
 					    console.log('Resultados calculados:', window.calculatedResults);
-					// Prevent auto-submission on page load
-					window.addEventListener('load', () => {
-					    const form = document.getElementById('anthropometry-form');
-					    if (form) {
-					        form.reset(); // Clear form inputs
-					        console.log('Form reset on page load to prevent auto-submission');
-					        // Asegurarse de que el botón esté oculto al cargar la página
-					        if (guardarDatosBtn) {
-					            guardarDatosBtn.style.display = 'none';
-					        }
-					    }
-					});
+					
 					// --- 3. Update Display ---
 					try {
 						if (!resultElements || typeof resultElements !== 'object') {
 							throw new Error('resultElements no está definido o es inválido');
 						}
-
 						const updateElement = (key, value, precision = 1) => {
 							if (resultElements[key]) {
 								resultElements[key].textContent = formatResult(value, precision);
@@ -4118,6 +4114,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							}
 						};
 
+						// Update IMC
 						updateElement('imc', results.imc, 1);
 						// Actualizar imcSource
 						    if (resultElements['imc-source']) {
@@ -4126,15 +4123,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						        console.warn('Elemento imc-source no encontrado en resultElements');
 						    }
 						
-				                if (resultElements['result-imc']) {
-				                    resultElements['result-imc'].textContent = '---';
-				                }
-				                if (resultElements['imc-source']) {
-				                    resultElements['imc-source'].textContent = '(Error en el cálculo)';
-				                }
-				            
+				                
 				        
-						
+						// Update other results
 						updateElement('icc', results.icc, 2);
 						if (resultElements.iccSource) {
 							resultElements.iccSource.textContent = results.iccSource|| '(No calculado)';
@@ -4213,8 +4204,20 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					console.error('Error durante los cálculos:', e.message);
 					alert(`Error en los cálculos: ${e.message}. Verifica los datos ingresados.`);
 				}
+			
+			// Prevent auto-submission on page load
+			window.addEventListener('load', () => {
+				const form = document.getElementById('anthropometry-form');
+				    if (form) {
+					form.reset(); // Clear form inputs
+					    console.log('Form reset on page load to prevent auto-submission');
+					        // Asegurarse de que el botón esté oculto al cargar la página
+					      if (guardarDatosBtn) {
+					            guardarDatosBtn.style.display = 'none';
+					        }
+				}
 			});
-				
+		});
 			// Initialize results display on page load
 			document.addEventListener('DOMContentLoaded', () => {
 				console.log('Inicializando visualización de resultados');
