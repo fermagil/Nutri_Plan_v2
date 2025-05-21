@@ -71,9 +71,7 @@ import { auth } from './app.js';
 			if (edad < 5) {
 			    throw new Error('El cálculo de IMC es para personas de 5 años o más');
 			}
-		// Calcular IMC
-		const alturaMetros = altura / 100; // Convertir altura a metros
-		const imc = peso / (alturaMetros * alturaMetros);
+		
 		
 		// Inicializar objeto de resultado
 		let imcSource = {};
