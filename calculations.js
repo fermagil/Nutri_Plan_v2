@@ -24,6 +24,7 @@ import { auth } from './app.js';
 				//mesomorfia: document.getElementById('result-mesomorfia'),
 				//ectomorfia: document.getElementById('result-ectomorfia'),
 				mmt: document.getElementById('result-mmt'),
+				Pctmmt: document.getElementById('result-Pct-mmt'),
 				imlg: document.getElementById('result-imlg'),
 				imlgSource:document.getElementById('imlg-source'),
 				img: document.getElementById('result-img'),
@@ -4175,12 +4176,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 		// MMT Calculation
 		
-		if (!isNaN(alturaM) && !isNaN(results.amb) && data.edad && ['masculino', 'femenino'].includes(data.genero)) {
+		if (!isNaN(alturaM) && !isNaN(results.amb) && mmtPct && data.edad && ['masculino', 'femenino'].includes(data.genero)) {
 		        try {
 		            const alturaCm = Number(data.altura);
 		            const amb = Number(results.amb);
 		            const edad = Number(data.edad);
-		
+			    const mmtPct = mmtPct
 		            if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
 		            if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
 		            if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
@@ -4199,6 +4200,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			}
 					
 		            results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
+				results.Pctmmt= mmtPct
 		            results.mmtSportType = sportType;
 		        } catch (e) {
 		            console.error('Error calculando MMT:', e.message);
@@ -4326,6 +4328,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      pesoIdeal: formatResult(results.pesoIdeal, 1),
 					      pesoObjetivo: formatResult(results.pesoObjetivo, 1),
 					      mmt: formatResult(results.mmt, 1),
+					      Pct: formatResult(results.Pctmmt, 1),    
 					      imlg: formatResult(results.imlg, 1),
 					      imlgSource: results.imlgSource || '(No calculado)',
 					      img: formatResult(results.img, 1),
@@ -4426,6 +4429,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								: '---';
 						}
 						updateElement('mmt', results.mmt, 1);
+						updateElement('Pctmmt', results.Pctmmt, 1);
 						
 						updateElement('edadmetabolica', results.edadmetabolica, 1);
 						if (resultElements.edadmetabolicaSource) {
