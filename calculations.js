@@ -3830,6 +3830,51 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                }
 				            }
 				        }
+					// Nueva función para formatear PctmmtSource
+				        function formatPctmmtSource(pctmmt, gender, isAthlete) {
+				            if (isNaN(pctmmt) || !gender) {
+				                return '(No calculado)';
+				            }
+				            gender = gender.toLowerCase();
+				            if (gender === 'masculino') {
+				                if (isAthlete) {
+				                    if (pctmmt >= 45 && pctmmt <= 55) {
+				                        return 'Rango saludable (45–55%)';
+				                    } else if (pctmmt < 45) {
+				                        return 'Por debajo del rango saludable (45–55%)';
+				                    } else {
+				                        return 'Por encima del rango saludable (45–55%)';
+				                    }
+				                } else {
+				                    if (pctmmt >= 38 && pctmmt <= 48) {
+				                        return 'Rango saludable (38–48%)';
+				                    } else if (pctmmt < 38) {
+				                        return 'Por debajo del rango saludable (38–48%)';
+				                    } else {
+				                        return 'Por encima del rango saludable (38–48%)';
+				                    }
+				                }
+				            } else if (gender === 'femenino') {
+				                if (isAthlete) {
+				                    if (pctmmt >= 35 && pctmmt <= 45) {
+				                        return 'Rango saludable (35–45%)';
+				                    } else if (pctmmt < 35) {
+				                        return 'Por debajo del rango saludable (35–45%)';
+				                    } else {
+				                        return 'Por encima del rango saludable (35–45%)';
+				                    }
+				                } else {
+				                    if (pctmmt >= 30 && pctmmt <= 40) {
+				                        return 'Rango saludable (30–40%)';
+				                    } else if (pctmmt < 30) {
+				                        return 'Por debajo del rango saludable (30–40%)';
+				                    } else {
+				                        return 'Por encima del rango saludable (30–40%)';
+				                    }
+				                }
+				            }
+				            return '(No calculado)';
+				        }
 				try {
 					// --- Calculate IMC ---
 				        if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
@@ -4175,17 +4220,20 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		    content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
 		}
 
-		// MMT Calculation
+		// MMT Calculation and %MMT
 		
-		if (!isNaN(alturaM) && !isNaN(results.amb)  && data.edad && ['masculino', 'femenino'].includes(data.genero)) {
+		if (!isNaN(alturaM) && !isNaN(results.amb)  && data.edad && ['masculino', 'femenino'].includes(data.genero.toLowerCase()) && data.peso) {
 		        try {
 		            const alturaCm = Number(data.altura);
 		            const amb = Number(results.amb);
 		            const edad = Number(data.edad);
-			    
+			    const gender = data.genero.toLowerCase();
+			    const isAthlete = data.es_deportista === 'si';
+				
 		            if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
 		            if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
 		            if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
+			     if (data.peso <= 0) throw new Error('Peso debe ser mayor a 0');
 		
 		            const sportType = data.tipo_deporte || 'general';
 		            let ambMultiplier = 0.0029;
@@ -4201,17 +4249,27 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			}
 					
 		            results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
-				
-				const mmtPct = formatResult((results.mmt / data.peso) * 100, 1);
-				results.Pctmmt= mmtPct
-		            	results.mmtSportType = sportType;
+			    results.Pctmmt = (results.mmt / data.peso) * 100;
+                    	    results.PctmmtSource = formatPctmmtSource(results.Pctmmt, gender, isAthlete);
+                    	    results.mmtSportType = sportType;
+
+				console.log('MMT y %MMT calculados:', {
+	                        mmt: results.mmt,
+	                        Pctmmt: results.Pctmmt,
+	                        PctmmtSource: results.PctmmtSource,
+	                        sportType: sportType
+	                    });
 		        } catch (e) {
 		            console.error('Error calculando MMT:', e.message);
 		            results.mmt = NaN;
+			    results.Pctmmt = NaN;
+                            results.PctmmtSource = 'Error: ' + e.message;
 		            content += `<p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
 		        }
 		    } else {
 		        results.mmt = NaN;
+			results.Pctmmt = NaN;
+                	results.PctmmtSource = '(No calculado: Datos insuficientes)';
 		        content += `<p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>`;
 		    }
     
@@ -4331,7 +4389,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      pesoIdeal: formatResult(results.pesoIdeal, 1),
 					      pesoObjetivo: formatResult(results.pesoObjetivo, 1),
 					      mmt: formatResult(results.mmt, 1),
-					      Pctmmt: formatResult(results.Pctmmt, 1),    
+					      Pctmmt: formatResult(results.Pctmmt, 1),
+                			      PctmmtSource: results.PctmmtSource || '(No calculado)',
 					      imlg: formatResult(results.imlg, 1),
 					      imlgSource: results.imlgSource || '(No calculado)',
 					      img: formatResult(results.img, 1),
@@ -4431,8 +4490,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								? `${results.pesoObjetivo >= 0 ? '+' : ''}${formatResult(results.pesoObjetivo, 1)}`
 								: '---';
 						}
-						updateElement('mmt', results.mmt, 1);
-						updateElement('Pctmmt', results.Pctmmt, 1);
+						// Update MMT and %MMT
+				                updateElement('mmt', results.mmt, 1);
+				                updateElement('Pct-mmt', results.Pctmmt, 1);
+				                if (resultElements['Pct-mmt-source']) {
+				                    resultElements['Pct-mmt-source'].textContent = results.PctmmtSource || '(No calculado)';
+				                } else {
+				                    console.warn('Elemento Pct-mmt-source no encontrado en resultElements.');
+				                }
 						
 						updateElement('edadmetabolica', results.edadmetabolica, 1);
 						if (resultElements.edadmetabolicaSource) {
