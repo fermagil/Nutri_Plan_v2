@@ -4101,6 +4101,77 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    
 					    return observaciones;
 					}
+					/ Función para calcular % Grasa CUN-BAE
+				        function calculateCUNBAEBodyFat(data, imc) {
+				            const { edad, genero, peso, altura } = data;
+				            
+				            // Validate inputs
+				            if (!edad || !genero || !peso || !altura || isNaN(imc)) {
+				                console.warn('calculateCUNBAEBodyFat: Datos insuficientes', { edad, genero, peso, altura, imc });
+				                return {
+				                    grasaPct: NaN,
+				                    source: '(No estimado: Datos insuficientes)'
+				                };
+				            }
+				
+				            if (edad < 18) {
+				                console.warn('calculateCUNBAEBodyFat: Edad menor a 18 años no soportada');
+				                return {
+				                    grasaPct: NaN,
+				                    source: '(No estimado: Edad < 18 años)'
+				                };
+				            }
+				
+				            const sexo = genero.toLowerCase() === 'masculino' ? 1 : genero.toLowerCase() === 'femenino' ? 0 : null;
+				            if (sexo === null) {
+				                console.warn('calculateCUNBAEBodyFat: Género no válido', { genero });
+				                return {
+				                    grasaPct: NaN,
+				                    source: '(No estimado: Género no válido)'
+				                };
+				            }
+				
+				            // CUN-BAE formula
+				            const imc2 = imc * imc;
+				            const grasaPct = -44.988 +
+				                            (0.503 * edad) +
+				                            (10.689 * sexo) +
+				                            (3.172 * imc) -
+				                            (0.026 * imc2) +
+				                            (0.181 * imc * sexo) -
+				                            (0.02 * imc * edad) -
+				                            (0.005 * imc2 * sexo) +
+				                            (0.00021 * imc2 * edad);
+				
+				            // Categorize based on sex and grasaPct
+				            let category = '';
+				            if (sexo === 1) { // Hombres
+				                if (grasaPct < 12) {
+				                    category = 'Bajo (<12%)';
+				                } else if (grasaPct >= 12 && grasaPct <= 20) {
+				                    category = 'Normal (12–20%)';
+				                } else if (grasaPct > 20 && grasaPct <= 25) {
+				                    category = 'Elevado (20–25%)';
+				                } else {
+				                    category = 'Obesidad (>25%)';
+				                }
+				            } else { // Mujeres
+				                if (grasaPct < 25) {
+				                    category = 'Bajo (<25%)';
+				                } else if (grasaPct >= 25 && grasaPct <= 33) {
+				                    category = 'Normal (25–33%)';
+				                } else if (grasaPct > 33 && grasaPct <= 39) {
+				                    category = 'Elevado (33–39%)';
+				                } else {
+				                    category = 'Obesidad (>39%)';
+				                }
+				            }
+				
+				            return {
+				                grasaPct: grasaPct,
+				                source: `CUN-BAE: ${category}`
+				            };
+				        }
 				try {
 					// --- Calculate IMC ---
 				        if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
@@ -4653,6 +4724,34 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        grasaPctDeurenberg: results.grasaPctDeurenberg,
 					        grasaPctDeurenbergSource: results.grasaPctDeurenbergSource
 					    });
+					  // --- Calculate % Grasa CUN-BAE ---
+				            if (data.edad && data.genero && data.peso && !isNaN(alturaM) && !isNaN(results.imc)) {
+				                try {
+				                    const cunBaeResults = calculateCUNBAEBodyFat(data, results.imc);
+				                    results.grasaPctCUNBAE = cunBaeResults.grasaPct;
+				                    results.grasaPctCUNBAESource = cunBaeResults.source;
+				                    console.log('CUN-BAE % Grasa calculado:', {
+				                        grasaPctCUNBAE: results.grasaPctCUNBAE,
+				                        grasaPctCUNBAESource: results.grasaPctCUNBAESource
+				                    });
+				                } catch (e) {
+				                    console.error('Error calculando % Grasa CUN-BAE:', e.message);
+				                    results.grasaPctCUNBAE = NaN;
+				                    results.grasaPctCUNBAESource = 'Error: ' + e.message;
+				                    content += `<p><strong>Error en % Grasa CUN-BAE:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+				                }
+				            } else {
+				                results.grasaPctCUNBAE = NaN;
+				                results.grasaPctCUNBAESource = '(No estimado: Datos insuficientes)';
+				                console.warn('No se pudo calcular % Grasa CUN-BAE: datos insuficientes', {
+				                    edad: data.edad,
+				                    genero: data.genero,
+				                    peso: data.peso,
+				                    alturaM,
+				                    imc: results.imc
+				                });
+				                content += `<p><strong>% Grasa CUN-BAE:</strong> No estimado debido a datos insuficientes.</p>`;
+				            }
 					// Store results for app.js
 					    // Store results for app.js
 					window.calculatedResults = {
@@ -4837,7 +4936,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    } else {
 						        console.log('[GrasaPctDeurenberg] Warning: grasa-pct-Deurenberg-source element not found');
 						    }
-						
+							// Update % Grasa CUN-BAE
+					                updateElement('grasaPctCUNBAE', results.grasaPctCUNBAE, 1);
+					                if (resultElements.grasaPctCUNBAESource) {
+					                    resultElements.grasaPctCUNBAESource.textContent = results.grasaPctCUNBAESource || '(No estimado)';
+					                } else {
+					                    console.warn('Elemento grasaPctCUNBAESource no encontrado en resultElements');
+					                }
 						// --- 4. Generate and Display Explanations ---
 						if (!explanationContent) {
 							throw new Error('Elemento explanation-content no encontrado');
