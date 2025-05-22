@@ -4481,7 +4481,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      grasaPctActual: formatResult(results.grasaPctActual, 1),
 					      grasaPctActualSource: actualBodyFatSource || '(No calculado)',
 					      grasaPctDeurenberg: formatResult(results.grasaPctDeurenberg, 1),
-				              grasaPctDeurenbergSource: results.grasaPctDeurenbergSource, 1),
+				              grasaPctDeurenbergSource: grasaPctDeurenbergSource  || '(No estimado)',
 					      grasaPctCUNBAE:  formatResult(results.grasaPctCUNBAE  || '(No estimado)',
                         	              grasaPctCUNBAESource: grasaPctCUNBAESource || '(No estimado)',
 					      grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
