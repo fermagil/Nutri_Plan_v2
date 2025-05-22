@@ -18,6 +18,7 @@ import { auth } from './app.js';
 				ambSource:document.getElementById('amb-source'),
 				masaOsea: document.getElementById('result-masa-osea'),
 				masaResidual: document.getElementById('result-masa-residual'),
+				masaResidualSource: document.getElementById('masa-residual-source'),
 				pesoIdeal: document.getElementById('result-peso-ideal'),
 				pesoObjetivo: document.getElementById('result-peso-objetivo'),
 				//endomorfia: document.getElementById('result-endomorfia'),
