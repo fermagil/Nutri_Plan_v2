@@ -637,7 +637,29 @@ button:hover {
         min-width: 120px; /* Ancho mínimo reducido */
     }
 }
-	   
+	/* Styling for the results section */
+#results-section .result-item label {
+    color: #28a745; /* Green color for labels, adjust to match page style if needed */
+    font-weight: 500; /* Slightly bold for readability */
+}
+
+#results-section .result-item span {
+    font-weight: bold; /* Bold for value and unit spans */
+}
+
+#results-section .result-item small {
+    font-style: italic; /* Italic for source/notes */
+    font-size: 0.85em; /* Slightly smaller for hierarchy */
+    color: #666; /* Subtle gray for contrast, adjust if needed */
+}
+
+/* Optional: Ensure grid layout is responsive if not already defined */
+#results-section .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}   
     </style>
 </head>
 <body>
