@@ -4130,18 +4130,19 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                    source: '(No estimado: Género no válido)'
 				                };
 				            }
-				
-				            // CUN-BAE formula
+
+						// CUN-BAE formula with adjustment
 				            const imc2 = imc * imc;
-				            const grasaPct = -44.988 +
-				                            (0.503 * edad) +
-				                            (10.689 * sexo) +
-				                            (3.172 * imc) -
-				                            (0.026 * imc2) +
-				                            (0.181 * imc * sexo) -
-				                            (0.02 * imc * edad) -
-				                            (0.005 * imc2 * sexo) +
-				                            (0.00021 * imc2 * edad);
+					    const grasaPct = -44.988 +
+					                     (0.503 * edad) +
+					                     (10.689 * sexo) +
+					                     (3.172 * imc) -
+					                     (0.026 * imc2) +
+					                     (0.181 * imc * sexo) -
+					                     (0.02 * imc * edad) -
+					                     (0.005 * imc2 * sexo) +
+					                     (0.00021 * imc2 * edad) -
+					                     11.43;
 				
 				            // Categorize based on sex and grasaPct
 				            let category = '';
