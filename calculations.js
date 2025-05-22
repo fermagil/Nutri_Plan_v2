@@ -3961,7 +3961,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						        return null; // Invalid inputs
 						    }
 						    const base = 1.20 * imc + 0.23 * edad;
-						    return sexo === 'hombre' ? base - 16.2 : base - 5.4;
+						    return sexo === 'masculino' ? base - 16.2 : base - 5.4;
 						}
 						
 						// Function to format grasaPctDeurenbergSource based on educational table
