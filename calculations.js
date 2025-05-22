@@ -36,6 +36,7 @@ import { auth } from './app.js';
 				edadmetabolicaSource: document.getElementById('edadmetabolica-source'),
 				resultSomatotipo: document.getElementById('result-somatotipo')
 			};
+        console.log('resultElements:', Object.entries(resultElements).map(([key, val]) => ({ key, val: val ? val.id : null })));
         const explanationSection = document.getElementById('explanation-section');
         const explanationContent = document.getElementById('explanation-content');
 		
