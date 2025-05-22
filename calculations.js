@@ -4568,40 +4568,40 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						results.ectomorfia = NaN;
 					}
 					// Destructure inputs
-				    let { genero, edad, peso, altura, esDeportista } = data;
-				    console.log('[GrasaPctDeurenberg] Destructured inputs:', { genero, edad, peso, altura, esDeportista });
-				
-				    // Parse and validate inputs
-				    edad = parseInt(edad);
-				    peso = parseFloat(peso);
-				    altura = parseFloat(altura);
-				    esDeportista = esDeportista === 'true' || esDeportista === true;
-				    const sexo = genero?.toLowerCase() === 'masculino' ? 'hombre' : genero?.toLowerCase() === 'femenino' ? 'mujer' : null;
-				    console.log('[GrasaPctDeurenberg] Parsed inputs:', { edad, peso, altura, esDeportista, sexo });
-				
-				    // Calculate IMC
-				    const imc = peso && altura > 0 ? peso / (altura * altura) : null;
-				    console.log('[GrasaPctDeurenberg] Calculated IMC:', { peso, altura, imc });
-				
-				    // Validate inputs
-				    if (!imc || isNaN(imc) || imc < 0 || !edad || isNaN(edad) || edad < 18 || !sexo) {
-				        console.log('[GrasaPctDeurenberg] Input validation failed:', { imc, edad, sexo });
-				        results.grasaPctDeurenberg = null;	
-				        results.grasaPctDeurenbergSource = '(No estimado)';
-				    } else {
-				        // Calculate % Grasa (Deurenberg)
-				        results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(imc, edad, sexo);
-				        results.grasaPctDeurenbergSource = formatGrasaPctDeurenbergSource(
-				            results.grasaPctDeurenberg,
-				            sexo,
-				            edad,
-				            imc
-				        );
-				    }
-				    console.log('[GrasaPctDeurenberg] Calculated results:', {
-				        grasaPctDeurenberg: results.grasaPctDeurenberg,
-				        grasaPctDeurenbergSource: results.grasaPctDeurenbergSource
-				    });
+					    let { genero, edad, peso, altura, esDeportista } = data;
+					    console.log('[GrasaPctDeurenberg] Destructured inputs:', { genero, edad, peso, altura, esDeportista });
+					
+					    // Parse and validate inputs
+					    edad = parseInt(edad);
+					    peso = parseFloat(peso);
+					    altura = parseFloat(altura);
+					    esDeportista = esDeportista === 'true' || esDeportista === true;
+					    const sexo = genero?.toLowerCase() === 'masculino' ? 'hombre' : genero?.toLowerCase() === 'femenino' ? 'mujer' : null;
+					    console.log('[GrasaPctDeurenberg] Parsed inputs:', { edad, peso, altura, esDeportista, sexo });
+					
+					    // Convert altura to meters for logging (not needed for calculation)
+					    const alturaMeters = altura > 0 ? altura / 100 : null;
+					    console.log('[GrasaPctDeurenberg] Converted altura:', { alturaCm: altura, alturaMeters });
+					
+					    // Validate inputs
+					    if (!peso || peso <= 0 || !altura || altura <= 0 || !edad || isNaN(edad) || edad < 18 || !sexo) {
+					        console.log('[GrasaPctDeurenberg] Input validation failed:', { peso, altura, edad, sexo });
+					        results.grasaPctDeurenberg = null;
+					        results.grasaPctDeurenbergSource = '(No estimado)';
+					    } else {
+					        // Calculate % Grasa (Deurenberg)
+					        results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(peso, altura, edad, sexo);
+					        results.grasaPctDeurenbergSource = formatGrasaPctDeurenbergSource(
+					            results.grasaPctDeurenberg,
+					            sexo,
+					            edad,
+					            peso && altura > 0 ? peso / ((altura / 100) * (altura / 100)) : null
+					        );
+					    }
+					    console.log('[GrasaPctDeurenberg] Calculated results:', {
+					        grasaPctDeurenberg: results.grasaPctDeurenberg,
+					        grasaPctDeurenbergSource: results.grasaPctDeurenbergSource
+					    });
 					// Store results for app.js
 					    // Store results for app.js
 					window.calculatedResults = {
