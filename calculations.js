@@ -3960,7 +3960,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    if (!grasaPct || !genero || !edad || !imc || edad < 18 || edad > 49 || imc < 18.5 || imc > 34.9) {
 					        return '(No estimado)';
 					    }
-						const genero = data.genero.toLowerCase();
+						 genero = data.genero.toLowerCase();
 					    const ranges = {
 					        masculino: {
 					            '18-29': [
