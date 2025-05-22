@@ -3956,17 +3956,41 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					    }
 					// Function to calculate % Grasa (Deurenberg)
-					function calculateGrasaPctDeurenberg(imc, edad, sexo) {
-					    console.log('[GrasaPctDeurenberg] Calculating % Grasa:', { imc, edad, sexo });
+					// Formula: % Grasa = (1.20 * IMC) + (0.23 * Edad) - (10.8 * Sexo) - 5.4
+					// Sexo: 1 (hombres), 0 (mujeres)
+					// Limitations: May overestimate in women with low weight or morbid obesity,
+					// and men with IMC 25–39.99 kg/m² (Medigraphic study).
+					function calculateGrasaPctDeurenberg(peso, altura, edad, sexo) {
+					    console.log('[GrasaPctDeurenberg] Calculating % Grasa:', { peso, altura, edad, sexo });
 					    
-					    if (!imc || !edad || imc < 0 || edad < 18 || !['hombre', 'mujer'].includes(sexo)) {
-					        console.log('[GrasaPctDeurenberg] Invalid inputs, returning null:', { imc, edad, sexo });
+					    // Validate inputs
+					    if (!peso || !altura || !edad || peso <= 0 || altura <= 0 || edad < 18 || !['hombre', 'mujer'].includes(sexo)) {
+					        console.log('[GrasaPctDeurenberg] Invalid inputs, returning null:', { peso, altura, edad, sexo });
 					        return null;
 					    }
 					    
-					    const base = 1.20 * imc + 0.23 * edad;
-					    const result = sexo === 'hombre' ? base - 16.2 : base - 5.4;
-					    console.log('[GrasaPctDeurenberg] Calculation:', { base, adjustment: sexo === 'hombre' ? -16.2 : -5.4, result });
+					    // Calculate IMC (peso in kg, altura in meters)
+					    const imc = peso / (altura * altura);
+					    console.log('[GrasaPctDeurenberg] Calculated IMC:', { peso, altura, imc });
+					    
+					    // Validate IMC
+					    if (imc < 10 || imc > 50) {
+					        console.log('[GrasaPctDeurenberg] Invalid IMC, returning null:', { imc });
+					        return null;
+					    }
+					    
+					    // Map sexo to 1 (hombre) or 0 (mujer)
+					    const sexoValue = sexo === 'hombre' ? 1 : 0;
+					    
+					    // Calculate % Grasa
+					    const result = (1.20 * imc) + (0.23 * edad) - (10.8 * sexoValue) - 5.4;
+					    console.log('[GrasaPctDeurenberg] Calculation:', {
+					        imcTerm: 1.20 * imc,
+					        edadTerm: 0.23 * edad,
+					        sexoTerm: -10.8 * sexoValue,
+					        constant: -5.4,
+					        result
+					    });
 					    
 					    return result;
 					}
