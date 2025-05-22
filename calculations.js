@@ -4176,7 +4176,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 		// MMT Calculation
 		
-		if (!isNaN(alturaM) && !isNaN(results.amb) && mmtPct && data.edad && ['masculino', 'femenino'].includes(data.genero)) {
+		if (!isNaN(alturaM) && !isNaN(results.amb)  && data.edad && ['masculino', 'femenino'].includes(data.genero)) {
 		        try {
 		            const alturaCm = Number(data.altura);
 		            const amb = Number(results.amb);
