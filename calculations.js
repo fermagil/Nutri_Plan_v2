@@ -4689,7 +4689,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								: '---';
 							resultElements.resultSomatotipo.textContent = somatotipoFormatted;
 						}
-
+							// Update %Grasa Deurenberg
+						    if (resultElements.grasaPctDeurenberg) {
+						        resultElements.grasaPctDeurenberg.textContent = window.calculatedResults.grasaPctDeurenberg;
+						    }
+						    if (resultElements.grasaPctDeurenbergSource) {
+						        resultElements.grasaPctDeurenbergSource.textContent = window.calculatedResults.grasaPctDeurenbergSource;
+						    }
+						}
 						// --- 4. Generate and Display Explanations ---
 						if (!explanationContent) {
 							throw new Error('Elemento explanation-content no encontrado');
