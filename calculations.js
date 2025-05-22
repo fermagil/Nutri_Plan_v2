@@ -3955,12 +3955,21 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					            return `Por encima del rango saludable (${rangeText}): ${obs}`;
 					        }
 					    }
-					// Function to format grasaPctDeurenbergSource based on educational table
-					function formatGrasaPctDeurenbergSource(grasaPct, gender, edad, imc) {
-					    if (!grasaPct || !gender || !edad || !imc || edad < 18 || edad > 49 || imc < 18.5 || imc > 34.9) {
-					        return '(No estimado)';
-					    }
-						 gender = gender.toLowerCase();
+					// Function to calculate % Grasa (Deurenberg)
+						function calculateGrasaPctDeurenberg(imc, edad, sexo) {
+						    if (!imc || !edad || imc < 0 || edad < 18 || !['masculino', 'femenino'].includes(sexo)) {
+						        return null; // Invalid inputs
+						    }
+						    const base = 1.20 * imc + 0.23 * edad;
+						    return sexo === 'hombre' ? base - 16.2 : base - 5.4;
+						}
+						
+						// Function to format grasaPctDeurenbergSource based on educational table
+						function formatGrasaPctDeurenbergSource(grasaPct, sexo, edad, imc) {
+						    if (!grasaPct || !sexo || !edad || !imc || edad < 18 || edad > 49 || imc < 18.5 || imc > 34.9) {
+						        return '(No estimado)';
+						    }
+						 
 					    const ranges = {
 					        masculino: {
 					            '18-29': [
@@ -4515,13 +4524,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					// Extract inputs
 					    const imc = parseFloat(formData.imc);
 					    const edad = parseInt(formData.edad);
-					     gender = formData.gender?.toLowerCase(); 
+					    const sexo = formData.sexo?.toLowerCase();
 					
 					    // Calculate % Grasa (Deurenberg)
-					    results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(imc, edad, gender);
+					    results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(imc, edad, sexo);
 					    results.grasaPctDeurenbergSource = formatGrasaPctDeurenbergSource(
 					        results.grasaPctDeurenberg,
-					        gender,
+					        sexo,
 					        edad,
 					        imc
 					    );
@@ -4535,7 +4544,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    grasaPctActual: formatResult(results.grasaPctActual, 1),
 					    grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
 					    grasaPctDeurenberg: results.grasaPctDeurenberg ? formatResult(results.grasaPctDeurenberg, 1) : '---',
-        				    grasaPctDeurenbergSource: results.grasaPctDeurenbergSource || '(No estimado)',
+                                            grasaPctDeurenbergSource: results.grasaPctDeurenbergSource || '(No estimado)',
 					    grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1) || '(No estimado)',
 					    grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)', // Uncomment if needed
 					    grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
@@ -4690,12 +4699,17 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							resultElements.resultSomatotipo.textContent = somatotipoFormatted;
 						}
 							// Update %Grasa Deurenberg
+							updateElement('grasaPctDeurenberg', results.grasaPctDeurenberg, 1);
 						    if (resultElements.grasaPctDeurenberg) {
 						        resultElements.grasaPctDeurenberg.textContent = window.calculatedResults.grasaPctDeurenberg;
-						    }
+						    }else {
+					                console.warn('Elemento  %Grasa Deurenberg no encontrado en resultElements.');
+					            }
 						    if (resultElements.grasaPctDeurenbergSource) {
 						        resultElements.grasaPctDeurenbergSource.textContent = window.calculatedResults.grasaPctDeurenbergSource;
-						    }
+						    }else {
+							    console.warn('Elemento  %Grasa Source Deurenberg no encontrado en resultElements.');
+					            }
 						
 						// --- 4. Generate and Display Explanations ---
 						if (!explanationContent) {
