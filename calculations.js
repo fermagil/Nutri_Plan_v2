@@ -4001,17 +4001,20 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					}
 					
 					// Function to format grasaPctDeurenbergSource based on educational table
+					// Function to format grasaPctDeurenbergSource based on educational table
 					function formatGrasaPctDeurenbergSource(grasaPct, sexo, edad, imc) {
 					    console.log('[GrasaPctDeurenberg] Formatting source:', { grasaPct, sexo, edad, imc });
 					    
-					    if (!grasaPct || !sexo || !edad || !imc || edad < 18 || edad > 49 || imc < 18.5 || imc > 34.9) {
+					    // Validate inputs
+					    if (!grasaPct || !sexo || !edad || !imc || edad < 18 || edad > 49 || imc < 16.0 || imc > 34.9) {
 					        console.log('[GrasaPctDeurenberg] Invalid inputs for source, returning default:', { grasaPct, sexo, edad, imc });
 					        return '(No estimado)';
 					    }
 					
 					    const ranges = {
 					        hombre: {
-					            '18-29': [
+					            '18-28': [
+					                { imc: [16.0, 18.4], grasa: [0, 12], observaciones: 'Riesgo de desnutrición, anemia, fatiga crónica, problemas reproductivos.' },
 					                { imc: [18.5, 24.9], grasa: [12, 18], observaciones: 'Valores bajos reflejan menor grasa visceral; el aumento de edad incrementa ligeramente el % de grasa.' },
 					                { imc: [25.0, 29.9], grasa: [19, 25], observaciones: 'Aumento notable de grasa subcutánea; ajuste por edad es mínimo en este rango joven.' },
 					                { imc: [30.0, 34.9], grasa: [25, 31], observaciones: 'Obesidad si sedentario; posible musculatura si atleta (e.g., levantador de pesas).' }
@@ -4023,7 +4026,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					            ]
 					        },
 					        mujer: {
-					            '18-29': [
+					            '18-28': [
+					                { imc: [16.0, 18.4], grasa: [0, 20], observaciones: 'Riesgo de desnutrición, anemia, fatiga crónica, problemas reproductivos.' },
 					                { imc: [18.5, 24.9], grasa: [20, 26], observaciones: 'Valores más altos que en hombres por mayor grasa esencial; estabilidad en jóvenes.' },
 					                { imc: [25.0, 29.9], grasa: [27, 33], observaciones: 'Aumento de grasa subcutánea; menor variación por edad en este rango.' },
 					                { imc: [30.0, 34.9], grasa: [33, 39], observaciones: 'Obesidad generalizada; músculo raro salvo en deportes de fuerza.' }
@@ -4036,7 +4040,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					    };
 					
-					    const ageRange = edad <= 29 ? '18-29' : '30-49';
+					    const ageRange = edad <= 28 ? '18-28' : '30-49';
 					    console.log('[GrasaPctDeurenberg] Selected age range:', ageRange);
 					    
 					    const sexRanges = ranges[sexo.toLowerCase()]?.[ageRange];
@@ -4612,7 +4616,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    grasaPctActual: formatResult(results.grasaPctActual, 1),
 					    grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
 					    grasaPctDeurenberg: results.grasaPctDeurenberg ? formatResult(results.grasaPctDeurenberg, 1) : '---',
-                                            grasaPctDeurenbergSource: results.grasaPctDeurenbergSource || '(No estimado)',
+                                            grasaPctDeurenbergSource: results.grasaPctDeurenbergSource ?? '(No estimado)',
 					    grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1) || '(No estimado)',
 					    grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)', // Uncomment if needed
 					    grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
