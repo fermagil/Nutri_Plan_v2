@@ -660,103 +660,108 @@ button:hover {
     gap: 1rem;
     padding: 1rem;
 } 
-/* Styling for the results table with elegant, compact typography */
+/* Styling for the results table with compact, elegant typography */
 #results-section {
-    padding: 1rem;
+    padding: 0.8rem;
     background-color: #fff;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    margin: 1rem auto;
-    max-width: 1000px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+    margin: 0.8rem auto;
+    max-width: 900px;
+    overflow: hidden;
 }
 
 #results-section h2 {
-    color: #367839;
-    font-family: 'Roboto', Arial, sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.4;
-    margin-bottom: 0.75rem;
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.6rem;
     text-align: center;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
 }
 
 .table-wrapper {
     overflow-x: auto; /* Horizontal scroll on small screens */
+    min-width: 300px;
 }
 
 .results-table {
     width: 100%;
     border-collapse: collapse;
-    font-family: 'Roboto', Arial, sans-serif;
-    font-size: 0.9rem; /* Compact base size */
-    line-height: 1.4;
-    letter-spacing: 0.03em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 0.85rem; /* Smaller base size */
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .results-table thead {
-    background-color: #28a745; /* Green header */
+    background-color: #388E3C; /* Darker green header */
     color: #fff;
 }
 
 .results-table th {
-    padding: 0.5rem;
+    padding: 0.4rem;
     text-align: left;
-    font-weight: 700;
-    font-size: 1rem; /* Slightly larger headers */
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
 .results-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa; /* Alternating rows */
+    background-color: #f9fafb; /* Subtler alternating rows */
 }
 
 .results-table tbody tr:hover {
-    background-color: #e9ecef; /* Hover effect */
-    transition: background-color 0.2s ease;
+    background-color: #edf0f2; /* Subtler hover effect */
+    transition: background-color 0.3s ease-in-out;
 }
 
 .results-table .section-header {
-    background-color: #e9ecef;
-    font-weight: 600;
-    font-size: 0.95rem;
-    border-top: 2px solid #dee2e6;
-    border-bottom: 2px solid #dee2e6;
+    background-color: #f1f3f5;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-top: 1.5px solid #e2e6ea;
+    border-bottom: 1.5px solid #e2e6ea;
 }
 
 .results-table .section-header th {
-    padding: 0.5rem;
+    padding: 0.4rem;
     color: #333;
 }
 
 .results-table th[scope="row"] label {
-    color: #28a745; /* Green labels */
-    font-weight: 500;
-    font-size: 0.9rem;
+    color: #388E3C; /* Darker green labels */
+    font-weight: 400;
+    font-size: 0.85rem;
 }
 
 .results-table td {
-    padding: 0.5rem;
-    border-bottom: 1px solid #dee2e6;
+    padding: 0.4rem;
+    border-bottom: 1px solid #e2e6ea;
     vertical-align: middle;
 }
 
 .results-table span {
-    font-weight: 700; /* Bold values */
-    font-size: 0.9rem;
-}
-
-.results-table .unit {
-    font-weight: 400; /* Non-bold units */
-    color: #555;
+    font-weight: 600; /* Slightly lighter bold values */
     font-size: 0.85rem;
 }
 
-.results-table small {
-    font-style: italic; /* Italic, footnote-like */
+.results-table .unit {
     font-weight: 400;
-    font-size: 0.7rem; /* Much smaller */
+    color: #666; /* Lighter for hierarchy */
+    font-size: 0.8rem;
+}
+
+.results-table small {
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.65rem; /* Tiny, footnote-like */
     color: #666;
-    line-height: 1.3;
+    line-height: 1.2;
+    opacity: 0.9;
 }
 
 /* Screen reader only class */
@@ -773,26 +778,29 @@ button:hover {
 
 /* Responsive design */
 @media (max-width: 600px) {
+    #results-section {
+        padding: 0.6rem;
+    }
     .results-table {
-        font-size: 0.85rem;
-    }
-    .results-table th, .results-table td {
-        padding: 0.4rem;
-    }
-    .results-table th[scope="row"] label {
-        font-size: 0.85rem;
-    }
-    .results-table span {
-        font-size: 0.85rem;
-    }
-    .results-table .unit {
         font-size: 0.8rem;
     }
+    .results-table th, .results-table td {
+        padding: 0.3rem;
+    }
+    .results-table th[scope="row"] label {
+        font-size: 0.8rem;
+    }
+    .results-table span {
+        font-size: 0.8rem;
+    }
+    .results-table .unit {
+        font-size: 0.75rem;
+    }
     .results-table small {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
     }
     .results-table .section-header {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 }
 </style>
