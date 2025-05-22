@@ -4696,7 +4696,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    if (resultElements.grasaPctDeurenbergSource) {
 						        resultElements.grasaPctDeurenbergSource.textContent = window.calculatedResults.grasaPctDeurenbergSource;
 						    }
-						}
+						
 						// --- 4. Generate and Display Explanations ---
 						if (!explanationContent) {
 							throw new Error('Elemento explanation-content no encontrado');
