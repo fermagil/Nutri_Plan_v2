@@ -90,6 +90,8 @@ const resultElementIds = [
     'icc-source',
     'result-grasa-pct-actual',
     'grasa-pct-actual-source',
+    'result-grasa-pct-Deurenberg',
+	'grasa-pct-Deurenberg-source',
     'result-grasa-pct-deseado',
     'grasa-pct-deseado-source',
     'result-masa-grasa',
