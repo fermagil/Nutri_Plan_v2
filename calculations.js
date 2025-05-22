@@ -24,7 +24,8 @@ import { auth } from './app.js';
 				//mesomorfia: document.getElementById('result-mesomorfia'),
 				//ectomorfia: document.getElementById('result-ectomorfia'),
 				mmt: document.getElementById('result-mmt'),
-				'Pct-mmt': document.getElementById('result-Pct-mmt'),
+				Pctmmt: document.getElementById('result-Pct-mmt'),
+        			PctmmtSource: document.getElementById('Pct-mmt-source'),
     				'Pct-mmt-source': document.getElementById('Pct-mmt-source'),
 				imlg: document.getElementById('result-imlg'),
 				imlgSource:document.getElementById('imlg-source'),
@@ -4491,13 +4492,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								: '---';
 						}
 						// Update MMT and %MMT
-						updateElement('mmt', results.mmt, 1);
-						updateElement('Pctmmt', results.Pctmmt, 1); // Changed from 'Pct-mmt'
-						if (resultElements.PctmmtSource) { // Changed from resultElements['Pct-mmt-source']
-						    resultElements.PctmmtSource.textContent = results.PctmmtSource || '(No calculado)';
-						} else {
-						    console.warn('Elemento PctmmtSource no encontrado en resultElements.');
-						}
+					            updateElement('mmt', results.mmt, 1);
+					            updateElement('Pctmmt', results.Pctmmt, 1); // Changed from 'Pct-mmt'
+					            if (resultElements.PctmmtSource) { // Changed from resultElements['Pct-mmt-source']
+					                resultElements.PctmmtSource.textContent = results.PctmmtSource || '(No calculado)';
+					            } else {
+					                console.warn('Elemento PctmmtSource no encontrado en resultElements.');
+					            }
 						
 						updateElement('edadmetabolica', results.edadmetabolica, 1);
 						if (resultElements.edadmetabolicaSource) {
