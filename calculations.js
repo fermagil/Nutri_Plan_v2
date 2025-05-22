@@ -4101,7 +4101,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    
 					    return observaciones;
 					}
-					/ Función para calcular % Grasa CUN-BAE
+					// Función para calcular % Grasa CUN-BAE
 				        function calculateCUNBAEBodyFat(data, imc) {
 				            const { edad, genero, peso, altura } = data;
 				            
