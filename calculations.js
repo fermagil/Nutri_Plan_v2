@@ -3956,11 +3956,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					    }
 					// Function to format grasaPctDeurenbergSource based on educational table
-					function formatGrasaPctDeurenbergSource(grasaPct, sexo, edad, imc) {
-					    if (!grasaPct || !genero || !edad || !imc || edad < 18 || edad > 49 || imc < 18.5 || imc > 34.9) {
+					function formatGrasaPctDeurenbergSource(grasaPct, gender, edad, imc) {
+					    if (!grasaPct || !gender || !edad || !imc || edad < 18 || edad > 49 || imc < 18.5 || imc > 34.9) {
 					        return '(No estimado)';
 					    }
-						 sexo = data.genero.toLowerCase();
+						 gender = gender.toLowerCase();
 					    const ranges = {
 					        masculino: {
 					            '18-29': [
@@ -3989,7 +3989,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    };
 					
 					    const ageRange = edad <= 29 ? '18-29' : '30-49';
-					    const sexRanges = ranges[sexo.toLowerCase()]?.[ageRange];
+					    const sexRanges = ranges[gender.toLowerCase()]?.[ageRange];
 					    if (!sexRanges) return '(No estimado)';
 					
 					    const range = sexRanges.find(r => imc >= r.imc[0] && imc <= r.imc[1] && grasaPct >= r.grasa[0] && grasaPct <= r.grasa[1]);
@@ -4515,13 +4515,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					// Extract inputs
 					    const imc = parseFloat(formData.imc);
 					    const edad = parseInt(formData.edad);
-					    const sexo = formData.data.genero?.toLowerCase();
+					     gender = formData.gender?.toLowerCase(); gender = gender.toLowerCase();
 					
 					    // Calculate % Grasa (Deurenberg)
-					    results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(imc, edad, sexo);
+					    results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(imc, edad, gender);
 					    results.grasaPctDeurenbergSource = formatGrasaPctDeurenbergSource(
 					        results.grasaPctDeurenberg,
-					        sexo,
+					        gender,
 					        edad,
 					        imc
 					    );
