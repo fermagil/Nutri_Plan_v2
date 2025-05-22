@@ -3956,6 +3956,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					    }
 					// Function to calculate % Grasa (Deurenberg)
+					// Function to calculate % Grasa (Deurenberg)
 					// Formula: % Grasa = (1.20 * IMC) + (0.23 * Edad) - (10.8 * Sexo) - 5.4
 					// Sexo: 1 (hombres), 0 (mujeres)
 					// Limitations: May overestimate in women with low weight or morbid obesity,
@@ -3969,9 +3970,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        return null;
 					    }
 					    
+					    // Convert altura from cm to meters
+					    const alturaMeters = altura / 100;
+					    console.log('[GrasaPctDeurenberg] Converted altura:', { alturaCm: altura, alturaMeters });
+					    
 					    // Calculate IMC (peso in kg, altura in meters)
-					    const imc = peso / (altura * altura);
-					    console.log('[GrasaPctDeurenberg] Calculated IMC:', { peso, altura, imc });
+					    const imc = peso / (alturaMeters * alturaMeters);
+					    console.log('[GrasaPctDeurenberg] Calculated IMC:', { peso, alturaMeters, imc });
 					    
 					    // Validate IMC
 					    if (imc < 10 || imc > 50) {
