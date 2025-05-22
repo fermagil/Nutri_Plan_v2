@@ -660,24 +660,23 @@ button:hover {
     gap: 1rem;
     padding: 1rem;
 } 
-	    <style>
-/* Styling for the results table with enhanced font style */
+/* Styling for the results table with elegant, compact typography */
 #results-section {
-    padding: 1.5rem;
+    padding: 1rem;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     margin: 1rem auto;
-    max-width: 1200px;
+    max-width: 1000px;
 }
 
 #results-section h2 {
-    color: #333;
+    color: #367839;
     font-family: 'Roboto', Arial, sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.4;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     text-align: center;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
@@ -690,9 +689,9 @@ button:hover {
     width: 100%;
     border-collapse: collapse;
     font-family: 'Roboto', Arial, sans-serif;
-    font-size: 1rem;
-    line-height: 1.5;
-    letter-spacing: 0.02em;
+    font-size: 0.9rem; /* Compact base size */
+    line-height: 1.4;
+    letter-spacing: 0.03em;
 }
 
 .results-table thead {
@@ -701,15 +700,14 @@ button:hover {
 }
 
 .results-table th {
-    padding: 0.75rem;
+    padding: 0.5rem;
     text-align: left;
-    font-weight: 700; /* Bolder for headers */
-    font-size: 1.1rem;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    font-weight: 700;
+    font-size: 1rem; /* Slightly larger headers */
 }
 
 .results-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa; /* Light gray for alternating rows */
+    background-color: #f8f9fa; /* Alternating rows */
 }
 
 .results-table tbody tr:hover {
@@ -717,21 +715,34 @@ button:hover {
     transition: background-color 0.2s ease;
 }
 
+.results-table .section-header {
+    background-color: #e9ecef;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-top: 2px solid #dee2e6;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.results-table .section-header th {
+    padding: 0.5rem;
+    color: #333;
+}
+
 .results-table th[scope="row"] label {
     color: #28a745; /* Green labels */
-    font-weight: 500; /* Medium weight for labels */
-    font-size: 1rem;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .results-table td {
-    padding: 0.75rem;
+    padding: 0.5rem;
     border-bottom: 1px solid #dee2e6;
     vertical-align: middle;
 }
 
 .results-table span {
     font-weight: 700; /* Bold values */
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .results-table .unit {
@@ -741,10 +752,11 @@ button:hover {
 }
 
 .results-table small {
-    font-style: italic; /* Italic notes */
+    font-style: italic; /* Italic, footnote-like */
     font-weight: 400;
-    font-size: 0.75rem;
+    font-size: 0.7rem; /* Much smaller */
     color: #666;
+    line-height: 1.3;
 }
 
 /* Screen reader only class */
@@ -762,19 +774,25 @@ button:hover {
 /* Responsive design */
 @media (max-width: 600px) {
     .results-table {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     .results-table th, .results-table td {
-        padding: 0.5rem;
+        padding: 0.4rem;
     }
     .results-table th[scope="row"] label {
-        font-size: 0.95rem;
+        font-size: 0.85rem;
     }
     .results-table span {
-        font-size: 0.95rem;
+        font-size: 0.85rem;
+    }
+    .results-table .unit {
+        font-size: 0.8rem;
     }
     .results-table small {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
+    }
+    .results-table .section-header {
+        font-size: 0.9rem;
     }
 }
 </style>
@@ -938,127 +956,151 @@ button:hover {
             </section>
 
             <section class="data-section" id="results-section">
-    <h2>Resultados</h2>
-    <div class="table-wrapper">
-        <table class="results-table" aria-describedby="results-table-desc">
-            <caption id="results-table-desc" class="sr-only">Tabla de resultados antropométricos</caption>
-            <thead>
-                <tr>
-                    <th scope="col">Métrica</th>
-                    <th scope="col">Valor</th>
-                    <th scope="col">Nota</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row"><label>Edad Metabólica</label></th>
-                    <td><span id="result-edadmetabolica">---</span> <span class="unit">años</span></td>
-                    <td><small id="edadmetabolica-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>IMC</label></th>
-                    <td><span id="result-imc">---</span> <span class="unit">kg/m²</span></td>
-                    <td><small id="imc-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>ICC</label></th>
-                    <td><span id="result-icc">---</span></td>
-                    <td><small id="icc-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>% Grasa Actual</label></th>
-                    <td><span id="result-grasa-pct-actual">---</span> <span class="unit">%</span></td>
-                    <td><small id="grasa-pct-actual-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>% Grasa (Deurenberg)</label></th>
-                    <td><span id="result-grasa-pct-Deurenberg">---</span> <span class="unit">%</span></td>
-                    <td><small id="grasa-pct-Deurenberg-source">(No estimado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>% Grasa (CUN-BAE)</label></th>
-                    <td><span id="result-grasa-pct-CUN-BAE">---</span> <span class="unit">%</span></td>
-                    <td><small id="grasa-pct-CUN-BAE-source">(No estimado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>% Grasa Deseado</label></th>
-                    <td><span id="result-grasa-pct-deseado">---</span> <span class="unit">%</span></td>
-                    <td><small id="grasa-pct-deseado-source">(No estimado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Masa Grasa</label></th>
-                    <td><span id="result-masa-grasa">---</span> <span class="unit">kg</span></td>
-                    <td><small id="masa-grasa-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Masa Magra (MLG)</label></th>
-                    <td><span id="result-mlg">---</span> <span class="unit">kg</span></td>
-                    <td><small id="mlg-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>IMLG</label></th>
-                    <td><span id="result-imlg">---</span> <span class="unit">kg/m²</span></td>
-                    <td><small id="imlg-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>IMG</label></th>
-                    <td><span id="result-img">---</span> <span class="unit">kg/m²</span></td>
-                    <td><small id="img-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>TMB</label></th>
-                    <td><span id="result-tmb">---</span> <span class="unit">Kcal</span></td>
-                    <td><small id="tmb-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Tipología del Cuerpo</label></th>
-                    <td><span id="result-tipologia">---</span></td>
-                    <td><small id="tipologia-source">(Relación IMLG/IMG)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Somatotipo</label></th>
-                    <td><span id="result-somatotipo">---</span></td>
-                    <td><small id="somatotipo-source">(Endo: Meso: Ecto)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Área Muscular Brazo (AMB)</label></th>
-                    <td><span id="result-amb">---</span> <span class="unit">cm²</span></td>
-                    <td><small id="amb-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Masa Muscular Total (MMT)</label></th>
-                    <td><span id="result-mmt">---</span> <span class="unit">kg</span></td>
-                    <td><small id="mmt-source">(Estimado según AMB)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>% Masa Muscular</label></th>
-                    <td><span id="result-Pct-mmt">---</span> <span class="unit">%</span></td>
-                    <td><small id="Pct-mmt-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Masa Ósea</label></th>
-                    <td><span id="result-masa-osea">---</span> <span class="unit">kg</span></td>
-                    <td><small id="masa-osea-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Masa Residual</label></th>
-                    <td><span id="result-masa-residual">---</span> <span class="unit">kg</span></td>
-                    <td><small id="masa-residual-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Peso Ideal (según % Grasa)</label></th>
-                    <td><span id="result-peso-ideal">---</span> <span class="unit">kg</span></td>
-                    <td><small id="peso-ideal-source">(Según Edad, Sexo y AF)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Peso a Perder/Ganar</label></th>
-                    <td><span id="result-peso-objetivo">---</span> <span class="unit">kg</span></td>
-                    <td><small id="peso-objetivo-source">Peso Actual - % Grasa</small></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</section>
+	    <h2>Resultados</h2>
+	    <div class="table-wrapper">
+	        <table class="results-table" aria-describedby="results-table-desc">
+	            <caption id="results-table-desc" class="sr-only">Tabla de resultados antropométricos</caption>
+	            <thead>
+	                <tr>
+	                    <th scope="col">Métrica</th>
+	                    <th scope="col">Valor</th>
+	                    <th scope="col">Nota</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <!-- Sección: Composición Corporal -->
+	                <tr class="section-header">
+	                    <th colspan="3">Composición Corporal</th>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>IMC</label></th>
+	                    <td><span id="result-imc">---</span> <span class="unit">kg/m²</span></td>
+	                    <td><small id="imc-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>ICC</label></th>
+	                    <td><span id="result-icc">---</span></td>
+	                    <td><small id="icc-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>% Grasa Actual</label></th>
+	                    <td><span id="result-grasa-pct-actual">---</span> <span class="unit">%</span></td>
+	                    <td><small id="grasa-pct-actual-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>% Grasa (Deurenberg)</label></th>
+	                    <td><span id="result-grasa-pct-Deurenberg">---</span> <span class="unit">%</span></td>
+	                    <td><small id="grasa-pct-Deurenberg-source">(No estimado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>% Grasa (CUN-BAE)</label></th>
+	                    <td><span id="result-grasa-pct-CUN-BAE">---</span> <span class="unit">%</span></td>
+	                    <td><small id="grasa-pct-CUN-BAE-source">(No estimado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>% Grasa Deseado</label></th>
+	                    <td><span id="result-grasa-pct-deseado">---</span> <span class="unit">%</span></td>
+	                    <td><small id="grasa-pct-deseado-source">(No estimado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Masa Grasa</label></th>
+	                    <td><span id="result-masa-grasa">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="masa-grasa-source">(No calculado)</small></td>
+	                </tr>
+	                <!-- Sección: Métricas Metabólicas -->
+	                <tr class="section-header">
+	                    <th colspan="3">Métricas Metabólicas</th>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Edad Metabólica</label></th>
+	                    <td><span id="result-edadmetabolica">---</span> <span class="unit">años</span></td>
+	                    <td><small id="edadmetabolica-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>TMB</label></th>
+	                    <td><span id="result-tmb">---</span> <span class="unit">Kcal</span></td>
+	                    <td><small id="tmb-source">(No calculado)</small></td>
+	                </tr>
+	                <!-- Sección: Masa Libre de Grasa -->
+	                <tr class="section-header">
+	                    <th colspan="3">Masa Libre de Grasa</th>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Masa Magra (MLG)</label></th>
+	                    <td><span id="result-mlg">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="mlg-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>IMLG</label></th>
+	                    <td><span id="result-imlg">---</span> <span class="unit">kg/m²</span></td>
+	                    <td><small id="imlg-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>IMG</label></th>
+	                    <td><span id="result-img">---</span> <span class="unit">kg/m²</span></td>
+	                    <td><small id="img-source">(No calculado)</small></td>
+	                </tr>
+	                <!-- Sección: Estructurales -->
+	                <tr class="section-header">
+	                    <th colspan="3">Estructurales</th>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Somatotipo</label></th>
+	                    <td><span id="result-somatotipo">---</span></td>
+	                    <td><small id="somatotipo-source">(Endo: Meso: Ecto)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Área Muscular Brazo (AMB)</label></th>
+	                    <td><span id="result-amb">---</span> <span class="unit">cm²</span></td>
+	                    <td><small id="amb-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Masa Muscular Total (MMT)</label></th>
+	                    <td><span id="result-mmt">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="mmt-source">(Estimado según AMB)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>% Masa Muscular</label></th>
+	                    <td><span id="result-Pct-mmt">---</span> <span class="unit">%</span></td>
+	                    <td><small id="Pct-mmt-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Masa Ósea</label></th>
+	                    <td><span id="result-masa-osea">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="masa-osea-source">(No calculado)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Masa Residual</label></th>
+	                    <td><span id="result-masa-residual">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="masa-residual-source">(No calculado)</small></td>
+	                </tr>
+	                <!-- Sección: Objetivos -->
+	                <tr class="section-header">
+	                    <th colspan="3">Objetivos</th>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Peso Ideal (según % Grasa)</label></th>
+	                    <td><span id="result-peso-ideal">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="peso-ideal-source">(Según Edad, Sexo y AF)</small></td>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Peso a Perder/Ganar</label></th>
+	                    <td><span id="result-peso-objetivo">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="peso-objetivo-source">Peso Actual - % Grasa</small></td>
+	                </tr>
+	                <!-- Sección: Otros -->
+	                <tr class="section-header">
+	                    <th colspan="3">Otros</th>
+	                </tr>
+	                <tr>
+	                    <th scope="row"><label>Tipología del Cuerpo</label></th>
+	                    <td><span id="result-tipologia">---</span></td>
+	                    <td><small id="tipologia-source">(Relación IMLG/IMG)</small></td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+	</section>
             <section class="data-section" id="explanation-section" style="display: none;">
                 <h2>Explicación de los Resultados y Sugerencias</h2>
                 <div id="explanation-content"></div>
