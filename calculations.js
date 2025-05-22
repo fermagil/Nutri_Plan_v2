@@ -26,7 +26,6 @@ import { auth } from './app.js';
 				mmt: document.getElementById('result-mmt'),
 				Pctmmt: document.getElementById('result-Pct-mmt'),
         			PctmmtSource: document.getElementById('Pct-mmt-source'),
-    				'Pct-mmt-source': document.getElementById('Pct-mmt-source'),
 				imlg: document.getElementById('result-imlg'),
 				imlgSource:document.getElementById('imlg-source'),
 				img: document.getElementById('result-img'),
