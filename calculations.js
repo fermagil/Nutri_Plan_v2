@@ -4181,7 +4181,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		            const alturaCm = Number(data.altura);
 		            const amb = Number(results.amb);
 		            const edad = Number(data.edad);
-			    const mmtPct = mmtPct
+			    const Pctmmt = mmtPct
 		            if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
 		            if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
 		            if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
@@ -4200,8 +4200,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			}
 					
 		            results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
-				results.Pctmmt= mmtPct
-		            results.mmtSportType = sportType;
+				results.Pctmmt= Pctmmt
+		            	results.mmtSportType = sportType;
 		        } catch (e) {
 		            console.error('Error calculando MMT:', e.message);
 		            results.mmt = NaN;
@@ -4328,7 +4328,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      pesoIdeal: formatResult(results.pesoIdeal, 1),
 					      pesoObjetivo: formatResult(results.pesoObjetivo, 1),
 					      mmt: formatResult(results.mmt, 1),
-					      Pct: formatResult(results.Pctmmt, 1),    
+					      Pctmmt: formatResult(results.Pctmmt, 1),    
 					      imlg: formatResult(results.imlg, 1),
 					      imlgSource: results.imlgSource || '(No calculado)',
 					      img: formatResult(results.img, 1),
