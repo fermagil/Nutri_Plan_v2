@@ -97,6 +97,7 @@ const resultElementIds = [
     'result-mlg',
     'mlg-source',
     'result-amb',
+    'amb-source',
     'result-masa-osea',
     'result-masa-residual',
     'result-peso-ideal',
