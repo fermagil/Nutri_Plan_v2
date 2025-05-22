@@ -3876,6 +3876,33 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            }
 				            return '(No calculado)';
 				        }
+
+
+					// Nueva función para formatear masaResidualSource
+				    function formatMasaResidualSource(masaResidualPct, gender) {
+				        if (isNaN(masaResidualPct) || !gender) {
+				            return '(No calculado)';
+				        }
+				        gender = gender.toLowerCase();
+				        if (gender === 'masculino') {
+				            if (masaResidualPct >= 22 && masaResidualPct <= 26) {
+				                return 'Rango típico (22–26%)';
+				            } else if (masaResidualPct < 22) {
+				                return 'Por debajo del rango típico (22–26%)';
+				            } else {
+				                return 'Por encima del rango típico (22–26%)';
+				            }
+				        } else if (gender === 'femenino') {
+				            if (masaResidualPct >= 19 && masaResidualPct <= 23) {
+				                return 'Rango típico (19–23%)';
+				            } else if (masaResidualPct < 19) {
+				                return 'Por debajo del rango típico (19–23%)';
+				            } else {
+				                return 'Por encima del rango típico (19–23%)';
+				            }
+				        }
+				        return '(No calculado)';
+				    }
 				try {
 					// --- Calculate IMC ---
 				        if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
@@ -4306,14 +4333,33 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		    }
     
 
-		    // Masa Residual Calculation
-		    
-		    if (data.peso && data.genero) {
-		        const factor = data.genero === 'masculino' ? 0.24 : 0.21;
-		        results.masaResidual = data.peso * factor;
-		    } else {
-		        results.masaResidual = NaN;
-		    }
+		                    // Masa Residual Calculation
+				        if (data.peso && data.genero) {
+				            try {
+				                if (data.peso <= 0) throw new Error('Peso debe ser mayor a 0');
+				                if (!['masculino', 'femenino'].includes(data.genero.toLowerCase())) {
+				                    throw new Error('Género debe ser "masculino" o "femenino"');
+				                }
+				                const factor = data.genero.toLowerCase() === 'masculino' ? 0.24 : 0.21;
+				                results.masaResidual = data.peso * factor;
+				                const masaResidualPct = (results.masaResidual / data.peso) * 100;
+				                results.masaResidualSource = formatMasaResidualSource(masaResidualPct, data.genero);
+				                console.log('Masa Residual calculada:', {
+				                    masaResidual: results.masaResidual,
+				                    masaResidualPct,
+				                    masaResidualSource: results.masaResidualSource
+				                });
+				            } catch (e) {
+				                console.error('Error calculando Masa Residual:', e.message);
+				                results.masaResidual = NaN;
+				                results.masaResidualSource = 'Error: ' + e.message;
+				                content += `<p><strong>Error en Masa Residual:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+				            }
+				        } else {
+				            results.masaResidual = NaN;
+				            results.masaResidualSource = '(No calculado: Falta peso o género)';
+				            content += `<p><strong>Masa Residual:</strong> No calculado debido a datos insuficientes (falta peso o género).</p>`;
+				        }
     
 					// Calculate Somatotipo
 					if (
@@ -4387,6 +4433,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      masaOsea: formatResult(results.masaOsea, 1),
 					      masaOseaSource: results.masaOseaSource || '(No calculado)',
 					      masaResidual: formatResult(results.masaResidual, 1),
+                                              masaResidualSource: results.masaResidualSource || '(No calculado)',   
 					      pesoIdeal: formatResult(results.pesoIdeal, 1),
 					      pesoObjetivo: formatResult(results.pesoObjetivo, 1),
 					      mmt: formatResult(results.mmt, 1),
@@ -4484,7 +4531,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                    console.warn('Elemento ambSource no encontrado en resultElements. Verifica que resultElements.ambSource esté definido y que el HTML tenga id="amb-source".');
 				                }
 						updateElement('masaOsea', results.masaOsea, 1);
-						updateElement('masaResidual', results.masaResidual, 1);
+						
+						// Update Masa Residual
+					            updateElement('masaResidual', results.masaResidual, 1);
+					            if (resultElements.masaResidualSource) {
+					                resultElements.masaResidualSource.textContent = results.masaResidualSource || '(No calculado)';
+					            } else {
+					                console.warn('Elemento masaResidualSource no encontrado en resultElements.');
+					            }
+						
 						updateElement('pesoIdeal', results.pesoIdeal, 1);
 						if (resultElements.pesoObjetivo) {
 							resultElements.pesoObjetivo.textContent = !isNaN(results.pesoObjetivo)
