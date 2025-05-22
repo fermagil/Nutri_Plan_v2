@@ -4515,7 +4515,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					// Extract inputs
 					    const imc = parseFloat(formData.imc);
 					    const edad = parseInt(formData.edad);
-					     gender = formData.gender?.toLowerCase(); gender = gender.toLowerCase();
+					     gender = formData.gender?.toLowerCase(); 
 					
 					    // Calculate % Grasa (Deurenberg)
 					    results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(imc, edad, gender);
