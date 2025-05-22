@@ -4056,24 +4056,50 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        return '(No estimado)';
 					    }
 					
-					    const range = sexRanges.find(r => imc >= r.imc[0] && imc <= r.imc[1] && grasaPct >= r.grasa[0] && grasaPct <= r.grasa[1]);
+					    // Try exact match first
+					    let range = sexRanges.find(r => imc >= r.imc[0] && imc <= r.imc[1] && grasaPct >= r.grasa[0] && grasaPct <= r.grasa[1]);
+					    let adjustedGrasaPct = grasaPct;
+					    let observaciones = range ? range.observaciones : null;
+					
+					    // If no exact match, find closest range and adjust
 					    if (!range) {
-					        console.log('[GrasaPctDeurenberg] No matching range found:', { 
-					            imc, 
-					            grasaPct, 
-					            sexo, 
-					            ageRange, 
-					            availableRanges: sexRanges.map(r => ({
-					                imc: r.imc,
-					                grasa: r.grasa,
-					                observaciones: r.observaciones
-					            }))
+					        console.log('[GrasaPctDeurenberg] No exact range match, finding closest range:', { imc, grasaPct });
+					        let minDistance = Infinity;
+					        let closestRange = null;
+					
+					        sexRanges.forEach(r => {
+					            // Calculate midpoints for IMC and % Grasa
+					            const imcMid = (r.imc[0] + r.imc[1]) / 2;
+					            const grasaMid = (r.grasa[0] + r.grasa[1]) / 2;
+					            // Euclidean distance
+					            const distance = Math.sqrt(
+					                Math.pow(imc - imcMid, 2) + Math.pow(grasaPct - grasaMid, 2)
+					            );
+					            if (distance < minDistance) {
+					                minDistance = distance;
+					                closestRange = r;
+					            }
+					        });
+					
+					        range = closestRange;
+					        // Adjust grasaPct to fit range bounds
+					        if (grasaPct < range.grasa[0]) {
+					            adjustedGrasaPct = range.grasa[0];
+					        } else if (grasaPct > range.grasa[1]) {
+					            adjustedGrasaPct = range.grasa[1];
+					        }
+					        observaciones = `${range.observaciones} (Aproximado: % Grasa ajustado a ${adjustedGrasaPct.toFixed(1)}%)`;
+					        console.log('[GrasaPctDeurenberg] Closest range selected:', {
+					            range,
+					            originalGrasaPct: grasaPct,
+					            adjustedGrasaPct,
+					            distance: minDistance
 					        });
 					    } else {
-					        console.log('[GrasaPctDeurenberg] Selected range:', range);
+					        console.log('[GrasaPctDeurenberg] Selected exact range:', range);
 					    }
 					    
-					    return range ? range.observaciones : '(No estimado)';
+					    return observaciones;
 					}
 				try {
 					// --- Calculate IMC ---
