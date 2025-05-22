@@ -103,6 +103,7 @@ const resultElementIds = [
     'result-peso-objetivo',
     'result-mmt',
     'result-Pct-mmt',
+    'Pct-mmt-source',
     'result-imlg',
     'imlg-source',
     'result-img',
