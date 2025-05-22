@@ -3905,6 +3905,51 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        }
 				        return '(No calculado)';
 				    }
+					// Nueva función para formatear masaOseaSource
+					    function formatMasaOseaSource(boneMassPct, gender, age, isAthlete) {
+					        if (isNaN(boneMassPct) || !gender || !age) {
+					            return '(No calculado)';
+					        }
+					        gender = gender.toLowerCase();
+					        const boneMassRanges = {
+					            masculino: {
+					                '15-19': [14, 15],
+					                '20-29': [14, 15],
+					                '30-39': [13.5, 14.5],
+					                '40-49': [13, 14],
+					                '50-59': [12, 13.5],
+					                '60-69': [11.5, 13],
+					                '70+': [11, 12.5],
+					                athlete: [15, 16]
+					            },
+					            femenino: {
+					                '15-19': [12, 13.5],
+					                '20-29': [12, 13.5],
+					                '30-39': [11.5, 13],
+					                '40-49': [11, 12.5],
+					                '50-59': [10.5, 12],
+					                '60-69': [10, 11.5],
+					                '70+': [9.5, 11],
+					                athlete: [13, 14]
+					            }
+					        };
+					        const boneAgeRange = age >= 15 && age <= 19 ? '15-19' : 
+					                             age <= 29 ? '20-29' : 
+					                             age <= 39 ? '30-39' : 
+					                             age <= 49 ? '40-49' : 
+					                             age <= 59 ? '50-59' : 
+					                             age <= 69 ? '60-69' : '70+';
+					        const boneRanges = isAthlete ? boneMassRanges[gender].athlete : boneMassRanges[gender][boneAgeRange];
+					        const [min, max] = boneRanges;
+					        const rangeText = `${min}–${max}%`;
+					        if (boneMassPct >= min && boneMassPct <= max) {
+					            return `Rango saludable (${rangeText})`;
+					        } else if (boneMassPct < min) {
+					            return `Por debajo del rango saludable (${rangeText})`;
+					        } else {
+					            return `Por encima del rango saludable (${rangeText})`;
+					        }
+					    }
 				try {
 					// --- Calculate IMC ---
 				        if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
@@ -4324,13 +4369,22 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		            let masaOsea = 3.02 * Math.pow(alturaM * alturaM * diamMunecaM * diamFemurM * 400, 0.712);
 		            if (isAthlete) masaOsea *= 1.05;
 		            results.masaOsea = Number(masaOsea.toFixed(1));
+		                const boneMassPct = (results.masaOsea / peso) * 100;
+		                results.masaOseaSource = formatMasaOseaSource(boneMassPct, data.genero, age, isAthlete);
+		                console.log('Masa Ósea calculada:', {
+		                    masaOsea: results.masaOsea,
+		                    boneMassPct,
+		                    masaOseaSource: results.masaOseaSource
+		                });
 		        } catch (e) {
 		            console.error('Error calculando Masa Ósea:', e.message);
 		            results.masaOsea = NaN;
+			    results.masaOseaSource = 'Error: ' + e.message;
 		            content += `<p><strong>Error en Masa Ósea:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
 		        }
 		    } else {
 		        results.masaOsea = NaN;
+			results.masaOseaSource = '(No calculado: Falta altura, diámetros óseos, peso, edad o género)';
 		        content += '<p><strong>Masa Ósea:</strong> No calculado debido a datos insuficientes.</p>';
 		    }
     
@@ -4433,7 +4487,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					      amb: formatResult(results.amb, 1),
 					      ambSource: results.ambSource || '(No calculado)',
 					      masaOsea: formatResult(results.masaOsea, 1),
-					      masaOseaSource: results.masaOseaSource || '(No calculado)',
+            				      masaOseaSource: results.masaOseaSource || '(No calculado)',
 					      masaResidual: formatResult(results.masaResidual, 1),
                                               masaResidualSource: results.masaResidualSource || '(No calculado)',   
 					      pesoIdeal: formatResult(results.pesoIdeal, 1),
@@ -4532,7 +4586,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                } else {
 				                    console.warn('Elemento ambSource no encontrado en resultElements. Verifica que resultElements.ambSource esté definido y que el HTML tenga id="amb-source".');
 				                }
-						updateElement('masaOsea', results.masaOsea, 1);
+						// Update Masa Ósea
+					            updateElement('masaOsea', results.masaOsea, 1);
+					            if (resultElements.masaOseaSource) {
+					                resultElements.masaOseaSource.textContent = results.masaOseaSource || '(No calculado)';
+					            } else {
+					                console.warn('Elemento masaOseaSource no encontrado en resultElements.');
+					            }
 						
 						// Update Masa Residual
 					            updateElement('masaResidual', results.masaResidual, 1);
