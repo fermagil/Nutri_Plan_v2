@@ -17,6 +17,7 @@ import { auth } from './app.js';
 				amb: document.getElementById('result-amb'),
 				ambSource:document.getElementById('amb-source'),
 				masaOsea: document.getElementById('result-masa-osea'),
+				masaOseaSource: document.getElementById('masa-osea-source'), 
 				masaResidual: document.getElementById('result-masa-residual'),
 				masaResidualSource: document.getElementById('masa-residual-source'),
 				pesoIdeal: document.getElementById('result-peso-ideal'),
