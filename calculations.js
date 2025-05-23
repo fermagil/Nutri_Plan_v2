@@ -3604,8 +3604,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
             ctxSomatotype.clearRect(0, 0, canvasSomatotype.width, canvasSomatotype.height);
 
             // Definir el área del gráfico (triángulo) en píxeles
-            const chartWidth = 400; // Ancho del triángulo en píxeles
-            const chartHeight = 400; // Alto del triángulo en píxeles
+            const chartWidth = 800; // Ancho del triángulo en píxeles
+            const chartHeight = 800; // Alto del triángulo en píxeles
             const chartOffsetX = (imgSomatotype.width - chartWidth) / 2; // Centrar el triángulo en la imagen
             const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
 
