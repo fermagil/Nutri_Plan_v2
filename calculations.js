@@ -5098,14 +5098,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        console.warn('Elemento edadmetabolicaSource no encontrado en resultElements.');
 					    }
 					
-					    updateElement('endomorfia', results.endomorfia, 1);
-					    updateElement('mesomorfia', results.mesomorfia, 1);
-					    updateElement('ectomorfia', results.ectomorfia, 1);
-					    if (resultElements.somatotipo) {
-					        resultElements.somatotipo.textContent = window.calculatedResults.somatotipo.formatted || '---';
-					    } else {
-					        console.warn('Elemento somatotipo no encontrado en resultElements.');
-					    }
+					    // Somatotipo Components
+					        // Somatotipo Components
+					        if (resultElements.resultSomatotipo) {
+					            resultElements.resultSomatotipo.textContent = window.calculatedResults.somatotipo.formatted || '---';
+					        } else {
+					            console.warn('Elemento resultSomatotipo no encontrado en resultElements. Verifica que el elemento con id="result-somatotipo" exista en el HTML.');
+					            content += `<p><strong>Advertencia:</strong> No se pudo mostrar el Somatotipo porque el elemento con id="result-somatotipo" no está definido en la interfaz.</p>`;
+					        }
 					
 					    // Update explanation section
 					    if (explanationContent && content) {
