@@ -4212,63 +4212,66 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            }
 					// --- Calculate Actual Body Fat % ---
 					// --- Calculate Actual Body Fat % ---
-						let actualBodyFatPct = NaN;
-						let actualBodyFatSource = '(No calculado)';
-						
-						// Caso 1: Porcentaje de grasa proporcionado (BioImpedancia)
-						if (!isNaN(data.grasa_actual_conocida)) {
-						    actualBodyFatPct = data.grasa_actual_conocida;
-						    actualBodyFatSource = '(Proporcionado: BioImpedancia)';
-						    console.log('Usando % Grasa Actual proporcionado:', actualBodyFatPct);
-						} else {
-						    // Caso 2: Edad menor a 6 años
-						    if (data.edad < 6) {
-						        console.warn('Edad < 6 años: No hay ecuación adecuada para calcular % Grasa.');
-						        actualBodyFatSource = '(No calculado: Edad < 6 años)';
-						    } 
-						    // Caso 3: Edad entre 6 y 17 años (Slaughter)
-						    else if (data.edad >= 6 && data.edad <= 17) {
-						        actualBodyFatPct = calculateSlaughterBodyFat(data);
-						        if (!isNaN(actualBodyFatPct)) {
-						            actualBodyFatSource = '(Calculado: Slaughter, 6-17 años)';
-						            console.log('Calculando % Grasa Actual (Slaughter):', actualBodyFatPct);
-						        }
-						    } 
-						    // Caso 4: Adultos (>= 18 años)
-						    else {
-						        // Subcaso 4.1: Deportistas (usar Jackson-Pollock, 3 pliegues)
-						        if (data.es_deportista) {
-						            actualBodyFatPct = calculateJacksonPollockBodyFat(data);
-						            if (!isNaN(actualBodyFatPct)) {
-						                actualBodyFatSource = '(Calculado: Jackson-Pollock, 3 pliegues, deportistas)';
-						                console.log('Calculando % Grasa Actual (Jackson-Pollock):', actualBodyFatPct);
-						            }
-						        } 
-						        // Subcaso 4.2: No deportistas (usar Durnin-Womersley)
-						        else {
-						            actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
-						            if (!isNaN(actualBodyFatPct)) {
-						                actualBodyFatSource = '(Calculado: Durnin-Womersley, adultos no deportistas)';
-						                console.log('Calculando % Grasa Actual (Durnin-Womersley):', actualBodyFatPct);
-						            }
-						        }
-						        
-						        // Subcaso 4.3: Fallback a Circunferencias si los métodos anteriores fallan
-						        if (isNaN(actualBodyFatPct)) {
-						            actualBodyFatPct = calculateCircumferenceBodyFat(data);
-						            if (!isNaN(actualBodyFatPct)) {
-						                actualBodyFatSource = '(Calculado: Circunferencias US Navy)';
-						                console.log('Calculando % Grasa Actual (Circunferencias US Navy):', actualBodyFatPct);
-						            } else {
-						                console.warn('No se pudo calcular % Grasa Actual: datos insuficientes');
-						            }
-						        }
-						    }
-						}
-						
-						// Guardar resultados
-						results.grasaPctActual = actualBodyFatPct;
-						results.grasaPctActualSource = actualBodyFatSource;
+					let actualBodyFatPct = NaN;
+					let actualBodyFatSource = '(No calculado)';
+					
+					// Caso 1: Porcentaje de grasa proporcionado (BioImpedancia)
+					if (!isNaN(data.grasa_actual_conocida)) {
+					    actualBodyFatPct = data.grasa_actual_conocida;
+					    actualBodyFatSource = '(Proporcionado: BioImpedancia)';
+					    console.log('Usando % Grasa Actual proporcionado:', actualBodyFatPct);
+					} else {
+					    // Caso 2: Edad menor a 6 años
+					    if (data.edad < 6) {
+					        console.warn('Edad < 6 años: No hay ecuación adecuada para calcular % Grasa.');
+					        actualBodyFatSource = '(No calculado: Edad < 6 años)';
+					    } 
+					    // Caso 3: Edad entre 6 y 17 años (Slaughter)
+					    else if (data.edad >= 6 && data.edad <= 17) {
+					        actualBodyFatPct = calculateSlaughterBodyFat(data);
+					        if (!isNaN(actualBodyFatPct)) {
+					            actualBodyFatSource = '(Calculado: Slaughter, 6-17 años)';
+					            console.log('Calculando % Grasa Actual (Slaughter):', actualBodyFatPct);
+					        }
+					    } 
+					    // Caso 4: Adultos (>= 18 años)
+					    else {
+					        // Determinar si es deportista
+					        const isAthlete = data.es_deportista === 'si';
+					        
+					        // Subcaso 4.1: Deportistas (usar Jackson-Pollock, 3 pliegues)
+					        if (isAthlete) {
+					            actualBodyFatPct = calculateJacksonPollockBodyFat(data);
+					            if (!isNaN(actualBodyFatPct)) {
+					                actualBodyFatSource = '(Calculado: Jackson-Pollock, 3 pliegues, deportistas)';
+					                console.log('Calculando % Grasa Actual (Jackson-Pollock):', actualBodyFatPct);
+					            }
+					        } 
+					        // Subcaso 4.2: No deportistas (usar Durnin-Womersley)
+					        else {
+					            actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
+					            if (!isNaN(actualBodyFatPct)) {
+					                actualBodyFatSource = '(Calculado: Durnin-Womersley, adultos no deportistas)';
+					                console.log('Calculando % Grasa Actual (Durnin-Womersley):', actualBodyFatPct);
+					            }
+					        }
+					        
+					        // Subcaso 4.3: Fallback a Circunferencias si los métodos anteriores fallan
+					        if (isNaN(actualBodyFatPct)) {
+					            actualBodyFatPct = calculateCircumferenceBodyFat(data);
+					            if (!isNaN(actualBodyFatPct)) {
+					                actualBodyFatSource = '(Calculado: Circunferencias US Navy)';
+					                console.log('Calculando % Grasa Actual (Circunferencias US Navy):', actualBodyFatPct);
+					            } else {
+					                console.warn('No se pudo calcular % Grasa Actual: datos insuficientes');
+					            }
+					        }
+					    }
+					}
+					
+					// Guardar resultados
+					results.grasaPctActual = actualBodyFatPct;
+					results.grasaPctActualSource = actualBodyFatSource;
 
 					// --- Calculate Desired Body Fat % ---
 					let desiredBodyFatPct = NaN;
