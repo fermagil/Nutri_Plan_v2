@@ -5120,19 +5120,23 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					alert(`Error en los cálculos: ${e.message}. Verifica los datos ingresados.`);
 				}
 			
-			// Prevent auto-submission on page load
-			window.addEventListener('load', () => {
-				const form = document.getElementById('anthropometry-form');
-				    if (form) {
-					form.reset(); // Clear form inputs
-					    console.log('Form reset on page load to prevent auto-submission');
-					        // Asegurarse de que el botón esté oculto al cargar la página
-					      if (guardarDatosBtn) {
-					            guardarDatosBtn.style.display = 'none';
-					        }
-				}
+				// Prevent auto-submission on page load
+				window.addEventListener('load', () => {
+					const form = document.getElementById('anthropometry-form');
+					    if (form) {
+						form.reset(); // Clear form inputs
+						    console.log('Form reset on page load to prevent auto-submission');
+						        // Asegurarse de que el botón esté oculto al cargar la página
+						      if (guardarDatosBtn) {
+						            guardarDatosBtn.style.display = 'none';
+						        }
+					}
+				});
 			});
-		});
+			} catch (e) {
+					console.error('Error durante los cálculos:', e.message);
+					alert(`Error en los cálculos: ${e.message}. Verifica los datos ingresados.`);
+				}
 			// Initialize results display on page load
 			document.addEventListener('DOMContentLoaded', () => {
 				console.log('Inicializando visualización de resultados');
