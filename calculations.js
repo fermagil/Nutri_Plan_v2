@@ -5123,7 +5123,22 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    } else {
 					        console.warn('explanationSection no está definido');
 					    }
-					
+						// --- 4. Generate and Display Explanations ---
+						if (!explanationContent) {
+							throw new Error('Elemento explanation-content no encontrado');
+						}
+						const analysisHtml = bodyCompResults
+							? generateExplanationsAndSuggestions(data, results, bodyCompResults)
+							: '<p>No se pudo generar el análisis de composición corporal: datos insuficientes.</p>';
+						explanationContent.innerHTML = analysisHtml + content; // Append error messages
+						if (explanationSection) {
+							explanationSection.style.display = 'block';
+						} else {
+							console.warn('explanationSection no encontrado');
+						}
+
+						console.log('Display updated successfully');
+						alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones.');
 					} catch (displayError) {
 					    console.error('Error al actualizar la interfaz:', displayError.message);
 					    alert('Error al actualizar los resultados: ' + displayError.message);
