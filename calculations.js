@@ -5138,7 +5138,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			});
 			
 			// After successful calculations
-			const guardarDatosBtn = document.getElementById('guardar_datos');
+			//const guardarDatosBtn = document.getElementById('guardar_datos');
 			if (guardarDatosBtn) {
 			    // Verificar si window.calculatedResults es null o está vacío
 			    if (!window.calculatedResults || Object.keys(window.calculatedResults).length === 0) {
