@@ -4931,171 +4931,171 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
 			
 			            // --- 3. Update Display ---
-			            try {
-			                if (!resultElements || typeof resultElements !== 'object') {
-			                    throw new Error('resultElements no está definido o es inválido');
-			                }
-			                const updateElement = (key, value, precision = 1) => {
-			                    if (resultElements[key]) {
-			                        resultElements[key].textContent = formatResult(value, precision);
-			                    } else {
-			                        console.warn(`Elemento ${key} no encontrado en resultElements`);
-			                    }
-			                };
-			
-			                // Update IMC
-			                updateElement('imc', results.imc, 1); // Matches resultElements.imc
-			                if (resultElements.imcSource) { // Use imcSource to match resultElements
-			                    resultElements.imcSource.textContent = formatImcSource(results.imcSource);
-			                } else {
-			                    console.warn('Elemento imcSource no encontrado en resultElements. Verifica que resultElements.imcSource esté definido y que el HTML tenga id="imc-source".');
-			                }
-			                
-			                // Update ICC
-			                updateElement('icc', results.icc, 2);
-			                if (resultElements.iccSource) {
-			                    resultElements.iccSource.textContent = formatIccSource(results.iccSource);
-			                } else {
-			                    console.warn('Elemento iccSource no encontrado en resultElements. Verifica que resultElements.iccSource esté definido y que el HTML tenga id="icc-source".');
-			                }
-			
-			                // Update IMLG and IMG
-			                updateElement('imlg', results.imlg, 1);
-			                if (resultElements.imlgSource) {
-			                    resultElements.imlgSource.textContent = results.imlgSource || '(No calculado)';
-			                } else {
-			                    console.warn('Elemento imlgSource no encontrado en resultElements. Verifica que resultElements.imlgSource esté definido y que el HTML tenga id="imlg-source".');
-			                }
-			                updateElement('img', results.img, 1);
-			                if (resultElements.imgSource) {
-			                    resultElements.imgSource.textContent = results.imgSource || '(No calculado)';
-			                } else {
-			                    console.warn('Elemento imgSource no encontrado en resultElements. Verifica que resultElements.imgSource esté definido y que el HTML tenga id="img-source".');
-			                }
-			                
-			                if (resultElements.tipologia) {
-			                    resultElements.tipologia.textContent = results.tipologia || 'Indefinido';
-			                }
-			                
-			                // Update other results
-			    updateElement('grasaPctActual', results.grasaPctActual, 1);
-			    if (resultElements.grasaPctActualSource) {
-			        resultElements.grasaPctActualSource.textContent = results.actualBodyFatSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento grasaPctActualSource no encontrado en resultElements. Verifica que resultElements.grasaPctActualSource esté definido y que el HTML tenga id="grasa-actual-source".');
-			    }
-			
-			    updateElement('grasaPctDeurenberg', results.grasaPctDeurenberg, 1);
-			    if (resultElements.grasaPctDeurenbergSource) {
-			        resultElements.grasaPctDeurenbergSource.textContent = results.grasaPctDeurenbergSource || '(No estimado)';
-			    } else {
-			        console.warn('Elemento grasaPctDeurenbergSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('grasaPctCUNBAE', results.grasaPctCUNBAE, 1);
-			    if (resultElements.grasaPctCUNBAESource) {
-			        resultElements.grasaPctCUNBAESource.textContent = results.grasaPctCUNBAESource || '(No estimado)';
-			    } else {
-			        console.warn('Elemento grasaPctCUNBAESource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('grasaPctDeseado', results.grasaPctDeseado, 1);
-			    if (resultElements.grasaPctDeseadoSource) {
-			        resultElements.grasaPctDeseadoSource.textContent = results.desiredBodyFatSource || '(No estimado)';
-			    } else {
-			        console.warn('Elemento grasaPctDeseadoSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('masaGrasa', results.masaGrasa, 1);
-			    if (resultElements.masaGrasaSource) {
-			        resultElements.masaGrasaSource.textContent = results.masaGrasaSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento masaGrasaSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('masaMagra', results.masaMagra, 1);
-			    updateElement('BRMEstimado', results.BRMEstimado, 1);
-			    if (resultElements.BRMEstimadoSource) {
-			        resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento BRMEstimadoSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('mlg', results.mlg, 1);
-			    if (resultElements.mlgSource) {
-			        resultElements.mlgSource.textContent = results.mlgSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento mlgSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('amb', results.amb, 1);
-			    if (resultElements.ambSource) {
-			        resultElements.ambSource.textContent = results.ambSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento ambSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('masaOsea', results.masaOsea, 1);
-			    if (resultElements.masaOseaSource) {
-			        resultElements.masaOseaSource.textContent = results.masaOseaSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento masaOseaSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('masaResidual', results.masaResidual, 1);
-			    if (resultElements.masaResidualSource) {
-			        resultElements.masaResidualSource.textContent = results.masaResidualSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento masaResidualSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('pesoIdeal', results.pesoIdeal, 1);
-			    updateElement('pesoObjetivo', results.pesoObjetivo, 1);
-			    updateElement('mmt', results.mmt, 1);
-			    updateElement('Pctmmt', results.Pctmmt, 1);
-			    if (resultElements.PctmmtSource) {
-			        resultElements.PctmmtSource.textContent = results.PctmmtSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento PctmmtSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('edadmetabolica', results.edadmetabolica, 1);
-			    if (resultElements.edadmetabolicaSource) {
-			        resultElements.edadmetabolicaSource.textContent = results.edadmetabolicaSource || '(No calculado)';
-			    } else {
-			        console.warn('Elemento edadmetabolicaSource no encontrado en resultElements.');
-			    }
-			
-			    updateElement('endomorfia', results.endomorfia, 1);
-			    updateElement('mesomorfia', results.mesomorfia, 1);
-			    updateElement('ectomorfia', results.ectomorfia, 1);
-			    if (resultElements.somatotipo) {
-			        resultElements.somatotipo.textContent = window.calculatedResults.somatotipo.formatted || '---';
-			    } else {
-			        console.warn('Elemento somatotipo no encontrado en resultElements.');
-			    }
-			
-			    // Update explanation section
-			    if (explanationContent && content) {
-			        explanationContent.innerHTML = content;
-			        console.log('Explicaciones actualizadas:', content);
-			    } else if (!content) {
-			        console.log('No hay mensajes de error o explicaciones para mostrar');
-			    } else {
-			        console.warn('explanationContent no está definido');
-			    }
-			
-			    if (explanationSection) {
-			        explanationSection.style.display = 'block';
-			        console.log('Sección de explicaciones mostrada');
-			    } else {
-			        console.warn('explanationSection no está definido');
-			    }
-			
-			} catch (displayError) {
-			    console.error('Error al actualizar la interfaz:', displayError.message);
-			    alert('Error al actualizar los resultados: ' + displayError.message);
-			}
+				        try {
+				                if (!resultElements || typeof resultElements !== 'object') {
+				                    throw new Error('resultElements no está definido o es inválido');
+				                }
+				                const updateElement = (key, value, precision = 1) => {
+				                    if (resultElements[key]) {
+				                        resultElements[key].textContent = formatResult(value, precision);
+				                    } else {
+				                        console.warn(`Elemento ${key} no encontrado en resultElements`);
+				                    }
+				                };
+				
+				                // Update IMC
+				                updateElement('imc', results.imc, 1); // Matches resultElements.imc
+				                if (resultElements.imcSource) { // Use imcSource to match resultElements
+				                    resultElements.imcSource.textContent = formatImcSource(results.imcSource);
+				                } else {
+				                    console.warn('Elemento imcSource no encontrado en resultElements. Verifica que resultElements.imcSource esté definido y que el HTML tenga id="imc-source".');
+				                }
+				                
+				                // Update ICC
+				                updateElement('icc', results.icc, 2);
+				                if (resultElements.iccSource) {
+				                    resultElements.iccSource.textContent = formatIccSource(results.iccSource);
+				                } else {
+				                    console.warn('Elemento iccSource no encontrado en resultElements. Verifica que resultElements.iccSource esté definido y que el HTML tenga id="icc-source".');
+				                }
+				
+				                // Update IMLG and IMG
+				                updateElement('imlg', results.imlg, 1);
+				                if (resultElements.imlgSource) {
+				                    resultElements.imlgSource.textContent = results.imlgSource || '(No calculado)';
+				                } else {
+				                    console.warn('Elemento imlgSource no encontrado en resultElements. Verifica que resultElements.imlgSource esté definido y que el HTML tenga id="imlg-source".');
+				                }
+				                updateElement('img', results.img, 1);
+				                if (resultElements.imgSource) {
+				                    resultElements.imgSource.textContent = results.imgSource || '(No calculado)';
+				                } else {
+				                    console.warn('Elemento imgSource no encontrado en resultElements. Verifica que resultElements.imgSource esté definido y que el HTML tenga id="img-source".');
+				                }
+				                
+				                if (resultElements.tipologia) {
+				                    resultElements.tipologia.textContent = results.tipologia || 'Indefinido';
+				                }
+				                
+				                // Update other results
+					    updateElement('grasaPctActual', results.grasaPctActual, 1);
+					    if (resultElements.grasaPctActualSource) {
+					        resultElements.grasaPctActualSource.textContent = results.actualBodyFatSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento grasaPctActualSource no encontrado en resultElements. Verifica que resultElements.grasaPctActualSource esté definido y que el HTML tenga id="grasa-actual-source".');
+					    }
+					
+					    updateElement('grasaPctDeurenberg', results.grasaPctDeurenberg, 1);
+					    if (resultElements.grasaPctDeurenbergSource) {
+					        resultElements.grasaPctDeurenbergSource.textContent = results.grasaPctDeurenbergSource || '(No estimado)';
+					    } else {
+					        console.warn('Elemento grasaPctDeurenbergSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('grasaPctCUNBAE', results.grasaPctCUNBAE, 1);
+					    if (resultElements.grasaPctCUNBAESource) {
+					        resultElements.grasaPctCUNBAESource.textContent = results.grasaPctCUNBAESource || '(No estimado)';
+					    } else {
+					        console.warn('Elemento grasaPctCUNBAESource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('grasaPctDeseado', results.grasaPctDeseado, 1);
+					    if (resultElements.grasaPctDeseadoSource) {
+					        resultElements.grasaPctDeseadoSource.textContent = results.desiredBodyFatSource || '(No estimado)';
+					    } else {
+					        console.warn('Elemento grasaPctDeseadoSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('masaGrasa', results.masaGrasa, 1);
+					    if (resultElements.masaGrasaSource) {
+					        resultElements.masaGrasaSource.textContent = results.masaGrasaSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento masaGrasaSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('masaMagra', results.masaMagra, 1);
+					    updateElement('BRMEstimado', results.BRMEstimado, 1);
+					    if (resultElements.BRMEstimadoSource) {
+					        resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento BRMEstimadoSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('mlg', results.mlg, 1);
+					    if (resultElements.mlgSource) {
+					        resultElements.mlgSource.textContent = results.mlgSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento mlgSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('amb', results.amb, 1);
+					    if (resultElements.ambSource) {
+					        resultElements.ambSource.textContent = results.ambSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento ambSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('masaOsea', results.masaOsea, 1);
+					    if (resultElements.masaOseaSource) {
+					        resultElements.masaOseaSource.textContent = results.masaOseaSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento masaOseaSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('masaResidual', results.masaResidual, 1);
+					    if (resultElements.masaResidualSource) {
+					        resultElements.masaResidualSource.textContent = results.masaResidualSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento masaResidualSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('pesoIdeal', results.pesoIdeal, 1);
+					    updateElement('pesoObjetivo', results.pesoObjetivo, 1);
+					    updateElement('mmt', results.mmt, 1);
+					    updateElement('Pctmmt', results.Pctmmt, 1);
+					    if (resultElements.PctmmtSource) {
+					        resultElements.PctmmtSource.textContent = results.PctmmtSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento PctmmtSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('edadmetabolica', results.edadmetabolica, 1);
+					    if (resultElements.edadmetabolicaSource) {
+					        resultElements.edadmetabolicaSource.textContent = results.edadmetabolicaSource || '(No calculado)';
+					    } else {
+					        console.warn('Elemento edadmetabolicaSource no encontrado en resultElements.');
+					    }
+					
+					    updateElement('endomorfia', results.endomorfia, 1);
+					    updateElement('mesomorfia', results.mesomorfia, 1);
+					    updateElement('ectomorfia', results.ectomorfia, 1);
+					    if (resultElements.somatotipo) {
+					        resultElements.somatotipo.textContent = window.calculatedResults.somatotipo.formatted || '---';
+					    } else {
+					        console.warn('Elemento somatotipo no encontrado en resultElements.');
+					    }
+					
+					    // Update explanation section
+					    if (explanationContent && content) {
+					        explanationContent.innerHTML = content;
+					        console.log('Explicaciones actualizadas:', content);
+					    } else if (!content) {
+					        console.log('No hay mensajes de error o explicaciones para mostrar');
+					    } else {
+					        console.warn('explanationContent no está definido');
+					    }
+					
+					    if (explanationSection) {
+					        explanationSection.style.display = 'block';
+					        console.log('Sección de explicaciones mostrada');
+					    } else {
+					        console.warn('explanationSection no está definido');
+					    }
+					
+					} catch (displayError) {
+					    console.error('Error al actualizar la interfaz:', displayError.message);
+					    alert('Error al actualizar los resultados: ' + displayError.message);
+					}
 			} catch (calcError) {
 			    console.error('Error durante los cálculos:', calcError.message);
 			    alert('Error en los cálculos: ' + calcError.message);
@@ -5107,7 +5107,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        explanationSection.style.display = 'block';
 			    }
 			}
-			});
+	});
 			
 			// Prevent auto-submission on page load
 			window.addEventListener('load', () => {
