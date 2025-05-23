@@ -4469,15 +4469,47 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			
 			            // --- Other Calculations ---
 			            // Calculate Masa Grasa y Masa Libre de Grasa
-			            if (!isNaN(results.grasaPctActual)) {
-			                results.masaMagra = metabolicResult.masaMagra;
-			                results.mlg = data.peso - results.masaGrasa;
-			                results.mlgSource = results.grasaPctActual ? 'Calculado a partir de % grasa' : '(No calculado)';
-			                results.masaGrasaSource = metabolicResult.method;
-			            } else {
-			                results.masaGrasa = NaN;
-			                results.mlg = NaN;
-			            }
+			            
+				    if (!isNaN(results.grasaPctActual) && data.peso) {
+				        try {
+				            // Priorizar valores de metabolicResult si están disponibles
+				            if (!isNaN(results.masaGrasa) && !isNaN(results.masaMagra)) {
+				                // Usar valores de calculateMetabolicAge (Masa Grasa: 35.4, Masa Magra: 64.6)
+				                console.log('Usando Masa Grasa y Magra de calculateMetabolicAge:', {
+				                    masaGrasa: results.masaGrasa,
+				                    masaMagra: results.masaMagra
+				                });
+				            } else {
+				                // Calcular desde results.grasaPctActual (17.913427508394022%)
+				                results.masaGrasa = (results.grasaPctActual / 100) * data.peso;
+				                results.masaMagra = data.peso - results.masaGrasa;
+				                results.masaGrasaSource = results.actualBodyFatSource || '(Calculado desde % grasa)';
+				                console.log('Calculando Masa Grasa y Magra desde % grasa:', {
+				                    grasaPctActual: results.grasaPctActual,
+				                    peso: data.peso,
+				                    masaGrasa: results.masaGrasa,
+				                    masaMagra: results.masaMagra
+				                });
+				            }
+				            results.mlg = results.masaMagra;
+				            results.mlgSource = 'Calculado a partir de % grasa o edad metabólica';
+				        } catch (e) {
+				            console.error('Error calculando Masa Grasa y Magra:', e.message);
+				            results.masaGrasa = NaN;
+				            results.masaMagra = NaN;
+				            results.mlg = NaN;
+				            results.mlgSource = 'Error: ' + e.message;
+				            results.masaGrasaSource = 'Error: ' + e.message;
+				            content += `<p><strong>Error en Masa Grasa y Magra:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+				        }
+				    } else {
+				        results.masaGrasa = NaN;
+				        results.masaMagra = NaN;
+				        results.mlg = NaN;
+				        results.mlgSource = '(No calculado: Falta % grasa o peso)';
+				        results.masaGrasaSource = '(No calculado)';
+				        content += `<p><strong>Masa Grasa y Magra:</strong> No calculado debido a datos insuficientes.</p>`;
+				    }
 			
 			            if (!isNaN(results.mlg) && !isNaN(results.grasaPctDeseado)) {
 			                results.pesoIdeal = results.mlg / (1 - results.grasaPctDeseado / 100);
