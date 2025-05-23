@@ -4865,9 +4865,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    masaGrasa: formatResult(results.masaGrasa, 1),
 					    masaGrasaSource: results.masaGrasaSource || '(No calculado)',
 					    masaMagra: formatResult(results.masaMagra, 1),
-        				    masaGrasa: formatResult(results.masaGrasa, 1)
-					    BRMEstimado:formatResult(results.BRMEstimado, 1),
-					    BRMEstimadoSource:results.BRMEstimadoSource || '(No calculado)',
+        				    masaGrasa: formatResult(results.masaGrasa, 1),
+					    BRMEstimado: formatResult(results.BRMEstimado, 1),
+        				    BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
 					    mlg: formatResult(results.mlg, 1),
 					    mlgSource: results.mlgSource || '(No calculado)',
 					    amb: formatResult(results.amb, 1),
