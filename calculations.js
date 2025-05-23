@@ -3605,7 +3605,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
             // Definir el área del gráfico (triángulo) en píxeles
             const chartWidth = 468; // Ancho del triángulo en píxeles
-            const chartHeight = 315; // Alto del triángulo en píxeles
+            const chartHeight = 515; // Alto del triángulo en píxeles
             const chartOffsetX = (imgSomatotype.width - chartWidth) / 2; // Centrar el triángulo en la imagen
             const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
 
