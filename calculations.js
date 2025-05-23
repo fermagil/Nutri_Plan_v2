@@ -4266,7 +4266,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            // --- Calculate IMC ---
 			            if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
 			                try {
-			                    const imcResults = calculate PMC(data); // Use a different variable to avoid shadowing
+			                    const imcResults = calculateIMC(data); // Use a different variable to avoid shadowing
 			                    results.imc = imcResults.imc;
 			                    results.imcSource = imcResults.imcSource;
 			                    console.log('IMC calculado:', results.imc, results.imcSource);
@@ -4282,7 +4282,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                content += `<p><strong>IMC:</strong> No calculado debido a datos insuficientes.</p>`;
 			            }
 			
-			            // --- Calculate ICC ---
+				            // --- Calculate ICC ---
 			            if (data.circ_cintura > 0 && data.circ_cadera > 0 && data.genero) {
 			                try {
 			                    const iccResults = calculateICC(data);
