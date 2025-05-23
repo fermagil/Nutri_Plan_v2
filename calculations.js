@@ -4384,15 +4384,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					}
 
 					// --- Calculate Metabolic Age ---
-					 let results = {
-						        grasaPctActual: NaN, // Asumiendo que esto viene de un cálculo previo
-						        edadmetabolica: NaN,
-						        edadmetabolicaSource: '(No calculado)',
-						        BRMEstimado: NaN,
-						        BRMEstimadoSource: '(No calculado)',
-						        masaMagra: NaN,
-						        masaGrasa: NaN
-						    };
+					 
 					try {
 					        const metabolicData = {
 					            genero: data.genero === 'Masculino' ? 'masculino' : 'femenino',
