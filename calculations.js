@@ -428,6 +428,8 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo1(genero, edad, peso, altura, tricipital, subescapular, suprailiaco, bicipital, false),
 						method: 'Escenario_1: Siri_Katch-McArdle_Harris-Benedict(Dxt,Pliegues)'
+						bmrResult: calculateBMRMetodo1(genero, peso, altura, tricipital, subescapular, suprailiaco, bicipital, false),
+        					bmrSource: method
 					};
 				}
 				// Escenario 2: Deportista, % grasa conocido
@@ -435,6 +437,8 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo1(genero, edad, peso, altura, null, null, null, null, true, porcentajeGrasa),
 						method: 'Escenario_2: Siri_Katch-McArdle_Harris-Benedict(Dxt,%Grasa Conocido)'
+						bmrResult : calculateBMRMetodo1(genero, peso, altura, null, null, null, null, true, porcentajeGrasa),
+        					bmrSource : method
 					};
 				}
 				// Escenario 3: No deportista, pliegues conocidos, no obeso
@@ -446,6 +450,8 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo2(genero, edad, peso, altura, null, cintura, nivelActividad, { tricipital, subescapular, suprailiaco, bicipital }, false),
 						method: 'Escenario_3: Brozek_Harris-Benedict(No-Dxt,Pliegues,No-Obeso)'
+						bmrResult : calculateBMRMetodo2(genero, peso, altura, null, { tricipital, subescapular, suprailiaco, bicipital }, false);
+        					bmrSource : method
 					};
 				}
 				// Escenario 4: No deportista, % grasa conocido, no obeso
@@ -456,6 +462,8 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, null, false),
 						method: 'Escenario_4: Brozek_Harris-Benedict(No-Dxt,%Grasa Conocido,No-Obeso)'
+						bmrResult : calculateBMRMetodo2(genero, peso, altura, porcentajeGrasa, null, false),
+        					bmrSource : method
 					};
 				}
 				// Escenario 5: No deportista, pliegues conocidos, obeso
@@ -467,6 +475,8 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo2(genero, edad, peso, altura, null, cintura, nivelActividad, { tricipital, subescapular, suprailiaco, bicipital }, true),
 						method: 'Escenario_5: Wagner_Harris-Benedict(No-Dxt,Pliegues,Obeso)'
+						bmrResult = calculateBMRMetodo2(genero, peso, altura, null, { tricipital, subescapular, suprailiaco, bicipital }, true),
+        					bmrSource : method
 					};
 				}
 				// Escenario 6: No deportista, % grasa conocido, obeso
@@ -477,6 +487,9 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, null, true),
 						method: 'Escenario_6: Wagner_Harris-Benedict(No-Dxt,%Grasa Conocido,Obeso)'
+						bmrResult : calculateBMRMetodo2(genero, peso, altura, porcentajeGrasa, null, true),
+        					bmrSource : method
+						
 					};
 				}
 				else {
@@ -535,6 +548,10 @@ import { auth } from './app.js';
 			}
 
 			return Number(edadMetabolica.toFixed(1));
+			return Number(bmrReal.toFixed(1));
+			return Number(masaMagra.toFixed(1));
+			return Number(masaGrasa.toFixed(1));
+			
 		}
 
 		function metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, pliegues = null, esObeso = false) {
@@ -624,6 +641,9 @@ import { auth } from './app.js';
 			const edadMetabolica = edad + deltaBMR + deltaCintura + deltaActividad;
 
 			return Number(edadMetabolica.toFixed(2));
+			return Number(bmrReal.toFixed(1));
+			return Number(masaMagra.toFixed(1));
+			//return Number(masaGrasa.toFixed(1));
 		}	
 		
         // Updated estimateTargetBodyFat function
