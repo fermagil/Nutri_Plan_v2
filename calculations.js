@@ -4376,6 +4376,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            // --- Calculate IMLG, IMG, and Tipología ---
 			            let bodyCompResults = null;
 			            if (data.peso && !isNaN(alturaM) && !isNaN(actualBodyFatPct)) {
+					    console.log('% Grasa:', actualBodyFatPct);
 			                try {
 			                    bodyCompResults = generateBodyCompositionAnalysis(
 			                        {
@@ -4389,7 +4390,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                            esDeportista: data.es_deportista === 'si'
 			                        }
 			                    );
-			
+					    console.log('% Grasa:', actualBodyFatPct);
 			                    results.imlg = bodyCompResults.imlg;
 			                    results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
 			                    results.img = bodyCompResults.img;
