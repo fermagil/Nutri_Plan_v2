@@ -5107,7 +5107,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        explanationSection.style.display = 'block';
 			    }
 			}
-	});
+	} catch (calcError) {
+			console.error('Error durante los cálculos:', calcError.message);
+			    alert('Error en los cálculos: ' + calcError.message);
+			}
 			
 			// Prevent auto-submission on page load
 			window.addEventListener('load', () => {
