@@ -420,258 +420,248 @@ import { auth } from './app.js';
 			}
 
 			// Escenario 1: Deportista, 18-61 años, pliegues conocidos
-				if (esDeportista && pliegues && edad >= 18 && edad <= 61) {
-					const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
-					if (!tricipital || !subescapular || !suprailiaco || !bicipital) {
-						throw new Error('Faltan mediciones de pliegues cutáneos');
-					}
-					const method = 'Siri_Katch-McArdle_Harris-Benedict(Dxt,Pliegues)';
-				        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo1(genero, edad, peso, altura, tricipital, subescapular, suprailiaco, bicipital, false);
-				        return {
-				            edadMetabolica,
-				            BRMEstimado: bmrReal,
-				            method,
-				            BRMEstimadoSource: method,
-				            masaMagra,
-				            masaGrasa
-					};
-				}
-				// Escenario 2: Deportista, % grasa conocido
-				else if (esDeportista && porcentajeGrasa) {
-					const method = 'Siri_Katch-McArdle_Harris-Benedict(Dxt,%Grasa Conocido)';
-				        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo1(genero, edad, peso, altura, null, null, null, null, true, porcentajeGrasa);
-				        return {
-				            edadMetabolica,
-				            BRMEstimado: bmrReal,
-				            method,
-				            BRMEstimadoSource: method,
-				            masaMagra,
-				            masaGrasa
-				        };
-				}
-				// Escenario 3: No deportista, pliegues conocidos, no obeso
-				else if (!esDeportista && pliegues && !esObeso) {
-					const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
-					if (!tricipital || !subescapular || !suprailiaco || !bicipital) {
-						throw new Error('Faltan mediciones de pliegues cutáneos para Durnin-Womersley');
-					}
-					const method = 'Brozek_Harris-Benedict(No-Dxt,Pliegues,No-Obeso)';
-				        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, null, cintura, nivelActividad, { tricipital, subescapular, suprailiaco, bicipital }, false);
-				        return {
-				            edadMetabolica,
-				            BRMEstimado: bmrReal,
-				            method,
-				            BRMEstimadoSource: method,
-				            masaMagra,
-				            masaGrasa
-				        };
-				}
-				// Escenario 4: No deportista, % grasa conocido, no obeso
-				else if (!esDeportista && porcentajeGrasa && !esObeso) {
-					if (!cintura) {
-						throw new Error('Se requiere medida de cintura para Método 2');
-					}
-					const method = 'Brozek_Harris-Benedict(No-Dxt,%Grasa Conocido,No-Obeso)';
-				        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, null, false);
-				        return {
-				            edadMetabolica,
-				            BRMEstimado: bmrReal,
-				            method,
-				            BRMEstimadoSource: method,
-				            masaMagra,
-				            masaGrasa
-					};
-				}
-				// Escenario 5: No deportista, pliegues conocidos, obeso
-				else if (!esDeportista && pliegues && esObeso) {
-					const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
-					if (!tricipital || !subescapular || !suprailiaco || !bicipital) {
-						throw new Error('Faltan mediciones de pliegues cutáneos para Durnin-Womersley');
-					}
-					const method = 'Wagner_Harris-Benedict(No-Dxt,Pliegues,Obeso)';
-				        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, null, cintura, nivelActividad, { tricipital, subescapular, suprailiaco, bicipital }, true);
-				        return {
-				            edadMetabolica,
-				            BRMEstimado: bmrReal,
-				            method,
-				            BRMEstimadoSource: method,
-				            masaMagra,
-				            masaGrasa
-					};
-				}
-				// Escenario 6: No deportista, % grasa conocido, obeso
-				else if (!esDeportista && porcentajeGrasa && esObeso) {
-					if (!cintura) {
-						throw new Error('Se requiere medida de cintura para Método 2');
-					}
-					const method = 'Wagner_Harris-Benedict(No-Dxt,%Grasa Conocido,Obeso)';
-				        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, null, true);
-				        return {
-				            edadMetabolica,
-				            BRMEstimado: bmrReal,
-				            method,
-				            BRMEstimadoSource: method,
-				            masaMagra,
-				            masaGrasa
-						
-					};
-				}
-				else {
-					throw new Error('No se cumplen las condiciones para ningún escenario');
-				}
+			    if (esDeportista && pliegues && edad >= 18 && edad <= 61) {
+			        const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
+			        if (!tricipital || !subescapular || !suprailiaco || !bicipital) {
+			            throw new Error('Faltan mediciones de pliegues cutáneos');
+			        }
+			        const method = 'Siri_Katch-McArdle_Harris-Benedict(Dxt,Pliegues)';
+			        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo1(genero, edad, peso, altura, tricipital, subescapular, suprailiaco, bicipital, false);
+			        return {
+			            edadMetabolica,
+			            BRMEstimado: bmrReal,
+			            method,
+			            BRMEstimadoSource: method,
+			            masaMagra,
+			            masaGrasa
+			        };
+			    }
+			    // Escenario 2: Deportista, % grasa conocido
+			    else if (esDeportista && porcentajeGrasa) {
+			        const method = 'Siri_Katch-McArdle_Harris-Benedict(Dxt,%Grasa Conocido)';
+			        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo1(genero, edad, peso, altura, null, null, null, null, true, porcentajeGrasa);
+			        return {
+			            edadMetabolica,
+			            BRMEstimado: bmrReal,
+			            method,
+			            BRMEstimadoSource: method,
+			            masaMagra,
+			            masaGrasa
+			        };
+			    }
+			    // Escenario 3: No deportista, pliegues conocidos, no obeso
+			    else if (!esDeportista && pliegues && !esObeso) {
+			        const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
+			        if (!tricipital || !subescapular || !suprailiaco || !bicipital) {
+			            throw new Error('Faltan mediciones de pliegues cutáneos para Durnin-Womersley');
+			        }
+			        const method = 'Brozek_Harris-Benedict(No-Dxt,Pliegues,No-Obeso)';
+			        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, null, cintura, nivelActividad, { tricipital, subescapular, suprailiaco, bicipital }, false);
+			        return {
+			            edadMetabolica,
+			            BRMEstimado: bmrReal,
+			            method,
+			            BRMEstimadoSource: method,
+			            masaMagra,
+			            masaGrasa
+			        };
+			    }
+			    // Escenario 4: No deportista, % grasa conocido, no obeso
+			    else if (!esDeportista && porcentajeGrasa && !esObeso) {
+			        if (!cintura) {
+			            throw new Error('Se requiere medida de cintura para Método 2');
+			        }
+			        const method = 'Brozek_Harris-Benedict(No-Dxt,%Grasa Conocido,No-Obeso)';
+			        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, null, false);
+			        return {
+			            edadMetabolica,
+			            BRMEstimado: bmrReal,
+			            method,
+			            BRMEstimadoSource: method,
+			            masaMagra,
+			            masaGrasa
+			        };
+			    }
+			    // Escenario 5: No deportista, pliegues conocidos, obeso
+			    else if (!esDeportista && pliegues && esObeso) {
+			        const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
+			        if (!tricipital || !subescapular || !suprailiaco || !bicipital) {
+			            throw new Error('Faltan mediciones de pliegues cutáneos para Durnin-Womersley');
+			        }
+			        const method = 'Wagner_Harris-Benedict(No-Dxt,Pliegues,Obeso)';
+			        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, null, cintura, nivelActividad, { tricipital, subescapular, suprailiaco, bicipital }, true);
+			        return {
+			            edadMetabolica,
+			            BRMEstimado: bmrReal,
+			            method,
+			            BRMEstimadoSource: method,
+			            masaMagra,
+			            masaGrasa
+			        };
+			    }
+			    // Escenario 6: No deportista, % grasa conocido, obeso
+			    else if (!esDeportista && porcentajeGrasa && esObeso) {
+			        if (!cintura) {
+			            throw new Error('Se requiere medida de cintura para Método 2');
+			        }
+			        const method = 'Wagner_Harris-Benedict(No-Dxt,%Grasa Conocido,Obeso)';
+			        const { edadMetabolica, bmrReal, masaMagra, masaGrasa } = metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, null, true);
+			        return {
+			            edadMetabolica,
+			            BRMEstimado: bmrReal,
+			            method,
+			            BRMEstimadoSource: method,
+			            masaMagra,
+			            masaGrasa
+			        };
+			    }
+			    else {
+			        throw new Error('No se cumplen las condiciones para ningún escenario');
+			    }
 			}
 
 		function metodo1(genero, edad, peso, altura, tricipital, subescapular, suprailiaco, bicipital, usePorcentajeGrasa = false, porcentajeGrasa = null) {
-			let grasa;
-			if (!usePorcentajeGrasa) {
-				const sumaPliegues = tricipital + subescapular + suprailiaco + bicipital;
-
-				// Determinar constantes según género y edad
-				let c, m;
-				if (genero === 'masculino') {
-					if (edad >= 17 && edad <= 19) { c = 1.1620; m = 0.0630; }
-					else if (edad >= 20 && edad <= 29) { c = 1.1631; m = 0.0632; }
-					else if (edad >= 30 && edad <= 39) { c = 1.1422; m = 0.0544; }
-					else if (edad >= 40 && edad <= 49) { c = 1.1620; m = 0.0700; }
-					else if (edad >= 50) { c = 1.1715; m = 0.0779; }
-				} else if (genero === 'femenino') {
-					if (edad >= 17 && edad <= 19) { c = 1.1549; m = 0.0678; }
-					else if (edad >= 20 && edad <= 29) { c = 1.1599; m = 0.0717; }
-					else if (edad >= 30 && edad <= 39) { c = 1.1423; m = 0.0632; }
-					else if (edad >= 40 && edad <= 49) { c = 1.1333; m = 0.0612; }
-					else if (edad >= 50) { c = 1.1339; m = 0.0645; }
-				} else {
-					throw new Error('Género no válido');
-				}
-
-				// Calcular densidad corporal
-				const logSumPliegues = Math.log10(sumaPliegues);
-				const densidadCorporal = c - (m * logSumPliegues);
-
-				// Calcular porcentaje de grasa con fórmula de Siri
-				grasa = (495 / densidadCorporal) - 450;
-			} else {
-				grasa = porcentajeGrasa;
-			}
-
-			// Calcular masa magra
-			const masaGrasa = (grasa / 100) * peso;
-			const masaMagra = peso - masaGrasa;
-
-			// Calcular BMR real con Katch-McArdle
-			const bmrReal = 370 + (21.6 * masaMagra);
-
-			// Calcular edad metabólica con Harris-Benedict ajustada
-			let edadMetabolica;
-			if (genero === 'masculino') {
-				const numerador = 88.362 + (13.397 * peso) + (4.799 * altura) - bmrReal;
-				edadMetabolica = numerador / 5.7;
-			} else if (genero === 'femenino') {
-				const numerador = 447.593 + (9.247 * peso) + (3.098 * altura) - bmrReal;
-				edadMetabolica = numerador / 4.7;
-			}
-
-			return {
-			        edadMetabolica: Number(edadMetabolica.toFixed(1)),
-			        bmrReal: Number(bmrReal.toFixed(1)),
-			        masaMagra: Number(masaMagra.toFixed(1)),
-			        masaGrasa: Number(masaGrasa.toFixed(1))
-			    };
-			
+		    let grasa;
+		    if (!usePorcentajeGrasa) {
+		        const sumaPliegues = tricipital + subescapular + suprailiaco + bicipital;
+		        let c, m;
+		        if (genero === 'masculino') {
+		            if (edad >= 17 && edad <= 19) { c = 1.1620; m = 0.0630; }
+		            else if (edad >= 20 && edad <= 29) { c = 1.1631; m = 0.0632; }
+		            else if (edad >= 30 && edad <= 39) { c = 1.1422; m = 0.0544; }
+		            else if (edad >= 40 && edad <= 49) { c = 1.1620; m = 0.0700; }
+		            else if (edad >= 50) { c = 1.1715; m = 0.0779; }
+		        } else if (genero === 'femenino') {
+		            if (edad >= 17 && edad <= 19) { c = 1.1549; m = 0.0678; }
+		            else if (edad >= 20 && edad <= 29) { c = 1.1599; m = 0.0717; }
+		            else if (edad >= 30 && edad <= 39) { c = 1.1423; m = 0.0632; }
+		            else if (edad >= 40 && edad <= 49) { c = 1.1333; m = 0.0612; }
+		            else if (edad >= 50) { c = 1.1339; m = 0.0645; }
+		        } else {
+		            throw new Error('Género no válido');
+		        }
+		        const logSumPliegues = Math.log10(sumaPliegues);
+		        const densidadCorporal = c - (m * logSumPliegues);
+		        grasa = (495 / densidadCorporal) - 450;
+		    } else {
+		        grasa = porcentajeGrasa;
+		    }
+		
+		    // Calcular masa magra y grasa
+		    const masaGrasa = (grasa / 100) * peso;
+		    const masaMagra = peso - masaGrasa;
+		
+		    // Calcular BMR real con Katch-McArdle
+		    const bmrReal = 370 + (21.6 * masaMagra);
+		
+		    // Calcular edad metabólica con Harris-Benedict ajustada
+		    let edadMetabolica;
+		    if (genero === 'masculino') {
+		        const numerador = 88.362 + (13.397 * peso) + (4.799 * altura) - bmrReal;
+		        edadMetabolica = numerador / 5.677; // Corregido de 5.7 a 5.677 para consistencia
+		    } else if (genero === 'femenino') {
+		        const numerador = 447.593 + (9.247 * peso) + (3.098 * altura) - bmrReal;
+		        edadMetabolica = numerador / 4.33; // Corregido de 4.7 a 4.33 para consistencia
+		    } else {
+		        throw new Error('Género no válido');
+		    }
+		
+		    return {
+		        edadMetabolica: Number(edadMetabolica.toFixed(1)),
+		        bmrReal: Number(bmrReal.toFixed(1)),
+		        masaMagra: Number(masaMagra.toFixed(1)),
+		        masaGrasa: Number(masaGrasa.toFixed(1))
+		    };
 		}
-
+		
 		function metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, pliegues = null, esObeso = false) {
-			let grasa;
-			if (pliegues) {
-				// Calcular % grasa con Durnin-Womersley
-				const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
-				const sumaPliegues = tricipital + subescapular + suprailiaco + bicipital;
-
-				// Tablas Durnin-Womersley para densidad corporal
-				let c, m;
-				if (genero === 'masculino') {
-					if (edad >= 17 && edad <= 19) { c = 1.1620; m = 0.0630; }
-					else if (edad >= 20 && edad <= 29) { c = 1.1631; m = 0.0632; }
-					else if (edad >= 30 && edad <= 39) { c = 1.1422; m = 0.0544; }
-					else if (edad >= 40 && edad <= 49) { c = 1.1620; m = 0.0700; }
-					else if (edad >= 50) { c = 1.1715; m = 0.0779; }
-				} else if (genero === 'femenino') {
-					if (edad >= 17 && edad <= 19) { c = 1.1549; m = 0.0678; }
-					else if (edad >= 20 && edad <= 29) { c = 1.1599; m = 0.0717; }
-					else if (edad >= 30 && edad <= 39) { c = 1.1423; m = 0.0632; }
-					else if (edad >= 40 && edad <= 49) { c = 1.1333; m = 0.0612; }
-					else if (edad >= 50) { c = 1.1339; m = 0.0645; }
-				} else {
-					throw new Error('Género no válido');
-				}
-
-				const logSumPliegues = Math.log10(sumaPliegues);
-				const densidadCorporal = c - (m * logSumPliegues);
-				// Calcular porcentaje de grasa: Wagner para obesos, Brozek para no obesos
-				grasa = esObeso ? (498 / densidadCorporal) - 451 : (457 / densidadCorporal) - 414.2;
-			} else {
-				grasa = porcentajeGrasa;
-			}
-
-			// Paso 1: Calcular Masa Magra
-			const masaMagra = peso * (1 - grasa / 100);
-
-			// Paso 2: Calcular BMR Real (Katch-McArdle)
-			const bmrReal = 370 + (21.6 * masaMagra);
-
-			// Paso 3: Calcular BMR Esperado (Harris-Benedict)
-			let bmrEsperado;
-			if (genero === 'femenino') {
-				bmrEsperado = 447.593 + (9.247 * peso) + (3.098 * altura) - (4.33 * edad);
-			} else if (genero === 'masculino') {
-				bmrEsperado = 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * edad);
-			} else {
-				throw new Error('Género no válido');
-			}
-
-			// Paso 4: Calcular Delta BMR
-			const deltaBMR = (bmrEsperado - bmrReal) / 15;
-
-			// Paso 5: Calcular Delta Cintura
-			let deltaCintura;
-			const whtr = cintura / altura;
-			const ajusteWHtR = Math.max(1, whtr / 0.5);
-			const ajusteEdad = edad > 50 ? 1 + 0.01 * (edad - 50) : 1;
-			if (genero === 'femenino') {
-				if (cintura <= 80) {
-					deltaCintura = 0;
-				} else {
-					deltaCintura = 0.2 * (cintura - 80) * ajusteWHtR * ajusteEdad;
-					deltaCintura = Math.min(deltaCintura, 10);
-				}
-			} else if (genero === 'Masculino') {
-				if (cintura <= 94) {
-					deltaCintura = 0;
-				} else {
-					deltaCintura = 0.2 * (cintura - 94) * ajusteWHtR * ajusteEdad;
-					deltaCintura = Math.min(deltaCintura, 10);
-				}
-			}
-
-			// Paso 6: Calcular Delta Actividad
-			const ajustesActividad = {
-				'sedentario': 3,
-				'ligero': 1,
-				'moderado': -1,
-				'intenso': -4,
-				'atleta': -5
-			};
-			const deltaActividad = ajustesActividad[nivelActividad] || 0;
-
-			// Paso 7: Calcular Edad Metabólica
-			const edadMetabolica = edad + deltaBMR + deltaCintura + deltaActividad;
-
-			return {
-			        edadMetabolica: Number(edadMetabolica.toFixed(2)),
-			        bmrReal: Number(bmrReal.toFixed(1)),
-			        masaMagra: Number(masaMagra.toFixed(1)),
-			        masaGrasa: Number(masaGrasa.toFixed(1))
-			    };
+		    let grasa;
+		    if (pliegues) {
+		        const { tricipital, subescapular, suprailiaco, bicipital } = pliegues;
+		        const sumaPliegues = tricipital + subescapular + suprailiaco + bicipital;
+		        let c, m;
+		        if (genero === 'masculino') {
+		            if (edad >= 17 && edad <= 19) { c = 1.1620; m = 0.0630; }
+		            else if (edad >= 20 && edad <= 29) { c = 1.1631; m = 0.0632; }
+		            else if (edad >= 30 && edad <= 39) { c = 1.1422; m = 0.0544; }
+		            else if (edad >= 40 && edad <= 49) { c = 1.1620; m = 0.0700; }
+		            else if (edad >= 50) { c = 1.1715; m = 0.0779; }
+		        } else if (genero === 'femenino') {
+		            if (edad >= 17 && edad <= 19) { c = 1.1549; m = 0.0678; }
+		            else if (edad >= 20 && edad <= 29) { c = 1.1599; m = 0.0717; }
+		            else if (edad >= 30 && edad <= 39) { c = 1.1423; m = 0.0632; }
+		            else if (edad >= 40 && edad <= 49) { c = 1.1333; m = 0.0612; }
+		            else if (edad >= 50) { c = 1.1339; m = 0.0645; }
+		        } else {
+		            throw new Error('Género no válido');
+		        }
+		        const logSumPliegues = Math.log10(sumaPliegues);
+		        const densidadCorporal = c - (m * logSumPliegues);
+		        grasa = esObeso ? (498 / densidadCorporal) - 451 : (457 / densidadCorporal) - 414.2;
+		    } else {
+		        grasa = porcentajeGrasa;
+		    }
+		
+		    // Calcular masa magra y grasa
+		    const masaGrasa = (grasa / 100) * peso;
+		    const masaMagra = peso - masaGrasa;
+		
+		    // Calcular BMR Real (Katch-McArdle)
+		    const bmrReal = 370 + (21.6 * masaMagra);
+		
+		    // Calcular BMR Esperado (Harris-Benedict)
+		    let bmrEsperado;
+		    if (genero === 'femenino') {
+		        bmrEsperado = 447.593 + (9.247 * peso) + (3.098 * altura) - (4.33 * edad);
+		    } else if (genero === 'masculino') {
+		        bmrEsperado = 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * edad);
+		    } else {
+		        throw new Error('Género no válido');
+		    }
+		
+		    // Calcular Delta BMR
+		    const deltaBMR = (bmrEsperado - bmrReal) / 15;
+		
+		    // Calcular Delta Cintura
+		    let deltaCintura;
+		    const whtr = cintura / altura;
+		    const ajusteWHtR = Math.max(1, whtr / 0.5);
+		    const ajusteEdad = edad > 50 ? 1 + 0.01 * (edad - 50) : 1;
+		    if (genero === 'femenino') {
+		        if (cintura <= 80) {
+		            deltaCintura = 0;
+		        } else {
+		            deltaCintura = 0.2 * (cintura - 80) * ajusteWHtR * ajusteEdad;
+		            deltaCintura = Math.min(deltaCintura, 10);
+		        }
+		    } else if (genero === 'masculino') { // Corregido de 'Masculino' a 'masculino'
+		        if (cintura <= 94) {
+		            deltaCintura = 0;
+		        } else {
+		            deltaCintura = 0.2 * (cintura - 94) * ajusteWHtR * ajusteEdad;
+		            deltaCintura = Math.min(deltaCintura, 10);
+		        }
+		    }
+		
+		    // Calcular Delta Actividad
+		    const ajustesActividad = {
+		        'sedentario': 3,
+		        'ligero': 1,
+		        'moderado': -1,
+		        'intenso': -4,
+		        'atleta': -5
+		    };
+		    const deltaActividad = ajustesActividad[nivelActividad] || 0;
+		
+		    // Calcular Edad Metabólica
+		    const edadMetabolica = edad + deltaBMR + deltaCintura + deltaActividad;
+		
+		    return {
+		        edadMetabolica: Number(edadMetabolica.toFixed(2)),
+		        bmrReal: Number(bmrReal.toFixed(1)),
+		        masaMagra: Number(masaMagra.toFixed(1)),
+		        masaGrasa: Number(masaGrasa.toFixed(1))
+		    };
 		}	
 		
         		// Updated estimateTargetBodyFat function
@@ -4394,38 +4384,55 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					}
 
 					// --- Calculate Metabolic Age ---
+					 let results = {
+						        grasaPctActual: NaN, // Asumiendo que esto viene de un cálculo previo
+						        edadmetabolica: NaN,
+						        edadmetabolicaSource: '(No calculado)',
+						        BRMEstimado: NaN,
+						        BRMEstimadoSource: '(No calculado)',
+						        masaMagra: NaN,
+						        masaGrasa: NaN
+						    };
 					try {
-						const metabolicData = {
-							genero: data.genero === 'Masculino' ? 'masculino' : 'femenino', // Assumes lowercase 'masculino' or 'femenino'
-							edad: data.edad,
-							peso: data.peso,
-							altura: data.altura,
-							esDeportista: data.es_deportista === 'si',
-							pliegues: {
-								tricipital: data.pliegue_tricipital || 0,
-								subescapular: data.pliegue_subescapular || 0,
-								suprailiaco: data.pliegue_suprailiaco || 0,
-								bicipital: data.pliegue_bicipital || 0
-							},
-							porcentajeGrasa: results.grasaPctActual,
-							cintura: data.circ_cintura || 0,
-							imc: data.imc
-						};
-						const metabolicResult = calculateMetabolicAge(metabolicData);
-						results.edadmetabolica = metabolicResult.edadMetabolica;
-						results.edadmetabolicaSource = metabolicResult.method;
-						results.BRMEstimado = metabolicResult.BRMEstimado;
+					        const metabolicData = {
+					            genero: data.genero === 'Masculino' ? 'masculino' : 'femenino',
+					            edad: data.edad,
+					            peso: data.peso,
+					            altura: data.altura,
+					            esDeportista: data.es_deportista === 'si',
+					            pliegues: {
+					                tricipital: data.pliegue_tricipital || 0,
+					                subescapular: data.pliegue_subescapular || 0,
+					                suprailiaco: data.pliegue_suprailiaco || 0,
+					                bicipital: data.pliegue_bicipital || 0
+					            },
+					            porcentajeGrasa: results.grasaPctActual,
+					            cintura: data.circ_cintura || 0,
+					            imc: data.imc
+					        };
+					        const metabolicResult = calculateMetabolicAge(metabolicData);
+					        results.edadmetabolica = metabolicResult.edadMetabolica;
+					        results.edadmetabolicaSource = metabolicResult.method;
+					        results.BRMEstimado = metabolicResult.BRMEstimado;
 					        results.BRMEstimadoSource = metabolicResult.BRMEstimadoSource;
 					        results.masaMagra = metabolicResult.masaMagra;
 					        results.masaGrasa = metabolicResult.masaGrasa;
-						console.log('Edad Metabólica calculada:', results.edadmetabolica, 'Método:', results.edadmetabolicaSource);
+					        console.log('Edad Metabólica calculada:', results.edadmetabolica, 'Método:', results.edadmetabolicaSource);
 					        console.log('BMR calculado:', results.BRMEstimado, 'Fuente:', results.BRMEstimadoSource);
 					        console.log('Masa Magra:', results.masaMagra, 'Masa Grasa:', results.masaGrasa);
-					} catch (error) {
-						console.error('Error al calcular la edad metabólica:', error.message);
-						results.edadmetabolica = NaN;
-						results.edadmetabolicaSource = 'Error en el cálculo';
-						results.BRMEstimado = NaN;
+					
+					        // Mostrar resultados en la interfaz
+					        if (resultElements.BRMEstimado) {
+					            resultElements.BRMEstimado.textContent = formatResult(results.BRMEstimado, 1);
+					        }
+					        if (resultElements.BRMEstimadoSource) {
+					            resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource;
+					        }
+					    } catch (error) {
+					        console.error('Error al calcular la edad metabólica o BMR:', error.message);
+					        results.edadmetabolica = NaN;
+					        results.edadmetabolicaSource = 'Error en el cálculo';
+					        results.BRMEstimado = NaN;
 					        results.BRMEstimadoSource = `Error: ${error.message}`;
 					        results.masaMagra = NaN;
 					        results.masaGrasa = NaN;
@@ -4435,7 +4442,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        if (resultElements.BRMEstimadoSource) {
 					            resultElements.BRMEstimadoSource.textContent = `Error: ${error.message}`;
 					        }
-					}
+					    }
 
 					// --- Other Calculations ---
 					// Calculate Masa Grasa y Masa Libre de Grasa
