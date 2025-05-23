@@ -5147,5 +5147,5 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        guardarDatosBtn.style.display = 'inline-block'; // Mostrar botón si hay resultados
 			    }
 			}
-    //alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones_1.');
+ });   //alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones_1.');
 
