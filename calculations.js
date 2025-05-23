@@ -18,6 +18,8 @@ import { auth } from './app.js';
 				BRMEstimadoSource:document.getElementById("tmb-source"),
 				masaGrasa: document.getElementById('result-masa-grasa'),
 				masaGrasaSource:document.getElementById('masa-grasa-source'),
+				masaMagra: document.getElementById('result-masa-magra'), // Added
+				masaMagraSource: document.getElementById('result-masa-magra-source'), // Added
 				mlg: document.getElementById('result-mlg'),
 				mlgSource:document.getElementById('mlg-source'),
 				amb: document.getElementById('result-amb'),
@@ -3759,6 +3761,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			    } else {
 			      console.error('Guardar Datos button not found');
 			    }
+
+			try{
 				// --- 1. Get Data ---
 				const formData = new FormData(form);
 				const data = {};
@@ -3790,40 +3794,83 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				console.log('Datos introducidos:', data);
 
 				// --- 2. Perform Calculations ---
-				const results = {};
+				let results = {
+				            imc: NaN,
+				            imcSource: '(No calculado)',
+				            icc: NaN,
+				            iccSource: '(No calculado)',
+				            grasaPctActual: NaN,
+				            actualBodyFatSource: '(No calculado)',
+				            grasaPctDeurenberg: NaN,
+				            grasaPctDeurenbergSource: '(No estimado)',
+				            grasaPctCUNBAE: NaN,
+				            grasaPctCUNBAESource: '(No estimado)',
+				            grasaPctDeseado: NaN,
+				            desiredBodyFatSource: '(No estimado)',
+				            masaGrasa: NaN,
+				            masaGrasaSource: '(No calculado)',
+				            masaMagra: NaN,
+				            BRMEstimado: NaN,
+				            BRMEstimadoSource: '(No calculado)',
+				            mlg: NaN,
+				            mlgSource: '(No calculado)',
+				            amb: NaN,
+				            ambSource: '(No calculado)',
+				            masaOsea: NaN,
+				            masaOseaSource: '(No calculado)',
+				            masaResidual: NaN,
+				            masaResidualSource: '(No calculado)',
+				            pesoIdeal: NaN,
+				            pesoObjetivo: NaN,
+				            mmt: NaN,
+				            Pctmmt: NaN,
+				            PctmmtSource: '(No calculado)',
+				            imlg: NaN,
+				            imlgSource: '(No calculado)',
+				            img: NaN,
+				            imgSource: '(No calculado)',
+				            tipologia: 'Indefinido',
+				            tipologiaSource: '(No calculado)',
+				            edadmetabolica: NaN,
+				            edadmetabolicaSource: '(No calculado)',
+				            endomorfia: NaN,
+				            mesomorfia: NaN,
+				            ectomorfia: NaN
+				        };
+				        
 				let content = ''; // For error messages
 
-				// Initialize alturaM with validation (single definition)
-				let alturaM = NaN;
-				try {
-					if (data.altura && !isNaN(data.altura)) {
-						alturaM = Number(data.altura) / 100;
-						if (alturaM < 1.2 || alturaM > 2.2) {
-							throw new Error('Altura debe estar entre 120 y 220 cm');
+					// Initialize alturaM with validation (single definition)
+					let alturaM = NaN;
+					try {
+						if (data.altura && !isNaN(data.altura)) {
+							alturaM = Number(data.altura) / 100;
+							if (alturaM < 1.2 || alturaM > 2.2) {
+								throw new Error('Altura debe estar entre 120 y 220 cm');
+							}
+						} else {
+							throw new Error('Altura no proporcionada o inválida');
 						}
-					} else {
-						throw new Error('Altura no proporcionada o inválida');
+					} catch (e) {
+						console.error('Error inicializando alturaM:', e.message);
+						content += `<p><strong>Error en Altura:</strong> ${e.message}. Por favor, revisa el valor ingresado para altura.</p>`;
 					}
-				} catch (e) {
-					console.error('Error inicializando alturaM:', e.message);
-					content += `<p><strong>Error en Altura:</strong> ${e.message}. Por favor, revisa el valor ingresado para altura.</p>`;
-				}
 
-				// Reset results display
-				resetResultElements(resultElements);
-				if (explanationSection) {
-					explanationSection.style.display = 'none';
-				}
-				if (explanationContent) {
-					explanationContent.innerHTML = '';
-				}
+					// Reset results display
+					resetResultElements(resultElements);
+					if (explanationSection) {
+						explanationSection.style.display = 'none';
+					}
+					if (explanationContent) {
+						explanationContent.innerHTML = '';
+					}
 
-				// Check for essential data
-				if (!data.peso || isNaN(data.altura) || !data.genero || !data.edad || !data.es_deportista) {
-					alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
-					console.error('Missing required fields', { peso: data.peso, altura: data.altura, genero: data.genero, edad: data.edad, es_deportista: data.es_deportista });
-					return;
-				}
+					// Check for essential data
+					if (!data.peso || isNaN(data.altura) || !data.genero || !data.edad || !data.es_deportista) {
+						alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
+						console.error('Missing required fields', { peso: data.peso, altura: data.altura, genero: data.genero, edad: data.edad, es_deportista: data.es_deportista });
+						return;
+					}
 					// Función para formatear números (si no está definida)
 					function formatResult(value, precision = 1) {
 					    return Number.isFinite(value) ? value.toFixed(precision) : '---';
@@ -4252,66 +4299,59 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            }
 					// --- Calculate Actual Body Fat % ---
 					// --- Calculate Actual Body Fat % ---
-					let actualBodyFatPct = NaN;
-					let actualBodyFatSource = '(No calculado)';
+					        try {
+					            let actualBodyFatPct = NaN;
+					            let actualBodyFatSource = '(No calculado)';
 					
-					// Caso 1: Porcentaje de grasa proporcionado (BioImpedancia)
-					if (!isNaN(data.grasa_actual_conocida)) {
-					    actualBodyFatPct = data.grasa_actual_conocida;
-					    actualBodyFatSource = '(Proporcionado: BioImpedancia)';
-					    console.log('Usando % Grasa Actual proporcionado:', actualBodyFatPct);
-					} else {
-					    // Caso 2: Edad menor a 6 años
-					    if (data.edad < 6) {
-					        console.warn('Edad < 6 años: No hay ecuación adecuada para calcular % Grasa.');
-					        actualBodyFatSource = '(No calculado: Edad < 6 años)';
-					    } 
-					    // Caso 3: Edad entre 6 y 17 años (Slaughter)
-					    else if (data.edad >= 6 && data.edad <= 17) {
-					        actualBodyFatPct = calculateSlaughterBodyFat(data);
-					        if (!isNaN(actualBodyFatPct)) {
-					            actualBodyFatSource = '(Calculado: Slaughter, 6-17 años)';
-					            console.log('Calculando % Grasa Actual (Slaughter):', actualBodyFatPct);
-					        }
-					    } 
-					    // Caso 4: Adultos (>= 18 años)
-					    else {
-					        // Determinar si es deportista
-					        const isAthlete = data.es_deportista === 'si';
-					        
-					        // Subcaso 4.1: Deportistas (usar Jackson-Pollock, 3 pliegues)
-					        if (isAthlete) {
-					            actualBodyFatPct = calculateJacksonPollockBodyFat(data);
-					            if (!isNaN(actualBodyFatPct)) {
-					                actualBodyFatSource = '(Calculado: Jackson-Pollock, 3 pliegues, deportistas)';
-					                console.log('Calculando % Grasa Actual (Jackson-Pollock):', actualBodyFatPct);
-					            }
-					        } 
-					        // Subcaso 4.2: No deportistas (usar Durnin-Womersley)
-					        else {
-					            actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
-					            if (!isNaN(actualBodyFatPct)) {
-					                actualBodyFatSource = '(Calculado: Durnin-Womersley, adultos no deportistas)';
-					                console.log('Calculando % Grasa Actual (Durnin-Womersley):', actualBodyFatPct);
-					            }
-					        }
-					        
-					        // Subcaso 4.3: Fallback a Circunferencias si los métodos anteriores fallan
-					        if (isNaN(actualBodyFatPct)) {
-					            actualBodyFatPct = calculateCircumferenceBodyFat(data);
-					            if (!isNaN(actualBodyFatPct)) {
-					                actualBodyFatSource = '(Calculado: Circunferencias US Navy)';
-					                console.log('Calculando % Grasa Actual (Circunferencias US Navy):', actualBodyFatPct);
+					            if (!isNaN(data.grasa_actual_conocida)) {
+					                actualBodyFatPct = data.grasa_actual_conocida;
+					                actualBodyFatSource = '(Proporcionado: BioImpedancia)';
+					                console.log('Usando % Grasa Actual proporcionado:', actualBodyFatPct);
 					            } else {
-					                console.warn('No se pudo calcular % Grasa Actual: datos insuficientes');
+					                if (data.edad < 6) {
+					                    console.warn('Edad < 6 años: No hay ecuación adecuada para calcular % Grasa.');
+					                    actualBodyFatSource = '(No calculado: Edad < 6 años)';
+					                } else if (data.edad >= 6 && data.edad <= 17) {
+					                    actualBodyFatPct = calculateSlaughterBodyFat(data);
+					                    if (!isNaN(actualBodyFatPct)) {
+					                        actualBodyFatSource = '(Calculado: Slaughter, 6-17 años)';
+					                        console.log('Calculando % Grasa Actual (Slaughter):', actualBodyFatPct);
+					                    }
+					                } else {
+					                    const isAthlete = data.es_deportista === 'si';
+					                    if (isAthlete) {
+					                        actualBodyFatPct = calculateJacksonPollockBodyFat(data);
+					                        if (!isNaN(actualBodyFatPct)) {
+					                            actualBodyFatSource = '(Calculado: Jackson-Pollock, 3 pliegues, deportistas)';
+					                            console.log('Calculando % Grasa Actual (Jackson-Pollock):', actualBodyFatPct);
+					                        }
+					                    } else {
+					                        actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
+					                        if (!isNaN(actualBodyFatPct)) {
+					                            actualBodyFatSource = '(Calculado: Durnin-Womersley, adultos no deportistas)';
+					                            console.log('Calculando % Grasa Actual (Durnin-Womersley):', actualBodyFatPct);
+					                        }
+					                    }
+					                    if (isNaN(actualBodyFatPct)) {
+					                        actualBodyFatPct = calculateCircumferenceBodyFat(data);
+					                        if (!isNaN(actualBodyFatPct)) {
+					                            actualBodyFatSource = '(Calculado: Circunferencias US Navy)';
+					                            console.log('Calculando % Grasa Actual (Circunferencias US Navy):', actualBodyFatPct);
+					                        } else {
+					                            console.warn('No se pudo calcular % Grasa Actual: datos insuficientes');
+					                        }
+					                    }
+					                }
 					            }
-					        }
-					    }
-					}
 					
-					// Guardar resultados
-					results.grasaPctActual = actualBodyFatPct;
-					results.grasaPctActualSource = actualBodyFatSource;
+					            results.grasaPctActual = actualBodyFatPct;
+					            results.actualBodyFatSource = actualBodyFatSource;
+					        //trackers.js:5082 Error durante los cálculos: metabolicResult is not defined
+					        } catch (error) {
+					            console.error('Error al calcular porcentaje de grasa:', error.message);
+					            results.grasaPctActual = NaN;
+					            results.actualBodyFatSource = `Error: ${error.message}`;
+					        }
 
 					// --- Calculate Desired Body Fat % ---
 					let desiredBodyFatPct = NaN;
@@ -4384,65 +4424,61 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					}
 
 					// --- Calculate Metabolic Age ---
-					 
-					try {
-					        const metabolicData = {
-					            genero: data.genero === 'Masculino' ? 'masculino' : 'femenino',
-					            edad: data.edad,
-					            peso: data.peso,
-					            altura: data.altura,
-					            esDeportista: data.es_deportista === 'si',
-					            pliegues: {
-					                tricipital: data.pliegue_tricipital || 0,
-					                subescapular: data.pliegue_subescapular || 0,
-					                suprailiaco: data.pliegue_suprailiaco || 0,
-					                bicipital: data.pliegue_bicipital || 0
-					            },
-					            porcentajeGrasa: results.grasaPctActual,
-					            cintura: data.circ_cintura || 0,
-					            imc: data.imc
-					        };
-						console.log('metabolicData:', metabolicData);
-					        const metabolicResult = calculateMetabolicAge(metabolicData);
-					        results.edadmetabolica = metabolicResult.edadMetabolica;
-						console.log('metabolicResult:', metabolicResult);
-					        results.edadmetabolicaSource = metabolicResult.method;
-					        results.BRMEstimado = metabolicResult.BRMEstimado;
-					        results.BRMEstimadoSource = metabolicResult.BRMEstimadoSource;
-					        results.masaMagra = metabolicResult.masaMagra;
-					        results.masaGrasa = metabolicResult.masaGrasa;
-					        console.log('Edad Metabólica calculada:', results.edadmetabolica, 'Método:', results.edadmetabolicaSource);
-					        console.log('BMR calculado:', results.BRMEstimado, 'Fuente:', results.BRMEstimadoSource);
-					        console.log('Masa Magra:', results.masaMagra, 'Masa Grasa:', results.masaGrasa);
-					
-					        
-					    } catch (error) {
-					        console.error('Error al calcular la edad metabólica o BMR:', error.message);
-					        results.edadmetabolica = NaN;
-					        results.edadmetabolicaSource = 'Error en el cálculo';
-					        results.BRMEstimado = NaN;
-					        results.BRMEstimadoSource = `Error: ${error.message}`;
-					        results.masaMagra = NaN;
-					        results.masaGrasa = NaN;
-					        if (resultElements.BRMEstimado) {
-					            resultElements.BRMEstimado.textContent = 'Error';
-					        }
-					        if (resultElements.BRMEstimadoSource) {
-					            resultElements.BRMEstimadoSource.textContent = `Error: ${error.message}`;
-					        }
-					    }
+					 					
+				        try {
+				            const metabolicData = {
+				                genero: data.genero === 'Masculino' ? 'masculino' : 'femenino',
+				                edad: data.edad,
+				                peso: data.peso,
+				                altura: data.altura,
+				                esDeportista: data.es_deportista === 'si',
+				                pliegues: {
+				                    tricipital: data.pliegue_tricipital || 0,
+				                    subescapular: data.pliegue_subescapular || 0,
+				                    suprailiaco: data.pliegue_suprailiaco || 0,
+				                    bicipital: data.pliegue_bicipital || 0
+				                },
+				                porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
+				                cintura: data.circ_cintura || 0,
+				                imc: data.imc
+				            };
+				            console.log('metabolicData:', metabolicData);
+				            const metabolicResult = calculateMetabolicAge(metabolicData);
+				            console.log('metabolicResult:', metabolicResult);
+				            results.edadmetabolica = metabolicResult.edadMetabolica;
+				            results.edadmetabolicaSource = metabolicResult.method;
+				            results.BRMEstimado = metabolicResult.BRMEstimado;
+				            results.BRMEstimadoSource = metabolicResult.BRMEstimadoSource;
+				            results.masaMagra = metabolicResult.masaMagra;
+				            results.masaGrasa = metabolicResult.masaGrasa;
+				            results.masaGrasaSource = metabolicResult.method; // Added
+				            console.log('Edad Metabólica calculada:', results.edadmetabolica, 'Método:', results.edadmetabolicaSource);
+				            console.log('BMR calculado:', results.BRMEstimado, 'Fuente:', results.BRMEstimadoSource);
+				            console.log('Masa Magra:', results.masaMagra, 'Masa Grasa:', results.masaGrasa);
+				        } catch (error) {
+				            console.error('Error al calcular la edad metabólica o BMR:', error.message);
+				            results.edadmetabolica = NaN;
+				            results.edadmetabolicaSource = 'Error en el cálculo';
+				            results.BRMEstimado = NaN;
+				            results.BRMEstimadoSource = `Error: ${error.message}`;
+				            results.masaMagra = NaN;
+				            results.masaGrasa = NaN;
+				            results.masaGrasaSource = `Error: ${error.message}`;
+				        }
 
 					// --- Other Calculations ---
 					// Calculate Masa Grasa y Masa Libre de Grasa
 					if (!isNaN(results.grasaPctActual)) {
-						results.masaGrasa = (results.grasaPctActual / 100) * data.peso;
+						results.masaMagra = metabolicResult.masaMagra;
 						results.mlg = data.peso - results.masaGrasa;
+						results.mlgSource = results.grasaPctActual ? 'Calculado a partir de % grasa' : '(No calculado)';
+						results.masaGrasaSource = metabolicResult.method;
 					} else {
 						results.masaGrasa = NaN;
 						results.mlg = NaN;
 					}
-					results.masaMagra = metabolicResult.masaMagra;
-					        results.masaGrasa = metabolicResult.masaGrasa;
+					//results.masaMagra = metabolicResult.masaMagra;
+					//results.masaGrasa = metabolicResult.masaGrasa;
 
 					
 					if (!isNaN(results.mlg) && !isNaN(results.grasaPctDeseado)) {
@@ -4961,6 +4997,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						if (resultElements.masaGrasaSource) {
 							resultElements.masaGrasaSource.textContent = results.masaGrasaSource|| '(No calculado)';
 						}
+						updateElement('masaMagra', results.masaMagra, 1);
 						updateElement('mlg', results.mlg, 1);
 						if (resultElements.mlgSource) {
 							resultElements.mlgSource.textContent = results.mlgSource|| '(No calculado)';
