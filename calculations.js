@@ -4902,7 +4902,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    }
 					};
 					    console.log('Resultados calculados:', window.calculatedResults);
-					
+					    console.log('Results for display:', results);
+					    console.log('BRMEstimado element:', document.getElementById('result-tmb'));
+					    console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
 					// --- 3. Update Display ---
 					try {
 						if (!resultElements || typeof resultElements !== 'object') {
@@ -5006,11 +5008,20 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					            } else {
 					                console.warn('Elemento PctmmtSource no encontrado en resultElements.');
 					            }
-						
+						// Update Metabolic Age
 						updateElement('edadmetabolica', results.edadmetabolica, 1);
 						if (resultElements.edadmetabolicaSource) {
 							resultElements.edadmetabolicaSource.textContent = results.edadmetabolicaSource || '(No calculado)';
 						}
+						// Update BMR
+							updateElement('result-tmb', results.BRMEstimado, 1);
+							if (resultElements.BRMEstimadoSource) {
+							    resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource || '(No calculado)';
+							}
+						//Update Masa Grasa y Magra
+						updateElement('result-masa-magra', results.masaMagra, 1);
+                                                updateElement('result-masa-grasa', results.masaGrasa, 1);
+						
 						// Mostrar resultados en la interfaz BMR
 					        if (resultElements.BRMEstimado) {
 					            resultElements.BRMEstimado.textContent = formatResult(results.BRMEstimado, 1);
