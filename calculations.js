@@ -428,8 +428,8 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo1(genero, edad, peso, altura, tricipital, subescapular, suprailiaco, bicipital, false),
 						method: 'Escenario_1: Siri_Katch-McArdle_Harris-Benedict(Dxt,Pliegues)'
-						bmrResult: calculateBMRMetodo1(genero, peso, altura, tricipital, subescapular, suprailiaco, bicipital, false),
-        					bmrSource: method
+						BRMEstimado: calculateBMRMetodo1(genero, peso, altura, tricipital, subescapular, suprailiaco, bicipital, false),
+        					BRMEstimadoSource: method
 					};
 				}
 				// Escenario 2: Deportista, % grasa conocido
@@ -437,7 +437,7 @@ import { auth } from './app.js';
 					return {
 						edadMetabolica: metodo1(genero, edad, peso, altura, null, null, null, null, true, porcentajeGrasa),
 						method: 'Escenario_2: Siri_Katch-McArdle_Harris-Benedict(Dxt,%Grasa Conocido)'
-						BRMEstimado : calculateBMRMetodo1(genero, peso, altura, null, null, null, null, true, porcentajeGrasa),
+						BRMEstimado: calculateBMRMetodo1(genero, peso, altura, null, null, null, null, true, porcentajeGrasa),
         					BRMEstimadoSource : method
 					};
 				}
