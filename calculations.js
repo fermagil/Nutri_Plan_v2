@@ -4374,57 +4374,56 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            results.grasaPctDeseadoSource = desiredBodyFatSource;
 			            
 			            // --- Calculate IMLG, IMG, and Tipología ---
-			            let bodyCompResults = null;
-			            if (data.peso && !isNaN(alturaM) && !isNaN(actualBodyFatPct)) {
-					    console.log('% Grasa:', actualBodyFatPct);
-			                try {
-			                    bodyCompResults = generateBodyCompositionAnalysis(
-			                        {
-			                            peso: data.peso,
-			                            altura: data.altura,
-			                            porcentajeGrasa: actualBodyFatPct
-			                        },
-			                        {
-			                            sexo: data.genero,
-			                            edad: data.edad,
-			                            esDeportista: data.es_deportista === 'si'
-			                        }
-			                    );
-					    console.log('% Grasa:', actualBodyFatPct);
-			                    results.imlg = bodyCompResults.imlg;
-			                    results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
-			                    results.img = bodyCompResults.img;
-			                    results.imgSource = bodyCompResults.imgCategory || '(No calculado)';
-			                    results.tipologia = bodyCompResults.tipologia  || 'Indefinido';
-			                    console.log('IMLG, IMG, Tipología:', {
-			                        imlg: results.imlg,
-			                        imlgSource: results.imlgSource,
-			                        img: results.img,
-			                        imgSource: results.imgSource,
-			                        tipologia: results.tipologia
-			                    });
-			                } catch (e) {
-			                    console.error('Error calculando IMLG, IMG y Tipología:', e.message);
-			                    results.imlg = NaN;
-			                    results.imlgSource = 'Error: ' + e.message;
-			                    results.img = NaN;
-			                    results.imgSource = 'Error: ' + e.message;
-			                    results.tipologia = 'Indefinido';
-			                    content += `<p><strong>Error en IMLG e IMG:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-			                }		
-			            } else {
-			                results.imlg = NaN;
-			                results.imlgSource = '(No calculado: Datos insuficientes)';
-			                results.img = NaN;
-			                results.imgSource = '(No calculado: Datos insuficientes)';
-			                results.tipologia = 'Indefinido';
-			                console.warn('No se pudieron calcular IMLG, IMG y Tipología: datos insuficientes', {
-			                    peso: data.peso,
-			                    alturaM,
-			                    actualBodyFatPct
-			                });
-			                content += `<p><strong>IMLG e IMG:</strong> No calculado debido a datos insuficientes.</p>`;
-			            }
+					    let bodyCompResults = null;
+					    if (data.peso && !isNaN(alturaM) && !isNaN(results.grasaPctActual)) {
+					        try {
+					            bodyCompResults = generateBodyCompositionAnalysis(
+					                {
+					                    peso: data.peso,
+					                    altura: data.altura,
+					                    porcentajeGrasa: results.grasaPctActual // Usar results.grasaPctActual en lugar de actualBodyFatPct
+					                },
+					                {
+					                    sexo: data.genero,
+					                    edad: data.edad,
+					                    esDeportista: data.es_deportista === 'si'
+					                }
+					            );
+					
+					            results.imlg = bodyCompResults.imlg;
+					            results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
+					            results.img = bodyCompResults.img;
+					            results.imgSource = bodyCompResults.imgCategory || '(No calculado)';
+					            results.tipologia = bodyCompResults.tipologia || 'Indefinido';
+					            console.log('IMLG, IMG, Tipología:', {
+					                imlg: results.imlg,
+					                imlgSource: results.imlgSource,
+					                img: results.img,
+					                imgSource: results.imgSource,
+					                tipologia: results.tipologia
+					            });
+					        } catch (e) {
+					            console.error('Error calculando IMLG, IMG y Tipología:', e.message);
+					            results.imlg = NaN;
+					            results.imlgSource = 'Error: ' + e.message;
+					            results.img = NaN;
+					            results.imgSource = 'Error: ' + e.message;
+					            results.tipologia = 'Indefinido';
+					            content += `<p><strong>Error en IMLG e IMG:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+					        }
+					    } else {
+					        results.imlg = NaN;
+					        results.imlgSource = '(No calculado: Datos insuficientes)';
+					        results.img = NaN;
+					        results.imgSource = '(No calculado: Datos insuficientes)';
+					        results.tipologia = 'Indefinido';
+					        console.warn('No se pudieron calcular IMLG, IMG y Tipología: datos insuficientes', {
+					            peso: data.peso,
+					            alturaM,
+					            grasaPctActual: results.grasaPctActual
+					        });
+					        content += `<p><strong>IMLG e IMG:</strong> No calculado debido a datos insuficientes.</p>`;
+					    }
 			
 			            // --- Calculate Metabolic Age ---
 			            try {
