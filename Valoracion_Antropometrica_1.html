@@ -339,24 +339,24 @@
             margin: 10px auto;
             display: block;
         }
-
+/* Contenedor para gráficos */
         .chart-container {
-            max-width: 800px;
-            width: 100%;
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e0e0;
-            box-sizing: border-box;
-            transition: transform 0.2s ease;
-        }
+					max-width: 6000px; /* Keep the max-width for consistency */
+					width: 100%;
+					margin: 20px auto; /* Center with more spacing */
+					padding: 15px; /* Increased padding for a cleaner look */
+					background-color: #ffffff; /* White background */
+					border-radius: 10px; /* Softer, modern rounded corners */
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+					border: 1px solid #e0e0e0; /* Light border for definition */
+					box-sizing: border-box;
+					transition: transform 0.2s ease; /* Smooth hover effect */
+				}
 
         .chart-container:hover {
-            transform: translateY(-3px);
+            transform: translateY(-3px);/* Slight lift on hover for interactivity */
         }
-
+	/* Ensure canvas is responsive */
         .chart-container canvas {
             width: 100% !important;
             height: 400px !important;
@@ -369,7 +369,7 @@
         .chart-container:has(#typology-chart) {
             max-width: 800px;
         }
-
+	/* Adjust the explanation section */
         #explanation-section {
             max-width: 900px;
             margin: 0 auto;
@@ -390,7 +390,7 @@
             height: auto;
         }
 
-        .chart-container canvas#somatotype-point-canvas,
+        
         .chart-container canvas#typology-point-canvas {
             position: absolute;
             top: 0;
