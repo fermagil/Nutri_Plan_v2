@@ -674,7 +674,7 @@ import { auth } from './app.js';
 			    };
 		}	
 		
-        // Updated estimateTargetBodyFat function
+        		// Updated estimateTargetBodyFat function
 			const estimateTargetBodyFat = (gender, isAthlete, age) => {
 				console.log(`Estimating target body fat for gender: ${gender}, isAthlete: ${isAthlete}, age: ${age}`);
 				const ranges = {
@@ -4438,6 +4438,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					}
 
 					// --- Other Calculations ---
+					// Calculate Masa Grasa y Masa Libre de Grasa
 					if (!isNaN(results.grasaPctActual)) {
 						results.masaGrasa = (results.grasaPctActual / 100) * data.peso;
 						results.mlg = data.peso - results.masaGrasa;
@@ -4445,7 +4446,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						results.masaGrasa = NaN;
 						results.mlg = NaN;
 					}
+					results.masaMagra = metabolicResult.masaMagra;
+					        results.masaGrasa = metabolicResult.masaGrasa;
 
+					
 					if (!isNaN(results.mlg) && !isNaN(results.grasaPctDeseado)) {
 						results.pesoIdeal = results.mlg / (1 - results.grasaPctDeseado / 100);
 					} else {
@@ -4865,7 +4869,6 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    masaGrasa: formatResult(results.masaGrasa, 1),
 					    masaGrasaSource: results.masaGrasaSource || '(No calculado)',
 					    masaMagra: formatResult(results.masaMagra, 1),
-        				    masaGrasa: formatResult(results.masaGrasa, 1),
 					    BRMEstimado: formatResult(results.BRMEstimado, 1),
         				    BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
 					    mlg: formatResult(results.mlg, 1),
