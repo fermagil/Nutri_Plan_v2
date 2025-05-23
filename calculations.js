@@ -4402,8 +4402,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					            cintura: data.circ_cintura || 0,
 					            imc: data.imc
 					        };
+						console.log('metabolicData:', metabolicData);
 					        const metabolicResult = calculateMetabolicAge(metabolicData);
 					        results.edadmetabolica = metabolicResult.edadMetabolica;
+						console.log('metabolicResult:', metabolicResult);
 					        results.edadmetabolicaSource = metabolicResult.method;
 					        results.BRMEstimado = metabolicResult.BRMEstimado;
 					        results.BRMEstimadoSource = metabolicResult.BRMEstimadoSource;
