@@ -4415,13 +4415,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        console.log('BMR calculado:', results.BRMEstimado, 'Fuente:', results.BRMEstimadoSource);
 					        console.log('Masa Magra:', results.masaMagra, 'Masa Grasa:', results.masaGrasa);
 					
-					        // Mostrar resultados en la interfaz
-					        if (resultElements.BRMEstimado) {
-					            resultElements.BRMEstimado.textContent = formatResult(results.BRMEstimado, 1);
-					        }
-					        if (resultElements.BRMEstimadoSource) {
-					            resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource;
-					        }
+					        
 					    } catch (error) {
 					        console.error('Error al calcular la edad metabólica o BMR:', error.message);
 					        results.edadmetabolica = NaN;
@@ -4513,7 +4507,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            results.amb = Math.max(baseAMB - correction, 0);
 			       
     				// Define AMB reference ranges
-	                    const ambRanges = {
+	                    	const ambRanges = {
 	                        masculino: {
 	                            general: {
 	                                '18-20': { P5: 23.4, P50: 30.4, P95: 39.6 },
