@@ -3751,656 +3751,658 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 			// Form submission handler
 			form.addEventListener('submit', function (event) {
-				event.preventDefault();
-				console.log('Form submitted via user action');
-			// Show Guardar Datos button
+			    event.preventDefault();
+			    console.log('Form submitted via user action');
+			    // Show Guardar Datos button
 			    const guardarDatosBtn = document.getElementById('guardar_datos');
 			    if (guardarDatosBtn) {
-			      guardarDatosBtn.style.display = 'inline-block';
-			      console.log('Guardar Datos button displayed');
+			        guardarDatosBtn.style.display = 'inline-block';
+			        console.log('Guardar Datos button displayed');
 			    } else {
-			      console.error('Guardar Datos button not found');
+			        console.error('Guardar Datos button not found');
 			    }
-
-			try{
-				// --- 1. Get Data ---
-				const formData = new FormData(form);
-				const data = {};
-				formData.forEach((value, key) => {
-					const numericFields = [
-						'edad',
-						'peso',
-						'altura',
-						'pliegue_tricipital',
-						'pliegue_subescapular',
-						'pliegue_suprailiaco',
-						'pliegue_bicipital',
-						'pliegue_pantorrilla',
-						'circ_cintura',
-						'circ_cadera',
-						'circ_cuello',
-						'circ_pantorrilla',
-						'circ_brazo',
-						'circ_brazo_contraido',
-						'diam_humero',
-						'diam_femur',
-						'diam_muneca',
-						'grasa_actual_conocida',
-						'grasa_deseada'
-					];
-					data[key] = numericFields.includes(key) ? parseFloatSafe(value) : value;
-				});
-
-				console.log('Datos introducidos:', data);
-
-				// --- 2. Perform Calculations ---
-				let results = {
-				            imc: NaN,
-				            imcSource: '(No calculado)',
-				            icc: NaN,
-				            iccSource: '(No calculado)',
-				            grasaPctActual: NaN,
-				            actualBodyFatSource: '(No calculado)',
-				            grasaPctDeurenberg: NaN,
-				            grasaPctDeurenbergSource: '(No estimado)',
-				            grasaPctCUNBAE: NaN,
-				            grasaPctCUNBAESource: '(No estimado)',
-				            grasaPctDeseado: NaN,
-				            desiredBodyFatSource: '(No estimado)',
-				            masaGrasa: NaN,
-				            masaGrasaSource: '(No calculado)',
-				            masaMagra: NaN,
-				            BRMEstimado: NaN,
-				            BRMEstimadoSource: '(No calculado)',
-				            mlg: NaN,
-				            mlgSource: '(No calculado)',
-				            amb: NaN,
-				            ambSource: '(No calculado)',
-				            masaOsea: NaN,
-				            masaOseaSource: '(No calculado)',
-				            masaResidual: NaN,
-				            masaResidualSource: '(No calculado)',
-				            pesoIdeal: NaN,
-				            pesoObjetivo: NaN,
-				            mmt: NaN,
-				            Pctmmt: NaN,
-				            PctmmtSource: '(No calculado)',
-				            imlg: NaN,
-				            imlgSource: '(No calculado)',
-				            img: NaN,
-				            imgSource: '(No calculado)',
-				            tipologia: 'Indefinido',
-				            tipologiaSource: '(No calculado)',
-				            edadmetabolica: NaN,
-				            edadmetabolicaSource: '(No calculado)',
-				            endomorfia: NaN,
-				            mesomorfia: NaN,
-				            ectomorfia: NaN
-				        };
-				        
-				let content = ''; // For error messages
-
-					// Initialize alturaM with validation (single definition)
-					let alturaM = NaN;
-					try {
-						if (data.altura && !isNaN(data.altura)) {
-							alturaM = Number(data.altura) / 100;
-							if (alturaM < 1.2 || alturaM > 2.2) {
-								throw new Error('Altura debe estar entre 120 y 220 cm');
-							}
-						} else {
-							throw new Error('Altura no proporcionada o inválida');
-						}
-					} catch (e) {
-						console.error('Error inicializando alturaM:', e.message);
-						content += `<p><strong>Error en Altura:</strong> ${e.message}. Por favor, revisa el valor ingresado para altura.</p>`;
-					}
-
-					// Reset results display
-					resetResultElements(resultElements);
-					if (explanationSection) {
-						explanationSection.style.display = 'none';
-					}
-					if (explanationContent) {
-						explanationContent.innerHTML = '';
-					}
-
-					// Check for essential data
-					if (!data.peso || isNaN(data.altura) || !data.genero || !data.edad || !data.es_deportista) {
-						alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
-						console.error('Missing required fields', { peso: data.peso, altura: data.altura, genero: data.genero, edad: data.edad, es_deportista: data.es_deportista });
-						return;
-					}
-					// Función para formatear números (si no está definida)
-					function formatResult(value, precision = 1) {
-					    return Number.isFinite(value) ? value.toFixed(precision) : '---';
-					}
-					// Función para formatear el objeto imcSource en una cadena legible
-					function formatImcSource(imcSource) {
-					    if (!imcSource || typeof imcSource !== 'object') {
-					        return '(No calculado)';
-					    }
-					
-					    let result = `${imcSource.clasificacion} - ${imcSource.riesgo}`;
-					    if (imcSource.percentil) {
-					        result += ` (Percentil: ${imcSource.percentil})`;
-					    }
-					    if (imcSource.nota) {
-					        result += `. ${imcSource.nota}`;
-					    }
-					    return result;
-					}
-					// Función para formatear iccSource
-				        function formatIccSource(iccSource) {
-				            if (!iccSource || typeof iccSource !== 'object') {
-				                return '(No calculado)';
-				            }
-				            return `${iccSource.clasificacion} - ${iccSource.riesgo}`;
-				        }
-					// Nueva función para formatear ambSource
-				        function formatAmbSource(amb, ranges, isAthlete, gender, ageRange) {
-				            if (!ranges || isNaN(amb)) {
-				                return '(No calculado)';
-				            }
-				            if (isAthlete) {
-				                if (amb < ranges.P50) {
-				                    return `Dxt Recreativo percentil <50 (${ranges.P50} cm²)`;
-				                } else if (amb >= ranges.P50 && amb < ranges.P75) {
-				                    return `Dxt Recreativo/Competitivo Percentil 50 (${ranges.P50} cm²)`;
-				                } else if (amb >= ranges.P75 && amb < ranges.P90) {
-				                    return `Dxt Competitivo Percentil 75 (${ranges.P75} cm²)`;
-				                } else {
-				                    return `Dxt Fuerza/Elite Percentil >90 (${ranges.P90} cm²)`;
-				                }
-				            } else {
-				                if (amb < ranges.P5) {
-				                    return `Muy bajo percentil <5 (${ranges.P5} cm²)`;
-				                } else if (amb >= ranges.P5 && amb < ranges.P50) {
-				                    return `Bajo-Medio Percentiles 5–50 (${ranges.P5}–${ranges.P50} cm²)`;
-				                } else if (amb >= ranges.P50 && amb < ranges.P95) {
-				                    return `Medio-Alto Percentil >50  (${ranges.P50}–${ranges.P95} cm²)`;
-				                } else {
-				                    return `Muy Alto  percentil >95 (${ranges.P95} cm²)`;
-				                }
-				            }
-				        }
-					// Nueva función para formatear PctmmtSource
-				        function formatPctmmtSource(pctmmt, gender, isAthlete) {
-				            if (isNaN(pctmmt) || !gender) {
-				                return '(No calculado)';
-				            }
-				            gender = gender.toLowerCase();
-				            if (gender === 'masculino') {
-				                if (isAthlete) {
-				                    if (pctmmt >= 45 && pctmmt <= 55) {
-				                        return 'Rango saludable (45–55%)';
-				                    } else if (pctmmt < 45) {
-				                        return 'Por debajo del rango saludable (45–55%)';
-				                    } else {
-				                        return 'Por encima del rango saludable (45–55%)';
-				                    }
-				                } else {
-				                    if (pctmmt >= 38 && pctmmt <= 48) {
-				                        return 'Rango saludable (38–48%)';
-				                    } else if (pctmmt < 38) {
-				                        return 'Por debajo del rango saludable (38–48%)';
-				                    } else {
-				                        return 'Por encima del rango saludable (38–48%)';
-				                    }
-				                }
-				            } else if (gender === 'femenino') {
-				                if (isAthlete) {
-				                    if (pctmmt >= 35 && pctmmt <= 45) {
-				                        return 'Rango saludable (35–45%)';
-				                    } else if (pctmmt < 35) {
-				                        return 'Por debajo del rango saludable (35–45%)';
-				                    } else {
-				                        return 'Por encima del rango saludable (35–45%)';
-				                    }
-				                } else {
-				                    if (pctmmt >= 30 && pctmmt <= 40) {
-				                        return 'Rango saludable (30–40%)';
-				                    } else if (pctmmt < 30) {
-				                        return 'Por debajo del rango saludable (30–40%)';
-				                    } else {
-				                        return 'Por encima del rango saludable (30–40%)';
-				                    }
-				                }
-				            }
-				            return '(No calculado)';
-				        }
-
-
-					// Nueva función para formatear masaResidualSource
-				    function formatMasaResidualSource(masaResidualPct, gender) {
-				        if (isNaN(masaResidualPct) || !gender) {
-				            return '(No calculado)';
-				        }
-				        gender = gender.toLowerCase();
-				        if (gender === 'masculino') {
-				            if (masaResidualPct >= 22 && masaResidualPct <= 26) {
-				                return 'Rango típico (22–26%)';
-				            } else if (masaResidualPct < 22) {
-				                return 'Por debajo del rango típico (22–26%)';
-				            } else {
-				                return 'Por encima del rango típico (22–26%)';
-				            }
-				        } else if (gender === 'femenino') {
-				            if (masaResidualPct >= 19 && masaResidualPct <= 23) {
-				                return 'Rango típico (19–23%)';
-				            } else if (masaResidualPct < 19) {
-				                return 'Por debajo del rango típico (19–23%)';
-				            } else {
-				                return 'Por encima del rango típico (19–23%)';
-				            }
-				        }
-				        return '(No calculado)';
-				    }
-					// Actualizada función para formatear masaOseaSource con Observaciones
-					    function formatMasaOseaSource(boneMassPct, gender, age, isAthlete) {
-					        if (isNaN(boneMassPct) || !gender || !age) {
-					            return '(No calculado)';
-					        }
-					        gender = gender.toLowerCase();
-					        const boneMassRanges = {
-					            masculino: {
-					                '15-19': { range: [14, 15], obs: 'Pico óseo' },
-					                '20-29': { range: [14, 15], obs: 'Máximo óseo' },
-					                '30-39': { range: [13.5, 14.5], obs: 'Inicio descenso' },
-					                '40-49': { range: [13, 14], obs: 'Pérdida sin ejercicio' },
-					                '50-59': { range: [12, 13.5], obs: 'Riesgo desmineralización' },
-					                '60-69': { range: [11.5, 13], obs: 'Disminución sin ejercicio' },
-					                '70+': { range: [11, 12.5], obs: 'Alto riesgo fracturas' },
-					                athlete: { range: [15, 16], obs: 'Densidad ósea sólida' }
-					            },
-					            femenino: {
-					                '15-19': { range: [12, 13.5], obs: 'Desarrollo óseo' },
-					                '20-29': { range: [12, 13.5], obs: 'Máximo óseo' },
-					                '30-39': { range: [11.5, 13], obs: 'Pérdida inicial' },
-					                '40-49': { range: [11, 12.5], obs: 'Pérdida acelerada' },
-					                '50-59': { range: [10.5, 12], obs: 'Riesgo osteoporosis' },
-					                '60-69': { range: [10, 11.5], obs: 'Pérdida significativa' },
-					                '70+': { range: [9.5, 11], obs: 'Prevención osteoporosis' },
-					                athlete: { range: [13, 14], obs: 'Densidad ósea sólida' }
-					            }
-					        };
-					        const boneAgeRange = age >= 15 && age <= 19 ? '15-19' : 
-					                             age <= 29 ? '20-29' : 
-					                             age <= 39 ? '30-39' : 
-					                             age <= 49 ? '40-49' : 
-					                             age <= 59 ? '50-59' : 
-					                             age <= 69 ? '60-69' : '70+';
-					        const entry = isAthlete ? boneMassRanges[gender].athlete : boneMassRanges[gender][boneAgeRange];
-					        const [min, max] = entry.range;
-					        const obs = entry.obs;
-					        const rangeText = `${min}–${max}%`;
-					        if (boneMassPct >= min && boneMassPct <= max) {
-					            return `Rango saludable (${rangeText}): ${obs}`;
-					        } else if (boneMassPct < min) {
-					            return `Por debajo del rango saludable (${rangeText}): ${obs}`;
-					        } else {
-					            return `Por encima del rango saludable (${rangeText}): ${obs}`;
-					        }
-					    }
-					// Function to calculate % Grasa (Deurenberg)
-					// Function to calculate % Grasa (Deurenberg)
-					// Formula: % Grasa = (1.20 * IMC) + (0.23 * Edad) - (10.8 * Sexo) - 5.4
-					// Sexo: 1 (hombres), 0 (mujeres)
-					// Limitations: May overestimate in women with low weight or morbid obesity,
-					// and men with IMC 25–39.99 kg/m² (Medigraphic study).
-					function calculateGrasaPctDeurenberg(peso, altura, edad, sexo) {
-					    console.log('[GrasaPctDeurenberg] Calculating % Grasa:', { peso, altura, edad, sexo });
-					    
-					    // Validate inputs
-					    if (!peso || !altura || !edad || peso <= 0 || altura <= 0 || edad < 18 || !['hombre', 'mujer'].includes(sexo)) {
-					        console.log('[GrasaPctDeurenberg] Invalid inputs, returning null:', { peso, altura, edad, sexo });
-					        return null;
-					    }
-					    
-					    // Convert altura from cm to meters
-					    const alturaMeters = altura / 100;
-					    console.log('[GrasaPctDeurenberg] Converted altura:', { alturaCm: altura, alturaMeters });
-					    
-					    // Calculate IMC (peso in kg, altura in meters)
-					    const imc = peso / (alturaMeters * alturaMeters);
-					    console.log('[GrasaPctDeurenberg] Calculated IMC:', { peso, alturaMeters, imc });
-					    
-					    // Validate IMC
-					    if (imc < 10 || imc > 50) {
-					        console.log('[GrasaPctDeurenberg] Invalid IMC, returning null:', { imc });
-					        return null;
-					    }
-					    
-					    // Map sexo to 1 (hombre) or 0 (mujer)
-					    const sexoValue = sexo === 'hombre' ? 1 : 0;
-					    
-					    // Calculate % Grasa
-					    const result = (1.20 * imc) + (0.23 * edad) - (10.8 * sexoValue) - 5.4;
-					    console.log('[GrasaPctDeurenberg] Calculation:', {
-					        imcTerm: 1.20 * imc,
-					        edadTerm: 0.23 * edad,
-					        sexoTerm: -10.8 * sexoValue,
-					        constant: -5.4,
-					        result
-					    });
-					    
-					    return result;
-					}
-					
-					// Function to format grasaPctDeurenbergSource based on educational table
-					// Function to format grasaPctDeurenbergSource based on educational table
-					function formatGrasaPctDeurenbergSource(grasaPct, sexo, edad, imc) {
-					    console.log('[GrasaPctDeurenberg] Formatting source:', { grasaPct, sexo, edad, imc });
-					    
-					    // Validate inputs
-					    if (!grasaPct || !sexo || !edad || !imc || edad < 18 || imc < 16.0 || imc > 34.9) {
-					        console.log('[GrasaPctDeurenberg] Invalid inputs for source:', { 
-					            grasaPct, 
-					            sexo, 
-					            edad, 
-					            imc, 
-					            reason: !grasaPct ? 'Missing grasaPct' : !sexo ? 'Missing sexo' : !edad ? 'Missing edad' : !imc ? 'Missing imc' : edad < 18 ? 'Edad < 18' : imc < 16.0 ? 'IMC < 16.0' : 'IMC > 34.9' 
-					        });
-					        return '(No estimado)';
-					    }
-					
-					    const ranges = {
-					        hombre: {
-					            '18-28': [
-					                { imc: [16.0, 18.4], grasa: [0, 12], observaciones: 'Riesgo de desnutrición, anemia, fatiga crónica, problemas reproductivos.' },
-					                { imc: [18.5, 24.9], grasa: [12, 18], observaciones: 'Valores bajos reflejan menor grasa visceral; el aumento de edad incrementa ligeramente el % de grasa.' },
-					                { imc: [25.0, 29.9], grasa: [19, 25], observaciones: 'Aumento notable de grasa subcutánea; ajuste por edad es mínimo en este rango joven.' },
-					                { imc: [30.0, 34.9], grasa: [25, 31], observaciones: 'Obesidad si sedentario; posible musculatura si atleta (e.g., levantador de pesas).' }
-					            ],
-					            '30-49': [
-					                { imc: [18.5, 24.9], grasa: [15, 21], observaciones: 'Incremento del % de grasa con edad debido a pérdida muscular; fórmula ajusta +0.23% por año.' },
-					                { imc: [25.0, 29.9], grasa: [22, 28], observaciones: 'Grasa corporal más pronunciada; riesgo de obesidad central aumenta con edad.' },
-					                { imc: [30.0, 34.9], grasa: [28, 34], observaciones: 'Obesidad probable por edad; músculo menos común salvo en entrenados.' }
-					            ]
-					        },
-					        mujer: {
-					            '18-28': [
-					                { imc: [16.0, 18.4], grasa: [0, 20], observaciones: 'Riesgo de desnutrición, anemia, fatiga crónica, problemas reproductivos.' },
-					                { imc: [18.5, 24.9], grasa: [20, 26], observaciones: 'Valores más altos que en hombres por mayor grasa esencial; estabilidad en jóvenes.' },
-					                { imc: [25.0, 29.9], grasa: [27, 33], observaciones: 'Aumento de grasa subcutánea; menor variación por edad en este rango.' },
-					                { imc: [30.0, 34.9], grasa: [33, 39], observaciones: 'Obesidad generalizada; músculo raro salvo en deportes de fuerza.' }
-					            ],
-					            '30-49': [
-					                { imc: [18.5, 24.9], grasa: [23, 29], observaciones: 'Subida del % de grasa con edad; influida por cambios hormonales post-30.' },
-					                { imc: [25.0, 29.9], grasa: [30, 36], observaciones: 'Alto riesgo de obesidad; grasa acumulada en caderas y abdomen.' },
-					                { imc: [30.0, 34.9], grasa: [36, 42], observaciones: 'Obesidad con riesgo alto por edad y cambios hormonales.' }
-					            ]
-					        }
-					    };
-					
-					    // Use 30-49 range for edad > 49 to extend applicability
-					    const ageRange = edad <= 28 ? '18-28' : '30-49';
-					    console.log('[GrasaPctDeurenberg] Selected age range:', ageRange);
-					    
-					    const sexRanges = ranges[sexo.toLowerCase()]?.[ageRange];
-					    if (!sexRanges) {
-					        console.log('[GrasaPctDeurenberg] No ranges for sex/age, returning default:', { sexo, ageRange });
-					        return '(No estimado)';
-					    }
-					
-					    // Try exact match first
-					    let range = sexRanges.find(r => imc >= r.imc[0] && imc <= r.imc[1] && grasaPct >= r.grasa[0] && grasaPct <= r.grasa[1]);
-					    let adjustedGrasaPct = grasaPct;
-					    let observaciones = range ? range.observaciones : null;
-					
-					    // If no exact match, find closest range and adjust
-					    if (!range) {
-					        console.log('[GrasaPctDeurenberg] No exact range match, finding closest range:', { imc, grasaPct });
-					        let minDistance = Infinity;
-					        let closestRange = null;
-					
-					        sexRanges.forEach(r => {
-					            // Calculate midpoints for IMC and % Grasa
-					            const imcMid = (r.imc[0] + r.imc[1]) / 2;
-					            const grasaMid = (r.grasa[0] + r.grasa[1]) / 2;
-					            // Euclidean distance
-					            const distance = Math.sqrt(
-					                Math.pow(imc - imcMid, 2) + Math.pow(grasaPct - grasaMid, 2)
-					            );
-					            if (distance < minDistance) {
-					                minDistance = distance;
-					                closestRange = r;
-					            }
-					        });
-					
-					        range = closestRange;
-					        // Adjust grasaPct to fit range bounds
-					        if (grasaPct < range.grasa[0]) {
-					            adjustedGrasaPct = range.grasa[0];
-					        } else if (grasaPct > range.grasa[1]) {
-					            adjustedGrasaPct = range.grasa[1];
-					        }
-					        observaciones = `${range.observaciones} (Aproximado: % Grasa ajustado a ${adjustedGrasaPct.toFixed(1)}%)`;
-					        console.log('[GrasaPctDeurenberg] Closest range selected:', {
-					            range,
-					            originalGrasaPct: grasaPct,
-					            adjustedGrasaPct,
-					            distance: minDistance
-					        });
-					    } else {
-					        console.log('[GrasaPctDeurenberg] Selected exact range:', range);
-					    }
-					    
-					    return observaciones;
-					}
-					// Función para calcular % Grasa CUN-BAE
-				        function calculateCUNBAEBodyFat(data, imc) {
-				            const { edad, genero, peso, altura } = data;
-				            
-				            // Validate inputs
-				            if (!edad || !genero || !peso || !altura || isNaN(imc)) {
-				                console.warn('calculateCUNBAEBodyFat: Datos insuficientes', { edad, genero, peso, altura, imc });
-				                return {
-				                    grasaPct: NaN,
-				                    source: '(No estimado: Datos insuficientes)'
-				                };
-				            }
-				
-				            if (edad < 18) {
-				                console.warn('calculateCUNBAEBodyFat: Edad menor a 18 años no soportada');
-				                return {
-				                    grasaPct: NaN,
-				                    source: '(No estimado: Edad < 18 años)'
-				                };
-				            }
-				
-				            const sexo = genero.toLowerCase() === 'masculino' ? 1 : genero.toLowerCase() === 'femenino' ? 0 : null;
-				            if (sexo === null) {
-				                console.warn('calculateCUNBAEBodyFat: Género no válido', { genero });
-				                return {
-				                    grasaPct: NaN,
-				                    source: '(No estimado: Género no válido)'
-				                };
-				            }
-
-						// CUN-BAE formula with adjustment
-				            const imc2 = imc * imc;
-					    const grasaPct = -44.988 +
-					                     (0.503 * edad) +
-					                     (10.689 * sexo) +
-					                     (3.172 * imc) -
-					                     (0.026 * imc2) +
-					                     (0.181 * imc * sexo) -
-					                     (0.02 * imc * edad) -
-					                     (0.005 * imc2 * sexo) +
-					                     (0.00021 * imc2 * edad) -
-					                     11.43;
-				
-				            // Categorize based on sex and grasaPct
-				            let category = '';
-				            if (sexo === 1) { // Hombres
-				                if (grasaPct < 12) {
-				                    category = 'Bajo (<12%)';
-				                } else if (grasaPct >= 12 && grasaPct <= 20) {
-				                    category = 'Normal (12–20%)';
-				                } else if (grasaPct > 20 && grasaPct <= 25) {
-				                    category = 'Elevado (20–25%)';
-				                } else {
-				                    category = 'Obesidad (>25%)';
-				                }
-				            } else { // Mujeres
-				                if (grasaPct < 25) {
-				                    category = 'Bajo (<25%)';
-				                } else if (grasaPct >= 25 && grasaPct <= 33) {
-				                    category = 'Normal (25–33%)';
-				                } else if (grasaPct > 33 && grasaPct <= 39) {
-				                    category = 'Elevado (33–39%)';
-				                } else {
-				                    category = 'Obesidad (>39%)';
-				                }
-				            }
-				
-				            return {
-				                grasaPct: grasaPct,
-				                source: `CUN-BAE: ${category}`
-				            };
-				        }
-				try {
-					// --- Calculate IMC ---
-				        if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
-				            try {
-				                const imcResults = calculateIMC(data); // Use a different variable to avoid shadowing
-				                results.imc = imcResults.imc;
-				                results.imcSource = imcResults.imcSource;
-				                console.log('IMC calculado:', results.imc, results.imcSource);
-				            } catch (e) {
-				                console.error('Error calculando IMC:', e.message);
-				                results.imc = NaN;
-				                results.imcSource = { clasificacion: 'Error', riesgo: e.message };
-				                content += `<p><strong>Error en IMC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-				            }
-				        } else {
-				            results.imc = NaN;
-				            results.imcSource = { clasificacion: 'No calculado', riesgo: 'Datos insuficientes' };
-				            content += `<p><strong>IMC:</strong> No calculado debido a datos insuficientes.</p>`;
-				        }
-					// --- Calculate ICC ---
-				            if (data.circ_cintura > 0 && data.circ_cadera > 0 && data.genero) {
-				                try {
-				                    const iccResults = calculateICC(data);
-				                    results.icc = iccResults.icc;
-				                    results.iccSource = iccResults.iccSource;
-				                    console.log('ICC calculado:', results.icc, results.iccSource);
-				                } catch (e) {
-				                    console.error('Error calculando ICC:', e.message);
-				                    results.icc = NaN;
-				                    results.iccSource = { clasificacion: 'Error', riesgo: e.message };
-				                    content += `<p><strong>Error en ICC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-				                }
-				            } else {
-				                results.icc = NaN;
-				                results.iccSource = { clasificacion: 'No calculado', riesgo: 'Datos insuficientes' };
-				                content += `<p><strong>ICC:</strong> No calculado debido a datos insuficientes.</p>`;
-				            }
-					// --- Calculate Actual Body Fat % ---
-					// --- Calculate Actual Body Fat % ---
-					        try {
-					            let actualBodyFatPct = NaN;
-					            let actualBodyFatSource = '(No calculado)';
-					
-					            if (!isNaN(data.grasa_actual_conocida)) {
-					                actualBodyFatPct = data.grasa_actual_conocida;
-					                actualBodyFatSource = '(Proporcionado: BioImpedancia)';
-					                console.log('Usando % Grasa Actual proporcionado:', actualBodyFatPct);
-					            } else {
-					                if (data.edad < 6) {
-					                    console.warn('Edad < 6 años: No hay ecuación adecuada para calcular % Grasa.');
-					                    actualBodyFatSource = '(No calculado: Edad < 6 años)';
-					                } else if (data.edad >= 6 && data.edad <= 17) {
-					                    actualBodyFatPct = calculateSlaughterBodyFat(data);
-					                    if (!isNaN(actualBodyFatPct)) {
-					                        actualBodyFatSource = '(Calculado: Slaughter, 6-17 años)';
-					                        console.log('Calculando % Grasa Actual (Slaughter):', actualBodyFatPct);
-					                    }
-					                } else {
-					                    const isAthlete = data.es_deportista === 'si';
-					                    if (isAthlete) {
-					                        actualBodyFatPct = calculateJacksonPollockBodyFat(data);
-					                        if (!isNaN(actualBodyFatPct)) {
-					                            actualBodyFatSource = '(Calculado: Jackson-Pollock, 3 pliegues, deportistas)';
-					                            console.log('Calculando % Grasa Actual (Jackson-Pollock):', actualBodyFatPct);
-					                        }
-					                    } else {
-					                        actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
-					                        if (!isNaN(actualBodyFatPct)) {
-					                            actualBodyFatSource = '(Calculado: Durnin-Womersley, adultos no deportistas)';
-					                            console.log('Calculando % Grasa Actual (Durnin-Womersley):', actualBodyFatPct);
-					                        }
-					                    }
-					                    if (isNaN(actualBodyFatPct)) {
-					                        actualBodyFatPct = calculateCircumferenceBodyFat(data);
-					                        if (!isNaN(actualBodyFatPct)) {
-					                            actualBodyFatSource = '(Calculado: Circunferencias US Navy)';
-					                            console.log('Calculando % Grasa Actual (Circunferencias US Navy):', actualBodyFatPct);
-					                        } else {
-					                            console.warn('No se pudo calcular % Grasa Actual: datos insuficientes');
-					                        }
-					                    }
-					                }
-					            }
-					
-					            results.grasaPctActual = actualBodyFatPct;
-					            results.actualBodyFatSource = actualBodyFatSource;
-					        //trackers.js:5082 Error durante los cálculos: metabolicResult is not defined
-					        } catch (error) {
-					            console.error('Error al calcular porcentaje de grasa:', error.message);
-					            results.grasaPctActual = NaN;
-					            results.actualBodyFatSource = `Error: ${error.message}`;
-					        }
-
-					// --- Calculate Desired Body Fat % ---
-					let desiredBodyFatPct = NaN;
-					let desiredBodyFatSource = '(No estimado)';
-					if (!isNaN(data.grasa_deseada) && data.grasa_deseada > 0) {
-						desiredBodyFatPct = Number(data.grasa_deseada);
-						desiredBodyFatSource = '(Proporcionado)';
-						console.log('Usando % Grasa Deseado proporcionado:', desiredBodyFatPct);
-					} else if (data.genero && data.edad) {
-						const isAthlete = data.es_deportista === 'si';
-						desiredBodyFatPct = estimateTargetBodyFat(data.genero, isAthlete, Number(data.edad));
-						if (!isNaN(desiredBodyFatPct)) {
-							desiredBodyFatSource = '(Estimado según edad, sexo y nivel AF)';
-							console.log('Estimando % Grasa Deseado:', desiredBodyFatPct);
-						}
-					}
-					results.grasaPctDeseado = desiredBodyFatPct;
-					results.grasaPctDeseadoSource = desiredBodyFatSource;
-					
-					// --- Calculate IMLG, IMG, and Tipología ---
-					let bodyCompResults = null;
-					if (data.peso && !isNaN(alturaM) && !isNaN(actualBodyFatPct)) {
-					  try {
-						bodyCompResults = generateBodyCompositionAnalysis(
-							{
-								peso: data.peso,
-								altura: data.altura,
-								porcentajeGrasa: actualBodyFatPct
-							},
-							{
-								sexo: data.genero,
-								edad: data.edad,
-								esDeportista: data.es_deportista === 'si'
-							}
-						);
-
-						results.imlg = bodyCompResults.imlg;
-						results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
-						results.img = bodyCompResults.img;
-						results.imgSource = bodyCompResults.imgCategory || '(No calculado)';
-						results.tipologia = bodyCompResults.tipologia  || 'Indefinido';
-						console.log('IMLG, IMG, Tipología:', {
-							imlg: results.imlg,
-							imlgSource: results.imlgSource,
-							img: results.img,
-							imgSource: results.imgSource,
-							tipologia: results.tipologia
-						});
-					} catch (e) {
+			
+			    try {
+			        // --- 1. Get Data ---
+			        const formData = new FormData(form);
+			        const data = {};
+			        formData.forEach((value, key) => {
+			            const numericFields = [
+			                'edad',
+			                'peso',
+			                'altura',
+			                'pliegue_tricipital',
+			                'pliegue_subescapular',
+			                'pliegue_suprailiaco',
+			                'pliegue_bicipital',
+			                'pliegue_pantorrilla',
+			                'circ_cintura',
+			                'circ_cadera',
+			                'circ_cuello',
+			                'circ_pantorrilla',
+			                'circ_brazo',
+			                'circ_brazo_contraido',
+			                'diam_humero',
+			                'diam_femur',
+			                'diam_muneca',
+			                'grasa_actual_conocida',
+			                'grasa_deseada'
+			            ];
+			            data[key] = numericFields.includes(key) ? parseFloatSafe(value) : value;
+			        });
+			
+			        console.log('Datos introducidos:', data);
+			
+			        // --- 2. Perform Calculations ---
+			        let results = {
+			            imc: NaN,
+			            imcSource: '(No calculado)',
+			            icc: NaN,
+			            iccSource: '(No calculado)',
+			            grasaPctActual: NaN,
+			            actualBodyFatSource: '(No calculado)',
+			            grasaPctDeurenberg: NaN,
+			            grasaPctDeurenbergSource: '(No estimado)',
+			            grasaPctCUNBAE: NaN,
+			            grasaPctCUNBAESource: '(No estimado)',
+			            grasaPctDeseado: NaN,
+			            desiredBodyFatSource: '(No estimado)',
+			            masaGrasa: NaN,
+			            masaGrasaSource: '(No calculado)',
+			            masaMagra: NaN,
+			            BRMEstimado: NaN,
+			            BRMEstimadoSource: '(No calculado)',
+			            mlg: NaN,
+			            mlgSource: '(No calculado)',
+			            amb: NaN,
+			            ambSource: '(No calculado)',
+			            masaOsea: NaN,
+			            masaOseaSource: '(No calculado)',
+			            masaResidual: NaN,
+			            masaResidualSource: '(No calculado)',
+			            pesoIdeal: NaN,
+			            pesoObjetivo: NaN,
+			            mmt: NaN,
+			            Pctmmt: NaN,
+			            PctmmtSource: '(No calculado)',
+			            imlg: NaN,
+			            imlgSource: '(No calculado)',
+			            img: NaN,
+			            imgSource: '(No calculado)',
+			            tipologia: 'Indefinido',
+			            tipologiaSource: '(No calculado)',
+			            edadmetabolica: NaN,
+			            edadmetabolicaSource: '(No calculado)',
+			            endomorfia: NaN,
+			            mesomorfia: NaN,
+			            ectomorfia: NaN
+			        };
+			        
+			        let content = ''; // For error messages
+			
+			        // Initialize alturaM with validation (single definition)
+			        let alturaM = NaN;
+			        try {
+			            if (data.altura && !isNaN(data.altura)) {
+			                alturaM = Number(data.altura) / 100;
+			                if (alturaM < 1.2 || alturaM > 2.2) {
+			                    throw new Error('Altura debe estar entre 120 y 220 cm');
+			                }
+			            } else {
+			                throw new Error('Altura no proporcionada o inválida');
+			            }
+			        } catch (e) {
+			            console.error('Error inicializando alturaM:', e.message);
+			            content += `<p><strong>Error en Altura:</strong> ${e.message}. Por favor, revisa el valor ingresado para altura.</p>`;
+			        }
+			
+			        // Reset results display
+			        resetResultElements(resultElements);
+			        if (explanationSection) {
+			            explanationSection.style.display = 'none';
+			        }
+			        if (explanationContent) {
+			            explanationContent.innerHTML = '';
+			        }
+			
+			        // Check for essential data
+			        if (!data.peso || isNaN(data.altura) || !data.genero || !data.edad || !data.es_deportista) {
+			            alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
+			            console.error('Missing required fields', { peso: data.peso, altura: data.altura, genero: data.genero, edad: data.edad, es_deportista: data.es_deportista });
+			            return;
+			        }
+			
+			        // Función para formatear números (si no está definida)
+			        function formatResult(value, precision = 1) {
+			            return Number.isFinite(value) ? value.toFixed(precision) : '---';
+			        }
+			
+			        // Función para formatear el objeto imcSource en una cadena legible
+			        function formatImcSource(imcSource) {
+			            if (!imcSource || typeof imcSource !== 'object') {
+			                return '(No calculado)';
+			            }
+			        
+			            let result = `${imcSource.clasificacion} - ${imcSource.riesgo}`;
+			            if (imcSource.percentil) {
+			                result += ` (Percentil: ${imcSource.percentil})`;
+			            }
+			            if (imcSource.nota) {
+			                result += `. ${imcSource.nota}`;
+			            }
+			            return result;
+			        }
+			
+			        // Función para formatear iccSource
+			        function formatIccSource(iccSource) {
+			            if (!iccSource || typeof iccSource !== 'object') {
+			                return '(No calculado)';
+			            }
+			            return `${iccSource.clasificacion} - ${iccSource.riesgo}`;
+			        }
+			
+			        // Nueva función para formatear ambSource
+			        function formatAmbSource(amb, ranges, isAthlete, gender, ageRange) {
+			            if (!ranges || isNaN(amb)) {
+			                return '(No calculado)';
+			            }
+			            if (isAthlete) {
+			                if (amb < ranges.P50) {
+			                    return `Dxt Recreativo percentil <50 (${ranges.P50} cm²)`;
+			                } else if (amb >= ranges.P50 && amb < ranges.P75) {
+			                    return `Dxt Recreativo/Competitivo Percentil 50 (${ranges.P50} cm²)`;
+			                } else if (amb >= ranges.P75 && amb < ranges.P90) {
+			                    return `Dxt Competitivo Percentil 75 (${ranges.P75} cm²)`;
+			                } else {
+			                    return `Dxt Fuerza/Elite Percentil >90 (${ranges.P90} cm²)`;
+			                }
+			            } else {
+			                if (amb < ranges.P5) {
+			                    return `Muy bajo percentil <5 (${ranges.P5} cm²)`;
+			                } else if (amb >= ranges.P5 && amb < ranges.P50) {
+			                    return `Bajo-Medio Percentiles 5–50 (${ranges.P5}–${ranges.P50} cm²)`;
+			                } else if (amb >= ranges.P50 && amb < ranges.P95) {
+			                    return `Medio-Alto Percentil >50  (${ranges.P50}–${ranges.P95} cm²)`;
+			                } else {
+			                    return `Muy Alto  percentil >95 (${ranges.P95} cm²)`;
+			                }
+			            }
+			        }
+			
+			        // Nueva función para formatear PctmmtSource
+			        function formatPctmmtSource(pctmmt, gender, isAthlete) {
+			            if (isNaN(pctmmt) || !gender) {
+			                return '(No calculado)';
+			            }
+			            gender = gender.toLowerCase();
+			            if (gender === 'masculino') {
+			                if (isAthlete) {
+			                    if (pctmmt >= 45 && pctmmt <= 55) {
+			                        return 'Rango saludable (45–55%)';
+			                    } else if (pctmmt < 45) {
+			                        return 'Por debajo del rango saludable (45–55%)';
+			                    } else {
+			                        return 'Por encima del rango saludable (45–55%)';
+			                    }
+			                } else {
+			                    if (pctmmt >= 38 && pctmmt <= 48) {
+			                        return 'Rango saludable (38–48%)';
+			                    } else if (pctmmt < 38) {
+			                        return 'Por debajo del rango saludable (38–48%)';
+			                    } else {
+			                        return 'Por encima del rango saludable (38–48%)';
+			                    }
+			                }
+			            } else if (gender === 'femenino') {
+			                if (isAthlete) {
+			                    if (pctmmt >= 35 && pctmmt <= 45) {
+			                        return 'Rango saludable (35–45%)';
+			                    } else if (pctmmt < 35) {
+			                        return 'Por debajo del rango saludable (35–45%)';
+			                    } else {
+			                        return 'Por encima del rango saludable (35–45%)';
+			                    }
+			                } else {
+			                    if (pctmmt >= 30 && pctmmt <= 40) {
+			                        return 'Rango saludable (30–40%)';
+			                    } else if (pctmmt < 30) {
+			                        return 'Por debajo del rango saludable (30–40%)';
+			                    } else {
+			                        return 'Por encima del rango saludable (30–40%)';
+			                    }
+			                }
+			            }
+			            return '(No calculado)';
+			        }
+			
+			        // Nueva función para formatear masaResidualSource
+			        function formatMasaResidualSource(masaResidualPct, gender) {
+			            if (isNaN(masaResidualPct) || !gender) {
+			                return '(No calculado)';
+			            }
+			            gender = gender.toLowerCase();
+			            if (gender === 'masculino') {
+			                if (masaResidualPct >= 22 && masaResidualPct <= 26) {
+			                    return 'Rango típico (22–26%)';
+			                } else if (masaResidualPct < 22) {
+			                    return 'Por debajo del rango típico (22–26%)';
+			                } else {
+			                    return 'Por encima del rango típico (22–26%)';
+			                }
+			            } else if (gender === 'femenino') {
+			                if (masaResidualPct >= 19 && masaResidualPct <= 23) {
+			                    return 'Rango típico (19–23%)';
+			                } else if (masaResidualPct < 19) {
+			                    return 'Por debajo del rango típico (19–23%)';
+			                } else {
+			                    return 'Por encima del rango típico (19–23%)';
+			                }
+			            }
+			            return '(No calculado)';
+			        }
+			
+			        // Actualizada función para formatear masaOseaSource con Observaciones
+			        function formatMasaOseaSource(boneMassPct, gender, age, isAthlete) {
+			            if (isNaN(boneMassPct) || !gender || !age) {
+			                return '(No calculado)';
+			            }
+			            gender = gender.toLowerCase();
+			            const boneMassRanges = {
+			                masculino: {
+			                    '15-19': { range: [14, 15], obs: 'Pico óseo' },
+			                    '20-29': { range: [14, 15], obs: 'Máximo óseo' },
+			                    '30-39': { range: [13.5, 14.5], obs: 'Inicio descenso' },
+			                    '40-49': { range: [13, 14], obs: 'Pérdida sin ejercicio' },
+			                    '50-59': { range: [12, 13.5], obs: 'Riesgo desmineralización' },
+			                    '60-69': { range: [11.5, 13], obs: 'Disminución sin ejercicio' },
+			                    '70+': { range: [11, 12.5], obs: 'Alto riesgo fracturas' },
+			                    athlete: { range: [15, 16], obs: 'Densidad ósea sólida' }
+			                },
+			                femenino: {
+			                    '15-19': { range: [12, 13.5], obs: 'Desarrollo óseo' },
+			                    '20-29': { range: [12, 13.5], obs: 'Máximo óseo' },
+			                    '30-39': { range: [11.5, 13], obs: 'Pérdida inicial' },
+			                    '40-49': { range: [11, 12.5], obs: 'Pérdida acelerada' },
+			                    '50-59': { range: [10.5, 12], obs: 'Riesgo osteoporosis' },
+			                    '60-69': { range: [10, 11.5], obs: 'Pérdida significativa' },
+			                    '70+': { range: [9.5, 11], obs: 'Prevención osteoporosis' },
+			                    athlete: { range: [13, 14], obs: 'Densidad ósea sólida' }
+			                }
+			            };
+			            const boneAgeRange = age >= 15 && age <= 19 ? '15-19' : 
+			                                 age <= 29 ? '20-29' : 
+			                                 age <= 39 ? '30-39' : 
+			                                 age <= 49 ? '40-49' : 
+			                                 age <= 59 ? '50-59' : 
+			                                 age <= 69 ? '60-69' : '70+';
+			            const entry = isAthlete ? boneMassRanges[gender].athlete : boneMassRanges[gender][boneAgeRange];
+			            const [min, max] = entry.range;
+			            const obs = entry.obs;
+			            const rangeText = `${min}–${max}%`;
+			            if (boneMassPct >= min && boneMassPct <= max) {
+			                return `Rango saludable (${rangeText}): ${obs}`;
+			            } else if (boneMassPct < min) {
+			                return `Por debajo del rango saludable (${rangeText}): ${obs}`;
+			            } else {
+			                return `Por encima del rango saludable (${rangeText}): ${obs}`;
+			            }
+			        }
+			
+			        // Function to calculate % Grasa (Deurenberg)
+			        function calculateGrasaPctDeurenberg(peso, altura, edad, sexo) {
+			            console.log('[GrasaPctDeurenberg] Calculating % Grasa:', { peso, altura, edad, sexo });
+			            
+			            // Validate inputs
+			            if (!peso || !altura || !edad || peso <= 0 || altura <= 0 || edad < 18 || !['hombre', 'mujer'].includes(sexo)) {
+			                console.log('[GrasaPctDeurenberg] Invalid inputs, returning null:', { peso, altura, edad, sexo });
+			                return null;
+			            }
+			            
+			            // Convert altura from cm to meters
+			            const alturaMeters = altura / 100;
+			            console.log('[GrasaPctDeurenberg] Converted altura:', { alturaCm: altura, alturaMeters });
+			            
+			            // Calculate IMC (peso in kg, altura in meters)
+			            const imc = peso / (alturaMeters * alturaMeters);
+			            console.log('[GrasaPctDeurenberg] Calculated IMC:', { peso, alturaMeters, imc });
+			            
+			            // Validate IMC
+			            if (imc < 10 || imc > 50) {
+			                console.log('[GrasaPctDeurenberg] Invalid IMC, returning null:', { imc });
+			                return null;
+			            }
+			            
+			            // Map sexo to 1 (hombre) or 0 (mujer)
+			            const sexoValue = sexo === 'hombre' ? 1 : 0;
+			            
+			            // Calculate % Grasa
+			            const result = (1.20 * imc) + (0.23 * edad) - (10.8 * sexoValue) - 5.4;
+			            console.log('[GrasaPctDeurenberg] Calculation:', {
+			                imcTerm: 1.20 * imc,
+			                edadTerm: 0.23 * edad,
+			                sexoTerm: -10.8 * sexoValue,
+			                constant: -5.4,
+			                result
+			            });
+			            
+			            return result;
+			        }
+			
+			        // Function to format grasaPctDeurenbergSource based on educational table
+			        function formatGrasaPctDeurenbergSource(grasaPct, sexo, edad, imc) {
+			            console.log('[GrasaPctDeurenberg] Formatting source:', { grasaPct, sexo, edad, imc });
+			            
+			            // Validate inputs
+			            if (!grasaPct || !sexo || !edad || !imc || edad < 18 || imc < 16.0 || imc > 34.9) {
+			                console.log('[GrasaPctDeurenberg] Invalid inputs for source:', { 
+			                    grasaPct, 
+			                    sexo, 
+			                    edad, 
+			                    imc, 
+			                    reason: !grasaPct ? 'Missing grasaPct' : !sexo ? 'Missing sexo' : !edad ? 'Missing edad' : !imc ? 'Missing imc' : edad < 18 ? 'Edad < 18' : imc < 16.0 ? 'IMC < 16.0' : 'IMC > 34.9' 
+			                });
+			                return '(No estimado)';
+			            }
+			        
+			            const ranges = {
+			                hombre: {
+			                    '18-28': [
+			                        { imc: [16.0, 18.4], grasa: [0, 12], observaciones: 'Riesgo de desnutrición, anemia, fatiga crónica, problemas reproductivos.' },
+			                        { imc: [18.5, 24.9], grasa: [12, 18], observaciones: 'Valores bajos reflejan menor grasa visceral; el aumento de edad incrementa ligeramente el % de grasa.' },
+			                        { imc: [25.0, 29.9], grasa: [19, 25], observaciones: 'Aumento notable de grasa subcutánea; ajuste por edad es mínimo en este rango joven.' },
+			                        { imc: [30.0, 34.9], grasa: [25, 31], observaciones: 'Obesidad si sedentario; posible musculatura si atleta (e.g., levantador de pesas).' }
+			                    ],
+			                    '30-49': [
+			                        { imc: [18.5, 24.9], grasa: [15, 21], observaciones: 'Incremento del % de grasa con edad debido a pérdida muscular; fórmula ajusta +0.23% por año.' },
+			                        { imc: [25.0, 29.9], grasa: [22, 28], observaciones: 'Grasa corporal más pronunciada; riesgo de obesidad central aumenta con edad.' },
+			                        { imc: [30.0, 34.9], grasa: [28, 34], observaciones: 'Obesidad probable por edad; músculo menos común salvo en entrenados.' }
+			                    ]
+			                },
+			                mujer: {
+			                    '18-28': [
+			                        { imc: [16.0, 18.4], grasa: [0, 20], observaciones: 'Riesgo de desnutrición, anemia, fatiga crónica, problemas reproductivos.' },
+			                        { imc: [18.5, 24.9], grasa: [20, 26], observaciones: 'Valores más altos que en hombres por mayor grasa esencial; estabilidad en jóvenes.' },
+			                        { imc: [25.0, 29.9], grasa: [27, 33], observaciones: 'Aumento de grasa subcutánea; menor variación por edad en este rango.' },
+			                        { imc: [30.0, 34.9], grasa: [33, 39], observaciones: 'Obesidad generalizada; músculo raro salvo en deportes de fuerza.' }
+			                    ],
+			                    '30-49': [
+			                        { imc: [18.5, 24.9], grasa: [23, 29], observaciones: 'Subida del % de grasa con edad; influida por cambios hormonales post-30.' },
+			                        { imc: [25.0, 29.9], grasa: [30, 36], observaciones: 'Alto riesgo de obesidad; grasa acumulada en caderas y abdomen.' },
+			                        { imc: [30.0, 34.9], grasa: [36, 42], observaciones: 'Obesidad con riesgo alto por edad y cambios hormonales.' }
+			                    ]
+			                }
+			            };
+			        
+			            // Use 30-49 range for edad > 49 to extend applicability
+			            const ageRange = edad <= 28 ? '18-28' : '30-49';
+			            console.log('[GrasaPctDeurenberg] Selected age range:', ageRange);
+			            
+			            const sexRanges = ranges[sexo.toLowerCase()]?.[ageRange];
+			            if (!sexRanges) {
+			                console.log('[GrasaPctDeurenberg] No ranges for sex/age, returning default:', { sexo, ageRange });
+			                return '(No estimado)';
+			            }
+			        
+			            // Try exact match first
+			            let range = sexRanges.find(r => imc >= r.imc[0] && imc <= r.imc[1] && grasaPct >= r.grasa[0] && grasaPct <= r.grasa[1]);
+			            let adjustedGrasaPct = grasaPct;
+			            let observaciones = range ? range.observaciones : null;
+			        
+			            // If no exact match, find closest range and adjust
+			            if (!range) {
+			                console.log('[GrasaPctDeurenberg] No exact range match, finding closest range:', { imc, grasaPct });
+			                let minDistance = Infinity;
+			                let closestRange = null;
+			        
+			                sexRanges.forEach(r => {
+			                    // Calculate midpoints for IMC and % Grasa
+			                    const imcMid = (r.imc[0] + r.imc[1]) / 2;
+			                    const grasaMid = (r.grasa[0] + r.grasa[1]) / 2;
+			                    // Euclidean distance
+			                    const distance = Math.sqrt(
+			                        Math.pow(imc - imcMid, 2) + Math.pow(grasaPct - grasaMid, 2)
+			                    );
+			                    if (distance < minDistance) {
+			                        minDistance = distance;
+			                        closestRange = r;
+			                    }
+			                });
+			        
+			                range = closestRange;
+			                // Adjust grasaPct to fit range bounds
+			                if (grasaPct < range.grasa[0]) {
+			                    adjustedGrasaPct = range.grasa[0];
+			                } else if (grasaPct > range.grasa[1]) {
+			                    adjustedGrasaPct = range.grasa[1];
+			                }
+			                observaciones = `${range.observaciones} (Aproximado: % Grasa ajustado a ${adjustedGrasaPct.toFixed(1)}%)`;
+			                console.log('[GrasaPctDeurenberg] Closest range selected:', {
+			                    range,
+			                    originalGrasaPct: grasaPct,
+			                    adjustedGrasaPct,
+			                    distance: minDistance
+			                });
+			            } else {
+			                console.log('[GrasaPctDeurenberg] Selected exact range:', range);
+			            }
+			            
+			            return observaciones;
+			        }
+			
+			        // Función para calcular % Grasa CUN-BAE
+			        function calculateCUNBAEBodyFat(data, imc) {
+			            const { edad, genero, peso, altura } = data;
+			            
+			            // Validate inputs
+			            if (!edad || !genero || !peso || !altura || isNaN(imc)) {
+			                console.warn('calculateCUNBAEBodyFat: Datos insuficientes', { edad, genero, peso, altura, imc });
+			                return {
+			                    grasaPct: NaN,
+			                    source: '(No estimado: Datos insuficientes)'
+			                };
+			            }
+			        
+			            if (edad < 18) {
+			                console.warn('calculateCUNBAEBodyFat: Edad menor a 18 años no soportada');
+			                return {
+			                    grasaPct: NaN,
+			                    source: '(No estimado: Edad < 18 años)'
+			                };
+			            }
+			        
+			            const sexo = genero.toLowerCase() === 'masculino' ? 1 : genero.toLowerCase() === 'femenino' ? 0 : null;
+			            if (sexo === null) {
+			                console.warn('calculateCUNBAEBodyFat: Género no válido', { genero });
+			                return {
+			                    grasaPct: NaN,
+			                    source: '(No estimado: Género no válido)'
+			                };
+			            }
+			
+			            // CUN-BAE formula with adjustment
+			            const imc2 = imc * imc;
+			            const grasaPct = -44.988 +
+			                             (0.503 * edad) +
+			                             (10.689 * sexo) +
+			                             (3.172 * imc) -
+			                             (0.026 * imc2) +
+			                             (0.181 * imc * sexo) -
+			                             (0.02 * imc * edad) -
+			                             (0.005 * imc2 * sexo) +
+			                             (0.00021 * imc2 * edad) -
+			                             11.43;
+			        
+			            // Categorize based on sex and grasaPct
+			            let category = '';
+			            if (sexo === 1) { // Hombres
+			                if (grasaPct < 12) {
+			                    category = 'Bajo (<12%)';
+			                } else if (grasaPct >= 12 && grasaPct <= 20) {
+			                    category = 'Normal (12–20%)';
+			                } else if (grasaPct > 20 && grasaPct <= 25) {
+			                    category = 'Elevado (20–25%)';
+			                } else {
+			                    category = 'Obesidad (>25%)';
+			                }
+			            } else { // Mujeres
+			                if (grasaPct < 25) {
+			                    category = 'Bajo (<25%)';
+			                } else if (grasaPct >= 25 && grasaPct <= 33) {
+			                    category = 'Normal (25–33%)';
+			                } else if (grasaPct > 33 && grasaPct <= 39) {
+			                    category = 'Elevado (33–39%)';
+			                } else {
+			                    category = 'Obesidad (>39%)';
+			                }
+			            }
+			        
+			            return {
+			                grasaPct: grasaPct,
+			                source: `CUN-BAE: ${category}`
+			            };
+			        }
+			
+			        try {
+			            // --- Calculate IMC ---
+			            if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
+			                try {
+			                    const imcResults = calculate PMC(data); // Use a different variable to avoid shadowing
+			                    results.imc = imcResults.imc;
+			                    results.imcSource = imcResults.imcSource;
+			                    console.log('IMC calculado:', results.imc, results.imcSource);
+			                } catch (e) {
+			                    console.error('Error calculando IMC:', e.message);
+			                    results.imc = NaN;
+			                    results.imcSource = { clasificacion: 'Error', riesgo: e.message };
+			                    content += `<p><strong>Error en IMC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                }
+			            } else {
+			                results.imc = NaN;
+			                results.imcSource = { clasificacion: 'No calculado', riesgo: 'Datos insuficientes' };
+			                content += `<p><strong>IMC:</strong> No calculado debido a datos insuficientes.</p>`;
+			            }
+			
+			            // --- Calculate ICC ---
+			            if (data.circ_cintura > 0 && data.circ_cadera > 0 && data.genero) {
+			                try {
+			                    const iccResults = calculateICC(data);
+			                    results.icc = iccResults.icc;
+			                    results.iccSource = iccResults.iccSource;
+			                    console.log('ICC calculado:', results.icc, results.iccSource);
+			                } catch (e) {
+			                    console.error('Error calculando ICC:', e.message);
+			                    results.icc = NaN;
+			                    results.iccSource = { clasificacion: 'Error', riesgo: e.message };
+			                    content += `<p><strong>Error en ICC:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                }
+			            } else {
+			                results.icc = NaN;
+			                results.iccSource = { clasificacion: 'No calculado', riesgo: 'Datos insuficientes' };
+			                content += `<p><strong>ICC:</strong> No calculado debido a datos insuficientes.</p>`;
+			            }
+			
+			            // --- Calculate Actual Body Fat % ---
+			            try {
+			                let actualBodyFatPct = NaN;
+			                let actualBodyFatSource = '(No calculado)';
+			        
+			                if (!isNaN(data.grasa_actual_conocida)) {
+			                    actualBodyFatPct = data.grasa_actual_conocida;
+			                    actualBodyFatSource = '(Proporcionado: BioImpedancia)';
+			                    console.log('Usando % Grasa Actual proporcionado:', actualBodyFatPct);
+			                } else {
+			                    if (data.edad < 6) {
+			                        console.warn('Edad < 6 años: No hay ecuación adecuada para calcular % Grasa.');
+			                        actualBodyFatSource = '(No calculado: Edad < 6 años)';
+			                    } else if (data.edad >= 6 && data.edad <= 17) {
+			                        actualBodyFatPct = calculateSlaughterBodyFat(data);
+			                        if (!isNaN(actualBodyFatPct)) {
+			                            actualBodyFatSource = '(Calculado: Slaughter, 6-17 años)';
+			                            console.log('Calculando % Grasa Actual (Slaughter):', actualBodyFatPct);
+			                        }
+			                    } else {
+			                        const isAthlete = data.es_deportista === 'si';
+			                        if (isAthlete) {
+			                            actualBodyFatPct = calculateJacksonPollockBodyFat(data);
+			                            if (!isNaN(actualBodyFatPct)) {
+			                                actualBodyFatSource = '(Calculado: Jackson-Pollock, 3 pliegues, deportistas)';
+			                                console.log('Calculando % Grasa Actual (Jackson-Pollock):', actualBodyFatPct);
+			                            }
+			                        } else {
+			                            actualBodyFatPct = calculateDurninWomersleyBodyFat(data);
+			                            if (!isNaN(actualBodyFatPct)) {
+			                                actualBodyFatSource = '(Calculado: Durnin-Womersley, adultos no deportistas)';
+			                                console.log('Calculando % Grasa Actual (Durnin-Womersley):', actualBodyFatPct);
+			                            }
+			                        }
+			                        if (isNaN(actualBodyFatPct)) {
+			                            actualBodyFatPct = calculateCircumferenceBodyFat(data);
+			                            if (!isNaN(actualBodyFatPct)) {
+			                                actualBodyFatSource = '(Calculado: Circunferencias US Navy)';
+			                                console.log('Calculando % Grasa Actual (Circunferencias US Navy):', actualBodyFatPct);
+			                            } else {
+			                                console.warn('No se pudo calcular % Grasa Actual: datos insuficientes');
+			                            }
+			                        }
+			                    }
+			                }
+			        
+			                results.grasaPctActual = actualBodyFatPct;
+			                results.actualBodyFatSource = actualBodyFatSource;
+			            } catch (error) {
+			                console.error('Error al calcular porcentaje de grasa:', error.message);
+			                results.grasaPctActual = NaN;
+			                results.actualBodyFatSource = `Error: ${error.message}`;
+			            }
+			
+			            // --- Calculate Desired Body Fat % ---
+			            let desiredBodyFatPct = NaN;
+			            let desiredBodyFatSource = '(No estimado)';
+			            if (!isNaN(data.grasa_deseada) && data.grasa_deseada > 0) {
+			                desiredBodyFatPct = Number(data.grasa_deseada);
+			                desiredBodyFatSource = '(Proporcionado)';
+			                console.log('Usando % Grasa Deseado proporcionado:', desiredBodyFatPct);
+			            } else if (data.genero && data.edad) {
+			                const isAthlete = data.es_deportista === 'si';
+			                desiredBodyFatPct = estimateTargetBodyFat(data.genero, isAthlete, Number(data.edad));
+			                if (!isNaN(desiredBodyFatPct)) {
+			                    desiredBodyFatSource = '(Estimado según edad, sexo y nivel AF)';
+			                    console.log('Estimando % Grasa Deseado:', desiredBodyFatPct);
+			                }
+			            }
+			            results.grasaPctDeseado = desiredBodyFatPct;
+			            results.grasaPctDeseadoSource = desiredBodyFatSource;
+			            
+			            // --- Calculate IMLG, IMG, and Tipología ---
+			            let bodyCompResults = null;
+			            if (data.peso && !isNaN(alturaM) && !isNaN(actualBodyFatPct)) {
+			                try {
+			                    bodyCompResults = generateBodyCompositionAnalysis(
+			                        {
+			                            peso: data.peso,
+			                            altura: data.altura,
+			                            porcentajeGrasa: actualBodyFatPct
+			                        },
+			                        {
+			                            sexo: data.genero,
+			                            edad: data.edad,
+			                            esDeportista: data.es_deportista === 'si'
+			                        }
+			                    );
+			
+			                    results.imlg = bodyCompResults.imlg;
+			                    results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
+			                    results.img = bodyCompResults.img;
+			                    results.imgSource = bodyCompResults.imgCategory || '(No calculado)';
+			                    results.tipologia = bodyCompResults.tipologia  || 'Indefinido';
+			                    console.log('IMLG, IMG, Tipología:', {
+			                        imlg: results.imlg,
+			                        imlgSource: results.imlgSource,
+			                        img: results.img,
+			                        imgSource: results.imgSource,
+			                        tipologia: results.tipologia
+			                    });
+			                } catch (e) {
 			                    console.error('Error calculando IMLG, IMG y Tipología:', e.message);
 			                    results.imlg = NaN;
 			                    results.imlgSource = 'Error: ' + e.message;
@@ -4408,735 +4410,718 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                    results.imgSource = 'Error: ' + e.message;
 			                    results.tipologia = 'Indefinido';
 			                    content += `<p><strong>Error en IMLG e IMG:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-			                 }		
-					} else {
-						results.imlg = NaN;
-						results.imlgSource = '(No calculado: Datos insuficientes)';
-						results.img = NaN;
-						results.imgSource = '(No calculado: Datos insuficientes)';
-						results.tipologia = 'Indefinido';
-						console.warn('No se pudieron calcular IMLG, IMG y Tipología: datos insuficientes', {
-							peso: data.peso,
-							alturaM,
-							actualBodyFatPct
-						});
-						content += `<p><strong>IMLG e IMG:</strong> No calculado debido a datos insuficientes.</p>`;
-					}
-
-					// --- Calculate Metabolic Age ---
-					 					
-				        try {
-				            const metabolicData = {
-				                genero: data.genero === 'Masculino' ? 'masculino' : 'femenino',
-				                edad: data.edad,
-				                peso: data.peso,
-				                altura: data.altura,
-				                esDeportista: data.es_deportista === 'si',
-				                pliegues: {
-				                    tricipital: data.pliegue_tricipital || 0,
-				                    subescapular: data.pliegue_subescapular || 0,
-				                    suprailiaco: data.pliegue_suprailiaco || 0,
-				                    bicipital: data.pliegue_bicipital || 0
-				                },
-				                porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
-				                cintura: data.circ_cintura || 0,
-				                imc: data.imc
-				            };
-				            console.log('metabolicData:', metabolicData);
-				            const metabolicResult = calculateMetabolicAge(metabolicData);
-				            console.log('metabolicResult:', metabolicResult);
-				            results.edadmetabolica = metabolicResult.edadMetabolica;
-				            results.edadmetabolicaSource = metabolicResult.method;
-				            results.BRMEstimado = metabolicResult.BRMEstimado;
-				            results.BRMEstimadoSource = metabolicResult.BRMEstimadoSource;
-				            results.masaMagra = metabolicResult.masaMagra;
-				            results.masaGrasa = metabolicResult.masaGrasa;
-				            results.masaGrasaSource = metabolicResult.method; // Added
-				            console.log('Edad Metabólica calculada:', results.edadmetabolica, 'Método:', results.edadmetabolicaSource);
-				            console.log('BMR calculado:', results.BRMEstimado, 'Fuente:', results.BRMEstimadoSource);
-				            console.log('Masa Magra:', results.masaMagra, 'Masa Grasa:', results.masaGrasa);
-				        } catch (error) {
-				            console.error('Error al calcular la edad metabólica o BMR:', error.message);
-				            results.edadmetabolica = NaN;
-				            results.edadmetabolicaSource = 'Error en el cálculo';
-				            results.BRMEstimado = NaN;
-				            results.BRMEstimadoSource = `Error: ${error.message}`;
-				            results.masaMagra = NaN;
-				            results.masaGrasa = NaN;
-				            results.masaGrasaSource = `Error: ${error.message}`;
-				        }
-
-					// --- Other Calculations ---
-					// Calculate Masa Grasa y Masa Libre de Grasa
-					if (!isNaN(results.grasaPctActual)) {
-						results.masaMagra = metabolicResult.masaMagra;
-						results.mlg = data.peso - results.masaGrasa;
-						results.mlgSource = results.grasaPctActual ? 'Calculado a partir de % grasa' : '(No calculado)';
-						results.masaGrasaSource = metabolicResult.method;
-					} else {
-						results.masaGrasa = NaN;
-						results.mlg = NaN;
-					}
-					//results.masaMagra = metabolicResult.masaMagra;
-					//results.masaGrasa = metabolicResult.masaGrasa;
-
-					
-					if (!isNaN(results.mlg) && !isNaN(results.grasaPctDeseado)) {
-						results.pesoIdeal = results.mlg / (1 - results.grasaPctDeseado / 100);
-					} else {
-						results.pesoIdeal = NaN;
-					}
-
-					if (data.peso && !isNaN(results.pesoIdeal)) {
-						results.pesoObjetivo = results.pesoIdeal - data.peso;
-					} else {
-						results.pesoObjetivo = NaN;
-					}
-
-					if (!isNaN(alturaM)) {
-						results.imc = data.peso / (alturaM * alturaM);
-					} else {
-						results.imc = NaN;
-					}
-
-					if (data.circ_cadera > 0 && data.circ_cintura) {
-						results.icc = data.circ_cintura / data.circ_cadera;
-					} else {
-						results.icc = NaN;
-					}
-					
-					   
-					  
-					// Calculate Área Muscular Brazo (AMB)
-					
-				if (data.circ_brazo && data.pliegue_tricipital && data.edad && data.genero) {
-				try {
-			            const circBrazo = Number(data.circ_brazo);
-			            const pliegueTricipital = Number(data.pliegue_tricipital);
-			            const age = Number(data.edad);
-			            const isAthlete = data.es_deportista === 'si';
-				    const gender = data.genero ? data.genero.toLowerCase() : '';
-				    // Log gender for debugging
-				        console.log('Gender for AMB calculation:', gender);
-				
-				        // Validate gender early
-				        if (!['masculino', 'femenino'].includes(gender)) {
-				            throw new Error('Género no válido: debe ser "masculino" o "femenino"');
-				        }
-			
-			            if (circBrazo < 20 || circBrazo > 50) throw new Error('Circunferencia del brazo debe estar entre 20 y 50 cm');
-			            if (pliegueTricipital < 2 || pliegueTricipital > 40) throw new Error('Pliegue tricipital debe estar entre 2 y 40 mm');
-			            if (age < 18) throw new Error('Edad debe ser mayor o igual a 18 años');
-			            if (!['masculino', 'femenino'].includes(data.genero)) throw new Error('Género no válido');
-			
-			            const tricepsCm = pliegueTricipital / 10;
-			            const term = circBrazo - Math.PI * tricepsCm;
-			            const baseAMB = (term * term) / (4 * Math.PI);
-			
-			            let correction = 0;
-			            if (gender === 'masculino') {
-			                correction = isAthlete ? (age < 40 ? 8 : age < 60 ? 7 : 6) : (age < 40 ? 10 : age < 60 ? 9 : 8);
-			            } else if (gender === 'femenino') {
-			                correction = isAthlete ? (age < 40 ? 5 : age < 60 ? 4.5 : 4) : (age < 40 ? 6.5 : age < 60 ? 6 : 5.5);
+			                }		
+			            } else {
+			                results.imlg = NaN;
+			                results.imlgSource = '(No calculado: Datos insuficientes)';
+			                results.img = NaN;
+			                results.imgSource = '(No calculado: Datos insuficientes)';
+			                results.tipologia = 'Indefinido';
+			                console.warn('No se pudieron calcular IMLG, IMG y Tipología: datos insuficientes', {
+			                    peso: data.peso,
+			                    alturaM,
+			                    actualBodyFatPct
+			                });
+			                content += `<p><strong>IMLG e IMG:</strong> No calculado debido a datos insuficientes.</p>`;
 			            }
 			
-			            results.amb = Math.max(baseAMB - correction, 0);
-			       
-    				// Define AMB reference ranges
-	                    	const ambRanges = {
-	                        masculino: {
-	                            general: {
-	                                '18-20': { P5: 23.4, P50: 30.4, P95: 39.6 },
-	                                '21-24': { P5: 23.6, P50: 30.6, P95: 39.8 },
-	                                '25-29': { P5: 23.8, P50: 31.0, P95: 40.0 },
-	                                '30-34': { P5: 23.5, P50: 30.6, P95: 39.8 },
-	                                '35-39': { P5: 22.9, P50: 29.9, P95: 39.0 },
-	                                '40-44': { P5: 22.6, P50: 29.5, P95: 38.5 },
-	                                '45-49': { P5: 21.8, P50: 28.5, P95: 37.3 },
-	                                '50-54': { P5: 21.2, P50: 27.9, P95: 36.5 },
-	                                '55-59': { P5: 20.6, P50: 27.1, P95: 35.5 },
-	                                '60-64': { P5: 20.2, P50: 26.4, P95: 34.7 },
-	                                '65-70': { P5: 19.0, P50: 25.0, P95: 33.0 },
-	                                '70+': { P5: 16.5, P50: 21.9, P95: 29.0 }
-	                            },
-	                            athlete: {
-	                                '18-20': { P50: 30.5, P75: 34.5, P90: 40.5 },
-	                                '21-24': { P50: 30.8, P75: 34.8, P90: 41.0 },
-	                                '25-29': { P50: 31.2, P75: 35.2, P90: 41.5 },
-	                                '30-34': { P50: 30.8, P75: 34.7, P90: 41.0 },
-	                                '35-39': { P50: 30.0, P75: 33.8, P90: 40.0 },
-	                                '40-44': { P50: 29.6, P75: 33.3, P90: 39.5 },
-	                                '45-49': { P50: 28.7, P75: 32.1, P90: 38.3 },
-	                                '50-54': { P50: 28.1, P75: 31.5, P90: 37.5 },
-	                                '55-59': { P50: 27.2, P75: 30.5, P90: 36.4 },
-	                                '60-64': { P50: 26.5, P75: 29.7, P90: 35.5 },
-	                                '65-70': { P50: 25.0, P75: 28.2, P90: 34.0 },
-	                                '70+': { P50: 21.9, P75: 25.2, P90: 30.0 }
-	                            }
-	                        },
-	                        femenino: {
-	                            general: {
-	                                '18-20': { P5: 17.7, P50: 22.6, P95: 28.8 },
-	                                '21-24': { P5: 17.9, P50: 22.8, P95: 29.1 },
-	                                '25-29': { P5: 18.0, P50: 23.2, P95: 29.8 },
-	                                '30-34': { P5: 17.8, P50: 22.9, P95: 29.4 },
-	                                '35-39': { P5: 17.3, P50: 22.4, P95: 29.0 },
-	                                '40-44': { P5: 17.1, P50: 22.2, P95: 28.8 },
-	                                '45-49': { P5: 16.6, P50: 21.8, P95: 28.4 },
-	                                '50-54': { P5: 16.3, P50: 21.4, P95: 27.9 },
-	                                '55-59': { P5: 15.8, P50: 21.0, P95: 27.4 },
-	                                '60-64': { P5: 15.4, P50: 20.5, P95: 26.8 },
-	                                '65-70': { P5: 14.7, P50: 19.5, P95: 25.6 },
-	                                '70+': { P5: 13.2, P50: 17.7, P95: 23.5 }
-	                            },
-	                            athlete: {
-	                                '18-20': { P50: 22.7, P75: 25.8, P90: 30.5 },
-	                                '21-24': { P50: 22.9, P75: 26.0, P90: 31.0 },
-	                                '25-29': { P50: 23.3, P75: 26.5, P90: 31.5 },
-	                                '30-34': { P50: 23.0, P75: 26.2, P90: 31.0 },
-	                                '35-39': { P50: 22.5, P75: 25.5, P90: 30.2 },
-	                                '40-44': { P50: 22.2, P75: 25.1, P90: 29.7 },
-	                                '45-49': { P50: 21.8, P75: 24.6, P90: 29.0 },
-	                                '50-54': { P50: 21.4, P75: 24.1, P90: 28.4 },
-	                                '55-59': { P50: 21.0, P75: 23.6, P90: 27.8 },
-	                                '60-64': { P50: 20.5, P75: 22.9, P90: 27.0 },
-	                                '65-70': { P50: 19.5, P75: 21.8, P90: 25.6 },
-	                                '70+': { P50: 17.7, P75: 20.0, P90: 24.0 }
-	                            }
-	                        }
-	                    };
-
-	                    // Determine age range
-	                    let ageRange;
-	                    if (age >= 18 && age <= 20) ageRange = '18-20';
-	                    else if (age <= 24) ageRange = '21-24';
-	                    else if (age <= 29) ageRange = '25-29';
-	                    else if (age <= 34) ageRange = '30-34';
-	                    else if (age <= 39) ageRange = '35-39';
-	                    else if (age <= 44) ageRange = '40-44';
-	                    else if (age <= 49) ageRange = '45-49';
-	                    else if (age <= 54) ageRange = '50-54';
-	                    else if (age <= 59) ageRange = '55-59';
-	                    else if (age <= 64) ageRange = '60-64';
-	                    else if (age <= 70) ageRange = '65-70';
-	                    else ageRange = '70+';
-
-				// Verify ambRanges[gender]
-			        if (!ambRanges[gender]) {
-			            throw new Error(`No se encontraron rangos de AMB para el género "${gender}"`);
-			        }
-	                    // Select ranges
-	                    const ranges = isAthlete ? ambRanges[gender].athlete[ageRange] : ambRanges[gender].general[ageRange];
-				// Verify ranges
-			        if (!ranges) {
-			            throw new Error(`No se encontraron rangos de AMB para el rango de edad "${ageRange}" y género "${gender}"`);
-			        }
-	                    // Set ambSource
-		        results.ambSource = formatAmbSource(results.amb, ranges, isAthlete, gender, ageRange);
-		
-		        console.log('AMB calculado:', { amb: results.amb, ambSource: results.ambSource });
-		    } catch (e) {
-		        console.error('Error calculando AMB:', e.message);
-		        results.amb = NaN;
-		        results.ambSource = 'Error: ' + e.message;
-		        content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-		    }
-		} else {
-		    results.amb = NaN;
-		    results.ambSource = '(No calculado: Datos insuficientes)';
-		    content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
-		}
-
-		// MMT Calculation and %MMT
-		
-		if (!isNaN(alturaM) && !isNaN(results.amb)  && data.edad && ['masculino', 'femenino'].includes(data.genero.toLowerCase()) && data.peso) {
-		        try {
-		            const alturaCm = Number(data.altura);
-		            const amb = Number(results.amb);
-		            const edad = Number(data.edad);
-			    const gender = data.genero.toLowerCase();
-			    const isAthlete = data.es_deportista === 'si';
-				
-		            if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
-		            if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
-		            if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
-			     if (data.peso <= 0) throw new Error('Peso debe ser mayor a 0');
-		
-		            const sportType = data.tipo_deporte || 'general';
-		            let ambMultiplier = 0.0029;
-		            if (data.es_deportista === 'si') {
-		                switch (sportType) {
-		                    case 'fuerza': ambMultiplier = 0.0030; break;
-		                    case 'resistencia': ambMultiplier = 0.0028; break;
-		                    case 'estetico': ambMultiplier = 0.00285; break;
-		                    default: ambMultiplier = 0.0029;
-		                }
-			} else { // No es deportista
-				ambMultiplier = 0.0024;
-			}
-					
-		            results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
-			    results.Pctmmt = (results.mmt / data.peso) * 100;
-                    	    results.PctmmtSource = formatPctmmtSource(results.Pctmmt, gender, isAthlete);
-                    	    results.mmtSportType = sportType;
-
-				console.log('MMT y %MMT calculados:', {
-	                        mmt: results.mmt,
-	                        Pctmmt: results.Pctmmt,
-	                        PctmmtSource: results.PctmmtSource,
-	                        sportType: sportType
-	                    });
-		        } catch (e) {
-		            console.error('Error calculando MMT:', e.message);
-		            results.mmt = NaN;
-			    results.Pctmmt = NaN;
-                            results.PctmmtSource = 'Error: ' + e.message;
-		            content += `<p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-		        }
-		    } else {
-		        results.mmt = NaN;
-			results.Pctmmt = NaN;
-                	results.PctmmtSource = '(No calculado: Datos insuficientes)';
-		        content += `<p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>`;
-		    }
-    
-
-		    // Masa Ósea Calculation
-		        if (!isNaN(alturaM) && data.diam_muneca && data.diam_femur && data.peso && data.edad && data.genero) {
-		            try {
-		                const diamMuneca = Number(data.diam_muneca);
-		                const diamFemur = Number(data.diam_femur);
-		                const peso = Number(data.peso);
-		                const age = Number(data.edad);
-		                const isAthlete = data.es_deportista === 'si';
-		                if (diamMuneca < 4 || diamMuneca > 10) throw new Error('Diámetro de muñeca debe estar entre 4 y 10 cm');
-		                if (diamFemur < 6 || diamFemur > 12) throw new Error('Diámetro de fémur debe estar entre 6 y 12 cm');
-		                if (peso < 30 || peso > 150) throw new Error('Peso debe estar entre 30 y 150 kg');
-		                if (age < 15) throw new Error('Edad debe ser mayor o igual a 15 años');
-		                const diamMunecaM = diamMuneca / 100;
-		                const diamFemurM = diamFemur / 100;
-		                let masaOsea = 3.02 * Math.pow(alturaM * alturaM * diamMunecaM * diamFemurM * 400, 0.712);
-		                if (isAthlete) masaOsea *= 1.05;
-		                results.masaOsea = Number(masaOsea.toFixed(1));
-		                const boneMassPct = (results.masaOsea / peso) * 100;
-		                results.masaOseaSource = formatMasaOseaSource(boneMassPct, data.genero, age, isAthlete);
-		                console.log('Masa Ósea calculada:', {
-		                    masaOsea: results.masaOsea,
-		                    boneMassPct,
-		                    masaOseaSource: results.masaOseaSource
-		                });
-		            } catch (e) {
-		                console.error('Error calculando Masa Ósea:', e.message);
-		                results.masaOsea = NaN;
-		                results.masaOseaSource = 'Error: ' + e.message;
-		                content += `<p><strong>Error en Masa Ósea:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-		            }
-		        } else {
-		            results.masaOsea = NaN;
-		            results.masaOseaSource = '(No calculado: Falta altura, diámetros óseos, peso, edad o género)';
-		            content += '<p><strong>Masa Ósea:</strong> No calculado debido a datos insuficientes.</p>';
-		        }
-    
-
-		                    // Masa Residual Calculation
-				        if (data.peso && data.genero) {
-				            try {
-				                if (data.peso <= 0) throw new Error('Peso debe ser mayor a 0');
-				                if (!['masculino', 'femenino'].includes(data.genero.toLowerCase())) {
-				                    throw new Error('Género debe ser "masculino" o "femenino"');
-				                }
-				                const factor = data.genero.toLowerCase() === 'masculino' ? 0.24 : 0.21;
-				                results.masaResidual = data.peso * factor;
-				                const masaResidualPct = (results.masaResidual / data.peso) * 100;
-				                results.masaResidualSource = formatMasaResidualSource(masaResidualPct, data.genero);
-				                console.log('Masa Residual calculada:', {
-				                    masaResidual: results.masaResidual,
-				                    masaResidualPct,
-				                    masaResidualSource: results.masaResidualSource
-				                });
-				            } catch (e) {
-				                console.error('Error calculando Masa Residual:', e.message);
-				                results.masaResidual = NaN;
-				                results.masaResidualSource = 'Error: ' + e.message;
-				                content += `<p><strong>Error en Masa Residual:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-				            }
-				        } else {
-				            results.masaResidual = NaN;
-				            results.masaResidualSource = '(No calculado: Falta peso o género)';
-				            content += `<p><strong>Masa Residual:</strong> No calculado debido a datos insuficientes (falta peso o género).</p>`;
-				        }
-    
-					// Calculate Somatotipo
-					if (
-						data.altura &&
-						data.peso &&
-						data.pliegue_tricipital &&
-						data.pliegue_subescapular &&
-						data.pliegue_suprailiaco &&
-						data.pliegue_pantorrilla &&
-						data.diam_humero &&
-						data.diam_femur &&
-						data.circ_brazo_contraido &&
-						data.circ_pantorrilla
-					) {
-						try {
-							const sum3Pliegues = data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
-							const X = sum3Pliegues * (170.18 / data.altura);
-							results.endomorfia = -0.7182 + 0.1451 * X - 0.00068 * X ** 2 + 0.0000014 * X ** 3;
-
-							const pliegueTricepsCm = data.pliegue_tricipital / 10;
-							const plieguePantorrillaCm = data.pliegue_pantorrilla / 10;
-							const circBrazoCorregido = data.circ_brazo_contraido - pliegueTricepsCm;
-							const circPantorrillaCorregida = data.circ_pantorrilla - plieguePantorrillaCm;
-							results.mesomorfia =
-								0.858 * data.diam_humero +
-								0.601 * data.diam_femur +
-								0.188 * circBrazoCorregido +
-								0.161 * circPantorrillaCorregida -
-								0.131 * data.altura +
-								4.5;
-
-							const HWR = data.altura / Math.pow(data.peso, 1 / 3);
-							if (HWR > 40.75) {
-								results.ectomorfia = 0.732 * HWR - 28.58;
-							} else if (HWR >= 38.25) {
-								results.ectomorfia = 0.463 * HWR - 17.63;
-							} else {
-								results.ectomorfia = 0.1;
-							}
-
-							results.endomorfia = Math.max(0.1, results.endomorfia);
-							results.mesomorfia = Math.max(0.1, results.mesomorfia);
-							results.ectomorfia = Math.max(0.1, results.ectomorfia);
-						} catch (e) {
-							console.error('Error calculando Somatotipo:', e.message);
-							results.endomorfia = NaN;
-							results.mesomorfia = NaN;
-							results.ectomorfia = NaN;
-						}
-					} else {
-						results.endomorfia = NaN;
-						results.mesomorfia = NaN;
-						results.ectomorfia = NaN;
-					}
-					// Destructure inputs
-					    let { genero, edad, peso, altura, esDeportista } = data;
-					    console.log('[GrasaPctDeurenberg] Destructured inputs:', { genero, edad, peso, altura, esDeportista });
-					
-					    // Parse and validate inputs
-					    edad = parseInt(edad);
-					    peso = parseFloat(peso);
-					    altura = parseFloat(altura);
-					    esDeportista = esDeportista === 'true' || esDeportista === true;
-					    const sexo = genero?.toLowerCase() === 'masculino' ? 'hombre' : genero?.toLowerCase() === 'femenino' ? 'mujer' : null;
-					    console.log('[GrasaPctDeurenberg] Parsed inputs:', { edad, peso, altura, esDeportista, sexo });
-					
-					    // Convert altura to meters for logging (not needed for calculation)
-					    const alturaMeters = altura > 0 ? altura / 100 : null;
-					    console.log('[GrasaPctDeurenberg] Converted altura:', { alturaCm: altura, alturaMeters });
-					
-					    // Validate inputs
-					    if (!peso || peso <= 0 || !altura || altura <= 0 || !edad || isNaN(edad) || edad < 18 || !sexo) {
-					        console.log('[GrasaPctDeurenberg] Input validation failed:', { peso, altura, edad, sexo });
-					        results.grasaPctDeurenberg = null;
-					        results.grasaPctDeurenbergSource = '(No estimado)';
-					    } else {
-					        // Calculate % Grasa (Deurenberg)
-					        results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(peso, altura, edad, sexo);
-					        results.grasaPctDeurenbergSource = formatGrasaPctDeurenbergSource(
-					            results.grasaPctDeurenberg,
-					            sexo,
-					            edad,
-					            peso && altura > 0 ? peso / ((altura / 100) * (altura / 100)) : null
-					        );
-					    }
-					    console.log('[GrasaPctDeurenberg] Calculated results:', {
-					        grasaPctDeurenberg: results.grasaPctDeurenberg,
-					        grasaPctDeurenbergSource: results.grasaPctDeurenbergSource
-					    });
-					  // --- Calculate % Grasa CUN-BAE ---
-				            if (data.edad && data.genero && data.peso && !isNaN(alturaM) && !isNaN(results.imc)) {
-				                try {
-				                    const cunBaeResults = calculateCUNBAEBodyFat(data, results.imc);
-				                    results.grasaPctCUNBAE = cunBaeResults.grasaPct;
-				                    results.grasaPctCUNBAESource = cunBaeResults.source;
-				                    console.log('CUN-BAE % Grasa calculado:', {
-				                        grasaPctCUNBAE: results.grasaPctCUNBAE,
-				                        grasaPctCUNBAESource: results.grasaPctCUNBAESource
-				                    });
-				                } catch (e) {
-				                    console.error('Error calculando % Grasa CUN-BAE:', e.message);
-				                    results.grasaPctCUNBAE = NaN;
-				                    results.grasaPctCUNBAESource = 'Error: ' + e.message;
-				                    content += `<p><strong>Error en % Grasa CUN-BAE:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-				                }
-				            } else {
-				                results.grasaPctCUNBAE = NaN;
-				                results.grasaPctCUNBAESource = '(No estimado: Datos insuficientes)';
-				                console.warn('No se pudo calcular % Grasa CUN-BAE: datos insuficientes', {
-				                    edad: data.edad,
-				                    genero: data.genero,
-				                    peso: data.peso,
-				                    alturaM,
-				                    imc: results.imc
-				                });
-				                content += `<p><strong>% Grasa CUN-BAE:</strong> No estimado debido a datos insuficientes.</p>`;
-				            }
-					// Store results for app.js
-					    // Store results for app.js
-					window.calculatedResults = {
-					    imc: formatResult(results.imc, 1),
-					    imcSource: results.imcSource ? formatImcSource(results.imcSource) : '(No calculado)',
-					    icc: formatResult(results.icc, 2),
-					    iccSource: results.iccSource ? formatIccSource(results.iccSource) : '(No calculado)',
-					    grasaPctActual: formatResult(results.grasaPctActual, 1),
-					    grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
-					    grasaPctDeurenberg: results.grasaPctDeurenberg ? formatResult(results.grasaPctDeurenberg, 1) : '---',
-                                            grasaPctDeurenbergSource: results.grasaPctDeurenbergSource ?? '(No estimado)',
-					    grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1) || '(No estimado)',
-					    grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)', // Uncomment if needed
-					    grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
-					    grasaPctDeseadoSource: results.desiredBodyFatSource || '(No estimado)',
-					    masaGrasa: formatResult(results.masaGrasa, 1),
-					    masaGrasaSource: results.masaGrasaSource || '(No calculado)',
-					    masaMagra: formatResult(results.masaMagra, 1),
-					    BRMEstimado: formatResult(results.BRMEstimado, 1),
-        				    BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
-					    mlg: formatResult(results.mlg, 1),
-					    mlgSource: results.mlgSource || '(No calculado)',
-					    amb: formatResult(results.amb, 1),
-					    ambSource: results.ambSource || '(No calculado)',
-					    masaOsea: formatResult(results.masaOsea, 1),
-					    masaOseaSource: results.masaOseaSource || '(No calculado)',
-					    masaResidual: formatResult(results.masaResidual, 1),
-					    masaResidualSource: results.masaResidualSource || '(No calculado)',
-					    pesoIdeal: formatResult(results.pesoIdeal, 1),
-					    pesoObjetivo: formatResult(results.pesoObjetivo, 1),
-					    mmt: formatResult(results.mmt, 1),
-					    Pctmmt: formatResult(results.Pctmmt, 1),
-					    PctmmtSource: results.PctmmtSource || '(No calculado)',
-					    imlg: formatResult(results.imlg, 1),
-					    imlgSource: results.imlgSource || '(No calculado)',
-					    img: formatResult(results.img, 1),
-					    imgSource: results.imgSource || '(No calculado)',
-					    tipologia: results.tipologia || 'Indefinido',
-					    tipologiaimgSource: results.tipologiaSource || '(No calculado)',
-					    edadmetabolica: formatResult(results.edadmetabolica, 1),
-					    edadmetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
-					    somatotipo: {
-					        endomorphy: formatResult(results.endomorfia, 1),
-					        mesomorphy: formatResult(results.mesomorfia, 1),
-					        ectomorphy: formatResult(results.ectomorfia, 1),
-					        formatted: results.endomorfia && !isNaN(results.endomorfia) ? 
-					            `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
-					    }
-					};
-					    console.log('Resultados calculados:', window.calculatedResults);
-					    console.log('Results for display:', results);
-					    console.log('BRMEstimado element:', document.getElementById('result-tmb'));
-					    console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
-					// --- 3. Update Display ---
-					try {
-						if (!resultElements || typeof resultElements !== 'object') {
-							throw new Error('resultElements no está definido o es inválido');
-						}
-						const updateElement = (key, value, precision = 1) => {
-							if (resultElements[key]) {
-								resultElements[key].textContent = formatResult(value, precision);
-							} else {
-								console.warn(`Elemento ${key} no encontrado en resultElements`);
-							}
-						};
-
-						// Update IMC
-					    updateElement('imc', results.imc, 1); // Matches resultElements.imc
-					    if (resultElements.imcSource) { // Use imcSource to match resultElements
-					        resultElements.imcSource.textContent = formatImcSource(results.imcSource);
-					    } else {
-					        console.warn('Elemento imcSource no encontrado en resultElements. Verifica que resultElements.imcSource esté definido y que el HTML tenga id="imc-source".');
-					    }
-						
-				                // Update ICC
-				                
-				                updateElement('icc', results.icc, 2);
-				                if (resultElements.iccSource) {
-				                    resultElements.iccSource.textContent = formatIccSource(results.iccSource);
-				                } else {
-				                    console.warn('Elemento iccSource no encontrado en resultElements. Verifica que resultElements.iccSource esté definido y que el HTML tenga id="icc-source".');
-				                }
-
-						// Update IMLG and IMG
-				                updateElement('imlg', results.imlg, 1);
-				                if (resultElements.imlgSource) {
-				                    resultElements.imlgSource.textContent = results.imlgSource || '(No calculado)';
-				                } else {
-				                    console.warn('Elemento imlgSource no encontrado en resultElements. Verifica que resultElements.imlgSource esté definido y que el HTML tenga id="imlg-source".');
-				                }
-				                updateElement('img', results.img, 1);
-				                if (resultElements.imgSource) {
-				                    resultElements.imgSource.textContent = results.imgSource || '(No calculado)';
-				                } else {
-				                    console.warn('Elemento imgSource no encontrado en resultElements. Verifica que resultElements.imgSource esté definido y que el HTML tenga id="img-source".');
-				                }
-																
-						if (resultElements.tipologia) {
-							resultElements.tipologia.textContent = results.tipologia || 'Indefinido';
-						}
-						
-						// Update other results
-						
-						updateElement('grasaPctActual', results.grasaPctActual, 1);
-						if (resultElements.grasaPctActualSource) {
-							resultElements.grasaPctActualSource.textContent = actualBodyFatSource || '(No calculado)';
-						}
-						updateElement('grasaPctDeseado', results.grasaPctDeseado, 1);
-						if (resultElements.grasaPctDeseadoSource) {
-							resultElements.grasaPctDeseadoSource.textContent = desiredBodyFatSource || '(No estimado)';
-						}
-						updateElement('masaGrasa', results.masaGrasa, 1);
-						if (resultElements.masaGrasaSource) {
-							resultElements.masaGrasaSource.textContent = results.masaGrasaSource|| '(No calculado)';
-						}
-						updateElement('masaMagra', results.masaMagra, 1);
-						updateElement('mlg', results.mlg, 1);
-						if (resultElements.mlgSource) {
-							resultElements.mlgSource.textContent = results.mlgSource|| '(No calculado)';
-						}
-						// Update AMB
-				                updateElement('amb', results.amb, 1);
-				                if (resultElements.ambSource) {
-				                    resultElements.ambSource.textContent = results.ambSource || '(No calculado)';
-				                } else {
-				                    console.warn('Elemento ambSource no encontrado en resultElements. Verifica que resultElements.ambSource esté definido y que el HTML tenga id="amb-source".');
-				                }
-						// Update Masa Ósea
-					            updateElement('masaOsea', results.masaOsea, 1);
-					            if (resultElements.masaOseaSource) {
-					                resultElements.masaOseaSource.textContent = results.masaOseaSource || '(No calculado)';
-					            } else {
-					                console.warn('Elemento masaOseaSource no encontrado en resultElements.');
-					            }
-						
-						// Update Masa Residual
-					            updateElement('masaResidual', results.masaResidual, 1);
-					            if (resultElements.masaResidualSource) {
-					                resultElements.masaResidualSource.textContent = results.masaResidualSource || '(No calculado)';
-					            } else {
-					                console.warn('Elemento masaResidualSource no encontrado en resultElements.');
-					            }
-						
-						updateElement('pesoIdeal', results.pesoIdeal, 1);
-						if (resultElements.pesoObjetivo) {
-							resultElements.pesoObjetivo.textContent = !isNaN(results.pesoObjetivo)
-								? `${results.pesoObjetivo >= 0 ? '+' : ''}${formatResult(results.pesoObjetivo, 1)}`
-								: '---';
-						}
-						// Update MMT and %MMT
-					            updateElement('mmt', results.mmt, 1);
-					            updateElement('Pctmmt', results.Pctmmt, 1); // Changed from 'Pct-mmt'
-					            if (resultElements.PctmmtSource) { // Changed from resultElements['Pct-mmt-source']
-					                resultElements.PctmmtSource.textContent = results.PctmmtSource || '(No calculado)';
-					            } else {
-					                console.warn('Elemento PctmmtSource no encontrado en resultElements.');
-					            }
-						// Update Metabolic Age
-						updateElement('edadmetabolica', results.edadmetabolica, 1);
-						if (resultElements.edadmetabolicaSource) {
-							resultElements.edadmetabolicaSource.textContent = results.edadmetabolicaSource || '(No calculado)';
-						}
-						// Update BMR
-							updateElement('result-tmb', results.BRMEstimado, 1);
-							if (resultElements.BRMEstimadoSource) {
-							    resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource || '(No calculado)';
-							}
-						//Update Masa Grasa y Magra
-						updateElement('result-masa-magra', results.masaMagra, 1);
-                                                updateElement('result-masa-grasa', results.masaGrasa, 1);
-						
-						// Mostrar resultados en la interfaz BMR
-					        if (resultElements.BRMEstimado) {
-					            resultElements.BRMEstimado.textContent = formatResult(results.BRMEstimado, 1);
-					        }
-					        if (resultElements.BRMEstimadoSource) {
-					            resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource;
-					        }
-						if (resultElements.resultSomatotipo) {
-							const somatotipoFormatted = results.endomorfia && !isNaN(results.endomorfia) &&
-								results.mesomorfia && !isNaN(results.mesomorfia) &&
-								results.ectomorfia && !isNaN(results.ectomorfia)
-								? `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}`
-								: '---';
-							resultElements.resultSomatotipo.textContent = somatotipoFormatted;
-						}
-							// Update %Grasa Deurenberg
-							if (resultElements.grasaPctDeurenberg) {
-						        resultElements.grasaPctDeurenberg.textContent = window.calculatedResults.grasaPctDeurenberg;
-						        console.log('[GrasaPctDeurenberg] Updated DOM:', {
-						            element: 'result-grasa-pct-Deurenberg',
-						            value: window.calculatedResults.grasaPctDeurenberg
-						        });
-						    } else {
-						        console.log('[GrasaPctDeurenberg] Warning: result-grasa-pct-Deurenberg element not found');
-						    }
-						    
-						    if (resultElements.grasaPctDeurenbergSource) {
-						        resultElements.grasaPctDeurenbergSource.textContent = window.calculatedResults.grasaPctDeurenbergSource;
-						        console.log('[GrasaPctDeurenberg] Updated DOM:', {
-						            element: 'grasa-pct-Deurenberg-source',
-						            value: window.calculatedResults.grasaPctDeurenbergSource
-						        });
-						    } else {
-						        console.log('[GrasaPctDeurenberg] Warning: grasa-pct-Deurenberg-source element not found');
-						    }
-							// Update % Grasa CUN-BAE
-					                updateElement('grasaPctCUNBAE', results.grasaPctCUNBAE, 1);
-					                if (resultElements.grasaPctCUNBAESource) {
-					                    resultElements.grasaPctCUNBAESource.textContent = results.grasaPctCUNBAESource || '(No estimado)';
-					                } else {
-					                    console.warn('Elemento grasaPctCUNBAESource no encontrado en resultElements');
-					                }
-						// --- 4. Generate and Display Explanations ---
-						if (!explanationContent) {
-							throw new Error('Elemento explanation-content no encontrado');
-						}
-						const analysisHtml = bodyCompResults
-							? generateExplanationsAndSuggestions(data, results, bodyCompResults)
-							: '<p>No se pudo generar el análisis de composición corporal: datos insuficientes.</p>';
-						explanationContent.innerHTML = analysisHtml + content; // Append error messages
-						if (explanationSection) {
-							explanationSection.style.display = 'block';
-						} else {
-							console.warn('explanationSection no encontrado');
-						}
-
-						console.log('Display updated successfully');
-						alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones.');
-					} catch (e) {
-						console.error('Error durante la actualización de la interfaz:', e.message);
-						alert(`Error al actualizar los resultados: ${e.message}. Verifica los datos ingresados y la configuración de la página.`);
-					}
-				} catch (e) {
-					console.error('Error durante los cálculos:', e.message);
-					alert(`Error en los cálculos: ${e.message}. Verifica los datos ingresados.`);
-				}
+			            // --- Calculate Metabolic Age ---
+			            try {
+			                const metabolicData = {
+			                    genero: data.genero === 'Masculino' ? 'masculino' : 'femenino',
+			                    edad: data.edad,
+			                    peso: data.peso,
+			                    altura: data.altura,
+			                    esDeportista: data.es_deportista === 'si',
+			                    pliegues: {
+			                        tricipital: data.pliegue_tricipital || 0,
+			                        subescapular: data.pliegue_subescapular || 0,
+			                        suprailiaco: data.pliegue_suprailiaco || 0,
+			                        bicipital: data.pliegue_bicipital || 0
+			                    },
+			                    porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
+			                    cintura: data.circ_cintura || 0,
+			                    imc: data.imc
+			                };
+			                console.log('metabolicData:', metabolicData);
+			                const metabolicResult = calculateMetabolicAge(metabolicData);
+			                console.log('metabolicResult:', metabolicResult);
+			                results.edadmetabolica = metabolicResult.edadMetabolica;
+			                results.edadmetabolicaSource = metabolicResult.method;
+			                results.BRMEstimado = metabolicResult.BRMEstimado;
+			                results.BRMEstimadoSource = metabolicResult.BRMEstimadoSource;
+			                results.masaMagra = metabolicResult.masaMagra;
+			                results.masaGrasa = metabolicResult.masaGrasa;
+			                results.masaGrasaSource = metabolicResult.method; // Added
+			                console.log('Edad Metabólica calculada:', results.edadmetabolica, 'Método:', results.edadmetabolicaSource);
+			                console.log('BMR calculado:', results.BRMEstimado, 'Fuente:', results.BRMEstimadoSource);
+			                console.log('Masa Magra:', results.masaMagra, 'Masa Grasa:', results.masaGrasa);
+			            } catch (error) {
+			                console.error('Error al calcular la edad metabólica o BMR:', error.message);
+			                results.edadmetabolica = NaN;
+			                results.edadmetabolicaSource = 'Error en el cálculo';
+			                results.BRMEstimado = NaN;
+			                results.BRMEstimadoSource = `Error: ${error.message}`;
+			                results.masaMagra = NaN;
+			                results.masaGrasa = NaN;
+			                results.masaGrasaSource = `Error: ${error.message}`;
+			            }
 			
-				// Prevent auto-submission on page load
-				window.addEventListener('load', () => {
-					const form = document.getElementById('anthropometry-form');
-					    if (form) {
-						form.reset(); // Clear form inputs
-						    console.log('Form reset on page load to prevent auto-submission');
-						        // Asegurarse de que el botón esté oculto al cargar la página
-						      if (guardarDatosBtn) {
-						            guardarDatosBtn.style.display = 'none';
-						        }
-					}
-				});
+			            // --- Other Calculations ---
+			            // Calculate Masa Grasa y Masa Libre de Grasa
+			            if (!isNaN(results.grasaPctActual)) {
+			                results.masaMagra = metabolicResult.masaMagra;
+			                results.mlg = data.peso - results.masaGrasa;
+			                results.mlgSource = results.grasaPctActual ? 'Calculado a partir de % grasa' : '(No calculado)';
+			                results.masaGrasaSource = metabolicResult.method;
+			            } else {
+			                results.masaGrasa = NaN;
+			                results.mlg = NaN;
+			            }
+			
+			            if (!isNaN(results.mlg) && !isNaN(results.grasaPctDeseado)) {
+			                results.pesoIdeal = results.mlg / (1 - results.grasaPctDeseado / 100);
+			            } else {
+			                results.pesoIdeal = NaN;
+			            }
+			
+			            if (data.peso && !isNaN(results.pesoIdeal)) {
+			                results.pesoObjetivo = results.pesoIdeal - data.peso;
+			            } else {
+			                results.pesoObjetivo = NaN;
+			            }
+			
+			            if (!isNaN(alturaM)) {
+			                results.imc = data.peso / (alturaM * alturaM);
+			            } else {
+			                results.imc = NaN;
+			            }
+			
+			            if (data.circ_cadera > 0 && data.circ_cintura) {
+			                results.icc = data.circ_cintura / data.circ_cadera;
+			            } else {
+			                results.icc = NaN;
+			            }
+			            
+			            // Calculate Área Muscular Brazo (AMB)
+			            if (data.circ_brazo && data.pliegue_tricipital && data.edad && data.genero) {
+			                try {
+			                    const circBrazo = Number(data.circ_brazo);
+			                    const pliegueTricipital = Number(data.pliegue_tricipital);
+			                    const age = Number(data.edad);
+			                    const isAthlete = data.es_deportista === 'si';
+			                    const gender = data.genero ? data.genero.toLowerCase() : '';
+			                    // Log gender for debugging
+			                    console.log('Gender for AMB calculation:', gender);
+			            
+			                    // Validate gender early
+			                    if (!['masculino', 'femenino'].includes(gender)) {
+			                        throw new Error('Género no válido: debe ser "masculino" o "femenino"');
+			                    }
+			        
+			                    if (circBrazo < 20 || circBrazo > 50) throw new Error('Circunferencia del brazo debe estar entre 20 y 50 cm');
+			                    if (pliegueTricipital < 2 || pliegueTricipital > 40) throw new Error('Pliegue tricipital debe estar entre 2 y 40 mm');
+			                    if (age < 18) throw new Error('Edad debe ser mayor o igual a 18 años');
+			                    if (!['masculino', 'femenino'].includes(data.genero)) throw new Error('Género no válido');
+			        
+			                    const tricepsCm = pliegueTricipital / 10;
+			                    const term = circBrazo - Math.PI * tricepsCm;
+			                    const baseAMB = (term * term) / (4 * Math.PI);
+			        
+			                    let correction = 0;
+			                    if (gender === 'masculino') {
+			                        correction = isAthlete ? (age < 40 ? 8 : age < 60 ? 7 : 6) : (age < 40 ? 10 : age < 60 ? 9 : 8);
+			                    } else if (gender === 'femenino') {
+			                        correction = isAthlete ? (age < 40 ? 5 : age < 60 ? 4.5 : 4) : (age < 40 ? 6.5 : age < 60 ? 6 : 5.5);
+			                    }
+			        
+			                    results.amb = Math.max(baseAMB - correction, 0);
+			               
+			                    // Define AMB reference ranges
+			                    const ambRanges = {
+			                        masculino: {
+			                            general: {
+			                                '18-20': { P5: 23.4, P50: 30.4, P95: 39.6 },
+			                                '21-24': { P5: 23.6, P50: 30.6, P95: 39.8 },
+			                                '25-29': { P5: 23.8, P50: 31.0, P95: 40.0 },
+			                                '30-34': { P5: 23.5, P50: 30.6, P95: 39.8 },
+			                                '35-39': { P5: 22.9, P50: 29.9, P95: 39.0 },
+			                                '40-44': { P5: 22.6, P50: 29.5, P95: 38.5 },
+			                                '45-49': { P5: 21.8, P50: 28.5, P95: 37.3 },
+			                                '50-54': { P5: 21.2, P50: 27.9, P95: 36.5 },
+			                                '55-59': { P5: 20.6, P50: 27.1, P95: 35.5 },
+			                                '60-64': { P5: 20.2, P50: 26.4, P95: 34.7 },
+			                                '65-70': { P5: 19.0, P50: 25.0, P95: 33.0 },
+			                                '70+': { P5: 16.5, P50: 21.9, P95: 29.0 }
+			                            },
+			                            athlete: {
+			                                '18-20': { P50: 30.5, P75: 34.5, P90: 40.5 },
+			                                '21-24': { P50: 30.8, P75: 34.8, P90: 41.0 },
+			                                '25-29': { P50: 31.2, P75: 35.2, P90: 41.5 },
+			                                '30-34': { P50: 30.8, P75: 34.7, P90: 41.0 },
+			                                '35-39': { P50: 30.0, P75: 33.8, P90: 40.0 },
+			                                '40-44': { P50: 29.6, P75: 33.3, P90: 39.5 },
+			                                '45-49': { P50: 28.7, P75: 32.1, P90: 38.3 },
+			                                '50-54': { P50: 28.1, P75: 31.5, P90: 37.5 },
+			                                '55-59': { P50: 27.2, P75: 30.5, P90: 36.4 },
+			                                '60-64': { P50: 26.5, P75: 29.7, P90: 35.5 },
+			                                '65-70': { P50: 25.0, P75: 28.2, P90: 34.0 },
+			                                '70+': { P50: 21.9, P75: 25.2, P90: 30.0 }
+			                            }
+			                        },
+			                        femenino: {
+			                            general: {
+			                                '18-20': { P5: 17.7, P50: 22.6, P95: 28.8 },
+			                                '21-24': { P5: 17.9, P50: 22.8, P95: 29.1 },
+			                                '25-29': { P5: 18.0, P50: 23.2, P95: 29.8 },
+			                                '30-34': { P5: 17.8, P50: 22.9, P95: 29.4 },
+			                                '35-39': { P5: 17.3, P50: 22.4, P95: 29.0 },
+			                                '40-44': { P5: 17.1, P50: 22.2, P95: 28.8 },
+			                                '45-49': { P5: 16.6, P50: 21.8, P95: 28.4 },
+			                                '50-54': { P5: 16.3, P50: 21.4, P95: 27.9 },
+			                                '55-59': { P5: 15.8, P50: 21.0, P95: 27.4 },
+			                                '60-64': { P5: 15.4, P50: 20.5, P95: 26.8 },
+			                                '65-70': { P5: 14.7, P50: 19.5, P95: 25.6 },
+			                                '70+': { P5: 13.2, P50: 17.7, P95: 23.5 }
+			                            },
+			                            athlete: {
+			                                '18-20': { P50: 22.7, P75: 25.8, P90: 30.5 },
+			                                '21-24': { P50: 22.9, P75: 26.0, P90: 31.0 },
+			                                '25-29': { P50: 23.3, P75: 26.5, P90: 31.5 },
+			                                '30-34': { P50: 23.0, P75: 26.2, P90: 31.0 },
+			                                '35-39': { P50: 22.5, P75: 25.5, P90: 30.2 },
+			                                '40-44': { P50: 22.2, P75: 25.1, P90: 29.7 },
+			                                '45-49': { P50: 21.8, P75: 24.6, P90: 29.0 },
+			                                '50-54': { P50: 21.4, P75: 24.1, P90: 28.4 },
+			                                '55-59': { P50: 21.0, P75: 23.6, P90: 27.8 },
+			                                '60-64': { P50: 20.5, P75: 22.9, P90: 27.0 },
+			                                '65-70': { P50: 19.5, P75: 21.8, P90: 25.6 },
+			                                '70+': { P50: 17.7, P75: 20.0, P90: 24.0 }
+			                            }
+			                        }
+			                    };
+			
+			                    // Determine age range
+			                    let ageRange;
+			                    if (age >= 18 && age <= 20) ageRange = '18-20';
+			                    else if (age <= 24) ageRange = '21-24';
+			                    else if (age <= 29) ageRange = '25-29';
+			                    else if (age <= 34) ageRange = '30-34';
+			                    else if (age <= 39) ageRange = '35-39';
+			                    else if (age <= 44) ageRange = '40-44';
+			                    else if (age <= 49) ageRange = '45-49';
+			                    else if (age <= 54) ageRange = '50-54';
+			                    else if (age <= 59) ageRange = '55-59';
+			                    else if (age <= 64) ageRange = '60-64';
+			                    else if (age <= 70) ageRange = '65-70';
+			                    else ageRange = '70+';
+			
+			                    // Verify ambRanges[gender]
+			                    if (!ambRanges[gender]) {
+			                        throw new Error(`No se encontraron rangos de AMB para el género "${gender}"`);
+			                    }
+			                    // Select ranges
+			                    const ranges = isAthlete ? ambRanges[gender].athlete[ageRange] : ambRanges[gender].general[ageRange];
+			                    // Verify ranges
+			                    if (!ranges) {
+			                        throw new Error(`No se encontraron rangos de AMB para el rango de edad "${ageRange}" y género "${gender}"`);
+			                    }
+			                    // Set ambSource
+			                    results.ambSource = formatAmbSource(results.amb, ranges, isAthlete, gender, ageRange);
+			        
+			                    console.log('AMB calculado:', { amb: results.amb, ambSource: results.ambSource });
+			                } catch (e) {
+			                    console.error('Error calculando AMB:', e.message);
+			                    results.amb = NaN;
+			                    results.ambSource = 'Error: ' + e.message;
+			                    content += `<p><strong>Error en AMB:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                }
+			            } else {
+			                results.amb = NaN;
+			                results.ambSource = '(No calculado: Datos insuficientes)';
+			                content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado debido a datos insuficientes (falta circunferencia del brazo, pliegue tricipital, edad o género).</p>';
+			            }
+			
+			            // MMT Calculation and %MMT
+			            if (!isNaN(alturaM) && !isNaN(results.amb)  && data.edad && ['masculino', 'femenino'].includes(data.genero.toLowerCase()) && data.peso) {
+			                try {
+			                    const alturaCm = Number(data.altura);
+			                    const amb = Number(results.amb);
+			                    const edad = Number(data.edad);
+			                    const gender = data.genero.toLowerCase();
+			                    const isAthlete = data.es_deportista === 'si';
+			                
+			                    if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
+			                    if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
+			                    if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
+			                    if (data.peso <= 0) throw new Error('Peso debe ser mayor a 0');
+			        
+			                    const sportType = data.tipo_deporte || 'general';
+			                    let ambMultiplier = 0.0029;
+			                    if (data.es_deportista === 'si') {
+			                        switch (sportType) {
+			                            case 'fuerza': ambMultiplier = 0.0030; break;
+			                            case 'resistencia': ambMultiplier = 0.0028; break;
+			                            case 'estetico': ambMultiplier = 0.00285; break;
+			                            default: ambMultiplier = 0.0029;
+			                        }
+			                    } else { // No es deportista
+			                        ambMultiplier = 0.0024;
+			                    }
+			                    
+			                    results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
+			                    results.Pctmmt = (results.mmt / data.peso) * 100;
+			                    results.PctmmtSource = formatPctmmtSource(results.Pctmmt, gender, isAthlete);
+			                    results.mmtSportType = sportType;
+			
+			                    console.log('MMT y %MMT calculados:', {
+			                        mmt: results.mmt,
+			                        Pctmmt: results.Pctmmt,
+			                        PctmmtSource: results.PctmmtSource,
+			                        sportType: sportType
+			                    });
+			                } catch (e) {
+			                    console.error('Error calculando MMT:', e.message);
+			                    results.mmt = NaN;
+			                    results.Pctmmt = NaN;
+			                    results.PctmmtSource = 'Error: ' + e.message;
+			                    content += `<p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                }
+			            } else {
+			                results.mmt = NaN;
+			                results.Pctmmt = NaN;
+			                results.PctmmtSource = '(No calculado: Datos insuficientes)';
+			                content += `<p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>`;
+			            }
+			
+			            // Masa Ósea Calculation
+			            if (!isNaN(alturaM) && data.diam_muneca && data.diam_femur && data.peso && data.edad && data.genero) {
+			                try {
+			                    const diamMuneca = Number(data.diam_muneca);
+			                    const diamFemur = Number(data.diam_femur);
+			                    const peso = Number(data.peso);
+			                    const age = Number(data.edad);
+			                    const isAthlete = data.es_deportista === 'si';
+			                    if (diamMuneca < 4 || diamMuneca > 10) throw new Error('Diámetro de muñeca debe estar entre 4 y 10 cm');
+			                    if (diamFemur < 6 || diamFemur > 12) throw new Error('Diámetro de fémur debe estar entre 6 y 12 cm');
+			                    if (peso < 30 || peso > 150) throw new Error('Peso debe estar entre 30 y 150 kg');
+			                    if (age < 15) throw new Error('Edad debe ser mayor o igual a 15 años');
+			                    const diamMunecaM = diamMuneca / 100;
+			                    const diamFemurM = diamFemur / 100;
+			                    let masaOsea = 3.02 * Math.pow(alturaM * alturaM * diamMunecaM * diamFemurM * 400, 0.712);
+			                    if (isAthlete) masaOsea *= 1.05;
+			                    results.masaOsea = Number(masaOsea.toFixed(1));
+			                    const boneMassPct = (results.masaOsea / peso) * 100;
+			                    results.masaOseaSource = formatMasaOseaSource(boneMassPct, data.genero, age, isAthlete);
+			                    console.log('Masa Ósea calculada:', {
+			                        masaOsea: results.masaOsea,
+			                        boneMassPct,
+			                        masaOseaSource: results.masaOseaSource
+			                    });
+			                } catch (e) {
+			                    console.error('Error calculando Masa Ósea:', e.message);
+			                    results.masaOsea = NaN;
+			                    results.masaOseaSource = 'Error: ' + e.message;
+			                    content += `<p><strong>Error en Masa Ósea:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                }
+			            } else {
+			                results.masaOsea = NaN;
+			                results.masaOseaSource = '(No calculado: Falta altura, diámetros óseos, peso, edad o género)';
+			                content += '<p><strong>Masa Ósea:</strong> No calculado debido a datos insuficientes.</p>';
+			            }
+			
+			            // Masa Residual Calculation
+			            if (data.peso && data.genero) {
+			                try {
+			                    if (data.peso <= 0) throw new Error('Peso debe ser mayor a 0');
+			                    if (!['masculino', 'femenino'].includes(data.genero.toLowerCase())) {
+			                        throw new Error('Género debe ser "masculino" o "femenino"');
+			                    }
+			                    const factor = data.genero.toLowerCase() === 'masculino' ? 0.24 : 0.21;
+			                    results.masaResidual = data.peso * factor;
+			                    const masaResidualPct = (results.masaResidual / data.peso) * 100;
+			                    results.masaResidualSource = formatMasaResidualSource(masaResidualPct, data.genero);
+			                    console.log('Masa Residual calculada:', {
+			                        masaResidual: results.masaResidual,
+			                        masaResidualPct,
+			                        masaResidualSource: results.masaResidualSource
+			                    });
+			                } catch (e) {
+			                    console.error('Error calculando Masa Residual:', e.message);
+			                    results.masaResidual = NaN;
+			                    results.masaResidualSource = 'Error: ' + e.message;
+			                    content += `<p><strong>Error en Masa Residual:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                }
+			            } else {
+			                results.masaResidual = NaN;
+			                results.masaResidualSource = '(No calculado: Falta peso o género)';
+			                content += `<p><strong>Masa Residual:</strong> No calculado debido a datos insuficientes (falta peso o género).</p>`;
+			            }
+			
+			            // Calculate Somatotipo
+			            if (
+			                data.altura &&
+			                data.peso &&
+			                data.pliegue_tricipital &&
+			                data.pliegue_subescapular &&
+			                data.pliegue_suprailiaco &&
+			                data.pliegue_pantorrilla &&
+			                data.diam_humero &&
+			                data.diam_femur &&
+			                data.circ_brazo_contraido &&
+			                data.circ_pantorrilla
+			            ) {
+			                try {
+			                    const sum3Pliegues = data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
+			                    const X = sum3Pliegues * (170.18 / data.altura);
+			                    results.endomorfia = -0.7182 + 0.1451 * X - 0.00068 * X ** 2 + 0.0000014 * X ** 3;
+			
+			                    const pliegueTricepsCm = data.pliegue_tricipital / 10;
+			                    const plieguePantorrillaCm = data.pliegue_pantorrilla / 10;
+			                    const circBrazoCorregido = data.circ_brazo_contraido - pliegueTricepsCm;
+			                    const circPantorrillaCorregida = data.circ_pantorrilla - plieguePantorrillaCm;
+			                    results.mesomorfia =
+			                        0.858 * data.diam_humero +
+			                        0.601 * data.diam_femur +
+			                        0.188 * circBrazoCorregido +
+			                        0.161 * circPantorrillaCorregida -
+			                        0.131 * data.altura +
+			                        4.5;
+			
+			                    const HWR = data.altura / Math.pow(data.peso, 1 / 3);
+			                    if (HWR > 40.75) {
+			                        results.ectomorfia = 0.732 * HWR - 28.58;
+			                    } else if (HWR >= 38.25) {
+			                        results.ectomorfia = 0.463 * HWR - 17.63;
+			                    } else {
+			                        results.ectomorfia = 0.1;
+			                    }
+			
+			                    results.endomorfia = Math.max(0.1, results.endomorfia);
+			                    results.mesomorfia = Math.max(0.1, results.mesomorfia);
+			                    results.ectomorfia = Math.max(0.1, results.ectomorfia);
+			                } catch (e) {
+			                    console.error('Error calculando Somatotipo:', e.message);
+			                    results.endomorfia = NaN;
+			                    results.mesomorfia = NaN;
+			                    results.ectomorfia = NaN;
+			                }
+			            } else {
+			                results.endomorfia = NaN;
+			                results.mesomorfia = NaN;
+			                results.ectomorfia = NaN;
+			            }
+			
+			            // Destructure inputs
+			            let { genero, edad, peso, altura, esDeportista } = data;
+			            console.log('[GrasaPctDeurenberg] Destructured inputs:', { genero, edad, peso, altura, esDeportista });
+			        
+			            // Parse and validate inputs
+			            edad = parseInt(edad);
+			            peso = parseFloat(peso);
+			            altura = parseFloat(altura);
+			            esDeportista = esDeportista === 'true' || esDeportista === true;
+			            const sexo = genero?.toLowerCase() === 'masculino' ? 'hombre' : genero?.toLowerCase() === 'femenino' ? 'mujer' : null;
+			            console.log('[GrasaPctDeurenberg] Parsed inputs:', { edad, peso, altura, esDeportista, sexo });
+			        
+			            // Convert altura to meters for logging (not needed for calculation)
+			            const alturaMeters = altura > 0 ? altura / 100 : null;
+			            console.log('[GrasaPctDeurenberg] Converted altura:', { alturaCm: altura, alturaMeters });
+			        
+			            // Validate inputs
+			            if (!peso || peso <= 0 || !altura || altura <= 0 || !edad || isNaN(edad) || edad < 18 || !sexo) {
+			                console.log('[GrasaPctDeurenberg] Input validation failed:', { peso, altura, edad, sexo });
+			                results.grasaPctDeurenberg = null;
+			                results.grasaPctDeurenbergSource = '(No estimado)';
+			            } else {
+			                // Calculate % Grasa (Deurenberg)
+			                results.grasaPctDeurenberg = calculateGrasaPctDeurenberg(peso, altura, edad, sexo);
+			                results.grasaPctDeurenbergSource = formatGrasaPctDeurenbergSource(
+			                    results.grasaPctDeurenberg,
+			                    sexo,
+			                    edad,
+			                    peso && altura > 0 ? peso / ((altura / 100) * (altura / 100)) : null
+			                );
+			            }
+			            console.log('[GrasaPctDeurenberg] Calculated results:', {
+			                grasaPctDeurenberg: results.grasaPctDeurenberg,
+			                grasaPctDeurenbergSource: results.grasaPctDeurenbergSource
+			            });
+			
+			            // --- Calculate % Grasa CUN-BAE ---
+			            if (data.edad && data.genero && data.peso && !isNaN(alturaM) && !isNaN(results.imc)) {
+			                try {
+			                    const cunBaeResults = calculateCUNBAEBodyFat(data, results.imc);
+			                    results.grasaPctCUNBAE = cunBaeResults.grasaPct;
+			                    results.grasaPctCUNBAESource = cunBaeResults.source;
+			                    console.log('CUN-BAE % Grasa calculado:', {
+			                        grasaPctCUNBAE: results.grasaPctCUNBAE,
+			                        grasaPctCUNBAESource: results.grasaPctCUNBAESource
+			                    });
+			                } catch (e) {
+			                    console.error('Error calculando % Grasa CUN-BAE:', e.message);
+			                    results.grasaPctCUNBAE = NaN;
+			                    results.grasaPctCUNBAESource = 'Error: ' + e.message;
+			                    content += `<p><strong>Error en % Grasa CUN-BAE:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
+			                }
+			            } else {
+			                results.grasaPctCUNBAE = NaN;
+			                results.grasaPctCUNBAESource = '(No estimado: Datos insuficientes)';
+			                console.warn('No se pudo calcular % Grasa CUN-BAE: datos insuficientes', {
+			                    edad: data.edad,
+			                    genero: data.genero,
+			                    peso: data.peso,
+			                    alturaM,
+			                    imc: results.imc
+			                });
+			                content += `<p><strong>% Grasa CUN-BAE:</strong> No estimado debido a datos insuficientes.</p>`;
+			            }
+			
+			            // Store results for app.js
+			            window.calculatedResults = {
+			                imc: formatResult(results.imc, 1),
+			                imcSource: results.imcSource ? formatImcSource(results.imcSource) : '(No calculado)',
+			                icc: formatResult(results.icc, 2),
+			                iccSource: results.iccSource ? formatIccSource(results.iccSource) : '(No calculado)',
+			                grasaPctActual: formatResult(results.grasaPctActual, 1),
+			                grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
+			                grasaPctDeurenberg: results.grasaPctDeurenberg ? formatResult(results.grasaPctDeurenberg, 1) : '---',
+			                grasaPctDeurenbergSource: results.grasaPctDeurenbergSource ?? '(No estimado)',
+			                grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1) || '(No estimado)',
+			                grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)',
+			                grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
+			                grasaPctDeseadoSource: results.desiredBodyFatSource || '(No estimado)',
+			                masaGrasa: formatResult(results.masaGrasa, 1),
+			                masaGrasaSource: results.masaGrasaSource || '(No calculado)',
+			                masaMagra: formatResult(results.masaMagra, 1),
+			                BRMEstimado: formatResult(results.BRMEstimado, 1),
+			                BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
+			                mlg: formatResult(results.mlg, 1),
+			                mlgSource: results.mlgSource || '(No calculado)',
+			                amb: formatResult(results.amb, 1),
+			                ambSource: results.ambSource || '(No calculado)',
+			                masaOsea: formatResult(results.masaOsea, 1),
+			                masaOseaSource: results.masaOseaSource || '(No calculado)',
+			                masaResidual: formatResult(results.masaResidual, 1),
+			                masaResidualSource: results.masaResidualSource || '(No calculado)',
+			                pesoIdeal: formatResult(results.pesoIdeal, 1),
+			                pesoObjetivo: formatResult(results.pesoObjetivo, 1),
+			                mmt: formatResult(results.mmt, 1),
+			                Pctmmt: formatResult(results.Pctmmt, 1),
+			                PctmmtSource: results.PctmmtSource || '(No calculado)',
+			                imlg: formatResult(results.imlg, 1),
+			                imlgSource: results.imlgSource || '(No calculado)',
+			                img: formatResult(results.img, 1),
+			                imgSource: results.imgSource || '(No calculado)',
+			                tipologia: results.tipologia || 'Indefinido',
+			                tipologiaimgSource: results.tipologiaSource || '(No calculado)',
+			                edadmetabolica: formatResult(results.edadmetabolica, 1),
+			                edadmetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
+			                somatotipo: {
+			                    endomorphy: formatResult(results.endomorfia, 1),
+			                    mesomorphy: formatResult(results.mesomorfia, 1),
+			                    ectomorphy: formatResult(results.ectomorfia, 1),
+			                    formatted: results.endomorfia && !isNaN(results.endomorfia) ? 
+			                        `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
+			                }
+			            };
+			            console.log('Resultados calculados:', window.calculatedResults);
+			            console.log('Results for display:', results);
+			            console.log('BRMEstimado element:', document.getElementById('result-tmb'));
+			            console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
+			
+			            // --- 3. Update Display ---
+			            try {
+			                if (!resultElements || typeof resultElements !== 'object') {
+			                    throw new Error('resultElements no está definido o es inválido');
+			                }
+			                const updateElement = (key, value, precision = 1) => {
+			                    if (resultElements[key]) {
+			                        resultElements[key].textContent = formatResult(value, precision);
+			                    } else {
+			                        console.warn(`Elemento ${key} no encontrado en resultElements`);
+			                    }
+			                };
+			
+			                // Update IMC
+			                updateElement('imc', results.imc, 1); // Matches resultElements.imc
+			                if (resultElements.imcSource) { // Use imcSource to match resultElements
+			                    resultElements.imcSource.textContent = formatImcSource(results.imcSource);
+			                } else {
+			                    console.warn('Elemento imcSource no encontrado en resultElements. Verifica que resultElements.imcSource esté definido y que el HTML tenga id="imc-source".');
+			                }
+			                
+			                // Update ICC
+			                updateElement('icc', results.icc, 2);
+			                if (resultElements.iccSource) {
+			                    resultElements.iccSource.textContent = formatIccSource(results.iccSource);
+			                } else {
+			                    console.warn('Elemento iccSource no encontrado en resultElements. Verifica que resultElements.iccSource esté definido y que el HTML tenga id="icc-source".');
+			                }
+			
+			                // Update IMLG and IMG
+			                updateElement('imlg', results.imlg, 1);
+			                if (resultElements.imlgSource) {
+			                    resultElements.imlgSource.textContent = results.imlgSource || '(No calculado)';
+			                } else {
+			                    console.warn('Elemento imlgSource no encontrado en resultElements. Verifica que resultElements.imlgSource esté definido y que el HTML tenga id="imlg-source".');
+			                }
+			                updateElement('img', results.img, 1);
+			                if (resultElements.imgSource) {
+			                    resultElements.imgSource.textContent = results.imgSource || '(No calculado)';
+			                } else {
+			                    console.warn('Elemento imgSource no encontrado en resultElements. Verifica que resultElements.imgSource esté definido y que el HTML tenga id="img-source".');
+			                }
+			                
+			                if (resultElements.tipologia) {
+			                    resultElements.tipologia.textContent = results.tipologia || 'Indefinido';
+			                }
+			                
+			                // Update other results
+			    updateElement('grasaPctActual', results.grasaPctActual, 1);
+			    if (resultElements.grasaPctActualSource) {
+			        resultElements.grasaPctActualSource.textContent = results.actualBodyFatSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento grasaPctActualSource no encontrado en resultElements. Verifica que resultElements.grasaPctActualSource esté definido y que el HTML tenga id="grasa-actual-source".');
+			    }
+			
+			    updateElement('grasaPctDeurenberg', results.grasaPctDeurenberg, 1);
+			    if (resultElements.grasaPctDeurenbergSource) {
+			        resultElements.grasaPctDeurenbergSource.textContent = results.grasaPctDeurenbergSource || '(No estimado)';
+			    } else {
+			        console.warn('Elemento grasaPctDeurenbergSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('grasaPctCUNBAE', results.grasaPctCUNBAE, 1);
+			    if (resultElements.grasaPctCUNBAESource) {
+			        resultElements.grasaPctCUNBAESource.textContent = results.grasaPctCUNBAESource || '(No estimado)';
+			    } else {
+			        console.warn('Elemento grasaPctCUNBAESource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('grasaPctDeseado', results.grasaPctDeseado, 1);
+			    if (resultElements.grasaPctDeseadoSource) {
+			        resultElements.grasaPctDeseadoSource.textContent = results.desiredBodyFatSource || '(No estimado)';
+			    } else {
+			        console.warn('Elemento grasaPctDeseadoSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('masaGrasa', results.masaGrasa, 1);
+			    if (resultElements.masaGrasaSource) {
+			        resultElements.masaGrasaSource.textContent = results.masaGrasaSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento masaGrasaSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('masaMagra', results.masaMagra, 1);
+			    updateElement('BRMEstimado', results.BRMEstimado, 1);
+			    if (resultElements.BRMEstimadoSource) {
+			        resultElements.BRMEstimadoSource.textContent = results.BRMEstimadoSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento BRMEstimadoSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('mlg', results.mlg, 1);
+			    if (resultElements.mlgSource) {
+			        resultElements.mlgSource.textContent = results.mlgSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento mlgSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('amb', results.amb, 1);
+			    if (resultElements.ambSource) {
+			        resultElements.ambSource.textContent = results.ambSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento ambSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('masaOsea', results.masaOsea, 1);
+			    if (resultElements.masaOseaSource) {
+			        resultElements.masaOseaSource.textContent = results.masaOseaSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento masaOseaSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('masaResidual', results.masaResidual, 1);
+			    if (resultElements.masaResidualSource) {
+			        resultElements.masaResidualSource.textContent = results.masaResidualSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento masaResidualSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('pesoIdeal', results.pesoIdeal, 1);
+			    updateElement('pesoObjetivo', results.pesoObjetivo, 1);
+			    updateElement('mmt', results.mmt, 1);
+			    updateElement('Pctmmt', results.Pctmmt, 1);
+			    if (resultElements.PctmmtSource) {
+			        resultElements.PctmmtSource.textContent = results.PctmmtSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento PctmmtSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('edadmetabolica', results.edadmetabolica, 1);
+			    if (resultElements.edadmetabolicaSource) {
+			        resultElements.edadmetabolicaSource.textContent = results.edadmetabolicaSource || '(No calculado)';
+			    } else {
+			        console.warn('Elemento edadmetabolicaSource no encontrado en resultElements.');
+			    }
+			
+			    updateElement('endomorfia', results.endomorfia, 1);
+			    updateElement('mesomorfia', results.mesomorfia, 1);
+			    updateElement('ectomorfia', results.ectomorfia, 1);
+			    if (resultElements.somatotipo) {
+			        resultElements.somatotipo.textContent = window.calculatedResults.somatotipo.formatted || '---';
+			    } else {
+			        console.warn('Elemento somatotipo no encontrado en resultElements.');
+			    }
+			
+			    // Update explanation section
+			    if (explanationContent && content) {
+			        explanationContent.innerHTML = content;
+			        console.log('Explicaciones actualizadas:', content);
+			    } else if (!content) {
+			        console.log('No hay mensajes de error o explicaciones para mostrar');
+			    } else {
+			        console.warn('explanationContent no está definido');
+			    }
+			
+			    if (explanationSection) {
+			        explanationSection.style.display = 'block';
+			        console.log('Sección de explicaciones mostrada');
+			    } else {
+			        console.warn('explanationSection no está definido');
+			    }
+			
+			} catch (displayError) {
+			    console.error('Error al actualizar la interfaz:', displayError.message);
+			    alert('Error al actualizar los resultados: ' + displayError.message);
+			}
+			} catch (calcError) {
+			    console.error('Error durante los cálculos:', calcError.message);
+			    alert('Error en los cálculos: ' + calcError.message);
+			    content += `<p><strong>Error General:</strong> ${calcError.message}. Por favor, revisa los datos ingresados.</p>`;
+			    if (explanationContent) {
+			        explanationContent.innerHTML = content;
+			    }
+			    if (explanationSection) {
+			        explanationSection.style.display = 'block';
+			    }
+			}
 			});
-			} catch (e) {
-					console.error('Error durante los cálculos:', e.message);
-					alert(`Error en los cálculos: ${e.message}. Verifica los datos ingresados.`);
-				}
+			
+			// Prevent auto-submission on page load
+			window.addEventListener('load', () => {
+			    const form = document.getElementById('anthropometry-form');
+			    if (form) {
+			        form.reset(); // Clear form inputs
+			        console.log('Form reset on page load to prevent auto-submission');
+			        // Asegurarse de que el botón esté oculto al cargar la página
+			        const guardarDatosBtn = document.getElementById('guardar_datos');
+			        if (guardarDatosBtn) {
+			            guardarDatosBtn.style.display = 'none';
+			        }
+			    }
+			});
 			// Initialize results display on page load
 			document.addEventListener('DOMContentLoaded', () => {
 				console.log('Inicializando visualización de resultados');
