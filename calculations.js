@@ -5149,7 +5149,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						
 						  
 						   // Actualizar la interfaz con updateDisplay
-					    	 updateElement('aguacorporal', results.aguacorporal, 1); // Matches resultElements.imc
+					    	 updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); // Matches resultElements.imc
 						    // Manejar errores o resultados
 						    if (resultadoAgua.error) {
 						        console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
@@ -5157,9 +5157,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						       // resultElements.aguacorporalSource.textContent = '';
 						    } else {
 						        console.log('[updateDisplay] Actualizando DOM con resultados');
-						        resultElements.aguacorporal.textContent = `ACT: ${resultados.actKg} kg (${resultados.porcentajeACT}% del peso corporal)`;
-							updateElement('aguacorporal', results.aguacorporal, 1); 
-						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultados.rangoReferencia} (${resultados.fuente}; InBody USA). Estado: ${results.clasificacion}`;
+						        resultElements.aguacorporal.textContent = `ACT: ${resultadoAgua.actKg} kg (${resultadoAgua.porcentajeACT}% del peso corporal)`;
+							updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); 
+						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${results.clasificacion}`;
 						    }
 						}
 				
