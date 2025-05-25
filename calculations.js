@@ -44,7 +44,9 @@ import { auth } from './app.js';
 				tipologiaSource:document.getElementById('tipologia-source'),
 				edadmetabolica: document.getElementById('result-edadmetabolica'),
 				edadmetabolicaSource: document.getElementById('edadmetabolica-source'),
-				resultSomatotipo: document.getElementById('result-somatotipo')
+				resultSomatotipo: document.getElementById('result-somatotipo'),
+				aguacorporal: document.getElementById('result-agua-corporal'),
+	                        aguacorporalSource: document.getElementById('agua-corporal-source')
 			};
         console.log('resultElements:', Object.entries(resultElements).map(([key, val]) => ({ key, val: val ? val.id : null })));
         const explanationSection = document.getElementById('explanation-section');
@@ -4949,6 +4951,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                tipologiaimgSource: results.tipologiaSource || '(No calculado)',
 			                edadmetabolica: formatResult(results.edadmetabolica, 1),
 			                edadmetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
+					aguacorporal: formatResult(results.aguacorporal, 1),
+	                                aguacorporalSource: results.aguacorporalSource || '(No calculado)',
 			                somatotipo: {
 			                    endomorphy: formatResult(results.endomorfia, 1),
 			                    mesomorphy: formatResult(results.mesomorfia, 1),
