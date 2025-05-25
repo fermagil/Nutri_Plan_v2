@@ -384,7 +384,7 @@ import { auth } from './app.js';
 			        if (genero.toLowerCase() === 'masculino') {
 			            actKg = -28.3497 + (0.243057 * alturaMetros) + (0.366248 * peso);
 			            fuente = 'Lee et al.';
-			        } else if (sexo.toLowerCase() === 'femenino') {
+			        } else if (genero.toLowerCase() === 'femenino') {
 			            actKg = -26.6224 + (0.262513 * alturaMetros) + (0.232948 * peso);
 			            fuente = 'Lee et al.';
 			        } else {
