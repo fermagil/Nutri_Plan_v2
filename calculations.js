@@ -393,10 +393,10 @@ import { auth } from './app.js';
 			        }
 			    } else {
 			        // Fórmulas de Watson para población general o deportistas (≤64 años)
-			        if (sexo.toLowerCase() === 'masculino') {
+			        if (genero.toLowerCase() === 'masculino') {
 			            actKg = 2.447 - 0.09516 * edad + 0.1074 * alturaMetros + 0.3362 * peso;
 			            fuente = 'Watson et al., 1980';
-			        } else if (sexo.toLowerCase() === 'femenino') {
+			        } else if (genero.toLowerCase() === 'femenino') {
 			            actKg = 2.097 + 0.1069 * alturaMetros + 0.2466 * peso;
 			            fuente = 'Watson et al., 1980';
 			        } else {
