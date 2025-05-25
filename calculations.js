@@ -5039,10 +5039,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                  
 					    edad =  Number(data.edad);
 					    genero = data.genero
-					     talla = data.altura
-					    talla= (talla/100)
+					     altura = data.altura
+					    altura= (talla/100)
 					     esDeportista = data.es_deportista
-					    const resultado = calcularACT(edad, genero, alturaMetros, peso, esDeportista);
+					    const resultado = calcularACT(edad, genero, altura, peso, esDeportista);
 					   
 					    // Actualizar la interfaz con updateDisplay
 					    updateDisplay(resultado);
