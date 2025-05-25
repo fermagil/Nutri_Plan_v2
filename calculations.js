@@ -5035,15 +5035,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 					// Llamar a calcularACT
 					// Obtener valores del formulario
-					    const peso = Number(data.peso);
-			                    const age = Number(data.edad);
-			                    const isAthlete = data.es_deportista
-					    const edad =  Number(data.edad);
-					    const genero = data.genero
-					    const talla = data.altura
-					    const esDeportista = data.es_deportista
-					    const resultado = calcularACT(edad, genero, alturaMetros, peso, esDeportista);
+					   peso = Number(data.peso);
+			                  
+					    edad =  Number(data.edad);
+					    genero = data.genero
+					     talla = data.altura
 					    talla= (talla/100)
+					     esDeportista = data.es_deportista
+					    const resultado = calcularACT(edad, genero, alturaMetros, peso, esDeportista);
+					   
 					    // Actualizar la interfaz con updateDisplay
 					    updateDisplay(resultado);
 					   console.log('Resultados calculados:', window.calculatedResults);
