@@ -366,11 +366,13 @@ import { auth } from './app.js';
 			//Funtion %Body Water
 			function calcularACT(edad, genero, altura, peso, esDeportista) {
 			    // Validar entradas
-			    if (data.edad || data.sexo || !altura || data.peso) {
-			        return { error: 'Por favor, ingrese todos los datos requeridos.' };
+			    if (data.edad || data.sexo || data.altura || data.peso) {
+			        console.error('calcularACT - Error: Faltan datos requeridos', { edad, genero, altura, peso });
+				    return { error: 'Por favor, ingrese todos los datos requeridos.' };
 			    }
 			
 			    if (edad < 0 || altura < 0 || peso < 0) {
+				    console.error('calcularACT - Error: Valores negativos no permitidos', { edad, altura, peso });
 			        return { error: 'Los valores no pueden ser negativos.' };
 			    }
 			
@@ -386,6 +388,7 @@ import { auth } from './app.js';
 			            actKg = -26.6224 + (0.262513 * alturaMetros) + (0.232948 * peso);
 			            fuente = 'Lee et al.';
 			        } else {
+					console.error('calcularACT - Error: Genero no válido', { genero });
 			            return { error: 'Sexo no válido. Use "hombre" o "mujer".' };
 			        }
 			    } else {
@@ -397,6 +400,7 @@ import { auth } from './app.js';
 			            actKg = 2.097 + 0.1069 * alturaMetros + 0.2466 * peso;
 			            fuente = 'Watson et al., 1980';
 			        } else {
+					console.error('calcularACT - Error: Genero no válido', { genero });
 			            return { error: 'Sexo no válido. Use "hombre" o "mujer".' };
 			        }
 			    }
@@ -452,6 +456,7 @@ import { auth } from './app.js';
 			                rangoReferencia = '39% - 57%';
 			            }
 			        } else {
+					console.error('calcularACT - Error: Edad no válida para rangos de referencia (<12 años)', { edad });
 			            return { error: 'Rango de referencia no disponible para menores de 12 años.' };
 			        }
 			    }
@@ -471,7 +476,16 @@ import { auth } from './app.js';
 			    } else {
 			        clasificacion = 'Por encima del rango de referencia';
 			    }
-			
+
+				// Registrar resultados
+				    console.log('calcularACT - Resultados:', {
+				        actKg: actKg.toFixed(2),
+				        porcentajeACT: porcentajeACT.toFixed(2),
+				        rangoReferencia,
+				        clasificacion,
+				        fuente
+				    });
+
 			    // Devolver resultados
 			    return {
 			        actKg: actKg.toFixed(2),
