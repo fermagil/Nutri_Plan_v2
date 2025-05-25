@@ -5160,7 +5160,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							    // Redondear actKg y porcentajeACT sin decimales
 						            const actKgRedondeado = Math.round(parseFloat(resultadoAgua.actKg));
 						            const porcentajeACTRedondeado = Math.round(parseFloat(resultadoAgua.porcentajeACT));
-						        resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${resultadoAgua.porcentajeACTRedondeado}%`;
+						        resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
 							//updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); 
 						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
 						    }
