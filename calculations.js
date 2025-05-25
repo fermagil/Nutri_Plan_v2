@@ -5061,19 +5061,18 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					
 					    // Llamar a calcularACT
 					    console.log('[Submission Handler] Llamando a calcularACT');
-					    const resultado = calcularACT(edad, genero, altura, peso, esDeportista);
+					    const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
 					
 					    // Verificar si calcularACT retornó un resultado válido
-					    if (!resultado) {
+					    if (!resultadoAgua) {
 					        console.error('[Submission Handler] Error: calcularACT no retornó un resultado', { edad, genero, altura, peso, esDeportista });
 					        updateDisplay({ error: 'Error interno durante el cálculo.' });
 					        return;
 					    }
 					
-					    console.log('[Submission Handler] Resultado de calcularACT:', resultado);
+					    console.log('[Submission Handler] Resultado de calcularACT:', resultadoAgua);
 					
-					    // Actualizar la interfaz con updateDisplay
-					    updateDisplay(resultado);
+					    
 					
 			            // Store results for app.js
 			            window.calculatedResults = {
@@ -5145,28 +5144,21 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 						//Update % Agua
 						
-						function updateDisplay(resultado) {
-						    console.log('[updateDisplay] Resultado recibido:', resultado);
+						function updateDisplay(resultadoAgua) {
+						    console.log('[updateDisplay] Resultado recibido:', resultadoAgua);
 						
-						    
-						    // Verificar si los elementos del DOM existen
-						    if (!resultElement || !sourceElement) {
-						        console.error('[updateDisplay] Error: Elementos del DOM no encontrados', {
-						            resultElement: !!resultElement,
-						            sourceElement: !!sourceElement
-						        });
-						        return;
-						    }
-						
+						  
+						   // Actualizar la interfaz con updateDisplay
+					    	updateDisplay(resultadoAgua);
 						    // Manejar errores o resultados
-						    if (resultado.error) {
-						        console.warn('[updateDisplay] Mostrando mensaje de error:', resultado.error);
-						        resultElement.textContent = resultado.error;
-						        sourceElement.textContent = '';
+						    if (resultadoAgua.error) {
+						        console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
+						        aguacorporal.textContent = resultadoAgua.error;
+						        aguacorporalSource.textContent = '';
 						    } else {
 						        console.log('[updateDisplay] Actualizando DOM con resultados');
-						        resultElement.textContent = `ACT: ${resultado.actKg} kg (${resultado.porcentajeACT}% del peso corporal)`;
-						        sourceElement.textContent = `Rango de referencia: ${resultado.rangoReferencia} (${resultado.fuente}; InBody USA). Estado: ${resultado.clasificacion}`;
+						        aguacorporal.textContent = `ACT: ${resultado.actKg} kg (${resultado.porcentajeACT}% del peso corporal)`;
+						        aguacorporalSource.textContent = `Rango de referencia: ${resultado.rangoReferencia} (${resultado.fuente}; InBody USA). Estado: ${resultado.clasificacion}`;
 						    }
 						}
 				
