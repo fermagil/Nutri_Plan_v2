@@ -371,21 +371,21 @@ import { auth } from './app.js';
 				    return { error: 'Por favor, ingrese todos los datos requeridos.' };
 			    }
 			
-			    if (edad < 0 || altura < 0 || peso < 0) {
-				    console.error('calcularACT - Error: Valores negativos no permitidos', { edad, altura, peso });
-			        return { error: 'Los valores no pueden ser negativos.' };
+			    if (edad < 6 || altura < 90 || peso < 15) {
+				    console.error('calcularACT - Error: Valores no permitidos', { edad, altura, peso });
+			        return { error: 'Los valores no pueden ser tan bajos.' };
 			    }
 			
 			    let actKg, porcentajeACT, rangoReferencia, fuente, clasificacion;
-			const alturaMetros = altura / 100; // Convertir altura a metros
+			//const alturaMetros = altura / 100; // Convertir altura a metros
 			    // Calcular ACT según sexo, edad y fórmula correspondiente
 			    if (edad > 64) {
 			        // Fórmulas de Lee et al. para población mayor (>64 años)
 			        if (genero.toLowerCase() === 'masculino') {
-			            actKg = -28.3497 + (0.243057 * alturaMetros) + (0.366248 * peso);
+			            actKg = -28.3497 + (0.243057 * altura) + (0.366248 * peso);
 			            fuente = 'Lee et al.';
 			        } else if (genero.toLowerCase() === 'femenino') {
-			            actKg = -26.6224 + (0.262513 * alturaMetros) + (0.232948 * peso);
+			            actKg = -26.6224 + (0.262513 * altura) + (0.232948 * peso);
 			            fuente = 'Lee et al.';
 			        } else {
 					console.error('calcularACT - Error: Genero no válido', { genero });
@@ -394,10 +394,10 @@ import { auth } from './app.js';
 			    } else {
 			        // Fórmulas de Watson para población general o deportistas (≤64 años)
 			        if (genero.toLowerCase() === 'masculino') {
-			            actKg = 2.447 - 0.09516 * edad + 0.1074 * alturaMetros + 0.3362 * peso;
+			            actKg = 2.447 - 0.09516 * edad + 0.1074 * altura + 0.3362 * peso;
 			            fuente = 'Watson et al., 1980';
 			        } else if (genero.toLowerCase() === 'femenino') {
-			            actKg = 2.097 + 0.1069 * alturaMetros + 0.2466 * peso;
+			            actKg = 2.097 + 0.1069 * altura + 0.2466 * peso;
 			            fuente = 'Watson et al., 1980';
 			        } else {
 					console.error('calcularACT - Error: Genero no válido', { genero });
