@@ -5158,8 +5158,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    } else {
 						        console.log('[updateDisplay] Actualizando DOM con resultados');
 						        resultElements.aguacorporal.textContent = `ACT: ${resultadoAgua.actKg} kg (${resultadoAgua.porcentajeACT}% del peso corporal)`;
-							updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); 
-						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${results.clasificacion}`;
+							//updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); 
+						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
 						    }
 						}
 				
