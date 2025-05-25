@@ -362,7 +362,129 @@ import { auth } from './app.js';
 			        }
 			    };
 			}
+
+			//Funtion %Body Water
+			function calcularACT(edad, genero, altura, peso, esDeportista) {
+			    // Validar entradas
+			    if (data.edad || data.sexo || !altura || data.peso) {
+			        return { error: 'Por favor, ingrese todos los datos requeridos.' };
+			    }
 			
+			    if (edad < 0 || altura < 0 || peso < 0) {
+			        return { error: 'Los valores no pueden ser negativos.' };
+			    }
+			
+			    let actKg, porcentajeACT, rangoReferencia, fuente, clasificacion;
+			const alturaMetros = altura / 100; // Convertir altura a metros
+			    // Calcular ACT según sexo, edad y fórmula correspondiente
+			    if (edad > 64) {
+			        // Fórmulas de Lee et al. para población mayor (>64 años)
+			        if (genero.toLowerCase() === 'masculino') {
+			            actKg = -28.3497 + (0.243057 * alturaMetros) + (0.366248 * peso);
+			            fuente = 'Lee et al.';
+			        } else if (sexo.toLowerCase() === 'femenino') {
+			            actKg = -26.6224 + (0.262513 * alturaMetros) + (0.232948 * peso);
+			            fuente = 'Lee et al.';
+			        } else {
+			            return { error: 'Sexo no válido. Use "hombre" o "mujer".' };
+			        }
+			    } else {
+			        // Fórmulas de Watson para población general o deportistas (≤64 años)
+			        if (sexo.toLowerCase() === 'masculino') {
+			            actKg = 2.447 - 0.09516 * edad + 0.1074 * alturaMetros + 0.3362 * peso;
+			            fuente = 'Watson et al., 1980';
+			        } else if (sexo.toLowerCase() === 'femenino') {
+			            actKg = 2.097 + 0.1069 * alturaMetros + 0.2466 * peso;
+			            fuente = 'Watson et al., 1980';
+			        } else {
+			            return { error: 'Sexo no válido. Use "hombre" o "mujer".' };
+			        }
+			    }
+			
+			    // Calcular porcentaje de ACT
+			    porcentajeACT = (actKg / peso) * 100;
+			
+			    // Determinar rango de referencia y clasificar % ACT
+			    let limiteInferior, limiteSuperior;
+			
+			    if (esDeportista && edad <= 64) {
+			        // Rangos para deportistas
+			        if (genero.toLowerCase() === 'masculino') {
+			            limiteInferior = 60;
+			            limiteSuperior = 70;
+			            rangoReferencia = '60% - 70%';
+			        } else {
+			            limiteInferior = 55;
+			            limiteSuperior = 65;
+			            rangoReferencia = '55% - 65%';
+			        }
+			    } else {
+			        // Rangos para población general según edad
+			        if (edad >= 12 && edad <= 18) {
+			            if (genero.toLowerCase() === 'masculino') {
+			                limiteInferior = 52;
+			                limiteSuperior = 66;
+			                rangoReferencia = '52% - 66%';
+			            } else {
+			                limiteInferior = 49;
+			                limiteSuperior = 63;
+			                rangoReferencia = '49% - 63%';
+			            }
+			        } else if (edad >= 19 && edad <= 50) {
+			            if (genero.toLowerCase() === 'masculino') {
+			                limiteInferior = 43;
+			                limiteSuperior = 73;
+			                rangoReferencia = '43% - 73%';
+			            } else {
+			                limiteInferior = 41;
+			                limiteSuperior = 60;
+			                rangoReferencia = '41% - 60%';
+			            }
+			        } else if (edad >= 51) {
+			            // Incluye a mayores de 64 años (población general)
+			            if (genero.toLowerCase() === 'masculino') {
+			                limiteInferior = 47;
+			                limiteSuperior = 67;
+			                rangoReferencia = '47% - 67%';
+			            } else {
+			                limiteInferior = 39;
+			                limiteSuperior = 57;
+			                rangoReferencia = '39% - 57%';
+			            }
+			        } else {
+			            return { error: 'Rango de referencia no disponible para menores de 12 años.' };
+			        }
+			    }
+			
+			    // Clasificar % ACT dentro del rango
+			    const rango = limiteSuperior - limiteInferior;
+			    const cuarto = rango / 4;
+			
+			    if (porcentajeACT < limiteInferior) {
+			        clasificacion = 'Muy Bajo';
+			    } else if (porcentajeACT >= limiteInferior && porcentajeACT < limiteInferior + cuarto) {
+			        clasificacion = 'Bajo';
+			    } else if (porcentajeACT >= limiteInferior + cuarto && porcentajeACT < limiteInferior + 3 * cuarto) {
+			        clasificacion = 'Normal';
+			    } else if (porcentajeACT >= limiteInferior + 3 * cuarto && porcentajeACT <= limiteSuperior) {
+			        clasificacion = 'Medio Alto';
+			    } else {
+			        clasificacion = 'Por encima del rango de referencia';
+			    }
+			
+			    // Devolver resultados
+			    return {
+			        actKg: actKg.toFixed(2),
+			        porcentajeACT: porcentajeACT.toFixed(2),
+			        rangoReferencia,
+			        clasificacion,
+			        fuente
+			    };
+			}
+
+
+
+
 			// Function to estimate metabolic Age
 			function calculateMetabolicAge(data) {
 			let { genero, edad, peso, altura, esDeportista, pliegues, porcentajeGrasa, cintura,imc } = data;
@@ -4910,7 +5032,22 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                });
 			                content += `<p><strong>% Grasa CUN-BAE:</strong> No estimado debido a datos insuficientes.</p>`;
 			            }
-			
+
+					// Llamar a calcularACT
+					// Obtener valores del formulario
+					    const peso = Number(data.peso);
+			                    const age = Number(data.edad);
+			                    const isAthlete = data.es_deportista
+					    const edad =  Number(data.edad);
+					    const genero = data.genero
+					    const talla = data.altura
+					    const esDeportista = data.es_deportista
+					    const resultado = calcularACT(edad, genero, alturaMetros, peso, esDeportista);
+					    talla= (talla/100)
+					    // Actualizar la interfaz con updateDisplay
+					    updateDisplay(resultado);
+					   console.log('Resultados calculados:', window.calculatedResults);
+					
 			            // Store results for app.js
 			            window.calculatedResults = {
 			                imc: formatResult(results.imc, 1),
@@ -4978,6 +5115,21 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                        console.warn(`Elemento ${key} no encontrado en resultElements`);
 				                    }
 				                };
+
+						//Update % Agua
+						
+						function updateDisplay(resultado) {
+						    const resultElement = document.getElementById('result-agua-corporal');
+						    const sourceElement = document.getElementById('agua-corporal-source');
+						
+						    if (resultado.error) {
+						        resultElement.textContent = resultado.error;
+						        sourceElement.textContent = '';
+						    } else {
+						        resultElement.textContent = `ACT: ${resultado.actKg} kg (${resultado.porcentajeACT}% del peso corporal)`;
+						        sourceElement.textContent = `Estado: ${resultado.clasificacion}. Rango de referencia: ${resultado.rangoReferencia} (${resultado.fuente}; InBody USA).`;
+						    }
+						}
 				
 				                // Update IMC
 				                updateElement('imc', results.imc, 1); // Matches resultElements.imc
