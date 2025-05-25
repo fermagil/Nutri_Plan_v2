@@ -366,7 +366,7 @@ import { auth } from './app.js';
 			//Funtion %Body Water
 			function calcularACT(edad, genero, altura, peso, esDeportista) {
 			    // Validar entradas
-			    if (data.edad || data.sexo || data.altura || data.peso) {
+			    if (!edad || !genero || !altura || !peso) {
 			        console.error('calcularACT - Error: Faltan datos requeridos', { edad, genero, altura, peso });
 				    return { error: 'Por favor, ingrese todos los datos requeridos.' };
 			    }
@@ -487,13 +487,17 @@ import { auth } from './app.js';
 				    });
 
 			    // Devolver resultados
-			    return {
+			    // Registrar resultados
+			    const resultados = {
 			        actKg: actKg.toFixed(2),
 			        porcentajeACT: porcentajeACT.toFixed(2),
 			        rangoReferencia,
 			        clasificacion,
 			        fuente
 			    };
+			    console.log('[calcularACT] Resultados calculados:', resultados);
+			
+			    return resultados;
 			}
 
 
@@ -5048,19 +5052,28 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            }
 
 					// Llamar a calcularACT
-					// Obtener valores del formulario
-					   peso = Number(data.peso);
-			                  
-					    edad =  Number(data.edad);
-					    genero = data.genero
-					     altura = data.altura
-					    altura= (altura/100)
-					     esDeportista = data.es_deportista
+					// Validar que los datos sean válidos antes de calcular
+					    if (isNaN(edad) || isNaN(altura) || isNaN(peso)) {
+					        console.error('[Submission Handler] Error: Datos numéricos inválidos', { edad, altura, peso });
+					        updateDisplay({ error: 'Por favor, ingrese valores numéricos válidos.' });
+					        return;
+					    }
+					
+					    // Llamar a calcularACT
+					    console.log('[Submission Handler] Llamando a calcularACT');
 					    const resultado = calcularACT(edad, genero, altura, peso, esDeportista);
-					   
+					
+					    // Verificar si calcularACT retornó un resultado válido
+					    if (!resultado) {
+					        console.error('[Submission Handler] Error: calcularACT no retornó un resultado', { edad, genero, altura, peso, esDeportista });
+					        updateDisplay({ error: 'Error interno durante el cálculo.' });
+					        return;
+					    }
+					
+					    console.log('[Submission Handler] Resultado de calcularACT:', resultado);
+					
 					    // Actualizar la interfaz con updateDisplay
 					    updateDisplay(resultado);
-					   console.log('Resultados calculados:', window.calculatedResults);
 					
 			            // Store results for app.js
 			            window.calculatedResults = {
@@ -5133,15 +5146,27 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						//Update % Agua
 						
 						function updateDisplay(resultado) {
-						    const resultElement = document.getElementById('result-agua-corporal');
-						    const sourceElement = document.getElementById('agua-corporal-source');
+						    console.log('[updateDisplay] Resultado recibido:', resultado);
 						
+						    
+						    // Verificar si los elementos del DOM existen
+						    if (!resultElement || !sourceElement) {
+						        console.error('[updateDisplay] Error: Elementos del DOM no encontrados', {
+						            resultElement: !!resultElement,
+						            sourceElement: !!sourceElement
+						        });
+						        return;
+						    }
+						
+						    // Manejar errores o resultados
 						    if (resultado.error) {
+						        console.warn('[updateDisplay] Mostrando mensaje de error:', resultado.error);
 						        resultElement.textContent = resultado.error;
 						        sourceElement.textContent = '';
 						    } else {
+						        console.log('[updateDisplay] Actualizando DOM con resultados');
 						        resultElement.textContent = `ACT: ${resultado.actKg} kg (${resultado.porcentajeACT}% del peso corporal)`;
-						        sourceElement.textContent = `Estado: ${resultado.clasificacion}. Rango de referencia: ${resultado.rangoReferencia} (${resultado.fuente}; InBody USA).`;
+						        sourceElement.textContent = `Rango de referencia: ${resultado.rangoReferencia} (${resultado.fuente}; InBody USA). Estado: ${resultado.clasificacion}`;
 						    }
 						}
 				
