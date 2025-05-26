@@ -1002,9 +1002,19 @@ button:hover {
 	                    <td><small id="grasa-pct-actual-source">(No calculado)</small></td>
 	                </tr>
 			<tr>
-	                    <th scope="row"><label>Masa Grasa (MG)</label></th>
-	                    <td><span id="result-masa-grasa2">---</span> <span class="unit">kg</span></td>
-	                    <td><small id="grasa-pct-actual-source">(No calculado)</small></td>
+	                    <th scope="row"><label>% Grasa Metabolico</label></th>
+	                    <td><span id="result-grasa-pct-metabolic">---</span> <span class="unit">%</span></td>
+	                    <td><small id="grasa-pct-metabolic-source">(No calculado)</small></td>
+	                </tr>
+			<tr>
+	                    <th scope="row"><label>Masa Grasa Actual (MGa)</label></th>
+	                    <td><span id="result-masa-grasa-actual">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="masa-grasa-actual-source">(No calculado)</small></td>
+	                </tr>
+			<tr>
+	                    <th scope="row"><label>Masa Grasa Metabolic(MG)</label></th>
+	                    <td><span id="result-masa-grasa-metabolic">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="masa-grasa-metabolic-source">(No calculado)</small></td>
 	                </tr>
 	                <tr>
 	                    <th scope="row"><label>% Grasa (Deurenberg)</label></th>
@@ -1017,11 +1027,7 @@ button:hover {
 	                    <td><small id="grasa-pct-CUN-BAE-source">(No estimado)</small></td>
 	                </tr>
 	                
-	                <tr>
-	                    <th scope="row"><label>Masa Grasa (MG)</label></th>
-	                    <td><span id="result-masa-grasa">---</span> <span class="unit">kg</span></td>
-	                    <td><small id="masa-grasa-source">(No calculado)</small></td>
-	                </tr>
+	                
 			<tr>
 	                    <th scope="row"><label>Agua corporal total (kg y % del peso corporal)</label></th>
 	                    <td><span id="result-agua-corporal">---</span> <span class="unit"></span></td>
@@ -1048,23 +1054,33 @@ button:hover {
 	                </tr>
 			<tr>
 	                    <th scope="row"><label>Masa Magra (MLG)</label></th>
-	                    <td><span id="result-masa-magra">---</span> <span class="unit">kg</span></td>
-	                    <td><small id="masa-grasa-source">(No calculado)</small></td>
+	                    <td><span id="result-masa-magra-actual">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="masa-magra-actual-source">(No calculado)</small></td>
 	                </tr>
 	                <tr>
 	                    <th scope="row"><label>Masa Magra (MLG)</label></th>
-	                    <td><span id="result-mlg">---</span> <span class="unit">kg</span></td>
-	                    <td><small id="mlg-source">(No calculado)</small></td>
+	                    <td><span id="result-masa-magra-metabolic">---</span> <span class="unit">kg</span></td>
+	                    <td><small id="masa-magra-metabolic-source">(No calculado)</small></td>
 	                </tr>
 	                <tr>
-	                    <th scope="row"><label>IMLG</label></th>
-	                    <td><span id="result-imlg">---</span> <span class="unit">kg/m²</span></td>
-	                    <td><small id="imlg-source">(No calculado)</small></td>
+	                    <th scope="row"><label>IMLG Actual</label></th>
+	                    <td><span id="result-imlg-actual">---</span> <span class="unit">kg/m²</span></td>
+	                    <td><small id="imlg-actual-source">(No calculado)</small></td>
+	                </tr>
+			    <tr>
+	                    <th scope="row"><label>IMLG Metabolic</label></th>
+	                    <td><span id="result-imlg-metabolic">---</span> <span class="unit">kg/m²</span></td>
+	                    <td><small id="imlg-metabolic-source">(No calculado)</small></td>
 	                </tr>
 	                <tr>
-	                    <th scope="row"><label>IMG</label></th>
-	                    <td><span id="result-img">---</span> <span class="unit">kg/m²</span></td>
-	                    <td><small id="img-source">(No calculado)</small></td>
+	                    <th scope="row"><label>IMG Actual</label></th>
+	                    <td><span id="result-img-actual">---</span> <span class="unit">kg/m²</span></td>
+	                    <td><small id="img-actual-source">(No calculado)</small></td>
+	                </tr>
+			    <tr>
+	                    <th scope="row"><label>IMG Metabolic</label></th>
+	                    <td><span id="result-img-metabolic">---</span> <span class="unit">kg/m²</span></td>
+	                    <td><small id="img-metabolic-source">(No calculado)</small></td>
 	                </tr>
 	                <!-- Sección: Estructurales -->
 	                <tr class="section-header">
@@ -1076,8 +1092,13 @@ button:hover {
 	                    <td><small id="somatotipo-source">(Endo: Meso: Ecto)</small></td>
 	                </tr>
 			  <tr>
-	                    <th scope="row"><label>Tipología del Cuerpo</label></th>
+	                    <th scope="row"><label>Tipología Actual</label></th>
 	                    <td><span id="result-tipologia">---</span></td>
+	                    <td><small id="tipologia-source">(Relación IMLG/IMG)</small></td>
+	                </tr>  
+			     <tr>
+	                    <th scope="row"><label>Tipología Metabolic</label></th>
+	                    <td><span id="result-tipologia-metabolic">---</span></td>
 	                    <td><small id="tipologia-source">(Relación IMLG/IMG)</small></td>
 	                </tr>   
 	                <tr>
