@@ -4596,7 +4596,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						console.log('Valores:', {
 						        peso: data.peso,
 						        alturaM: alturaM,
-						        actualBodyFatPct: results.actualBodyFatPct
+						        actualBodyFatPct: results.actualBodyFatPct,
+							actualBodyFatPct:data.grasa_actual_conocida
 						    });	
 					    if (data.peso && !isNaN(alturaM) && !isNaN(data.grasa_actual_conocida)) {
 						    
