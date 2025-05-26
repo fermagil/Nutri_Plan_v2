@@ -4759,6 +4759,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            } else {
 			                results.pesoIdeal = NaN;
 			            }
+					results.pesoIdealActual = !isNaN(results.masaMagraActual) && !isNaN(results.grasaPctDeseado)
+					    ? results.masaMagraActual / (1 - results.grasaPctDeseado / 100)
+					    : NaN;
+					results.pesoIdealMetabolic = !isNaN(results.masaMagraMetabolic) && !isNaN(results.grasaPctDeseado)
+					    ? results.masaMagraMetabolic / (1 - results.grasaPctDeseado / 100)
+					    : NaN;
 			
 			            if (data.peso && !isNaN(results.pesoIdeal)) {
 			                results.pesoObjetivo = results.pesoIdeal - data.peso;
