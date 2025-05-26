@@ -3979,7 +3979,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			       
 			        
 			        let content = ''; // For error messages
-			
+				 const results = {};
 			        // Initialize alturaM with validation (single definition)
 			        let alturaM = NaN;
 			        try {
