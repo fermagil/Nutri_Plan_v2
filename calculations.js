@@ -4598,14 +4598,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						        alturaM: alturaM,
 						        actualBodyFatPct: results.actualBodyFatPct
 						    });	
-					    if (data.peso && !isNaN(alturaM) && !isNaN(results.actualBodyFatPct)) {
+					    if (data.peso && !isNaN(alturaM) && !isNaN(data.grasa_actual_conocida)) {
 						    
 					        try {
 					            bodyCompResults = generateBodyCompositionAnalysis(
 					                {
 					                    peso: data.peso,
 					                    altura: data.altura,
-					                    porcentajeGrasa: results.grasaPctActual // Usar results.grasaPctActual en lugar de actualBodyFatPct
+					                    porcentajeGrasa: data.grasa_actual_conocida // Usar results.grasaPctActual en lugar de actualBodyFatPct
 								
 					                },
 					                {
