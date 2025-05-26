@@ -5266,13 +5266,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                        console.warn(`Elemento ${key} no encontrado en resultElements`);
 				                    }
 				                };
-							const updateElement = (key, value, precision = 1) => {
-							    if (resultElements[key]) {
-							        resultElements[key].textContent = isNaN(value) ? 'No calculado' : value.toFixed(precision);
-							    } else {
-							        console.warn(`Elemento ${key} no encontrado en resultElements`);
-							    }
-							};
+							
 							
 							// Update Actual Body Fat Results
 							updateElement('grasaPctActual', results.grasaPctActual, 1);
