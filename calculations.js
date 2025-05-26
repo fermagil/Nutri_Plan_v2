@@ -526,13 +526,13 @@ import { auth } from './app.js';
 				}
 				const sumaPliegues = tricipital + subescapular + suprailiaco + bicipital;
 				let c, m;
-				if (genero === 'masculino') {
+				if (genero.toLowerCase() === 'masculino') {
 					if (edad >= 17 && edad <= 19) { c = 1.1620; m = 0.0630; }
 					else if (edad >= 20 && edad <= 29) { c = 1.1631; m = 0.0632; }
 					else if (edad >= 30 && edad <= 39) { c = 1.1422; m = 0.0544; }
 					else if (edad >= 40 && edad <= 49) { c = 1.1620; m = 0.0700; }
 					else if (edad >= 50) { c = 1.1715; m = 0.0779; }
-				} else if (genero === 'femenino') {
+				} else if (genero.toLowerCase() === 'femenino') {
 					if (edad >= 17 && edad <= 19) { c = 1.1549; m = 0.0678; }
 					else if (edad >= 20 && edad <= 29) { c = 1.1599; m = 0.0717; }
 					else if (edad >= 30 && edad <= 39) { c = 1.1423; m = 0.0632; }
@@ -549,7 +549,7 @@ import { auth } from './app.js';
 			}
 
 			// Forzar esDeportista = true para culturistas (IMC ≥ 30 y % grasa bajo)
-			const umbralGrasaCulturista = genero === 'masculino' ? 15 : 20;
+			const umbralGrasaCulturista = genero.toLowerCase() === 'masculino' ? 15 : 20;
 			if (imc >= 30 && grasaEval && grasaEval < umbralGrasaCulturista) {
 				esDeportista = true;
 			}
