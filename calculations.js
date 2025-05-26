@@ -4570,9 +4570,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    }
 			
 			            // --- Calculate Metabolic Age ---
+					console.log('Valor de data.genero:', data.genero);
 			            try {
 			                const metabolicData = {
-			                    genero: data.genero === 'Masculino' ? 'masculino' : 'femenino',
+			                    genero: data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino',
 			                    edad: data.edad,
 			                    peso: data.peso,
 			                    altura: data.altura,
