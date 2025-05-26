@@ -513,7 +513,10 @@ import { auth } from './app.js';
 			if (!genero || !edad || !peso || !altura) {
 				throw new Error('Faltan datos obligatorios: genero, edad, peso, altura');
 			}
-				
+			console.log({genero});
+				   
+
+					
 			// Validación para culturistas: forzar esDeportista = true si % grasa es bajo e IMC es alto
 			let grasaEval;
 			if (pliegues) {
