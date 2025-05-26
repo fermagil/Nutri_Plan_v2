@@ -3976,49 +3976,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        console.log('Datos introducidos:', data);
 			
 			        // --- 2. Perform Calculations ---
-			        let results = {
-			            imc: NaN,
-			            imcSource: '(No calculado)',
-			            icc: NaN,
-			            iccSource: '(No calculado)',
-			            grasaPctActual: NaN,
-			            actualBodyFatSource: '(No calculado)',
-			            grasaPctDeurenberg: NaN,
-			            grasaPctDeurenbergSource: '(No estimado)',
-			            grasaPctCUNBAE: NaN,
-			            grasaPctCUNBAESource: '(No estimado)',
-			            grasaPctDeseado: NaN,
-			            desiredBodyFatSource: '(No estimado)',
-			            masaGrasa: NaN,
-			            masaGrasaSource: '(No calculado)',
-			            masaMagra: NaN,
-			            BRMEstimado: NaN,
-			            BRMEstimadoSource: '(No calculado)',
-			            mlg: NaN,
-			            mlgSource: '(No calculado)',
-			            amb: NaN,
-			            ambSource: '(No calculado)',
-			            masaOsea: NaN,
-			            masaOseaSource: '(No calculado)',
-			            masaResidual: NaN,
-			            masaResidualSource: '(No calculado)',
-			            pesoIdeal: NaN,
-			            pesoObjetivo: NaN,
-			            mmt: NaN,
-			            Pctmmt: NaN,
-			            PctmmtSource: '(No calculado)',
-			            imlg: NaN,
-			            imlgSource: '(No calculado)',
-			            img: NaN,
-			            imgSource: '(No calculado)',
-			            tipologia: 'Indefinido',
-			            tipologiaSource: '(No calculado)',
-			            edadmetabolica: NaN,
-			            edadmetabolicaSource: '(No calculado)',
-			            endomorfia: NaN,
-			            mesomorfia: NaN,
-			            ectomorfia: NaN
-			        };
+			       
 			        
 			        let content = ''; // For error messages
 			
