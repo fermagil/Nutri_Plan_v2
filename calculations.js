@@ -4594,23 +4594,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            // --- Calculate IMLG, IMG, and Tipología ---
 					    let bodyCompResults = null;
 					    if (data.peso && !isNaN(alturaM) && !isNaN(results.actualBodyFatPct)) {
-						    console.log('Valores:', {
-						        peso: data.peso,
-						        alturaM: alturaM,
-						        actualBodyFatPct: results.actualBodyFatPct
-						    });
+						    
 					        try {
 					            bodyCompResults = generateBodyCompositionAnalysis(
 					                {
 					                    peso: data.peso,
 					                    altura: data.altura,
 					                    porcentajeGrasa: results.grasaPctActual // Usar results.grasaPctActual en lugar de actualBodyFatPct
-								console.log('Valores:', {
-								        peso: data.peso,
-								        altura: data.altura,
-								        actualBodyFatPct: results.actualBodyFatPct,
-								        porcentajeGrasa: results.grasaPctActual
-								    });
+								
 					                },
 					                {
 					                    sexo: data.genero,
@@ -4618,7 +4609,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                    esDeportista: data.es_deportista === 'si'
 					                }
 					            );
-					
+						console.log('Valores:', {
+						        peso: data.peso,
+						        alturaM: alturaM,
+						        actualBodyFatPct: results.actualBodyFatPct
+						    });	
 					            results.imlg = bodyCompResults.imlg;
 					            results.imlgSource = bodyCompResults.imlgCategory || '(No calculado)';
 					            results.img = bodyCompResults.img;
