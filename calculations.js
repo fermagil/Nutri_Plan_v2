@@ -579,6 +579,14 @@ import { auth } from './app.js';
 			            masaMagra,
 			            masaGrasa
 			        };
+				    console.log({
+				    edadMetabolica,
+				    BRMEstimado: bmrReal,
+				    method,
+				    BRMEstimadoSource: method,
+				    masaMagra,
+				    masaGrasa
+				});
 			    }
 			    // Escenario 2: Deportista, % grasa conocido
 			    else if (esDeportista && porcentajeGrasa) {
@@ -592,6 +600,14 @@ import { auth } from './app.js';
 			            masaMagra,
 			            masaGrasa
 			        };
+				    console.log({
+				    edadMetabolica,
+				    BRMEstimado: bmrReal,
+				    method,
+				    BRMEstimadoSource: method,
+				    masaMagra,
+				    masaGrasa
+				});
 			    }
 			    // Escenario 3: No deportista, pliegues conocidos, no obeso
 			    else if (!esDeportista && pliegues && !esObeso) {
@@ -609,6 +625,14 @@ import { auth } from './app.js';
 			            masaMagra,
 			            masaGrasa
 			        };
+				    console.log({
+				    edadMetabolica,
+				    BRMEstimado: bmrReal,
+				    method,
+				    BRMEstimadoSource: method,
+				    masaMagra,
+				    masaGrasa
+				});
 			    }
 			    // Escenario 4: No deportista, % grasa conocido, no obeso
 			    else if (!esDeportista && porcentajeGrasa && !esObeso) {
@@ -625,6 +649,14 @@ import { auth } from './app.js';
 			            masaMagra,
 			            masaGrasa
 			        };
+				    console.log({
+				    edadMetabolica,
+				    BRMEstimado: bmrReal,
+				    method,
+				    BRMEstimadoSource: method,
+				    masaMagra,
+				    masaGrasa
+				});
 			    }
 			    // Escenario 5: No deportista, pliegues conocidos, obeso
 			    else if (!esDeportista && pliegues && esObeso) {
@@ -642,7 +674,15 @@ import { auth } from './app.js';
 			            masaMagra,
 			            masaGrasa
 			        };
-			    }
+				    console.log({
+				    edadMetabolica,
+				    BRMEstimado: bmrReal,
+				    method,
+				    BRMEstimadoSource: method,
+				    masaMagra,
+				    masaGrasa
+				});
+							    }
 			    // Escenario 6: No deportista, % grasa conocido, obeso
 			    else if (!esDeportista && porcentajeGrasa && esObeso) {
 			        if (!cintura) {
@@ -658,6 +698,14 @@ import { auth } from './app.js';
 			            masaMagra,
 			            masaGrasa
 			        };
+				    console.log({
+				    edadMetabolica,
+				    BRMEstimado: bmrReal,
+				    method,
+				    BRMEstimadoSource: method,
+				    masaMagra,
+				    masaGrasa
+				});
 			    }
 			    else {
 			        throw new Error('No se cumplen las condiciones para ningún escenario');
@@ -694,7 +742,11 @@ import { auth } from './app.js';
 		    // Calcular masa magra y grasa
 		    const masaGrasa = (grasa / 100) * peso;
 		    const masaMagra = peso - masaGrasa;
-		
+			console.log({
+				grasa,
+			    masaGrasa,
+			    masaMagra
+			});
 		    // Calcular BMR real con Katch-McArdle
 		    const bmrReal = 370 + (21.6 * masaMagra);
 		
@@ -716,6 +768,12 @@ import { auth } from './app.js';
 		        masaMagra: Number(masaMagra.toFixed(1)),
 		        masaGrasa: Number(masaGrasa.toFixed(1))
 		    };
+			console.log({
+			    edadMetabolica: Number(edadMetabolica.toFixed(1)),
+			    bmrReal: Number(bmrReal.toFixed(1)),
+			    masaMagra: Number(masaMagra.toFixed(1)),
+			    masaGrasa: Number(masaGrasa.toFixed(1))
+			});
 		}
 		
 		function metodo2(genero, edad, peso, altura, porcentajeGrasa, cintura, nivelActividad, pliegues = null, esObeso = false) {
@@ -749,7 +807,11 @@ import { auth } from './app.js';
 		    // Calcular masa magra y grasa
 		    const masaGrasa = (grasa / 100) * peso;
 		    const masaMagra = peso - masaGrasa;
-		
+			console.log({
+				grasa,
+			    masaGrasa,
+			    masaMagra
+			});
 		    // Calcular BMR Real (Katch-McArdle)
 		    const bmrReal = 370 + (21.6 * masaMagra);
 		
@@ -806,6 +868,12 @@ import { auth } from './app.js';
 		        masaMagra: Number(masaMagra.toFixed(1)),
 		        masaGrasa: Number(masaGrasa.toFixed(1))
 		    };
+			console.log({
+			    edadMetabolica: Number(edadMetabolica.toFixed(1)),
+			    bmrReal: Number(bmrReal.toFixed(1)),
+			    masaMagra: Number(masaMagra.toFixed(1)),
+			    masaGrasa: Number(masaGrasa.toFixed(1))
+			});
 		}	
 		
         		// Updated estimateTargetBodyFat function
