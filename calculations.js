@@ -2,54 +2,74 @@ import { auth } from './app.js';
 			const ChartAnnotation = window['chartjs-plugin-annotation'];
 			const form = document.getElementById('anthropometry-form');
 			const resultElements = {
-				imc: document.getElementById('result-imc'),
-				imcSource:document.getElementById('imc-source'),
-				icc: document.getElementById('result-icc'),
-				iccSource:document.getElementById('icc-source'),
-				grasaPctActual: document.getElementById('result-grasa-pct-actual'),
-				grasaPctActualSource: document.getElementById('grasa-pct-actual-source'),
-				grasaPctDeseado: document.getElementById('result-grasa-pct-deseado'),
-				grasaPctDeseadoSource: document.getElementById('grasa-pct-deseado-source'),
-				grasaPctDeurenberg: document.getElementById('result-grasa-pct-Deurenberg'),
-				grasaPctDeurenbergSource: document.getElementById('grasa-pct-Deurenberg-source'),
-				grasaPctCUNBAE:  document.getElementById('result-grasa-pct-CUN-BAE'),
-                        	grasaPctCUNBAESource: document.getElementById('grasa-pct-CUN-BAE-source'),
-				BRMEstimado:document.getElementById("result-tmb"),
-				BRMEstimadoSource:document.getElementById("tmb-source"),
-				masaGrasa: document.getElementById('result-masa-grasa'),
-				masaGrasa2:document.getElementById('result-masa-grasa2'),
-	                        masaGrasa2Source:document.getElementById('grasa-pct-actual-source"'),
-				masaGrasaSource:document.getElementById('masa-grasa-source'),
-				masaMagra: document.getElementById('result-masa-magra'), // Added
-				masaMagraSource: document.getElementById('result-masa-magra-source'), // Added
-				mlg: document.getElementById('result-mlg'),
-				mlgSource:document.getElementById('mlg-source'),
-				amb: document.getElementById('result-amb'),
-				ambSource:document.getElementById('amb-source'),
-				masaOsea: document.getElementById('result-masa-osea'),
-				masaOseaSource: document.getElementById('masa-osea-source'), 
-				masaResidual: document.getElementById('result-masa-residual'),
-				masaResidualSource: document.getElementById('masa-residual-source'),
-				pesoIdeal: document.getElementById('result-peso-ideal'),
-				pesoObjetivo: document.getElementById('result-peso-objetivo'),
-				//endomorfia: document.getElementById('result-endomorfia'),
-				//mesomorfia: document.getElementById('result-mesomorfia'),
-				//ectomorfia: document.getElementById('result-ectomorfia'),
-				mmt: document.getElementById('result-mmt'),
-				Pctmmt: document.getElementById('result-Pct-mmt'),
-        			PctmmtSource: document.getElementById('Pct-mmt-source'),
-				imlg: document.getElementById('result-imlg'),
-				imlgSource:document.getElementById('imlg-source'),
-				img: document.getElementById('result-img'),
-				imgSource:document.getElementById('img-source'),
-				tipologia: document.getElementById('result-tipologia'),
-				tipologiaSource:document.getElementById('tipologia-source'),
-				edadmetabolica: document.getElementById('result-edadmetabolica'),
-				edadmetabolicaSource: document.getElementById('edadmetabolica-source'),
-				resultSomatotipo: document.getElementById('result-somatotipo'),
-				aguacorporal: document.getElementById('result-agua-corporal'),
-	                        aguacorporalSource: document.getElementById('agua-corporal-source')
-			};
+					    // IMC and ICC
+					    imc: document.getElementById('result-imc'),
+					    imcSource: document.getElementById('imc-source'),
+					    icc: document.getElementById('result-icc'),
+					    iccSource: document.getElementById('icc-source'),
+					
+					    // Body Fat Percentages
+					    grasaPctActual: document.getElementById('result-grasa-pct-actual'),
+					    grasaPctActualSource: document.getElementById('grasa-pct-actual-source'),
+					    grasaPctMetabolic: document.getElementById('result-grasa-pct-metabolic'),
+					    grasaPctMetabolicSource: document.getElementById('grasa-pct-metabolic-source'),
+					    grasaPctDeseado: document.getElementById('result-grasa-pct-deseado'),
+					    grasaPctDeseadoSource: document.getElementById('grasa-pct-deseado-source'),
+					    grasaPctDeurenberg: document.getElementById('result-grasa-pct-Deurenberg'),
+					    grasaPctDeurenbergSource: document.getElementById('grasa-pct-Deurenberg-source'),
+					    grasaPctCUNBAE: document.getElementById('result-grasa-pct-CUN-BAE'),
+					    grasaPctCUNBAESource: document.getElementById('grasa-pct-CUN-BAE-source'),
+					
+					    // Fat Mass (Actual and Metabolic)
+					    masaGrasaActual: document.getElementById('result-masa-grasa-actual'),
+					    masaGrasaActualSource: document.getElementById('masa-grasa-actual-source'),
+					    masaGrasaMetabolic: document.getElementById('result-masa-grasa-metabolic'),
+					    masaGrasaMetabolicSource: document.getElementById('masa-grasa-metabolic-source'),
+					
+					    // Lean Mass (Actual and Metabolic)
+					    masaMagraActual: document.getElementById('result-masa-magra-actual'),
+					    masaMagraActualSource: document.getElementById('masa-magra-actual-source'),
+					    masaMagraMetabolic: document.getElementById('result-masa-magra-metabolic'),
+					    masaMagraMetabolicSource: document.getElementById('masa-magra-metabolic-source'),
+					
+					    // IMLG (Actual and Metabolic)
+					    imlgActual: document.getElementById('result-imlg-actual'),
+					    imlgActualSource: document.getElementById('imlg-actual-source'),
+					    imlgMetabolic: document.getElementById('result-imlg-metabolic'),
+					    imlgMetabolicSource: document.getElementById('imlg-metabolic-source'),
+					
+					    // IMG (Actual and Metabolic)
+					    imgActual: document.getElementById('result-img-actual'),
+					    imgActualSource: document.getElementById('img-actual-source'),
+					    imgMetabolic: document.getElementById('result-img-metabolic'),
+					    imgMetabolicSource: document.getElementById('img-metabolic-source'),
+					
+					    // Tipología (Actual and Metabolic, if needed)
+					    tipologiaActual: document.getElementById('result-tipologia-actual'),
+					    tipologiaMetabolic: document.getElementById('result-tipologia-metabolic'),
+					
+					    // Metabolic Rate and Age
+					    BRMEstimado: document.getElementById('result-tmb'),
+					    BRMEstimadoSource: document.getElementById('tmb-source'),
+					    edadmetabolica: document.getElementById('result-edadmetabolica'),
+					    edadmetabolicaSource: document.getElementById('edadmetabolica-source'),
+					
+					    // Other Metrics
+					    amb: document.getElementById('result-amb'),
+					    ambSource: document.getElementById('amb-source'),
+					    masaOsea: document.getElementById('result-masa-osea'),
+					    masaOseaSource: document.getElementById('masa-osea-source'),
+					    masaResidual: document.getElementById('result-masa-residual'),
+					    masaResidualSource: document.getElementById('masa-residual-source'),
+					    pesoIdeal: document.getElementById('result-peso-ideal'),
+					    pesoObjetivo: document.getElementById('result-peso-objetivo'),
+					    mmt: document.getElementById('result-mmt'),
+					    Pctmmt: document.getElementById('result-Pct-mmt'),
+					    PctmmtSource: document.getElementById('Pct-mmt-source'),
+					    resultSomatotipo: document.getElementById('result-somatotipo'),
+					    aguacorporal: document.getElementById('result-agua-corporal'),
+					    aguacorporalSource: document.getElementById('agua-corporal-source')
+					};
         console.log('resultElements:', Object.entries(resultElements).map(([key, val]) => ({ key, val: val ? val.id : null })));
         const explanationSection = document.getElementById('explanation-section');
         const explanationContent = document.getElementById('explanation-content');
