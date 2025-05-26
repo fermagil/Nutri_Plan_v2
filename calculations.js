@@ -509,12 +509,15 @@ import { auth } from './app.js';
 			function calculateMetabolicAge(data) {
 			let { genero, edad, peso, altura, esDeportista, pliegues, porcentajeGrasa, cintura, imc } = data;
 			console.log({imc});
+				// Calcular IMC
+			    
 			// Verificar datos obligatorios
 			if (!genero || !edad || !peso || !altura) {
 				throw new Error('Faltan datos obligatorios: genero, edad, peso, altura');
 			}
 			console.log({genero});
-				   
+				 alturaMetros = altura / 100; // Convertir altura a metros
+			     imc = peso / (alturaMetros * alturaMetros);   
 
 					
 			// Validación para culturistas: forzar esDeportista = true si % grasa es bajo e IMC es alto
@@ -532,12 +535,14 @@ import { auth } from './app.js';
 					else if (edad >= 30 && edad <= 39) { c = 1.1422; m = 0.0544; }
 					else if (edad >= 40 && edad <= 49) { c = 1.1620; m = 0.0700; }
 					else if (edad >= 50) { c = 1.1715; m = 0.0779; }
+				console.log({genero});
 				} else if (genero.toLowerCase() === 'femenino') {
 					if (edad >= 17 && edad <= 19) { c = 1.1549; m = 0.0678; }
 					else if (edad >= 20 && edad <= 29) { c = 1.1599; m = 0.0717; }
 					else if (edad >= 30 && edad <= 39) { c = 1.1423; m = 0.0632; }
 					else if (edad >= 40 && edad <= 49) { c = 1.1333; m = 0.0612; }
 					else if (edad >= 50) { c = 1.1339; m = 0.0645; }
+				console.log({genero});
 				} else {
 					throw new Error('Género no válido');
 				}
@@ -564,7 +569,7 @@ import { auth } from './app.js';
 					throw new Error('Se requiere pliegues o porcentajeGrasa para evaluar obesidad');
 				}
 				// Definir obesidad: IMC ≥ 30 y % grasa > umbral saludable
-				const umbralGrasa = genero === 'masculino' ? 25 : 32;
+				const umbralGrasa = genero.toLowerCase() === 'masculino' ? 25 : 32;
 				esObeso = imc >= 30 && grasaEval > umbralGrasa;
 			}
 
