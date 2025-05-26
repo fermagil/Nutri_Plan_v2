@@ -4624,7 +4624,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            } else {
 				                // Calcular desde results.grasaPctActual (17.913427508394022%)
 				                results.masaGrasa = (results.grasaPctActual / 100) * data.peso;
+						    console.log('Masa grasa:', results.masaGrasa);
+						    console.log('Porcentaje de grasa actual:', results.grasaPctActual);
 				                results.masaMagra = data.peso - results.masaGrasa;
+						     console.log('Masa grasa:', results.masaGrasa);
 				                results.masaGrasaSource = results.actualBodyFatSource || '(Calculado desde % grasa)';
 				                console.log('Calculando Masa Grasa y Magra desde % grasa:', {
 				                    grasaPctActual: results.grasaPctActual,
@@ -4635,6 +4638,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            }
 				            results.mlg = results.masaMagra;
 				            results.mlgSource = 'Calculado a partir de % grasa o edad metabólica';
+						 console.log('Masa grasa:', results.masaGrasa);
 				        } catch (e) {
 				            console.error('Error calculando Masa Grasa y Magra:', e.message);
 				            results.masaGrasa = NaN;
