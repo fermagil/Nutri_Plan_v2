@@ -4557,7 +4557,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            
 			            // --- Calculate IMLG, IMG, and Tipología ---
 					    let bodyCompResults = null;
-					const alturaM = data.altura / 100;
+					//const alturaM = data.altura / 100;
 					    if (data.peso && !isNaN(alturaM) && !isNaN(results.grasaPctActual)) {
 					        try {
 					            bodyCompResults = generateBodyCompositionAnalysis(
