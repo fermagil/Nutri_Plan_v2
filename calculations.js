@@ -5449,17 +5449,20 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    }
 					
 					    // Somatotipo Components
-					        // Somatotipo Components
-					        if (resultElements.resultSomatotipo) {
-					            resultElements.resultSomatotipo.textContent = window.calculatedResults.somatotipo.formatted || '---';
-					        } else {
-					            console.warn('Elemento resultSomatotipo no encontrado en resultElements. Verifica que el elemento con id="result-somatotipo" exista en el HTML.');
-					            content += `<p><strong>Advertencia:</strong> No se pudo mostrar el Somatotipo porque el elemento con id="result-somatotipo" no está definido en la interfaz.</p>`;
-					        }
+					        if (resultElements.somatotipo) {
+						    resultElements.somatotipo.textContent = window.calculatedResults.somatotipo.formatted || '---';
+						} else {
+						    console.warn('Elemento somatotipo no encontrado en resultElements. Verifica que el elemento con id="result-somatotipo" exista en el HTML.');
+						    content += `<p><strong>Advertencia:</strong> No se pudo mostrar el Somatotipo porque el elemento con id="result-somatotipo" no está definido en la interfaz.</p>`;
+						}
 						
-						    if (resultElements.somatotipoSource) resultElements.somatotipoSource.textContent = results.somatotipoSource || '(No calculado)';
-
-  
+						if (resultElements.somatotipoSource) {
+						    resultElements.somatotipoSource.textContent = results.somatotipoSource || '(No calculado)';
+						} else {
+						    console.warn('Elemento somatotipoSource no encontrado en resultElements. Verifica que el elemento con id="somatotipo-source" exista en el HTML.');
+						    content += `<p><strong>Advertencia:</strong> No se pudo mostrar la fuente del Somatotipo porque el elemento con id="somatotipo-source" no está definido en la interfaz.</p>`;
+						}
+  						updateElement('resultSomatotipo', window.calculatedResults.somatotipo.formatted, 1);
 					    // Update explanation section
 					    if (explanationContent && content) {
 					        explanationContent.innerHTML = content;
