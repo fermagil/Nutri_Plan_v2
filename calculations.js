@@ -17,6 +17,8 @@ import { auth } from './app.js';
 				BRMEstimado:document.getElementById("result-tmb"),
 				BRMEstimadoSource:document.getElementById("tmb-source"),
 				masaGrasa: document.getElementById('result-masa-grasa'),
+				masaGrasa2:document.getElementById('result-masa-grasa2'),
+	                        masaGrasa2Source:document.getElementById('grasa-pct-actual-source"'),
 				masaGrasaSource:document.getElementById('masa-grasa-source'),
 				masaMagra: document.getElementById('result-masa-magra'), // Added
 				masaMagraSource: document.getElementById('result-masa-magra-source'), // Added
@@ -1068,7 +1070,7 @@ import { auth } from './app.js';
     }
 
     // Calcular masa grasa y masa magra
-    const masaGrasa = peso * (porcentajeGrasa / 100);
+    const masaGrasa = peso * (grasaPctActual / 100);
     const masaMagra = peso - masaGrasa;
     const alturaMetros = altura / 100;
 
@@ -1808,9 +1810,9 @@ import { auth } from './app.js';
             // Masa Grasa
 				content += '<h3>Masa Grasa y Masa Magra(MLG)</h3>';
 				  content +='<p><strong>Masa Grasa:</strong> Peso de la grasa en tu cuerpo.';
-				if (!isNaN(results.masaGrasa)) {
-					const fatPercentage = (results.masaGrasa / data.peso) * 100;
-					content += 'Tu masa grasa es ' + formatResult(results.masaGrasa, 1) + ' kg, que representa ' + formatResult(fatPercentage, 1) + '% de tu peso corporal. ';
+				if (!isNaN(results.grasaPctActual)) {
+					const fatPercentage = (results.grasaPctActual / data.peso) * 100;
+					content += 'Tu masa grasa es ' + formatResult(results.grasaPctActual, 1) + ' kg, que representa ' + formatResult(fatPercentage, 1) + '% de tu peso corporal. ';
 					if (gender === 'masculino') {
 						if (isAthlete) {
 							if (fatPercentage >= 6 && fatPercentage <= 15) {
