@@ -5016,63 +5016,114 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            }
 			
 			           try {
-				        if (
-				            data.altura &&
-				            data.peso &&
-				            data.pliegue_tricipital &&
-				            data.pliegue_subescapular &&
-				            data.pliegue_suprailiaco &&
-				            data.pliegue_pantorrilla &&
-				            data.diam_humero &&
-				            data.diam_femur &&
-				            data.circ_brazo && // Changed to circ_brazo for consistency with AMB
-				            data.circ_pantorrilla
-				        ) {
-				            const sum3Pliegues = data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
-				            const X = sum3Pliegues * (170.18 / data.altura);
-				            results.endomorfia = -0.7182 + 0.1451 * X - 0.00068 * Math.pow(X, 2) + 0.0000014 * Math.pow(X, 3);
-				
-				            const pliegueTricepsCm = data.pliegue_tricipital / 10;
-				            const plieguePantorrillaCm = data.pliegue_pantorrilla / 10;
-				            const circBrazoCorregido = data.circ_brazo - pliegueTricepsCm;
-				            const circPantorrillaCorregida = data.circ_pantorrilla - plieguePantorrillaCm;
-				            results.mesomorfia =
-				                0.858 * data.diam_humero +
-				                0.601 * data.diam_femur +
-				                0.188 * circBrazoCorregido +
-				                0.161 * circPantorrillaCorregida -
-				                0.131 * (data.altura / 100) + // Convert to meters
-				                4.5;
-				
-				            const HWR = data.altura / Math.pow(data.peso, 1 / 3);
-				            if (HWR > 40.75) {
-				                results.ectomorfia = 0.732 * HWR - 28.58;
-				            } else if (HWR >= 38.25) {
-				                results.ectomorfia = 0.463 * HWR - 17.63;
-				            } else {
-				                results.ectomorfia = 0.1;
-				            }
-				
-				            results.endomorfia = Math.max(0.1, results.endomorfia);
-				            results.mesomorfia = Math.max(0.1, results.mesomorfia);
-				            results.ectomorfia = Math.max(0.1, results.ectomorfia);
-				            results.somatotipoSource = 'Heath-Carter';
-				            console.log('Somatotipo calculado:', {
-				                endomorfia: results.endomorfia,
-				                mesomorfia: results.mesomorfia,
-				                ectomorfia: results.ectomorfia
-				            });
-				        } else {
-				            throw new Error('Datos insuficientes para somatotipo');
-				        }
-				    } catch (e) {
-				        console.error('Error calculando Somatotipo:', e.message);
-				        results.endomorfia = NaN;
-				        results.mesomorfia = NaN;
-				        results.ectomorfia = NaN;
-				        results.somatotipoSource = `Error: ${e.message}`;
-				        content += `<p><strong>Error en Somatotipo:</strong> ${e.message}.</p>`;
-				    }
+					    if (
+					        data.altura &&
+					        data.peso &&
+					        data.pliegue_tricipital &&
+					        data.pliegue_subescapular &&
+					        data.pliegue_suprailiaco &&
+					        data.pliegue_pantorrilla &&
+					        data.diam_humero &&
+					        data.diam_femur &&
+					        data.circ_brazo &&
+					        data.circ_pantorrilla
+					    ) {
+					        // Convert and validate inputs
+					        const altura = parseFloatSafe(data.altura);
+					        const peso = parseFloatSafe(data.peso);
+					        const pliegueTricipital = parseFloatSafe(data.pliegue_tricipital);
+					        const pliegueSubescapular = parseFloatSafe(data.pliegue_subescapular);
+					        const pliegueSuprailiaco = parseFloatSafe(data.pliegue_suprailiaco);
+					        const plieguePantorrilla = parseFloatSafe(data.pliegue_pantorrilla);
+					        let diamHumero = parseFloatSafe(data.diam_humero);
+					        let diamFemur = parseFloatSafe(data.diam_femur);
+					        const circBrazo = parseFloatSafe(data.circ_brazo);
+					        const circPantorrilla = parseFloatSafe(data.circ_pantorrilla);
+					
+					        // Validate ranges and units
+					        if (altura < 100 || altura > 250) throw new Error('Altura fuera de rango (100–250 cm)');
+					        if (peso < 30 || peso > 200) throw new Error('Peso fuera de rango (30–200 kg)');
+					        if (pliegueTricipital < 2 || pliegueTricipital > 50) throw new Error('Pliegue tricipital fuera de rango (2–50 mm)');
+					        if (pliegueSubescapular < 2 || pliegueSubescapular > 50) throw new Error('Pliegue subescapular fuera de rango (2–50 mm)');
+					        if (pliegueSuprailiaco < 2 || pliegueSuprailiaco > 50) throw new Error('Pliegue suprailiaco fuera de rango (2–50 mm)');
+					        if (plieguePantorrilla < 2 || plieguePantorrilla > 50) throw new Error('Pliegue pantorrilla fuera de rango (2–50 mm)');
+					        if (circBrazo < 20 || circBrazo > 50) throw new Error('Circunferencia brazo fuera de rango (20–50 cm)');
+					        if (circPantorrilla < 25 || circPantorrilla > 60) throw new Error('Circunferencia pantorrilla fuera de rango (25–60 cm)');
+					
+					        // Convert bone diameters from mm to cm if necessary
+					        if (diamHumero > 20) {
+					            console.warn(`diam_humero (${diamHumero}) parece estar en mm, convirtiendo a cm`);
+					            diamHumero /= 10;
+					        }
+					        if (diamFemur > 20) {
+					            console.warn(`diam_femur (${diamFemur}) parece estar en mm, convirtiendo a cm`);
+					            diamFemur /= 10;
+					        }
+					        if (diamHumero < 4 || diamHumero > 10) throw new Error('Diámetro húmero fuera de rango (4–10 cm)');
+					        if (diamFemur < 6 || diamFemur > 12) throw new Error('Diámetro fémur fuera de rango (6–12 cm)');
+					
+					        // Log inputs for debugging
+					        console.log('Somatotipo inputs:', {
+					            altura, peso, pliegueTricipital, pliegueSubescapular, pliegueSuprailiaco,
+					            plieguePantorrilla, diamHumero, diamFemur, circBrazo, circPantorrilla
+					        });
+					
+					        // Endomorfia
+					        const sum3Pliegues = pliegueTricipital + pliegueSubescapular + pliegueSuprailiaco;
+					        const X = sum3Pliegues * (170.18 / altura);
+					        results.endomorfia = -0.7182 + 0.1451 * X - 0.00068 * Math.pow(X, 2) + 0.0000014 * Math.pow(X, 3);
+					
+					        // Mesomorfia
+					        const pliegueTricepsCm = pliegueTricipital / 10;
+					        const plieguePantorrillaCm = plieguePantorrilla / 10;
+					        const circBrazoCorregido = circBrazo - pliegueTricepsCm;
+					        const circPantorrillaCorregida = circPantorrilla - plieguePantorrillaCm;
+					        results.mesomorfia =
+					            0.858 * diamHumero +
+					            0.601 * diamFemur +
+					            0.188 * circBrazoCorregido +
+					            0.161 * circPantorrillaCorregida -
+					            0.131 * (altura / 100) +
+					            4.5;
+					
+					        // Ectomorfia
+					        const HWR = altura / Math.pow(peso, 1 / 3);
+					        if (HWR > 40.75) {
+					            results.ectomorfia = 0.732 * HWR - 28.58;
+					        } else if (HWR >= 38.25) {
+					            results.ectomorfia = 0.463 * HWR - 17.63;
+					        } else {
+					            results.ectomorfia = 0.1;
+					        }
+					
+					        // Ensure non-negative
+					        results.endomorfia = Math.max(0.1, results.endomorfia);
+					        results.mesomorfia = Math.max(0.1, results.mesomorfia);
+					        results.ectomorfia = Math.max(0.1, results.ectomorfia);
+					        results.somatotipoSource = 'Heath-Carter';
+					
+					        // Validate mesomorfia range
+					        if (results.mesomorfia > 10) {
+					            console.warn(`Mesomorfia (${results.mesomorfia}) es inusualmente alta, revisa los datos de entrada`);
+					            content += `<p><strong>Advertencia:</strong> Mesomorfia (${results.mesomorfia.toFixed(1)}) es inusualmente alta, por favor verifica los datos de entrada (diámetros óseos, circunferencias).</p>`;
+					        }
+					
+					        console.log('Somatotipo calculado:', {
+					            endomorfia: results.endomorfia,
+					            mesomorfia: results.mesomorfia,
+					            ectomorfia: results.ectomorfia
+					        });
+					    } else {
+					        throw new Error('Datos insuficientes para somatotipo');
+					    }
+					} catch (e) {
+					    console.error('Error calculando Somatotipo:', e.message);
+					    results.endomorfia = NaN;
+					    results.mesomorfia = NaN;
+					    results.ectomorfia = NaN;
+					    results.somatotipoSource = `Error: ${e.message}`;
+					    content += `<p><strong>Error en Somatotipo:</strong> ${e.message}.</p>`;
+					}
 							
 			            // Destructure inputs
 			            let { genero, edad, peso, altura, esDeportista } = data;
