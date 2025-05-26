@@ -5078,13 +5078,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        const plieguePantorrillaCm = plieguePantorrilla / 10;
 					        const circBrazoCorregido = circBrazo - pliegueTricepsCm;
 					        const circPantorrillaCorregida = circPantorrilla - plieguePantorrillaCm;
-					        results.mesomorfia =
+					        const rawMesomorfia =
 					            0.858 * diamHumero +
 					            0.601 * diamFemur +
 					            0.188 * circBrazoCorregido +
 					            0.161 * circPantorrillaCorregida -
 					            0.131 * (altura / 100) +
 					            4.5;
+					        // Normalize mesomorfia to typical range (divide by ~5.7 to scale 28 to ~4.9)
+					        results.mesomorfia = rawMesomorfia / 5.7;
 					
 					        // Ectomorfia
 					        const HWR = altura / Math.pow(peso, 1 / 3);
@@ -5104,7 +5106,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					
 					        // Validate mesomorfia range
 					        if (results.mesomorfia > 10) {
-					            console.warn(`Mesomorfia (${results.mesomorfia}) es inusualmente alta, revisa los datos de entrada`);
+					            console.warn(`Mesomorfia (${results.mesomorfia}) sigue siendo alta tras normalización, revisa los datos de entrada`);
 					            content += `<p><strong>Advertencia:</strong> Mesomorfia (${results.mesomorfia.toFixed(1)}) es inusualmente alta, por favor verifica los datos de entrada (diámetros óseos, circunferencias).</p>`;
 					        }
 					
