@@ -4533,11 +4533,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					
 						        results.masaGrasaActual = (results.grasaPctActual / 100) * data.peso;
 						        results.masaMagraActual = data.peso - results.masaGrasaActual;
-						        results.imlgActual = bodyCompResultsActual.imlg;
-						        results.imlgActualSource = bodyCompResultsActual.imlgCategory || '(No calculado)';
-						        results.imgActual = bodyCompResultsActual.img;
-						        results.imgActualSource = bodyCompResultsActual.imgCategory || '(No calculado)';
-						        results.tipologiaActual = bodyCompResultsActual.tipologia || 'Indefinido';
+						        results.imlgActual = bodyCompResults.imlg;
+						        results.imlgActualSource = bodyCompResults.imlgCategory || '(No calculado)';
+						        results.imgActual = bodyCompResults.img;
+						        results.imgActualSource = bodyCompResults.imgCategory || '(No calculado)';
+						        results.tipologiaActual = bodyCompResults.tipologia || 'Indefinido';
 						        results.masaGrasaActualSource = results.actualBodyFatSource;
 						        results.mlgActual = results.masaMagraActual;
 						        results.mlgActualSource = 'Calculado desde % Grasa Actual';
