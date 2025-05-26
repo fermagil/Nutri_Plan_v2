@@ -737,6 +737,9 @@ import { auth } from './app.js';
 		        grasa = (495 / densidadCorporal) - 450;
 		    } else {
 		        grasa = porcentajeGrasa;
+			     console.log({
+				grasa,
+			});
 		    }
 		
 		    // Calcular masa magra y grasa
@@ -802,6 +805,9 @@ import { auth } from './app.js';
 		        grasa = esObeso ? (498 / densidadCorporal) - 451 : (457 / densidadCorporal) - 414.2;
 		    } else {
 		        grasa = porcentajeGrasa;
+			    console.log({
+				grasa,
+			});
 		    }
 		
 		    // Calcular masa magra y grasa
