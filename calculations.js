@@ -20,33 +20,35 @@ import { auth } from './app.js';
 					    grasaPctCUNBAE: document.getElementById('result-grasa-pct-CUN-BAE'),
 					    grasaPctCUNBAESource: document.getElementById('grasa-pct-CUN-BAE-source'),
 					
-					    // Fat Mass (Actual and Metabolic)
+					    // Fat Mass
 					    masaGrasaActual: document.getElementById('result-masa-grasa-actual'),
 					    masaGrasaActualSource: document.getElementById('masa-grasa-actual-source'),
 					    masaGrasaMetabolic: document.getElementById('result-masa-grasa-metabolic'),
 					    masaGrasaMetabolicSource: document.getElementById('masa-grasa-metabolic-source'),
 					
-					    // Lean Mass (Actual and Metabolic)
+					    // Lean Mass
 					    masaMagraActual: document.getElementById('result-masa-magra-actual'),
 					    masaMagraActualSource: document.getElementById('masa-magra-actual-source'),
 					    masaMagraMetabolic: document.getElementById('result-masa-magra-metabolic'),
-					    masaMagraMetabolicSource: document.getElementById('masa-magra-metabolic-source'),
+					    masaMagraMetabolicSource: document.getElementById('masa-grasa-metabolic-source'),
 					
-					    // IMLG (Actual and Metabolic)
+					    // IMLG
 					    imlgActual: document.getElementById('result-imlg-actual'),
 					    imlgActualSource: document.getElementById('imlg-actual-source'),
 					    imlgMetabolic: document.getElementById('result-imlg-metabolic'),
 					    imlgMetabolicSource: document.getElementById('imlg-metabolic-source'),
 					
-					    // IMG (Actual and Metabolic)
+					    // IMG
 					    imgActual: document.getElementById('result-img-actual'),
 					    imgActualSource: document.getElementById('img-actual-source'),
 					    imgMetabolic: document.getElementById('result-img-metabolic'),
 					    imgMetabolicSource: document.getElementById('img-metabolic-source'),
 					
-					    // Tipología (Actual and Metabolic, if needed)
+					    // Tipología
 					    tipologiaActual: document.getElementById('result-tipologia-actual'),
+					    tipologiaActualSource: document.getElementById('tipologia-actual-source'),
 					    tipologiaMetabolic: document.getElementById('result-tipologia-metabolic'),
+					    tipologiaMetabolicSource: document.getElementById('tipologia-metabolic-source'),
 					
 					    // Metabolic Rate and Age
 					    BRMEstimado: document.getElementById('result-tmb'),
@@ -54,19 +56,35 @@ import { auth } from './app.js';
 					    edadmetabolica: document.getElementById('result-edadmetabolica'),
 					    edadmetabolicaSource: document.getElementById('edadmetabolica-source'),
 					
-					    // Other Metrics
+					    // Structural Metrics
+					    somatotipo: document.getElementById('result-somatotipo'),
+					    somatotipoSource: document.getElementById('somatotipo-source'),
 					    amb: document.getElementById('result-amb'),
 					    ambSource: document.getElementById('amb-source'),
+					    ambc: document.getElementById('result-ambc'),
+					    ambcSource: document.getElementById('ambc-source'),
+					    mmt: document.getElementById('result-mmt'),
+					    mmtSource: document.getElementById('mmt-source'),
+					    mmt2: document.getElementById('result-mmt2'),
+					    mmt2Source: document.getElementById('mmt2-source'),
+					    Pctmmt: document.getElementById('result-Pct-mmt'),
+					    PctmmtSource: document.getElementById('Pct-mmt-source'),
+					    Pctmmt2: document.getElementById('result-Pct-mmt2'),
+					    Pctmmt2Source: document.getElementById('Pct-mmt2-source'),
 					    masaOsea: document.getElementById('result-masa-osea'),
 					    masaOseaSource: document.getElementById('masa-osea-source'),
 					    masaResidual: document.getElementById('result-masa-residual'),
 					    masaResidualSource: document.getElementById('masa-residual-source'),
+					
+					    // Objectives
 					    pesoIdeal: document.getElementById('result-peso-ideal'),
+					    pesoIdealSource: document.getElementById('peso-ideal-source'),
 					    pesoObjetivo: document.getElementById('result-peso-objetivo'),
-					    mmt: document.getElementById('result-mmt'),
-					    Pctmmt: document.getElementById('result-Pct-mmt'),
-					    PctmmtSource: document.getElementById('Pct-mmt-source'),
-					    resultSomatotipo: document.getElementById('result-somatotipo'),
+					    pesoObjetivoSource: document.getElementById('peso-objetivo-source'),
+					    pesoMuscular: document.getElementById('result-peso-muscular'),
+					    pesoMuscularSource: document.getElementById('peso-muscular-source'),
+					
+					    // Other
 					    aguacorporal: document.getElementById('result-agua-corporal'),
 					    aguacorporalSource: document.getElementById('agua-corporal-source')
 					};
@@ -5248,7 +5266,69 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                        console.warn(`Elemento ${key} no encontrado en resultElements`);
 				                    }
 				                };
-
+							const updateElement = (key, value, precision = 1) => {
+							    if (resultElements[key]) {
+							        resultElements[key].textContent = isNaN(value) ? 'No calculado' : value.toFixed(precision);
+							    } else {
+							        console.warn(`Elemento ${key} no encontrado en resultElements`);
+							    }
+							};
+							
+							// Update Actual Body Fat Results
+							updateElement('grasaPctActual', results.grasaPctActual, 1);
+							if (resultElements.grasaPctActualSource) {
+							    resultElements.grasaPctActualSource.textContent = results.actualBodyFatSource || '(No calculado)';
+							}
+							updateElement('masaGrasaActual', results.masaGrasaActual, 1);
+							if (resultElements.masaGrasaActualSource) {
+							    resultElements.masaGrasaActualSource.textContent = results.masaGrasaActualSource || '(No calculado)';
+							}
+							updateElement('masaMagraActual', results.masaMagraActual, 1);
+							if (resultElements.masaMagraActualSource) {
+							    resultElements.masaMagraActualSource.textContent = results.masaMagraActualSource || '(No calculado)';
+							}
+							updateElement('imlgActual', results.imlgActual, 1);
+							if (resultElements.imlgActualSource) {
+							    resultElements.imlgActualSource.textContent = results.imlgActualSource || '(No calculado)';
+							}
+							updateElement('imgActual', results.imgActual, 1);
+							if (resultElements.imgActualSource) {
+							    resultElements.imgActualSource.textContent = results.imgActualSource || '(No calculado)';
+							}
+							if (resultElements.tipologiaActual) {
+							    resultElements.tipologiaActual.textContent = results.tipologiaActual || 'Indefinido';
+							}
+							if (resultElements.tipologiaActualSource) {
+							    resultElements.tipologiaActualSource.textContent = '(Relación IMLG/IMG)';
+							}
+							
+							// Update Metabolic Age Results
+							updateElement('grasaPctMetabolic', results.grasaPctMetabolic, 1);
+							if (resultElements.grasaPctMetabolicSource) {
+							    resultElements.grasaPctMetabolicSource.textContent = results.masaGrasaMetabolicSource || '(No calculado)';
+							}
+							updateElement('masaGrasaMetabolic', results.masaGrasaMetabolic, 1);
+							if (resultElements.masaGrasaMetabolicSource) {
+							    resultElements.masaGrasaMetabolicSource.textContent = results.masaGrasaMetabolicSource || '(No calculado)';
+							}
+							updateElement('masaMagraMetabolic', results.masaMagraMetabolic, 1);
+							if (resultElements.masaMagraMetabolicSource) {
+							    resultElements.masaMagraMetabolicSource.textContent = results.masaGrasaMetabolicSource || '(No calculado)';
+							}
+							updateElement('imlgMetabolic', results.imlgMetabolic, 1);
+							if (resultElements.imlgMetabolicSource) {
+							    resultElements.imlgMetabolicSource.textContent = results.imlgMetabolicSource || '(No calculado)';
+							}
+							updateElement('imgMetabolic', results.imgMetabolic, 1);
+							if (resultElements.imgMetabolicSource) {
+							    resultElements.imgMetabolicSource.textContent = results.imgMetabolicSource || '(No calculado)';
+							}
+							if (resultElements.tipologiaMetabolic) {
+							    resultElements.tipologiaMetabolic.textContent = results.tipologiaMetabolic || 'Indefinido';
+							}
+							if (resultElements.tipologiaMetabolicSource) {
+							    resultElements.tipologiaMetabolicSource.textContent = '(Relación IMLG/IMG)';
+							}
 						//Update % Agua
 						updateDisplay(resultadoAgua);
 						function updateDisplay(resultadoAgua) {
