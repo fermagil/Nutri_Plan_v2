@@ -4708,8 +4708,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                console.log('Calculando Masa Grasa y Magra desde % grasa:', {
 				                    grasaPctActual: results.grasaPctActual,
 				                    peso: data.peso,
-				                    masaGrasa: results.masaGrasa,
-				                    masaMagra: results.masaMagra
+				                    masaGrasa2: results.masaGrasa2,
+				                    masaMagra2: results.masaMagra2
 				                });
 				            }
 				            results.mlg = results.masaMagra;
