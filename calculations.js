@@ -4593,13 +4593,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            
 			            // --- Calculate IMLG, IMG, and Tipología ---
 					    let bodyCompResults = null;
-					    if (data.peso && !isNaN(alturaM) && !isNaN(results.grasaPctActual)) {
+					    if (data.peso && !isNaN(alturaM) && !isNaN(results.actualBodyFatPct)) {
 					        try {
 					            bodyCompResults = generateBodyCompositionAnalysis(
 					                {
 					                    peso: data.peso,
 					                    altura: data.altura,
-					                    porcentajeGrasa: results.grasaPctActual // Usar results.grasaPctActual en lugar de actualBodyFatPct
+					                    porcentajeGrasa: results.actualBodyFatPct // Usar results.grasaPctActual en lugar de actualBodyFatPct
 					                },
 					                {
 					                    sexo: data.genero,
@@ -4638,7 +4638,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        console.warn('No se pudieron calcular IMLG, IMG y Tipología: datos insuficientes', {
 					            peso: data.peso,
 					            alturaM,
-					            grasaPctActual: results.grasaPctActual
+					            grasaPctActual: results.actualBodyFatPct
 					        });
 					        content += `<p><strong>IMLG e IMG:</strong> No calculado debido a datos insuficientes.</p>`;
 					    }
