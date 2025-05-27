@@ -713,7 +713,7 @@ async function showProgressCharts(clienteId) {
 
             nonNumericalData.somatotipo.push(data.resultados?.somatotipo?.formatted || '---');
             nonNumericalData.tipologiaActual.push(data.resultados?.tipologiaActual || '---');
-            nonNumericalData.tipologiaMetabolico.push(data.resultados?.tipologiaMetabolic || '---');
+            nonNumericalData.tipologiaMetabolico.push(data.resultados?.tipologiaMetabolico || '---');
         });
 
         // Destroy existing charts if any
@@ -721,6 +721,37 @@ async function showProgressCharts(clienteId) {
             const chart = Chart.getChart(canvasId);
             if (chart) chart.destroy();
         });
+
+        // Common chart options
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                datalabels: {
+                    display: true,
+                    align: 'top',
+                    formatter: (value, context) => {
+                        if (value === null) return '';
+                        const date = context.chart.data.labels[context.dataIndex];
+                        let formattedValue = value;
+                        if (context.dataset.label.includes('Peso')) formattedValue = `${value.toFixed(1)} kg`;
+                        else if (context.dataset.label.includes('%')) formattedValue = `${value.toFixed(1)}%`;
+                        else if (context.dataset.label.includes('mm')) formattedValue = `${value.toFixed(1)} mm`;
+                        else if (context.dataset.label.includes('cm')) formattedValue = `${value.toFixed(1)} cm`;
+                        else if (context.dataset.label.includes('Masa')) formattedValue = `${value.toFixed(1)} kg`;
+                        else if (context.dataset.label.includes('IMC')) formattedValue = `${value.toFixed(1)}`;
+                        else if (context.dataset.label.includes('ICC')) formattedValue = `${value.toFixed(2)}`;
+                        return `${formattedValue}`;
+                    },
+                    color: '#333',
+                    font: { size: 10 }
+                }
+            },
+            scales: {
+                x: { title: { display: true, text: 'Fecha' } }
+            }
+        };
 
         // Peso Chart
         new Chart(document.getElementById('peso-chart'), {
@@ -737,13 +768,13 @@ async function showProgressCharts(clienteId) {
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonOptions,
                 scales: {
+                    ...commonOptions.scales,
                     y: { title: { display: true, text: 'Peso (kg)' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // % Grasa Chart
@@ -761,13 +792,13 @@ async function showProgressCharts(clienteId) {
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonOptions,
                 scales: {
+                    ...commonOptions.scales,
                     y: { title: { display: true, text: '% Grasa' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // Pliegues Chart
@@ -784,13 +815,13 @@ async function showProgressCharts(clienteId) {
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonOptions,
                 scales: {
+                    ...commonOptions.scales,
                     y: { title: { display: true, text: 'Pliegues (mm)' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // Circunferencias Chart
@@ -801,20 +832,20 @@ async function showProgressCharts(clienteId) {
                 datasets: [
                     { label: 'Cintura (cm)', data: circunferenciasData.cintura, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
                     { label: 'Cadera (cm)', data: circunferenciasData.cadera, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 },
-                    { label: 'Cuello (cm)', data: circunferenciasData.cuello, borderColor: '#5cb85c', backgroundColor: 'rgba(92, 184, 92, 0.2)', fill: false,  tension: 0.1 },
+                    { label: 'Cuello (cm)', data: circunferenciasData.cuello, borderColor: '#5cb85c', backgroundColor: 'rgba(92, 184, 92, 0.2)', fill: false, tension: 0.1 },
                     { label: 'Pantorrilla (cm)', data: circunferenciasData.pantorrilla, borderColor: '#f0ad4e', backgroundColor: 'rgba(240, 173, 78, 0.2)', fill: false, tension: 0.1 },
                     { label: 'Brazo Relajado (cm)', data: circunferenciasData.brazo, borderColor: '#d9534f', backgroundColor: 'rgba(217, 83, 79, 0.2)', fill: false, tension: 0.1 },
                     { label: 'Brazo Contraído (cm)', data: circunferenciasData.brazo_contraido, borderColor: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.2)', fill: false, tension: 0.1 }
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonOptions,
                 scales: {
+                    ...commonOptions.scales,
                     y: { title: { display: true, text: 'Circunferencias (cm)' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // IMC and ICC Chart
@@ -828,13 +859,13 @@ async function showProgressCharts(clienteId) {
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonOptions,
                 scales: {
+                    ...commonOptions.scales,
                     y: { title: { display: true, text: 'Valor' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // Masa Magra Chart
@@ -848,77 +879,69 @@ async function showProgressCharts(clienteId) {
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonOptions,
                 scales: {
+                    ...commonOptions.scales,
                     y: { title: { display: true, text: 'Masa Magra (kg)' } }
-                },
-                plugins: { legend: { position: 'top' }}
-            }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
 
-       // Masa Muscular Chart
-            new Chart(document.getElementById('masa-muscular-chart'), {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [
-                        {
-                            label: 'Masa Muscular Total (kg)',
-                            data: masaMuscularData.mmt,
-                            borderColor: '#0275d8',
-                            backgroundColor: 'rgba(2, 117, 216, 0.2)',
-                            fill: false,
-                            tension: 0.1
-                        },
-                        {
-                            label: '% Masa Muscular',
-                            data: masaMuscularData.Pctmmt,
-                            borderColor: '#5bc0de',
-                            backgroundColor: 'rgba(91, 192, 222, 0.2)',
-                            fill: false,
-                            tension: 0.1
-                        }
-                    ]
-                }, // Added closing brace and comma
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Valor'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        }
-                    }
+        // Masa Muscular Chart
+        new Chart(document.getElementById('masa-muscular-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: 'Masa Muscular Total (kg)', data: masaMuscularData.mmt, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+                    { label: '% Masa Muscular', data: masaMuscularData.Pctmmt, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    ...commonOptions.scales,
+                    y: { title: { display: true, text: 'Valor' } }
                 }
-            });
+            },
+            plugins: [ChartDataLabels]
+        });
 
         // Populate non-numerical data table
-        // Populate non-numerical data table
-            const tableBody = document.getElementById('non-numerical-table-body');
-            tableBody.innerHTML = '';
-            dates.forEach((date, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
-                    <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
-                    <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
-                    <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+        const tableBody = document.getElementById('non-numerical-table-body');
+        tableBody.innerHTML = '';
+        dates.forEach((date, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>
+            `;
+            tableBody.appendChild(row);
+        });
 
         // Show popup
         const popup = document.getElementById('progress-popup');
         if (popup) {
             popup.style.display = 'flex';
+        }
+
+        // Add PDF export functionality
+        const printPdfBtn = document.getElementById('print-pdf-btn');
+        if (printPdfBtn) {
+            printPdfBtn.addEventListener('click', () => {
+                const element = document.getElementById('charts-container');
+                const opt = {
+                    margin: 10,
+                    filename: `Progreso_Cliente_${clienteId}_${new Date().toLocaleDateString('es-ES')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(element).save();
+            });
         }
     } catch (error) {
         console.error('Error al cargar los datos de progreso:', error);
