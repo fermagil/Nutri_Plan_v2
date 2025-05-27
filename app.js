@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signOut,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
-// Initialize Firebase
+// Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
     authDomain: "nutriplanv2.firebaseapp.com",
@@ -13,27 +13,67 @@ const firebaseConfig = {
     measurementId: "G-NWER69E8B6"
 };
 
+// Inicializa Firebase, Firestore y Auth
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+// Exportar instancias para uso en otros módulos
 export { app, db, auth, provider };
 
-// Chart.js CDN (loaded dynamically if needed)
-const loadChartJs = () => {
-    if (typeof Chart === 'undefined') {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-        document.head.appendChild(script);
-        return new Promise((resolve) => {
-            script.onload = () => resolve();
-        });
-    }
-    return Promise.resolve();
-};
+ // Logout
+     export async function logout() {
+            auth.signOut().then(function() {
+                console.log('Sesión cerrada');
+                window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+            }).catch(function(error) {
+                console.error('Error al cerrar sesión:', error.code, error.message);
+                var main = document.querySelector('main');
+                var errorDiv = document.createElement('div');
+                errorDiv.style.color = 'red';
+                errorDiv.style.marginBottom = '10px';
+                errorDiv.style.fontSize = '14px';
+                errorDiv.textContent = 'Error al cerrar sesión: ' + error.message;
+                main.insertBefore(errorDiv, main.firstChild);
+                setTimeout(function() { errorDiv.remove(); }, 5000);
+            });
+        }
 
-// Existing variables and functions (abridged for brevity)
+        // Initialize UI
+        function initializeUI() {
+            document.getElementById('logo').addEventListener('click', function(event) {
+                event.preventDefault();
+                var dropdown = document.getElementById('dropdown');
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+    // Close dropdown if clicking outside
+            document.addEventListener('click', function(event) {
+                var dropdown = document.getElementById('dropdown');
+                var logo = document.getElementById('logo');
+                if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            window.logout = logout;
+        }
+
+        // Handle auth state
+        auth.onAuthStateChanged(function(user) {
+            var dropdown = document.getElementById('dropdown');
+            if (user) {
+                console.log('Auth state: User signed in', user.displayName, user.email);
+                if (dropdown) dropdown.style.display = 'none'; // Initially hidden, shown on logo click
+            } else {
+                console.log('Auth state: No user signed in');
+                window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+            }
+        });
+
+
+
+// Referencias al formulario y elementos
 const form = document.getElementById('anthropometry-form');
 const buscarClienteInput = document.getElementById('buscar_cliente');
 const nuevoClienteBtn = document.getElementById('nuevo_cliente');
@@ -42,24 +82,75 @@ const guardarDatosBtn = document.getElementById('guardar_datos');
 let currentClienteId = null;
 let currentUser = null;
 
+// Lista de elementos de resultados
 const resultElementIds = [
-    'result-imc', 'imc-source', 'result-icc', 'icc-source', 'result-grasa-pct-actual', 'grasa-pct-actual-source',
-    'result-grasa-pct-metabolic', 'grasa-pct-metabolic-source', 'result-grasa-pct-deseado', 'grasa-pct-deseado-source',
-    'result-grasa-pct-Deurenberg', 'grasa-pct-Deurenberg-source', 'result-grasa-pct-CUN-BAE', 'grasa-pct-CUN-BAE-source',
-    'result-masa-grasa-actual', 'masa-grasa-actual-source', 'result-masa-grasa-metabolic', 'masa-grasa-metabolic-source',
-    'result-masa-magra-actual', 'masa-magra-actual-source', 'result-masa-magra-metabolic', 'masa-magra-metabolic-source',
-    'result-imlg-actual', 'imlg-actual-source', 'result-imlg-metabolic', 'imlg-metabolic-source',
-    'result-img-actual', 'img-actual-source', 'result-img-metabolic', 'img-metabolic-source',
-    'result-tipologia-actual', 'tipologia-actual-source', 'result-tipologia-metabolic', 'tipologia-metabolic-source',
-    'result-tmb', 'tmb-source', 'result-edadmetabolica', 'edadmetabolica-source',
-    'result-somatotipo', 'somatotipo-source', 'result-amb', 'amb-source', 'result-ambc', 'ambc-source',
-    'result-mmt', 'mmt-source', 'result-mmt2', 'mmt2-source', 'result-Pct-mmt', 'Pct-mmt-source',
-    'result-Pct-mmt2', 'Pct-mmt2-source', 'result-masa-osea', 'masa-osea-source',
-    'result-masa-residual', 'masa-residual-source', 'result-peso-ideal', 'peso-ideal-source',
-    'result-peso-objetivo', 'peso-objetivo-source', 'result-peso-muscular', 'peso-muscular-source',
-    'result-agua-corporal', 'agua-corporal-source'
+    'result-imc',
+    'imc-source',
+    'result-icc',
+    'icc-source',
+    'result-grasa-pct-actual',
+    'grasa-pct-actual-source',
+    'result-grasa-pct-metabolic',
+    'grasa-pct-metabolic-source',
+    'result-grasa-pct-deseado',
+    'grasa-pct-deseado-source',
+    'result-grasa-pct-Deurenberg',
+    'grasa-pct-Deurenberg-source',
+    'result-grasa-pct-CUN-BAE',
+    'grasa-pct-CUN-BAE-source',
+    'result-masa-grasa-actual',
+    'masa-grasa-actual-source',
+    'result-masa-grasa-metabolic',
+    'masa-grasa-metabolic-source',
+    'result-masa-magra-actual',
+    'masa-magra-actual-source',
+    'result-masa-magra-metabolic',
+    'masa-magra-metabolic-source',
+    'result-imlg-actual',
+    'imlg-actual-source',
+    'result-imlg-metabolic',
+    'imlg-metabolic-source',
+    'result-img-actual',
+    'img-actual-source',
+    'result-img-metabolic',
+    'img-metabolic-source',
+    'result-tipologia-actual',
+    'tipologia-actual-source',
+    'result-tipologia-metabolic',
+    'tipologia-metabolic-source',
+    'result-tmb',
+    'tmb-source',
+    'result-edadmetabolica',
+    'edadmetabolica-source',
+    'result-somatotipo',
+    'somatotipo-source',
+    'result-amb',
+    'amb-source',
+    'result-ambc',
+    'ambc-source',
+    'result-mmt',
+    'mmt-source',
+    'result-mmt2',
+    'mmt2-source',
+    'result-Pct-mmt',
+    'Pct-mmt-source',
+    'result-Pct-mmt2',
+    'Pct-mmt2-source',
+    'result-masa-osea',
+    'masa-osea-source',
+    'result-masa-residual',
+    'masa-residual-source',
+    'result-peso-ideal',
+    'peso-ideal-source',
+    'result-peso-objetivo',
+    'peso-objetivo-source',
+    'result-peso-muscular',
+    'peso-muscular-source',
+    'result-agua-corporal',
+    'agua-corporal-source'
 ];
 
+// Crear select para resultados de búsqueda
 let clientesResultados = document.getElementById('clientes_resultados');
 if (!clientesResultados) {
     clientesResultados = document.createElement('select');
@@ -67,6 +158,7 @@ if (!clientesResultados) {
     buscarClienteInput.insertAdjacentElement('afterend', clientesResultados);
 }
 
+// Función para normalizar texto (eliminar acentos y caracteres especiales)
 const normalizeText = (text) => {
     return text
         .toLowerCase()
@@ -76,6 +168,7 @@ const normalizeText = (text) => {
         .trim();
 };
 
+// Función para convertir cadenas numéricas a números
 const toNumber = (value) => {
     if (typeof value === 'string' && !isNaN(parseFloat(value))) {
         return parseFloat(value);
@@ -83,88 +176,209 @@ const toNumber = (value) => {
     return value;
 };
 
-export async function logout() {
-    auth.signOut().then(function() {
-        console.log('Sesión cerrada');
-        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-    }).catch(function(error) {
-        console.error('Error al cerrar sesión:', error.code, error.message);
-        var main = document.querySelector('main');
-        var errorDiv = document.createElement('div');
-        errorDiv.style.color = 'red';
-        errorDiv.style.marginBottom = '10px';
-        errorDiv.style.fontSize = '14px';
-        errorDiv.textContent = 'Error al cerrar sesión: ' + error.message;
-        main.insertBefore(errorDiv, main.firstChild);
-        setTimeout(function() { errorDiv.remove(); }, 5000);
-    });
-}
 
-function initializeUI() {
-    document.getElementById('logo').addEventListener('click', function(event) {
-        event.preventDefault();
-        var dropdown = document.getElementById('dropdown');
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    });
-
-    document.addEventListener('click', function(event) {
-        var dropdown = document.getElementById('dropdown');
-        var logo = document.getElementById('logo');
-        if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
-
-    // Initialize Ver Progreso button
-    const verProgresoBtn = document.getElementById('ver-progreso-btn');
-    if (verProgresoBtn) {
-        verProgresoBtn.addEventListener('click', async () => {
-            if (currentClienteId) {
-                await loadChartJs();
-                await showProgressCharts(currentClienteId);
-            } else {
-                alert('Por favor, selecciona un cliente primero.');
-            }
-        });
-    }
-
-    window.logout = logout;
-}
-
+// Manejar estado de autenticación
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
-    const verProgresoBtn = document.getElementById('ver-progreso-btn');
+    //const loginContainer = document.getElementById('login-container');
+    //const navMenu = document.getElementById('nav-menu');
     if (user) {
         console.log('Auth state: User signed in', user.displayName, user.email);
-        if (verProgresoBtn) verProgresoBtn.style.display = currentClienteId ? 'inline-block' : 'none';
+        //loginContainer.style.display = 'none';
+        //form.style.display = 'block';
+        //navMenu.style.display = 'flex';
     } else {
         console.log('Auth state: No user signed in');
-        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-        if (verProgresoBtn) verProgresoBtn.style.display = 'none';
-        clientesResultados.style.display = 'none';
-        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+        //loginContainer.style.display = 'block';
+        //form.style.display = 'none';
+        //navMenu.style.display = 'none';
+        //clientesResultados.style.display = 'none';
+        //seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
         currentClienteId = null;
     }
 });
 
-// Update clientesResultados change event to toggle Ver Progreso button
+
+
+
+// Búsqueda de clientes
+buscarClienteInput.addEventListener('input', async () => {
+    if (!currentUser) {
+        console.log('No user authenticated, skipping search');
+        return;
+    }
+    const searchTerm = normalizeText(buscarClienteInput.value);
+    console.log('Normalized search term:', searchTerm);
+    clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
+    if (searchTerm.length < 2) {
+        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+        clientesResultados.style.display = 'none';
+        console.log('Search term too short (< 2), hiding resultados');
+        return;
+    }
+    clientesResultados.style.display = 'block';
+    console.log('Executing Firestore query for clientes');
+    const q = query(collection(db, 'clientes'), 
+        where('nombreLowercase', '>=', searchTerm), 
+        where('nombreLowercase', '<=', searchTerm + '\uf8ff'));
+    try {
+        const querySnapshot = await getDocs(q);
+        console.log('Query snapshot size:', querySnapshot.size);
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            console.log('Found client:', doc.id, data.nombre, 'nombreLowercase:', data.nombreLowercase);
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.textContent = data.nombre;
+            clientesResultados.appendChild(option);
+        });
+        if (querySnapshot.empty) {
+            console.log('No clients found for search term:', searchTerm);
+            clientesResultados.innerHTML = '<option value="">No se encontraron clientes...</option>';
+        }
+    } catch (error) {
+        console.error('Error fetching clients:', error.code, error.message);
+        alert('Error al buscar clientes: ' + error.message);
+    }
+});
+
+// Cargar fechas de tomas al seleccionar un cliente
 clientesResultados.addEventListener('change', async () => {
     const clienteId = clientesResultados.value;
     console.log('Cliente seleccionado:', clienteId);
-    const verProgresoBtn = document.getElementById('ver-progreso-btn');
     if (clienteId) {
         currentClienteId = clienteId;
         await cargarFechasTomas(clienteId);
-        if (verProgresoBtn) verProgresoBtn.style.display = 'inline-block';
     } else {
         console.log('No cliente seleccionado, limpiando fechas');
         seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
         currentClienteId = null;
-        if (verProgresoBtn) verProgresoBtn.style.display = 'none';
     }
 });
 
-// Existing functions (abridged for brevity)
+// Cargar datos de la toma seleccionada
+seleccionarFecha.addEventListener('change', async () => {
+    const tomaId = seleccionarFecha.value;
+    console.log('Toma seleccionada:', tomaId);
+    if (tomaId && currentClienteId) {
+        await cargarDatosToma(currentClienteId, tomaId);
+    } else {
+        console.log('No toma seleccionada o no clienteId, limpiando formulario');
+        form.reset();
+    }
+});
+
+// Limpiar y ocultar secciones para nuevo cliente
+nuevoClienteBtn.addEventListener('click', () => {
+    console.log('Nuevo Cliente clicked');
+    currentClienteId = null;
+    form.reset();
+    buscarClienteInput.value = '';
+    clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
+    clientesResultados.style.display = 'none';
+    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+    guardarDatosBtn.style.display = 'none';
+    // Limpiar sección de resultados
+    resultElementIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = '---';
+    });
+    // Ocultar sección de explicación
+    const explanationSection = document.getElementById('explanation-section');
+    if (explanationSection) {
+        explanationSection.style.display = 'none';
+        console.log('Explanation section hidden');
+    }
+    // Limpiar gráficos
+    ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    });
+});
+
+// Guardar datos
+guardarDatosBtn.addEventListener('click', async () => {
+    if (!currentUser) {
+        alert('Por favor, inicia sesión para guardar datos.');
+        return;
+    }
+    const nombre = document.getElementById('nombre').value.trim();
+    const peso = document.getElementById('peso').value;
+    const altura = document.getElementById('altura').value;
+    if (!nombre) {
+        alert('Por favor, ingrese el nombre del cliente.');
+        return;
+    }
+    if (!peso || isNaN(peso) || peso <= 0) {
+        alert('Por favor, ingrese un peso válido.');
+        return;
+    }
+    if (!altura || isNaN(altura) || altura <= 0) {
+        alert('Por favor, ingrese una altura válida.');
+        return;
+    }
+    const data = {
+        nombre,
+        genero: document.getElementById('genero').value || null,
+        fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
+        edad: parseInt(document.getElementById('edad').value) || null,
+        peso: parseFloat(peso),
+        altura: parseFloat(altura),
+        es_deportista: document.getElementById('es_deportista').value || null,
+        grasa_actual_conocida: parseFloat(document.getElementById('grasa_actual_conocida').value) || null,
+        grasa_deseada: parseFloat(document.getElementById('grasa_deseada').value) || null,
+        medidas: {
+            pliegues: {
+                tricipital: parseFloat(document.getElementById('pliegue_tricipital').value) || null,
+                subescapular: parseFloat(document.getElementById('pliegue_subescapular').value) || null,
+                suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
+                bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
+                pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
+            },
+            circunferencias: {
+                cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
+                cadera: parseFloat(document.getElementById('circ_cadera').value) || null,
+                cuello: parseFloat(document.getElementById('circ_cuello').value) || null,
+                pantorrilla: parseFloat(document.getElementById('circ_pantorrilla').value) || null,
+                brazo: parseFloat(document.getElementById('circ_brazo').value) || null,
+                brazo_contraido: parseFloat(document.getElementById('circ_brazo_contraido').value) || null,
+            },
+            diametros: {
+                humero: parseFloat(document.getElementById('diam_humero').value) || null,
+                femur: parseFloat(document.getElementById('diam_femur').value) || null,
+                muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
+            },
+        },
+        resultados: window.calculatedResults || {}
+    };
+    try {
+        console.log('Datos a guardar:', JSON.stringify(data, null, 2));
+        if (!currentClienteId) {
+            const clienteRef = await addDoc(collection(db, 'clientes'), {
+                nombre,
+                nombreLowercase: normalizeText(nombre),
+                genero: data.genero,
+                fecha_creacion: new Date(),
+                created_by: currentUser.uid,
+            });
+            currentClienteId = clienteRef.id;
+            console.log('Cliente creado con ID:', currentClienteId);
+        }
+        const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
+        console.log('Documento guardado con ID:', tomaRef.id);
+        alert('Datos guardados exitosamente.');
+        await cargarFechasTomas(currentClienteId);
+        guardarDatosBtn.style.display = 'none';
+    } catch (error) {
+        console.error('Error al guardar:', error);
+        alert('Error al guardar los datos: ' + error.message);
+    }
+});
+
+// Cargar fechas de tomas
 async function cargarFechasTomas(clienteId) {
     if (!clienteId) {
         console.log('No clienteId provided, skipping cargarFechasTomas');
@@ -192,13 +406,17 @@ async function cargarFechasTomas(clienteId) {
                     fechaStr = data.fecha.toDate().toLocaleString('es-ES', {
                         year: 'numeric',
                         month: '2-digit',
-                        day: '2-digit'
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
                     });
                 } else if (data.fecha) {
                     fechaStr = new Date(data.fecha).toLocaleString('es-ES', {
                         year: 'numeric',
                         month: '2-digit',
-                        day: '2-digit'
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
                     });
                 }
             } catch (error) {
@@ -213,6 +431,7 @@ async function cargarFechasTomas(clienteId) {
     }
 }
 
+// Cargar datos de la toma seleccionada en el formulario
 async function cargarDatosToma(clienteId, tomaId) {
     if (!clienteId || !tomaId) {
         console.log('Falta clienteId o tomaId, limpiando formulario');
@@ -232,6 +451,7 @@ async function cargarDatosToma(clienteId, tomaId) {
         const data = tomaSnap.data();
         console.log('Datos de la toma:', JSON.stringify(data, null, 2));
 
+        // Poblar campos del formulario
         document.getElementById('nombre').value = data.nombre || '';
         document.getElementById('genero').value = data.genero || '';
         document.getElementById('edad').value = data.edad || '';
@@ -241,12 +461,14 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
         document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
 
+        // Poblar medidas.pliegues
         document.getElementById('pliegue_tricipital').value = data.medidas?.pliegues?.tricipital || '';
         document.getElementById('pliegue_subescapular').value = data.medidas?.pliegues?.subescapular || '';
         document.getElementById('pliegue_suprailiaco').value = data.medidas?.pliegues?.suprailiaco || '';
         document.getElementById('pliegue_bicipital').value = data.medidas?.pliegues?.bicipital || '';
         document.getElementById('pliegue_pantorrilla').value = data.medidas?.pliegues?.pantorrilla || '';
 
+        // Poblar medidas.circunferencias
         document.getElementById('circ_cintura').value = data.medidas?.circunferencias?.cintura || '';
         document.getElementById('circ_cadera').value = data.medidas?.circunferencias?.cadera || '';
         document.getElementById('circ_cuello').value = data.medidas?.circunferencias?.cuello || '';
@@ -254,12 +476,17 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('circ_brazo').value = data.medidas?.circunferencias?.brazo || '';
         document.getElementById('circ_brazo_contraido').value = data.medidas?.circunferencias?.brazo_contraido || '';
 
+        // Poblar medidas.diametros
         document.getElementById('diam_humero').value = data.medidas?.diametros?.humero || '';
         document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
         document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
 
+        // Poblar resultados
         if (data.resultados) {
             const resultados = data.resultados;
+            console.log('Claves disponibles en resultados:', Object.keys(resultados));
+
+            // Mapear claves de resultados a IDs de elementos
             const resultMappings = {
                 'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
                 'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
@@ -289,9 +516,10 @@ async function cargarDatosToma(clienteId, tomaId) {
                 'imlg': { id: 'result-imlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
                 'imlgSource': { id: 'imlg-source', unit: '', format: (v) => v || '---' },
                 'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imgSource': { id: 'img-source', unit: '', format: (v) => v || '---' }
+                'imgSource': { id: 'img-source', unit: '', format: (v) => v || '---' },
             };
 
+            // Asignar valores a los elementos de resultados
             Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
                 const element = document.getElementById(id);
                 if (element) {
@@ -314,6 +542,7 @@ async function cargarDatosToma(clienteId, tomaId) {
             });
         }
 
+        // Asegurarse de que el botón Guardar Datos esté oculto
         if (guardarDatosBtn && guardarDatosBtn.style.display !== 'none') {
             guardarDatosBtn.style.display = 'none';
             console.log('Botón Guardar Datos ocultado al cargar toma');
@@ -329,251 +558,7 @@ async function cargarDatosToma(clienteId, tomaId) {
     }
 }
 
-// Function to fetch and display progress charts
-async function showProgressCharts(clienteId) {
-    if (!clienteId) {
-        console.log('No clienteId provided, skipping showProgressCharts');
-        return;
-    }
-
-    try {
-        const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'asc'));
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            console.log('No tomas found for cliente:', clienteId);
-            alert('No hay datos disponibles para mostrar el progreso.');
-            return;
-        }
-
-        // Collect data for charts
-        const dates = [];
-        const pesoData = [];
-        const grasaPctData = [];
-        const plieguesData = {
-            tricipital: [], subescapular: [], suprailiaco: [], bicipital: [], pantorrilla: []
-        };
-        const circunferenciasData = {
-            cintura: [], cadera: [], cuello: [], pantorrilla: [], brazo: [], brazo_contraido: []
-        };
-        const imcIccData = { imc: [], icc: [] };
-        const masaMagraData = { actual: [], metabolico: [] };
-        const masaMuscularData = { mmt: [], Pctmmt: [] };
-        const nonNumericalData = { somatotipo: [], tipologiaActual: [], tipologiaMetabolico: [] };
-
-        querySnapshot.forEach(doc => {
-            const data = doc.data();
-            const fecha = data.fecha && data.fecha.toDate ? data.fecha.toDate() : new Date(data.fecha);
-            dates.push(fecha.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }));
-
-            pesoData.push(toNumber(data.peso) || null);
-            grasaPctData.push(toNumber(data.grasa_actual_conocida) || null);
-
-            plieguesData.tricipital.push(toNumber(data.medidas?.pliegues?.tricipital) || null);
-            plieguesData.subescapular.push(toNumber(data.medidas?.pliegues?.subescapular) || null);
-            plieguesData.suprailiaco.push(toNumber(data.medidas?.pliegues?.suprailiaco) || null);
-            plieguesData.bicipital.push(toNumber(data.medidas?.pliegues?.bicipital) || null);
-            plieguesData.pantorrilla.push(toNumber(data.medidas?.pliegues?.pantorrilla) || null);
-
-            circunferenciasData.cintura.push(toNumber(data.medidas?.circunferencias?.cintura) || null);
-            circunferenciasData.cadera.push(toNumber(data.medidas?.circunferencias?.cadera) || null);
-            circunferenciasData.cuello.push(toNumber(data.medidas?.circunferencias?.cuello) || null);
-            circunferenciasData.pantorrilla.push(toNumber(data.medidas?.circunferencias?.pantorrilla) || null);
-            circunferenciasData.brazo.push(toNumber(data.medidas?.circunferencias?.brazo) || null);
-            circunferenciasData.brazo_contraido.push(toNumber(data.medidas?.circunferencias?.brazo_contraido) || null);
-
-            imcIccData.imc.push(toNumber(data.resultados?.imc) || null);
-            imcIccData.icc.push(toNumber(data.resultados?.icc) || null);
-
-            masaMagraData.actual.push(toNumber(data.resultados?.mlg) || null);
-            masaMagraData.metabolico.push(toNumber(data.resultados?.masaMagraMetabolic) || null);
-
-            masaMuscularData.mmt.push(toNumber(data.resultados?.mmt) || null);
-            masaMuscularData.Pctmmt.push(toNumber(data.resultados?.Pctmmt) || null);
-
-            nonNumericalData.somatotipo.push(data.resultados?.somatotipo?.formatted || '---');
-            nonNumericalData.tipologiaActual.push(data.resultados?.tipologia || '---');
-            nonNumericalData.tipologiaMetabolico.push(data.resultados?.tipologiaMetabolic || '---');
-        });
-
-        // Destroy existing charts if any
-        ['peso-chart', 'grasa-pct-chart', 'pliegues-chart', 'circunferencias-chart', 'imc-icc-chart', 'masa-magra-chart', 'masa-muscular-chart'].forEach(canvasId => {
-            const chart = Chart.getChart(canvasId);
-            if (chart) chart.destroy();
-        });
-
-        // Peso Chart
-        new Chart(document.getElementById('peso-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Peso Actual (kg)',
-                    data: pesoData,
-                    borderColor: '#4CAF50',
-                    fill: false,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display: true, text: 'Peso (kg)' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
-
-        // % Grasa Chart
-        new Chart(document.getElementById('grasa-pct-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: '% Grasa Actual',
-                    data: grasaPctData,
-                    borderColor: '#388E3C',
-                    fill: false,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display: true, text: '% Grasa' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
-
-        // Pliegues Chart
-        new Chart(document.getElementById('pliegues-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    { label: 'Tricipital (mm)', data: plieguesData.tricipital, borderColor: '#0275d8', fill: false, tension: 0.1 },
-                    { label: 'Subescapular (mm)', data: plieguesData.subescapular, borderColor: '#5bc0de', fill: false, tension: 0.1 },
-                    { label: 'Suprailiaco (mm)', data: plieguesData.suprailiaco, borderColor: '#5cb85c', fill: false, tension: 0.1 },
-                    { label: 'Bicipital (mm)', data: plieguesData.bicipital, borderColor: '#f0ad4e', fill: false, tension: 0.1 },
-                    { label: 'Pantorrilla (mm)', data: plieguesData.pantorrilla, borderColor: '#d9534f', fill: false, tension: 0.1 }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display: true, text: 'Pliegues (mm)' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
-
-        // Circunferencias Chart
-        new Chart(document.getElementById('circunferencias-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    { label: 'Cintura (cm)', data: circunferenciasData.cintura, borderColor: '#0275d8', fill: false, tension: 0.1 },
-                    { label: 'Cadera (cm)', data: circunferenciasData.cadera, borderColor: '#5bc0de', fill: false, tension: 0.1 },
-                    { label: 'Cuello (cm)', data: circunferenciasData.cuello, borderColor: '#5cb85c', fill: false, tension: 0.1 },
-                    { label: 'Pantorrilla (cm)', data: circunferenciasData.pantorrilla, borderColor: '#f0ad4e', fill: false, tension: 0.1 },
-                    { label: 'Brazo Relajado (cm)', data: circunferenciasData.brazo, borderColor: '#d9534f', fill: false, tension: 0.1 },
-                    { label: 'Brazo Contraído (cm)', data: circunferenciasData.brazo_contraido, borderColor: '#6610f2', fill: false, tension: 0.1 }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display: true, text: 'Circunferencias (cm)' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
-
-        // IMC and ICC Chart
-        new Chart(document.getElementById('imc-icc-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    { label: 'IMC (kg/m²)', data: imcIccData.imc, borderColor: '#0275d8', fill: false, tension: 0.1 },
-                    { label: 'ICC', data: imcIccData.icc, borderColor: '#5bc0de', fill: false, tension: 0.1 }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display: true, text: 'Valor' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
-
-        // Masa Magra Chart
-        new Chart(document.getElementById('masa-magra-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    { label: 'Masa Magra Actual (kg)', data: masaMagraData.actual, borderColor: '#0275d8', fill: false, tension: 0.1 },
-                    { label: 'Masa Magra Metabólico (kg)', data: masaMagraData.metabolico, borderColor: '#5bc0de', fill: false, tension: 0.1 }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display: true, text: 'Masa Magra (kg)' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
-
-        // Masa Muscular Chart
-        new Chart(document.getElementById('masa-muscular-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    { label: 'Masa Muscular Total (kg)', data: masaMuscularData.mmt, borderColor: '#0275d8', fill: false, tension: 0.1 },
-                    { label: '% Masa Muscular', data: masaMuscularData.Pctmmt, borderColor: '#5bc0de', fill: false, tension: 0.1 }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display: true, text: 'Valor' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
-
-        // Non-Numerical Data Table
-        const tableBody = document.getElementById('non-numerical-table-body');
-        tableBody.innerHTML = '';
-        dates.forEach((date, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        // Show popup
-        const popup = document.getElementById('progress-popup');
-        if (popup) {
-            popup.style.display = 'flex';
-        }
-    } catch (error) {
-        console.error('Error fetching progress data:', error);
-        alert('Error al cargar los datos de progreso: ' + error.message);
-    }
-}
-
 // Initialize UI when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeUI);
-
 
   
