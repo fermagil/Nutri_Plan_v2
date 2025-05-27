@@ -1,21 +1,8 @@
+// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
-// Debug Chart.js and plugin loading
-console.log('Checking Chart.js:', typeof Chart);
-console.log('Checking ChartDataLabels:', typeof ChartDataLabels);
-console.log('Checking ChartAnnotation:', typeof ChartAnnotation);
-
-// Register Chart.js plugins
-window.addEventListener('load', () => {
-    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined' && typeof ChartAnnotation !== 'undefined') {
-        Chart.register(ChartDataLabels, ChartAnnotation);
-        console.log('Chart.js plugins registered successfully');
-    } else {
-        console.error('Chart.js, ChartDataLabels, or ChartAnnotation not loaded.');
-    }
-});
 // Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
@@ -27,16 +14,35 @@ const firebaseConfig = {
     measurementId: "G-NWER69E8B6"
 };
 
-// Inicializa Firebase, Firestore y Auth
+// Initialize Firebase
+let app;
 try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+    app = initializeApp(firebaseConfig);
     console.log('Firebase initialized successfully');
 } catch (error) {
     console.error('Firebase initialization failed:', error);
 }
+
+// Initialize Firestore, Auth, and Provider
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// Debug Chart.js and plugin loading
+console.log('Checking Chart.js:', typeof Chart);
+console.log('Checking ChartDataLabels:', typeof ChartDataLabels);
+console.log('Checking ChartAnnotation:', typeof ChartAnnotation);
+
+// Register Chart.js plugins
+if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined' && typeof ChartAnnotation !== 'undefined') {
+    Chart.register(ChartDataLabels, ChartAnnotation);
+    console.log('Chart.js plugins registered successfully');
+} else {
+    console.error('Chart.js, ChartDataLabels, or ChartAnnotation not loaded. Check CDN scripts in HTML.');
+}
+
+
+
 // Exportar instancias para uso en otros módulos
 export { app, db, auth, provider };
 
