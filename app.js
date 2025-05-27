@@ -692,33 +692,101 @@ async function showProgressCharts(clienteId) {
 
         // Collect data for charts
         const dates = [];
-        const pesoData = [];
-        const grasaPctData = [];
+        const pesoData = {
+            actual: [],
+            perdidaExceso: [],
+            perdidaInicial: []
+        };
+        const grasaData = {
+            actualPct: [],
+            actualKg: [],
+            metabolicaPct: [],
+            metabolicaKg: [],
+            deurenberg: [],
+            cunBae: []
+        };
+        const musculoData = {
+            mmt: [],
+            Pctmmt: [],
+            masaMagraActual: [],
+            masaMagraMetabolic: []
+        };
         const plieguesData = {
-            tricipital: [], subescapular: [], suprailiaco: [], bicipital: [], pantorrilla: []
+            tricipital: [],
+            subescapular: [],
+            suprailiaco: [],
+            bicipital: [],
+            pantorrilla: []
         };
         const circunferenciasData = {
-            cintura: [], cadera: [], cuello: [], pantorrilla: [], brazo: [], brazo_contraido: []
+            cintura: [],
+            cadera: [],
+            cuello: [],
+            pantorrilla: [],
+            brazo: [],
+            brazo_contraido: []
         };
-        const imcIccData = { imc: [], icc: [] };
-        const masaMagraData = { actual: [], metabolico: [] };
-        const masaMuscularData = { mmt: [], Pctmmt: [] };
-        const nonNumericalData = { somatotipo: [], tipologiaActual: [], tipologiaMetabolico: [] };
+        const imcIccData = {
+            imc: [],
+            icc: []
+        };
+        const reservaProteicaData = {
+            perimetroBrazo: [],
+            areaMuscularBrazo: [],
+            areaGrasaBrazo: []
+        };
+        const gastoEnergeticoData = {
+            gasto: [],
+            edadMetabolica: [],
+            tmb: []
+        };
+        const nonNumericalData = {
+            somatotipo: [],
+            tipologiaActual: [],
+            tipologiaMetabolico: []
+        };
 
-        querySnapshot.forEach(doc => {
+        // Calculate initial weight for % loss
+        let pesoInicial = null;
+        let pesoIdeal = 70; // Placeholder; adjust based on Firestore or BMI (e.g., BMI 22 * height^2)
+
+        querySnapshot.forEach((doc, index) => {
             const data = doc.data();
             const fecha = data.fecha && data.fecha.toDate ? data.fecha.toDate() : new Date(data.fecha);
             dates.push(fecha.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }));
 
-            pesoData.push(toNumber(data.peso) || null);
-            grasaPctData.push(toNumber(data.grasa_actual_conocida) || null);
+            // Peso
+            const peso = toNumber(data.peso) || null;
+            pesoData.actual.push(peso);
+            if (index === 0 && peso) pesoInicial = peso; // Set initial weight
+            // % Pérdida del Exceso de Peso
+            pesoData.perdidaExceso.push(peso && pesoInicial ? ((pesoInicial - peso) / (pesoInicial - pesoIdeal) * 100).toFixed(1) : null);
+            // % Pérdida del Peso Inicial
+            pesoData.perdidaInicial.push(peso && pesoInicial ? ((pesoInicial - peso) / pesoInicial * 100).toFixed(1) : null);
 
+            // Grasa
+            const grasaActualPct = toNumber(data.grasa_actual_conocida) || null;
+            grasaData.actualPct.push(grasaActualPct);
+            grasaData.actualKg.push(peso && grasaActualPct ? (peso * grasaActualPct / 100).toFixed(1) : null);
+            grasaData.metabolicaPct.push(toNumber(data.resultados?.grasa_metabolica_pct) || null);
+            grasaData.metabolicaKg.push(toNumber(data.resultados?.grasa_metabolica_kg) || null);
+            grasaData.deurenberg.push(toNumber(data.resultados?.grasa_deurenberg) || null);
+            grasaData.cunBae.push(toNumber(data.resultados?.grasa_cun_bae) || null);
+
+            // Músculo
+            musculoData.mmt.push(toNumber(data.resultados?.mmt) || null);
+            musculoData.Pctmmt.push(toNumber(data.resultados?.Pctmmt) || null);
+            musculoData.masaMagraActual.push(toNumber(data.resultados?.masaMagraActual) || null);
+            musculoData.masaMagraMetabolic.push(toNumber(data.resultados?.masaMagraMetabolic) || null);
+
+            // Pliegues
             plieguesData.tricipital.push(toNumber(data.medidas?.pliegues?.tricipital) || null);
             plieguesData.subescapular.push(toNumber(data.medidas?.pliegues?.subescapular) || null);
             plieguesData.suprailiaco.push(toNumber(data.medidas?.pliegues?.suprailiaco) || null);
             plieguesData.bicipital.push(toNumber(data.medidas?.pliegues?.bicipital) || null);
             plieguesData.pantorrilla.push(toNumber(data.medidas?.pliegues?.pantorrilla) || null);
 
+            // Circunferencias
             circunferenciasData.cintura.push(toNumber(data.medidas?.circunferencias?.cintura) || null);
             circunferenciasData.cadera.push(toNumber(data.medidas?.circunferencias?.cadera) || null);
             circunferenciasData.cuello.push(toNumber(data.medidas?.circunferencias?.cuello) || null);
@@ -726,22 +794,38 @@ async function showProgressCharts(clienteId) {
             circunferenciasData.brazo.push(toNumber(data.medidas?.circunferencias?.brazo) || null);
             circunferenciasData.brazo_contraido.push(toNumber(data.medidas?.circunferencias?.brazo_contraido) || null);
 
+            // IMC e ICC
             imcIccData.imc.push(toNumber(data.resultados?.imc) || null);
             imcIccData.icc.push(toNumber(data.resultados?.icc) || null);
 
-            masaMagraData.actual.push(toNumber(data.resultados?.masaMagraActual) || null);
-            masaMagraData.metabolico.push(toNumber(data.resultados?.masaMagraMetabolic) || null);
+            // Reserva Proteica
+            reservaProteicaData.perimetroBrazo.push(toNumber(data.medidas?.circunferencias?.brazo) || null);
+            reservaProteicaData.areaMuscularBrazo.push(toNumber(data.resultados?.area_muscular_brazo) || null);
+            reservaProteicaData.areaGrasaBrazo.push(toNumber(data.resultados?.area_grasa_brazo) || null);
 
-            masaMuscularData.mmt.push(toNumber(data.resultados?.mmt) || null);
-            masaMuscularData.Pctmmt.push(toNumber(data.resultados.Pctmmt) || null);
+            // Gasto Energético
+            gastoEnergeticoData.gasto.push(toNumber(data.resultados?.gasto_energetico) || null);
+            gastoEnergeticoData.edadMetabolica.push(toNumber(data.resultados?.edad_metabolica) || null);
+            gastoEnergeticoData.tmb.push(toNumber(data.resultados?.tmb) || null);
 
+            // Non-numerical data
             nonNumericalData.somatotipo.push(data.resultados?.somatotipo?.formatted || '---');
             nonNumericalData.tipologiaActual.push(data.resultados?.tipologiaActual || '---');
             nonNumericalData.tipologiaMetabolico.push(data.resultados?.tipologiaMetabolico || '---');
         });
 
-        // Destroy existing charts if any
-        ['peso-chart', 'grasa-pct-chart', 'pliegues-chart', 'circunferencias-chart', 'imc-icc-chart', 'masa-magra-chart', 'masa-muscular-chart'].forEach(canvasId => {
+        // Destroy existing charts
+        const chartIds = [
+            'peso-evolucion-chart',
+            'grasa-evolucion-chart',
+            'musculo-evolucion-chart',
+            'pliegues-chart',
+            'circunferencias-chart',
+            'imc-icc-chart',
+            'reserva-proteica-chart',
+            'gasto-energetico-chart'
+        ];
+        chartIds.forEach(canvasId => {
             const chart = Chart.getChart(canvasId);
             if (chart) chart.destroy();
         });
@@ -751,21 +835,22 @@ async function showProgressCharts(clienteId) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' },
+                legend: { position: 'top', labels: { font: { size: 10 } } },
                 datalabels: {
                     display: true,
                     align: 'top',
                     formatter: (value, context) => {
                         if (value === null) return '';
-                        const date = context.chart.data.labels[context.dataIndex];
                         let formattedValue = value;
-                        if (context.dataset.label.includes('Peso')) formattedValue = `${value.toFixed(1)} kg`;
+                        if (context.dataset.label.includes('kg')) formattedValue = `${value.toFixed(1)} kg`;
                         else if (context.dataset.label.includes('%')) formattedValue = `${value.toFixed(1)}%`;
                         else if (context.dataset.label.includes('mm')) formattedValue = `${value.toFixed(1)} mm`;
+                        else if (context.dataset.label.includes('cm²')) formattedValue = `${value.toFixed(1)} cm²`;
                         else if (context.dataset.label.includes('cm')) formattedValue = `${value.toFixed(1)} cm`;
-                        else if (context.dataset.label.includes('Masa')) formattedValue = `${value.toFixed(1)} kg`;
                         else if (context.dataset.label.includes('IMC')) formattedValue = `${value.toFixed(1)}`;
                         else if (context.dataset.label.includes('ICC')) formattedValue = `${value.toFixed(2)}`;
+                        else if (context.dataset.label.includes('kcal')) formattedValue = `${value.toFixed(0)} kcal`;
+                        else if (context.dataset.label.includes('años')) formattedValue = `${value.toFixed(0)} años`;
                         return `${formattedValue}`;
                     },
                     color: '#333',
@@ -773,53 +858,73 @@ async function showProgressCharts(clienteId) {
                 }
             },
             scales: {
-                x: { title: { display: true, text: 'Fecha' } }
+                x: { title: { display: true, text: 'Fecha', font: { size: 12 } } },
+                y: { beginAtZero: false }
             }
         };
 
-        // Peso Chart
-        new Chart(document.getElementById('peso-chart'), {
+        // Peso Evolución Chart
+        new Chart(document.getElementById('peso-evolucion-chart'), {
             type: 'line',
             data: {
                 labels: dates,
-                datasets: [{
-                    label: 'Peso Actual (kg)',
-                    data: pesoData,
-                    borderColor: '#4CAF50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-                    fill: false,
-                    tension: 0.1
-                }]
+                datasets: [
+                    { label: 'Peso Actual (kg)', data: pesoData.actual, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
+                    { label: '% Pérdida Exceso', data: pesoData.perdidaExceso, borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
+                    { label: '% Pérdida Inicial', data: pesoData.perdidaInicial, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 }
+                ]
             },
             options: {
                 ...commonOptions,
                 scales: {
                     ...commonOptions.scales,
-                    y: { title: { display: true, text: 'Peso (kg)' } }
+                    y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
                 }
             },
             plugins: [ChartDataLabels]
         });
 
-        // % Grasa Chart
-        new Chart(document.getElementById('grasa-pct-chart'), {
+        // Grasa Evolución Chart
+        new Chart(document.getElementById('grasa-evolucion-chart'), {
             type: 'line',
             data: {
                 labels: dates,
-                datasets: [{
-                    label: '% Grasa Actual',
-                    data: grasaPctData,
-                    borderColor: '#388E3C',
-                    backgroundColor: 'rgba(56, 142, 60, 0.2)',
-                    fill: false,
-                    tension: 0.1
-                }]
+                datasets: [
+                    { label: 'Grasa Actual (%)', data: grasaData.actualPct, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Grasa Actual (kg)', data: grasaData.actualKg, borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Grasa Metabólica (%)', data: grasaData.metabolicaPct, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Grasa Metabólica (kg)', data: grasaData.metabolicaKg, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 },
+                    { label: '% Grasa Deurenberg', data: grasaData.deurenberg, borderColor: '#f0ad4e', backgroundColor: 'rgba(240, 173, 78, 0.2)', fill: false, tension: 0.1 },
+                    { label: '% Grasa CUN-BAE', data: grasaData.cunBae, borderColor: '#d9534f', backgroundColor: 'rgba(217, 83, 79, 0.2)', fill: false, tension: 0.1 }
+                ]
             },
             options: {
                 ...commonOptions,
                 scales: {
                     ...commonOptions.scales,
-                    y: { title: { display: true, text: '% Grasa' } }
+                    y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        // Músculo Evolución Chart
+        new Chart(document.getElementById('musculo-evolucion-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: 'Masa Muscular (kg)', data: musculoData.mmt, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Masa Muscular (%)', data: musculoData.Pctmmt, borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Masa Magra Actual (kg)', data: musculoData.masaMagraActual, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Masa Magra Metabólica (kg)', data: musculoData.masaMagraMetabolic, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    ...commonOptions.scales,
+                    y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
                 }
             },
             plugins: [ChartDataLabels]
@@ -842,7 +947,7 @@ async function showProgressCharts(clienteId) {
                 ...commonOptions,
                 scales: {
                     ...commonOptions.scales,
-                    y: { title: { display: true, text: 'Pliegues (mm)' } }
+                    y: { title: { display: true, text: 'Pliegues (mm)', font: { size: 12 } } }
                 }
             },
             plugins: [ChartDataLabels]
@@ -866,13 +971,13 @@ async function showProgressCharts(clienteId) {
                 ...commonOptions,
                 scales: {
                     ...commonOptions.scales,
-                    y: { title: { display: true, text: 'Circunferencias (cm)' } }
+                    y: { title: { display: true, text: 'Circunferencias (cm)', font: { size: 12 } } }
                 }
             },
             plugins: [ChartDataLabels]
         });
 
-        // IMC and ICC Chart
+        // IMC e ICC Chart
         new Chart(document.getElementById('imc-icc-chart'), {
             type: 'line',
             data: {
@@ -886,47 +991,49 @@ async function showProgressCharts(clienteId) {
                 ...commonOptions,
                 scales: {
                     ...commonOptions.scales,
-                    y: { title: { display: true, text: 'Valor' } }
+                    y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
                 }
             },
             plugins: [ChartDataLabels]
         });
 
-        // Masa Magra Chart
-        new Chart(document.getElementById('masa-magra-chart'), {
+        // Reserva Proteica Chart
+        new Chart(document.getElementById('reserva-proteica-chart'), {
             type: 'line',
             data: {
                 labels: dates,
                 datasets: [
-                    { label: 'Masa Magra Actual (kg)', data: masaMagraData.actual, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 95, 0.2)', fill: false, tension: 0.1 },
-                    { label: 'Masa Magra Metabólico (kg)', data: masaMagraData.metabolico, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
+                    { label: 'Perímetro de Brazo (cm)', data: reservaProteicaData.perimetroBrazo, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Área Muscular Brazo (cm²)', data: reservaProteicaData.areaMuscularBrazo, borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Área Grasa Brazo (cm²)', data: reservaProteicaData.areaGrasaBrazo, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 }
                 ]
             },
             options: {
                 ...commonOptions,
                 scales: {
                     ...commonOptions.scales,
-                    y: { title: { display: true, text: 'Masa Magra (kg)' } }
+                    y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
                 }
             },
             plugins: [ChartDataLabels]
         });
 
-        // Masa Muscular Chart
-        new Chart(document.getElementById('masa-muscular-chart'), {
+        // Gasto Energético Chart
+        new Chart(document.getElementById('gasto-energetico-chart'), {
             type: 'line',
             data: {
                 labels: dates,
                 datasets: [
-                    { label: 'Masa Muscular Total (kg)', data: masaMuscularData.mmt, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
-                    { label: '% Masa Muscular', data: masaMuscularData.Pctmmt, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
+                    { label: 'Gasto Energético (kcal)', data: gastoEnergeticoData.gasto, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Edad Metabólica (años)', data: gastoEnergeticoData.edadMetabolica, borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'TMB (kcal)', data: gastoEnergeticoData.tmb, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 }
                 ]
             },
             options: {
                 ...commonOptions,
                 scales: {
                     ...commonOptions.scales,
-                    y: { title: { display: true, text: 'Valor' } }
+                    y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
                 }
             },
             plugins: [ChartDataLabels]
@@ -947,7 +1054,7 @@ async function showProgressCharts(clienteId) {
         });
 
         // Show popup
-        const popup = document.getElementById('progress-popup');
+        const popup = document.getElementById('progress-container');
         if (popup) {
             popup.style.display = 'flex';
         }
