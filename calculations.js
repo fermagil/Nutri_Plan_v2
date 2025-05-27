@@ -3402,7 +3402,7 @@ function mapToCanvas(value, min, max, canvasSize) {
 }
 
 // Gráfica de Tipología Corporal (IMLG vs IMG) con canvas
-if (!isNaN(results.imlg) && !isNaN(results.img) && data.edad >= 18) {
+if (!isNaN(bodyCompResults.imlg) && !isNaN(bodyCompResults.img) && data.edad >= 18) {
     const sexo = data.genero === 'masculino' ? 'hombre' : 'mujer';
     const actividad = data.es_deportista === 'si' ? 'activo' : 'sedentario';
     const edad = data.edad;
@@ -3562,7 +3562,7 @@ if (!isNaN(results.imlg) && !isNaN(results.img) && data.edad >= 18) {
         currentPointX = x;
         currentPointY = y;
     }
-    drawPoint(results.imlg, results.img, '#007bff');
+    drawPoint(bodyCompResults.imlg, bodyCompResults.img, '#007bff');
 
     // Crear tooltip
 	//const tooltip = document.getElementById('tooltip');
@@ -3598,11 +3598,11 @@ if (!isNaN(results.imlg) && !isNaN(results.img) && data.edad >= 18) {
 
     if (isCursorOverPoint(mouseX, mouseY)) {
         console.log('Cursor sobre el punto');
-        const { tipologia } = detectarTipologia(results.imlg, results.img, sexo, actividad, edad);
+        const { tipologia } = detectarTipologia(bodyCompResults.imlg, bodyCompResults.img, sexo, actividad, edad);
         const typologyObj = typologies.find(t => t.name === tipologia);
         const emoji = typologyObj ? typologyObj.emoji : '';
         tooltip.style.display = 'block';
-        tooltip.innerHTML = `IMLG: ${results.imlg.toFixed(1)} kg/m²<br>IMG: ${results.img.toFixed(1)} kg/m²<br>Tipología: ${emoji} ${tipologia}`;
+        tooltip.innerHTML = `IMLG: ${bodyCompResults.imlg.toFixed(1)} kg/m²<br>IMG: ${bodyCompResults.img.toFixed(1)} kg/m²<br>Tipología: ${emoji} ${tipologia}`;
 
         // Posicionar el tooltip justo encima del punto azul
         let tooltipX = rect.left + currentPointX - (tooltip.offsetWidth / 2); // Centrado horizontalmente respecto al canvas
