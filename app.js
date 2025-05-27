@@ -840,7 +840,7 @@ async function showProgressCharts(clienteId) {
                 scales: {
                     y: { title: { display: true, text: 'Masa Magra (kg)' } }
                 },
-                plugins: { legend: { position: 'top' }
+                plugins: { legend: { position: 'top' }}
             }
         });
 
