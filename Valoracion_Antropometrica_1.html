@@ -6,6 +6,8 @@
     <title>Valoración Antropométrica con Resultados</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
+	<!-- Add html2pdf.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -826,32 +828,60 @@ button:hover {
 	
 	
 	<div id="progress-popup" class="popup-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center;">
-	    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 90%; max-height: 90%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
-	        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center;">Progreso del Cliente</h2>
-	        <div id="charts-container">
-	            <!-- Charts will be dynamically inserted here -->
-	            <canvas id="peso-chart" style="margin-bottom: 20px;"></canvas>
-	            <canvas id="grasa-pct-chart" style="margin-bottom: 20px;"></canvas>
-	            <canvas id="pliegues-chart" style="margin-bottom: 20px;"></canvas>
-	            <canvas id="circunferencias-chart" style="margin-bottom: 20px;"></canvas>
-	            <canvas id="imc-icc-chart" style="margin-bottom: 20px;"></canvas>
-	            <canvas id="masa-magra-chart" style="margin-bottom: 20px;"></canvas>
-	            <canvas id="masa-muscular-chart" style="margin-bottom: 20px;"></canvas>
-	            <table id="non-numerical-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-	                <thead>
-	                    <tr style="background-color: #e9f5e9; color: #388e3c;">
-	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Fecha</th>
-	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Somatotipo</th>
-	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Actual</th>
-	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Metabólico</th>
-	                    </tr>
-	                </thead>
-	                <tbody id="non-numerical-table-body"></tbody>
-	            </table>
-	        </div>
-	        <button onclick="document.getElementById('progress-popup').style.display = 'none';" style="margin-top: 20px; padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; display: block; margin-left: auto; margin-right: auto;">Cerrar</button>
-	    </div>
-	</div>
+    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 90%; max-height: 90%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center;">Progreso del Cliente</h2>
+        <div id="charts-container" style="display: grid; gap: 20px;">
+            <!-- Chart containers -->
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Peso</h3>
+                <canvas id="peso-chart" style="max-height: 200px;"></canvas>
+            </div>
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">% Grasa</h3>
+                <canvas id="grasa-pct-chart" style="max-height: 200px;"></canvas>
+            </div>
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Pliegues</h3>
+                <canvas id="pliegues-chart" style="max-height: 200px;"></canvas>
+            </div>
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Circunferencias</h3>
+                <canvas id="circunferencias-chart" style="max-height: 200px;"></canvas>
+            </div>
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">IMC e ICC</h3>
+                <canvas id="imc-icc-chart" style="max-height: 200px;"></canvas>
+            </div>
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Masa Magra</h3>
+                <canvas id="masa-magra-chart" style="max-height: 200px;"></canvas>
+            </div>
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Masa Muscular</h3>
+                <canvas id="masa-muscular-chart" style="max-height: 200px;"></canvas>
+            </div>
+            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Datos No Numéricos</h3>
+                <table id="non-numerical-table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #e9f5e9; color: #388e3c;">
+                            <th style="padding: 10px; border: 1px solid #dee2e6;">Fecha</th>
+                            <th style="padding: 10px; border: 1px solid #dee2e6;">Somatotipo</th>
+                            <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Actual</th>
+                            <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Metabólico</th>
+                        </tr>
+                    </thead>
+                    <tbody id="non-numerical-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <button onclick="document.getElementById('progress-popup').style.display = 'none';" style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Cerrar</button>
+            <button id="print-pdf-btn" style="padding: 10px 20px; background-color: #388E3C; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir a PDF</button>
+        </div>
+    </div>
+</div>
+
     <main>
         <h1>Valoración Antropométrica App</h1>
         
