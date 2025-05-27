@@ -14,10 +14,9 @@
             line-height: 1.6;
             font-size: 16px;
             padding-bottom: 80px;
-            padding-top: 80px; /* Space for fixed header */
+            padding-top: 80px;
         }
 
-        /* Header & Navigation */
         header {
             background-color: #ffffff;
             padding: 15px 30px;
@@ -40,6 +39,7 @@
             font-size: 1.75em;
             font-weight: 600;
         }
+
         h1,
         h2,
         h3 {
@@ -49,7 +49,6 @@
         }
 
         h1 {
-            color: #388E3C;
             font-size: 2.2em;
             text-align: center;
             margin-bottom: 30px;
@@ -61,10 +60,6 @@
             padding-bottom: 8px;
         }
 
-        h3 {
-            font-size: 1.5em;
-            margin-top: 25px;
-        }
         .dropdown {
             display: none;
             position: absolute;
@@ -91,8 +86,7 @@
             color: #388e3c;
         }
 
-        /* Login Container */
-        .login-container {
+        .login-container, .selection-container {
             max-width: 400px;
             margin: 20px auto;
             padding: 25px 30px;
@@ -103,9 +97,10 @@
             box-sizing: border-box;
         }
 
-        .login-container h2 {
+        .login-container h2, .selection-container h2 {
             margin-bottom: 20px;
             color: #212529;
+            text-align: center;
         }
 
         .login-container input[type="email"],
@@ -126,16 +121,20 @@
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
 
-        .login-container button {
+        .login-container button, .selection-container button {
             width: 100%;
             padding: 12px 20px;
             margin-top: 10px;
-            border: none;
             border-radius: 4px;
-            background-color: #4CAF50;
-            color: white;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-container button {
+            border: none;
+            background-color: #4CAF50;
+            color: white;
         }
 
         .login-container button:hover {
@@ -166,7 +165,38 @@
             font-size: 0.9em;
         }
 
-        /* Footer */
+        .selection-container button {
+            background-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .selection-container #nutrition-btn {
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .selection-container #nutrition-btn:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .selection-container #fitness-btn {
+            border: 2px solid #0288D1;
+            color: #0288D1;
+        }
+
+        .selection-container #fitness-btn:hover {
+            background-color: rgba(2, 136, 209, 0.1);
+        }
+
+        .selection-container #exercise-btn {
+            border: 2px solid #F57C00;
+            color: #F57C00;
+        }
+
+        .selection-container #exercise-btn:hover {
+            background-color: rgba(245, 124, 0, 0.1);
+        }
+
         footer {
             background-color: #e9ecef;
             text-align: center;
@@ -187,9 +217,9 @@
             <a href="#" onclick="logout()">Cerrar Sesión</a>
         </div>
     </header>
-     <h1 style="text-align: center;">Composicion Corporal y Nutricion</h1>
+    <h1 style="text-align: center;">Composición Corporal y Nutrición</h1>
     <div class="login-container" id="login-container">
-        <h2 style="text-align: center;">Iniciar Sesión</h2>
+        <h2>Iniciar Sesión</h2>
         <input type="email" id="email" placeholder="Email Address" required>
         <input type="password" id="password" placeholder="Password" required>
         <button type="button" id="email-login-btn">Login</button>
@@ -199,15 +229,19 @@
             Iniciar Sesión con Google
         </button>
     </div>
+    <div class="selection-container" id="selection-container" style="display: none;">
+        <h2>Selecciona una Opción</h2>
+        <button id="nutrition-btn" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/index.html'">Valoración Antropométrica y Nutrición</button>
+        <button id="fitness-btn">Valoración de la Condición Física y Salud</button>
+        <button id="exercise-btn">Planificación del Ejercicio</button>
+    </div>
     <footer>
         © 2025 NutriPlan v2. Todos los derechos reservados.
     </footer>
     <script type="module">
-        // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
-        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
             authDomain: "nutriplanv2.firebaseapp.com",
@@ -218,19 +252,17 @@
             measurementId: "G-NWER69E8B6"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Google Sign-In
         async function signInWithGoogle() {
             try {
                 console.log('Initiating signInWithPopup');
                 provider.setCustomParameters({ prompt: 'select_account' });
                 const result = await signInWithPopup(auth, provider);
                 console.log('Popup result:', result.user.displayName, result.user.email, result.user.uid);
-                window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/Inicio_NutriPlan_v2.html';
+                showSelectionContainer();
             } catch (error) {
                 console.error('Sign-in error:', error.code, error.message, error);
                 let errorMessage;
@@ -250,37 +282,20 @@
                     default:
                         errorMessage = `Error al iniciar sesión: ${error.message}`;
                 }
-                const loginContainer = document.getElementById('login-container');
-                const errorDiv = document.createElement('div');
-                errorDiv.id = 'login-error';
-                errorDiv.style.color = 'red';
-                errorDiv.style.marginBottom = '10px';
-                errorDiv.style.fontSize = '14px';
-                errorDiv.textContent = errorMessage;
-                loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
-                setTimeout(() => errorDiv.remove(), 5000);
+                showError(errorMessage);
             }
         }
 
-        // Email/Password Login
         async function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const loginContainer = document.getElementById('login-container');
-            const errorDiv = document.createElement('div');
-            errorDiv.id = 'login-error';
-            errorDiv.style.color = 'red';
-            errorDiv.style.marginBottom = '10px';
-            errorDiv.style.fontSize = '14px';
 
-            // Remove existing error message
             const existingError = document.getElementById('login-error');
             if (existingError) existingError.remove();
 
             if (!email || !password) {
-                errorDiv.textContent = 'Por favor, ingrese email y contraseña';
-                loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
-                setTimeout(() => errorDiv.remove(), 5000);
+                showError('Por favor, ingrese email y contraseña');
                 return;
             }
 
@@ -288,14 +303,8 @@
                 await signInWithEmailAndPassword(auth, email, password);
                 document.getElementById('email').value = '';
                 document.getElementById('password').value = '';
-                const successDiv = document.createElement('div');
-                successDiv.style.color = 'green';
-                successDiv.style.marginBottom = '10px';
-                successDiv.style.fontSize = '14px';
-                successDiv.textContent = 'Inicio de sesión exitoso';
-                loginContainer.insertBefore(successDiv, loginContainer.firstChild);
-                setTimeout(() => successDiv.remove(), 3000);
-                window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/Inicio_NutriPlan_v2.html';
+                showSuccess('Inicio de sesión exitoso');
+                showSelectionContainer();
             } catch (error) {
                 console.error('Email login error:', error.code, error.message, error);
                 let errorMessage;
@@ -319,13 +328,10 @@
                     default:
                         errorMessage = `Error al iniciar sesión: ${error.message}`;
                 }
-                errorDiv.textContent = errorMessage;
-                loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
-                setTimeout(() => errorDiv.remove(), 5000);
+                showError(errorMessage);
             }
         }
 
-        // Logout
         async function logout() {
             try {
                 await signOut(auth);
@@ -333,19 +339,38 @@
                 window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
             } catch (error) {
                 console.error('Error al cerrar sesión:', error.code, error.message, error);
-                const loginContainer = document.getElementById('login-container');
-                const errorDiv = document.createElement('div');
-                errorDiv.id = 'login-error';
-                errorDiv.style.color = 'red';
-                errorDiv.style.marginBottom = '10px';
-                errorDiv.style.fontSize = '14px';
-                errorDiv.textContent = 'Error al cerrar sesión: ' + error.message;
-                loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
-                setTimeout(() => errorDiv.remove(), 5000);
+                showError('Error al cerrar sesión: ' + error.message);
             }
         }
 
-        // Initialize UI
+        function showError(message) {
+            const loginContainer = document.getElementById('login-container');
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'login-error';
+            errorDiv.style.color = 'red';
+            errorDiv.style.marginBottom = '10px';
+            errorDiv.style.fontSize = '14px';
+            errorDiv.textContent = message;
+            loginContainer.insertBefore(errorDiv, loginContainer.firstChild);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        function showSuccess(message) {
+            const loginContainer = document.getElementById('login-container');
+            const successDiv = document.createElement('div');
+            successDiv.style.color = 'green';
+            successDiv.style.marginBottom = '10px';
+            successDiv.style.fontSize = '14px';
+            successDiv.textContent = message;
+            loginContainer.insertBefore(successDiv, loginContainer.firstChild);
+            setTimeout(() => successDiv.remove(), 3000);
+        }
+
+        function showSelectionContainer() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('selection-container').style.display = 'block';
+        }
+
         function initializeUI() {
             document.getElementById('logo').addEventListener('click', function(event) {
                 event.preventDefault();
@@ -370,30 +395,29 @@
             window.logout = logout;
         }
 
-        // Handle auth state
         onAuthStateChanged(auth, (user) => {
             const loginContainer = document.getElementById('login-container');
+            const selectionContainer = document.getElementById('selection-container');
             const dropdown = document.getElementById('dropdown');
             if (user) {
                 console.log('Auth state: User signed in', user.displayName, user.email);
                 if (window.location.pathname.includes('index.html')) {
-                    window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/Inicio_NutriPlan_v2.html';
-                } else {
-                    if (loginContainer) loginContainer.style.display = 'none';
-                    if (dropdown) dropdown.style.display = 'block'; // Show dropdown when logged in
+                    loginContainer.style.display = 'none';
+                    selectionContainer.style.display = 'block';
+                    dropdown.style.display = 'block';
                 }
             } else {
                 console.log('Auth state: No user signed in');
                 if (!window.location.pathname.includes('index.html')) {
                     window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
                 } else {
-                    if (loginContainer) loginContainer.style.display = 'block';
-                    if (dropdown) dropdown.style.display = 'none'; // Hide dropdown when logged out
+                    loginContainer.style.display = 'block';
+                    selectionContainer.style.display = 'none';
+                    dropdown.style.display = 'none';
                 }
             }
         });
 
-        // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', initializeUI);
     </script>
 </body>
