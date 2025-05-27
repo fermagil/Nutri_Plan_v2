@@ -825,60 +825,93 @@ button:hover {
 	<!-- Add this within the <body> tag, ideally near the <main> section -->
 	
 	
-	<div id="progress-popup" class="popup-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center;">
-    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 90%; max-height: 90%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
-        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center;">Progreso del Cliente</h2>
-        <div id="charts-container" style="display: grid; gap: 20px;">
-            <!-- Chart containers -->
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Peso</h3>
-                <canvas id="peso-chart" style="max-height: 200px;"></canvas>
-            </div>
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">% Grasa</h3>
-                <canvas id="grasa-pct-chart" style="max-height: 200px;"></canvas>
-            </div>
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Pliegues</h3>
-                <canvas id="pliegues-chart" style="max-height: 200px;"></canvas>
-            </div>
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Circunferencias</h3>
-                <canvas id="circunferencias-chart" style="max-height: 200px;"></canvas>
-            </div>
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">IMC e ICC</h3>
-                <canvas id="imc-icc-chart" style="max-height: 200px;"></canvas>
-            </div>
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Masa Magra</h3>
-                <canvas id="masa-magra-chart" style="max-height: 200px;"></canvas>
-            </div>
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Masa Muscular</h3>
-                <canvas id="masa-muscular-chart" style="max-height: 200px;"></canvas>
-            </div>
-            <div class="chart-container" style="border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
-                <h3 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Datos No Numéricos</h3>
-                <table id="non-numerical-table" style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background-color: #e9f5e9; color: #388e3c;">
-                            <th style="padding: 10px; border: 1px solid #dee2e6;">Fecha</th>
-                            <th style="padding: 10px; border: 1px solid #dee2e6;">Somatotipo</th>
-                            <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Actual</th>
-                            <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Metabólico</th>
-                        </tr>
-                    </thead>
-                    <tbody id="non-numerical-table-body"></tbody>
-                </table>
-            </div>
-        </div>
-        <div style="margin-top: 20px; text-align: center;">
-            <button onclick="document.getElementById('progress-popup').style.display = 'none';" style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Cerrar</button>
-            <button id="print-pdf-btn" style="padding: 10px 20px; background-color: #388E3C; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir a PDF</button>
-        </div>
-    </div>
-</div>
+			<div id="progress-container" class="popup-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center;">
+		    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 1200px; width: 95%; max-height: 90%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
+		        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center; font-size: 1.5em;">Progreso del Cliente</h2>
+		        <div id="charts-container" style="display: flex; flex-direction: column; gap: 30px;">
+		            <!-- Section 1: Evolución del Peso -->
+		            <section style="border: 1px solid #dee2e6; border-radius: 5px; padding: 15px;">
+		                <h3 style="font-size: 1.2em; color: #388E3C; margin: 0 0 15px 0; text-align: center;">Evolución del Peso</h3>
+		                <div class="chart-container" style="padding: 10px;">
+		                    <canvas id="peso-evolucion-chart" style="max-height: 250px;"></canvas>
+		                </div>
+		            </section>
+		
+		            <!-- Section 2: Evolución de Grasa y Músculo -->
+		            <section style="border: 1px solid #dee2e6; border-radius: 5px; padding: 15px;">
+		                <h3 style="font-size: 1.2em; color: #388E3C; margin: 0 0 15px 0; text-align: center;">Evolución de Grasa y Músculo</h3>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+		                    <div class="chart-container" style="padding: 10px;">
+		                        <h4 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Grasa</h4>
+		                        <canvas id="grasa-evolucion-chart" style="max-height: 250px;"></canvas>
+		                    </div>
+		                    <div class="chart-container" style="padding: 10px;">
+		                        <h4 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Masa Muscular</h4>
+		                        <canvas id="musculo-evolucion-chart" style="max-height: 250px;"></canvas>
+		                    </div>
+		                </div>
+		            </section>
+		
+		            <!-- Section 3: Distribución de Grasa -->
+		            <section style="border: 1px solid #dee2e6; border-radius: 5px; padding: 15px;">
+		                <h3 style="font-size: 1.2em; color: #388E3C; margin: 0 0 15px 0; text-align: center;">Distribución de Grasa</h3>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+		                    <div class="chart-container" style="padding: 10px;">
+		                        <h4 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Pliegues (mm)</h4>
+		                        <canvas id="pliegues-chart" style="max-height: 250px;"></canvas>
+		                    </div>
+		                    <div class="chart-container" style="padding: 10px;">
+		                        <h4 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">Circunferencias (cm)</h4>
+		                        <canvas id="circunferencias-chart" style="max-height: 250px;"></canvas>
+		                    </div>
+		                    <div class="chart-container" style="padding: 10px;">
+		                        <h4 style="font-size: 1.1em; color: #388E3C; margin: 0 0 10px 0; text-align: center;">IMC e ICC</h4>
+		                        <canvas id="imc-icc-chart" style="max-height: 250px;"></canvas>
+		                    </div>
+		                </div>
+		            </section>
+		
+		            <!-- Section 4: Reserva Proteica Energética -->
+		            <section style="border: 1px solid #dee2e6; border-radius: 5px; padding: 15px;">
+		                <h3 style="font-size: 1.2em; color: #388E3C; margin: 0 0 15px 0; text-align: center;">Reserva Proteica Energética</h3>
+		                <div class="chart-container" style="padding: 10px;">
+		                    <canvas id="reserva-proteica-chart" style="max-height: 250px;"></canvas>
+		                </div>
+		            </section>
+		
+		            <!-- Section 5: Gasto Energético y Edad Metabólica -->
+		            <section style="border: 1px solid #dee2e6; border-radius: 5px; padding: 15px;">
+		                <h3 style="font-size: 1.2em; color: #388E3C; margin: 0 0 15px 0; text-align: center;">Gasto Energético y Edad Metabólica</h3>
+		                <div class="chart-container" style="padding: 10px;">
+		                    <canvas id="gasto-energetico-chart" style="max-height: 250px;"></canvas>
+		                </div>
+		            </section>
+		
+		            <!-- Section 6: Datos No Numéricos -->
+		            <section style="border: 1px solid #dee2e6; border-radius: 5px; padding: 15px;">
+		                <h3 style="font-size: 1.2em; color: #388E3C; margin: 0 0 15px 0; text-align: center;">Datos No Numéricos</h3>
+		                <div class="chart-container" style="padding: 10px;">
+		                    <table id="non-numerical-table" style="width: 100%; border-collapse: collapse;">
+		                        <thead>
+		                            <tr style="background-color: #e9f5e9; color: #388e3c;">
+		                                <th style="padding: 10px; border: 1px solid #dee2e6;">Fecha</th>
+		                                <th style="padding: 10px; border: 1px solid #dee2e6;">Somatotipo</th>
+		                                <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Actual</th>
+		                                <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Metabólica</th>
+		                            </tr>
+		                        </thead>
+		                        <tbody id="non-numerical-table-body"></tbody>
+		                    </table>
+		                </div>
+		            </section>
+		        </div>
+		        <div style="margin-top: 20px; text-align: center;">
+		            <button onclick="document.getElementById('progress-container').style.display = 'none';" style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Cerrar</button>
+		            <button id="print-pdf-btn" style="padding: 10px 20px; background-color: #388E3C; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir a PDF</button>
+		        </div>
+		    </div>
+		</div>
+        
 
     <main>
         <h1>Valoración Antropométrica App</h1>
