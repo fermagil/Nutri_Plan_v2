@@ -1914,7 +1914,7 @@ import { auth } from './app.js';
                 <li><strong>Esbelto Magro Atleta:</strong> Bajo IMG, IMLG moderado a alto. Poca grasa y buena cantidad de masa magra/muscular (físico definido).</li>
                 <li><strong>Musculoso Atleta:</strong> Bajo IMG, IMLG muy alto. Muy poca grasa y una gran cantidad de masa magra/muscular.</li>
             </ol>
-            <div id="typology-legend-container"></div>
+            <div id="typology-legend-container" style="margin-bottom: 20px;"></div>
             <div id="typology-chart-container"></div>
             <p><em>Nota:</em> Estos rangos son guías generales basadas en estándares de población. La interpretación debe considerar tu nivel de actividad física, salud general y otros indicadores clínicos. Consulta a un profesional para un análisis más detallado.</p>
         `;
