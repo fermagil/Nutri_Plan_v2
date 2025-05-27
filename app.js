@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebas
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signOut,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
-/ Debug Chart.js and plugin loading
+// Debug Chart.js and plugin loading
 console.log('Checking Chart.js:', typeof Chart);
 console.log('Checking ChartDataLabels:', typeof ChartDataLabels);
 console.log('Checking ChartAnnotation:', typeof ChartAnnotation);
