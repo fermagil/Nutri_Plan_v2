@@ -55,23 +55,7 @@ export { app, db, auth, provider };
                     dropdown.style.display = 'none';
                 }
             });
-           // Ensure button is hidden initially in initializeUI
-           
-                function initializeUI() {
-                    document.getElementById('logo').addEventListener('click', function(event) {
-                        event.preventDefault();
-                        var dropdown = document.getElementById('dropdown');
-                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-                    });
-                    
-                    document.addEventListener('click', function(event) {
-                        var dropdown = document.getElementById('dropdown');
-                        var logo = document.getElementById('logo');
-                        if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
-                            dropdown.style.display = 'none';
-                        }
-                    });
-                
+                                    
                     // Initialize Ver Progreso button
                     const verProgresoBtn = document.getElementById('ver-progreso-btn');
                     if (verProgresoBtn) {
@@ -209,22 +193,23 @@ const toNumber = (value) => {
 
 
 // Manejar estado de autenticación
+// Handle auth state
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
-    //const loginContainer = document.getElementById('login-container');
-    //const navMenu = document.getElementById('nav-menu');
+    const verProgresoBtn = document.getElementById('ver-progreso-btn');
     if (user) {
         console.log('Auth state: User signed in', user.displayName, user.email);
-        //loginContainer.style.display = 'none';
-        //form.style.display = 'block';
-        //navMenu.style.display = 'flex';
+        if (verProgresoBtn) {
+            verProgresoBtn.style.display = currentClienteId ? 'inline-block' : 'none';
+        } else {
+            console.error('Botón Ver Progreso no encontrado en el DOM durante auth change');
+        }
     } else {
         console.log('Auth state: No user signed in');
-        //loginContainer.style.display = 'block';
-        //form.style.display = 'none';
-        //navMenu.style.display = 'none';
-        //clientesResultados.style.display = 'none';
-        //seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        if (verProgresoBtn) verProgresoBtn.style.display = 'none';
+        clientesResultados.style.display = 'none';
+        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
         currentClienteId = null;
     }
 });
@@ -916,18 +901,19 @@ async function showProgressCharts(clienteId) {
             });
 
         // Populate non-numerical data table
-        const tableBody = document.getElementById('non-numerical-table-body');
-        tableBody.innerHTML = '';
-        dates.forEach((date, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
-                <td style="padding: 10px; border: 1px solid #ddee2e6;">${nonNumericalData.tipologiaActual[index]}</td>}>
-                <td style="padding: 10px; border: 1px solid #ddee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>}>
-            `;
-            tableBody.appendChild(row);
-        });
+        // Populate non-numerical data table
+            const tableBody = document.getElementById('non-numerical-table-body');
+            tableBody.innerHTML = '';
+            dates.forEach((date, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
+                    <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
+                    <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
+                    <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>
+                `;
+                tableBody.appendChild(row);
+            });
 
         // Show popup
         const popup = document.getElementById('progress-popup');
