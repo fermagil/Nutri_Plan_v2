@@ -751,7 +751,7 @@ async function showProgressCharts(clienteId) {
         const nonNumericalData = {
             somatotipo: [],
             tipologiaActual: [],
-            tipologiaMetabolico: []
+            tipologiaMetabolica: []
         };
 
         // Calculate initial weight for % loss
@@ -813,7 +813,7 @@ async function showProgressCharts(clienteId) {
             circunferenciasData.cintura.push(safeToNumber(data.medidas.circunferencias?.cintura));
             circunferenciasData.cadera.push(safeToNumber(data.medidas.circunferencias?.cadera));
             circunferenciasData.cuello.push(safeToNumber(data.medidas.circunferencias?.cuello));
-            circunferenciasData.pantorrilla.push(safeToNumber(data.medidas.circunferencias?.pantorrilla));
+            circunferenciasData.pantorrilla.push(safeToNumber(data.medidas.def.circunferencias?.pantorrilla));
             circunferenciasData.brazo.push(safeToNumber(data.medidas.circunferencias?.brazo));
             circunferenciasData.brazo_contraido.push(safeToNumber(data.medidas.circunferencias?.brazo_contraido));
 
@@ -838,7 +838,7 @@ async function showProgressCharts(clienteId) {
             // Non-numerical data
             nonNumericalData.somatotipo.push(data.resultados.somatotipo?.formatted || '---');
             nonNumericalData.tipologiaActual.push(data.resultados.tipologiaActual || '---');
-            nonNumericalData.tipologiaMetabolico.push(data.resultados.tipologiaMetabolic || '---');
+            nonNumericalData.tipologiaMetabolica.push(data.resultados.tipologiaMetabolic || '---');
         });
 
         // Destroy existing charts
@@ -907,7 +907,10 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: pesoDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Valor', font: { size: 12 } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
@@ -930,7 +933,10 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: grasaDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Valor', font: 12 } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
@@ -941,7 +947,7 @@ async function showProgressCharts(clienteId) {
         // Músculo Evolución Chart
         const musculoDatasets = [
             { label: 'Masa Muscular (kg)', data: musculoData.mmt, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
-            { label: 'Masa Muscular (%)', data: musculoData.Pctmmt, borderColor: '#388E3c', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
+            { label: 'Masa Muscular (%)', data: musculoData.Pctmmt, borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
             { label: 'Masa Magra Actual (kg)', data: musculoData.masaMagraActual, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
             { label: 'Masa Magra Metabólica (kg)', data: musculoData.masaMagraMetabolic, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
         ].filter(ds => hasValidData(ds.data));
@@ -951,7 +957,10 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: musculoDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Valor', font: { size: 12 } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
@@ -962,8 +971,8 @@ async function showProgressCharts(clienteId) {
         // Pliegues Chart
         const plieguesDatasets = [
             { label: 'Tricipital (mm)', data: plieguesData.tricipital, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
-            { label: 'Subescapular (mm)', data: plieguesData.subescapular, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2), fill: false, tension: 0.1 },
-            { label: 'Suprailiaco (mm), data: plieguesData.suprailiaco, borderColor: '#5cb85c', backgroundColor: 'rgba(92, 184, 92, 0.2)', fill: false, tension: 0.1 },
+            { label: 'Subescapular (mm)', data: plieguesData.subescapular, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 },
+            { label: 'Suprailiaco (mm)', data: plieguesData.suprailiaco, borderColor: '#5cb85c', backgroundColor: 'rgba(92, 184, 92, 0.2)', fill: false, tension: 0.1 },
             { label: 'Bicipital (mm)', data: plieguesData.bicipital, borderColor: '#f0ad4e', backgroundColor: 'rgba(240, 173, 78, 0.2)', fill: false, tension: 0.1 },
             { label: 'Pantorrilla (mm)', data: plieguesData.pantorrilla, borderColor: '#d9534f', backgroundColor: 'rgba(217, 83, 79, 0.2)', fill: false, tension: 0.1 }
         ].filter(ds => hasValidData(ds.data));
@@ -973,12 +982,15 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: plieguesDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Pliegues (mm)', font: { size: 12 } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Pliegues (mm)', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
         } else {
-            console.warn('No valid data válida para datos Pliegues de Chart');
+            console.warn('No valid data for Pliegues Chart');
         }
 
         // Circunferencias Chart
@@ -986,7 +998,8 @@ async function showProgressCharts(clienteId) {
             { label: 'Cintura (cm)', data: circunferenciasData.cintura, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
             { label: 'Cadera (cm)', data: circunferenciasData.cadera, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 },
             { label: 'Cuello (cm)', data: circunferenciasData.cuello, borderColor: '#5cb85c', backgroundColor: 'rgba(92, 184, 92, 0.2)', fill: false, tension: 0.1 },
-            { label: 'Pantorrilla (cm)', data: circunferenciasData.pantorrilla, label: 'Brazo Relajado (cm)', backgroundColor: 'rgba(217, 83, 79, 0.2)', fill: false, tension: 0.1 },
+            { label: 'Pantorrilla (cm)', data: circunferenciasData.pantorrilla, borderColor: '#f0ad4e', backgroundColor: 'rgba(240, 173, 78, 0.2)', fill: false, tension: 0.1 },
+            { label: 'Brazo Relajado (cm)', data: circunferenciasData.brazo, borderColor: '#d9534f', backgroundColor: 'rgba(217, 83, 79, 0.2)', fill: false, tension: 0.1 },
             { label: 'Brazo Contraído (cm)', data: circunferenciasData.brazo_contraido, borderColor: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.2)', fill: false, tension: 0.1 }
         ].filter(ds => hasValidData(ds.data));
         if (circunferenciasDatasets.length > 0) {
@@ -995,17 +1008,20 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: circunferenciasDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Circunferencias (cm)', font: { size: 12 } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Circunferencias (cm)', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
         } else {
-            console.warn('No valid data for válida Circunferencias de Chart');
+            console.warn('No valid data for Circunferencias Chart');
         }
 
         // IMC e ICC Chart
         const imcIccDatasets = [
-            { label: 'IMC (kg/m²'), data: imcIccData.imc, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+            { label: 'IMC (kg/m²)', data: imcIccData.imc, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
             { label: 'ICC', data: imcIccData.icc, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
         ].filter(ds => hasValidData(ds.data));
         if (imcIccDatasets.length > 0) {
@@ -1014,7 +1030,10 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: imcIccDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Valor', font: { size: true } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
@@ -1034,7 +1053,10 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: reservaProteicaDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Valor', font: { size: 12 } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
@@ -1054,7 +1076,10 @@ async function showProgressCharts(clienteId) {
                 data: { labels: dates, datasets: gastoEnergeticoDatasets },
                 options: {
                     ...commonOptions,
-                    scales: { ...commonOptions.scales, y: { title: { display: true, text: 'Valor', font: { size: 12 } } } }
+                    scales: {
+                        ...commonOptions.scales,
+                        y: { title: { display: true, text: 'Valor', font: { size: 12 } } }
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
@@ -1082,7 +1107,7 @@ async function showProgressCharts(clienteId) {
             popup.style.display = 'flex';
         }
 
-        // Add PDF export
+        // Add PDF export functionality
         const printPdfBtn = document.getElementById('print-pdf-btn');
         if (printPdfBtn) {
             printPdfBtn.addEventListener('click', () => {
