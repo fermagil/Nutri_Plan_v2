@@ -813,7 +813,7 @@ async function showProgressCharts(clienteId) {
             circunferenciasData.cintura.push(safeToNumber(data.medidas.circunferencias?.cintura));
             circunferenciasData.cadera.push(safeToNumber(data.medidas.circunferencias?.cadera));
             circunferenciasData.cuello.push(safeToNumber(data.medidas.circunferencias?.cuello));
-            circunferenciasData.pantorrilla.push(safeToNumber(data.medidas.def.circunferencias?.pantorrilla));
+            circunferenciasData.pantorrilla.push(safeToNumber(data.medidas.circunferencias?.pantorrilla));
             circunferenciasData.brazo.push(safeToNumber(data.medidas.circunferencias?.brazo));
             circunferenciasData.brazo_contraido.push(safeToNumber(data.medidas.circunferencias?.brazo_contraido));
 
