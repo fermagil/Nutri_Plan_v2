@@ -5543,18 +5543,39 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        console.warn('explanationSection no está definido');
 					    }
 						// --- 4. Generate and Display Explanations ---
-						if (!explanationContent) {
-							throw new Error('Elemento explanation-content no encontrado');
-						}
-						const analysisHtml = bodyCompResults
-							? generateExplanationsAndSuggestions(data, results, bodyCompResults)
-							: '<p>No se pudo generar el análisis de composición corporal: datos insuficientes.</p>';
-						explanationContent.innerHTML = analysisHtml + content; // Append error messages
-						if (explanationSection) {
-							explanationSection.style.display = 'block';
-						} else {
-							console.warn('explanationSection no encontrado');
-						}
+							if (!explanationContent) {
+							    throw new Error('Elemento explanation-content no encontrado');
+							}
+							let analysisHtml = '<p>No se pudo generar el análisis de composición corporal: datos insuficientes.</p>';
+							if (bodyCompResults && !isNaN(bodyCompResults.imlg) && !isNaN(bodyCompResults.img)) {
+							    try {
+							        analysisHtml = generateExplanationsAndSuggestions(data, results, bodyCompResults);
+							    } catch (e) {
+							        console.error('Error generando explicaciones:', e.message);
+							        analysisHtml = `<p>Error generando el análisis: ${e.message}</p>`;
+							    }
+							} else {
+							    console.warn('bodyCompResults inválido o datos insuficientes', {
+							        bodyCompResults,
+							        imlg: bodyCompResults?.imlg,
+							        img: bodyCompResults?.img
+							    });
+							}
+							explanationContent.innerHTML = analysisHtml + content; // Append error messages
+							if (explanationSection) {
+							    explanationSection.style.display = 'block';
+							} else {
+							    console.warn('explanationSection no encontrado');
+							}
+							
+							// Re-trigger typology chart rendering to ensure DOM is ready
+							if (bodyCompResults && !isNaN(bodyCompResults.imlg) && !isNaN(bodyCompResults.img) && data.edad >= 18) {
+							    const renderTypologyChart = () => {
+							        const chartContainer = document.getElementById('typology-chart-container');
+							        if (!chartContainer) {
+							            console.error('Contenedor #typology-chart-container no encontrado');
+							            return;
+							        }
 
 						console.log('Display updated successfully');
 						alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones.');
