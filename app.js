@@ -488,36 +488,106 @@ async function cargarDatosToma(clienteId, tomaId) {
 
             // Mapear claves de resultados a IDs de elementos
             const resultMappings = {
-                'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
-                'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-                'iccSource': { id: 'icc-source', unit: '', format: (v) => v || '---' },
-                'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
-                'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
-                'masaGrasa': { id: 'result-masa-grasa', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaGrasaSource': { id: 'masaGrasa-source', unit: '', format: (v) => v || '---' },
-                'mlg': { id: 'result-mlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'mlgSource': { id: 'mlg-source', unit: '', format: (v) => v || '---' },
-                'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                'ambSource': { id: 'amb-source', unit: '', format: (v) => v || '---' },
-                'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
-                'mmt': { id: 'result-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'Pctmmt': { id: 'result-Pctmmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
-                'tipologia': { id: 'result-tipologia', unit: '', format: (v) => v || '---' },
-                'tipologiaSource': { id: 'tipologia-source', unit: '', format: (v) => v || '---' },
-                'imlg': { id: 'result-imlg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imlgSource': { id: 'imlg-source', unit: '', format: (v) => v || '---' },
-                'img': { id: 'result-img', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imgSource': { id: 'img-source', unit: '', format: (v) => v || '---' },
-            };
+                                // IMC
+                                'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
+                                
+                                // ICC
+                                'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+                                'iccSource': { id: 'icc-source', unit: '', format: (v) => v || '---' },
+                                
+                                // % Grasa
+                                'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
+                                'grasaPctMetabolic': { id: 'result-grasa-pct-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'grasaPctMetabolicSource': { id: 'grasa-pct-metabolic-source', unit: '', format: (v) => v || '---' },
+                                'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
+                                'grasaPctDeurenberg': { id: 'result-grasa-pct-Deurenberg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'grasaPctDeurenbergSource': { id: 'grasa-pct-Deurenberg-source', unit: '', format: (v) => v || '---' },
+                                'grasaPctCUNBAE': { id: 'result-grasa-pct-CUN-BAE', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'grasaPctCUNBAESource': { id: 'grasa-pct-CUN-BAE-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Masa Grasa
+                                'masaGrasaActual': { id: 'result-masa-grasa-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'masaGrasaActualSource': { id: 'masa-grasa-actual-source', unit: '', format: (v) => v || '---' },
+                                'masaGrasaMetabolic': { id: 'result-masa-grasa-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'masaGrasaMetabolicSource': { id: 'masa-grasa-metabolic-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Masa Magra
+                                'masaMagraActual': { id: 'result-masa-magra-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'masaMagraActualSource': { id: 'masa-magra-actual-source', unit: '', format: (v) => v || '---' },
+                                'masaMagraMetabolic': { id: 'result-masa-magra-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'masaMagraMetabolicSource': { id: 'masa-magra-metabolic-source', unit: '', format: (v) => v || '---' },
+                                
+                                // IMLG
+                                'imlgActual': { id: 'result-imlg-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'imlgActualSource': { id: 'imlg-actual-source', unit: '', format: (v) => v || '---' },
+                                'imlgMetabolic': { id: 'result-imlg-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'imlgMetabolicSource': { id: 'imlg-metabolic-source', unit: '', format: (v) => v || '---' },
+                                
+                                // IMG
+                                'imgActual': { id: 'result-img-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'imgActualSource': { id: 'img-actual-source', unit: '', format: (v) => v || '---' },
+                                'imgMetabolic': { id: 'result-img-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'imgMetabolicSource': { id: 'img-metabolic-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Tipología
+                                'tipologiaActual': { id: 'result-tipologia-actual', unit: '', format: (v) => v || '---' },
+                                'tipologiaActualSource': { id: 'tipologia-actual-source', unit: '', format: (v) => v || '---' },
+                                'tipologiaMetabolic': { id: 'result-tipologia-metabolic', unit: '', format: (v) => v || '---' },
+                                'tipologiaMetabolicSource': { id: 'tipologia-metabolic-source', unit: '', format: (v) => v || '---' },
+                                
+                                // TMB
+                                'tmb': { id: 'result-tmb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                                'tmbSource': { id: 'tmb-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Edad Metabólica
+                                'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                                'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Somatotipo
+                                'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
+                                'somatotipoSource': { id: 'somatotipo-source', unit: '', format: (v) => v || '---' },
+                                
+                                // AMB
+                                'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                                'ambSource': { id: 'amb-source', unit: '', format: (v) => v || '---' },
+                                
+                                // AMBC
+                                'ambc': { id: 'result-ambc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                                'ambcSource': { id: 'ambc-source', unit: '', format: (v) => v || '---' },
+                                
+                                // MMT
+                                'mmt': { id: 'result-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'mmtSource': { id: 'mmt-source', unit: '', format: (v) => v || '---' },
+                                'mmt2': { id: 'result-mmt2', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'mmt2Source': { id: 'mmt2-source', unit: '', format: (v) => v || '---' },
+                                'Pctmmt': { id: 'result-Pct-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'PctmmtSource': { id: 'Pct-mmt-source', unit: '', format: (v) => v || '---' },
+                                'Pctmmt2': { id: 'result-Pct-mmt2', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'Pctmmt2Source': { id: 'Pct-mmt2-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Masa Ósea
+                                'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'masaOseaSource': { id: 'masa-osea-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Masa Residual
+                                'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'masaResidualSource': { id: 'masa-residual-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Peso
+                                'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'pesoIdealSource': { id: 'peso-ideal-source', unit: '', format: (v) => v || '---' },
+                                'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'pesoObjetivoSource': { id: 'peso-objetivo-source', unit: '', format: (v) => v || '---' },
+                                'pesoMuscular': { id: 'result-peso-muscular', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'pesoMuscularSource': { id: 'peso-muscular-source', unit: '', format: (v) => v || '---' },
+                                
+                                // Agua Corporal
+                                'aguaCorporal': { id: 'result-agua-corporal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                                'aguaCorporalSource': { id: 'agua-corporal-source', unit: '', format: (v) => v || '---' }
+                            };
 
             // Asignar valores a los elementos de resultados
             Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
