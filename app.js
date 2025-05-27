@@ -748,7 +748,6 @@ async function showProgressCharts(clienteId) {
 
         // Calculate initial weight for % loss
         let pesoInicial = null;
-        let pesoIdeal = 70; // Placeholder; adjust based on Firestore or BMI (e.g., BMI 22 * height^2)
 
         querySnapshot.forEach((doc, index) => {
             const data = doc.data();
@@ -758,20 +757,18 @@ async function showProgressCharts(clienteId) {
             // Peso
             const peso = toNumber(data.peso) || null;
             pesoData.actual.push(peso);
-            if (index === 0 && peso) pesoInicial = peso; // Set initial weight
-            // % Pérdida del Exceso de Peso
-            pesoData.perdidaExceso.push(peso && pesoInicial ? ((pesoInicial - peso) / (pesoInicial - pesoIdeal) * 100).toFixed(1) : null);
-            // % Pérdida del Peso Inicial
+            if (index === 0 && peso) pesoInicial = peso;
+            const pesoIdeal = toNumber(data.resultados?.pesoIdeal) || 70; // From resultMappings
+            pesoData.perdidaExceso.push(peso && pesoInicial && pesoIdeal ? ((pesoInicial - peso) / (pesoInicial - pesoIdeal) * 100).toFixed(1) : null);
             pesoData.perdidaInicial.push(peso && pesoInicial ? ((pesoInicial - peso) / pesoInicial * 100).toFixed(1) : null);
 
             // Grasa
-            const grasaActualPct = toNumber(data.grasa_actual_conocida) || null;
-            grasaData.actualPct.push(grasaActualPct);
-            grasaData.actualKg.push(peso && grasaActualPct ? (peso * grasaActualPct / 100).toFixed(1) : null);
-            grasaData.metabolicaPct.push(toNumber(data.resultados?.grasa_metabolica_pct) || null);
-            grasaData.metabolicaKg.push(toNumber(data.resultados?.grasa_metabolica_kg) || null);
-            grasaData.deurenberg.push(toNumber(data.resultados?.grasa_deurenberg) || null);
-            grasaData.cunBae.push(toNumber(data.resultados?.grasa_cun_bae) || null);
+            grasaData.actualPct.push(toNumber(data.resultados?.grasaPctActual) || null);
+            grasaData.actualKg.push(toNumber(data.resultados?.masaGrasaActual) || (peso && data.resultados?.grasaPctActual ? (peso * data.resultados.grasaPctActual / 100).toFixed(1) : null));
+            grasaData.metabolicaPct.push(toNumber(data.resultados?.grasaPctMetabolic) || null);
+            grasaData.metabolicaKg.push(toNumber(data.resultados?.masaGrasaMetabolic) || null);
+            grasaData.deurenberg.push(toNumber(data.resultados?.grasaPctDeurenberg) || null);
+            grasaData.cunBae.push(toNumber(data.resultados?.grasaPctCUNBAE) || null);
 
             // Músculo
             musculoData.mmt.push(toNumber(data.resultados?.mmt) || null);
@@ -799,19 +796,23 @@ async function showProgressCharts(clienteId) {
             imcIccData.icc.push(toNumber(data.resultados?.icc) || null);
 
             // Reserva Proteica
-            reservaProteicaData.perimetroBrazo.push(toNumber(data.medidas?.circunferencias?.brazo) || null);
-            reservaProteicaData.areaMuscularBrazo.push(toNumber(data.resultados?.area_muscular_brazo) || null);
-            reservaProteicaData.areaGrasaBrazo.push(toNumber(data.resultados?.area_grasa_brazo) || null);
+            const perimetroBrazo = toNumber(data.medidas?.circunferencias?.brazo) || null;
+            reservaProteicaData.perimetroBrazo.push(perimetroBrazo);
+            reservaProteicaData.areaMuscularBrazo.push(toNumber(data.resultados?.amb) || null); // Assume amb is Área Muscular
+            // Calculate Área Grasa if not provided
+            const pliegueTricipital = toNumber(data.medidas?.pliegues?.tricipital) || null;
+            reservaProteicaData.areaGrasaBrazo.push(perimetroBrazo && pliegueTricipital ? 
+                ((perimetroBrazo * pliegueTricipital / 2) - (Math.PI * (pliegueTricipital / 2) ** 2)).toFixed(1) : null);
 
             // Gasto Energético
-            gastoEnergeticoData.gasto.push(toNumber(data.resultados?.gasto_energetico) || null);
-            gastoEnergeticoData.edadMetabolica.push(toNumber(data.resultados?.edad_metabolica) || null);
+            gastoEnergeticoData.gasto.push(toNumber(data.resultados?.tmb) || null); // Use tmb as proxy
+            gastoEnergeticoData.edadMetabolica.push(toNumber(data.resultados?.edadmetabolica) || null);
             gastoEnergeticoData.tmb.push(toNumber(data.resultados?.tmb) || null);
 
             // Non-numerical data
             nonNumericalData.somatotipo.push(data.resultados?.somatotipo?.formatted || '---');
             nonNumericalData.tipologiaActual.push(data.resultados?.tipologiaActual || '---');
-            nonNumericalData.tipologiaMetabolico.push(data.resultados?.tipologiaMetabolico || '---');
+            nonNumericalData.tipologiaMetabolic.push(data.resultados?.tipologiaMetabolic || '---');
         });
 
         // Destroy existing charts
@@ -1048,7 +1049,7 @@ async function showProgressCharts(clienteId) {
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolic[index]}</td>
             `;
             tableBody.appendChild(row);
         });
