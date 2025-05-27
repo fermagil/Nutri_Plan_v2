@@ -56,36 +56,39 @@ export { app, db, auth, provider };
                 }
             });
            // Ensure button is hidden initially in initializeUI
-        function initializeUI() {
-            document.getElementById('logo').addEventListener('click', function(event) {
-                event.preventDefault();
-                var dropdown = document.getElementById('dropdown');
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            });
-            document.addEventListener('click', function(event) {
-                var dropdown = document.getElementById('dropdown');
-                var logo = document.getElementById('logo');
-                if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-        
-            // Initialize Ver Progreso button
-            const verProgresoBtn = document.getElementById('ver-progreso-btn');
-            if (verProgresoBtn) {
-                verProgresoBtn.style.display = 'none'; // Hide initially
-                verProgresoBtn.addEventListener('click', async () => {
-                    if (currentClienteId) {
-                        await showProgressCharts(currentClienteId);
+           
+                function initializeUI() {
+                    document.getElementById('logo').addEventListener('click', function(event) {
+                        event.preventDefault();
+                        var dropdown = document.getElementById('dropdown');
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    });
+                    
+                    document.addEventListener('click', function(event) {
+                        var dropdown = document.getElementById('dropdown');
+                        var logo = document.getElementById('logo');
+                        if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
+                            dropdown.style.display = 'none';
+                        }
+                    });
+                
+                    // Initialize Ver Progreso button
+                    const verProgresoBtn = document.getElementById('ver-progreso-btn');
+                    if (verProgresoBtn) {
+                        verProgresoBtn.style.display = 'none'; // Hide initially
+                        verProgresoBtn.addEventListener('click', async () => {
+                            if (currentClienteId) {
+                                await showProgressCharts(currentClienteId);
+                            } else {
+                                alert('Por favor, selecciona un cliente primero.');
+                            }
+                        });
                     } else {
-                        alert('Por favor, selecciona un cliente primero.');
+                        console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
                     }
-                });
-            } else {
-                console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
-            }
-            window.logout = logout;
-        }
+                
+                    window.logout = logout;
+                }
 
         // Handle auth state
         auth.onAuthStateChanged(function(user) {
