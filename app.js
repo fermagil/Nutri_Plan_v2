@@ -844,24 +844,48 @@ async function showProgressCharts(clienteId) {
             }
         });
 
-        // Masa Muscular Chart
-        new Chart(document.getElementById('masa-muscular-chart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    { label: 'Masa Muscular Total (kg)', data: masaMuscularData.mmt, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
-                    { label: '% Masa Muscular', data: masaMuscularData.Pctmmt, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 ]
+       // Masa Muscular Chart
+            new Chart(document.getElementById('masa-muscular-chart'), {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Masa Muscular Total (kg)',
+                            data: masaMuscularData.mmt,
+                            borderColor: '#0275d8',
+                            backgroundColor: 'rgba(2, 117, 216, 0.2)',
+                            fill: false,
+                            tension: 0.1
+                        },
+                        {
+                            label: '% Masa Muscular',
+                            data: masaMuscularData.Pctmmt,
+                            borderColor: '#5bc0de',
+                            backgroundColor: 'rgba(91, 192, 222, 0.2)',
+                            fill: false,
+                            tension: 0.1
+                        }
+                    ]
+                }, // Added closing brace and comma
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Valor'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
                 }
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { title: { display: true, text: 'Valor' } }
-                },
-                plugins: { legend: { position: 'top' } }
-            }
-        });
+            });
 
         // Populate non-numerical data table
         const tableBody = document.getElementById('non-numerical-table-body');
