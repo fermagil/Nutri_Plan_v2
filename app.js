@@ -55,9 +55,25 @@ export { app, db, auth, provider };
                     dropdown.style.display = 'none';
                 }
             });
+           // Ensure button is hidden initially in initializeUI
+        function initializeUI() {
+            document.getElementById('logo').addEventListener('click', function(event) {
+                event.preventDefault();
+                var dropdown = document.getElementById('dropdown');
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            document.addEventListener('click', function(event) {
+                var dropdown = document.getElementById('dropdown');
+                var logo = document.getElementById('logo');
+                if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        
             // Initialize Ver Progreso button
             const verProgresoBtn = document.getElementById('ver-progreso-btn');
             if (verProgresoBtn) {
+                verProgresoBtn.style.display = 'none'; // Hide initially
                 verProgresoBtn.addEventListener('click', async () => {
                     if (currentClienteId) {
                         await showProgressCharts(currentClienteId);
@@ -65,6 +81,8 @@ export { app, db, auth, provider };
                         alert('Por favor, selecciona un cliente primero.');
                     }
                 });
+            } else {
+                console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
             }
             window.logout = logout;
         }
@@ -256,13 +274,20 @@ buscarClienteInput.addEventListener('input', async () => {
 clientesResultados.addEventListener('change', async () => {
     const clienteId = clientesResultados.value;
     console.log('Cliente seleccionado:', clienteId);
+    const verProgresoBtn = document.getElementById('ver-progreso-btn');
+    if (!verProgresoBtn) {
+        console.error('Botón Ver Progreso no encontrado en el DOM');
+        return;
+    }
     if (clienteId) {
         currentClienteId = clienteId;
+        verProgresoBtn.style.display = 'inline-block'; // Show button
         await cargarFechasTomas(clienteId);
     } else {
         console.log('No cliente seleccionado, limpiando fechas');
-        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
         currentClienteId = null;
+        verProgresoBtn.style.display = 'none'; // Hide button
+        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
     }
 });
 
