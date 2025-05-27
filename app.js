@@ -8,12 +8,14 @@ console.log('Checking ChartDataLabels:', typeof ChartDataLabels);
 console.log('Checking ChartAnnotation:', typeof ChartAnnotation);
 
 // Register Chart.js plugins
-if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined' && typeof ChartAnnotation !== 'undefined') {
-    Chart.register(ChartDataLabels, ChartAnnotation);
-    console.log('Chart.js plugins registered successfully');
-} else {
-    console.error('Chart.js, ChartDataLabels, or ChartAnnotation not loaded. Check CDN scripts in HTML.');
-}
+window.addEventListener('load', () => {
+    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined' && typeof ChartAnnotation !== 'undefined') {
+        Chart.register(ChartDataLabels, ChartAnnotation);
+        console.log('Chart.js plugins registered successfully');
+    } else {
+        console.error('Chart.js, ChartDataLabels, or ChartAnnotation not loaded.');
+    }
+});
 // Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
