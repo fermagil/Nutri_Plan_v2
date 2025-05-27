@@ -873,9 +873,9 @@ async function showProgressCharts(clienteId) {
                         let formattedValue = numValue;
                         if (context.dataset.label.includes('kg')) formattedValue = `${numValue.toFixed(1)} kg`;
                         else if (context.dataset.label.includes('%')) formattedValue = `${numValue.toFixed(1)}%`;
-                        else if (context.dataset.label.includes('mm')) formattedValue = `${numValue.toFixed(1)} mm`;
+                        else if (context.dataset.label.includes('mm')) formattedValue = `${numValue.toFixed(1)}`;
                         else if (context.dataset.label.includes('cm²')) formattedValue = `${numValue.toFixed(1)} cm²`;
-                        else if (context.dataset.label.includes('cm')) formattedValue = `${numValue.toFixed(1)} cm`;
+                        else if (context.dataset.label.includes('cm')) formattedValue = `${numValue.toFixed(1)}`;
                         else if (context.dataset.label.includes('IMC')) formattedValue = `${numValue.toFixed(1)}`;
                         else if (context.dataset.label.includes('ICC')) formattedValue = `${numValue.toFixed(2)}`;
                         else if (context.dataset.label.includes('kcal')) formattedValue = `${numValue.toFixed(0)} kcal`;
