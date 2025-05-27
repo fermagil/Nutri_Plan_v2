@@ -5568,14 +5568,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							    console.warn('explanationSection no encontrado');
 							}
 							
-							// Re-trigger typology chart rendering to ensure DOM is ready
-							if (bodyCompResults && !isNaN(bodyCompResults.imlg) && !isNaN(bodyCompResults.img) && data.edad >= 18) {
-							    const renderTypologyChart = () => {
-							        const chartContainer = document.getElementById('typology-chart-container');
-							        if (!chartContainer) {
-							            console.error('Contenedor #typology-chart-container no encontrado');
-							            return;
-							        }
+							
 
 						console.log('Display updated successfully');
 						alert('Cálculos realizados. Revisa la sección de Resultados y las Explicaciones.');
