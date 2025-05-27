@@ -55,7 +55,17 @@ export { app, db, auth, provider };
                     dropdown.style.display = 'none';
                 }
             });
-
+            // Initialize Ver Progreso button
+            const verProgresoBtn = document.getElementById('ver-progreso-btn');
+            if (verProgresoBtn) {
+                verProgresoBtn.addEventListener('click', async () => {
+                    if (currentClienteId) {
+                        await showProgressCharts(currentClienteId);
+                    } else {
+                        alert('Por favor, selecciona un cliente primero.');
+                    }
+                });
+            }
             window.logout = logout;
         }
 
@@ -627,8 +637,258 @@ async function cargarDatosToma(clienteId, tomaId) {
         });
     }
 }
+// Function to fetch and display progress charts
+async function showProgressCharts(clienteId) {
+    if (!clienteId) {
+        console.log('No clienteId provided, skipping showProgressCharts');
+        return;
+    }
 
+    try {
+        const q = query(collection(db, `clientes/${clienteId}/tomas`), orderBy('fecha', 'asc'));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            console.log('No tomas found for cliente:', clienteId);
+            alert('No hay datos disponibles para mostrar el progreso.');
+            return;
+        }
+
+        // Collect data for charts
+        const dates = [];
+        const pesoData = [];
+        const grasaPctData = [];
+        const plieguesData = {
+            tricipital: [], subescapular: [], suprailiaco: [], bicipital: [], pantorrilla: []
+        };
+        const circunferenciasData = {
+            cintura: [], cadera: [], cuello: [], pantorrilla: [], brazo: [], brazo_contraido: []
+        };
+        const imcIccData = { imc: [], icc: [] };
+        const masaMagraData = { actual: [], metabolico: [] };
+        const masaMuscularData = { mmt: [], Pctmmt: [] };
+        const nonNumericalData = { somatotipo: [], tipologiaActual: [], tipologiaMetabolico: [] };
+
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            const fecha = data.fecha && data.fecha.toDate ? data.fecha.toDate() : new Date(data.fecha);
+            dates.push(fecha.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }));
+
+            pesoData.push(toNumber(data.peso) || null);
+            grasaPctData.push(toNumber(data.grasa_actual_conocida) || null);
+
+            plieguesData.tricipital.push(toNumber(data.medidas?.pliegues?.tricipital) || null);
+            plieguesData.subescapular.push(toNumber(data.medidas?.pliegues?.subescapular) || null);
+            plieguesData.suprailiaco.push(toNumber(data.medidas?.pliegues?.suprailiaco) || null);
+            plieguesData.bicipital.push(toNumber(data.medidas?.pliegues?.bicipital) || null);
+            plieguesData.pantorrilla.push(toNumber(data.medidas?.pliegues?.pantorrilla) || null);
+
+            circunferenciasData.cintura.push(toNumber(data.medidas?.circunferencias?.cintura) || null);
+            circunferenciasData.cadera.push(toNumber(data.medidas?.circunferencias?.cadera) || null);
+            circunferenciasData.cuello.push(toNumber(data.medidas?.circunferencias?.cuello) || null);
+            circunferenciasData.pantorrilla.push(toNumber(data.medidas?.circunferencias?.pantorrilla) || null);
+            circunferenciasData.brazo.push(toNumber(data.medidas?.circunferencias?.brazo) || null);
+            circunferenciasData.brazo_contraido.push(toNumber(data.medidas?.circunferencias?.brazo_contraido) || null);
+
+            imcIccData.imc.push(toNumber(data.resultados?.imc) || null);
+            imcIccData.icc.push(toNumber(data.resultados?.icc) || null);
+
+            masaMagraData.actual.push(toNumber(data.resultados?.masaMagraActual) || null);
+            masaMagraData.metabolico.push(toNumber(data.resultados?.masaMagraMetabolic) || null);
+
+            masaMuscularData.mmt.push(toNumber(data.resultados?.mmt) || null);
+            masaMuscularData.Pctmmt.push(toNumber(data.resultados.Pctmmt) || null);
+
+            nonNumericalData.somatotipo.push(data.resultados?.somatotipo?.formatted || '---');
+            nonNumericalData.tipologiaActual.push(data.resultados?.tipologiaActual || '---');
+            nonNumericalData.tipologiaMetabolico.push(data.resultados?.tipologiaMetabolic || '---');
+        });
+
+        // Destroy existing charts if any
+        ['peso-chart', 'grasa-pct-chart', 'pliegues-chart', 'circunferencias-chart', 'imc-icc-chart', 'masa-magra-chart', 'masa-muscular-chart'].forEach(canvasId => {
+            const chart = Chart.getChart(canvasId);
+            if (chart) chart.destroy();
+        });
+
+        // Peso Chart
+        new Chart(document.getElementById('peso-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Peso Actual (kg)',
+                    data: pesoData,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: 'Peso (kg)' } }
+                },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        // % Grasa Chart
+        new Chart(document.getElementById('grasa-pct-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '% Grasa Actual',
+                    data: grasaPctData,
+                    borderColor: '#388E3C',
+                    backgroundColor: 'rgba(56, 142, 60, 0.2)',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: '% Grasa' } }
+                },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        // Pliegues Chart
+        new Chart(document.getElementById('pliegues-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: 'Tricipital (mm)', data: plieguesData.tricipital, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Subescapular (mm)', data: plieguesData.subescapular, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Suprailiaco (mm)', data: plieguesData.suprailiaco, borderColor: '#5cb85c', backgroundColor: 'rgba(92, 184, 92, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Bicipital (mm)', data: plieguesData.bicipital, borderColor: '#f0ad4e', backgroundColor: 'rgba(240, 173, 78, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Pantorrilla (mm)', data: plieguesData.pantorrilla, borderColor: '#d9534f', backgroundColor: 'rgba(217, 83, 79, 0.2)', fill: false, tension: 0.1 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: 'Pliegues (mm)' } }
+                },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        // Circunferencias Chart
+        new Chart(document.getElementById('circunferencias-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: 'Cintura (cm)', data: circunferenciasData.cintura, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Cadera (cm)', data: circunferenciasData.cadera, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Cuello (cm)', data: circunferenciasData.cuello, borderColor: '#5cb85c', backgroundColor: 'rgba(92, 184, 92, 0.2)', fill: false, data: circunferenciasData.pantorrilla, tension: 0.1 },
+                    { label: 'Pantorrilla (cm)', data: circunferenciasData.pantorrilla, borderColor: '#f0ad4e', backgroundColor: 'rgba(240, 173, 78, 0.2, fill: false, tension: 0.1 },
+                    { label: 'Brazo Relajado (cm)', data: circunferenciasData.brazo, borderColor: '#d9534f', backgroundColor: 'rgba(217, 83, 79, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Brazo Contraído (cm)', data: circunferenciasData.brazo_contraido, borderColor: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.2)', fill: false, tension: 0.1 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: 'Circunferencias (cm)' } }
+                },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        // IMC and ICC Chart
+        new Chart(document.getElementById('imc-icc-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: 'IMC (kg/m²)', data: imcIccData.imc, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'ICC', data: imcIccData.icc, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: 'Valor' } }
+                },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        // Masa Magra Chart
+        new Chart(document.getElementById('masa-magra-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: 'Masa Magra Actual (kg)', data: masaMagraData.actual, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 95, 0.2)', fill: false, tension: 0.1 },
+                    { label: 'Masa Magra Metabólico (kg)', data: masaMagraData.metabolico, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: 'Masa Magra (kg)' } }
+                },
+                plugins: { legend: { position: 'top' }
+            }
+        });
+
+        // Masa Muscular Chart
+        new Chart(document.getElementById('masa-muscular-chart'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: 'Masa Muscular Total (kg)', data: masaMuscularData.mmt, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 },
+                    { label: '% Masa Muscular', data: masaMuscularData.Pctmmt, borderColor: '#5bc0de', backgroundColor: 'rgba(91, 192, 222, 0.2)', fill: false, tension: 0.1 ]
+                }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: 'Valor' } }
+                },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        // Populate non-numerical data table
+        const tableBody = document.getElementById('non-numerical-table-body');
+        tableBody.innerHTML = '';
+        dates.forEach((date, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
+                <td style="padding: 10px; border: 1px solid #ddee2e6;">${nonNumericalData.tipologiaActual[index]}</td>}>
+                <td style="padding: 10px; border: 1px solid #ddee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>}>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Show popup
+        const popup = document.getElementById('progress-popup');
+        if (popup) {
+            popup.style.display = 'flex';
+        }
+    } catch (error) {
+        console.error('Error al cargar los datos de progreso:', error);
+        alert('Error al cargar los datos de progreso: ' + error.message);
+    }
+}
 // Initialize UI when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeUI);
+
 
   
