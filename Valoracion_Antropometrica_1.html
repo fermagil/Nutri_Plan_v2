@@ -804,7 +804,16 @@ button:hover {
         font-size: 0.75rem;
     }
 }
-</style>
+	   
+@media (max-width: 768px) {
+    #charts-container section div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+    .chart-container canvas {
+        max-height: 200px !important;
+    }
+}
+
     </style>
 </head>
 <body>
