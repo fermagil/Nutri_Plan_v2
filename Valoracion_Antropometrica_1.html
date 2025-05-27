@@ -17,7 +17,7 @@
             font-size: 16px;
             padding-bottom: 80px;
         }
-
+	
         header {
             background-color: #ffffff;
             padding: 15px 30px;
@@ -822,7 +822,36 @@ button:hover {
             </ul>
         </nav>
     </header>
-
+	<!-- Add this within the <body> tag, ideally near the <main> section -->
+	<button id="ver-progreso-btn" style="display: none; margin: 10px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Ver Progreso</button>
+	
+	<div id="progress-popup" class="popup-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center;">
+	    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 90%; max-height: 90%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
+	        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center;">Progreso del Cliente</h2>
+	        <div id="charts-container">
+	            <!-- Charts will be dynamically inserted here -->
+	            <canvas id="peso-chart" style="margin-bottom: 20px;"></canvas>
+	            <canvas id="grasa-pct-chart" style="margin-bottom: 20px;"></canvas>
+	            <canvas id="pliegues-chart" style="margin-bottom: 20px;"></canvas>
+	            <canvas id="circunferencias-chart" style="margin-bottom: 20px;"></canvas>
+	            <canvas id="imc-icc-chart" style="margin-bottom: 20px;"></canvas>
+	            <canvas id="masa-magra-chart" style="margin-bottom: 20px;"></canvas>
+	            <canvas id="masa-muscular-chart" style="margin-bottom: 20px;"></canvas>
+	            <table id="non-numerical-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+	                <thead>
+	                    <tr style="background-color: #e9f5e9; color: #388e3c;">
+	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Fecha</th>
+	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Somatotipo</th>
+	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Actual</th>
+	                        <th style="padding: 10px; border: 1px solid #dee2e6;">Tipología Metabólico</th>
+	                    </tr>
+	                </thead>
+	                <tbody id="non-numerical-table-body"></tbody>
+	            </table>
+	        </div>
+	        <button onclick="document.getElementById('progress-popup').style.display = 'none';" style="margin-top: 20px; padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; display: block; margin-left: auto; margin-right: auto;">Cerrar</button>
+	    </div>
+	</div>
     <main>
         <h1>Valoración Antropométrica App</h1>
         
