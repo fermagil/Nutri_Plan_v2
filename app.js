@@ -105,7 +105,7 @@ const resultElementIds = [
     'result-masa-magra-actual',
     'masa-magra-actual-source',
     'result-masa-magra-metabolic',
-    'masa-grasa-metabolic-source',
+    'masa-magra-metabolic-source',
     'result-imlg-actual',
     'imlg-actual-source',
     'result-imlg-metabolic',
