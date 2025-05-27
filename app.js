@@ -776,7 +776,7 @@ async function showProgressCharts(clienteId) {
             }
 
             const fecha = data.fecha && data.fecha.toDate ? data.fecha.toDate() : new Date(data.fecha);
-            dates.push(fecha.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }));
+            dates.push(fecha.toLocaleDateString('es-ES', { year: '2-digit', month: 'numeric', day: 'numeric' }));
 
             // Peso
             const peso = safeToNumber(data.peso);
