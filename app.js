@@ -751,6 +751,22 @@ async function showProgressCharts(clienteId) {
 
         querySnapshot.forEach((doc, index) => {
             const data = doc.data();
+            console.log(`Document ${index} ID: ${doc.id}`, data); // Debug document
+
+            // Validate data structure
+            if (!data.fecha) {
+                console.warn(`Document ${doc.id} missing fecha, skipping`);
+                return;
+            }
+            if (!data.resultados) {
+                console.warn(`Document ${doc.id} missing resultados, using defaults`);
+                data.resultados = {};
+            }
+            if (!data.medidas) {
+                console.warn(`Document ${doc.id} missing medidas, using defaults`);
+                data.medidas = { pliegues: {}, circunferencias: {} };
+            }
+
             const fecha = data.fecha && data.fecha.toDate ? data.fecha.toDate() : new Date(data.fecha);
             dates.push(fecha.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }));
 
@@ -758,61 +774,61 @@ async function showProgressCharts(clienteId) {
             const peso = toNumber(data.peso) || null;
             pesoData.actual.push(peso);
             if (index === 0 && peso) pesoInicial = peso;
-            const pesoIdeal = toNumber(data.resultados?.pesoIdeal) || 70; // From resultMappings
+            const pesoIdeal = toNumber(data.resultados.pesoIdeal) || 70;
             pesoData.perdidaExceso.push(peso && pesoInicial && pesoIdeal ? ((pesoInicial - peso) / (pesoInicial - pesoIdeal) * 100).toFixed(1) : null);
             pesoData.perdidaInicial.push(peso && pesoInicial ? ((pesoInicial - peso) / pesoInicial * 100).toFixed(1) : null);
 
             // Grasa
-            grasaData.actualPct.push(toNumber(data.resultados?.grasaPctActual) || null);
-            grasaData.actualKg.push(toNumber(data.resultados?.masaGrasaActual) || (peso && data.resultados?.grasaPctActual ? (peso * data.resultados.grasaPctActual / 100).toFixed(1) : null));
-            grasaData.metabolicaPct.push(toNumber(data.resultados?.grasaPctMetabolic) || null);
-            grasaData.metabolicaKg.push(toNumber(data.resultados?.masaGrasaMetabolic) || null);
-            grasaData.deurenberg.push(toNumber(data.resultados?.grasaPctDeurenberg) || null);
-            grasaData.cunBae.push(toNumber(data.resultados?.grasaPctCUNBAE) || null);
+            const grasaActualPct = toNumber(data.resultados.grasaPctActual) || toNumber(data.grasa_actual_conocida) || null;
+            grasaData.actualPct.push(grasaActualPct);
+            grasaData.actualKg.push(toNumber(data.resultados.masaGrasaActual) || (peso && grasaActualPct ? (peso * grasaActualPct / 100).toFixed(1) : null));
+            grasaData.metabolicaPct.push(toNumber(data.resultados.grasaPctMetabolic) || null);
+            grasaData.metabolicaKg.push(toNumber(data.resultados.masaGrasaMetabolic) || null);
+            grasaData.deurenberg.push(toNumber(data.resultados.grasaPctDeurenberg) || null);
+            grasaData.cunBae.push(toNumber(data.resultados.grasaPctCUNBAE) || null);
 
             // Músculo
-            musculoData.mmt.push(toNumber(data.resultados?.mmt) || null);
-            musculoData.Pctmmt.push(toNumber(data.resultados?.Pctmmt) || null);
-            musculoData.masaMagraActual.push(toNumber(data.resultados?.masaMagraActual) || null);
-            musculoData.masaMagraMetabolic.push(toNumber(data.resultados?.masaMagraMetabolic) || null);
+            musculoData.mmt.push(toNumber(data.resultados.mmt) || null);
+            musculoData.Pctmmt.push(toNumber(data.resultados.Pctmmt) || null);
+            musculoData.masaMagraActual.push(toNumber(data.resultados.masaMagraActual) || null);
+            musculoData.masaMagraMetabolic.push(toNumber(data.resultados.masaMagraMetabolic) || null);
 
             // Pliegues
-            plieguesData.tricipital.push(toNumber(data.medidas?.pliegues?.tricipital) || null);
-            plieguesData.subescapular.push(toNumber(data.medidas?.pliegues?.subescapular) || null);
-            plieguesData.suprailiaco.push(toNumber(data.medidas?.pliegues?.suprailiaco) || null);
-            plieguesData.bicipital.push(toNumber(data.medidas?.pliegues?.bicipital) || null);
-            plieguesData.pantorrilla.push(toNumber(data.medidas?.pliegues?.pantorrilla) || null);
+            plieguesData.tricipital.push(toNumber(data.medidas.pliegues?.tricipital) || null);
+            plieguesData.subescapular.push(toNumber(data.medidas.pliegues?.subescapular) || null);
+            plieguesData.suprailiaco.push(toNumber(data.medidas.pliegues?.suprailiaco) || null);
+            plieguesData.bicipital.push(toNumber(data.medidas.pliegues?.bicipital) || null);
+            plieguesData.pantorrilla.push(toNumber(data.medidas.pliegues?.pantorrilla) || null);
 
             // Circunferencias
-            circunferenciasData.cintura.push(toNumber(data.medidas?.circunferencias?.cintura) || null);
-            circunferenciasData.cadera.push(toNumber(data.medidas?.circunferencias?.cadera) || null);
-            circunferenciasData.cuello.push(toNumber(data.medidas?.circunferencias?.cuello) || null);
-            circunferenciasData.pantorrilla.push(toNumber(data.medidas?.circunferencias?.pantorrilla) || null);
-            circunferenciasData.brazo.push(toNumber(data.medidas?.circunferencias?.brazo) || null);
-            circunferenciasData.brazo_contraido.push(toNumber(data.medidas?.circunferencias?.brazo_contraido) || null);
+            circunferenciasData.cintura.push(toNumber(data.medidas.circunferencias?.cintura) || null);
+            circunferenciasData.cadera.push(toNumber(data.medidas.circunferencias?.cadera) || null);
+            circunferenciasData.cuello.push(toNumber(data.medidas.circunferencias?.cuello) || null);
+            circunferenciasData.pantorrilla.push(toNumber(data.medidas.circunferencias?.pantorrilla) || null);
+            circunferenciasData.brazo.push(toNumber(data.medidas.circunferencias?.brazo) || null);
+            circunferenciasData.brazo_contraido.push(toNumber(data.medidas.circunferencias?.brazo_contraido) || null);
 
             // IMC e ICC
-            imcIccData.imc.push(toNumber(data.resultados?.imc) || null);
-            imcIccData.icc.push(toNumber(data.resultados?.icc) || null);
+            imcIccData.imc.push(toNumber(data.resultados.imc) || null);
+            imcIccData.icc.push(toNumber(data.resultados.icc) || null);
 
             // Reserva Proteica
-            const perimetroBrazo = toNumber(data.medidas?.circunferencias?.brazo) || null;
+            const perimetroBrazo = toNumber(data.medidas.circunferencias?.brazo) || null;
             reservaProteicaData.perimetroBrazo.push(perimetroBrazo);
-            reservaProteicaData.areaMuscularBrazo.push(toNumber(data.resultados?.amb) || null); // Assume amb is Área Muscular
-            // Calculate Área Grasa if not provided
-            const pliegueTricipital = toNumber(data.medidas?.pliegues?.tricipital) || null;
+            reservaProteicaData.areaMuscularBrazo.push(toNumber(data.resultados.amb) || null);
+            const pliegueTricipital = toNumber(data.medidas.pliegues?.tricipital) || null;
             reservaProteicaData.areaGrasaBrazo.push(perimetroBrazo && pliegueTricipital ? 
                 ((perimetroBrazo * pliegueTricipital / 2) - (Math.PI * (pliegueTricipital / 2) ** 2)).toFixed(1) : null);
 
             // Gasto Energético
-            gastoEnergeticoData.gasto.push(toNumber(data.resultados?.tmb) || null); // Use tmb as proxy
-            gastoEnergeticoData.edadMetabolica.push(toNumber(data.resultados?.edadmetabolica) || null);
-            gastoEnergeticoData.tmb.push(toNumber(data.resultados?.tmb) || null);
+            gastoEnergeticoData.gasto.push(toNumber(data.resultados.tmb) || null);
+            gastoEnergeticoData.edadMetabolica.push(toNumber(data.resultados.edadmetabolica) || null);
+            gastoEnergeticoData.tmb.push(toNumber(data.resultados.tmb) || null);
 
             // Non-numerical data
-            nonNumericalData.somatotipo.push(data.resultados?.somatotipo?.formatted || '---');
-            nonNumericalData.tipologiaActual.push(data.resultados?.tipologiaActual || '---');
-            nonNumericalData.tipologiaMetabolic.push(data.resultados?.tipologiaMetabolic || '---');
+            nonNumericalData.somatotipo.push(data.resultados.somatotipo?.formatted || '---');
+            nonNumericalData.tipologiaActual.push(data.resultados.tipologiaActual || '---');
+            nonNumericalData.tipologiaMetabolico.push(data.resultados.tipologiaMetabolic || '---');
         });
 
         // Destroy existing charts
@@ -1049,7 +1065,7 @@ async function showProgressCharts(clienteId) {
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolic[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolico[index]}</td>
             `;
             tableBody.appendChild(row);
         });
