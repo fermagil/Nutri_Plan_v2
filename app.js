@@ -2,10 +2,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebas
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signOut,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
-// Register ChartDataLabels plugin
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.min.js';
-import ChartDataLabels from 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js';
-Chart.register(ChartDataLabels);
+// Register Chart.js plugins
+if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined' && typeof ChartAnnotation !== 'undefined') {
+    Chart.register(ChartDataLabels, ChartAnnotation);
+} else {
+    console.error('Chart.js, ChartDataLabels, or ChartAnnotation not loaded. Check CDN scripts in HTML.');
+}
 
 // Configuración de Firebase
 const firebaseConfig = {
