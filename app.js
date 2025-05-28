@@ -80,7 +80,7 @@ export { app, db, auth, provider };
                 }
             });
                                     
-                    // Initialize Ver Progreso button
+                    // Initialize Ver Progreso button id="mail-btn"
                     const verProgresoBtn = document.getElementById('ver-progreso-btn');
                     if (verProgresoBtn) {
                         verProgresoBtn.style.display = 'none'; // Hide initially
@@ -93,6 +93,24 @@ export { app, db, auth, provider };
                         });
                     } else {
                         console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
+                    }
+                
+                    window.logout = logout;
+                }
+
+                 // Initialize Ver Emai Btn
+                    const verEmailbtn = document.getElementById('mail-btn');
+                    if (verEmailbtn) {
+                        verEmailbtn.style.display = 'none'; // Hide initially
+                        verEmailbtn.addEventListener('click', async () => {
+                            if (currentClienteId) {
+                                //await showProgressEmail(currentClienteId);
+                            } else {
+                                alert('Por favor, selecciona un cliente primero.');
+                            }
+                        });
+                    } else {
+                        console.error('Botón Email no encontrado en el DOM durante inicialización');
                     }
                 
                     window.logout = logout;
@@ -118,6 +136,7 @@ const buscarClienteInput = document.getElementById('buscar_cliente');
 const nuevoClienteBtn = document.getElementById('nuevo_cliente');
 const seleccionarFecha = document.getElementById('seleccionar_fecha');
 const guardarDatosBtn = document.getElementById('guardar_datos');
+const enviarEmailBtn = document.getElementById('mail-btn');
 let currentClienteId = null;
 let currentUser = null;
 
@@ -325,6 +344,7 @@ nuevoClienteBtn.addEventListener('click', () => {
     clientesResultados.style.display = 'none';
     seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
     guardarDatosBtn.style.display = 'none';
+    enviarEmailBtn.style.display =  'none';
     // Limpiar sección de resultados
     resultElementIds.forEach(id => {
         const element = document.getElementById(id);
@@ -345,6 +365,81 @@ nuevoClienteBtn.addEventListener('click', () => {
         }
     });
 });
+
+//Funcion Email
+// Botón para enviar email
+const enviarEmailBtn = document.getElementById('mail-btn');
+
+enviarEmailBtn.addEventListener('click', async () => {
+    if (!currentUser) {
+        alert('Por favor, inicia sesión para enviar un email.');
+        return;
+    }
+
+    const nombre = document.getElementById('nombre').value.trim();
+    const email = document.getElementById('e-mail').value.trim();
+
+    // Validar campos
+    if (!nombre || !email) {
+        alert('Por favor, completa todos los campos.');
+        return;
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Por favor, introduce un email válido.');
+        return;
+    }
+
+    // Mensaje de bienvenida genérico
+    const mensaje = `
+        ¡Hola ${nombre}!
+
+        Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros. 
+        En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar. 
+        Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
+
+        Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.
+
+        ¡Gracias por unirte!
+        El equipo de NutriPlan
+    `;
+
+    // Parámetros para EmailJS
+    const templateParams = {
+        from_name: 'NutriPlan Team', // Nombre del remitente (puedes cambiarlo)
+        from_email: 'no-reply@nutriplan.com', // Email ficticio o configurado en EmailJS
+        message: mensaje,
+        to_email: email // Usar el email del formulario como destinatario
+    };
+
+     try {
+        // Enviar email usando EmailJS
+        const response = await emailjs.send(serviceID, templateID, templateParams);
+        btn.value = 'Send Email';
+        alert('¡Email de bienvenida enviado con éxito!');
+
+        // Limpiar formulario
+        document.getElementById('nombre').value = '';
+        document.getElementById('e-mail').value = '';
+
+        // Guardar en Firestore
+        await addDoc(collection(db, 'emails'), {
+            nombre,
+            email,
+            mensaje,
+            timestamp: new Date(),
+            userId: currentUser.uid
+        });
+    } catch (error) {
+        btn.value = 'Send Email';
+        console.error('Error al enviar el email:', error);
+        alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
+    }
+});
+
+
 
 // Guardar datos
 guardarDatosBtn.addEventListener('click', async () => {
