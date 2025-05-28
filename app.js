@@ -156,8 +156,8 @@ export { app, db, auth, provider };
                                 
                                     // Health assessment
                                     let valoracion = '';
-                                    const esHombre = currentTomaData.genero === 'Masculino';
-                                    const esDeportista = currentTomaData.es_deportista === 'Sí';
+                                    const esHombre = currentTomaData.genero === 'masculino';
+                                    const esDeportista = currentTomaData.es_deportista === 'sí';
                                     const grasaAlta = currentTomaData.resultados?.grasaPctActual && (
                                         (esHombre && currentTomaData.resultados.grasaPctActual > 25) ||
                                         (!esHombre && currentTomaData.resultados.grasaPctActual > 32)
