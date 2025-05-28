@@ -986,6 +986,10 @@ button:hover {
                         <label for="grasa_deseada">% Grasa Deseado (Opcional):</label>
                         <input type="number" id="grasa_deseada" name="grasa_deseada" step="0.1" min="3" max="50" placeholder="Objetivo, ej: 12.0" class="optional-input">
                     </div>
+		    <div class="form-group">
+                        <label for="grasa_visceral_conocida">% Grasa Visceral (Opcional):</label>
+                        <input type="number" id="grasa_visceral_conocida" name="grasa_visceral_conocida" step="0.1" min="0" max="70" placeholder="Si lo conoce, ej: 15.5" class="optional-input">
+                    </div>
                 </div>
             </section>
 
@@ -1107,6 +1111,11 @@ button:hover {
                     <th scope="row"><label>% Grasa Metabólico</label></th>
                     <td><span id="result-grasa-pct-metabolic">---</span> <span class="unit">%</span></td>
                     <td><small id="grasa-pct-metabolic-source">(No calculado)</small></td>
+                </tr>
+		<tr>
+                    <th scope="row"><label>% Grasa Visceral</label></th>
+                    <td><span id="result-grasa-pct-visceral">---</span> <span class="unit">%</span></td>
+                    <td><small id="grasa-pct-visceral-source">(No calculado)</small></td>
                 </tr>
                 <tr>
                     <th scope="row"><label>Masa Grasa Actual (MGa)</label></th>
@@ -1232,6 +1241,11 @@ button:hover {
                     <th scope="row"><label>% Masa Muscular</label></th>
                     <td><span id="result-Pct-mmt2">---</span> <span class="unit">%</span></td>
                     <td><small id="Pct-mmt2-source">(No calculado)</small></td>
+                </tr>
+		<tr>
+                    <th scope="row"><label>Area Grasa Brazo</label></th>
+                    <td><span id="result-agb">---</span> <span class="unit">%</span></td>
+                    <td><small id="agb-source">(No calculado)</small></td>
                 </tr>
                 <tr>
                     <th scope="row"><label>Masa Ósea</label></th>
