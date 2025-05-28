@@ -166,7 +166,7 @@ export { app, db, auth, provider };
                             enviarEmailBtn.value = 'Enviando...';
                 
                             try {
-                                const response = await emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID', templateParams);
+                                const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
                                 console.log('Email enviado con éxito:', response);
                                 alert('¡Email de bienvenida enviado con éxito!');
                                 document.getElementById('nombre').value = '';
