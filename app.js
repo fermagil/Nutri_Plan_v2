@@ -271,11 +271,7 @@ export { app, db, auth, provider };
                                 const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
                                 console.log('Email enviado con éxito:', response);
                                 alert('¡Email de bienvenida enviado con éxito!');
-                                // Clear inputs safely without triggering form submission
-                                if (nombreInput && emailInput) {
-                                    nombreInput.value = '';
-                                    emailInput.value = '';
-                                }
+                               
                                 await addDoc(collection(db, 'emails'), {
                                     nombre,
                                     email,
@@ -844,7 +840,7 @@ async function cargarDatosToma(clienteId, tomaId) {
                 'tmb': { id: 'result-tmb', unit: 'kcal', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
                 'tmbSource': { id: 'tmb-source', unit: '', format: (v) => v || '---' },
                 // Edad Metabólica
-                'edadmetabolica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
                 'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
                 // Somatotipo
                 'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : (typeof v === 'string' ? v : '---') },
