@@ -110,100 +110,97 @@ export { app, db, auth, provider };
                     }
                 
                     // Initialize Enviar Email button
-                    const enviarEmailBtn = document.getElementById('mail-btn');
-                    if (enviarEmailBtn) {
-                        enviarEmailBtn.style.display = 'none';
-                        enviarEmailBtn.addEventListener('click', async () => {
-                            if (!currentUser) {
-                                alert('Por favor, inicia sesión para enviar un correo electrónico.');
-                                return;
-                            }
-                            const nombreInput = document.getElementById('nombre');
-                            const emailInput = document.getElementById('e-mail');
-                            if (!nombreInput || !emailInput) {
-                                console.error('Input elements not found:', { nombreInput, emailInput });
-                                alert('Error: No se encontraron los campos de nombre o email en el formulario.');
-                                return;
-                            }
-                            const nombre = nombreInput.value.trim();
-                            const email = emailInput.value.trim();
-                            console.log('Attempting to send email:', { nombre, email });
-                            if (!nombre || !email) {
-                                alert('Por favor, completa los campos de nombre y email.');
-                                return;
-                            }
-                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                            if (!emailRegex.test(email)) {
-                                alert('Por favor, introduce un email válido.');
-                                return;
-                            }
-                
-                            let mensaje;
-                            if (currentTomaData && currentClienteId) {
-                                // Mensaje personalizado con datos de la toma
-                                mensaje = `
-                                    ¡Hola ${nombre}!
-                
-                                    Bienvenid@ a NutriPlan, tu aliado para la salud. Estamos emocionados de acompañarte.
-                                    Tu último chequeo incluyó:
-                                    - Peso: ${currentTomaData.peso || 'No disponible'} kg
-                                    - % Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}%
-                                    - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg
-                
-                                    Revisa tu plan en https://nutriplanv2.firebaseapp.com/dashboard.
-                                    Contáctanos en soporte@nutriplan.com para soporte.
-                
-                                    ¡Gracias por elegir NutriPlan!
-                                    El equipo de NutriPlan
-                                `;
-                            } else {
-                                // Mensaje genérico si no hay datos de toma
-                                mensaje = `
-                                    ¡Hola ${nombre}!
-                
-                                    Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros.
-                                    En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
-                                    Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
-                
-                                    Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos en soporte@nutriplan.com.
-                
-                                    ¡Gracias por unirte!
-                                    El equipo de NutriPlan
-                                `;
-                            }
-                
-                            const templateParams = {
-                                from_name: 'NutriPlan',
-                                from_email: 'fermagil@gmail.com',
-                                message: mensaje,
-                                to_email: email
-                            };
-                            console.log('EmailJS templateParams:', JSON.stringify(templateParams, null, 2));
-                            enviarEmailBtn.value = 'Enviando...';
-                            try {
-                                const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
-                                console.log('Email enviado con éxito:', response);
-                                alert('¡Email de bienvenida enviado con éxito!');
-                                nombreInput.value = '';
-                                emailInput.value = '';
-                                await addDoc(collection(db, 'emails'), {
-                                    nombre,
-                                    email,
-                                    mensaje,
-                                    timestamp: new Date(),
-                                    userId: currentUser.uid,
-                                    clienteId: currentClienteId || null
-                                });
-                            } catch (error) {
-                                console.error('Error al enviar el email:', error);
-                                alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
-                            } finally {
-                                enviarEmailBtn.value = 'E-mail';
-                            }
-                        });
-                    } else {
-                        console.error('Botón mail-btn no encontrado en el DOM');
-                    }
+                    // Inside initializeUI function, update the enviarEmailBtn event listener
+                        const enviarEmailBtn = document.getElementById('mail-btn');
+                        if (enviarEmailBtn) {
+                            enviarEmailBtn.style.display = 'none';
+                            enviarEmailBtn.addEventListener('click', async () => {
+                                if (!currentUser) {
+                                    alert('Por favor, inicia sesión para enviar un correo electrónico.');
+                                    return;
+                                }
+                                const nombreInput = document.getElementById('nombre');
+                                const emailInput = document.getElementById('e-mail');
+                                if (!nombreInput || !emailInput) {
+                                    console.error('Input elements not found:', { nombreInput, emailInput });
+                                    alert('Error: No se encontraron los campos de nombre o email en el formulario.');
+                                    return;
+                                }
+                                const nombre = nombreInput.value.trim();
+                                const email = emailInput.value.trim();
+                                console.log('Attempting to send email:', { nombre, email });
+                                if (!nombre || !email) {
+                                    alert('Por favor, completa los campos de nombre y email.');
+                                    return;
+                                }
+                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                if (!emailRegex.test(email)) {
+                                    alert('Por favor, introduce un email válido.');
+                                    return;
+                                }
+                                let mensaje;
+                                if (currentTomaData && currentClienteId) {
+                                    mensaje = `
+                                        ¡Hola ${nombre}!
+                        
+                                        Bienvenid@ a NutriPlan, tu aliado para la salud. Estamos emocionados de acompañarte.
+                                        Tu último chequeo incluyó:
+                                        - Peso: ${currentTomaData.peso || 'No disponible'} kg
+                                        - % Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}%
+                                        - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg
+                        
+                                        Revisa tu plan en https://nutriplanv2.firebaseapp.com/dashboard.
+                                        Contáctanos en soporte@nutriplan.com para soporte.
+                        
+                                        ¡Gracias por elegir NutriPlan!
+                                        El equipo de NutriPlan
+                                    `;
+                                } else {
+                                    mensaje = `
+                                        ¡Hola ${nombre}!
+                        
+                                        Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros.
+                                        En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
+                                        Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
+                        
+                                        Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos en soporte@nutriplan.com.
+                        
+                                        ¡Gracias por unirte!
+                                        El equipo de NutriPlan
+                                    `;
+                                }
+                               const templateParams = {
+                                    from_name: 'NutriPlan Team',
+                                    from_email: 'no-reply@nutriplan.com', // Sender email
+                                    message: mensaje,
+                                    email: email // Recipient email (e.g., fermagil@gmail.com)
+                                };
+                                console.log('EmailJS templateParams:', JSON.stringify(templateParams, null, 2));
+                                enviarEmailBtn.value = 'Enviando...';
+                                try {
+                                    const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
+                                    console.log('Email enviado con éxito:', response);
+                                    alert('¡Email de bienvenida enviado con éxito!');
+                                    nombreInput.value = '';
+                                    emailInput.value = '';
+                                    await addDoc(collection(db, 'emails'), {
+                                        nombre,
+                                        email,
+                                        mensaje,
+                                        timestamp: new Date(),
+                                        userId: currentUser.uid,
+                                        clienteId: currentClienteId || null
+                                    });
+                                } catch (error) {
+                                    console.error('Error al enviar el email:', error);
+                                    alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
+                                } finally {
+                                    enviarEmailBtn.value = 'E-mail';
+                                }
+                            });
+                        } else {
+                            console.error('Botón mail-btn no encontrado en el DOM');
+                        }
                 
                     window.logout = logout;
                 }
