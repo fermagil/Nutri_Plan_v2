@@ -328,10 +328,10 @@ const toNumber = (value) => {
             if (user) {
                 console.log('Auth state: User signed in', user.displayName, user.email);
                 if (verProgresoBtn) {
-                    verProgresoBtn.style.display = currentClienteId ? 'inline-block' : 'none';
+                    verProgresoBtn.style.display = 'none'; // Hide until client and toma are selected
                 }
                 if (enviarEmailBtn) {
-                    enviarEmailBtn.style.display = currentClienteId ? 'inline-block' : 'none';
+                    enviarEmailBtn.style.display = 'none'; // Hide until toma is selected
                 }
                 clientesResultados.style.display = 'none';
             } else {
@@ -402,13 +402,17 @@ clientesResultados.addEventListener('change', async () => {
     if (clienteId) {
         currentClienteId = clienteId;
         verProgresoBtn.style.display = 'inline-block'; // Show button
-        enviarEmailBtn.style.display = 'inline-block';
+       if (enviarEmailBtn) {
+            enviarEmailBtn.style.display = 'none'; // Hide until a toma is selected
+        }
         await cargarFechasTomas(clienteId);
     } else {
         console.log('No cliente seleccionado, limpiando fechas');
         currentClienteId = null;
         verProgresoBtn.style.display = 'none'; // Hide button
-        enviarEmailBtn.style.display = 'none';
+        if (enviarEmailBtn) {
+            enviarEmailBtn.style.display = 'none';
+        }
         seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
     }
 });
@@ -417,11 +421,22 @@ clientesResultados.addEventListener('change', async () => {
 seleccionarFecha.addEventListener('change', async () => {
     const tomaId = seleccionarFecha.value;
     console.log('Toma seleccionada:', tomaId);
+    const verProgresoBtn = document.getElementById('ver-progreso-btn');
+    const enviarEmailBtn = document.getElementById('mail-btn');
     if (tomaId && currentClienteId) {
         await cargarDatosToma(currentClienteId, tomaId);
+        if (verProgresoBtn) {
+            verProgresoBtn.style.display = 'inline-block'; // Show when a toma is selected
+        }
     } else {
         console.log('No toma seleccionada o no clienteId, limpiando formulario');
         form.reset();
+        if (verProgresoBtn) {
+            verProgresoBtn.style.display = 'none';
+        }
+        if (enviarEmailBtn) {
+            enviarEmailBtn.style.display = 'none';
+        }
     }
 });
 
@@ -435,7 +450,14 @@ nuevoClienteBtn.addEventListener('click', () => {
     clientesResultados.style.display = 'none';
     seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
     guardarDatosBtn.style.display = 'none';
-    enviarEmailBtn.style.display =  'none';
+    const verProgresoBtn = document.getElementById('ver-progreso-btn');
+    const enviarEmailBtn = document.getElementById('mail-btn');
+    if (verProgresoBtn) {
+        verProgresoBtn.style.display = 'none';
+    }
+    if (enviarEmailBtn) {
+        enviarEmailBtn.style.display = 'none';
+    }
     // Limpiar sección de resultados
     resultElementIds.forEach(id => {
         const element = document.getElementById(id);
@@ -470,6 +492,7 @@ guardarDatosBtn.addEventListener('click', async () => {
     const nombre = document.getElementById('nombre').value.trim();
     const peso = document.getElementById('peso').value;
     const altura = document.getElementById('altura').value;
+    const email = document.getElementById('e-mail').value.trim();
     if (!nombre) {
         alert('Por favor, ingrese el nombre del cliente.');
         return;
@@ -482,8 +505,16 @@ guardarDatosBtn.addEventListener('click', async () => {
         alert('Por favor, ingrese una altura válida.');
         return;
     }
+    if (!email) {
+        alert('Por favor, ingrese el email del cliente.');
+        return;
+    }
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const validatedEmail = email && emailRegex.test(email) ? email : null;
     const data = {
         nombre,
+        email: validatedEmail,
         genero: document.getElementById('genero').value || null,
         fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
         edad: parseInt(document.getElementById('edad').value) || null,
@@ -521,6 +552,7 @@ guardarDatosBtn.addEventListener('click', async () => {
         if (!currentClienteId) {
             const clienteRef = await addDoc(collection(db, 'clientes'), {
                 nombre,
+                email,
                 nombreLowercase: normalizeText(nombre),
                 genero: data.genero,
                 fecha_creacion: new Date(),
