@@ -141,13 +141,14 @@ export { app, db, auth, provider };
                                 let mensaje;
                                 if (currentTomaData && currentClienteId) {
                                     // Format date and time
-                                    const fechaRegistro = currentTomaData.fecha ? new Date(currentTomaData.fecha).toLocaleString('es-ES', { 
-                                        day: '2-digit', 
-                                        month: '2-digit', 
-                                        year: 'numeric', 
-                                        hour: '2-digit', 
-                                        minute: '2-digit' 
-                                    }) : 'No disponible';
+                                    const fechaRegistro = currentTomaData.fecha && currentTomaData.fecha.toDate ? 
+                                        currentTomaData.fecha.toDate().toLocaleString('es-ES', { 
+                                            day: '2-digit', 
+                                            month: '2-digit', 
+                                            year: 'numeric', 
+                                            hour: '2-digit', 
+                                            minute: '2-digit' 
+                                        }) : 'No disponible';
                                 
                                     // Calculate BMI
                                     const alturaMetros = currentTomaData.altura ? currentTomaData.altura / 100 : null;
