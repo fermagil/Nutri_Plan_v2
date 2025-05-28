@@ -243,7 +243,7 @@ export { app, db, auth, provider };
                                 try {
                                     const response = await emailjs.send('service_hsxp598', 'template_zxrnlya', templateParams);
                                     console.log('Email enviado con éxito:', response);
-                                    alert('¡Email de bienvenida enviado con éxito!');
+                                    alert('¡Email enviado con éxito!', email);
                                     nombreInput.value = '';
                                     emailInput.value = '';
                                     await addDoc(collection(db, 'emails'), {
