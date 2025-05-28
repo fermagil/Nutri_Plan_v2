@@ -44,7 +44,9 @@ if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined' && ty
     console.error('Chart.js, ChartDataLabels, or ChartAnnotation not loaded. Check CDN scripts in HTML.');
 }
 
-
+let currentClienteId = null;
+let currentUser = null;
+let currentTomaData = null; // Nueva variable para almacenar datos de la toma actual
 
 // Exportar instancias para uso en otros módulos
 export { app, db, auth, provider };
@@ -68,155 +70,128 @@ export { app, db, auth, provider };
         }
 
         // Initialize UI
-        function initializeUI() {
-            document.getElementById('logo').addEventListener('click', function(event) {
-                event.preventDefault();
-                var dropdown = document.getElementById('dropdown');
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            });
-            
-            // Close dropdown if clicking outside
-            document.addEventListener('click', function(event) {
-                var dropdown = document.getElementById('dropdown');
-                var logo = document.getElementById('logo');
-                if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-                                    
-                    // Initialize Ver Progreso button
-                const verProgresoBtn = document.getElementById('ver-progreso-btn');
-                if (verProgresoBtn) {
-                    verProgresoBtn.style.display = 'none'; // Hide initially
-                    verProgresoBtn.addEventListener('click', async () => {
-                        if (currentClienteId) {
-                            await showProgressCharts(currentClienteId); // Asumo que esta función está definida
-                        } else {
-                            alert('Por favor, selecciona un cliente primero.');
+                function initializeUI() {
+                    document.getElementById('logo').addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const dropdown = document.getElementById('dropdown');
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    });
+                
+                    // Close dropdown if clicking outside
+                    document.addEventListener('click', function(event) {
+                        const dropdown = document.getElementById('dropdown');
+                        const logo = document.getElementById('logo');
+                        if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
+                            dropdown.style.display = 'none';
                         }
                     });
-                } else {
-                    console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
-                }
                 
-                    window.logout = logout;
-                
-
-                 // Initialize Ver Emai Btn
-                    const verEmailbtn = document.getElementById('ver-email-btn');
-                    if (verEmailbtn) {
-                        verEmailbtn.style.display = 'none'; // Hide initially
-                        verEmailbtn.addEventListener('click', async () => {
+                    // Initialize Ver Progreso button
+                    const verProgresoBtn = document.getElementById('ver-progreso-btn');
+                    if (verProgresoBtn) {
+                        verProgresoBtn.style.display = 'none';
+                        verProgresoBtn.addEventListener('click', async () => {
                             if (currentClienteId) {
-                                //await showProgressEmail(currentClienteId);
+                                await showProgressCharts(currentClienteId);
                             } else {
                                 alert('Por favor, selecciona un cliente primero.');
                             }
                         });
                     } else {
-                        console.error('Botón Email no encontrado en el DOM durante inicialización');
+                        console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
                     }
                 
                     // Initialize Enviar Email button
-                        const enviarEmailBtn = document.getElementById('mail-btn');
-                        if (enviarEmailBtn) {
-                            enviarEmailBtn.style.display = 'none'; // Hide initially
-                            enviarEmailBtn.addEventListener('click', async () => {
-                                if (!currentUser) {
-                                    alert('Por favor, inicia sesión para enviar un email.');
-                                    return;
-                                }
-                    
-                                const nombre = document.getElementById('nombre').value.trim();
-                                const email = document.getElementById('e-mail').value.trim();
-                    
-                                // Validar campos
-                                if (!nombre || !email) {
-                                    alert('Por favor, completa todos los campos del formulario.');
-                                    return;
-                                }
-                    
-                                // Validar formato de email
-                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                                if (!emailRegex.test(email)) {
-                                    alert('Por favor, introduce un email válido.');
-                                    return;
-                                }
-                    
-                                // Mensaje de bienvenida personalizado
-                                let mensaje = `
+                    const enviarEmailBtn = document.getElementById('mail-btn');
+                    if (enviarEmailBtn) {
+                        enviarEmailBtn.style.display = 'none';
+                        enviarEmailBtn.addEventListener('click', async () => {
+                            if (!currentUser) {
+                                alert('Por favor, inicia sesión para enviar un correo electrónico.');
+                                return;
+                            }
+                            const nombre = document.getElementById('nombre').value.trim();
+                            const email = document.getElementById('e-mail').value.trim();
+                            if (!nombre || !email) {
+                                alert('Por favor, completa los campos de nombre y email.');
+                                return;
+                            }
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(email)) {
+                                alert('Por favor, introduce un email válido.');
+                                return;
+                            }
+                
+                            let mensaje;
+                            if (currentTomaData && currentClienteId) {
+                                // Mensaje personalizado con datos de la toma
+                                mensaje = `
                                     ¡Hola ${nombre}!
-                    
-                                    Bienvenid@ a NutriPlan, tu aliado para una vida saludable. Estamos emocionados de acompañarte en tu viaje hacia el bienestar.
-                                    Con NutriPlan, puedes:
-                                    - Crear planes de nutrición personalizados.
-                                    - Hacer seguimiento de tu progreso con nuestras herramientas.
-                                    - Recibir consejos y soporte de nuestro equipo.
-                                `;
-                    
-                                // Si hay un cliente seleccionado, obtener datos adicionales
-                                if (currentClienteId) {
-                                    try {
-                                        const clienteDoc = await getDoc(doc(db, 'clientes', currentClienteId));
-                                        if (clienteDoc.exists()) {
-                                            const clienteData = clienteDoc.data();
-                                            mensaje += `
-                                                Como nuestro cliente, ya tienes un plan activo. Revisa tu progreso en el panel: https://nutriplanv2.firebaseapp.com/dashboard.
-                                            `;
-                                        }
-                                    } catch (error) {
-                                        console.error('Error al obtener datos del cliente:', error);
-                                    }
-                                }
-                    
-                                mensaje += `
-                                    ¡Comienza ahora explorando tu panel de usuario en https://nutriplanv2.firebaseapp.com/dashboard!
-                                    Si necesitas ayuda, contáctanos en soporte@nutriplan.com.
-                    
+                
+                                    Bienvenid@ a NutriPlan, tu aliado para la salud. Estamos emocionados de acompañarte.
+                                    Tu último chequeo incluyó:
+                                    - Peso: ${currentTomaData.peso || 'No disponible'} kg
+                                    - % Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}%
+                                    - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg
+                
+                                    Revisa tu plan en https://nutriplanv2.firebaseapp.com/dashboard.
+                                    Contáctanos en soporte@nutriplan.com para soporte.
+                
                                     ¡Gracias por elegir NutriPlan!
                                     El equipo de NutriPlan
                                 `;
-                    
-                                // Parámetros para EmailJS
-                                const templateParams = {
-                                    from_name: 'NutriPlan',
-                                    from_email: 'fermagil@gmail.com',  //no-reply@nutriplan.com
-                                    message: mensaje,
-                                    to_email: email
-                                };
-                    
-                                enviarEmailBtn.value = 'Sending...';
-                    
-                                try {
-                                    // Enviar email usando EmailJS
-                                    const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
-                                    console.log('Email enviado con éxito:', response);
-                                    alert('¡Email de bienvenida enviado con éxito!');
-                    
-                                    // Limpiar formulario
-                                    document.getElementById('nombre').value = '';
-                                    document.getElementById('e-mail').value = '';
-                    
-                                    // Guardar en Firestore
-                                    await addDoc(collection(db, 'emails'), {
-                                        nombre,
-                                        email,
-                                        mensaje,
-                                        timestamp: new Date(),
-                                        userId: currentUser.uid,
-                                        clienteId: currentClienteId || null
-                                    });
-                                } catch (error) {
-                                    console.error('Error al enviar el email:', error);
-                                    alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
-                                } finally {
-                                    enviarEmailBtn.value = 'E-mail';
-                                }
-                            });
-                        } else {
-                            console.error('Botón mail-btn no encontrado en el DOM');
-                        }
-        }
+                            } else {
+                                // Mensaje genérico si no hay datos de toma
+                                mensaje = `
+                                    ¡Hola ${nombre}!
+                
+                                    Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros.
+                                    En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
+                                    Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
+                
+                                    Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos en soporte@nutriplan.com.
+                
+                                    ¡Gracias por unirte!
+                                    El equipo de NutriPlan
+                                `;
+                            }
+                
+                            const templateParams = {
+                                from_name: 'NutriPlan',
+                                from_email: 'no-reply@nutriplan.com',
+                                message: mensaje,
+                                to_email: email
+                            };
+                
+                            enviarEmailBtn.value = 'Enviando...';
+                
+                            try {
+                                const response = await emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID', templateParams);
+                                console.log('Email enviado con éxito:', response);
+                                alert('¡Email de bienvenida enviado con éxito!');
+                                document.getElementById('nombre').value = '';
+                                document.getElementById('e-mail').value = '';
+                                await addDoc(collection(db, 'emails'), {
+                                    nombre,
+                                    email,
+                                    mensaje,
+                                    timestamp: new Date(),
+                                    userId: currentUser.uid,
+                                    clienteId: currentClienteId || null
+                                });
+                            } catch (error) {
+                                console.error('Error al enviar el email:', error);
+                                alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
+                            } finally {
+                                enviarEmailBtn.value = 'E-mail';
+                            }
+                        });
+                    } else {
+                        console.error('Botón mail-btn no encontrado en el DOM');
+                    }
+                
+                    window.logout = logout;
+                }
         // Handle auth state
         auth.onAuthStateChanged(function(user) {
             var dropdown = document.getElementById('dropdown');
@@ -616,6 +591,7 @@ async function cargarDatosToma(clienteId, tomaId) {
     if (!clienteId || !tomaId) {
         console.log('Falta clienteId o tomaId, limpiando formulario');
         form.reset();
+        currentTomaData = null; // Limpiar datos de toma
         return;
     }
     console.log('Cargando datos de toma:', tomaId, 'para cliente:', clienteId);
@@ -626,11 +602,12 @@ async function cargarDatosToma(clienteId, tomaId) {
             console.log('Toma no encontrada:', tomaId);
             alert('La toma seleccionada no existe.');
             form.reset();
+            currentTomaData = null;
             return;
         }
         const data = tomaSnap.data();
         console.log('Datos de la toma:', JSON.stringify(data, null, 2));
-
+        currentTomaData = data; // Guardar datos de la toma
         // Poblar campos del formulario
         document.getElementById('nombre').value = data.nombre || '';
         document.getElementById('e-mail').value = data.email || ''; // Corregido de 'email' a 'e-mail'
