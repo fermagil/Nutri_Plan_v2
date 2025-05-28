@@ -4614,6 +4614,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    console.log('metabolicResult:', metabolicResult);
 					
 					    results.edadmetabolica = metabolicResult.edadMetabolica;
+					    console.log(results.edadmetabolica);
 					    results.edadmetabolicaSource = metabolicResult.method;
 					    results.BRMEstimado = metabolicResult.BRMEstimado;
 					    results.BRMEstimadoSource = metabolicResult.BRMEstimadoSource;
