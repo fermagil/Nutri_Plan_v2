@@ -213,8 +213,8 @@ const nuevoClienteBtn = document.getElementById('nuevo_cliente');
 const seleccionarFecha = document.getElementById('seleccionar_fecha');
 const guardarDatosBtn = document.getElementById('guardar_datos');
 //const enviarEmailBtn = document.getElementById('mail-btn');
-let currentClienteId = null;
-let currentUser = null;
+//let currentClienteId = null;
+//let currentUser = null;
 
 // Lista de elementos de resultados
 const resultElementIds = [
