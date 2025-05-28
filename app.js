@@ -96,7 +96,7 @@ export { app, db, auth, provider };
                     }
                 
                     window.logout = logout;
-                }
+                
 
                  // Initialize Ver Emai Btn
                     const verEmailbtn = document.getElementById('mail-btn');
