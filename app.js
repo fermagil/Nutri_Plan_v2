@@ -156,7 +156,8 @@ export { app, db, auth, provider };
                                 
                                     // Health assessment
                                     let valoracion = '';
-                                    const esHombre = currentTomaData.genero === 'masculino';
+                                    const esHombre = currentTomaData.genero === 'Masculino';
+                                    const esDeportista = currentTomaData.es_deportista === 'Sí';
                                     const grasaAlta = currentTomaData.resultados?.grasaPctActual && (
                                         (esHombre && currentTomaData.resultados.grasaPctActual > 25) ||
                                         (!esHombre && currentTomaData.resultados.grasaPctActual > 32)
@@ -164,17 +165,35 @@ export { app, db, auth, provider };
                                     const bmiAlto = bmi && bmi >= 25;
                                 
                                     if (grasaAlta || bmiAlto) {
-                                        valoracion = `
-                                            **Evaluación**: Tus resultados indican que tu peso o porcentaje de grasa corporal están por encima de los rangos saludables. Esto puede aumentar el riesgo de problemas de salud a largo plazo. **Es urgente tomar medidas** para mejorar tu bienestar. Te recomendamos trabajar con nosotros en un plan nutricional personalizado y un programa de ejercicio para normalizar estos valores. ¡Contáctanos hoy mismo para comenzar!
-                                        `;
+                                        if (esDeportista) {
+                                            valoracion = `
+                                                **Evaluación**: Tus resultados muestran un porcentaje de grasa corporal o peso por encima de los rangos óptimos para un deportista. Esto puede afectar tu rendimiento, resistencia y recuperación en tu disciplina. **Es crucial optimizar tu composición corporal** para maximizar tus resultados deportivos. Te recomendamos un plan nutricional específico para atletas y un programa de entrenamiento personalizado. ¡Contáctanos hoy mismo para impulsar tu rendimiento!
+                                            `;
+                                        } else {
+                                            valoracion = `
+                                                **Evaluación**: Tus resultados indican que tu peso o porcentaje de grasa corporal están por encima de los rangos saludables, lo que puede aumentar el riesgo de problemas de salud como enfermedades cardiovasculares. **Es urgente tomar medidas** para mejorar tu bienestar. Te recomendamos trabajar con nosotros en un plan nutricional personalizado y un programa de ejercicio para normalizar estos valores. ¡Contáctanos hoy mismo para comenzar!
+                                            `;
+                                        }
                                     } else if (bmi && bmi < 18.5) {
-                                        valoracion = `
-                                            **Evaluación**: Tu índice de masa corporal está por debajo del rango saludable, lo que puede indicar bajo peso. Para proteger tu salud, es importante establecer un plan nutricional que te ayude a alcanzar un peso adecuado. Contáctanos para diseñar un programa que incluya una dieta equilibrada y ejercicios de fortalecimiento.
-                                        `;
+                                        if (esDeportista) {
+                                            valoracion = `
+                                                **Evaluación**: Tu índice de masa corporal está por debajo del rango ideal para un deportista, lo que puede limitar tu fuerza, energía y capacidad de entrenamiento. Para mejorar tu rendimiento, es esencial aumentar tu masa muscular y optimizar tu nutrición. Contáctanos para diseñar un plan de alimentación de alto rendimiento y un programa de entrenamiento de fuerza.
+                                            `;
+                                        } else {
+                                            valoracion = `
+                                                **Evaluación**: Tu índice de masa corporal está por debajo del rango saludable, lo que puede indicar bajo peso y riesgos como un sistema inmunológico debilitado. Para proteger tu salud, es importante establecer un plan nutricional que te ayude a alcanzar un peso adecuado. Contáctanos para diseñar un programa que incluya una dieta equilibrada y ejercicios de fortalecimiento.
+                                            `;
+                                        }
                                     } else {
-                                        valoracion = `
-                                            **Evaluación**: ¡Felicidades! Tus resultados están dentro de rangos saludables. Para mantener tu bienestar, te recomendamos seguir con una dieta equilibrada y un estilo de vida activo. Si deseas optimizar aún más tus objetivos, contáctanos para personalizar tu plan de nutrición y ejercicio.
-                                        `;
+                                        if (esDeportista) {
+                                            valoracion = `
+                                                **Evaluación**: ¡Enhorabuena! Tus resultados están en rangos óptimos para un deportista. Para seguir mejorando tu rendimiento y alcanzar tus metas deportivas, te recomendamos ajustar tu nutrición y entrenamiento según tus objetivos específicos. Contáctanos para personalizar un plan que optimice tu recuperación, fuerza y resistencia.
+                                            `;
+                                        } else {
+                                            valoracion = `
+                                                **Evaluación**: ¡Felicidades! Tus resultados están dentro de rangos saludables. Para mantener tu bienestar, te recomendamos seguir con una dieta equilibrada y un estilo de vida activo. Si deseas optimizar aún más tus objetivos, contáctanos para personalizar tu plan de nutrición y ejercicio.
+                                            `;
+                                        }
                                     }
                                 
                                     mensaje = `
@@ -212,7 +231,7 @@ export { app, db, auth, provider };
                                 
                                         ${valoracion}
                                 
-                                        Revisa tu plan con nosotros enviando un email para pedir cita a soporte@nutriplan.com.
+                                        Revisa tu plan con nosotros enviando un correo electrónico para pedir cita a soporte@nutriplan.com.
                                         Contáctanos en soporte@nutriplan.com para soporte.
                                 
                                         ¡Gracias por elegir NutriPlan!
@@ -226,7 +245,7 @@ export { app, db, auth, provider };
                                         En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
                                         Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
                                 
-                                        Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos en soporte@nutriplan.com.
+                                        Si tienes alguna pregunta o necesitas ayuda, por favor contáctanos en soporte@nutriplan.com.
                                 
                                         ¡Gracias por unirte!
                                         El equipo de NutriPlan
