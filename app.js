@@ -1068,11 +1068,11 @@ async function showProgressCharts(clienteId) {
             reservaProteicaData.areaGrasaBrazo.push(perimetroBrazo && pliegueTricipital ? 
                 ((perimetroBrazo * pliegueTricipital / 2) - (Math.PI * (pliegueTricipital / 2) ** 2)) : null);
 
-            // Gasto Energético
-            const tmb = safeToNumber(data.resultados.tmb);
+           // Gasto Energético
+            const tmb = safeToNumber(data.resultados.BRMEstimado);
             gastoEnergeticoData.gasto.push(tmb);
             gastoEnergeticoData.edadMetabolica.push(safeToNumber(data.resultados.edadmetabolica));
-            gastoEnergeticoData.tmb.push(tmb);
+            gastoEnergeticoData.BRMEstimado.push(BRMEstimado);
 
             // Non-numerical data
             nonNumericalData.somatotipo.push(data.resultados.somatotipo?.formatted || '---');
