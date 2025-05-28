@@ -118,8 +118,16 @@ export { app, db, auth, provider };
                                 alert('Por favor, inicia sesión para enviar un correo electrónico.');
                                 return;
                             }
-                            const nombre = document.getElementById('nombre').value.trim();
-                            const email = document.getElementById('e-mail').value.trim();
+                            const nombreInput = document.getElementById('nombre');
+                            const emailInput = document.getElementById('e-mail');
+                            if (!nombreInput || !emailInput) {
+                                console.error('Input elements not found:', { nombreInput, emailInput });
+                                alert('Error: No se encontraron los campos de nombre o email en el formulario.');
+                                return;
+                            }
+                            const nombre = nombreInput.value.trim();
+                            const email = emailInput.value.trim();
+                            console.log('Attempting to send email:', { nombre, email });
                             if (!nombre || !email) {
                                 alert('Por favor, completa los campos de nombre y email.');
                                 return;
@@ -166,19 +174,18 @@ export { app, db, auth, provider };
                 
                             const templateParams = {
                                 from_name: 'NutriPlan',
-                                from_email: 'no-reply@nutriplan.com',
+                                from_email: 'fermagil@gmail.com',
                                 message: mensaje,
                                 to_email: email
                             };
-                
+                            console.log('EmailJS templateParams:', JSON.stringify(templateParams, null, 2));
                             enviarEmailBtn.value = 'Enviando...';
-                
                             try {
                                 const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
                                 console.log('Email enviado con éxito:', response);
                                 alert('¡Email de bienvenida enviado con éxito!');
-                                document.getElementById('nombre').value = '';
-                                document.getElementById('e-mail').value = '';
+                                nombreInput.value = '';
+                                emailInput.value = '';
                                 await addDoc(collection(db, 'emails'), {
                                     nombre,
                                     email,
