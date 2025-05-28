@@ -32,7 +32,7 @@ const provider = new GoogleAuthProvider();
 // Initialize EmailJS cuando el script esté cargado
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof emailjs !== 'undefined') {
-        emailjs.init("1S-5omi_qgflXcLhD"); // Tu clave pública
+        emailjs.init("1S-5omi_qgflXcLhD");
         console.log('EmailJS inicializado con éxito');
     } else {
         console.error('EmailJS no está definido. Verifica la carga de email.min.js');
