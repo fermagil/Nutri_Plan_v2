@@ -157,7 +157,12 @@ export { app, db, auth, provider };
                                     // Health assessment
                                     let valoracion = '';
                                     const esHombre = currentTomaData.genero === 'masculino';
-                                    const esDeportista = currentTomaData.es_deportista === 'sí';
+                                    const esDeportista = currentTomaData.es_deportista === 'Sí';
+                                    console.log('Athlete status:', {
+                                        es_deportista_raw: currentTomaData.es_deportista,
+                                        esDeportista: esDeportista,
+                                        caseInsensitiveMatch: currentTomaData.es_deportista?.toLowerCase() === 'sí'
+                                    });
                                     const grasaAlta = currentTomaData.resultados?.grasaPctActual && (
                                         (esHombre && currentTomaData.resultados.grasaPctActual > 25) ||
                                         (!esHombre && currentTomaData.resultados.grasaPctActual > 32)
@@ -208,6 +213,7 @@ export { app, db, auth, provider };
                                         - Índice de Masa Corporal (IMC): ${bmi || 'No disponible'} (Fuente: Calculado como peso / altura²)
                                         - Porcentaje de Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}% (Fuente: ${currentTomaData.grasa_actual_conocida ? 'Estimación proporcionada' : 'Medición de pliegues cutáneos o bioimpedancia'})
                                         - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg (Fuente: Calculado según objetivos personales)
+                                        - Peso Ideal: ${currentTomaData.resultados?.pesoIdeal|| 'No disponible'} kg (Fuente: Calculado según objetivos personales)
                                 
                                         **Pliegues Cutáneos** (Fuente: Medición con calibrador):
                                         - Tricipital: ${currentTomaData.medidas?.pliegues?.tricipital || 'No disponible'} mm
