@@ -5226,7 +5226,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    console.log('[Submission Handler] Resultado de calcularACT:', resultadoAgua);
 					
 					    
-					
+					console.log('results.edadmetabolica:', results.edadmetabolica);
 			            // Store results for app.js
 			            window.calculatedResults = {
 			                imc: formatResult(results.imc, 1),
