@@ -157,7 +157,9 @@ export { app, db, auth, provider };
                                     // Health assessment
                                     let valoracion = '';
                                     const esHombre = currentTomaData.genero === 'masculino';
-                                    const esDeportista = currentTomaData.es_deportista === 'Sí';
+                                    console.log('Genero status:', {genero: currentTomaData.genero, });
+                        
+                                    const esDeportista = currentTomaData.es_deportista === 'sí';
                                     console.log('Athlete status:', {
                                         es_deportista_raw: currentTomaData.es_deportista,
                                         esDeportista: esDeportista,
