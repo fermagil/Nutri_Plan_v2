@@ -111,186 +111,189 @@ export { app, db, auth, provider };
                 
                     // Initialize Enviar Email button
                     const enviarEmailBtn = document.getElementById('mail-btn');
-                        if (enviarEmailBtn) {
-                            enviarEmailBtn.style.display = 'none';
-                            enviarEmailBtn.addEventListener('click', async (e) => {
-                                e.preventDefault(); // Prevent form submission
-                                console.log('Email button clicked, processing email only');
-                                if (!currentUser) {
-                                    alert('Por favor, inicia sesión para enviar un correo electrónico.');
-                                    return;
-                                }
-                                const nombreInput = document.getElementById('nombre');
-                                const emailInput = document.getElementById('e-mail');
-                                if (!nombreInput || !emailInput) {
-                                    console.error('Input elements not found:', { nombreInput, emailInput });
-                                    alert('Error: No se encontraron los campos de nombre o email en el formulario.');
-                                    return;
-                                }
-                                const nombre = nombreInput.value.trim();
-                                const email = emailInput.value.trim();
-                                console.log('Attempting to send email:', { nombre, email });
-                                if (!nombre || !email) {
-                                    alert('Por favor, completa los campos de nombre y email.');
-                                    return;
-                                }
-                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                                if (!emailRegex.test(email)) {
-                                    alert('Por favor, introduce un email válido.');
-                                    return;
-                                }
-                                let mensaje;
-                                if (currentTomaData && currentClienteId) {
-                                    // Format date and time
-                                    const fechaRegistro = currentTomaData.fecha && currentTomaData.fecha.toDate ? 
-                                        currentTomaData.fecha.toDate().toLocaleString('es-ES', { 
-                                            day: '2-digit', 
-                                            month: '2-digit', 
-                                            year: 'numeric', 
-                                            hour: '2-digit', 
-                                            minute: '2-digit' 
-                                        }) : 'No disponible';
-                        
-                                    // Calculate BMI
-                                    const alturaMetros = currentTomaData.altura ? currentTomaData.altura / 100 : null;
-                                    const bmi = alturaMetros && currentTomaData.peso ? (currentTomaData.peso / (alturaMetros * alturaMetros)).toFixed(1) : null;
-                        
-                                    // Health assessment
-                                    let valoracion = '';
-                                    const esHombre = currentTomaData.genero === 'Masculino';
-                                    const esDeportista = currentTomaData.es_deportista && 
-                                        currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si';
-                                    console.log('Athlete status:', {
-                                        es_deportista_raw: currentTomaData.es_deportista,
-                                        esDeportista: esDeportista,
-                                        caseInsensitiveMatch: currentTomaData.es_deportista && 
-                                            currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si'
-                                    });
-                                    const grasaAlta = currentTomaData.resultados?.grasaPctActual && (
-                                        (esHombre && currentTomaData.resultados.grasaPctActual > 25) ||
-                                        (!esHombre && currentTomaData.resultados.grasaPctActual > 32)
-                                    );
-                                    const bmiAlto = bmi && bmi >= 25;
-                        
-                                    if (grasaAlta || bmiAlto) {
-                                        if (esDeportista) {
-                                            valoracion = `
-                                                **Evaluación**: Tus resultados muestran un porcentaje de grasa corporal o peso por encima de los rangos óptimos para un deportista. Esto puede afectar tu rendimiento, resistencia y recuperación en tu disciplina. **Es crucial optimizar tu composición corporal** para maximizar tus resultados deportivos. Te recomendamos un plan nutricional específico para atletas y un programa de entrenamiento personalizado. ¡Contáctanos hoy mismo para impulsar tu rendimiento!
-                                            `;
-                                        } else {
-                                            valoracion = `
-                                                **Evaluación**: Tus resultados indican que tu peso o porcentaje de grasa corporal están por encima de los rangos saludables, lo que puede aumentar el riesgo de problemas de salud como enfermedades cardiovasculares. **Es urgente tomar medidas** para mejorar tu bienestar. Te recomendamos trabajar con nosotros en un plan nutricional personalizado y un programa de ejercicio para normalizar estos valores. ¡Contáctanos hoy mismo para comenzar!
-                                            `;
-                                        }
-                                    } else if (bmi && bmi < 18.5) {
-                                        if (esDeportista) {
-                                            valoracion = `
-                                                **Evaluación**: Tu índice de masa corporal está por debajo del rango ideal para un deportista, lo que puede limitar tu fuerza, energía y capacidad de entrenamiento. Para mejorar tu rendimiento, es esencial aumentar tu masa muscular y optimizar tu nutrición. Contáctanos para diseñar un plan de alimentación de alto rendimiento y un programa de entrenamiento de fuerza.
-                                            `;
-                                        } else {
-                                            valoracion = `
-                                                **Evaluación**: Tu índice de masa corporal está por debajo del rango saludable, lo que puede indicar bajo peso y riesgos como un sistema inmunológico debilitado. Para proteger tu salud, es importante establecer un plan nutricional que te ayude a alcanzar un peso adecuado. Contáctanos para diseñar un programa que incluya una dieta equilibrada y ejercicios de fortalecimiento.
-                                            `;
-                                        }
+                    if (enviarEmailBtn) {
+                        enviarEmailBtn.style.display = 'none';
+                        enviarEmailBtn.addEventListener('click', async (e) => {
+                            e.preventDefault(); // Prevent form submission
+                            console.log('Email button clicked, processing email only, event:', { targetId: e.target.id, form: e.target.form });
+                            if (!currentUser) {
+                                alert('Por favor, inicia sesión para enviar un correo electrónico.');
+                                return;
+                            }
+                            const nombreInput = document.getElementById('nombre');
+                            const emailInput = document.getElementById('e-mail');
+                            if (!nombreInput || !emailInput) {
+                                console.error('Input elements not found:', { nombreInput, emailInput });
+                                alert('Error: No se encontraron los campos de nombre o email en el formulario.');
+                                return;
+                            }
+                            const nombre = nombreInput.value.trim();
+                            const email = emailInput.value.trim();
+                            console.log('Attempting to send email:', { nombre, email });
+                            if (!nombre || !email) {
+                                alert('Por favor, completa los campos de nombre y email.');
+                                return;
+                            }
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(email)) {
+                                alert('Por favor, introduce un email válido.');
+                                return;
+                            }
+                            let mensaje;
+                            if (currentTomaData && currentClienteId) {
+                                // Format date and time
+                                const fechaRegistro = currentTomaData.fecha && currentTomaData.fecha.toDate ? 
+                                    currentTomaData.fecha.toDate().toLocaleString('es-ES', { 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: 'numeric', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit' 
+                                    }) : 'No disponible';
+                    
+                                // Calculate BMI
+                                const alturaMetros = currentTomaData.altura ? currentTomaData.altura / 100 : null;
+                                const bmi = alturaMetros && currentTomaData.peso ? (currentTomaData.peso / (alturaMetros * alturaMetros)).toFixed(1) : null;
+                    
+                                // Health assessment
+                                let valoracion = '';
+                                const esHombre = currentTomaData.genero === 'Masculino';
+                                const esDeportista = currentTomaData.es_deportista && 
+                                    currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si';
+                                console.log('Athlete status:', {
+                                    es_deportista_raw: currentTomaData.es_deportista,
+                                    esDeportista: esDeportista,
+                                    caseInsensitiveMatch: currentTomaData.es_deportista && 
+                                        currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si'
+                                });
+                                const grasaAlta = currentTomaData.resultados?.grasaPctActual && (
+                                    (esHombre && currentTomaData.resultados.grasaPctActual > 25) ||
+                                    (!esHombre && currentTomaData.resultados.grasaPctActual > 32)
+                                );
+                                const bmiAlto = bmi && bmi >= 25;
+                    
+                                if (grasaAlta || bmiAlto) {
+                                    if (esDeportista) {
+                                        valoracion = `
+                                            **Evaluación**: Tus resultados muestran un porcentaje de grasa corporal o peso por encima de los rangos óptimos para un deportista. Esto puede afectar tu rendimiento, resistencia y recuperación en tu disciplina. **Es crucial optimizar tu composición corporal** para maximizar tus resultados deportivos. Te recomendamos un plan nutricional específico para atletas y un programa de entrenamiento personalizado. ¡Contáctanos hoy mismo para impulsar tu rendimiento!
+                                        `;
                                     } else {
-                                        if (esDeportista) {
-                                            valoracion = `
-                                                **Evaluación**: ¡Enhorabuena! Tus resultados están en rangos óptimos para un deportista. Para seguir mejorando tu rendimiento y alcanzar tus metas deportivas, te recomendamos ajustar tu nutrición y entrenamiento según tus objetivos específicos. Contáctanos para personalizar un plan que optimice tu recuperación, fuerza y resistencia.
-                                            `;
-                                        } else {
-                                            valoracion = `
-                                                **Evaluación**: ¡Felicidades! Tus resultados están dentro de rangos saludables. Para mantener tu bienestar, te recomendamos seguir con una dieta equilibrada y un estilo de vida activo. Si deseas optimizar aún más tus objetivos, contáctanos para personalizar tu plan de nutrición y ejercicio.
-                                            `;
-                                        }
+                                        valoracion = `
+                                            **Evaluación**: Tus resultados indican que tu peso o porcentaje de grasa corporal están por encima de los rangos saludables, lo que puede aumentar el riesgo de problemas de salud como enfermedades cardiovasculares. **Es urgente tomar medidas** para mejorar tu bienestar. Te recomendamos trabajar con nosotros en un plan nutricional personalizado y un programa de ejercicio para normalizar estos valores. ¡Contáctanos hoy mismo para comenzar!
+                                        `;
                                     }
-                        
-                                    mensaje = `
-                                        ¡Hola ${nombre}!
-                        
-                                        Bienvenid@ a NutriPlan, tu aliado para la salud. Estamos emocionados de acompañarte.
-                                        Tu último chequeo del día ${fechaRegistro} incluyó:
-                        
-                                        **Datos Generales**:
-                                        - Peso: ${currentTomaData.peso || 'No disponible'} kg (Fuente: Medición directa con báscula)
-                                        - Altura: ${currentTomaData.altura || 'No disponible'} cm (Fuente: Medición directa con estadiómetro)
-                                        - Índice de Masa Corporal (IMC): ${bmi || 'No disponible'} (Fuente: Calculado como peso / altura²)
-                                        - Porcentaje de Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}% (Fuente: ${currentTomaData.grasa_actual_conocida ? 'Estimación proporcionada' : 'Medición de pliegues cutáneos o bioimpedancia'})
-                                        - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg (Fuente: Calculado según objetivos personales)
-                        
-                                        **Pliegues Cutáneos** (Fuente: Medición con calibrador):
-                                        - Tricipital: ${currentTomaData.medidas?.pliegues?.tricipital || 'No disponible'} mm
-                                        - Subescapular: ${currentTomaData.medidas?.pliegues?.subescapular || 'No disponible'} mm
-                                        - Suprailiaco: ${currentTomaData.medidas?.pliegues?.suprailiaco || 'No disponible'} mm
-                                        - Bicipital: ${currentTomaData.medidas?.pliegues?.bicipital || 'No disponible'} mm
-                                        - Pantorrilla: ${currentTomaData.medidas?.pliegues?.pantorrilla || 'No disponible'} mm
-                        
-                                        **Circunferencias** (Fuente: Medición con cinta métrica):
-                                        - Cintura: ${currentTomaData.medidas?.circunferencias?.cintura || 'No disponible'} cm
-                                        - Cadera: ${currentTomaData.medidas?.circunferencias?.cadera || 'No disponible'} cm
-                                        - Cuello: ${currentTomaData.medidas?.circunferencias?.cuello || 'No disponible'} cm
-                                        - Pantorrilla: ${currentTomaData.medidas?.circunferencias?.pantorrilla || 'No disponible'} cm
-                                        - Brazo: ${currentTomaData.medidas?.circunferencias?.brazo || 'No disponible'} cm
-                                        - Brazo Contraído: ${currentTomaData.medidas?.circunferencias?.brazo_contraido || 'No disponible'} cm
-                        
-                                        **Diámetros Óseos** (Fuente: Medición con calibrador):
-                                        - Húmero: ${currentTomaData.medidas?.diametros?.humero || 'No disponible'} cm
-                                        - Fémur: ${currentTomaData.medidas?.diametros?.femur || 'No disponible'} cm
-                                        - Muñeca: ${currentTomaData.medidas?.diametros?.muneca || 'No disponible'} cm
-                        
-                                        ${valoracion}
-                        
-                                        Revisa tu plan con nosotros enviando un correo electrónico para pedir cita a soporte@nutriplan.com.
-                                        Contáctanos en soporte@nutriplan.com para soporte.
-                        
-                                        ¡Gracias por elegir NutriPlan!
-                                        El equipo de NutriPlan
-                                    `;
+                                } else if (bmi && bmi < 18.5) {
+                                    if (esDeportista) {
+                                        valoracion = `
+                                            **Evaluación**: Tu índice de masa corporal está por debajo del rango ideal para un deportista, lo que puede limitar tu fuerza, energía y capacidad de entrenamiento. Para mejorar tu rendimiento, es esencial aumentar tu masa muscular y optimizar tu nutrición. Contáctanos para diseñar un plan de alimentación de alto rendimiento y un programa de entrenamiento de fuerza.
+                                        `;
+                                    } else {
+                                        valoracion = `
+                                            **Evaluación**: Tu índice de masa corporal está por debajo del rango saludable, lo que puede indicar bajo peso y riesgos como un sistema inmunológico debilitado. Para proteger tu salud, es importante establecer un plan nutricional que te ayude a alcanzar un peso adecuado. Contáctanos para diseñar un programa que incluya una dieta equilibrada y ejercicios de fortalecimiento.
+                                        `;
+                                    }
                                 } else {
-                                    mensaje = `
-                                        ¡Hola ${nombre}!
-                        
-                                        Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros.
-                                        En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
-                                        Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
-                        
-                                        Si tienes alguna pregunta o necesita ayuda, por favor contáctanos en soporte@nutriplan.com.
-                        
-                                        ¡Gracias por unirte!
-                                        El equipo de NutriPlan
-                                    `;
+                                    if (esDeportista) {
+                                        valoracion = `
+                                            **Evaluación**: ¡Enhorabuena! Tus resultados están en rangos óptimos para un deportista. Para seguir mejorando tu rendimiento y alcanzar tus metas deportivas, te recomendamos ajustar tu nutrición y entrenamiento según tus objetivos específicos. Contáctanos para personalizar un plan que optimice tu recuperación, fuerza y resistencia.
+                                        `;
+                                    } else {
+                                        valoracion = `
+                                            **Evaluación**: ¡Felicidades! Tus resultados están dentro de rangos saludables. Para mantener tu bienestar, te recomendamos seguir con una dieta equilibrada y un estilo de vida activo. Si deseas optimizar aún más tus objetivos, contáctanos para personalizar tu plan de nutrición y ejercicio.
+                                        `;
+                                    }
                                 }
-                                const templateParams = {
-                                    from_name: 'NutriPlan Team',
-                                    from_email: 'no-reply@nutriplan.com',
-                                    message: mensaje,
-                                    email: email
-                                };
-                                console.log('EmailJS templateParams:', JSON.stringify(templateParams, null, 2));
-                                enviarEmailBtn.value = 'Enviando...';
-                                try {
-                                    const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
-                                    console.log('Email enviado con éxito:', response);
-                                    alert('¡Email de bienvenida enviado con éxito!');
+                    
+                                mensaje = `
+                                    ¡Hola ${nombre}!
+                    
+                                    Bienvenid@ a NutriPlan, tu aliado para la salud. Estamos emocionados de acompañarte.
+                                    Tu último chequeo del día ${fechaRegistro} incluyó:
+                    
+                                    **Datos Generales**:
+                                    - Peso: ${currentTomaData.peso || 'No disponible'} kg (Fuente: Medición directa con báscula)
+                                    - Altura: ${currentTomaData.altura || 'No disponible'} cm (Fuente: Medición directa con estadiómetro)
+                                    - Índice de Masa Corporal (IMC): ${bmi || 'No disponible'} (Fuente: Calculado como peso / altura²)
+                                    - Porcentaje de Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}% (Fuente: ${currentTomaData.grasa_actual_conocida ? 'Estimación proporcionada' : 'Medición de pliegues cutáneos o bioimpedancia'})
+                                    - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg (Fuente: Calculado según objetivos personales)
+                    
+                                    **Pliegues Cutáneos** (Fuente: Medición con calibrador):
+                                    - Tricipital: ${currentTomaData.medidas?.pliegues?.tricipital || 'No disponible'} mm
+                                    - Subescapular: ${currentTomaData.medidas?.pliegues?.subescapular || 'No disponible'} mm
+                                    - Suprailiaco: ${currentTomaData.medidas?.pliegues?.suprailiaco || 'No disponible'} mm
+                                    - Bicipital: ${currentTomaData.medidas?.pliegues?.bicipital || 'No disponible'} mm
+                                    - Pantorrilla: ${currentTomaData.medidas?.pliegues?.pantorrilla || 'No disponible'} mm
+                    
+                                    **Circunferencias** (Fuente: Medición con cinta métrica):
+                                    - Cintura: ${currentTomaData.medidas?.circunferencias?.cintura || 'No disponible'} cm
+                                    - Cadera: ${currentTomaData.medidas?.circunferencias?.cadera || 'No disponible'} cm
+                                    - Cuello: ${currentTomaData.medidas?.circunferencias?.cuello || 'No disponible'} cm
+                                    - Pantorrilla: ${currentTomaData.medidas?.circunferencias?.pantorrilla || 'No disponible'} cm
+                                    - Brazo: ${currentTomaData.medidas?.circunferencias?.brazo || 'No disponible'} cm
+                                    - Brazo Contraído: ${currentTomaData.medidas?.circunferencias?.brazo_contraido || 'No disponible'} cm
+                    
+                                    **Diámetros Óseos** (Fuente: Medición con calibrador):
+                                    - Húmero: ${currentTomaData.medidas?.diametros?.humero || 'No disponible'} cm
+                                    - Fémur: ${currentTomaData.medidas?.diametros?.femur || 'No disponible'} cm
+                                    - Muñeca: ${currentTomaData.medidas?.diametros?.muneca || 'No disponible'} cm
+                    
+                                    ${valoracion}
+                    
+                                    Revisa tu plan con nosotros enviando un correo electrónico para pedir cita a soporte@nutriplan.com.
+                                    Contáctanos en soporte@nutriplan.com para soporte.
+                    
+                                    ¡Gracias por elegir NutriPlan!
+                                    El equipo de NutriPlan
+                                `;
+                            } else {
+                                mensaje = `
+                                    ¡Hola ${nombre}!
+                    
+                                    Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros.
+                                    En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
+                                    Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
+                    
+                                    Si tienes alguna pregunta o necesita ayuda, por favor contáctanos en soporte@nutriplan.com.
+                    
+                                    ¡Gracias por unirte!
+                                    El equipo de NutriPlan
+                                `;
+                            }
+                            const templateParams = {
+                                from_name: 'NutriPlan Team',
+                                from_email: 'no-reply@nutriplan.com',
+                                message: mensaje,
+                                email: email
+                            };
+                            console.log('EmailJS templateParams:', JSON.stringify(templateParams, null, 2));
+                            enviarEmailBtn.value = 'Enviando...';
+                            try {
+                                const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
+                                console.log('Email enviado con éxito:', response);
+                                alert('¡Email de bienvenida enviado con éxito!');
+                                // Clear inputs safely without triggering form submission
+                                if (nombreInput && emailInput) {
                                     nombreInput.value = '';
                                     emailInput.value = '';
-                                    await addDoc(collection(db, 'emails'), {
-                                        nombre,
-                                        email,
-                                        mensaje,
-                                        timestamp: new Date(),
-                                        userId: currentUser.uid,
-                                        clienteId: currentClienteId || null
-                                    });
-                                } catch (error) {
-                                    console.error('Error al enviar el email:', error);
-                                    alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
-                                } finally {
-                                    enviarEmailBtn.value = 'E-mail';
                                 }
-                            });
-                        } else {
-                            console.error('Botón mail-btn no encontrado en el DOM');
-                        }
+                                await addDoc(collection(db, 'emails'), {
+                                    nombre,
+                                    email,
+                                    mensaje,
+                                    timestamp: new Date(),
+                                    userId: currentUser.uid,
+                                    clienteId: currentClienteId || null
+                                });
+                            } catch (error) {
+                                console.error('Error al enviar el email:', error);
+                                alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
+                            } finally {
+                                enviarEmailBtn.value = 'E-mail';
+                            }
+                        });
+                    } else {
+                        console.error('Botón mail-btn no encontrado en el DOM');
+                    }
                 
                     window.logout = logout;
                 }
