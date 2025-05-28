@@ -159,11 +159,13 @@ export { app, db, auth, provider };
                                     const esHombre = currentTomaData.genero === 'masculino';
                                     console.log('Genero status:', {genero: currentTomaData.genero, });
                         
-                                    const esDeportista = currentTomaData.es_deportista === 'sí';
+                                   const esDeportista = currentTomaData.es_deportista && 
+                                    currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si';
                                     console.log('Athlete status:', {
                                         es_deportista_raw: currentTomaData.es_deportista,
                                         esDeportista: esDeportista,
-                                        caseInsensitiveMatch: currentTomaData.es_deportista?.toLowerCase() === 'sí'
+                                        caseInsensitiveMatch: currentTomaData.es_deportista && 
+                                            currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si'
                                     });
                                     const grasaAlta = currentTomaData.resultados?.grasaPctActual && (
                                         (esHombre && currentTomaData.resultados.grasaPctActual > 25) ||
