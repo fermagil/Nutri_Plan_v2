@@ -140,31 +140,93 @@ export { app, db, auth, provider };
                                 }
                                 let mensaje;
                                 if (currentTomaData && currentClienteId) {
+                                    // Format date and time
+                                    const fechaRegistro = currentTomaData.fecha ? new Date(currentTomaData.fecha).toLocaleString('es-ES', { 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: 'numeric', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit' 
+                                    }) : 'No disponible';
+                                
+                                    // Calculate BMI
+                                    const alturaMetros = currentTomaData.altura ? currentTomaData.altura / 100 : null;
+                                    const bmi = alturaMetros && currentTomaData.peso ? (currentTomaData.peso / (alturaMetros * alturaMetros)).toFixed(1) : null;
+                                
+                                    // Health assessment
+                                    let valoracion = '';
+                                    const esHombre = currentTomaData.genero === 'masculino';
+                                    const grasaAlta = currentTomaData.resultados?.grasaPctActual && (
+                                        (esHombre && currentTomaData.resultados.grasaPctActual > 25) ||
+                                        (!esHombre && currentTomaData.resultados.grasaPctActual > 32)
+                                    );
+                                    const bmiAlto = bmi && bmi >= 25;
+                                
+                                    if (grasaAlta || bmiAlto) {
+                                        valoracion = `
+                                            **Evaluación**: Tus resultados indican que tu peso o porcentaje de grasa corporal están por encima de los rangos saludables. Esto puede aumentar el riesgo de problemas de salud a largo plazo. **Es urgente tomar medidas** para mejorar tu bienestar. Te recomendamos trabajar con nosotros en un plan nutricional personalizado y un programa de ejercicio para normalizar estos valores. ¡Contáctanos hoy mismo para comenzar!
+                                        `;
+                                    } else if (bmi && bmi < 18.5) {
+                                        valoracion = `
+                                            **Evaluación**: Tu índice de masa corporal está por debajo del rango saludable, lo que puede indicar bajo peso. Para proteger tu salud, es importante establecer un plan nutricional que te ayude a alcanzar un peso adecuado. Contáctanos para diseñar un programa que incluya una dieta equilibrada y ejercicios de fortalecimiento.
+                                        `;
+                                    } else {
+                                        valoracion = `
+                                            **Evaluación**: ¡Felicidades! Tus resultados están dentro de rangos saludables. Para mantener tu bienestar, te recomendamos seguir con una dieta equilibrada y un estilo de vida activo. Si deseas optimizar aún más tus objetivos, contáctanos para personalizar tu plan de nutrición y ejercicio.
+                                        `;
+                                    }
+                                
                                     mensaje = `
                                         ¡Hola ${nombre}!
-                        
+                                
                                         Bienvenid@ a NutriPlan, tu aliado para la salud. Estamos emocionados de acompañarte.
-                                        Tu último chequeo incluyó:
-                                        - Peso: ${currentTomaData.peso || 'No disponible'} kg
-                                        - % Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}%
-                                        - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg
-                        
-                                        Revisa tu plan en https://nutriplanv2.firebaseapp.com/dashboard.
+                                        Tu último chequeo del día ${fechaRegistro} incluyó:
+                                
+                                        **Datos Generales**:
+                                        - Peso: ${currentTomaData.peso || 'No disponible'} kg (Fuente: Medición directa con báscula)
+                                        - Altura: ${currentTomaData.altura || 'No disponible'} cm (Fuente: Medición directa con estadiómetro)
+                                        - Índice de Masa Corporal (IMC): ${bmi || 'No disponible'} (Fuente: Calculado como peso / altura²)
+                                        - Porcentaje de Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}% (Fuente: ${currentTomaData.grasa_actual_conocida ? 'Estimación proporcionada' : 'Medición de pliegues cutáneos o bioimpedancia'})
+                                        - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg (Fuente: Calculado según objetivos personales)
+                                
+                                        **Pliegues Cutáneos** (Fuente: Medición con calibrador):
+                                        - Tricipital: ${currentTomaData.medidas?.pliegues?.tricipital || 'No disponible'} mm
+                                        - Subescapular: ${currentTomaData.medidas?.pliegues?.subescapular || 'No disponible'} mm
+                                        - Suprailiaco: ${currentTomaData.medidas?.pliegues?.suprailiaco || 'No disponible'} mm
+                                        - Bicipital: ${currentTomaData.medidas?.pliegues?.bicipital || 'No disponible'} mm
+                                        - Pantorrilla: ${currentTomaData.medidas?.pliegues?.pantorrilla || 'No disponible'} mm
+                                
+                                        **Circunferencias** (Fuente: Medición con cinta métrica):
+                                        - Cintura: ${currentTomaData.medidas?.circunferencias?.cintura || 'No disponible'} cm
+                                        - Cadera: ${currentTomaData.medidas?.circunferencias?.cadera || 'No disponible'} cm
+                                        - Cuello: ${currentTomaData.medidas?.circunferencias?.cuello || 'No disponible'} cm
+                                        - Pantorrilla: ${currentTomaData.medidas?.circunferencias?.pantorrilla || 'No disponible'} cm
+                                        - Brazo: ${currentTomaData.medidas?.circunferencias?.brazo || 'No disponible'} cm
+                                        - Brazo Contraído: ${currentTomaData.medidas?.circunferencias?.brazo_contraido || 'No disponible'} cm
+                                
+                                        **Diámetros Óseos** (Fuente: Medición con calibrador):
+                                        - Húmero: ${currentTomaData.medidas?.diametros?.humero || 'No disponible'} cm
+                                        - Fémur: ${currentTomaData.medidas?.diametros?.femur || 'No disponible'} cm
+                                        - Muñeca: ${currentTomaData.medidas?.diametros?.muneca || 'No disponible'} cm
+                                
+                                        ${valoracion}
+                                
+                                        Revisa tu plan con nosotros enviando un email para pedir cita a soporte@nutriplan.com.
                                         Contáctanos en soporte@nutriplan.com para soporte.
-                        
+                                
                                         ¡Gracias por elegir NutriPlan!
                                         El equipo de NutriPlan
                                     `;
                                 } else {
                                     mensaje = `
                                         ¡Hola ${nombre}!
-                        
+                                
                                         Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros.
                                         En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
                                         Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
-                        
+                                
                                         Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos en soporte@nutriplan.com.
-                        
+                                
                                         ¡Gracias por unirte!
                                         El equipo de NutriPlan
                                     `;
