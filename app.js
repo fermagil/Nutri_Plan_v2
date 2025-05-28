@@ -28,6 +28,9 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+// Initialize EmailJS
+emailjs.init("1S-5omi_qgflXcLhD"); // Reemplaza con tu Public Key de EmailJS
+
 // Debug Chart.js and plugin loading
 console.log('Checking Chart.js:', typeof Chart);
 console.log('Checking ChartDataLabels:', typeof ChartDataLabels);
@@ -71,7 +74,8 @@ export { app, db, auth, provider };
                 var dropdown = document.getElementById('dropdown');
                 dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
             });
-    // Close dropdown if clicking outside
+            
+            // Close dropdown if clicking outside
             document.addEventListener('click', function(event) {
                 var dropdown = document.getElementById('dropdown');
                 var logo = document.getElementById('logo');
@@ -80,26 +84,26 @@ export { app, db, auth, provider };
                 }
             });
                                     
-                    // Initialize Ver Progreso button id="mail-btn"
-                    const verProgresoBtn = document.getElementById('ver-progreso-btn');
-                    if (verProgresoBtn) {
-                        verProgresoBtn.style.display = 'none'; // Hide initially
-                        verProgresoBtn.addEventListener('click', async () => {
-                            if (currentClienteId) {
-                                await showProgressCharts(currentClienteId);
-                            } else {
-                                alert('Por favor, selecciona un cliente primero.');
-                            }
-                        });
-                    } else {
-                        console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
-                    }
+                    // Initialize Ver Progreso button
+                const verProgresoBtn = document.getElementById('ver-progreso-btn');
+                if (verProgresoBtn) {
+                    verProgresoBtn.style.display = 'none'; // Hide initially
+                    verProgresoBtn.addEventListener('click', async () => {
+                        if (currentClienteId) {
+                            await showProgressCharts(currentClienteId); // Asumo que esta función está definida
+                        } else {
+                            alert('Por favor, selecciona un cliente primero.');
+                        }
+                    });
+                } else {
+                    console.error('Botón Ver Progreso no encontrado en el DOM durante inicialización');
+                }
                 
                     window.logout = logout;
                 
 
                  // Initialize Ver Emai Btn
-                    const verEmailbtn = document.getElementById('mail-btn');
+                    const verEmailbtn = document.getElementById('ver-email-btn');
                     if (verEmailbtn) {
                         verEmailbtn.style.display = 'none'; // Hide initially
                         verEmailbtn.addEventListener('click', async () => {
@@ -113,9 +117,106 @@ export { app, db, auth, provider };
                         console.error('Botón Email no encontrado en el DOM durante inicialización');
                     }
                 
-                    window.logout = logout;
-                }
-
+                    // Initialize Enviar Email button
+                        const enviarEmailBtn = document.getElementById('mail-btn');
+                        if (enviarEmailBtn) {
+                            enviarEmailBtn.style.display = 'none'; // Hide initially
+                            enviarEmailBtn.addEventListener('click', async () => {
+                                if (!currentUser) {
+                                    alert('Por favor, inicia sesión para enviar un email.');
+                                    return;
+                                }
+                    
+                                const nombre = document.getElementById('nombre').value.trim();
+                                const email = document.getElementById('e-mail').value.trim();
+                    
+                                // Validar campos
+                                if (!nombre || !email) {
+                                    alert('Por favor, completa todos los campos del formulario.');
+                                    return;
+                                }
+                    
+                                // Validar formato de email
+                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                if (!emailRegex.test(email)) {
+                                    alert('Por favor, introduce un email válido.');
+                                    return;
+                                }
+                    
+                                // Mensaje de bienvenida personalizado
+                                let mensaje = `
+                                    ¡Hola ${nombre}!
+                    
+                                    Bienvenid@ a NutriPlan, tu aliado para una vida saludable. Estamos emocionados de acompañarte en tu viaje hacia el bienestar.
+                                    Con NutriPlan, puedes:
+                                    - Crear planes de nutrición personalizados.
+                                    - Hacer seguimiento de tu progreso con nuestras herramientas.
+                                    - Recibir consejos y soporte de nuestro equipo.
+                                `;
+                    
+                                // Si hay un cliente seleccionado, obtener datos adicionales
+                                if (currentClienteId) {
+                                    try {
+                                        const clienteDoc = await getDoc(doc(db, 'clientes', currentClienteId));
+                                        if (clienteDoc.exists()) {
+                                            const clienteData = clienteDoc.data();
+                                            mensaje += `
+                                                Como nuestro cliente, ya tienes un plan activo. Revisa tu progreso en el panel: https://nutriplanv2.firebaseapp.com/dashboard.
+                                            `;
+                                        }
+                                    } catch (error) {
+                                        console.error('Error al obtener datos del cliente:', error);
+                                    }
+                                }
+                    
+                                mensaje += `
+                                    ¡Comienza ahora explorando tu panel de usuario en https://nutriplanv2.firebaseapp.com/dashboard!
+                                    Si necesitas ayuda, contáctanos en soporte@nutriplan.com.
+                    
+                                    ¡Gracias por elegir NutriPlan!
+                                    El equipo de NutriPlan
+                                `;
+                    
+                                // Parámetros para EmailJS
+                                const templateParams = {
+                                    from_name: 'NutriPlan',
+                                    from_email: 'fermagil@gmail.com',  //no-reply@nutriplan.com
+                                    message: mensaje,
+                                    to_email: email
+                                };
+                    
+                                enviarEmailBtn.value = 'Sending...';
+                    
+                                try {
+                                    // Enviar email usando EmailJS
+                                    const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
+                                    console.log('Email enviado con éxito:', response);
+                                    alert('¡Email de bienvenida enviado con éxito!');
+                    
+                                    // Limpiar formulario
+                                    document.getElementById('nombre').value = '';
+                                    document.getElementById('e-mail').value = '';
+                    
+                                    // Guardar en Firestore
+                                    await addDoc(collection(db, 'emails'), {
+                                        nombre,
+                                        email,
+                                        mensaje,
+                                        timestamp: new Date(),
+                                        userId: currentUser.uid,
+                                        clienteId: currentClienteId || null
+                                    });
+                                } catch (error) {
+                                    console.error('Error al enviar el email:', error);
+                                    alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
+                                } finally {
+                                    enviarEmailBtn.value = 'E-mail';
+                                }
+                            });
+                        } else {
+                            console.error('Botón mail-btn no encontrado en el DOM');
+                        }
+        }
         // Handle auth state
         auth.onAuthStateChanged(function(user) {
             var dropdown = document.getElementById('dropdown');
@@ -136,7 +237,7 @@ const buscarClienteInput = document.getElementById('buscar_cliente');
 const nuevoClienteBtn = document.getElementById('nuevo_cliente');
 const seleccionarFecha = document.getElementById('seleccionar_fecha');
 const guardarDatosBtn = document.getElementById('guardar_datos');
-const enviarEmailBtn = document.getElementById('mail-btn');
+//const enviarEmailBtn = document.getElementById('mail-btn');
 let currentClienteId = null;
 let currentUser = null;
 
@@ -237,25 +338,29 @@ const toNumber = (value) => {
 
 // Manejar estado de autenticación
 // Handle auth state
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    const verProgresoBtn = document.getElementById('ver-progreso-btn');
-    if (user) {
-        console.log('Auth state: User signed in', user.displayName, user.email);
-        if (verProgresoBtn) {
-            verProgresoBtn.style.display = currentClienteId ? 'inline-block' : 'none';
-        } else {
-            console.error('Botón Ver Progreso no encontrado en el DOM durante auth change');
-        }
-    } else {
-        console.log('Auth state: No user signed in');
-        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-        if (verProgresoBtn) verProgresoBtn.style.display = 'none';
-        clientesResultados.style.display = 'none';
-        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-        currentClienteId = null;
-    }
-});
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const verProgresoBtn = document.getElementById('ver-progreso-btn');
+            const enviarEmailBtn = document.getElementById('mail-btn');
+            if (user) {
+                console.log('Auth state: User signed in', user.displayName, user.email);
+                if (verProgresoBtn) {
+                    verProgresoBtn.style.display = currentClienteId ? 'inline-block' : 'none';
+                }
+                if (enviarEmailBtn) {
+                    enviarEmailBtn.style.display = currentClienteId ? 'inline-block' : 'none';
+                }
+                clientesResultados.style.display = 'none';
+            } else {
+                console.log('Auth state: No user signed in');
+                window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+                if (verProgresoBtn) verProgresoBtn.style.display = 'none';
+                if (enviarEmailBtn) enviarEmailBtn.style.display = 'none';
+                clientesResultados.style.display = 'none';
+                seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+                currentClienteId = null;
+            }
+        });
 
 
 
@@ -306,6 +411,7 @@ clientesResultados.addEventListener('change', async () => {
     const clienteId = clientesResultados.value;
     console.log('Cliente seleccionado:', clienteId);
     const verProgresoBtn = document.getElementById('ver-progreso-btn');
+    const enviarEmailBtn = document.getElementById('mail-btn');
     if (!verProgresoBtn) {
         console.error('Botón Ver Progreso no encontrado en el DOM');
         return;
@@ -313,11 +419,13 @@ clientesResultados.addEventListener('change', async () => {
     if (clienteId) {
         currentClienteId = clienteId;
         verProgresoBtn.style.display = 'inline-block'; // Show button
+        enviarEmailBtn.style.display = 'inline-block';
         await cargarFechasTomas(clienteId);
     } else {
         console.log('No cliente seleccionado, limpiando fechas');
         currentClienteId = null;
         verProgresoBtn.style.display = 'none'; // Hide button
+        enviarEmailBtn.style.display = 'none';
         seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
     }
 });
@@ -366,78 +474,7 @@ nuevoClienteBtn.addEventListener('click', () => {
     });
 });
 
-//Funcion Email
-// Botón para enviar email
-const enviarEmailBtn = document.getElementById('mail-btn');
 
-enviarEmailBtn.addEventListener('click', async () => {
-    if (!currentUser) {
-        alert('Por favor, inicia sesión para enviar un email.');
-        return;
-    }
-
-    const nombre = document.getElementById('nombre').value.trim();
-    const email = document.getElementById('e-mail').value.trim();
-
-    // Validar campos
-    if (!nombre || !email) {
-        alert('Por favor, completa todos los campos.');
-        return;
-    }
-
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        alert('Por favor, introduce un email válido.');
-        return;
-    }
-
-    // Mensaje de bienvenida genérico
-    const mensaje = `
-        ¡Hola ${nombre}!
-
-        Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros. 
-        En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar. 
-        Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
-
-        Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.
-
-        ¡Gracias por unirte!
-        El equipo de NutriPlan
-    `;
-
-    // Parámetros para EmailJS
-    const templateParams = {
-        from_name: 'NutriPlan Team', // Nombre del remitente (puedes cambiarlo)
-        from_email: 'no-reply@nutriplan.com', // Email ficticio o configurado en EmailJS
-        message: mensaje,
-        to_email: email // Usar el email del formulario como destinatario
-    };
-
-     try {
-        // Enviar email usando EmailJS
-        const response = await emailjs.send(serviceID, templateID, templateParams);
-        btn.value = 'Send Email';
-        alert('¡Email de bienvenida enviado con éxito!');
-
-        // Limpiar formulario
-        document.getElementById('nombre').value = '';
-        document.getElementById('e-mail').value = '';
-
-        // Guardar en Firestore
-        await addDoc(collection(db, 'emails'), {
-            nombre,
-            email,
-            mensaje,
-            timestamp: new Date(),
-            userId: currentUser.uid
-        });
-    } catch (error) {
-        btn.value = 'Send Email';
-        console.error('Error al enviar el email:', error);
-        alert('Hubo un error al enviar el email: ' + JSON.stringify(error));
-    }
-});
 
 
 
@@ -574,6 +611,7 @@ async function cargarFechasTomas(clienteId) {
 }
 
 // Cargar datos de la toma seleccionada en el formulario
+// Cargar datos de la toma seleccionada en el formulario
 async function cargarDatosToma(clienteId, tomaId) {
     if (!clienteId || !tomaId) {
         console.log('Falta clienteId o tomaId, limpiando formulario');
@@ -595,6 +633,7 @@ async function cargarDatosToma(clienteId, tomaId) {
 
         // Poblar campos del formulario
         document.getElementById('nombre').value = data.nombre || '';
+        document.getElementById('e-mail').value = data.email || ''; // Corregido de 'email' a 'e-mail'
         document.getElementById('genero').value = data.genero || '';
         document.getElementById('edad').value = data.edad || '';
         document.getElementById('peso').value = data.peso || '';
@@ -623,6 +662,21 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
         document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
 
+        // Asegurarse de que los botones estén en el estado correcto
+        const guardarDatosBtn = document.getElementById('guardar_datos');
+        const enviarEmailBtn = document.getElementById('mail-btn');
+        if (guardarDatosBtn && guardarDatosBtn.style.display !== 'none') {
+            guardarDatosBtn.style.display = 'none';
+            console.log('Botón Guardar Datos ocultado al cargar toma');
+        }
+        if (enviarEmailBtn) {
+            // Mostrar mail-btn solo si hay un email válido
+            const email = data.email || '';
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            enviarEmailBtn.style.display = email && emailRegex.test(email) ? 'inline-block' : 'none';
+            console.log('Botón Enviar Email:', enviarEmailBtn.style.display === 'inline-block' ? 'mostrado' : 'ocultado', 'Email:', email);
+        }
+
         // Poblar resultados
         if (data.resultados) {
             const resultados = data.resultados;
@@ -630,118 +684,96 @@ async function cargarDatosToma(clienteId, tomaId) {
 
             // Mapear claves de resultados a IDs de elementos
             const resultMappings = {
-                                // IMC
-                                'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
-                                
-                                // ICC
-                                'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-                                'iccSource': { id: 'icc-source', unit: '', format: (v) => v || '---' },
-                                
-                                // % Grasa
-                                'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
-                                'grasaPctMetabolic': { id: 'result-grasa-pct-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'grasaPctMetabolicSource': { id: 'grasa-pct-metabolic-source', unit: '', format: (v) => v || '---' },
-                                'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
-                                'grasaPctDeurenberg': { id: 'result-grasa-pct-Deurenberg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'grasaPctDeurenbergSource': { id: 'grasa-pct-Deurenberg-source', unit: '', format: (v) => v || '---' },
-                                'grasaPctCUNBAE': { id: 'result-grasa-pct-CUN-BAE', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'grasaPctCUNBAESource': { id: 'grasa-pct-CUN-BAE-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Masa Grasa
-                                'masaGrasaActual': { id: 'result-masa-grasa-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'masaGrasaActualSource': { id: 'masa-grasa-actual-source', unit: '', format: (v) => v || '---' },
-                                'masaGrasaMetabolic': { id: 'result-masa-grasa-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'masaGrasaMetabolicSource': { id: 'masa-grasa-metabolic-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Masa Magra
-                                'masaMagraActual': { id: 'result-masa-magra-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'masaMagraActualSource': { id: 'masa-magra-actual-source', unit: '', format: (v) => v || '---' },
-                                'masaMagraMetabolic': { id: 'result-masa-magra-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'masaMagraMetabolicSource': { id: 'masa-magra-metabolic-source', unit: '', format: (v) => v || '---' },
-                                
-                                // IMLG
-                                'imlgActual': { id: 'result-imlg-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'imlgActualSource': { id: 'imlg-actual-source', unit: '', format: (v) => v || '---' },
-                                'imlgMetabolic': { id: 'result-imlg-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'imlgMetabolicSource': { id: 'imlg-metabolic-source', unit: '', format: (v) => v || '---' },
-                                
-                                // IMG
-                                'imgActual': { id: 'result-img-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'imgActualSource': { id: 'img-actual-source', unit: '', format: (v) => v || '---' },
-                                'imgMetabolic': { id: 'result-img-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'imgMetabolicSource': { id: 'img-metabolic-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Tipología
-                                'tipologiaActual': { id: 'result-tipologia-actual', unit: '', format: (v) => v || '---' },
-                                'tipologiaActualSource': { id: 'tipologia-actual-source', unit: '', format: (v) => v || '---' },
-                                'tipologiaMetabolic': { id: 'result-tipologia-metabolic', unit: '', format: (v) => v || '---' },
-                                'tipologiaMetabolicSource': { id: 'tipologia-metabolic-source', unit: '', format: (v) => v || '---' },
-                                
-                                // TMB
-                                'tmb': { id: 'result-tmb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                                'tmbSource': { id: 'tmb-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Edad Metabólica
-                                'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                                'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Somatotipo
-                                'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : '---' },
-                                'somatotipoSource': { id: 'somatotipo-source', unit: '', format: (v) => v || '---' },
-                                
-                                // AMB
-                                'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                                'ambSource': { id: 'amb-source', unit: '', format: (v) => v || '---' },
-                                
-                                // AMBC
-                                'ambc': { id: 'result-ambc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                                'ambcSource': { id: 'ambc-source', unit: '', format: (v) => v || '---' },
-                                
-                                // MMT
-                                'mmt': { id: 'result-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'mmtSource': { id: 'mmt-source', unit: '', format: (v) => v || '---' },
-                                'mmt2': { id: 'result-mmt2', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'mmt2Source': { id: 'mmt2-source', unit: '', format: (v) => v || '---' },
-                                'Pctmmt': { id: 'result-Pct-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'PctmmtSource': { id: 'Pct-mmt-source', unit: '', format: (v) => v || '---' },
-                                'Pctmmt2': { id: 'result-Pct-mmt2', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'Pctmmt2Source': { id: 'Pct-mmt2-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Masa Ósea
-                                'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'masaOseaSource': { id: 'masa-osea-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Masa Residual
-                                'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'masaResidualSource': { id: 'masa-residual-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Peso
-                                'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'pesoIdealSource': { id: 'peso-ideal-source', unit: '', format: (v) => v || '---' },
-                                'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'pesoObjetivoSource': { id: 'peso-objetivo-source', unit: '', format: (v) => v || '---' },
-                                'pesoMuscular': { id: 'result-peso-muscular', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'pesoMuscularSource': { id: 'peso-muscular-source', unit: '', format: (v) => v || '---' },
-                                
-                                // Agua Corporal
-                                'aguaCorporal': { id: 'result-agua-corporal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                                'aguaCorporalSource': { id: 'agua-corporal-source', unit: '', format: (v) => v || '---' }
-                            };
+                // IMC
+                'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
+                // ICC
+                'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+                'iccSource': { id: 'icc-source', unit: '', format: (v) => v || '---' },
+                // % Grasa
+                'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
+                'grasaPctMetabolic': { id: 'result-grasa-pct-metabolic', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'grasaPctMetabolicSource': { id: 'grasa-pct-metabolic-source', unit: '', format: (v) => v || '---' },
+                'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
+                'grasaPctDeurenberg': { id: 'result-grasa-pct-Deurenberg', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'grasaPctDeurenbergSource': { id: 'grasa-pct-Deurenberg-source', unit: '', format: (v) => v || '---' },
+                'grasaPctCUNBAE': { id: 'result-grasa-pct-CUN-BAE', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'grasaPctCUNBAESource': { id: 'grasa-pct-CUN-BAE-source', unit: '', format: (v) => v || '---' },
+                // Masa Grasa
+                'masaGrasaActual': { id: 'result-masa-grasa-actual', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaGrasaActualSource': { id: 'masa-grasa-actual-source', unit: '', format: (v) => v || '---' },
+                'masaGrasaMetabolic': { id: 'result-masa-grasa-metabolic', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaGrasaMetabolicSource': { id: 'masa-grasa-metabolic-source', unit: '', format: (v) => v || '---' },
+                // Masa Magra
+                'masaMagraActual': { id: 'result-masa-magra-actual', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaMagraActualSource': { id: 'masa-magra-actual-source', unit: '', format: (v) => v || '---' },
+                'masaMagraMetabolic': { id: 'result-masa-magra-metabolic', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaMagraMetabolicSource': { id: 'masa-magra-metabolic-source', unit: '', format: (v) => v || '---' },
+                // IMLG
+                'imlgActual': { id: 'result-imlg-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'imlgActualSource': { id: 'imlg-actual-source', unit: '', format: (v) => v || '---' },
+                'imlgMetabolic': { id: 'result-imlg-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'imlgMetabolicSource': { id: 'imlg-metabolic-source', unit: '', format: (v) => v || '---' },
+                // IMG
+                'imgActual': { id: 'result-img-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'imgActualSource': { id: 'img-actual-source', unit: '', format: (v) => v || '---' },
+                'imgMetabolic': { id: 'result-img-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'imgMetabolicSource': { id: 'img-metabolic-source', unit: '', format: (v) => v || '---' },
+                // Tipología
+                'tipologiaActual': { id: 'result-tipologia-actual', unit: '', format: (v) => v || '---' },
+                'tipologiaActualSource': { id: 'tipologia-actual-source', unit: '', format: (v) => v || '---' },
+                'tipologiaMetabolic': { id: 'result-tipologia-metabolic', unit: '', format: (v) => v || '---' },
+                'tipologiaMetabolicSource': { id: 'tipologia-metabolic-source', unit: '', format: (v) => v || '---' },
+                // TMB
+                'tmb': { id: 'result-tmb', unit: 'kcal', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'tmbSource': { id: 'tmb-source', unit: '', format: (v) => v || '---' },
+                // Edad Metabólica
+                'edadmetabolica': { id: 'result-edadmetabolica', unit: 'años', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
+                // Somatotipo
+                'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : (typeof v === 'string' ? v : '---') },
+                'somatotipoSource': { id: 'somatotipo-source', unit: '', format: (v) => v || '---' },
+                // AMB
+                'amb': { id: 'result-amb', unit: 'cm', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'ambSource': { id: 'amb-source', unit: '', format: (v) => v || '---' },
+                // AMBC
+                'ambc': { id: 'result-ambc', unit: 'cm', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'ambcSource': { id: 'ambc-source', unit: '', format: (v) => v || '---' },
+                // MMT
+                'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'mmtSource': { id: 'mmt-source', unit: '', format: (v) => v || '---' },
+                'mmt2': { id: 'result-mmt2', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'mmt2Source': { id: 'mmt2-source', unit: '', format: (v) => v || '---' },
+                'Pctmmt': { id: 'result-Pct-mmt', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'PctmmtSource': { id: 'Pct-mmt-source', unit: '', format: (v) => v || '---' },
+                'Pctmmt2': { id: 'result-Pct-mmt2', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'Pctmmt2Source': { id: 'Pct-mmt2-source', unit: '', format: (v) => v || '---' },
+                // Masa Ósea
+                'masaOsea': { id: 'result-masa-osea', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaOseaSource': { id: 'masa-osea-source', unit: '', format: (v) => v || '---' },
+                // Masa Residual
+                'masaResidual': { id: 'result-masa-residual', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'masaResidualSource': { id: 'masa-residual-source', unit: '', format: (v) => v || '---' },
+                // Peso
+                'pesoIdeal': { id: 'result-peso-ideal', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'pesoIdealSource': { id: 'peso-ideal-source', unit: '', format: (v) => v || '---' },
+                'pesoObjetivo': { id: 'result-peso-objetivo', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'pesoObjetivoSource': { id: 'peso-objetivo-source', unit: '', format: (v) => v || '---' },
+                'pesoMuscular': { id: 'result-peso-muscular', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'pesoMuscularSource': { id: 'peso-muscular-source', unit: '', format: (v) => v || '---' },
+                // Agua Corporal
+                'aguaCorporal': { id: 'result-agua-corporal', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'aguaCorporalSource': { id: 'agua-corporal-source', unit: '', format: (v) => v || '---' }
+            };
 
             // Asignar valores a los elementos de resultados
             Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
                 const element = document.getElementById(id);
                 if (element) {
                     const value = resultados[key];
-                    if (value !== undefined && value !== null) {
-                        element.textContent = `${format(value)} ${unit}`.trim();
-                    } else {
-                        console.warn(`No se encontró valor para ${key} en resultados`);
-                        element.textContent = '---';
-                    }
+                    element.textContent = value !== undefined && value !== null ? `${format(value)} ${unit}`.trim() : '---';
                 } else {
                     console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
                 }
@@ -754,19 +786,21 @@ async function cargarDatosToma(clienteId, tomaId) {
             });
         }
 
-        // Asegurarse de que el botón Guardar Datos esté oculto
-        if (guardarDatosBtn && guardarDatosBtn.style.display !== 'none') {
-            guardarDatosBtn.style.display = 'none';
-            console.log('Botón Guardar Datos ocultado al cargar toma');
+        // Actualizar sección de explicación (si existe)
+        const explanationSection = document.getElementById('explanation-section');
+        if (explanationSection) {
+            explanationSection.style.display = data.resultados ? 'block' : 'none';
         }
     } catch (error) {
         console.error('Error al cargar datos de la toma:', error);
-        alert('Error al cargar los datos: ' + error.message);
+        alert('Error al cargar datos: ' + error.message);
         form.reset();
         resultElementIds.forEach(id => {
             const element = document.getElementById(id);
             if (element) element.textContent = '---';
         });
+        if (enviarEmailBtn) enviarEmailBtn.style.display = 'none';
+        if (guardarDatosBtn) guardarDatosBtn.style.display = 'none';
     }
 }
 
