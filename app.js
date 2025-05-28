@@ -110,11 +110,12 @@ export { app, db, auth, provider };
                     }
                 
                     // Initialize Enviar Email button
-                    // Inside initializeUI function, update the enviarEmailBtn event listener
-                        const enviarEmailBtn = document.getElementById('mail-btn');
+                    const enviarEmailBtn = document.getElementById('mail-btn');
                         if (enviarEmailBtn) {
                             enviarEmailBtn.style.display = 'none';
-                            enviarEmailBtn.addEventListener('click', async () => {
+                            enviarEmailBtn.addEventListener('click', async (e) => {
+                                e.preventDefault(); // Prevent form submission
+                                console.log('Email button clicked, processing email only');
                                 if (!currentUser) {
                                     alert('Por favor, inicia sesión para enviar un correo electrónico.');
                                     return;
@@ -149,18 +150,16 @@ export { app, db, auth, provider };
                                             hour: '2-digit', 
                                             minute: '2-digit' 
                                         }) : 'No disponible';
-                                
+                        
                                     // Calculate BMI
                                     const alturaMetros = currentTomaData.altura ? currentTomaData.altura / 100 : null;
                                     const bmi = alturaMetros && currentTomaData.peso ? (currentTomaData.peso / (alturaMetros * alturaMetros)).toFixed(1) : null;
-                                
+                        
                                     // Health assessment
                                     let valoracion = '';
-                                    const esHombre = currentTomaData.genero === 'masculino';
-                                    console.log('Genero status:', {genero: currentTomaData.genero, });
-                        
-                                   const esDeportista = currentTomaData.es_deportista && 
-                                    currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si';
+                                    const esHombre = currentTomaData.genero === 'Masculino';
+                                    const esDeportista = currentTomaData.es_deportista && 
+                                        currentTomaData.es_deportista.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'si';
                                     console.log('Athlete status:', {
                                         es_deportista_raw: currentTomaData.es_deportista,
                                         esDeportista: esDeportista,
@@ -172,7 +171,7 @@ export { app, db, auth, provider };
                                         (!esHombre && currentTomaData.resultados.grasaPctActual > 32)
                                     );
                                     const bmiAlto = bmi && bmi >= 25;
-                                
+                        
                                     if (grasaAlta || bmiAlto) {
                                         if (esDeportista) {
                                             valoracion = `
@@ -204,28 +203,27 @@ export { app, db, auth, provider };
                                             `;
                                         }
                                     }
-                                
+                        
                                     mensaje = `
                                         ¡Hola ${nombre}!
-                                
+                        
                                         Bienvenid@ a NutriPlan, tu aliado para la salud. Estamos emocionados de acompañarte.
                                         Tu último chequeo del día ${fechaRegistro} incluyó:
-                                
+                        
                                         **Datos Generales**:
                                         - Peso: ${currentTomaData.peso || 'No disponible'} kg (Fuente: Medición directa con báscula)
                                         - Altura: ${currentTomaData.altura || 'No disponible'} cm (Fuente: Medición directa con estadiómetro)
                                         - Índice de Masa Corporal (IMC): ${bmi || 'No disponible'} (Fuente: Calculado como peso / altura²)
                                         - Porcentaje de Grasa Actual: ${currentTomaData.resultados?.grasaPctActual || 'No disponible'}% (Fuente: ${currentTomaData.grasa_actual_conocida ? 'Estimación proporcionada' : 'Medición de pliegues cutáneos o bioimpedancia'})
                                         - Peso Objetivo: ${currentTomaData.resultados?.pesoObjetivo || 'No disponible'} kg (Fuente: Calculado según objetivos personales)
-                                        - Peso Ideal: ${currentTomaData.resultados?.pesoIdeal|| 'No disponible'} kg (Fuente: Calculado según objetivos personales)
-                                
+                        
                                         **Pliegues Cutáneos** (Fuente: Medición con calibrador):
                                         - Tricipital: ${currentTomaData.medidas?.pliegues?.tricipital || 'No disponible'} mm
                                         - Subescapular: ${currentTomaData.medidas?.pliegues?.subescapular || 'No disponible'} mm
                                         - Suprailiaco: ${currentTomaData.medidas?.pliegues?.suprailiaco || 'No disponible'} mm
                                         - Bicipital: ${currentTomaData.medidas?.pliegues?.bicipital || 'No disponible'} mm
                                         - Pantorrilla: ${currentTomaData.medidas?.pliegues?.pantorrilla || 'No disponible'} mm
-                                
+                        
                                         **Circunferencias** (Fuente: Medición con cinta métrica):
                                         - Cintura: ${currentTomaData.medidas?.circunferencias?.cintura || 'No disponible'} cm
                                         - Cadera: ${currentTomaData.medidas?.circunferencias?.cadera || 'No disponible'} cm
@@ -233,46 +231,46 @@ export { app, db, auth, provider };
                                         - Pantorrilla: ${currentTomaData.medidas?.circunferencias?.pantorrilla || 'No disponible'} cm
                                         - Brazo: ${currentTomaData.medidas?.circunferencias?.brazo || 'No disponible'} cm
                                         - Brazo Contraído: ${currentTomaData.medidas?.circunferencias?.brazo_contraido || 'No disponible'} cm
-                                
+                        
                                         **Diámetros Óseos** (Fuente: Medición con calibrador):
                                         - Húmero: ${currentTomaData.medidas?.diametros?.humero || 'No disponible'} cm
                                         - Fémur: ${currentTomaData.medidas?.diametros?.femur || 'No disponible'} cm
                                         - Muñeca: ${currentTomaData.medidas?.diametros?.muneca || 'No disponible'} cm
-                                
+                        
                                         ${valoracion}
-                                
+                        
                                         Revisa tu plan con nosotros enviando un correo electrónico para pedir cita a soporte@nutriplan.com.
                                         Contáctanos en soporte@nutriplan.com para soporte.
-                                
+                        
                                         ¡Gracias por elegir NutriPlan!
                                         El equipo de NutriPlan
                                     `;
                                 } else {
                                     mensaje = `
                                         ¡Hola ${nombre}!
-                                
+                        
                                         Bienvenid@ a NutriPlan, tu plataforma para una vida más saludable. Estamos encantados de tenerte con nosotros.
                                         En NutriPlan, ofrecemos herramientas y recursos para ayudarte a alcanzar tus objetivos de nutrición y bienestar.
                                         Explora nuestras funcionalidades, crea tu plan personalizado y comienza tu viaje hacia una mejor versión de ti mism@.
-                                
-                                        Si tienes alguna pregunta o necesitas ayuda, por favor contáctanos en soporte@nutriplan.com.
-                                
+                        
+                                        Si tienes alguna pregunta o necesita ayuda, por favor contáctanos en soporte@nutriplan.com.
+                        
                                         ¡Gracias por unirte!
                                         El equipo de NutriPlan
                                     `;
                                 }
-                               const templateParams = {
+                                const templateParams = {
                                     from_name: 'NutriPlan Team',
-                                    from_email: 'no-reply@nutriplan.com', // Sender email
+                                    from_email: 'no-reply@nutriplan.com',
                                     message: mensaje,
-                                    email: email // Recipient email (e.g., fermagil@gmail.com)
+                                    email: email
                                 };
                                 console.log('EmailJS templateParams:', JSON.stringify(templateParams, null, 2));
                                 enviarEmailBtn.value = 'Enviando...';
                                 try {
-                                    const response = await emailjs.send('service_hsxp598', 'template_zxrnlya', templateParams);
+                                    const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
                                     console.log('Email enviado con éxito:', response);
-                                    alert('¡Email enviado con éxito!', email);
+                                    alert('¡Email de bienvenida enviado con éxito!');
                                     nombreInput.value = '';
                                     emailInput.value = '';
                                     await addDoc(collection(db, 'emails'), {
