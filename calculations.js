@@ -5300,8 +5300,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            console.log('BRMEstimado element:', document.getElementById('result-tmb'));
 			            console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
 				// Ejemplo de uso de edadmetabolica
-					if (resultados.edadmetabolica) {
-					    console.log('Edad metabólica:', resultados.edadmetabolica);
+					if (results.edadmetabolica) {
+					    console.log('Edad metabólica:', results.edadmetabolica);
 					} else {
 					    console.error('Edad metabólica no está definida');
 					}
