@@ -5377,31 +5377,31 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							}
 						
 							//Update % Agua
-						//updateDisplay(resultadoAgua);
-						//function updateDisplay(resultadoAgua) {
-						    //console.log('[updateDisplay] Resultado recibido:', resultadoAgua);
+						updateDisplay(resultadoAgua);
+						function updateDisplay(resultadoAgua) {
+						    console.log('[updateDisplay] Resultado recibido:', resultadoAgua);
 						
 						  
 						   // Actualizar la interfaz con updateDisplay
-						//document.getElementById('result-agua-corporal').textContent = resultadoAgua.aguacorporal;
-					    	 //updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); // Matches resultElements.imc
+						document.getElementById('result-agua-corporal').textContent = resultadoAgua.aguacorporal;
+					    	 updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); // Matches resultElements.imc
 							
 						
 						    // Manejar errores o resultados
-						    //if (resultadoAgua.error) {
-						        //console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
-						        //resultElements.aguacorporal.textContent = resultadoAgua.error;
-						       // resultElements.aguacorporalSource.textContent = '';
-						    //} else {
-						        //console.log('[updateDisplay] Actualizando DOM con resultados');
+						    if (resultadoAgua.error) {
+						        console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
+						        resultElements.aguacorporal.textContent = resultadoAgua.error;
+						        resultElements.aguacorporalSource.textContent = '';
+						    } else {
+						        console.log('[updateDisplay] Actualizando DOM con resultados');
 							    // Redondear actKg y porcentajeACT sin decimales
-						            //const actKgRedondeado = Math.round(parseFloat(resultadoAgua.actKg));
-						            //const porcentajeACTRedondeado = Math.round(parseFloat(resultadoAgua.porcentajeACT));
-						        //resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
-						        //resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
+						            const actKgRedondeado = Math.round(parseFloat(resultadoAgua.actKg));
+						            const porcentajeACTRedondeado = Math.round(parseFloat(resultadoAgua.porcentajeACT));
+						        resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
+						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
 							    
-						   // }
-						//}
+						    }
+						}
 				                // Update IMC
 				                updateElement('imc', results.imc, 1); // Matches resultElements.imc
 				                if (resultElements.imcSource) { // Use imcSource to match resultElements
