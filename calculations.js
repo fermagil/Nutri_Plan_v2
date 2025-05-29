@@ -5369,7 +5369,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    masaMagraActualSource: results.mlgActualSource || '(No calculado)',
 				    masaGrasaMetabolic: formatResult(results.masaGrasaMetabolic, 1),
 				    masaGrasaMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
-				    masaMagraMetabolic: formatResult(results cheatedResults.masaMagraMetabolic, 1),
+				    masaMagraMetabolic: formatResult(results.masaGrasaMetabolic, 1),
 				    masaMagraMetabolicSource: results.mlgMetabolicSource || '(No calculado)',
 				    imlgActual: formatResult(results.imlgActual, 1),
 				    imlgActualSource: results.imlgActualSource || '(No calculado)',
