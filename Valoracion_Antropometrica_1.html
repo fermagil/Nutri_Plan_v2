@@ -1029,10 +1029,11 @@ button:hover {
 			<div class="form-group">
                         <label for="parametros-bioquimicos">Parametros Bioquimicos (Opcional):</label>
                         <input type="text" id="parametros-bioquimicos" name="grasa_visceral_conocida"  placeholder="Si lo conoce, enter..." class="optional-input">
-                    <div class="form-group" style="display: none">
-			    <label for="pliegue_abdominal">P. Abdominal (Opcional):</label>
-			    <input type="number" id="pliegue_abdominal" name="pliegue_abdominal" step="0.1" min="0" max="70" placeholder="mm">
-		</div>
+                    <div class="form">
+		        <div class="form-group pliegue-abdominal-group" style="display: none">
+		            <label for="pliegue_abdominal">P. Abdominal (Opcional):</label>
+		            <input type="number" id="pliegue_abdominal" name="pliegue_abdominal" step="0.1" min="0" max="70" placeholder="mm">
+		        </div>
                 </div>
             </section>
 	<section class="data-section">
@@ -1493,28 +1494,28 @@ button:hover {
 
 		//visibility of the "P. Abdominal"
 		  document.addEventListener('DOMContentLoaded', () => {
-		    const deportistaSelect = document.getElementById('es_deportista');
-		    const pliegueAbdominalGroup = document.querySelector('pliegue_abdominal');
+		            const deportistaSelect = document.getElementById('es_deportista');
+		            const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
 		
-		    // Function to update visibility based on dropdown value
-		    const updateVisibility = () => {
-		        const isDeportista = deportistaSelect.value === 'si';
-		        pliegueAbdominalGroup.style.display = isDeportista ? 'block' : 'none';
-		    };
+		            // Function to update visibility based on dropdown value
+		            const updateVisibility = () => {
+		                const isDeportista = deportistaSelect.value === 'si';
+		                pliegueAbdominalGroup.style.display = isDeport personally ista ? 'block' : 'none';
+		            };
 		
-		    // Restore saved value from localStorage
-		    const savedValue = localStorage.getItem('es_deportista');
-		    if (savedValue) {
-		        deportistaSelect.value = savedValue;
-		        updateVisibility();
-		    }
+		            // Restore saved value from localStorage
+		            const savedValue = localStorage.getItem('es_deportista');
+		            if (savedValue) {
+		                deportistaSelect.value = savedValue;
+		                updateVisibility();
+		            }
 		
-		    // Update localStorage and visibility on dropdown change
-		    deportistaSelect.addEventListener('change', () => {
-		        localStorage.setItem('es_deportista', deportistaSelect.value);
-		        updateVisibility();
-		    });
-		});
+		            // Update localStorage and visibility on dropdown change
+		            deportistaSelect.addEventListener('change', () => {
+		                localStorage.setItem('es_deportista', deportistaSelect.value);
+                	updateVisibility();
+            });
+        });
 	</script>
   <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
