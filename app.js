@@ -874,7 +874,7 @@ async function cargarDatosToma(clienteId, tomaId) {
                 'pesoMuscular': { id: 'result-peso-muscular', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
                 'pesoMuscularSource': { id: 'peso-muscular-source', unit: '', format: (v) => v || '---' },
                 // Agua Corporal
-                'aguacorporal': { id: 'result-agua-corporal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'aguacorporal': { id: 'result-agua-corporal', unit: '', format: (v) => v || '---' },
                 'aguacorporalSource': { id: 'agua-corporal-source', unit: '', format: (v) => v || '---' }
             };
 
