@@ -1029,7 +1029,10 @@ button:hover {
 			<div class="form-group">
                         <label for="parametros-bioquimicos">Parametros Bioquimicos (Opcional):</label>
                         <input type="text" id="parametros-bioquimicos" name="grasa_visceral_conocida"  placeholder="Si lo conoce, enter..." class="optional-input">
-                    </div>
+                    <div class="form-group" style="display: none">
+			    <label for="pliegue_abdominal">P. Abdominal (Opcional):</label>
+			    <input type="number" id="pliegue_abdominal" name="pliegue_abdominal" step="0.1" min="0" max="70" placeholder="mm">
+		</div>
                 </div>
             </section>
 	<section class="data-section">
@@ -1046,23 +1049,23 @@ button:hover {
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="pliegue_tricipital">P. tricipital:</label>
-                        <input type="number" id="pliegue_tricipital" name="pliegue_tricipital" step="0.1" min="0" placeholder="mm">
+                        <input type="number" id="pliegue_tricipital" name="pliegue_tricipital" step="0.1" min="0" max="70" placeholder="mm">
                     </div>
                     <div class="form-group">
                         <label for="pliegue_subescapular">P. Subescapular:</label>
-                        <input type="number" id="pliegue_subescapular" name="pliegue_subescapular" step="0.1" min="0" placeholder="mm">
+                        <input type="number" id="pliegue_subescapular" name="pliegue_subescapular" step="0.1" min="0" max="70" placeholder="mm">
                     </div>
                     <div class="form-group">
                         <label for="pliegue_suprailiaco">P. Suprailiaco:</label>
-                        <input type="number" id="pliegue_suprailiaco" name="pliegue_suprailiaco" step="0.1" min="0" placeholder="mm">
+                        <input type="number" id="pliegue_suprailiaco" name="pliegue_suprailiaco" step="0.1" min="0" max="70" placeholder="mm">
                     </div>
                     <div class="form-group">
                         <label for="pliegue_bicipital">P. Bicipital:</label>
-                        <input type="number" id="pliegue_bicipital" name="pliegue_bicipital" step="0.1" min="0" placeholder="mm">
+                        <input type="number" id="pliegue_bicipital" name="pliegue_bicipital" step="0.1" min="0" max="70" placeholder="mm">
                     </div>
                     <div class="form-group">
                         <label for="pliegue_pantorrilla">P. Pantorrilla:</label>
-                        <input type="number" id="pliegue_pantorrilla" name="pliegue_pantorrilla" step="0.1" min="0" placeholder="mm">
+                        <input type="number" id="pliegue_pantorrilla" name="pliegue_pantorrilla" sstep="0.1" min="0" max="70" placeholder="mm">
                     </div>
                 </div>
 
@@ -1485,6 +1488,31 @@ button:hover {
 		            const section = header.closest('.accordion-section');
 		            section.classList.toggle('collapsed');
 		        });
+		    });
+		});
+
+		//visibility of the "P. Abdominal"
+		  document.addEventListener('DOMContentLoaded', () => {
+		    const deportistaSelect = document.getElementById('es_deportista');
+		    const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
+		
+		    // Function to update visibility based on dropdown value
+		    const updateVisibility = () => {
+		        const isDeportista = deportistaSelect.value === 'si';
+		        pliegueAbdominalGroup.style.display = isDeportista ? 'block' : 'none';
+		    };
+		
+		    // Restore saved value from localStorage
+		    const savedValue = localStorage.getItem('es_deportista');
+		    if (savedValue) {
+		        deportistaSelect.value = savedValue;
+		        updateVisibility();
+		    }
+		
+		    // Update localStorage and visibility on dropdown change
+		    deportistaSelect.addEventListener('change', () => {
+		        localStorage.setItem('es_deportista', deportistaSelect.value);
+		        updateVisibility();
 		    });
 		});
 	</script>
