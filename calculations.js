@@ -5221,7 +5221,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						  // Verificar si calcularACT retornó un resultado válido
 						  if (!resultadoAgua || resultadoAgua.error) {
 						    console.error('[Submission Handler] Error: calcularACT no retornó un resultado válido', { edad, genero, altura, peso, esDeportista });
-						    updateDisplay({ error: resultadoAgua?.error || 'Error interno durante el cálculo.' });
+						    //updateDisplay({ error: resultadoAgua?.error || 'Error interno durante el cálculo.' });
 						  }
 						    // Actualizar window.calculatedResults con el error y otros cálculos
 						   console.log('results.edadmetabolica:', results.edadmetabolica);
@@ -5304,7 +5304,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
 				    console.log('[Submission Handler] Resultado de calcularACT:', resultadoAgua);		    
 				                  // Actualizar la interfaz
-						  updateDisplay(resultadoAgua);		
+						  //updateDisplay(resultadoAgua);		
 						  
 			            // --- 3. Update Display ---
 				        try {
