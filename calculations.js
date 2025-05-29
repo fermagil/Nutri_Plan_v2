@@ -5216,203 +5216,155 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    // Llamar a calcularACT
 					    //console.log('[Submission Handler] Llamando a calcularACT');
 					   // const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
-						// Función updateDisplay
-							function updateDisplay(resultadoAgua) {
-							  console.log('[updateDisplay] Resultado recibido:', resultadoAgua);
-							
-							  if (resultadoAgua.error) {
-							    console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
-							    resultElements.aguacorporal.textContent = resultadoAgua.error;
-							    resultElements.aguacorporalSource.textContent = '';
-							    updateElement('aguacorporal', resultadoAgua.error, 1);
-							  } else {
-							    console.log('[updateDisplay] Actualizando DOM con resultados');
-							    const actKgRedondeado = Math.round(parseFloat(resultadoAgua.actKg));
-							    const porcentajeACTRedondeado = Math.round(parseFloat(resultadoAgua.porcentajeACT));
-							
-							    const aguacorporalText = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
-							    const aguacorporalSourceText = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
-							
-							    resultElements.aguacorporal.textContent = aguacorporalText;
-							    resultElements.aguacorporalSource.textContent = aguacorporalSourceText;
-							    updateElement('aguacorporal', aguacorporalText, 1);
-							  }
-							}
-					    // Verificar si calcularACT retornó un resultado válido
-					    if (!resultadoAgua) {
-					        console.error('[Submission Handler] Error: calcularACT no retornó un resultado', { edad, genero, altura, peso, esDeportista });
-					        updateDisplay({ error: 'Error interno durante el cálculo.' });
-					        return;
-					    }
-					
-					    console.log('[Submission Handler] Resultado de calcularACT:', resultadoAgua);
-					
-					    
-					console.log('results.edadmetabolica:', results.edadmetabolica);
-			            // Store results for app.js
-			            window.calculatedResults = {
-			                imc: formatResult(results.imc, 1),
-				        imcSource: results.imcSource ? formatImcSource(results.imcSource) : '(No calculado)',
-				        icc: formatResult(results.icc, 2),
-				        iccSource: results.iccSource ? formatIccSource(results.iccSource) : '(No calculado)',
-				        grasaPctActual: formatResult(results.grasaPctActual, 1),
-				        grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
-				        grasaPctDeurenberg: formatResult(results.grasaPctDeurenberg, 1),
-				        grasaPctDeurenbergSource: results.grasaPctDeurenbergSource || '(No estimado)',
-				        grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1),
-				        grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)',
-				        grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
-				        grasaPctDeseadoSource: results.grasaPctDeseadoSource || '(No estimado)',
-				        grasaPctMetabolic: formatResult(results.grasaPctMetabolic, 1),
-				        grasaPctMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
-				        masaGrasaActual: formatResult(results.masaGrasaActual, 1),
-				        masaGrasaActualSource: results.masaGrasaActualSource || '(No calculado)',
-				        masaMagraActual: formatResult(results.masaMagraActual, 1),
-				        masaMagraActualSource: results.mlgActualSource || '(No calculado)',
-				        masaGrasaMetabolic: formatResult(results.masaGrasaMetabolic, 1),
-				        masaGrasaMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
-				        masaMagraMetabolic: formatResult(results.masaMagraMetabolic, 1),
-				        masaMagraMetabolicSource: results.mlgMetabolicSource || '(No calculado)',
-				        imlgActual: formatResult(results.imlgActual, 1),
-				        imlgActualSource: results.imlgActualSource || '(No calculado)',
-				        imgActual: formatResult(results.imgActual, 1),
-				        imgActualSource: results.imgActualSource || '(No calculado)',
-				        tipologiaActual: results.tipologiaActual || 'Indefinido',
-				        tipologiaActualSource: results.tipologiaActual ? 'Calculado' : '(No calculado)',
-				        imlgMetabolic: formatResult(results.imlgMetabolic, 1),
-				        imlgMetabolicSource: results.imlgMetabolicSource || '(No calculado)',
-				        imgMetabolic: formatResult(results.imgMetabolic, 1),
-				        imgMetabolicSource: results.imgMetabolicSource || '(No calculado)',
-				        tipologiaMetabolic: results.tipologiaMetabolic || 'Indefinido',
-				        tipologiaMetabolicSource: results.tipologiaMetabolic ? 'Calculado' : '(No calculado)',
-				        BRMEstimado: formatResult(results.BRMEstimado, 0),
-				        BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
-				        pesoIdeal: formatResult(results.pesoIdeal, 1),
-				        pesoIdealActual: formatResult(results.pesoIdealActual, 1),
-				        pesoIdealMetabolic: formatResult(results.pesoIdealMetabolic, 1),
-				        pesoObjetivo: formatResult(results.pesoObjetivo, 1),
-				        edadMetabolica: formatResult(results.edadmetabolica, 0),
-				        edadMetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
-			                amb: formatResult(results.amb, 1),
-			                ambSource: results.ambSource || '(No calculado)',
-			                masaOsea: formatResult(results.masaOsea, 1),
-			                masaOseaSource: results.masaOseaSource || '(No calculado)',
-			                masaResidual: formatResult(results.masaResidual, 1),
-			                masaResidualSource: results.masaResidualSource || '(No calculado)',
-			                mmt: formatResult(results.mmt, 1),
-			                Pctmmt: formatResult(results.Pctmmt, 1),
-			                PctmmtSource: results.PctmmtSource || '(No calculado)',
-					    
-			                aguacorporal: resultElements.aguacorporal.textContent,
-      					aguacorporalSource: resultElements.aguacorporalSource.textContent,
-					//aguacorporal: formatResult(resultadoAgua.aguacorporal, 1),
-  					//aguacorporalSource: resultadoAgua.aguacorporalSource || '(No calculado)',
-					
-			                somatotipo: {
-			                    endomorphy: formatResult(results.endomorfia, 1),
-			                    mesomorphy: formatResult(results.mesomorfia, 1),
-			                    ectomorphy: formatResult(results.ectomorfia, 1),
-			                    formatted: results.endomorfia && !isNaN(results.endomorfia) ? 
-			                        `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
-			                },
-					    somatotipoSource: results.somatotipoSource || '(No calculado)'
-			            };
-			            console.log('Resultados calculados:', window.calculatedResults);
-					console.log('[Submission Handler] window.calculatedResults actualizado:', window.calculatedResults);
-				   // Depuración para verificar que se creó correctamente
-                                console.log('window.calculatedResults:', window.calculatedResults);
-			            console.log('Results for display:', results);
-			            console.log('BRMEstimado element:', document.getElementById('result-tmb'));
-			            console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
-
-				// Llamar a calcularACT
-				  console.log('[Submission Handler] Llamando a calcularACT');
-				  const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
-				
-				  // Verificar si calcularACT retornó un resultado válido
-				  if (!resultadoAgua) {
-				    console.error('[Submission Handler] Error: calcularACT no retornó un resultado', { edad, genero, altura, peso, esDeportista });
-				    updateDisplay({ error: 'Error interno durante el cálculo.' });
-				    window.calculatedResults = {
-				      ...window.calculatedResults,
-				      aguacorporal: resultElements.aguacorporal.textContent,
-				      aguacorporalSource: resultElements.aguacorporalSource.textContent
-				    };
-				    return;
-				  }
-				
-				  console.log('[Submission Handler] Resultado de calcularACT:', resultadoAgua);
-				
-				  // Actualizar la interfaz
-				  updateDisplay(resultadoAgua);
-				
-				  // Actualizar window.calculatedResults con todos los cálculos
-				  window.calculatedResults = {
-				    ...window.calculatedResults,
-				    imc: formatResult(results.imc, 1),
-				    imcSource: results.imcSource ? formatImcSource(results.imcSource) : '(No calculado)',
-				    icc: formatResult(results.icc, 2),
-				    iccSource: results.iccSource ? formatIccSource(results.iccSource) : '(No calculado)',
-				    grasaPctActual: formatResult(results.grasaPctActual, 1),
-				    grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
-				    grasaPctDeurenberg: formatResult(results.grasaPctDeurenberg, 1),
-				    grasaPctDeurenbergSource: results.grasaPctDeurenbergSource || '(No estimado)',
-				    grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1),
-				    grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)',
-				    grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
-				    grasaPctDeseadoSource: results.grasaPctDeseadoSource || '(No estimado)',
-				    grasaPctMetabolic: formatResult(results.grasaPctMetabolic, 1),
-				    grasaPctMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
-				    masaGrasaActual: formatResult(results.masaGrasaActual, 1),
-				    masaGrasaActualSource: results.masaGrasaActualSource || '(No calculado)',
-				    masaMagraActual: formatResult(results.masaMagraActual, 1),
-				    masaMagraActualSource: results.mlgActualSource || '(No calculado)',
-				    masaGrasaMetabolic: formatResult(results.masaGrasaMetabolic, 1),
-				    masaGrasaMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
-				    masaMagraMetabolic: formatResult(results.masaGrasaMetabolic, 1),
-				    masaMagraMetabolicSource: results.mlgMetabolicSource || '(No calculado)',
-				    imlgActual: formatResult(results.imlgActual, 1),
-				    imlgActualSource: results.imlgActualSource || '(No calculado)',
-				    imgActual: formatResult(results.imgActual, 1),
-				    imgActualSource: results.imgActualSource || '(No calculado)',
-				    tipologiaActual: results.tipologiaActual || 'Indefinido',
-				    tipologiaActualSource: results.tipologiaActual ? 'Calculado' : '(No calculado)',
-				    imlgMetabolic: formatResult(results.imlgMetabolic, 1),
-				    imlgMetabolicSource: results.imlgMetabolicSource || '(No calculado)',
-				    imgMetabolic: formatResult(results.imgMetabolic, 1),
-				    imgMetabolicSource: results.imgMetabolicSource || '(No calculado)',
-				    tipologiaMetabolic: results.tipologiaMetabolic || 'Indefinido',
-				    tipologiaMetabolicSource: results.tipologiaMetabolic ? 'Calculado' : '(No calculado)',
-				    BRMEstimado: formatResult(results.BRMEstimado, 0),
-				    BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
-				    pesoIdeal: formatResult(results.pesoIdeal, 1),
-				    pesoIdealActual: formatResult(results.pesoIdealActual, 1),
-				    pesoIdealMetabolic: formatResult(results.pesoIdealMetabolic, 1),
-				    pesoObjetivo: formatResult(results.pesoObjetivo, 1),
-				    edadMetabolica: formatResult(results.edadmetabolica, 0),
-				    edadMetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
-				    amb: formatResult(results.amb, 1),
-				    ambSource: results.ambSource || '(No calculado)',
-				    masaOsea: formatResult(results.masaOsea, 1),
-				    masaOseaSource: results.masaOseaSource || '(No calculado)',
-				    masaResidual: formatResult(results.masaResidual, 1),
-				    masaResidualSource: results.masaResidualSource || '(No calculado)',
-				    mmt: formatResult(results.mmt, 1),
-				    Pctmmt: formatResult(results.pctmmt, 1),
-				    PctmmtSource: results.PctmmtSource || '(No calculado)',
-				    aguacorporal: resultElements.aguacorporal.textContent,
-				    aguacorporalSource: resultElements.aguacorporalSource.textContent,
-				    somatotipo: {
-				      endomorphy: formatResult(results.endomorfia, 1),
-				      mesomorphy: formatResult(results.mesomorfia, 1),
-				      ectomorphy: formatResult(results.ectomorfia, 1),
-				      formatted: results.endomorfia && !isNaN(results.endomorfia) ? 
-				        `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
-				    },
-				    somatotipoSource: results.somatotipoSource || '(No calculado)'
-				  };
-				
-				  console.log('[Submission Handler] window.calculatedResults actualizado:', window.calculatedResults);
+						// Llamar a calcularACT
+						  console.log('[Submission Handler] Llamando a calcularACT');
+						  const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
+						
+						  // Verificar si calcularACT retornó un resultado válido
+						  if (!resultadoAgua || resultadoAgua.error) {
+						    console.error('[Submission Handler] Error: calcularACT no retornó un resultado válido', { edad, genero, altura, peso, esDeportista });
+						    updateDisplay({ error: resultadoAgua?.error || 'Error interno durante el cálculo.' });
+						    // Actualizar window.calculatedResults con el error y otros cálculos
+						    window.calculatedResults = {
+						      ...window.calculatedResults,
+						      imc: formatResult(results.imc, 1),
+						      imcSource: results.imcSource ? formatImcSource(results.imcSource) : '(No calculado)',
+						      icc: formatResult(results.icc, 2),
+						      iccSource: results.iccSource ? formatImcSource(results.iccSource) : '(No calculado)',
+						      grasaPctActual: formatResult(results.grasaPctActual, 1),
+						      grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
+						      grasaPctDeurenberg: formatResult(results.grasaPctDeurenberg, 1),
+						      grasaPctDeurenbergSource: results.grasaPctDeurenbergSource || '(No estimado)',
+						      grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1),
+						      grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)',
+						      grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
+						      grasaPctDeseadoSource: results.grasaPctDeseadoSource || '(No estimado)',
+						      grasaPctMetabolic: formatResult(results.grasaPctMetabolic, 1),
+						      grasaPctMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
+						      masaGrasaActual: formatResult(results.masaGrasaActual, 1),
+						      masaGrasaActualSource: results.masaGrasaActualSource || '(No calculado)',
+						      masaMagraActual: formatResult(results.masaMagraActual, 1),
+						      masaMagraActualSource: results.mlgActualSource || '(No calculado)',
+						      masaGrasaMetabolic: formatResult(results.masaGrasaMetabolic, 1),
+						      masaGrasaMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
+						      masaMagraMetabolic: formatResult(results.masaMagraMetabolic, 1),
+						      masaMagraMetabolicSource: results.mlgMetabolicSource || '(No calculado)',
+						      imlgActual: formatResult(results.imlgActual, 1),
+						      imlgActualSource: results.imlgActualSource || '(No calculado)',
+						      imgActual: formatResult(results.imgActual, 1),
+						      imgActualSource: results.imgActualSource || '(No calculado)',
+						      tipologiaActual: results.tipologiaActual || 'Indefinido',
+						      tipologiaActualSource: results.tipologiaActual ? 'Calculado' : '(No calculado)',
+						      imlgMetabolic: formatResult(results.imlgMetabolic, 1),
+						      imlgMetabolicSource: results.imlgMetabolicSource || '(No calculado)',
+						      imgMetabolic: formatResult(results.imgMetabolic, 1),
+						      imgMetabolicSource: results.imgMetabolicSource || '(No calculado)',
+						      tipologiaMetabolic: results.tipologiaMetabolic || 'Indefinido',
+						      tipologiaMetabolicSource: results.tipologiaMetabolic ? 'Calculado' : '(No calculado)',
+						      BRMEstimado: formatResult(results.BRMEstimado, 0),
+						      BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
+						      pesoIdeal: formatResult(results.pesoIdeal, 1),
+						      pesoIdealActual: formatResult(results.pesoIdealActual, 1),
+						      pesoIdealMetabolic: formatResult(results.pesoIdealMetabolic, 1),
+						      pesoObjetivo: formatResult(results.pesoObjetivo, 1),
+						      edadMetabolica: formatResult(results.edadmetabolica, 0),
+						      edadMetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
+						      amb: formatResult(results.amb, 1),
+						      ambSource: results.ambSource || '(No calculado)',
+						      masaOsea: formatResult(results.masaOsea, 1),
+						      masaOseaSource: results.masaOseaSource || '(No calculado)',
+						      masaResidual: formatResult(results.masaResidual, 1),
+						      masaResidualSource: results.masaResidualSource || '(No calculado)',
+						      mmt: formatResult(results.mmt, 1),
+						      Pctmmt: formatResult(results.Pctmmt, 1),
+						      PctmmtSource: results.PctmmtSource || '(No calculado)',
+						      aguacorporal: resultElements.aguacorporal.textContent,
+						      aguacorporalSource: resultElements.aguacorporalSource.textContent,
+						      somatotipo: {
+						        endomorphy: formatResult(results.endomorfia, 1),
+						        mesomorphy: formatResult(results.mesomorfia, 1),
+						        ectomorphy: formatResult(results.ectomorfia, 1),
+						        formatted: results.endomorfia && !isNaN(results.endomorfia) ? 
+						          `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
+						      },
+						      somatotipoSource: results.somatotipoSource || '(No calculado)'
+						    };
+						    return;
+						  }
+						
+						  console.log('[Submission Handler] Resultado de calcularACT:', resultadoAgua);
+						
+						  // Actualizar la interfaz
+						  updateDisplay(resultadoAgua);
+						
+						  // Actualizar window.calculatedResults con todos los cálculos
+						  window.calculatedResults = {
+						    ...window.calculatedResults,
+						    imc: formatResult(results.imc, 1),
+						    imcSource: results.imcSource ? formatImcSource(results.imcSource) : '(No calculado)',
+						    icc: formatResult(results.icc, 2),
+						    iccSource: results.iccSource ? formatImcSource(results.iccSource) : '(No calculado)',
+						    grasaPctActual: formatResult(results.grasaPctActual, 1),
+						    grasaPctActualSource: results.actualBodyFatSource || '(No calculado)',
+						    grasaPctDeurenberg: formatResult(results.grasaPctDeurenberg, 1),
+						    grasaPctDeurenbergSource: results.grasaPctDeurenbergSource || '(No estimado)',
+						    grasaPctCUNBAE: formatResult(results.grasaPctCUNBAE, 1),
+						    grasaPctCUNBAESource: results.grasaPctCUNBAESource || '(No estimado)',
+						    grasaPctDeseado: formatResult(results.grasaPctDeseado, 1),
+						    grasaPctDeseadoSource: results.grasaPctDeseadoSource || '(No estimado)',
+						    grasaPctMetabolic: formatResult(results.grasaPctMetabolic, 1),
+						    grasaPctMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
+						    masaGrasaActual: formatResult(results.masaGrasaActual, 1),
+						    masaGrasaActualSource: results.masaGrasaActualSource || '(No calculado)',
+						    masaMagraActual: formatResult(results.masaMagraActual, 1),
+						    masaMagraActualSource: results.mlgActualSource || '(No calculado)',
+						    masaGrasaMetabolic: formatResult(results.masaGrasaMetabolic, 1),
+						    masaGrasaMetabolicSource: results.masaGrasaMetabolicSource || '(No calculado)',
+						    masaMagraMetabolic: formatResult(results.masaMagraMetabolic, 1),
+						    masaMagraMetabolicSource: results.mlgMetabolicSource || '(No calculado)',
+						    imlgActual: formatResult(results.imlgActual, 1),
+						    imlgActualSource: results.imlgActualSource || '(No calculado)',
+						    imgActual: formatResult(results.imgActual, 1),
+						    imgActualSource: results.imgActualSource || '(No calculado)',
+						    tipologiaActual: results.tipologiaActual || 'Indefinido',
+						    tipologiaActualSource: results.tipologiaActual ? 'Calculado' : '(No calculado)',
+						    imlgMetabolic: formatResult(results.imlgMetabolic, 1),
+						    imlgMetabolicSource: results.imlgMetabolicSource || '(No calculado)',
+						    imgMetabolic: formatResult(results.imgMetabolic, 1),
+						    imgMetabolicSource: results.imgMetabolicSource || '(No calculado)',
+						    tipologiaMetabolic: results.tipologiaMetabolic || 'Indefinido',
+						    tipologiaMetabolicSource: results.tipologiaMetabolic ? 'Calculado' : '(No calculado)',
+						    BRMEstimado: formatResult(results.BRMEstimado, 0),
+						    BRMEstimadoSource: results.BRMEstimadoSource || '(No calculado)',
+						    pesoIdeal: formatResult(results.pesoIdeal, 1),
+						    pesoIdealActual: formatResult(results.pesoIdealActual, 1),
+						    pesoIdealMetabolic: formatResult(results.pesoIdealMetabolic, 1),
+						    pesoObjetivo: formatResult(results.pesoObjetivo, 1),
+						    edadMetabolica: formatResult(results.edadmetabolica, 0),
+						    edadMetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
+						    amb: formatResult(results.amb, 1),
+						    ambSource: results.ambSource || '(No calculado)',
+						    masaOsea: formatResult(results.masaOsea, 1),
+						    masaOseaSource: results.masaOseaSource || '(No calculado)',
+						    masaResidual: formatResult(results.masaResidual, 1),
+						    masaResidualSource: results.masaResidualSource || '(No calculado)',
+						    mmt: formatResult(results.mmt, 1),
+						    Pctmmt: formatResult(results.Pctmmt, 1),
+						    PctmmtSource: results.PctmmtSource || '(No calculado)',
+						    aguacorporal: resultElements.aguacorporal.textContent,
+						    aguacorporalSource: resultElements.aguacorporalSource.textContent,
+						    somatotipo: {
+						      endomorphy: formatResult(results.endomorfia, 1),
+						      mesomorphy: formatResult(results.mesomorfia, 1),
+						      ectomorphy: formatResult(results.ectomorfia, 1),
+						      formatted: results.endomorfia && !isNaN(results.endomorfia) ? 
+						        `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
+						    },
+						    somatotipoSource: results.somatotipoSource || '(No calculado)'
+						  };
+						
+						  console.log('[Submission Handler] window.calculatedResults actualizado:', window.calculatedResults);
+						
 				
 
 			            // --- 3. Update Display ---
