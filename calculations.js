@@ -5379,9 +5379,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						   // Actualizar la interfaz con updateDisplay
 						document.getElementById('result-agua-corporal').textContent = resultadoAgua.aguacorporal;
 					    	 updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); // Matches resultElements.imc
-							updateElement('aguacorporal', `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`);
-							updateElement('aguacorporalSource', `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`);
-						// Suponiendo que resultadoAgua es el valor que quieres mostrar
+							
 						
 						    // Manejar errores o resultados
 						    if (resultadoAgua.error) {
@@ -5400,6 +5398,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						}
 						resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
 						resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
+						updateElement('aguacorporal', `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`);
+						updateElement('aguacorporalSource', `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`);
+						// Suponiendo que resultadoAgua es el valor que quieres mostrar
 				                // Update IMC
 				                updateElement('imc', results.imc, 1); // Matches resultElements.imc
 				                if (resultElements.imcSource) { // Use imcSource to match resultElements
