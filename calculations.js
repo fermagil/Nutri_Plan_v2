@@ -5413,16 +5413,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				  };
 				
 				  console.log('[Submission Handler] window.calculatedResults actualizado:', window.calculatedResults);
-				}
+				
 
-
-
-
-
-
-
-
-					
 			            // --- 3. Update Display ---
 				        try {
 				                if (!resultElements || typeof resultElements !== 'object') {
