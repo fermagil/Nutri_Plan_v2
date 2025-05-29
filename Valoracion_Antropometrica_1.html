@@ -1276,25 +1276,42 @@ button:hover {
                     <td><span id="result-masa-residual">---</span> <span class="unit">kg</span></td>
                     <td><small id="masa-residual-source">(No calculado)</small></td>
                 </tr>
-                
+                pesoIdealMetabolic: document.getElementById('result-peso-ideal-metabolic'),
+					    pesoObjetivo: document.getElementById('result-peso-objetivo'),
+					    pesoObjetivoMetabolic: document.getElementById('result-peso-objetivo-metabolic'),
                 <!-- Sección: Objetivos -->
                 <tr class="section-header">
                     <th colspan="3">Objetivos</th>
                 </tr>
                 <tr>
-                    <th scope="row"><label>Peso Ideal (según % Grasa)</label></th>
+                    <th scope="row"><label>Peso Ideal (% Grasa)</label></th>
                     <td><span id="result-peso-ideal">---</span> <span class="unit">kg</span></td>
                     <td><small id="peso-ideal-source">(Según Edad, Sexo y AF)</small></td>
+                </tr>
+		<tr>
+                    <th scope="row"><label>Peso Ideal(% Grasa Mtb)</label></th>
+                    <td><span id="result-peso-ideal-metabolic">---</span> <span class="unit">kg</span></td>
+                    <td><small id="pesometabolico-source">(Según Edad, Sexo y AF)</small></td>
                 </tr>
                 <tr>
                     <th scope="row"><label>Peso a Perder/Ganar</label></th>
                     <td><span id="result-peso-objetivo">---</span> <span class="unit">kg</span></td>
                     <td><small id="peso-objetivo-source">Peso Actual - % Grasa</small></td>
                 </tr>
+		<tr>
+                    <th scope="row"><label>Peso a Perder/Ganar(Mtb)</label></th>
+                    <td><span id="result-peso-objetivo-metabolic">---</span> <span class="unit">kg</span></td>
+                    <td><small id="peso-objetivo-metabolicsource">Peso Actual - % Grasa</small></td>
+                </tr>
                 <tr>
                     <th scope="row"><label>Masa Muscular a Ganar</label></th>
                     <td><span id="result-peso-muscular">---</span> <span class="unit">kg</span></td>
                     <td><small id="peso-muscular-source"></small></td>
+                </tr>
+		<tr>
+                    <th scope="row"><label>Masa Muscular a Ganar(Mtb)</label></th>
+                    <td><span id="result-peso-muscular-matabolic">---</span> <span class="unit">kg</span></td>
+                    <td><small id="peso-muscular-metabolicsource"></small></td>
                 </tr>
                 
                 <!-- Sección: Otros -->
