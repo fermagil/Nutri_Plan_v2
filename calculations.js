@@ -5207,15 +5207,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 					// Llamar a calcularACT
 					// Validar que los datos sean válidos antes de calcular
-					   // if (isNaN(edad) || isNaN(altura) || isNaN(peso)) {
-					        //console.error('[Submission Handler] Error: Datos numéricos inválidos', { edad, altura, peso });
-					        //updateDisplay({ error: 'Por favor, ingrese valores numéricos válidos.' });
-					        //return;
-					    //}
+					   if (isNaN(edad) || isNaN(altura) || isNaN(peso)) {
+					        console.error('[Submission Handler] Error: Datos numéricos inválidos', { edad, altura, peso });
+					        updateDisplay({ error: 'Por favor, ingrese valores numéricos válidos.' });
+					        return;
+					    }
 					
 					    // Llamar a calcularACT
-					    //console.log('[Submission Handler] Llamando a calcularACT');
-					   // const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
+					    console.log('[Submission Handler] Llamando a calcularACT');
+					    const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
 						// Llamar a calcularACT
 						  console.log('[Submission Handler] Llamando a calcularACT');
 						  const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
