@@ -5379,6 +5379,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						   // Actualizar la interfaz con updateDisplay
 						document.getElementById('result-agua-corporal').textContent = resultadoAgua.aguacorporal;
 					    	 updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); // Matches resultElements.imc
+							updateElement('aguacorporal', `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`);
+							updateElement('aguacorporalSource', `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`);
 						// Suponiendo que resultadoAgua es el valor que quieres mostrar
 						
 						    // Manejar errores o resultados
