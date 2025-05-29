@@ -5299,20 +5299,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            console.log('Results for display:', results);
 			            console.log('BRMEstimado element:', document.getElementById('result-tmb'));
 			            console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
-				// Ejemplo de uso de edadmetabolica
-					if (results.edadmetabolica) {
-					    console.log('Edad metabólica:', results.edadmetabolica);
-					} else {
-					    console.error('Edad metabólica no está definida');
-					}
-					
-					// Si necesitas asignar algo desde metabolicResult
-					if (metabolicResult && typeof metabolicResult.edadMetabolica !== 'undefined') {
-					    results.edadmetabolica = metabolicResult.edadMetabolica;
-					    console.log('Edad metabólica asignada:', results.edadmetabolica);
-					} else {
-					    console.error('metabolicResult o edadMetabolica no están definidos');
-					}
+				
 			            // --- 3. Update Display ---
 				        try {
 				                if (!resultElements || typeof resultElements !== 'object') {
