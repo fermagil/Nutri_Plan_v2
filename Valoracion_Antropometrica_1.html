@@ -1514,8 +1514,8 @@ button:hover {
 	    <div id="bioquimicos-modal" class="modal">
 	        <div class="modal-content">
 	            <span class="close-button">×</span>
-	            <h2>Ingresar Parámetros Bioquímicos</h2>
-	            <p>Test modal content</p>
+	            <h2>Test Modal</h2>
+	            <p>This is a test modal to confirm triggering.</p>
 	            <button class="close">Cerrar</button>
 	        </div>
 	    </div>
@@ -1565,6 +1565,83 @@ button:hover {
 		            deportistaSelect.addEventListener('change', () => {
 		                localStorage.setItem('es_deportista', deportistaSelect.value);
                 	updateVisibility();
+
+		    console.log('Script started at', new Date().toISOString());
+	// Bioquimicos pop-up modal
+        function setupBioquimicosModal() {
+            console.log('Setting up bioquimicos modal...');
+            const input = document.getElementById('parametros-bioquimicos');
+            const modal = document.getElementById('bioquimicos-modal');
+            const closeButton = modal ? modal.querySelector('.close-button') : null;
+            const closeModalButton = modal ? modal.querySelector('.close') : null;
+
+            if (!input) {
+                console.error('Input #parametros-bioquimicos not found');
+                return;
+            }
+            console.log('Input found:', input);
+
+            if (!modal) {
+                console.error('Modal #bioquimicos-modal not found');
+                return;
+            }
+            console.log('Modal found:', modal);
+
+            if (!closeButton || !closeModalButton) {
+                console.error('Close button(s) not found in modal');
+                return;
+            }
+            console.log('Close buttons found');
+
+            // Test focus event
+            input.addEventListener('focus', () => {
+                console.log('Input focused, attempting to show modal');
+                modal.style.display = 'flex';
+                input.blur(); // Prevent text entry
+                console.log('Modal display set to flex, current style:', modal.style.display);
+            });
+
+            // Test click event as fallback
+            input.addEventListener('click', () => {
+                console.log('Input clicked, attempting to show modal');
+                modal.style.display = 'flex';
+                input.blur();
+                console.log('Modal display set to flex, current style:', modal.style.display);
+            });
+
+            // Close modal
+            const closeModal = () => {
+                console.log('Closing modal');
+                modal.style.display = 'none';
+            };
+
+            closeButton.addEventListener('click', closeModal);
+            closeModalButton.addEventListener('click', closeModal);
+
+            // Close on click outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    console.log('Clicked outside modal, closing');
+                    closeModal();
+                }
+            });
+
+            // Log when input is interacted with
+            input.addEventListener('input', () => {
+                console.log('Input value changed to:', input.value);
+            });
+        }
+
+        // Run setup immediately
+        console.log('DOM loading, running setup');
+        setupBioquimicosModal();
+
+        // Also run after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded, re-running setup');
+            setupBioquimicosModal();
+        });
+    </script>
             });
         });
 	</script>
