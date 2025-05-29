@@ -847,8 +847,6 @@ button:hover {
 .accordion-content {
     transition: all 0.3s ease;
 }
-	 
-      
     </style>
 </head>
 <body>
@@ -1032,7 +1030,6 @@ button:hover {
                         <label for="parametros-bioquimicos">Parametros Bioquimicos (Op.):</label>
                         <input type="text" id="parametros-bioquimicos" name="grasa_visceral_conocida"  placeholder="Si lo conoce, enter..." class="optional-input">
                      </div>
-			
 		        <div class="form-group pliegue-abdominal-group" style="display: none">
 		            <label for="pliegue_abdominal">P. Abdominal (Op.):</label>
 		            <input type="number" id="pliegue_abdominal" name="pliegue_abdominal" step="0.1" min="1" max="70" placeholder="mm" class="optional-input">
@@ -1471,8 +1468,6 @@ button:hover {
         </table>
     </div>
 </section>
-		<!-- Modal for Biochemical Parameters -->
-	      
             <section class="data-section" id="explanation-section" style="display: none;">
                 <h2>Explicación de los Resultados y Sugerencias</h2>
                 <div id="explanation-content"></div>
@@ -1519,11 +1514,6 @@ button:hover {
 		            deportistaSelect.addEventListener('change', () => {
 		                localStorage.setItem('es_deportista', deportistaSelect.value);
                 	updateVisibility();
-
-		    console.log('Script started at', new Date().toISOString());
-	
-        });
-    </script>
             });
         });
 	</script>
