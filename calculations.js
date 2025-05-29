@@ -5281,9 +5281,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                mmt: formatResult(results.mmt, 1),
 			                Pctmmt: formatResult(results.Pctmmt, 1),
 			                PctmmtSource: results.PctmmtSource || '(No calculado)',
-			               
-					aguacorporal: formatResult(resultadoAgua.aguacorporal, 1),
-  					aguacorporalSource: resultadoAgua.aguacorporalSource || '(No calculado)',
+					    
+			               aguacorporal: displayValues.aguacorporal,
+   				       aguacorporalSource: displayValues.aguacorporalSource,
+					//aguacorporal: formatResult(resultadoAgua.aguacorporal, 1),
+  					//aguacorporalSource: resultadoAgua.aguacorporalSource || '(No calculado)',
 					
 			                somatotipo: {
 			                    endomorphy: formatResult(results.endomorfia, 1),
@@ -5295,6 +5297,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    somatotipoSource: results.somatotipoSource || '(No calculado)'
 			            };
 			            console.log('Resultados calculados:', window.calculatedResults);
+					console.log('[Submission Handler] window.calculatedResults actualizado:', window.calculatedResults);
 				   // Depuración para verificar que se creó correctamente
                                 console.log('window.calculatedResults:', window.calculatedResults);
 			            console.log('Results for display:', results);
@@ -5370,37 +5373,52 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							if (resultElements.tipologiaMetabolicSource) {
 							    resultElements.tipologiaMetabolicSource.textContent = '(Relación IMLG/IMG)';
 							}
-						//Update % Agua
-						updateDisplay(resultadoAgua);
-						function updateDisplay(resultadoAgua) {
-						    console.log('[updateDisplay] Resultado recibido:', resultadoAgua);
-						
-						  
-						   // Actualizar la interfaz con updateDisplay
-						document.getElementById('result-agua-corporal').textContent = resultadoAgua.aguacorporal;
-					    	 updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); // Matches resultElements.imc
+						// Función updateDisplay (modificada para devolver valores formateados)
+							function updateDisplay(resultadoAgua) {
+							  console.log('[updateDisplay] Resultado recibido:', resultadoAgua);
 							
-						
-						    // Manejar errores o resultados
-						    if (resultadoAgua.error) {
-						        console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
-						        //resultElements.aguacorporal.textContent = resultadoAgua.error;
-						       // resultElements.aguacorporalSource.textContent = '';
-						    } else {
-						        console.log('[updateDisplay] Actualizando DOM con resultados');
-							    // Redondear actKg y porcentajeACT sin decimales
-						            const actKgRedondeado = Math.round(parseFloat(resultadoAgua.actKg));
-						            const porcentajeACTRedondeado = Math.round(parseFloat(resultadoAgua.porcentajeACT));
-						        resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
-						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
-							    //resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
-							//resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
-							//updateElement('aguacorporal', `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`);
-							//updateElement('aguacorporalSource', `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`);
-						// Suponiendo que resultadoAgua es el valor que quieres mostrar
-						    }
-						}
-						
+							  const displayValues = {};
+							
+							  if (resultadoAgua.error) {
+							    console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
+							    resultElements.aguacorporal.textContent = resultadoAgua.error;
+							    resultElements.aguacorporalSource.textContent = '';
+							    displayValues.aguacorporal = resultadoAgua.error;
+							    displayValues.aguacorporalSource = '';
+							  } else {
+							    console.log('[updateDisplay] Actualizando DOM con resultados');
+							    const actKgRedondeado = Math.round(parseFloat(resultadoAgua.actKg));
+							    const porcentajeACTRedondeado = Math.round(parseFloat(resultadoAgua.porcentajeACT));
+							
+							    const aguacorporalText = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
+							    const aguacorporalSourceText = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
+							
+							    resultElements.aguacorporal.textContent = aguacorporalText;
+							    resultElements.aguacorporalSource.textContent = aguacorporalSourceText;
+							    updateElement('aguacorporal', aguacorporalText); // Mantener la llamada a updateElement
+							
+							    displayValues.aguacorporal = {
+							      kg: actKgRedondeado,
+							      porcentaje: porcentajeACTRedondeado,
+							      texto: aguacorporalText
+							    };
+							    displayValues.aguacorporalSource = aguacorporalSourceText;
+							    displayValues.actKgOriginal = resultadoAgua.actKg;
+							    displayValues.porcentajeACTOriginal = resultadoAgua.porcentajeACT;
+							    displayValues.rangoReferencia = resultadoAgua.rangoReferencia;
+							    displayValues.clasificacion = resultadoAgua.clasificacion;
+							    displayValues.fuente = resultadoAgua.fuente;
+							  }
+							
+							  console.log('[updateDisplay] Valores para mostrar:', displayValues);
+							  return displayValues;
+							}
+							// Llamar a calcularACT
+							  console.log('[Submission Handler] Llamando a calcularACT');
+							  const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
+							
+							  // Actualizar la interfaz y obtener los valores formateados
+							  const displayValues = updateDisplay(resultadoAgua);
 				                // Update IMC
 				                updateElement('imc', results.imc, 1); // Matches resultElements.imc
 				                if (resultElements.imcSource) { // Use imcSource to match resultElements
