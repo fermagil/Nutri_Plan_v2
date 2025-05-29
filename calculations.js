@@ -78,11 +78,11 @@ import { auth } from './app.js';
 					
 					    // Objectives
 					    pesoIdeal: document.getElementById('result-peso-ideal'),
-					    pesoIdealSource: document.getElementById('peso-ideal-source'),
+					    //pesoIdealSource: document.getElementById('peso-ideal-source'),
 					    pesoIdealMetabolic: document.getElementById('result-peso-ideal-metabolic'),
 					    pesoObjetivo: document.getElementById('result-peso-objetivo'),
 					    pesoObjetivoMetabolic: document.getElementById('result-peso-objetivo-metabolic'),
-					    pesoObjetivoSource: document.getElementById('peso-objetivo-source'),
+					    //pesoObjetivoSource: document.getElementById('peso-objetivo-source'),
 					    pesoMuscular: document.getElementById('result-peso-muscular'),
 					    pesoMuscularSource: document.getElementById('peso-muscular-source'),
 					
