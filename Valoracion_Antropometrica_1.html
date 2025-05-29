@@ -815,7 +815,38 @@ button:hover {
         max-height: 200px !important;
     }
 }
+/* Style for the accordion header */
+.section-header[data-accordion] {
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+}
 
+.section-header[data-accordion]:hover {
+    background-color: #f0f0f0; /* Light gray hover effect, adjust to match your theme */
+}
+
+/* Accordion icon styling */
+.accordion-icon {
+    position: absolute;
+    right: 10px;
+    transition: transform 0.3s ease;
+}
+
+/* Rotate icon when collapsed */
+.section-header[data-accordion].collapsed .accordion-icon {
+    transform: rotate(-90deg); /* Rotate arrow to point right when collapsed */
+}
+
+/* Hide accordion content when collapsed */
+.accordion-section.collapsed .accordion-content {
+    display: none;
+}
+
+/* Smooth transition for content (optional, if you want to animate height) */
+.accordion-content {
+    transition: all 0.3s ease;
+}
     </style>
 </head>
 <body>
@@ -1315,112 +1346,118 @@ button:hover {
                 </tr>
                 
                 <!-- Sección: Otros -->
-                <tr class="section-header">
-                    <th colspan="3">Parámetros Bioquímicos</th>
-                </tr>
-                <!-- Subsección: Nutrición -->
-                <tr class="section-header">
-                    <th colspan="3">Nutrición</th>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Albúmina</label></th>
-                    <td><span id="result-albumina">---</span> <span class="unit">g/dL</span></td>
-                    <td><small id="albumina-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Prealbúmina</label></th>
-                    <td><span id="result-prealbumina">---</span> <span class="unit">mg/dL</span></td>
-                    <td><small id="prealbumina-source">(No calculado)</small></td>
-                </tr>
-                <!-- Subsección: Lípidos -->
-                <tr class="section-header">
-                    <th colspan="3">Lípidos</th>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Colesterol Total</label></th>
-                    <td><span id="result-colesterol-total">---</span> <span class="unit">mg/dL</span></td>
-                    <td><small id="colesterol-total-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>HDL (colesterol "bueno")</label></th>
-                    <td><span id="result-hdl">---</span> <span class="unit">mg/dL</span></td>
-                    <td><small id="hdl-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Triglicéridos</label></th>
-                    <td><span id="result-trigliceridos">---</span> <span class="unit">mg/dL</span></td>
-                    <td><small id="trigliceridos-source">(No calculado)</small></td>
-                </tr>
-                <!-- Subsección: Glucosa -->
-                <tr class="section-header">
-                    <th colspan="3">Glucosa</th>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Glucosa en ayunas</label></th>
-                    <td><span id="result-glucosa-ayunas">---</span> <span class="unit">mg/dL</span></td>
-                    <td><small id="glucosa-ayunas-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>HbA1c</label></th>
-                    <td><span id="result-hba1c">---</span> <span class="unit">%</span></td>
-                    <td><small id="hba1c-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Insulina</label></th>
-                    <td><span id="result-insulina">---</span> <span class="unit">µU/mL</span></td>
-                    <td><small id="insulina-source">(No calculado)</small></td>
-                </tr>
-                <!-- Subsección: Inflamación -->
-                <tr class="section-header">
-                    <th colspan="3">Inflamación</th>
-                </tr>
-                <tr>
-                    <th scope="row"><label>PCR ultrasensible</label></th>
-                    <td><span id="result-pcr-ultrasensible">---</span> <span class="unit">mg/L</span></td>
-                    <td><small id="pcr-ultrasensible-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Leptina</label></th>
-                    <td><span id="result-leptina">---</span> <span class="unit">ng/mL</span></td>
-                    <td><small id="leptina-source">(No calculado)</small></td>
-                </tr>
-                <!-- Subsección: Hígado -->
-                <tr class="section-header">
-                    <th colspan="3">Hígado</th>
-                </tr>
-                <tr>
-                    <th scope="row"><label>ALT</label></th>
-                    <td><span id="result-alt">---</span> <span class="unit">U/L</span></td>
-                    <td><small id="alt-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>GGT</label></th>
-                    <td><span id="result-ggt">---</span> <span class="unit">U/L</span></td>
-                    <td><small id="ggt-source">(No calculado)</small></td>
-                </tr>
-                <!-- Subsección: Hormonas -->
-                <tr class="section-header">
-                    <th colspan="3">Hormonas</th>
-                </tr>
-                <tr>
-                    <th scope="row"><label>TSH</label></th>
-                    <td><span id="result-tsh">---</span> <span class="unit">µIU/mL</span></td>
-                    <td><small id="tsh-source">(No calculado)</small></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Testosterona (H)</label></th>
-                    <td><span id="result-testosterona">---</span> <span class="unit">ng/dL</span></td>
-                    <td><small id="testosterona-source">(No calculado)</small></td>
-                </tr>
-                <!-- Subsección: Óseo -->
-                <tr class="section-header">
-                    <th colspan="3">Óseo</th>
-                </tr>
-                <tr>
-                    <th scope="row"><label>Vitamina D (25-OH-D3)</label></th>
-                    <td><span id="result-vitamina-d">---</span> <span class="unit">ng/mL</span></td>
-                    <td><small id="vitamina-d-source">(No calculado)</small></td>
-                </tr>
+                <!-- Sección: Otros -->
+                <tbody class="accordion-section">
+                    <tr class="section-header" data-accordion="bioquimicos">
+                        <th colspan="3">
+                            <span class="accordion-toggle">Parámetros Bioquímicos</span>
+                            <span class="accordion-icon">▼</span>
+                        </th>
+                    </tr>
+                    <!-- Subsección: Nutrición -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Nutrición</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Albúmina</label></th>
+                        <td><span id="result-albumina">---</span> <span class="unit">g/dL</span></td>
+                        <td><small id="albumina-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Prealbúmina</label></th>
+                        <td><span id="result-prealbumina">---</span> <span class="unit">mg/dL</span></td>
+                        <td><small id="prealbumina-source">(No calculado)</small></td>
+                    </tr>
+                    <!-- Subsección: Lípidos -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Lípidos</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Colesterol Total</label></th>
+                        <td><span id="result-colesterol-total">---</span> <span class="unit">mg/dL</span></td>
+                        <td><small id="colesterol-total-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>HDL (colesterol "bueno")</label></th>
+                        <td><span id="result-hdl">---</span> <span class="unit">mg/dL</span></td>
+                        <td><small id="hdl-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Triglicéridos</label></th>
+                        <td><span id="result-trigliceridos">---</span> <span class="unit">mg/dL</span></td>
+                        <td><small id="trigliceridos-source">(No calculado)</small></td>
+                    </tr>
+                    <!-- Subsección: Glucosa -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Glucosa</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Glucosa en ayunas</label></th>
+                        <td><span id="result-glucosa-ayunas">---</span> <span class="unit">mg/dL</span></td>
+                        <td><small id="glucosa-ayunas-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>HbA1c</label></th>
+                        <td><span id="result-hba1c">---</span> <span class="unit">%</span></td>
+                        <td><small id="hba1c-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Insulina</label></th>
+                        <td><span id="result-insulina">---</span> <span class="unit">µU/mL</span></td>
+                        <td><small id="insulina-source">(No calculado)</small></td>
+                    </tr>
+                    <!-- Subsección: Inflamación -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Inflamación</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>PCR ultrasensible</label></th>
+                        <td><span id="result-pcr-ultrasensible">---</span> <span class="unit">mg/L</span></td>
+                        <td><small id="pcr-ultrasensible-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Leptina</label></th>
+                        <td><span id="result-leptina">---</span> <span class="unit">ng/mL</span></td>
+                        <td><small id="leptina-source">(No calculado)</small></td>
+                    </tr>
+                    <!-- Subsección: Hígado -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Hígado</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>ALT</label></th>
+                        <td><span id="result-alt">---</span> <span class="unit">U/L</span></td>
+                        <td><small id="alt-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>GGT</label></th>
+                        <td><span id="result-ggt">---</span> <span class="unit">U/L</span></td>
+                        <td><small id="ggt-source">(No calculado)</small></td>
+                    </tr>
+                    <!-- Subsección: Hormonas -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Hormonas</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>TSH</label></th>
+                        <td><span id="result-tsh">---</span> <span class="unit">µIU/mL</span></td>
+                        <td><small id="tsh-source">(No calculado)</small></td>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Testosterona (H)</label></th>
+                        <td><span id="result-testosterona">---</span> <span class="unit">ng/dL</span></td>
+                        <td><small id="testosterona-source">(No calculado)</small></td>
+                    </tr>
+                    <!-- Subsección: Óseo -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Óseo</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Vitamina D (25-OH-D3)</label></th>
+                        <td><span id="result-vitamina-d">---</span> <span class="unit">ng/mL</span></td>
+                        <td><small id="vitamina-d-source">(No calculado)</small></td>
+                    </tr>
+                </tbody>
             </tbody>
         </table>
     </div>
@@ -1435,6 +1472,20 @@ button:hover {
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
+
+	//Acordeon Efect
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+		    const accordionHeaders = document.querySelectorAll('.section-header[data-accordion]');
+		
+		    accordionHeaders.forEach(header => {
+		        header.addEventListener('click', () => {
+		            const section = header.closest('.accordion-section');
+		            section.classList.toggle('collapsed');
+		        });
+		    });
+		});
+	</script>
   <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js"></script>
