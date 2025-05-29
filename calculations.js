@@ -5282,8 +5282,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                Pctmmt: formatResult(results.Pctmmt, 1),
 			                PctmmtSource: results.PctmmtSource || '(No calculado)',
 			               
-					aguacorporal: formatResult(results.aguacorporal, 1),
-	                                aguacorporalSource: results.aguacorporalSource || '(No calculado)',
+					aguacorporal: formatResult(resultadoAgua.aguacorporal, 1),
+	                                aguacorporalSource: resultadoAgua.aguacorporalSource || '(No calculado)',
 			                somatotipo: {
 			                    endomorphy: formatResult(results.endomorfia, 1),
 			                    mesomorphy: formatResult(results.mesomorfia, 1),
