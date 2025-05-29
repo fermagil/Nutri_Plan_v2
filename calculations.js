@@ -5403,7 +5403,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								//resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
 								updateElement('aguacorporal', `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`);
 								updateElement('aguacorporalSource', `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`);
-							
+								
 						    }
 						}
 				                // Update IMC
