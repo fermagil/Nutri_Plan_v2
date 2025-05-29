@@ -5222,6 +5222,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						  if (!resultadoAgua || resultadoAgua.error) {
 						    console.error('[Submission Handler] Error: calcularACT no retornó un resultado válido', { edad, genero, altura, peso, esDeportista });
 						    updateDisplay({ error: resultadoAgua?.error || 'Error interno durante el cálculo.' });
+						  }
 						    // Actualizar window.calculatedResults con el error y otros cálculos
 						   console.log('results.edadmetabolica:', results.edadmetabolica);
 							  
