@@ -79,7 +79,9 @@ import { auth } from './app.js';
 					    // Objectives
 					    pesoIdeal: document.getElementById('result-peso-ideal'),
 					    pesoIdealSource: document.getElementById('peso-ideal-source'),
+					    pesoIdealMetabolic: document.getElementById('result-peso-ideal-metabolic'),
 					    pesoObjetivo: document.getElementById('result-peso-objetivo'),
+					    pesoObjetivoMetabolic: document.getElementById('result-peso-objetivo-metabolic'),
 					    pesoObjetivoSource: document.getElementById('peso-objetivo-source'),
 					    pesoMuscular: document.getElementById('result-peso-muscular'),
 					    pesoMuscularSource: document.getElementById('peso-muscular-source'),
@@ -87,7 +89,7 @@ import { auth } from './app.js';
 					    // Other
 					    aguacorporal: document.getElementById('result-agua-corporal'),
 					    aguacorporalSource: document.getElementById('agua-corporal-source'),
-					    aguacorporalSource2: document.getElementById('agua-corporal-source2')
+					   
 					};
         console.log('resultElements:', Object.entries(resultElements).map(([key, val]) => ({ key, val: val ? val.id : null })));
         const explanationSection = document.getElementById('explanation-section');
