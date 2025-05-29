@@ -4014,9 +4014,18 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        }
 			
 			        // Función para formatear números (si no está definida)
-			        function formatResult(value, precision = 1) {
-			            return Number.isFinite(value) ? value.toFixed(precision) : '---';
-			        }
+			            function formatResult(value, precision = 1) {
+				    // Si value es una cadena no vacía, devolverla sin modificar
+				    if (typeof value === 'string' && value.trim() !== '') {
+				        return value;
+				    }
+				    // Si value es un número finito, formatearlo con la precisión especificada
+				    if (Number.isFinite(value)) {
+				        return value.toFixed(precision);
+				    }
+				    // Para cualquier otro caso (null, undefined, NaN, etc.), devolver '---'
+				    return '---';
+				}
 			
 			        // Función para formatear el objeto imcSource en una cadena legible
 			        function formatImcSource(imcSource) {
