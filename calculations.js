@@ -89,8 +89,38 @@ import { auth } from './app.js';
 					    // Other
 					    aguacorporal: document.getElementById('result-agua-corporal'),
 					    aguacorporalSource: document.getElementById('agua-corporal-source'),
-					   
-					};
+					   // Bioquímicos
+					    albumina: document.getElementById('result-albumina'),
+					    albuminaSource: document.getElementById('albumina-source'),
+					    prealbumina: document.getElementById('result-prealbumina'),
+					    prealbuminaSource: document.getElementById('prealbumina-source'),
+					    colesterolTotal: document.getElementById('result-colesterol-total'),
+					    colesterolTotalSource: document.getElementById('colesterol-total-source'),
+					    hdl: document.getElementById('result-hdl'),
+					    hdlSource: document.getElementById('hdl-source'),
+					    trigliceridos: document.getElementById('result-trigliceridos'),
+					    trigliceridosSource: document.getElementById('trigliceridos-source'),
+					    glucosaAyunas: document.getElementById('result-glucosa-ayunas'),
+					    glucosaAyunasSource: document.getElementById('glucosa-ayunas-source'),
+					    hba1c: document.getElementById('result-hba1c'),
+					    hba1cSource: document.getElementById('hba1c-source'),
+					    insulina: document.getElementById('result-insulina'),
+					    insulinaSource: document.getElementById('insulina-source'),
+					    pcrUltrasensible: document.getElementById('result-pcr-ultrasensible'),
+					    pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source'),
+					    leptina: document.getElementById('result-leptina'),
+					    leptinaSource: document.getElementById('leptina-source'),
+					    alt: document.getElementById('result-alt'),
+					    altSource: document.getElementById('alt-source'),
+					    ggt: document.getElementById('result-ggt'),
+					    ggtSource: document.getElementById('ggt-source'),
+					    tsh: document.getElementById('result-tsh'),
+					    tshSource: document.getElementById('tsh-source'),
+					    testosterona: document.getElementById('result-testosterona'),
+					    testosteronaSource: document.getElementById('testosterona-source'),
+					    vitaminaD: document.getElementById('result-vitamina-d'),
+					    vitaminaDSource: document.getElementById('vitamina-d-source')
+										};
         console.log('resultElements:', Object.entries(resultElements).map(([key, val]) => ({ key, val: val ? val.id : null })));
         const explanationSection = document.getElementById('explanation-section');
         const explanationContent = document.getElementById('explanation-content');
