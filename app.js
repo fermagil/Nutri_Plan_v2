@@ -840,8 +840,8 @@ async function cargarDatosToma(clienteId, tomaId) {
                 'BRMEstimado': { id: 'result-tmb', unit: 'kcal', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
                 'BRMEstimadoSource': { id: 'tmb-source', unit: '', format: (v) => v || '---' },
                 // Edad Metabólica
-                'edadmetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                'edadmetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
+                'edadMetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+                'edadMetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
                 // Somatotipo
                 'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : (typeof v === 'string' ? v : '---') },
                 'somatotipoSource': { id: 'somatotipo-source', unit: '', format: (v) => v || '---' },
@@ -874,8 +874,8 @@ async function cargarDatosToma(clienteId, tomaId) {
                 'pesoMuscular': { id: 'result-peso-muscular', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
                 'pesoMuscularSource': { id: 'peso-muscular-source', unit: '', format: (v) => v || '---' },
                 // Agua Corporal
-                'aguaCorporal': { id: 'result-agua-corporal', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'aguaCorporalSource': { id: 'agua-corporal-source', unit: '', format: (v) => v || '---' }
+                'aguacorporal': { id: 'result-agua-corporal', unit: '%', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+                'aguacorporalSource': { id: 'agua-corporal-source', unit: '', format: (v) => v || '---' }
             };
 
             // Asignar valores a los elementos de resultados
