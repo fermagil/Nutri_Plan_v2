@@ -86,7 +86,8 @@ import { auth } from './app.js';
 					
 					    // Other
 					    aguacorporal: document.getElementById('result-agua-corporal'),
-					    aguacorporalSource: document.getElementById('agua-corporal-source')
+					    aguacorporalSource: document.getElementById('agua-corporal-source'),
+					    aguacorporalSource2: document.getElementById('agua-corporal-source2')
 					};
         console.log('resultElements:', Object.entries(resultElements).map(([key, val]) => ({ key, val: val ? val.id : null })));
         const explanationSection = document.getElementById('explanation-section');
