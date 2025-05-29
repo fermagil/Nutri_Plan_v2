@@ -5283,7 +5283,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                PctmmtSource: results.PctmmtSource || '(No calculado)',
 			               
 					aguacorporal: formatResult(resultadoAgua.aguacorporal, 1),
-	                                aguacorporalSource: resultadoAgua.aguacorporalSource || '(No calculado)',
+  					aguacorporalSource: resultadoAgua.aguacorporalSource || '(No calculado)',
+					
 			                somatotipo: {
 			                    endomorphy: formatResult(results.endomorfia, 1),
 			                    mesomorphy: formatResult(results.mesomorfia, 1),
@@ -5376,7 +5377,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						
 						  
 						   // Actualizar la interfaz con updateDisplay
+						document.getElementById('result-agua-corporal').textContent = resultadoAgua.aguacorporal;
 					    	 updateElement('aguacorporal', resultadoAgua.aguacorporal, 1); // Matches resultElements.imc
+						// Suponiendo que resultadoAgua es el valor que quieres mostrar
+						
 						    // Manejar errores o resultados
 						    if (resultadoAgua.error) {
 						        console.warn('[updateDisplay] Mostrando mensaje de error:', resultadoAgua.error);
@@ -5392,7 +5396,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						        resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
 						    }
 						}
-				
+						resultElements.aguacorporal.textContent = `${actKgRedondeado} kg / ${porcentajeACTRedondeado}%`;
+						resultElements.aguacorporalSource.textContent = `Rango de referencia: ${resultadoAgua.rangoReferencia} (${resultadoAgua.fuente}; InBody USA). Estado: ${resultadoAgua.clasificacion}`;
 				                // Update IMC
 				                updateElement('imc', results.imc, 1); // Matches resultElements.imc
 				                if (resultElements.imcSource) { // Use imcSource to match resultElements
