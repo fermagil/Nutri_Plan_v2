@@ -5213,9 +5213,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        return;
 					    }
 					
-					    // Llamar a calcularACT
-					    console.log('[Submission Handler] Llamando a calcularACT');
-					    const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
+					  
 						// Llamar a calcularACT
 						  console.log('[Submission Handler] Llamando a calcularACT');
 						  const resultadoAgua = calcularACT(edad, genero, altura, peso, esDeportista);
@@ -5226,6 +5224,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    updateDisplay({ error: resultadoAgua?.error || 'Error interno durante el cálculo.' });
 						    // Actualizar window.calculatedResults con el error y otros cálculos
 						   console.log('results.edadmetabolica:', results.edadmetabolica);
+							  
 			            // Store results for app.js
 			            window.calculatedResults = {
 			                imc: formatResult(results.imc, 1),
@@ -5281,7 +5280,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                PctmmtSource: results.PctmmtSource || '(No calculado)',
 					    
 			               aguacorporal: resultElements.aguacorporal.textContent,
-					aguacorporalSource: resultElements.aguacorporalSource.textContent,
+				       aguacorporalSource: resultElements.aguacorporalSource.textContent,
 						     
 					//aguacorporal: formatResult(resultadoAgua.aguacorporal, 1),
   					//aguacorporalSource: resultadoAgua.aguacorporalSource || '(No calculado)',
