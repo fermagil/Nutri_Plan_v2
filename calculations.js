@@ -5289,37 +5289,37 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    if (
 					        data.albumina &&
 					        data.prealbumina &&
-					        data.colesterol-total &&
+					        data.colesterolTotal &&
 					        data.hdl &&
 					        data.trigliceridos &&
-					        data.glucosa-ayunas &&
+					        data.glucosaAyunas &&
 					        data.hba1c &&
 					        data.insulina &&
-					        data.pcr-ultrasensible &&
+					        data.pcrUltrasensible &&
 					        data.leptina &&
 					        data.alt &&
 					        data.ggt &&
 					        data.tsh &&
 					        data.testosterona &&
-					        data.vitamina-d
+					        data.vitaminaD
 					    ) {
 					        // Convert and validate inputs
 					      
 						const albumina = parseFloatSafe(data.albumina);
 					        const prealbumina = parseFloatSafe(data.prealbumina);
-					        const colesterolTotal = parseFloatSafe(data.colesterol_total);
+					        const colesterolTotal = parseFloatSafe(data.colesterolTotal);
 					        const hdl = parseFloatSafe(data.hdl);
 					        const trigliceridos = parseFloatSafe(data.trigliceridos);
 					        const glucosaAyunas = parseFloatSafe(data.glucosa_ayunas);
 					        const hba1c = parseFloatSafe(data.hba1c);
 					        const insulina = parseFloatSafe(data.insulina);
-					        const pcrUltrasensible = parseFloatSafe(data.pcr_ultrasensible);
+					        const pcrUltrasensible = parseFloatSafe(data.pcrUltrasensible);
 					        const leptina = parseFloatSafe(data.leptina);
 					        const alt = parseFloatSafe(data.alt);
 					        const ggt = parseFloatSafe(data.ggt);
 					        const tsh = parseFloatSafe(data.tsh);
 					        const testosterona = parseFloatSafe(data.testosterona);
-					        const vitaminaD = parseFloatSafe(data.vitamina_d);
+					        const vitaminaD = parseFloatSafe(data.vitaminaD);
 					
 					        // Validate ranges and units
 					        if (albumina < 3.5 || albumina > 5.5) throw new Error('Albúmina fuera de rango (3.5–5.5 g/dL)');
