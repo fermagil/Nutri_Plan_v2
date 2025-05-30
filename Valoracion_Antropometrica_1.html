@@ -954,7 +954,120 @@ button:hover {
 		    </div>
 		</div>
         
-
+		//Pop-up Parametros quimicos
+		    <div id="bioquimicos-container" class="popup-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center;">
+		    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 1200px; width: 95%; max-height: 90%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
+		        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center; font-size: 1.5em;">Parámetros Bioquímicos</h2>
+		        <form id="bioquimicos-form">
+		            <!-- Nutrición -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Nutrición</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="albumina">Albúmina (g/dL):</label>
+		                        <input type="number" id="albumina" name="albumina" step="0.1" min="0" placeholder="Ej: 4.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="prealbumina">Prealbúmina (mg/dL):</label>
+		                        <input type="number" id="prealbumina" name="prealbumina" step="0.1" min="0" placeholder="Ej: 20.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <!-- Lípidos -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Lípidos</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="colesterol-total">Colesterol Total (mg/dL):</label>
+		                        <input type="number" id="colesterol-total" name="colesterol-total" step="0.1" min="0" placeholder="Ej: 200.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="hdl">HDL (mg/dL):</label>
+		                        <input type="number" id="hdl" name="hdl" step="0.1" min="0" placeholder="Ej: 50.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="trigliceridos">Triglicéridos (mg/dL):</label>
+		                        <input type="number" id="trigliceridos" name="trigliceridos" step="0.1" min="0" placeholder="Ej: 150.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <!-- Glucosa -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Glucosa</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="glucosa-ayunas">Glucosa en ayunas (mg/dL):</label>
+		                        <input type="number" id="glucosa-ayunas" name="glucosa-ayunas" step="0.1" min="0" placeholder="Ej: 90.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="hba1c">HbA1c (%):</label>
+		                        <input type="number" id="hba1c" name="hba1c" step="0.1" min="0" placeholder="Ej: 5.7" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="insulina">Insulina (µU/mL):</label>
+		                        <input type="number" id="insulina" name="insulina" step="0.1" min="0" placeholder="Ej: 10.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <!-- Inflamación -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Inflamación</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="pcr-ultrasensible">PCR ultrasensible (mg/L):</label>
+		                        <input type="number" id="pcr-ultrasensible" name="pcr-ultrasensible" step="0.1" min="0" placeholder="Ej: 1.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="leptina">Leptina (ng/mL):</label>
+		                        <input type="number" id="leptina" name="leptina" step="0.1" min="0" placeholder="Ej: 5.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <!-- Hígado -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Hígado</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="alt">ALT (U/L):</label>
+		                        <input type="number" id="alt" name="alt" step="0.1" min="0" placeholder="Ej: 30.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="ggt">GGT (U/L):</label>
+		                        <input type="number" id="ggt" name="ggt" step="0.1" min="0" placeholder="Ej: 25.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <!-- Hormonas -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Hormonas</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="tsh">TSH (µIU/mL):</label>
+		                        <input type="number" id="tsh" name="tsh" step="0.1" min="0" placeholder="Ej: 2.5" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="testosterona">Testosterona (H) (ng/dL):</label>
+		                        <input type="number" id="testosterona" name="testosterona" step="0.1" min="0" placeholder="Ej: 300.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <!-- Óseo -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Óseo</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="vitamina-d">Vitamina D (25-OH-D3) (ng/mL):</label>
+		                        <input type="number" id="vitamina-d" name="vitamina-d" step="0.1" min="0" placeholder="Ej: 30.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <div style="text-align: center; margin-top: 20px;">
+		                <button type="button" id="save-bioquimicos" style="background: #388E3C; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Guardar</button>
+		                <button type="button" id="cancel-bioquimicos" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Cancelar</button>
+		            </div>
+		        </form>
+		    </div>
+		</div>
     <main>
         <h1>Valoración Antropométrica App</h1>
         
