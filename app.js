@@ -803,6 +803,23 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
         document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
 
+        // Poblar medidas.parametros_bioquimicos
+            document.getElementById('albumina').value = data.medidas?.parametros_bioquimicos?.albumina || '';
+            document.getElementById('prealbumina').value = data.medidas?.parametros_bioquimicos?.prealbumina || '';
+            document.getElementById('colesterol-total').value = data.medidas?.parametros_bioquimicos?.colesterol_total || '';
+            document.getElementById('hdl').value = data.medidas?.parametros_bioquimicos?.hdl || '';
+            document.getElementById('trigliceridos').value = data.medidas?.parametros_bioquimicos?.trigliceridos || '';
+            document.getElementById('glucosa-ayunas').value = data.medidas?.parametros_bioquimicos?.glucosa_ayunas || '';
+            document.getElementById('hba1c').value = data.medidas?.parametros_bioquimicos?.hba1c || '';
+            document.getElementById('insulina').value = data.medidas?.parametros_bioquimicos?.insulina || '';
+            document.getElementById('pcr-ultrasensible').value = data.medidas?.parametros_bioquimicos?.pcr_ultrasensible || '';
+            document.getElementById('leptina').value = data.medidas?.parametros_bioquimicos?.leptina || '';
+            document.getElementById('alt').value = data.medidas?.parametros_bioquimicos?.alt || '';
+            document.getElementById('ggt').value = data.medidas?.parametros_bioquimicos?.ggt || '';
+            document.getElementById('tsh').value = data.medidas?.parametros_bioquimicos?.tsh || '';
+            document.getElementById('testosterona').value = data.medidas?.parametros_bioquimicos?.testosterona || '';
+            document.getElementById('vitamina-d').value = data.medidas?.parametros_bioquimicos?.vitamina_d || '';
+
         // Asegurarse de que los botones estén en el estado correcto
         const guardarDatosBtn = document.getElementById('guardar_datos');
         const enviarEmailBtn = document.getElementById('mail-btn');
