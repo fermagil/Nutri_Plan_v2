@@ -670,35 +670,35 @@ guardarDatosBtn.addEventListener('click', async () => {
             },
             
              parametros_bioquimicos: {
-                albumina: parseFloat(document.getElementById('result-albumina').value) || null,
+                albumina: parseFloat(document.getElementById('result-albumina')?.textContent) || null,
                 albuminaSource: document.getElementById('albumina-source')?.textContent || null,
-                prealbumina: parseFloat(document.getElementById('result-prealbumina').value) || null,
+                prealbumina: parseFloat(document.getElementById('result-prealbumina')?.textContent) || null,
                 prealbuminaSource: document.getElementById('prealbumina-source')?.textContent || null,
-                colesterol_total: parseFloat(document.getElementById('result-colesterol-total').value) || null,
+                colesterol_total: parseFloat(document.getElementById('result-colesterol-total')?.textContent) || null,
                 colesterolTotalSource: document.getElementById('colesterol-total-source')?.textContent || null,
-                hdl: parseFloat(document.getElementById('result-hdl').value) || null,
+                hdl: parseFloat(document.getElementById('result-hdl')?.textContent) || null,
                 hdlSource: document.getElementById('hdl-source')?.textContent || null,
-                trigliceridos: parseFloat(document.getElementById('result-trigliceridos').value) || null,
+                trigliceridos: parseFloat(document.getElementById('result-trigliceridos')?.textContent) || null,
                 trigliceridosSource: document.getElementById('trigliceridos-source')?.textContent || null,
-                glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas').value) || null,
+                glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas')?.textContent) || null,
                 glucosaAyunasSource: document.getElementById('glucosa-ayunas-source')?.textContent || null,
-                hba1c: parseFloat(document.getElementById('result-hba1c').value) || null,
+                hba1c: parseFloat(document.getElementById('result-hba1c')?.textContent) || null,
                 hba1cSource: document.getElementById('hba1c-source')?.textContent || null,
-                insulina: parseFloat(document.getElementById('result-insulina').value) || null,
+                insulina: parseFloat(document.getElementById('result-insulina')?.textContent) || null,
                 insulinaSource: document.getElementById('insulina-source')?.textContent || null,
-                pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible').value) || null,
+                pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible')?.textContent) || null,
                 pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source')?.textContent || null,
-                leptina: parseFloat(document.getElementById('result-leptina').value) || null,
+                leptina: parseFloat(document.getElementById('result-leptina')?.textContent) || null,
                 leptinaSource: document.getElementById('leptina-source')?.textContent || null,
-                alt: parseFloat(document.getElementById('result-alt').value) || null,
+                alt: parseFloat(document.getElementById('result-alt')?.textContent) || null,
                 altSource: document.getElementById('alt-source')?.textContent || null,
-                ggt: parseFloat(document.getElementById('result-ggt').value) || null,
+                ggt: parseFloat(document.getElementById('result-ggt')?.textContent) || null,
                 ggtSource: document.getElementById('ggt-source')?.textContent || null,
-                tsh: parseFloat(document.getElementById('result-tsh').value) || null,
+                tsh: parseFloat(document.getElementById('result-tsh')?.textContent) || null,
                 tshSource: document.getElementById('tsh-source')?.textContent || null,
-                testosterona: parseFloat(document.getElementById('result-testosterona').value) || null,
+                testosterona: parseFloat(document.getElementById('result-testosterona')?.textContent) || null,
                 testosteronaSource: document.getElementById('testosterona-source')?.textContent || null,
-                vitamina_d: parseFloat(document.getElementById('result-vitamina-d').value) || null,
+                vitamina_d: parseFloat(document.getElementById('result-vitamina-d')?.textContent) || null,
                 vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null
             },
             
@@ -1136,7 +1136,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!config) return 'Parámetro no reconocido';
         if (isNaN(value) || value === null || value === undefined) return `Valor inválido para ${param}`;
 
-        // Determinar estado (normal, bajo, alto)
         let estado;
         if (config.genderSpecific && genero !== config.genderSpecific) {
             estado = `No aplicable para género ${genero}`;
@@ -1148,7 +1147,6 @@ document.addEventListener('DOMContentLoaded', function() {
             estado = 'normal';
         }
 
-        // Generar mensaje
         return `${param.replace(/-/g, ' ').toUpperCase()}: ${value} ${config.unit} (${estado}). ${config.indica}. ${config.alteracion}.`;
     }
 
@@ -1189,20 +1187,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!isNaN(value)) {
                     // Formatear según el parámetro
                     const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
-                    // Asignar a result (manejar <span> o <input>)
-                    if (result.tagName === 'INPUT') {
-                        result.value = value.toFixed(decimals);
-                    } else {
-                        result.textContent = value.toFixed(decimals);
-                    }
+                    result.textContent = value.toFixed(decimals); // Asignar a <span>
                     source.textContent = getBioquimicoExplanation(field.input, value, genero);
                     console.log(`Asignado ${field.input}: ${value.toFixed(decimals)} a ${field.result}, source: ${source.textContent}`);
                 } else {
-                    if (result.tagName === 'INPUT') {
-                        result.value = '';
-                    } else {
-                        result.textContent = '---';
-                    }
+                    result.textContent = '---';
                     source.textContent = 'Valor inválido';
                     console.warn(`Valor inválido para ${field.input}`);
                 }
