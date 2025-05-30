@@ -975,6 +975,62 @@ async function cargarDatosToma(clienteId, tomaId) {
         if (guardarDatosBtn) guardarDatosBtn.style.display = 'none';
     }
 }
+//Bioquimicos Pop-up Function
+document.addEventListener('DOMContentLoaded', function() {
+    const bioquimicosInput = document.getElementById('parametros-bioquimicos');
+    const bioquimicosContainer = document.getElementById('bioquimicos-container');
+    const saveButton = document.getElementById('save-bioquimicos');
+    const cancelButton = document.getElementById('cancel-bioquimicos');
+
+    // Show popup when typing in the input field
+    bioquimicosInput.addEventListener('input', function() {
+        if (this.value.length > 0) {
+            bioquimicosContainer.style.display = 'flex';
+        }
+    });
+
+    // Save values to the table
+    saveButton.addEventListener('click', function() {
+        const fields = [
+            { input: 'albumina', result: 'result-albumina', source: 'albumina-source' },
+            { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source' },
+            { input: 'colesterol-total', result: 'result-colesterol-total', source: 'colesterol-total-source' },
+            { input: 'hdl', result: 'result-hdl', source: 'hdl-source' },
+            { input: 'trigliceridos', result: 'result-trigliceridos', source: 'trigliceridos-source' },
+            { input: 'glucosa-ayunas', result: 'result-glucosa-ayunas', source: 'glucosa-ayunas-source' },
+            { input: 'hba1c', result: 'result-hba1c', source: 'hba1c-source' },
+            { input: 'insulina', result: 'result-insulina', source: 'insulina-source' },
+            { input: 'pcr-ultrasensible', result: 'result-pcr-ultrasensible', source: 'pcr-ultrasensible-source' },
+            { input: 'leptina', result: 'result-leptina', source: 'leptina-source' },
+            { input: 'alt', result: 'result-alt', source: 'alt-source' },
+            { input: 'ggt', result: 'result-ggt', source: 'ggt-source' },
+            { input: 'tsh', result: 'result-tsh', source: 'tsh-source' },
+            { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source' },
+            { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source' }
+        ];
+
+        fields.forEach(field => {
+            const input = document.getElementById(field.input);
+            const result = document.getElementById(field.result);
+            const source = document.getElementById(field.source);
+            if (input.value) {
+                result.textContent = parseFloat(input.value).toFixed(1);
+                source.textContent = '(Ingresado manualmente)';
+            }
+        });
+
+        bioquimicosContainer.style.display = 'none';
+        bioquimicosInput.value = ''; // Clear the input field
+    });
+
+    // Close popup without saving
+    cancelButton.addEventListener('click', function() {
+        bioquimicosContainer.style.display = 'none';
+        bioquimicosInput.value = ''; // Clear the input field
+        document.getElementById('bioquimicos-form').reset(); // Reset form inputs
+    });
+});
+
 
 // Function to fetch and display progress charts
 async function showProgressCharts(clienteId) {
