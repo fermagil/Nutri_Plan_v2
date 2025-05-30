@@ -815,13 +815,17 @@ button:hover {
         max-height: 200px !important;
     }
 }
-/* Style for the accordion header */
- .accordion-section .accordion-content {
+/* Style for accordion content to display as table rows */
+.accordion-section .accordion-content {
     display: table-row;
 }
+
+/* Hide accordion content when collapsed */
 .accordion-section.collapsed .accordion-content {
     display: none;
 }
+
+/* Style for the accordion header */
 .section-header[data-accordion] {
     cursor: pointer;
     position: relative;
@@ -829,7 +833,7 @@ button:hover {
 }
 
 .section-header[data-accordion]:hover {
-    background-color: #f0f0f0; /* Light gray hover effect, adjust to match your theme */
+    background-color: #f0f0f0; /* Light gray hover effect */
 }
 
 /* Accordion icon styling */
@@ -840,18 +844,20 @@ button:hover {
 }
 
 /* Rotate icon when collapsed */
-.section-header[data-accordion].collapsed .accordion-icon {
+.accordion-section.collapsed .accordion-icon {
     transform: rotate(-90deg); /* Rotate arrow to point right when collapsed */
 }
 
-/* Hide accordion content when collapsed */
-.accordion-section.collapsed .accordion-content {
-    display: none;
+/* General table styling */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-/* Smooth transition for content (optional, if you want to animate height) */
-.accordion-content {
-    transition: all 0.3s ease;
+.results-table th, .results-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
 }
     </style>
 </head>
