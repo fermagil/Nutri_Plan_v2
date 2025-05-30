@@ -1608,29 +1608,40 @@ button:hover {
 		});
 
 		//visibility of the "P. Abdominal"
-		  document.addEventListener('DOMContentLoaded', () => {
-		            const deportistaSelect = document.getElementById('es_deportista');
-		            const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
+		    document.addEventListener('DOMContentLoaded', () => {
+		    const deportistaSelect = document.getElementById('es_deportista');
+		    const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
 		
-		            // Function to update visibility based on dropdown value
-		            const updateVisibility = () => {
-		                const isDeportista = deportistaSelect.value === 'si';
-		                pliegueAbdominalGroup.style.display = isDeportista ? 'block' : 'none';
-		            };
+		    // Function to update visibility based on dropdown value
+		    const updateVisibility = () => {
+		        const isDeportista = deportistaSelect.value === 'sí';
+		        pliegueAbdominalGroup.style.display = isDeportista ? 'block' : 'none';
+		    };
 		
-		            // Restore saved value from localStorage
-		            const savedValue = localStorage.getItem('es_deportista');
-		            if (savedValue) {
-		                deportistaSelect.value = savedValue;
-		                updateVisibility();
-		            }
+		    // Function to handle value changes (from dropdown or external data)
+		    const handleValueChange = (value) => {
+		        deportistaSelect.value = value;
+		        localStorage.setItem('es_deportista', value);
+		        updateVisibility();
+		    };
 		
-		            // Update localStorage and visibility on dropdown change
-		            deportistaSelect.addEventListener('change', () => {
-		                localStorage.setItem('es_deportista', deportistaSelect.value);
-                	updateVisibility();
-            });
-        });
+		    // Restore saved value from localStorage
+		    const savedValue = localStorage.getItem('es_deportista');
+		    if (savedValue) {
+		        handleValueChange(savedValue);
+		    }
+		
+		    // Update localStorage and visibility on dropdown change
+		    deportistaSelect.addEventListener('change', () => {
+		        handleValueChange(deportistaSelect.value);
+		    });
+		
+		    // Expose function to update value programmatically
+		    window.updateDeportistaValue = (newValue) => {
+		        handleValueChange(newValue);
+		    };
+		});
+        
 	</script>
   <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
