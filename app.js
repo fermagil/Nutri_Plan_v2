@@ -669,23 +669,38 @@ guardarDatosBtn.addEventListener('click', async () => {
                 muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
             },
             
-             parametros_bioquimicos: {
-                    albumina: parseFloat(document.getElementById('result-albumina').value) || null,
-                    prealbumina: parseFloat(document.getElementById('result-prealbumina').value) || null,
-                    colesterol_total: parseFloat(document.getElementById('result-colesterol-total').value) || null,
-                    hdl: parseFloat(document.getElementById('result-hdl').value) || null,
-                    trigliceridos: parseFloat(document.getElementById('result-trigliceridos').value) || null,
-                    glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas').value) || null,
-                    hba1c: parseFloat(document.getElementById('result-hba1c').value) || null,
-                    insulina: parseFloat(document.getElementById('result-insulina').value) || null,
-                    pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible').value) || null,
-                    leptina: parseFloat(document.getElementById('result-leptina').value) || null,
-                    alt: parseFloat(document.getElementById('result-alt').value) || null,
-                    ggt: parseFloat(document.getElementById('result-ggt').value) || null,
-                    tsh: parseFloat(document.getElementById('result-tsh').value) || null,
-                    testosterona: parseFloat(document.getElementById('result-testosterona').value) || null,
-                    vitamina_d: parseFloat(document.getElementById('result-vitamina-d').value) || null,
-                },
+             parametros_bioquimicos = {
+                albumina: parseFloat(document.getElementById('result-albumina').value) || null,
+                albuminaSource: document.getElementById('albumina-source')?.textContent || null,
+                prealbumina: parseFloat(document.getElementById('result-prealbumina').value) || null,
+                prealbuminaSource: document.getElementById('prealbumina-source')?.textContent || null,
+                colesterol_total: parseFloat(document.getElementById('result-colesterol-total').value) || null,
+                colesterolTotalSource: document.getElementById('colesterol-total-source')?.textContent || null,
+                hdl: parseFloat(document.getElementById('result-hdl').value) || null,
+                hdlSource: document.getElementById('hdl-source')?.textContent || null,
+                trigliceridos: parseFloat(document.getElementById('result-trigliceridos').value) || null,
+                trigliceridosSource: document.getElementById('trigliceridos-source')?.textContent || null,
+                glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas').value) || null,
+                glucosaAyunasSource: document.getElementById('glucosa-ayunas-source')?.textContent || null,
+                hba1c: parseFloat(document.getElementById('result-hba1c').value) || null,
+                hba1cSource: document.getElementById('hba1c-source')?.textContent || null,
+                insulina: parseFloat(document.getElementById('result-insulina').value) || null,
+                insulinaSource: document.getElementById('insulina-source')?.textContent || null,
+                pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible').value) || null,
+                pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source')?.textContent || null,
+                leptina: parseFloat(document.getElementById('result-leptina').value) || null,
+                leptinaSource: document.getElementById('leptina-source')?.textContent || null,
+                alt: parseFloat(document.getElementById('result-alt').value) || null,
+                altSource: document.getElementById('alt-source')?.textContent || null,
+                ggt: parseFloat(document.getElementById('result-ggt').value) || null,
+                ggtSource: document.getElementById('ggt-source')?.textContent || null,
+                tsh: parseFloat(document.getElementById('result-tsh').value) || null,
+                tshSource: document.getElementById('tsh-source')?.textContent || null,
+                testosterona: parseFloat(document.getElementById('result-testosterona').value) || null,
+                testosteronaSource: document.getElementById('testosterona-source')?.textContent || null,
+                vitamina_d: parseFloat(document.getElementById('result-vitamina-d').value) || null,
+                vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null
+            },
             
         },
         resultados: window.calculatedResults || {}
@@ -920,6 +935,99 @@ async function cargarDatosToma(clienteId, tomaId) {
             'tsh': { id: 'result-tsh', unit: '', source: 'medidas.parametros_bioquimicos.tsh', format: (v) => typeof v === 'number' ? v.toFixed(2) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(2) : '---') },
             'testosterona': { id: 'result-testosterona', unit: '', source: 'medidas.parametros_bioquimicos.testosterona', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
             'vitaminaD': { id: 'result-vitamina-d', unit: '', source: 'medidas.parametros_bioquimicos.vitamina_d', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') }
+            // Parámetros Bioquímicos Sources
+            'albuminaSource': { 
+                id: 'albumina-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.albuminaSource', 
+                format: (v) => v || '---' 
+            },
+            'prealbuminaSource': { 
+                id: 'prealbumina-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.prealbuminaSource', 
+                format: (v) => v || '---' 
+            },
+            'colesterolTotalSource': { 
+                id: 'colesterol-total-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.colesterolTotalSource', 
+                format: (v) => v || '---' 
+            },
+            'hdlSource': { 
+                id: 'hdl-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.hdlSource', 
+                format: (v) => v || '---' 
+            },
+            'trigliceridosSource': { 
+                id: 'trigliceridos-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.trigliceridosSource', 
+                format: (v) => v || '---' 
+            },
+            'glucosaAyunasSource': { 
+                id: 'glucosa-ayunas-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.glucosaAyunasSource', 
+                format: (v) => v || '---' 
+            },
+            'hba1cSource': { 
+                id: 'hba1c-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.hba1cSource', 
+                format: (v) => v || '---' 
+            },
+            'insulinaSource': { 
+                id: 'insulina-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.insulinaSource', 
+                format: (v) => v || '---' 
+            },
+            'pcrUltrasensibleSource': { 
+                id: 'pcr-ultrasensible-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.pcrUltrasensibleSource', 
+                format: (v) => v || '---' 
+            },
+            
+            'leptinaSource': { 
+                id: 'leptina-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.leptinaSource', 
+                format: (v) => v || '---' 
+            },
+            'altSource': { 
+                id: 'alt-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.altSource', 
+                format: (v) => v || '---' 
+            },
+            'ggtSource': { 
+                id: 'ggt-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.ggtSource', 
+                format: (v) => v || '---' 
+            },
+            'tshSource': { 
+                id: 'tsh-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.tshSource', 
+                format: (v) => v || '---' 
+            },
+           
+            'testosteronaSource': { 
+                id: 'testosterona-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.testosteronaSource', 
+                format: (v) => v || '---' 
+            },
+            'vitaminaDSource': { 
+                id: 'vitamina-d-source', 
+                unit: '', 
+                source: 'medidas.parametros_bioquimicos.vitaminaDSource', 
+                format: (v) => v || '---' 
+            }
         };
 
         // Asignar valores a los elementos de resultados
