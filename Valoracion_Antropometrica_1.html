@@ -854,13 +854,22 @@ button:hover {
 .results-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: auto; /* Allows columns to adjust based on content */
 }
 
+/* Style for all table cells */
 .results-table th,
 .results-table td {
     padding: 8px;
     border: 1px solid #ddd;
     text-align: left;
+}
+
+/* Make the "Valor" column wider and prevent wrapping */
+.results-table th:nth-child(2),
+.results-table td:nth-child(2) {
+    min-width: 150px; /* Adjust this value as needed */
+    white-space: nowrap; /* Prevents wrapping of value and unit */
 }
     </style>
 </head>
