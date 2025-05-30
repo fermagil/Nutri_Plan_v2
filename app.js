@@ -940,93 +940,93 @@ async function cargarDatosToma(clienteId, tomaId) {
                 id: 'albumina-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.albuminaSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'prealbuminaSource': { 
                 id: 'prealbumina-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.prealbuminaSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'colesterolTotalSource': { 
                 id: 'colesterol-total-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.colesterolTotalSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'hdlSource': { 
                 id: 'hdl-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.hdlSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'trigliceridosSource': { 
                 id: 'trigliceridos-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.trigliceridosSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'glucosaAyunasSource': { 
                 id: 'glucosa-ayunas-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.glucosaAyunasSource', 
-                format: (v) => v || '---' 
+               format: (v) => v || '(No calculado)' 
             },
             'hba1cSource': { 
                 id: 'hba1c-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.hba1cSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'insulinaSource': { 
                 id: 'insulina-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.insulinaSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'pcrUltrasensibleSource': { 
                 id: 'pcr-ultrasensible-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.pcrUltrasensibleSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             
             'leptinaSource': { 
                 id: 'leptina-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.leptinaSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'altSource': { 
                 id: 'alt-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.altSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)'  
             },
             'ggtSource': { 
                 id: 'ggt-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.ggtSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'tshSource': { 
                 id: 'tsh-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.tshSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
            
             'testosteronaSource': { 
                 id: 'testosterona-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.testosteronaSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             },
             'vitaminaDSource': { 
                 id: 'vitamina-d-source', 
                 unit: '', 
                 source: 'medidas.parametros_bioquimicos.vitaminaDSource', 
-                format: (v) => v || '---' 
+                format: (v) => v || '(No calculado)' 
             }
         };
 
