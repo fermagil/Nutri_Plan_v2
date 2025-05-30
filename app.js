@@ -1026,7 +1026,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveButton = document.getElementById('save-bioquimicos');
     const cancelButton = document.getElementById('cancel-bioquimicos');
 
-    // Función para obtener la explicación de un parámetro bioquímico
+    // Create warning container
+    const warningContainer = document.createElement('div');
+    warningContainer.id = 'bioquimicos-warnings';
+    warningContainer.style.color = 'red';
+    warningContainer.style.marginBottom = '10px';
+    warningContainer.style.display = 'none';
+    document.getElementById('bioquimicos-form')?.prepend(warningContainer);
+
+    // Función para obtener la explicación de un parámetro bioquímico (unchanged)
     function getBioquimicoExplanation(param, value, genero = 'masculino') {
         const ranges = {
             albumina: { min: 3.5, max: 5.0, unit: '', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
@@ -1080,59 +1088,81 @@ document.addEventListener('DOMContentLoaded', function() {
     bioquimicosInput.addEventListener('input', function() {
         if (this.value.length > 0) {
             bioquimicosContainer.style.display = 'flex';
+            warningContainer.style.display = 'none'; // Reset warnings
         }
     });
 
-        // Save values to the table
-        saveButton.addEventListener('click', function() {
+    // Save values to the table with validation
+    saveButton.addEventListener('click', function() {
         console.log('saveButton clicked');
         const genero = document.getElementById('genero')?.value || 'masculino';
         const fields = [
-            { input: 'albumina', result: 'result-albumina', source: 'albumina-source' },
-            { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source' },
-            { input: 'colesterol-total', result: 'result-colesterol-total', source: 'colesterol-total-source' },
-            { input: 'hdl', result: 'result-hdl', source: 'hdl-source' },
-            { input: 'trigliceridos', result: 'result-trigliceridos', source: 'trigliceridos-source' },
-            { input: 'glucosa-ayunas', result: 'result-glucosa-ayunas', source: 'glucosa-ayunas-source' },
-            { input: 'hba1c', result: 'result-hba1c', source: 'hba1c-source' },
-            { input: 'insulina', result: 'result-insulina', source: 'insulina-source' },
-            { input: 'pcr-ultrasensible', result: 'result-pcr-ultrasensible', source: 'pcr-ultrasensible-source' },
-            { input: 'leptina', result: 'result-leptina', source: 'leptina-source' },
-            { input: 'alt', result: 'result-alt', source: 'alt-source' },
-            { input: 'ggt', result: 'result-ggt', source: 'ggt-source' },
-            { input: 'tsh', result: 'result-tsh', source: 'tsh-source' },
-            { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source' },
-            { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source' }
+            { input: 'albumina', result: 'result-albumina', source: 'albumina-source', label: 'Albúmina', unit: 'g/dL', range: [2.5, 6.0] },
+            { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source', label: 'Prealbúmina', unit: 'mg/dL', range: [5, 50] },
+            { input: 'colesterol-total', result: 'result-colesterol-total', source: 'colesterol-total-source', label: 'Colesterol Total', unit: 'mg/dL', range: [50, 400] },
+            { input: 'hdl', result: 'result-hdl', source: 'hdl-source', label: 'HDL', unit: 'mg/dL', range: [10, 120] },
+            { input: 'trigliceridos', result: 'result-trigliceridos', source: 'trigliceridos-source', label: 'Triglicéridos', unit: 'mg/dL', range: [20, 1000] },
+            { input: 'glucosa-ayunas', result: 'result-glucosa-ayunas', source: 'glucosa-ayunas-source', label: 'Glucosa en ayunas', unit: 'mg/dL', range: [40, 300] },
+            { input: 'hba1c', result: 'result-hba1c', source: 'hba1c-source', label: 'HbA1c', unit: '%', range: [3, 15] },
+            { input: 'insulina', result: 'result-insulina', source: 'insulina-source', label: 'Insulina', unit: 'µU/mL', range: [1, 150] },
+            { input: 'pcr-ultrasensible', result: 'result-pcr-ultrasensible', source: 'pcr-ultrasensible-source', label: 'PCR ultrasensible', unit: 'mg/L', range: [0.05, 20] },
+            { input: 'leptina', result: 'result-lepta', source: 'leptina-source', label: 'Leptina', unit: 'ng/mL', range: [0.5, 200] },
+            { input: 'alt', result: 'result-alt', source: 'alt-source', label: 'ALT', unit: 'U/L', range: [5, 200] },
+            { input: 'ggt', result: 'result-ggt', source: 'ggt-source', label: 'GGT', unit: 'U/L', range: [5, 300] },
+            { input: 'tsh', result: 'result-tsh', source: 'tsh-source', label: 'TSH', unit: 'µIU/mL', range: [0.05, 15] },
+            { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source', label: 'Testosterona', unit: 'ng/dL', range: [20, 1500] },
+            { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source', label: 'Vitamina D', unit: 'ng/mL', range: [5, 200] }
         ];
-    
+
+        const warnings = [];
+        const validEntries = [];
+
         fields.forEach(field => {
             const input = document.getElementById(field.input);
             const result = document.getElementById(field.result);
             const source = document.getElementById(field.source);
             console.log(`Processing ${field.input}: input=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
+
             if (input && result && source && input.value) {
                 const value = parseFloat(input.value);
                 if (!isNaN(value)) {
-                    const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
-                    result.textContent = value.toFixed(decimals);
-                    source.textContent = getBioquimicoExplanation(field.input, value, genero);
-                    console.log(`Asignado ${field.input}: ${value.toFixed(decimals)} a ${field.result}, source: ${source.textContent}`);
+                    // Validate range
+                    if (value < field.range[0] || value > field.range[1]) {
+                        warnings.push(`${field.label} (${value} ${field.unit}) fuera de rango (${field.range[0]}–${field.range[1]} ${field.unit}). Por favor, corrige.`);
+                    } else {
+                        const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
+                        validEntries.push({ field, value, decimals });
+                    }
                 } else {
-                    result.textContent = '---';
-                    source.textContent = 'Valor inválido';
-                    console.warn(`Valor inválido para ${input.input}: ${input.value}`);
+                    warnings.push(`${field.label} tiene un valor inválido (${input.value}).`);
                 }
-            } else {
-                console.warn(`Falta elemento o valor para ${field.input}: ${input}=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
+            } else if (input && input.value) {
+                warnings.push(`Falta elemento para ${field.label}: result=${!!result}, source=${!!source}.`);
             }
         });
-    
-        // Verify post-save DOM
-        console.log('Post-save:');
-        fields.forEach(field => {
-            console.log(`${field.result}: ${document.getElementById(field.result)?.textContent || 'N/A'}, source: ${v => v || 'null'} source}: ${document.getElementById(field.source)?.textContent || 'null'}`);
+
+        if (warnings.length > 0) {
+            warningContainer.innerHTML = `<strong>Errores:</strong><ul>${warnings.map(w => `<li>${w}</li>`).join('')}</ul>`;
+            warningContainer.style.display = 'block';
+            console.warn('Validation warnings:', warnings);
+            return; // Stop and let user correct
+        }
+
+        // Save valid entries
+        validEntries.forEach(({ field, value, decimals }) => {
+            const result = document.getElementById(field.result);
+            const source = document.getElementById(field.source);
+            result.textContent = value.toFixed(decimals);
+            source.textContent = getBioquimicoExplanation(field.input, value, genero);
+            console.log(`Asignado ${field.input}: ${value.toFixed(decimals)} a ${field.result}, source: ${source.textContent}`);
         });
-    
+
+        // Verify post-save DOM
+        console.log('Post-save DOM check:');
+        fields.forEach(field => {
+            console.log(`${field.result}: ${document.getElementById(field.result)?.textContent || 'N/A'}, ${field.source}: ${document.getElementById(field.source)?.textContent || 'N/A'}`);
+        });
+
         bioquimicosContainer.style.display = 'none';
         bioquimicosInput.value = '';
         document.getElementById('bioquimicos-form').reset();
@@ -1144,6 +1174,8 @@ document.addEventListener('DOMContentLoaded', function() {
         bioquimicosContainer.style.display = 'none';
         bioquimicosInput.value = '';
         document.getElementById('bioquimicos-form').reset();
+        warningContainer.style.display = 'none';
+        console.log('Pop-up cancelled');
     });
 });
 
