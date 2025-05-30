@@ -668,6 +668,24 @@ guardarDatosBtn.addEventListener('click', async () => {
                 femur: parseFloat(document.getElementById('diam_femur').value) || null,
                 muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
             },
+             parametros_bioquimicos: {
+                    albumina: parseFloat(document.getElementById('albumina').value) || null,
+                    prealbumina: parseFloat(document.getElementById('prealbumina').value) || null,
+                    colesterol_total: parseFloat(document.getElementById('colesterol-total').value) || null,
+                    hdl: parseFloat(document.getElementById('hdl').value) || null,
+                    trigliceridos: parseFloat(document.getElementById('trigliceridos').value) || null,
+                    glucosa_ayunas: parseFloat(document.getElementById('glucosa-ayunas').value) || null,
+                    hba1c: parseFloat(document.getElementById('hba1c').value) || null,
+                    insulina: parseFloat(document.getElementById('insulina').value) || null,
+                    pcr_ultrasensible: parseFloat(document.getElementById('pcr-ultrasensible').value) || null,
+                    leptina: parseFloat(document.getElementById('leptina').value) || null,
+                    alt: parseFloat(document.getElementById('alt').value) || null,
+                    ggt: parseFloat(document.getElementById('ggt').value) || null,
+                    tsh: parseFloat(document.getElementById('tsh').value) || null,
+                    testosterona: parseFloat(document.getElementById('testosterona').value) || null,
+                    vitamina_d: parseFloat(document.getElementById('vitamina-d').value) || null,
+                },
+            
         },
         resultados: window.calculatedResults || {}
     };
