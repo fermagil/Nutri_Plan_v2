@@ -4002,6 +4002,37 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                'diam_muneca',
 			                'grasa_actual_conocida',
 			                'grasa_deseada'
+					     // Bioquímicos
+				    'result-albumina',
+				    'albumina-source',
+				    'result-prealbumina',
+				    'prealbumina-source',
+				    'result-colesterol-total',
+				    'colesterol-total-source',
+				    'result-hdl',
+				    'hdl-source',
+				    'result-trigliceridos',
+				    'trigliceridos-source',
+				    'result-glucosa-ayunas',
+				    'glucosa-ayunas-source',
+				    'result-hba1c',
+				    'hba1c-source',
+				    'result-insulina',
+				    'insulina-source',
+				    'result-pcr-ultrasensible',
+				    'pcr-ultrasensible-source',
+				    'result-leptina',
+				    'leptina-source',
+				    'result-alt',
+				    'alt-source',
+				    'result-ggt',
+				    'ggt-source',
+				    'result-tsh',
+				    'tsh-source',
+				    'result-testosterona',
+				    'testosterona-source',
+				    'result-vitamina-d',
+				    'vitamina-d-source'
 			            ];
 			            data[key] = numericFields.includes(key) ? parseFloatSafe(value) : value;
 			        });
