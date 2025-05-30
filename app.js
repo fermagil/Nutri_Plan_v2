@@ -1157,8 +1157,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Save values to the table
-    saveButton.addEventListener('click', function() {
+        // Save values to the table
+        saveButton.addEventListener('click', function() {
         const genero = document.getElementById('genero')?.value || 'masculino';
         const fields = [
             { input: 'albumina', result: 'result-albumina', source: 'albumina-source' },
@@ -1177,7 +1177,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source' },
             { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source' }
         ];
-
+    
         fields.forEach(field => {
             const input = document.getElementById(field.input);
             const result = document.getElementById(field.result);
@@ -1193,13 +1193,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     result.textContent = '---';
                     source.textContent = 'Valor inválido';
-                    console.warn(`Valor inválido para ${field.input}`);
+                    console.warn(`Valor inválido para ${field.input}: ${input.value}`);
                 }
             } else {
                 console.warn(`Falta elemento o valor para ${field.input}: input=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
             }
         });
-
+    
         bioquimicosContainer.style.display = 'none';
         bioquimicosInput.value = '';
         document.getElementById('bioquimicos-form').reset();
