@@ -5310,7 +5310,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        const colesterolTotal = parseFloatSafe(data.colesterolTotal);
 					        const hdl = parseFloatSafe(data.hdl);
 					        const trigliceridos = parseFloatSafe(data.trigliceridos);
-					        const glucosaAyunas = parseFloatSafe(data.glucosa_ayunas);
+					        const glucosaAyunas = parseFloatSafe(data.glucosaAyunas);
 					        const hba1c = parseFloatSafe(data.hba1c);
 					        const insulina = parseFloatSafe(data.insulina);
 					        const pcrUltrasensible = parseFloatSafe(data.pcrUltrasensible);
@@ -5498,35 +5498,35 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    },
 				    somatotipoSource: results.somatotipoSource || '(No calculado)',
 				    // Bioquímicos
-				    albumina: formatResult(results.albumina, 1),
+				   // albumina: formatResult(results.albumina, 1),
 				    albuminaSource: results.albuminaSource || '(No calculado)',
-				    prealbumina: formatResult(results.prealbumina, 1),
+				    //prealbumina: formatResult(results.prealbumina, 1),
 				    prealbuminaSource: results.prealbuminaSource || '(No calculado)',
-				    colesterolTotal: formatResult(results.colesterolTotal, 1),
+				    //colesterolTotal: formatResult(results.colesterolTotal, 1),
 				    colesterolTotalSource: results.colesterolTotalSource || '(No calculado)',
-				    hdl: formatResult(results.hdl, 1),
+				   // hdl: formatResult(results.hdl, 1),
 				    hdlSource: results.hdlSource || '(No calculado)',
-				    trigliceridos: formatResult(results.trigliceridos, 1),
+				   // trigliceridos: formatResult(results.trigliceridos, 1),
 				    trigliceridosSource: results.trigliceridosSource || '(No calculado)',
-				    glucosaAyunas: formatResult(results.glucosaAyunas, 1),
+				   // glucosaAyunas: formatResult(results.glucosaAyunas, 1),
 				    glucosaAyunasSource: results.glucosaAyunasSource || '(No calculado)',
-				    hba1c: formatResult(results.hba1c, 1),
+				   // hba1c: formatResult(results.hba1c, 1),
 				    hba1cSource: results.hba1cSource || '(No calculado)',
-				    insulina: formatResult(results.insulina, 1),
+				    //insulina: formatResult(results.insulina, 1),
 				    insulinaSource: results.insulinaSource || '(No calculado)',
-				    pcrUltrasensible: formatResult(results.pcrUltrasensible, 1),
+				   // pcrUltrasensible: formatResult(results.pcrUltrasensible, 1),
 				    pcrUltrasensibleSource: results.pcrUltrasensibleSource || '(No calculado)',
-				    leptina: formatResult(results.leptina, 1),
+				   // leptina: formatResult(results.leptina, 1),
 				    leptinaSource: results.leptinaSource || '(No calculado)',
-				    alt: formatResult(results.alt, 1),
+				   // alt: formatResult(results.alt, 1),
 				    altSource: results.altSource || '(No calculado)',
-				    ggt: formatResult(results.ggt, 1),
+				   // ggt: formatResult(results.ggt, 1),
 				    ggtSource: results.ggtSource || '(No calculado)',
-				    tsh: formatResult(results.tsh, 1),
+				    //tsh: formatResult(results.tsh, 1),
 				    tshSource: results.tshSource || '(No calculado)',
-				    testosterona: formatResult(results.testosterona, 1),
+				    //testosterona: formatResult(results.testosterona, 1),
 				    testosteronaSource: results.testosteronaSource || '(No calculado)',
-				    vitaminaD: formatResult(results.vitaminaD, 1),
+				    //vitaminaD: formatResult(results.vitaminaD, 1),
 				    vitaminaDSource: results.vitaminaDSource || '(No calculado)'
 				};
 				    
