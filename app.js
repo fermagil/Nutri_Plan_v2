@@ -612,127 +612,167 @@ nuevoClienteBtn.addEventListener('click', () => {
 
 
 // Guardar datos
-guardarDatosBtn.addEventListener('click', async () => {
-    if (!currentUser) {
-        alert('Por favor, inicia sesión para guardar datos.');
-        return;
-    }
-    const nombre = document.getElementById('nombre').value.trim();
-    const peso = document.getElementById('peso').value;
-    const altura = document.getElementById('altura').value;
-    const email = document.getElementById('e-mail').value.trim();
-    if (!nombre) {
-        alert('Por favor, ingrese el nombre del cliente.');
-        return;
-    }
-    if (!peso || isNaN(peso) || peso <= 0) {
-        alert('Por favor, ingrese un peso válido.');
-        return;
-    }
-    if (!altura || isNaN(altura) || altura <= 0) {
-        alert('Por favor, ingrese una altura válida.');
-        return;
-    }
-    if (!email) {
-        alert('Por favor, ingrese el email del cliente.');
-        return;
-    }
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const validatedEmail = email && emailRegex.test(email) ? email : null;
-    const data = {
-        nombre,
-        email: validatedEmail,
-        genero: document.getElementById('genero').value || null,
-        fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
-        edad: parseInt(document.getElementById('edad').value) || null,
-        peso: parseFloat(peso),
-        altura: parseFloat(altura),
-        es_deportista: document.getElementById('es_deportista').value || null,
-        grasa_actual_conocida: parseFloat(document.getElementById('grasa_actual_conocida').value) || null,
-        grasa_deseada: parseFloat(document.getElementById('grasa_deseada').value) || null,
-        medidas: {
-            pliegues: {
-                tricipital: parseFloat(document.getElementById('pliegue_tricipital').value) || null,
-                subescapular: parseFloat(document.getElementById('pliegue_subescapular').value) || null,
-                suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
-                bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
-                pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
-            },
-            circunferencias: {
-                cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
-                cadera: parseFloat(document.getElementById('circ_cadera').value) || null,
-                cuello: parseFloat(document.getElementById('circ_cuello').value) || null,
-                pantorrilla: parseFloat(document.getElementById('circ_pantorrilla').value) || null,
-                brazo: parseFloat(document.getElementById('circ_brazo').value) || null,
-                brazo_contraido: parseFloat(document.getElementById('circ_brazo_contraido').value) || null,
-            },
-            diametros: {
-                humero: parseFloat(document.getElementById('diam_humero').value) || null,
-                femur: parseFloat(document.getElementById('diam_femur').value) || null,
-                muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
-            },
-            
-             parametros_bioquimicos: {
-                albumina: parseFloat(document.getElementById('result-albumina')?.textContent) || null,
-                albuminaSource: document.getElementById('albumina-source')?.textContent || null,
-                prealbumina: parseFloat(document.getElementById('result-prealbumina')?.textContent) || null,
-                prealbuminaSource: document.getElementById('prealbumina-source')?.textContent || null,
-                colesterol_total: parseFloat(document.getElementById('result-colesterol-total')?.textContent) || null,
-                colesterolTotalSource: document.getElementById('colesterol-total-source')?.textContent || null,
-                hdl: parseFloat(document.getElementById('result-hdl')?.textContent) || null,
-                hdlSource: document.getElementById('hdl-source')?.textContent || null,
-                trigliceridos: parseFloat(document.getElementById('result-trigliceridos')?.textContent) || null,
-                trigliceridosSource: document.getElementById('trigliceridos-source')?.textContent || null,
-                glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas')?.textContent) || null,
-                glucosaAyunasSource: document.getElementById('glucosa-ayunas-source')?.textContent || null,
-                hba1c: parseFloat(document.getElementById('result-hba1c')?.textContent) || null,
-                hba1cSource: document.getElementById('hba1c-source')?.textContent || null,
-                insulina: parseFloat(document.getElementById('result-insulina')?.textContent) || null,
-                insulinaSource: document.getElementById('insulina-source')?.textContent || null,
-                pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible')?.textContent) || null,
-                pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source')?.textContent || null,
-                leptina: parseFloat(document.getElementById('result-leptina')?.textContent) || null,
-                leptinaSource: document.getElementById('leptina-source')?.textContent || null,
-                alt: parseFloat(document.getElementById('result-alt')?.textContent) || null,
-                altSource: document.getElementById('alt-source')?.textContent || null,
-                ggt: parseFloat(document.getElementById('result-ggt')?.textContent) || null,
-                ggtSource: document.getElementById('ggt-source')?.textContent || null,
-                tsh: parseFloat(document.getElementById('result-tsh')?.textContent) || null,
-                tshSource: document.getElementById('tsh-source')?.textContent || null,
-                testosterona: parseFloat(document.getElementById('result-testosterona')?.textContent) || null,
-                testosteronaSource: document.getElementById('testosterona-source')?.textContent || null,
-                vitamina_d: parseFloat(document.getElementById('result-vitamina-d')?.textContent) || null,
-                vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null
-            },
-            
-        },
-        resultados: window.calculatedResults || {}
-    };
-    try {
-        console.log('Datos a guardar:', JSON.stringify(data, null, 2));
-        if (!currentClienteId) {
-            const clienteRef = await addDoc(collection(db, 'clientes'), {
-                nombre,
-                email,
-                nombreLowercase: normalizeText(nombre),
-                genero: data.genero,
-                fecha_creacion: new Date(),
-                created_by: currentUser.uid,
-            });
-            currentClienteId = clienteRef.id;
-            console.log('Cliente creado con ID:', currentClienteId);
+    guardarDatosBtn.addEventListener('click', async () => {
+        if (!currentUser) {
+            alert('Por favor, inicia sesión para guardar datos.');
+            return;
         }
-        const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
-        console.log('Documento guardado con ID:', tomaRef.id);
-        alert('Datos guardados exitosamente.');
-        await cargarFechasTomas(currentClienteId);
-        guardarDatosBtn.style.display = 'none';
-    } catch (error) {
-        console.error('Error al guardar:', error);
-        alert('Error al guardar los datos: ' + error.message);
-    }
-});
+
+        const nombre = document.getElementById('nombre').value.trim();
+        const peso = document.getElementById('peso').value;
+        const altura = document.getElementById('altura').value;
+        const email = document.getElementById('e-mail').value.trim();
+
+        // Validaciones
+        if (!nombre) {
+            alert('Por favor, ingrese el nombre del cliente.');
+            return;
+        }
+        if (!peso || isNaN(peso) || peso <= 0) {
+            alert('Por favor, ingrese un peso válido.');
+            return;
+        }
+        if (!altura || isNaN(altura) || altura <= 0) {
+            alert('Por favor, ingrese una altura válida.');
+            return;
+        }
+        if (!email) {
+            alert('Por favor, ingrese el email del cliente.');
+            return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const validatedEmail = email && emailRegex.test(email) ? email : null;
+        if (!validatedEmail) {
+            alert('Por favor, ingrese un email válido.');
+            return;
+        }
+
+        // Construir objeto de datos
+        const data = {
+            nombre,
+            email: validatedEmail,
+            genero: document.getElementById('genero').value || null,
+            fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
+            edad: parseInt(document.getElementById('edad').value) || null,
+            peso: parseFloat(peso),
+            altura: parseFloat(altura),
+            es_deportista: document.getElementById('es_deportista').value || null,
+            grasa_actual_conocida: parseFloat(document.getElementById('grasa_actual_conocida').value) || null,
+            grasa_deseada: parseFloat(document.getElementById('grasa_deseada').value) || null,
+            medidas: {
+                pliegues: {
+                    tricipital: parseFloat(document.getElementById('pliegue_tricipital').value) || null,
+                    subescapular: parseFloat(document.getElementById('pliegue_subescapular').value) || null,
+                    suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
+                    bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
+                    pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
+                },
+                circunferencias: {
+                    cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
+                    cadera: parseFloat(document.getElementById('circ_cadera').value) || null,
+                    cuello: parseFloat(document.getElementById('circ_cuello').value) || null,
+                    pantorrilla: parseFloat(document.getElementById('circ_pantorrilla').value) || null,
+                    brazo: parseFloat(document.getElementById('circ_brazo').value) || null,
+                    brazo_contraido: parseFloat(document.getElementById('circ_brazo_contraido').value) || null,
+                },
+                diametros: {
+                    humero: parseFloat(document.getElementById('diam_humero').value) || null,
+                    femur: parseFloat(document.getElementById('diam_femur').value) || null,
+                    muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
+                },
+                parametros_bioquimicos: {
+                    albumina: parseFloat(document.getElementById('result-albumina')?.textContent) || null,
+                    albuminaSource: document.getElementById('albumina-source')?.textContent || null,
+                    prealbumina: parseFloat(document.getElementById('result-prealbumina')?.textContent) || null,
+                    prealbuminaSource: document.getElementById('prealbumina-source')?.textContent || null,
+                    colesterol_total: parseFloat(document.getElementById('result-colesterol-total')?.textContent) || null,
+                    colesterolTotalSource: document.getElementById('colesterol-total-source')?.textContent || null,
+                    hdl: parseFloat(document.getElementById('result-hdl')?.textContent) || null,
+                    hdlSource: document.getElementById('hdl-source')?.textContent || null,
+                    trigliceridos: parseFloat(document.getElementById('result-trigliceridos')?.textContent) || null,
+                    trigliceridosSource: document.getElementById('trigliceridos-source')?.textContent || null,
+                    glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas')?.textContent) || null,
+                    glucosaAyunasSource: document.getElementById('glucosa-ayunas-source')?.textContent || null,
+                    hba1c: parseFloat(document.getElementById('result-hba1c')?.textContent) || null,
+                    hba1cSource: document.getElementById('hba1c-source')?.textContent || null,
+                    insulina: parseFloat(document.getElementById('result-insulina')?.textContent) || null,
+                    insulinaSource: document.getElementById('insulina-source')?.textContent || null,
+                    pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible')?.textContent) || null,
+                    pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source')?.textContent || null,
+                    leptina: parseFloat(document.getElementById('result-leptina')?.textContent) || null,
+                    leptinaSource: document.getElementById('leptina-source')?.textContent || null,
+                    alt: parseFloat(document.getElementById('result-alt')?.textContent) || null,
+                    altSource: document.getElementById('alt-source')?.textContent || null,
+                    ggt: parseFloat(document.getElementById('result-ggt')?.textContent) || null,
+                    ggtSource: document.getElementById('ggt-source')?.textContent || null,
+                    tsh: parseFloat(document.getElementById('result-tsh')?.textContent) || null,
+                    tshSource: document.getElementById('tsh-source')?.textContent || null,
+                    testosterona: parseFloat(document.getElementById('result-testosterona')?.textContent) || null,
+                    testosteronaSource: document.getElementById('testosterona-source')?.textContent || null,
+                    vitamina_d: parseFloat(document.getElementById('result-vitamina-d')?.textContent) || null,
+                    vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null,
+                },
+            },
+            resultados: window.calculatedResults || {},
+        };
+
+        try {
+            console.log('Datos a guardar:', JSON.stringify(data, null, 2));
+
+            // Create client if not exists
+            if (!currentClienteId) {
+                const clienteRef = await addDoc(collection(db, 'clientes'), {
+                    nombre,
+                    email,
+                    nombreLowercase: normalizeText(nombre),
+                    genero: data.genero,
+                    fecha_creacion: new Date(),
+                    created_by: currentUser.uid,
+                });
+                currentClienteId = clienteRef.id;
+                console.log('Cliente creado con ID:', currentClienteId);
+            }
+
+            // Check for existing toma by date
+            const tomasRef = collection(db, `clientes/${currentClienteId}/tomas`);
+            const q = query(tomasRef, where('fecha', '==', data.fecha));
+            const querySnapshot = await getDocs(q);
+
+            let tomaId = null;
+            let shouldUpdate = false;
+
+            if (!querySnapshot.empty) {
+                // Existing toma found
+                const existingToma = querySnapshot.docs[0];
+                tomaId = existingToma.id;
+                const confirmUpdate = confirm(
+                    'Ya existe una toma para esta fecha. ¿Desea actualizar los datos existentes o crear una nueva toma?\n' +
+                    'Aceptar: Actualizar datos\nCancelar: Crear nueva toma'
+                );
+                shouldUpdate = confirmUpdate;
+            }
+
+            if (shouldUpdate && tomaId) {
+                // Update existing toma
+                const tomaDocRef = doc(db, `clientes/${currentClienteId}/tomas`, tomaId);
+                await setDoc(tomaDocRef, data, { merge: true });
+                console.log('Toma actualizada con ID:', tomaId);
+                alert('Datos actualizados exitosamente.');
+            } else {
+                // Create new toma
+                const tomaRef = await addDoc(tomasRef, data);
+                console.log('Nueva toma guardada con ID:', tomaRef.id);
+                alert('Datos guardados exitosamente.');
+            }
+
+            // Refresh the list of tomas
+            await cargarFechasTomas(currentClienteId);
+            guardarDatosBtn.style.display = 'none';
+        } catch (error) {
+            console.error('Error al guardar:', error);
+            alert('Error al guardar los datos: ' + error.message);
+        }
+    });
 
 // Cargar fechas de tomas
 async function cargarFechasTomas(clienteId) {
