@@ -1,4 +1,4 @@
-// Firebase imports
+    // Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
@@ -1161,7 +1161,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Save values to the table
     saveButton.addEventListener('click', function() {
-        const genero = document.getElementById('genero')?.value || 'masculino'; // Obtener género del formulario
+        const genero = document.getElementById('genero')?.value || 'masculino';
         const fields = [
             { input: 'albumina', result: 'result-albumina', source: 'albumina-source' },
             { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source' },
@@ -1189,25 +1189,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!isNaN(value)) {
                     // Formatear según el parámetro
                     const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
-                    result.textContent = value.toFixed(decimals);
+                    // Asignar a result (manejar <span> o <input>)
+                    if (result.tagName === 'INPUT') {
+                        result.value = value.toFixed(decimals);
+                    } else {
+                        result.textContent = value.toFixed(decimals);
+                    }
                     source.textContent = getBioquimicoExplanation(field.input, value, genero);
+                    console.log(`Asignado ${field.input}: ${value.toFixed(decimals)} a ${field.result}, source: ${source.textContent}`);
                 } else {
-                    result.textContent = '---';
+                    if (result.tagName === 'INPUT') {
+                        result.value = '';
+                    } else {
+                        result.textContent = '---';
+                    }
                     source.textContent = 'Valor inválido';
+                    console.warn(`Valor inválido para ${field.input}`);
                 }
+            } else {
+                console.warn(`Falta elemento o valor para ${field.input}: input=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
             }
         });
 
         bioquimicosContainer.style.display = 'none';
-        bioquimicosInput.value = ''; // Clear the input field
-        document.getElementById('bioquimicos-form').reset(); // Reset form inputs
+        bioquimicosInput.value = '';
+        document.getElementById('bioquimicos-form').reset();
     });
 
     // Close popup without saving
     cancelButton.addEventListener('click', function() {
         bioquimicosContainer.style.display = 'none';
-        bioquimicosInput.value = ''; // Clear the input field
-        document.getElementById('bioquimicos-form').reset(); // Reset form inputs
+        bioquimicosInput.value = '';
+        document.getElementById('bioquimicos-form').reset();
     });
 });
 
