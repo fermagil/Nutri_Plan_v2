@@ -992,6 +992,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveButton = document.getElementById('save-bioquimicos');
     const cancelButton = document.getElementById('cancel-bioquimicos');
 
+    // Función para obtener la explicación de un parámetro bioquímico
+    function getBioquimicoExplanation(param, value, genero = 'masculino') {
+        const ranges = {
+            albumina: { min: 3.5, max: 5.0, unit: 'g/dL', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
+            prealbumina: { min: 15, max: 40, unit: 'mg/dL', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
+            'colesterol-total': { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
+            hdl: { 
+                min: genero === 'masculino' ? 40 : 50, max: 100, unit: 'mg/dL', 
+                indica: 'Protege contra enfermedades cardíacas', alteracion: '↓ En obesidad visceral' 
+            },
+            trigliceridos: { min: 0, max: 150, unit: 'mg/dL', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
+            'glucosa-ayunas': { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
+            hba1c: { min: 0, max: 5.7, unit: '%', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
+            insulina: { min: 2, max: 25, unit: 'µUI/mL', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
+            'pcr-ultrasensible': { min: 0, max: 1.0, unit: 'mg/L', indica: 'Inflamación sistémica', alteracion: '↑ En obesidad (>3 mg/L = riesgo cardiovascular)' },
+            leptina: { 
+                min: genero === 'masculino' ? 0.5 : 3, max: genero === 'masculino' ? 15 : 30, unit: 'ng/mL', 
+                indica: 'Regula saciedad; alta en obesidad (resistencia leptínica)', alteracion: '↑ En obesidad (resistencia leptínica)' 
+            },
+            alt: { 
+                min: genero === 'masculino' ? 7 : 7, max: genero === 'masculino' ? 55 : 45, unit: 'U/L', 
+                indica: 'Daño hepático (hígado graso no alcohólico, NAFLD)', alteracion: '↑ En NAFLD (obesidad)' 
+            },
+            ggt: { 
+                min: genero === 'masculino' ? 8 : 5, max: genero === 'masculino' ? 61 : 36, unit: 'U/L', 
+                indica: 'Sensible a acumulación de grasa en hígado', alteracion: '↑ En obesidad y consumo de alcohol' 
+            },
+            tsh: { min: 0.4, max: 4.0, unit: 'mIU/L', indica: 'Función tiroidea (hipotiroidismo → aumento de peso)', alteracion: '↑ En hipotiroidismo' },
+            testosterona: { min: 300, max: 1000, unit: 'ng/dL', indica: 'Bajos niveles asociados a ↑ grasa visceral', alteracion: '↓ En obesidad masculina', genderSpecific: 'masculino' },
+            'vitamina-d': { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' }
+        };
+
+        const config = ranges[param];
+        if (!config) return 'Parámetro no reconocido';
+        if (isNaN(value) || value === null || value === undefined) return `Valor inválido para ${param}`;
+
+        // Determinar estado (normal, bajo, alto)
+        let estado;
+        if (config.genderSpecific && genero !== config.genderSpecific) {
+            estado = `No aplicable para género ${genero}`;
+        } else if (value < config.min) {
+            estado = 'bajo';
+        } else if (value > config.max) {
+            estado = 'alto';
+        } else {
+            estado = 'normal';
+        }
+
+        // Generar mensaje
+        return `${param.replace(/-/g, ' ').toUpperCase()}: ${value} ${config.unit} (${estado}). ${config.indica}. ${config.alteracion}.`;
+    }
+
     // Show popup when typing in the input field
     bioquimicosInput.addEventListener('input', function() {
         if (this.value.length > 0) {
@@ -1001,6 +1053,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Save values to the table
     saveButton.addEventListener('click', function() {
+        const genero = document.getElementById('genero')?.value || 'masculino'; // Obtener género del formulario
         const fields = [
             { input: 'albumina', result: 'result-albumina', source: 'albumina-source' },
             { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source' },
@@ -1023,14 +1076,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById(field.input);
             const result = document.getElementById(field.result);
             const source = document.getElementById(field.source);
-            if (input.value) {
-                result.textContent = parseFloat(input.value).toFixed(1);
-                source.textContent = '(Ingresado manualmente)';
+            if (input && result && source && input.value) {
+                const value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    // Formatear según el parámetro
+                    const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
+                    result.textContent = value.toFixed(decimals);
+                    source.textContent = getBioquimicoExplanation(field.input, value, genero);
+                } else {
+                    result.textContent = '---';
+                    source.textContent = 'Valor inválido';
+                }
             }
         });
 
         bioquimicosContainer.style.display = 'none';
         bioquimicosInput.value = ''; // Clear the input field
+        document.getElementById('bioquimicos-form').reset(); // Reset form inputs
     });
 
     // Close popup without saving
