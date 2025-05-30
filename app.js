@@ -1025,33 +1025,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para obtener la explicación de un parámetro bioquímico
     function getBioquimicoExplanation(param, value, genero = 'masculino') {
         const ranges = {
-            albumina: { min: 3.5, max: 5.0, unit: 'g/dL', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
-            prealbumina: { min: 15, max: 40, unit: 'mg/dL', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
-            'colesterol-total': { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
+            albumina: { min: 3.5, max: 5.0, unit: '', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
+            prealbumina: { min: 15, max: 40, unit: '', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
+            'colesterol-total': { min: 0, max: 200, unit: '', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
             hdl: { 
-                min: genero === 'masculino' ? 40 : 50, max: 100, unit: 'mg/dL', 
+                min: genero === 'masculino' ? 40 : 50, max: 100, unit: '', 
                 indica: 'Protege contra enfermedades cardíacas', alteracion: '↓ En obesidad visceral' 
             },
-            trigliceridos: { min: 0, max: 150, unit: 'mg/dL', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
-            'glucosa-ayunas': { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
-            hba1c: { min: 0, max: 5.7, unit: '%', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
-            insulina: { min: 2, max: 25, unit: 'µUI/mL', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
-            'pcr-ultrasensible': { min: 0, max: 1.0, unit: 'mg/L', indica: 'Inflamación sistémica', alteracion: '↑ En obesidad (>3 mg/L = riesgo cardiovascular)' },
+            trigliceridos: { min: 0, max: 150, unit: '', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
+            'glucosa-ayunas': { min: 70, max: 99, unit: '', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
+            hba1c: { min: 0, max: 5.7, unit: '', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
+            insulina: { min: 2, max: 25, unit: '', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
+            'pcr-ultrasensible': { min: 0, max: 1.0, unit: '', indica: 'Inflamación sistémica', alteracion: '↑ En obesidad (>3 mg/L = riesgo cardiovascular)' },
             leptina: { 
-                min: genero === 'masculino' ? 0.5 : 3, max: genero === 'masculino' ? 15 : 30, unit: 'ng/mL', 
+                min: genero === 'masculino' ? 0.5 : 3, max: genero === 'masculino' ? 15 : 30, unit: '', 
                 indica: 'Regula saciedad; alta en obesidad (resistencia leptínica)', alteracion: '↑ En obesidad (resistencia leptínica)' 
             },
             alt: { 
-                min: genero === 'masculino' ? 7 : 7, max: genero === 'masculino' ? 55 : 45, unit: 'U/L', 
+                min: genero === 'masculino' ? 7 : 7, max: genero === 'masculino' ? 55 : 45, unit: '', 
                 indica: 'Daño hepático (hígado graso no alcohólico, NAFLD)', alteracion: '↑ En NAFLD (obesidad)' 
             },
             ggt: { 
-                min: genero === 'masculino' ? 8 : 5, max: genero === 'masculino' ? 61 : 36, unit: 'U/L', 
+                min: genero === 'masculino' ? 8 : 5, max: genero === 'masculino' ? 61 : 36, unit: '', 
                 indica: 'Sensible a acumulación de grasa en hígado', alteracion: '↑ En obesidad y consumo de alcohol' 
             },
-            tsh: { min: 0.4, max: 4.0, unit: 'mIU/L', indica: 'Función tiroidea (hipotiroidismo → aumento de peso)', alteracion: '↑ En hipotiroidismo' },
-            testosterona: { min: 300, max: 1000, unit: 'ng/dL', indica: 'Bajos niveles asociados a ↑ grasa visceral', alteracion: '↓ En obesidad masculina', genderSpecific: 'masculino' },
-            'vitamina-d': { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' }
+            tsh: { min: 0.4, max: 4.0, unit: '', indica: 'Función tiroidea (hipotiroidismo → aumento de peso)', alteracion: '↑ En hipotiroidismo' },
+            testosterona: { min: 300, max: 1000, unit: '', indica: 'Bajos niveles asociados a ↑ grasa visceral', alteracion: '↓ En obesidad masculina', genderSpecific: 'masculino' },
+            'vitamina-d': { min: 30, max: 100, unit: '', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' }
         };
 
         const config = ranges[param];
@@ -1098,7 +1098,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { input: 'ggt', result: 'result-ggt', source: 'ggt-source' },
             { input: 'tsh', result: 'result-tsh', source: 'tsh-source' },
             { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source' },
-            { input: 'vitamina-d', result: 'result-vitamina-d', source unit: 'vitamina-d-source' }
+            { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source' }
         ];
     
         fields.forEach(field => {
