@@ -934,7 +934,7 @@ async function cargarDatosToma(clienteId, tomaId) {
             'ggt': { id: 'result-ggt', unit: '', source: 'medidas.parametros_bioquimicos.ggt', format: (v) => typeof v === 'number' ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
             'tsh': { id: 'result-tsh', unit: '', source: 'medidas.parametros_bioquimicos.tsh', format: (v) => typeof v === 'number' ? v.toFixed(2) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(2) : '---') },
             'testosterona': { id: 'result-testosterona', unit: '', source: 'medidas.parametros_bioquimicos.testosterona', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
-            'vitaminaD': { id: 'result-vitamina-d', unit: '', source: 'medidas.parametros_bioquimicos.vitamina_d', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') }
+            'vitaminaD': { id: 'result-vitamina-d', unit: '', source: 'medidas.parametros_bioquimicos.vitamina_d', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
             // Parámetros Bioquímicos Sources
             'albuminaSource': { 
                 id: 'albumina-source', 
