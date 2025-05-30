@@ -1003,7 +1003,23 @@ async function cargarDatosToma(clienteId, tomaId) {
                 if (element) element.textContent = '---';
             });
         }
-
+         // Poblar medidas.parametros_bioquimicos
+            document.getElementById('result-albumina').value = data.medidas?.parametros_bioquimicos?.albumina || '';
+            document.getElementById('result-prealbumina').value = data.medidas?.parametros_bioquimicos?.prealbumina || '';
+            document.getElementById('result-colesterol-total').value = data.medidas?.parametros_bioquimicos?.colesterol_total || '';
+            document.getElementById('result-hdl').value = data.medidas?.parametros_bioquimicos?.hdl || '';
+            document.getElementById('result-trigliceridos').value = data.medidas?.parametros_bioquimicos?.trigliceridos || '';
+            document.getElementById('result-glucosa-ayunas').value = data.medidas?.parametros_bioquimicos?.glucosa_ayunas || '';
+            document.getElementById('result-hba1c').value = data.medidas?.parametros_bioquimicos?.hba1c || '';
+            document.getElementById('result-insulina').value = data.medidas?.parametros_bioquimicos?.insulina || '';
+            document.getElementById('result-pcr-ultrasensible').value = data.medidas?.parametros_bioquimicos?.pcr_ultrasensible || '';
+            document.getElementById('result-leptina').value = data.medidas?.parametros_bioquimicos?.leptina || '';
+            document.getElementById('result-alt').value = data.medidas?.parametros_bioquimicos?.alt || '';
+            document.getElementById('result-ggt').value = data.medidas?.parametros_bioquimicos?.ggt || '';
+            document.getElementById('result-tsh').value = data.medidas?.parametros_bioquimicos?.tsh || '';
+            document.getElementById('result-testosterona').value = data.medidas?.parametros_bioquimicos?.testosterona || '';
+            document.getElementById('result-vitamina-d').value = data.medidas?.parametros_bioquimicos?.vitamina_d || '';
+        
         // Actualizar sección de explicación (si existe)
         const explanationSection = document.getElementById('explanation-section');
         if (explanationSection) {
