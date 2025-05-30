@@ -892,7 +892,7 @@ async function cargarDatosToma(clienteId, tomaId) {
             // MMT
             'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
             'mmtSource': { id: 'mmt-source', unit: '', format: (v) => v || '---' },
-            'Pctmmt': { id: 'result-Pct-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed-ChristianMartinez-2025-05-30T16:50:45.166Z
+            'Pctmmt': { id: 'result-Pct-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
             // Masa Ósea
             'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
             'masaOseaSource': { id: 'masa-osea-source', unit: '', format: (v) => v || '---' },
