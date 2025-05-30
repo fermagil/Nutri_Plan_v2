@@ -5304,19 +5304,19 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    if (
 					        data.albumina &&
 					        data.prealbumina &&
-					        data.colesterol_total &&
+					        data.colesterol-total &&
 					        data.hdl &&
 					        data.trigliceridos &&
-					        data.glucosa_ayunas &&
+					        data.glucosa-ayunas &&
 					        data.hba1c &&
 					        data.insulina &&
-					        data.pcr_ultrasensible &&
+					        data.pcr-ultrasensible &&
 					        data.leptina &&
 					        data.alt &&
 					        data.ggt &&
 					        data.tsh &&
 					        data.testosterona &&
-					        data.vitamina_d
+					        data.vitamina-d
 					    ) {
 					        // Convert and validate inputs
 					      
@@ -5405,57 +5405,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					            vitaminaD: results.vitaminaD
 					        });
 					
-					        // Store results
-						        results.albumina = Math.max(0.1, albumina);
-						        results.prealbumina = Math.max(0.1, prealbumina);
-						        results.colesterolTotal = Math.max(0.1, colesterolTotal);
-						        results.hdl = Math.max(0.1, hdl);
-						        results.trigliceridos = Math.max(0.1, trigliceridos);
-						        results.glucosaAyunas = Math.max(0.1, glucosaAyunas);
-						        results.hba1c = Math.max(0.1, hba1c);
-						        results.insulina = Math.max(0.1, insulina);
-						        results.pcrUltrasensible = Math.max(0.1, pcrUltrasensible);
-						        results.leptina = Math.max(0.1, leptina);
-						        results.alt = Math.max(0.1, alt);
-						        results.ggt = Math.max(0.1, ggt);
-						        results.tsh = Math.max(0.1, tsh);
-						        results.testosterona = Math.max(0.1, testosterona);
-						        results.vitaminaD = Math.max(0.1, vitaminaD);
-						
-						        // Set source to indicate manual input
-						        results.albuminaSource = 'Ingresado manualmente';
-						        results.prealbuminaSource = 'Ingresado manualmente';
-						        results.colesterolTotalSource = 'Ingresado manualmente';
-						        results.hdlSource = 'Ingresado manualmente';
-						        results.trigliceridosSource = 'Ingresado manualmente';
-						        results.glucosaAyunasSource = 'Ingresado manualmente';
-						        results.hba1cSource = 'Ingresado manualmente';
-						        results.insulinaSource = 'Ingresado manualmente';
-						        results.pcrUltrasensibleSource = 'Ingresado manualmente';
-						        results.leptinaSource = 'Ingresado manualmente';
-						        results.altSource = 'Ingresado manualmente';
-						        results.ggtSource = 'Ingresado manualmente';
-						        results.tshSource = 'Ingresado manualmente';
-						        results.testosteronaSource = 'Ingresado manualmente';
-						        results.vitaminaDSource = 'Ingresado manualmente';
-						
-						        console.log('Parámetros bioquímicos validados:', {
-						            albumina: results.albumina,
-						            prealbumina: results.prealbumina,
-						            colesterolTotal: results.colesterolTotal,
-						            hdl: results.hdl,
-						            trigliceridos: results.trigliceridos,
-						            glucosaAyunas: results.glucosaAyunas,
-						            hba1c: results.hba1c,
-						            insulina: results.insulina,
-						            pcrUltrasensible: results.pcrUltrasensible,
-						            leptina: results.leptina,
-						            alt: results.alt,
-						            ggt: results.ggt,
-						            tsh: results.tsh,
-						            testosterona: results.testosterona,
-						            vitaminaD: results.vitaminaD
-						        });
+					      
 						    } else {
 						        throw new Error('Datos insuficientes para parámetros bioquímicos');
 						    }
@@ -5497,6 +5447,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						
 						    content += `<p><strong>Error en Parámetros Bioquímicos:</strong> ${e.message}.</p>`;
 						}
+
+					
 			            // Store results for app.js
 			           window.calculatedResults = {
 				    imc: formatResult(results.imc, 1),
