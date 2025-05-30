@@ -1608,7 +1608,7 @@ button:hover {
 		});
 
 		//visibility of the "P. Abdominal"
-		    document.addEventListener('DOMContentLoaded', () => {
+		   document.addEventListener('DOMContentLoaded', () => {
 		    const deportistaSelect = document.getElementById('es_deportista');
 		    const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
 		
@@ -1620,7 +1620,9 @@ button:hover {
 		
 		    // Function to handle value changes (from dropdown or external data)
 		    const handleValueChange = (value) => {
-		        deportistaSelect.value = value;
+		        if (deportistaSelect.value !== value) {
+		            deportistaSelect.value = value;
+		        }
 		        localStorage.setItem('es_deportista', value);
 		        updateVisibility();
 		    };
@@ -1634,6 +1636,15 @@ button:hover {
 		    // Update localStorage and visibility on dropdown change
 		    deportistaSelect.addEventListener('change', () => {
 		        handleValueChange(deportistaSelect.value);
+		    });
+		
+		    // Observe changes to the dropdown value programmatically
+		    const observer = new MutationObserver(() => {
+		        updateVisibility();
+		    });
+		    observer.observe(deportistaSelect, {
+		        attributes: true,
+		        attributeFilter: ['value']
 		    });
 		
 		    // Expose function to update value programmatically
