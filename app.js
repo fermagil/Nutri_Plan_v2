@@ -471,7 +471,7 @@ const toNumber = (value) => {
 
 
 // Global variables
-let currentClienteId = null;
+ currentClienteId = null;
 let currentTomaSerial = null; // Track the loaded toma's serial
 
 // Búsqueda de clientes
