@@ -268,7 +268,7 @@ export { app, db, auth, provider };
                             console.log('EmailJS templateParams:', JSON.stringify(templateParams, null, 2));
                             enviarEmailBtn.value = 'Enviando...';
                             try {
-                                const response = await emailjs.send('service_hsxp598', 'template_jidfcmg', templateParams);
+                                const response = await emailjs.send('service_hsxp598', 'template_lf5a4xh', templateParams);
                                 console.log('Email enviado con éxito:', response);
                                 alert('¡Email de bienvenida enviado con éxito!');
                                
