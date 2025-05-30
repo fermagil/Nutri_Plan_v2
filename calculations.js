@@ -5310,7 +5310,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        data.glucosa_ayunas &&
 					        data.hba1c &&
 					        data.insulina &&
-					        data.pcr_ltrasensible &&
+					        data.pcr_ultrasensible &&
 					        data.leptina &&
 					        data.alt &&
 					        data.ggt &&
