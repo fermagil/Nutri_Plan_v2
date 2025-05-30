@@ -526,6 +526,7 @@ clientesResultados.addEventListener('change', async () => {
     }
     if (clienteId) {
         currentClienteId = clienteId;
+        currentTomaSerial = null; // Clear toma serial when changing client
         verProgresoBtn.style.display = 'inline-block'; // Show button
        if (enviarEmailBtn) {
             enviarEmailBtn.style.display = 'none'; // Hide until a toma is selected
@@ -553,8 +554,12 @@ seleccionarFecha.addEventListener('change', async () => {
         if (verProgresoBtn) {
             verProgresoBtn.style.display = 'inline-block'; // Show when a toma is selected
         }
+        if (enviarEmailBtn) {
+                enviarEmailBtn.style.display = 'inline-block'; // Show when toma is selected
+            }
     } else {
         console.log('No toma seleccionada o no clienteId, limpiando formulario');
+        currentTomaSerial = null; // Clear toma serial
         form.reset();
         if (verProgresoBtn) {
             verProgresoBtn.style.display = 'none';
@@ -569,6 +574,7 @@ seleccionarFecha.addEventListener('change', async () => {
 nuevoClienteBtn.addEventListener('click', () => {
     console.log('Nuevo Cliente clicked');
     currentClienteId = null;
+    currentTomaSerial = null; // Clear toma serial
     form.reset();
     buscarClienteInput.value = '';
     clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
@@ -623,7 +629,7 @@ nuevoClienteBtn.addEventListener('click', () => {
             const peso = document.getElementById('peso').value;
             const altura = document.getElementById('altura').value;
             const email = document.getElementById('e-mail').value.trim();
-            const tomaSerial = document.getElementById('tomaSerial')?.value.trim() || currentTomaSerial || null;
+            const tomaSerial = currentTomaSerial || null;
     
             // Validaciones
             if (!nombre) {
