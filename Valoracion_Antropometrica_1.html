@@ -829,7 +829,7 @@ button:hover {
 .accordion-section .section-header[data-accordion] {
     cursor: pointer;
     position: relative;
-    transition: background-color 0.5s ease;
+    transition: background-color 0.3s ease;
     background-color: #f5f5f5; /* Default background for accordion headers */
 }
 
@@ -842,7 +842,7 @@ button:hover {
 .accordion-section .accordion-icon {
     position: absolute;
     right: 10px;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
 }
 
 /* Rotate icon when section is collapsed */
@@ -853,7 +853,8 @@ button:hover {
 /* General table styling */
 .results-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate; /* Changed to separate to support border-radius */
+    border-spacing: 0; /* Maintains tight cell spacing */
     table-layout: auto; /* Allows columns to adjust based on content */
 }
 
@@ -874,23 +875,36 @@ button:hover {
 
 /* Style for table headers (Métrica, Valor, Nota) */
 .results-table thead th {
-    background-color: #3b9c40; /* Darker gray-blue for contrast */
-    color: #ffffff; /* White text for readability */
-    font-weight: 600; /* Bolder text */
-    font-size: 1.1rem; /* Slightly larger text */
-    padding: 12px 8px; /* Increased padding for better spacing */
-    border-bottom: 2px solid #2d3748; /* Stronger border to separate from body */
-    transition: background-color 0.5s ease; /* Smooth hover transition */
+    background: linear-gradient(135deg, #3b9c40 0%, #2e7d32 100%); /* Gradient with specified green */
+    color: #ffffff; /* White text for contrast */
+    font-weight: 700; /* Bolder text for modern look */
+    font-size: 1.15rem; /* Slightly larger text */
+    padding: 12px 10px; /* Increased padding for spacing */
+    border: 1px solid #2e7d32; /* Matching border color */
+    border-radius: 8px 8px 0 0; /* Rounded top corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
+    transition: background 0.3s ease, transform 0.2s ease; /* Smooth hover and scale */
 }
 
 /* Hover effect for table headers */
 .results-table thead th:hover {
-    background-color: #5a8a73; /* Lighter shade on hover */
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); /* Lighter gradient on hover */
+    transform: translateY(-1px); /* Slight lift effect */
 }
 
-/* Optional: Ensure "Valor" header respects width */
+/* Ensure "Valor" header respects width */
 .results-table thead th:nth-child(2) {
     min-width: 150px; /* Match the data column width */
+}
+
+/* Fix for rounded corners in collapsed table */
+.results-table thead th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.results-table thead th:last-child {
+    border-top-right-radius: 8px;
 }
     </style>
 </head>
