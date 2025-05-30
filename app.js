@@ -470,148 +470,154 @@ const toNumber = (value) => {
         });
 
 
-
+// Global variables
+let currentClienteId = null;
+let currentTomaSerial = null; // Track the loaded toma's serial
 
 // Búsqueda de clientes
-buscarClienteInput.addEventListener('input', async () => {
-    if (!currentUser) {
-        console.log('No user authenticated, skipping search');
-        return;
-    }
-    const searchTerm = normalizeText(buscarClienteInput.value);
-    console.log('Normalized search term:', searchTerm);
-    clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
-    if (searchTerm.length < 2) {
-        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-        clientesResultados.style.display = 'none';
-        console.log('Search term too short (< 2), hiding resultados');
-        return;
-    }
-    clientesResultados.style.display = 'block';
-    console.log('Executing Firestore query for clientes');
-    const q = query(collection(db, 'clientes'), 
-        where('nombreLowercase', '>=', searchTerm), 
-        where('nombreLowercase', '<=', searchTerm + '\uf8ff'));
-    try {
-        const querySnapshot = await getDocs(q);
-        console.log('Query snapshot size:', querySnapshot.size);
-        querySnapshot.forEach(doc => {
-            const data = doc.data();
-            console.log('Found client:', doc.id, data.nombre, 'nombreLowercase:', data.nombreLowercase);
-            const option = document.createElement('option');
-            option.value = doc.id;
-            option.textContent = data.nombre;
-            clientesResultados.appendChild(option);
-        });
-        if (querySnapshot.empty) {
-            console.log('No clients found for search term:', searchTerm);
-            clientesResultados.innerHTML = '<option value="">No se encontraron clientes...</option>';
+// Búsqueda de clientes
+    buscarClienteInput.addEventListener('input', async () => {
+        if (!currentUser) {
+            console.log('No user authenticated, skipping search');
+            return;
         }
-    } catch (error) {
-        console.error('Error fetching clients:', error.code, error.message);
-        alert('Error al buscar clientes: ' + error.message);
-    }
-});
+        const searchTerm = normalizeText(buscarClienteInput.value);
+        console.log('Normalized search term:', searchTerm);
+        clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
+        if (searchTerm.length < 2) {
+            seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+            clientesResultados.style.display = 'none';
+            console.log('Search term too short (< 2), hiding resultados');
+            return;
+        }
+        clientesResultados.style.display = 'block';
+        console.log('Executing Firestore query for clientes');
+        const q = query(collection(db, 'clientes'), 
+            where('nombreLowercase', '>=', searchTerm), 
+            where('nombreLowercase', '<=', searchTerm + '\uf8ff'));
+        try {
+            const querySnapshot = await getDocs(q);
+            console.log('Query snapshot size:', querySnapshot.size);
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                console.log('Found client:', doc.id, data.nombre, 'nombreLowercase:', data.nombreLowercase);
+                const option = document.createElement('option');
+                option.value = doc.id;
+                option.textContent = data.nombre;
+                clientesResultados.appendChild(option);
+            });
+            if (querySnapshot.empty) {
+                console.log('No clients found for search term:', searchTerm);
+                clientesResultados.innerHTML = '<option value="">No se encontraron clientes...</option>';
+            }
+        } catch (error) {
+            console.error('Error fetching clients:', error.code, error.message);
+            alert('Error al buscar clientes: ' + error.message);
+        }
+    });
 
 // Cargar fechas de tomas al seleccionar un cliente
-clientesResultados.addEventListener('change', async () => {
-    const clienteId = clientesResultados.value;
-    console.log('Cliente seleccionado:', clienteId);
-    const verProgresoBtn = document.getElementById('ver-progreso-btn');
-    const enviarEmailBtn = document.getElementById('mail-btn');
-    
-    if (!verProgresoBtn) {
-        console.error('Botón Ver Progreso no encontrado en el DOM');
-        return;
-    }
-    if (clienteId) {
-        currentClienteId = clienteId;
-        currentTomaSerial = null; // Clear toma serial when changing client
-        verProgresoBtn.style.display = 'inline-block'; // Show button
-       if (enviarEmailBtn) {
-            enviarEmailBtn.style.display = 'none'; // Hide until a toma is selected
+    clientesResultados.addEventListener('change', async () => {
+        const clienteId = clientesResultados.value;
+        console.log('Cliente seleccionado:', clienteId);
+        const verProgresoBtn = document.getElementById('ver-progreso-btn');
+        const enviarEmailBtn = document.getElementById('mail-btn');
+        
+        if (!verProgresoBtn) {
+            console.error('Botón Ver Progreso no encontrado en el DOM');
+            return;
         }
-        await cargarFechasTomas(clienteId);
-    } else {
-        console.log('No cliente seleccionado, limpiando fechas');
-        currentClienteId = null;
-        verProgresoBtn.style.display = 'none'; // Hide button
-        if (enviarEmailBtn) {
-            enviarEmailBtn.style.display = 'none';
+        if (clienteId) {
+            currentClienteId = clienteId;
+            currentTomaSerial = null; // Reset toma serial when changing client
+            verProgresoBtn.style.display = 'inline-block';
+            if (enviarEmailBtn) {
+                enviarEmailBtn.style.display = 'none';
+            }
+            await cargarFechasTomas(clienteId);
+        } else {
+            console.log('No cliente seleccionado, limpiando fechas');
+            currentClienteId = null;
+            currentTomaSerial = null;
+            verProgresoBtn.style.display = 'none';
+            if (enviarEmailBtn) {
+                enviarEmailBtn.style.display = 'none';
+            }
+            seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
         }
-        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-    }
-});
+    });
 
 // Cargar datos de la toma seleccionada
-seleccionarFecha.addEventListener('change', async () => {
-    const tomaId = seleccionarFecha.value;
-    console.log('Toma seleccionada:', tomaId);
-    const verProgresoBtn = document.getElementById('ver-progreso-btn');
-    const enviarEmailBtn = document.getElementById('mail-btn');
-    if (tomaId && currentClienteId) {
-        await cargarDatosToma(currentClienteId, tomaId);
-        if (verProgresoBtn) {
-            verProgresoBtn.style.display = 'inline-block'; // Show when a toma is selected
-        }
-        if (enviarEmailBtn) {
+    seleccionarFecha.addEventListener('change', async () => {
+        const tomaId = seleccionarFecha.value;
+        console.log('Toma seleccionada:', tomaId);
+        const verProgresoBtn = document.getElementById('ver-progreso-btn');
+        const enviarEmailBtn = document.getElementById('mail-btn');
+        if (tomaId && currentClienteId) {
+            currentTomaSerial = tomaId; // Set the loaded toma's serial
+            await cargarDatosToma(currentClienteId, tomaId);
+            if (verProgresoBtn) {
+                verProgresoBtn.style.display = 'inline-block';
+            }
+            if (enviarEmailBtn) {
                 enviarEmailBtn.style.display = 'inline-block'; // Show when toma is selected
             }
-    } else {
-        console.log('No toma seleccionada o no clienteId, limpiando formulario');
-        currentTomaSerial = null; // Clear toma serial
+        } else {
+            console.log('No toma seleccionada o no clienteId, limpiando formulario');
+            currentTomaSerial = null; // Reset toma serial
+            form.reset();
+            if (verProgresoBtn) {
+                verProgresoBtn.style.display = 'none';
+            }
+            if (enviarEmailBtn) {
+                enviarEmailBtn.style.display = 'none';
+            }
+        }
+    });
+
+
+ // Limpiar y ocultar secciones para nuevo cliente
+    nuevoClienteBtn.addEventListener('click', () => {
+        console.log('Nuevo Cliente clicked');
+        currentClienteId = null;
+        currentTomaSerial = null; // Reset toma serial
         form.reset();
+        buscarClienteInput.value = '';
+        clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
+        clientesResultados.style.display = 'none';
+        seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
+        guardarDatosBtn.style.display = 'none';
+        const verProgresoBtn = document.getElementById('ver-progreso-btn');
+        const enviarEmailBtn = document.getElementById('mail-btn');
+        const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
+        pliegueAbdominalGroup.style.display = 'none';
+        
         if (verProgresoBtn) {
             verProgresoBtn.style.display = 'none';
         }
         if (enviarEmailBtn) {
             enviarEmailBtn.style.display = 'none';
         }
-    }
-});
-
-// Limpiar y ocultar secciones para nuevo cliente
-nuevoClienteBtn.addEventListener('click', () => {
-    console.log('Nuevo Cliente clicked');
-    currentClienteId = null;
-    currentTomaSerial = null; // Clear toma serial
-    form.reset();
-    buscarClienteInput.value = '';
-    clientesResultados.innerHTML = '<option value="">Seleccionar cliente...</option>';
-    clientesResultados.style.display = 'none';
-    seleccionarFecha.innerHTML = '<option value="">Seleccionar fecha...</option>';
-    guardarDatosBtn.style.display = 'none';
-    const verProgresoBtn = document.getElementById('ver-progreso-btn');
-    const enviarEmailBtn = document.getElementById('mail-btn');
-    const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
-    pliegueAbdominalGroup.style.display = 'none';
-    
-    if (verProgresoBtn) {
-        verProgresoBtn.style.display = 'none';
-    }
-    if (enviarEmailBtn) {
-        enviarEmailBtn.style.display = 'none';
-    }
-    // Limpiar sección de resultados
-    resultElementIds.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = '---';
-    });
-    // Ocultar sección de explicación
-    const explanationSection = document.getElementById('explanation-section');
-    if (explanationSection) {
-        explanationSection.style.display = 'none';
-        console.log('Explanation section hidden');
-    }
-    // Limpiar gráficos
-    ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
-        const canvas = document.getElementById(canvasId);
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Limpiar sección de resultados
+        resultElementIds.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = '---';
+        });
+        // Ocultar sección de explicación
+        const explanationSection = document.getElementById('explanation-section');
+        if (explanationSection) {
+            explanationSection.style.display = 'none';
+            console.log('Explanation section hidden');
         }
+        // Limpiar gráficos
+        ['somatotype-point-canvas', 'typology-chart', 'weight-chart'].forEach(canvasId => {
+            const canvas = document.getElementById(canvasId);
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        });
     });
-});
 
 
            
@@ -619,168 +625,167 @@ nuevoClienteBtn.addEventListener('click', () => {
 
         // Guardar datos
         // Guardar datos
-        guardarDatosBtn.addEventListener('click', async () => {
-            if (!currentUser) {
-                alert('Por favor, inicia sesión para guardar datos.');
-                return;
-            }
-    
-            const nombre = document.getElementById('nombre').value.trim();
-            const peso = document.getElementById('peso').value;
-            const altura = document.getElementById('altura').value;
-            const email = document.getElementById('e-mail').value.trim();
-            const tomaSerial = currentTomaSerial || null;
-    
-            // Validaciones
-            if (!nombre) {
-                alert('Por favor, ingrese el nombre del cliente.');
-                return;
-            }
-            if (!peso || isNaN(peso) || peso <= 0) {
-                alert('Por favor, ingrese un peso válido.');
-                return;
-            }
-            if (!altura || isNaN(altura) || altura <= 0) {
-                alert('Por favor, ingrese una altura válida.');
-                return;
-            }
-            if (!email) {
-                alert('Por favor, ingrese el email del cliente.');
-                return;
-            }
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const validatedEmail = email && emailRegex.test(email) ? email : null;
-            if (!validatedEmail) {
-                alert('Por favor, ingrese un email válido.');
-                return;
-            }
-    
-            // Construir objeto de datos
-            const data = {
-                nombre,
-                email: validatedEmail,
-                genero: document.getElementById('genero').value || null,
-                fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
-                edad: parseInt(document.getElementById('edad').value) || null,
-                peso: parseFloat(peso),
-                altura: parseFloat(altura),
-                es_deportista: document.getElementById('es_deportista').value || null,
-                grasa_actual_conocida: parseFloat(document.getElementById('grasa_actual_conocida').value) || null,
-                grasa_deseada: parseFloat(document.getElementById('grasa_deseada').value) || null,
-                medidas: {
-                    pliegues: {
-                        tricipital: parseFloat(document.getElementById('pliegue_tricipital').value) || null,
-                        subescapular: parseFloat(document.getElementById('pliegue_subescapular').value) || null,
-                        suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
-                        bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
-                        pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
-                    },
-                    circunferencias: {
-                        cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
-                        cadera: parseFloat(document.getElementById('circ_cadera').value) || null,
-                        cuello: parseFloat(document.getElementById('circ_cuello').value) || null,
-                        pantorrilla: parseFloat(document.getElementById('circ_pantorrilla').value) || null,
-                        brazo: parseFloat(document.getElementById('circ_brazo').value) || null,
-                        brazo_contraido: parseFloat(document.getElementById('circ_brazo_contraido').value) || null,
-                    },
-                    diametros: {
-                        humero: parseFloat(document.getElementById('diam_humero').value) || null,
-                        femur: parseFloat(document.getElementById('diam_femur').value) || null,
-                        muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
-                    },
-                    parametros_bioquimicos: {
-                        albumina: parseFloat(document.getElementById('result-albumina')?.textContent) || null,
-                        albuminaSource: document.getElementById('albumina-source')?.textContent || null,
-                        prealbumina: parseFloat(document.getElementById('result-prealbumina')?.textContent) || null,
-                        prealbuminaSource: document.getElementById('prealbumina-source')?.textContent || null,
-                        colesterol_total: parseFloat(document.getElementById('result-colesterol-total')?.textContent) || null,
-                        colesterolTotalSource: document.getElementById('colesterol-total-source')?.textContent || null,
-                        hdl: parseFloat(document.getElementById('result-hdl')?.textContent) || null,
-                        hdlSource: document.getElementById('hdl-source')?.textContent || null,
-                        trigliceridos: parseFloat(document.getElementById('result-trigliceridos')?.textContent) || null,
-                        trigliceridosSource: document.getElementById('trigliceridos-source')?.textContent || null,
-                        glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas')?.textContent) || null,
-                        glucosaAyunasSource: document.getElementById('glucosa-ayunas-source')?.textContent || null,
-                        hba1c: parseFloat(document.getElementById('result-hba1c')?.textContent) || null,
-                        hba1cSource: document.getElementById('hba1c-source')?.textContent || null,
-                        insulina: parseFloat(document.getElementById('result-insulina')?.textContent) || null,
-                        insulinaSource: document.getElementById('insulina-source')?.textContent || null,
-                        pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible')?.textContent) || null,
-                        pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source')?.textContent || null,
-                        leptina: parseFloat(document.getElementById('result-leptina')?.textContent) || null,
-                        leptinaSource: document.getElementById('leptina-source')?.textContent || null,
-                        alt: parseFloat(document.getElementById('result-alt')?.textContent) || null,
-                        altSource: document.getElementById('alt-source')?.textContent || null,
-                        ggt: parseFloat(document.getElementById('result-ggt')?.textContent) || null,
-                        ggtSource: document.getElementById('ggt-source')?.textContent || null,
-                        tsh: parseFloat(document.getElementById('result-tsh')?.textContent) || null,
-                        tshSource: document.getElementById('tsh-source')?.textContent || null,
-                        testosterona: parseFloat(document.getElementById('result-testosterona')?.textContent) || null,
-                        testosteronaSource: document.getElementById('testosterona-source')?.textContent || null,
-                        vitamina_d: parseFloat(document.getElementById('result-vitamina-d')?.textContent) || null,
-                        vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null,
-                    },
+    guardarDatosBtn.addEventListener('click', async () => {
+        if (!currentUser) {
+            alert('Por favor, inicia sesión para guardar datos.');
+            return;
+        }
+
+        const nombre = document.getElementById('nombre').value.trim();
+        const peso = document.getElementById('peso').value;
+        const altura = document.getElementById('altura').value;
+        const email = document.getElementById('e-mail').value.trim();
+        const tomaSerial = currentTomaSerial || null; // Use currentTomaSerial
+
+        // Validaciones
+        if (!nombre) {
+            alert('Por favor, ingrese el nombre del cliente.');
+            return;
+        }
+        if (!peso || isNaN(peso) || peso <= 0) {
+            alert('Por favor, ingrese un peso válido.');
+            return;
+        }
+        if (!altura || isNaN(altura) || altura <= 0) {
+            alert('Por favor, ingrese una altura válida.');
+            return;
+        }
+        if (!email) {
+            alert('Por favor, ingrese el email del cliente.');
+            return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const validatedEmail = email && emailRegex.test(email) ? email : null;
+        if (!validatedEmail) {
+            alert('Por favor, ingrese un email válido.');
+            return;
+        }
+
+        // Construir objeto de datos
+        const data = {
+            nombre,
+            email: validatedEmail,
+            genero: document.getElementById('genero').value || null,
+            fecha: document.getElementById('fecha').value ? new Date(document.getElementById('fecha').value) : new Date(),
+            edad: parseInt(document.getElementById('edad').value) || null,
+            peso: parseFloat(peso),
+            altura: parseFloat(altura),
+            es_deportista: document.getElementById('es_deportista').value || null,
+            grasa_actual_conocida: parseFloat(document.getElementById('grasa_actual_conocida').value) || null,
+            grasa_deseada: parseFloat(document.getElementById('grasa_deseada').value) || null,
+            medidas: {
+                pliegues: {
+                    tricipital: parseFloat(document.getElementById('pliegue_tricipital').value) || null,
+                    subescapular: parseFloat(document.getElementById('pliegue_subescapular').value) || null,
+                    suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
+                    bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
+                    pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
                 },
-                resultados: window.calculatedResults || {},
-            };
-    
-            try {
-                console.log('Datos a guardar:', JSON.stringify(data, null, 2));
-    
-                // Create client if not exists
-                if (!currentClienteId) {
-                    const clienteRef = await addDoc(collection(db, 'clientes'), {
-                        nombre,
-                        email,
-                        nombreLowercase: normalizeText(nombre),
-                        genero: data.genero,
-                        fecha_creacion: new Date(),
-                        created_by: currentUser.uid,
-                    });
-                    currentClienteId = clienteRef.id;
-                    console.log('Cliente creado con ID:', currentClienteId);
-                }
-    
-                let shouldUpdate = false;
-                let tomaId = tomaSerial;
-    
-                // Check if toma exists if tomaSerial is provided
-                if (tomaSerial) {
-                    const tomaDocRef = doc(db, `clientes/${currentClienteId}/tomas`, tomaSerial);
-                    const tomaDoc = await getDoc(tomaDocRef);
-                    if (tomaDoc.exists()) {
-                        // Existing toma found
-                        const promptMessage = currentTomaSerial === tomaSerial
-                            ? 'Los datos han sido cargados de una toma existente y modificados. ¿Desea actualizar la toma existente o crear una nueva?\nAceptar: Actualizar datos\nCancelar: Crear nueva toma'
-                            : 'Ya existe una toma con este serial. ¿Desea actualizar la toma existente o crear una nueva?\nAceptar: Actualizar datos\nCancelar: Crear nueva toma';
-                        const confirmUpdate = confirm(promptMessage);
-                        shouldUpdate = confirmUpdate;
-                    } else {
-                        tomaId = null; // Serial doesn’t exist, treat as new
-                    }
-                }
-    
-                if (shouldUpdate && tomaId) {
-                    // Update existing toma
-                    const tomaDocRef = doc(db, `clientes/${currentClienteId}/tomas`, tomaId);
-                    await setDoc(tomaDocRef, data, { merge: true });
-                    console.log('Toma actualizada con ID:', tomaId);
-                    alert('Datos actualizados exitosamente.');
-                } else {
-                    // Create new toma
-                    const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
-                    console.log('Nueva toma guardada con ID:', tomaRef.id);
-                    alert('Datos guardados exitosamente.');
-                }
-    
-                // Refresh the list of toma records
-                await cargarFechasTomas(currentClienteId);
-                guardarDatosBtn.style.display = 'none';
-            } catch (error) {
-                console.error('Error al guardar:', error);
-                alert('Error al guardar los datos: ' + error.message);
+                circunferencias: {
+                    cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
+                    cadera: parseFloat(document.getElementById('circ_cadera').value) || null,
+                    cuello: parseFloat(document.getElementById('circ_cuello').value) || null,
+                    pantorrilla: parseFloat(document.getElementById('circ_pantorrilla').value) || null,
+                    brazo: parseFloat(document.getElementById('circ_brazo').value) || null,
+                    brazo_contraido: parseFloat(document.getElementById('circ_brazo_contraido').value) || null,
+                },
+                diametros: {
+                    humero: parseFloat(document.getElementById('diam_humero').value) || null,
+                    femur: parseFloat(document.getElementById('diam_femur').value) || null,
+                    muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
+                },
+                parametros_bioquimicos: {
+                    albumina: parseFloat(document.getElementById('result-albumina')?.textContent) || null,
+                    albuminaSource: document.getElementById('albumina-source')?.textContent || null,
+                    prealbumina: parseFloat(document.getElementById('result-prealbumina')?.textContent) || null,
+                    prealbuminaSource: document.getElementById('prealbumina-source')?.textContent || null,
+                    colesterol_total: parseFloat(document.getElementById('result-colesterol-total')?.textContent) || null,
+                    colesterolTotalSource: document.getElementById('colesterol-total-source')?.textContent || null,
+                    hdl: parseFloat(document.getElementById('result-hdl')?.textContent) || null,
+                    hdlSource: document.getElementById('hdl-source')?.textContent || null,
+                    trigliceridos: parseFloat(document.getElementById('result-trigliceridos')?.textContent) || null,
+                    trigliceridosSource: document.getElementById('trigliceridos-source')?.textContent || null,
+                    glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas')?.textContent) || null,
+                    glucosaAyunasSource: document.getElementById('glucosa-ayunas-source')?.textContent || null,
+                    hba1c: parseFloat(document.getElementById('result-hba1c')?.textContent) || null,
+                    hba1cSource: document.getElementById('hba1c-source')?.textContent || null,
+                    insulina: parseFloat(document.getElementById('result-insulina')?.textContent) || null,
+                    insulinaSource: document.getElementById('insulina-source')?.textContent || null,
+                    pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible')?.textContent) || null,
+                    pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source')?.textContent || null,
+                    leptina: parseFloat(document.getElementById('result-leptina')?.textContent) || null,
+                    leptinaSource: document.getElementById('leptina-source')?.textContent || null,
+                    alt: parseFloat(document.getElementById('result-alt')?.textContent) || null,
+                    altSource: document.getElementById('alt-source')?.textContent || null,
+                    ggt: parseFloat(document.getElementById('result-ggt')?.textContent) || null,
+                    ggtSource: document.getElementById('ggt-source')?.textContent || null,
+                    tsh: parseFloat(document.getElementById('result-tsh')?.textContent) || null,
+                    tshSource: document.getElementById('tsh-source')?.textContent || null,
+                    testosterona: parseFloat(document.getElementById('result-testosterona')?.textContent) || null,
+                    testosteronaSource: document.getElementById('testosterona-source')?.textContent || null,
+                    vitamina_d: parseFloat(document.getElementById('result-vitamina-d')?.textContent) || null,
+                    vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null,
+                },
+            },
+            resultados: window.calculatedResults || {},
+        };
+
+        try {
+            console.log('Datos a guardar:', JSON.stringify(data, null, 2));
+
+            // Create client if not exists
+            if (!currentClienteId) {
+                const clienteRef = await addDoc(collection(db, 'clientes'), {
+                    nombre,
+                    email,
+                    nombreLowercase: normalizeText(nombre),
+                    genero: data.genero,
+                    fecha_creacion: new Date(),
+                    created_by: currentUser.uid,
+                });
+                currentClienteId = clienteRef.id;
+                console.log('Cliente creado con ID:', currentClienteId);
             }
-        });
+
+            let shouldUpdate = false;
+            let tomaId = tomaSerial;
+
+            // Check if toma exists if tomaSerial is provided
+            if (tomaSerial) {
+                const tomaDocRef = doc(db, `clientes/${currentClienteId}/tomas`, tomaSerial);
+                const tomaDoc = await getDoc(tomaDocRef);
+                if (tomaDoc.exists()) {
+                    // Existing toma found
+                    const confirmUpdate = confirm(
+                        'Los datos han sido cargados de una toma existente y modificados. ¿Desea actualizar la toma existente o crear una nueva?\nAceptar: Actualizar datos\nCancelar: Crear nueva toma'
+                    );
+                    shouldUpdate = confirmUpdate;
+                } else {
+                    tomaId = null; // Serial doesn’t exist, treat as new
+                }
+            }
+
+            if (shouldUpdate && tomaId) {
+                // Update existing toma
+                const tomaDocRef = doc(db, `clientes/${currentClienteId}/tomas`, tomaId);
+                await setDoc(tomaDocRef, data, { merge: true });
+                console.log('Toma actualizada con ID:', tomaId);
+                alert('Datos actualizados exitosamente.');
+            } else {
+                // Create new toma
+                const tomaRef = await addDoc(collection(db, `clientes/${currentClienteId}/tomas`), data);
+                console.log('Nueva toma guardada con ID:', tomaRef.id);
+                alert('Datos guardados exitosamente.');
+            }
+
+            // Refresh the list of toma records
+            await cargarFechasTomas(currentClienteId);
+            guardarDatosBtn.style.display = 'none';
+        } catch (error) {
+            console.error('Error al guardar:', error);
+            alert('Error al guardar los datos: ' + error.message);
+        }
+    });
 
 // Cargar fechas de tomas
 async function cargarFechasTomas(clienteId) {
