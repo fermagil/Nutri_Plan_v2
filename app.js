@@ -791,24 +791,25 @@ async function cargarDatosToma(clienteId, tomaId) {
         const data = tomaSnap.data();
         console.log('Datos de la toma:', JSON.stringify(data, null, 2));
         currentTomaData = data; // Guardar datos de la toma
+
         // Poblar campos del formulario
         document.getElementById('nombre').value = data.nombre || '';
-        document.getElementById('e-mail').value = data.email || ''; // Corregido de 'email' a 'e-mail'
+        document.getElementById('e-mail').value = data.email || '';
         document.getElementById('genero').value = data.genero || '';
         document.getElementById('edad').value = data.edad || '';
         document.getElementById('peso').value = data.peso || '';
         document.getElementById('altura').value = data.altura || '';
-        //document.getElementById('es_deportista').value = data.es_deportista || '';
+
         // Actualizar es_deportista y visibilidad de P. Abdominal
         const esDeportistaValue = data.es_deportista || '';
         document.getElementById('es_deportista').value = esDeportistaValue;
         console.log('Valor de es_deportista:', esDeportistaValue);
-        // Llamar a la función global para actualizar visibilidad
         if (window.updateDeportistaValue) {
             window.updateDeportistaValue(esDeportistaValue);
         } else {
             console.warn('Función updateDeportistaValue no encontrada. Asegúrate de que el script de visibilidad esté cargado.');
         }
+
         document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
         document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
 
@@ -832,22 +833,119 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('diam_femur').value = data.medidas?.diametros?.femur || '';
         document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
 
-        // Poblar medidas.parametros_bioquimicos
-            document.getElementById('result-albumina').value = data.medidas?.parametros_bioquimicos?.albumina || '';
-            document.getElementById('result-prealbumina').value = data.medidas?.parametros_bioquimicos?.prealbumina || '';
-            document.getElementById('result-colesterol-total').value = data.medidas?.parametros_bioquimicos?.colesterol_total || '';
-            document.getElementById('result-hdl').value = data.medidas?.parametros_bioquimicos?.hdl || '';
-            document.getElementById('result-trigliceridos').value = data.medidas?.parametros_bioquimicos?.trigliceridos || '';
-            document.getElementById('result-glucosa-ayunas').value = data.medidas?.parametros_bioquimicos?.glucosa_ayunas || '';
-            document.getElementById('result-hba1c').value = data.medidas?.parametros_bioquimicos?.hba1c || '';
-            document.getElementById('result-insulina').value = data.medidas?.parametros_bioquimicos?.insulina || '';
-            document.getElementById('result-pcr-ultrasensible').value = data.medidas?.parametros_bioquimicos?.pcr_ultrasensible || '';
-            document.getElementById('result-leptina').value = data.medidas?.parametros_bioquimicos?.leptina || '';
-            document.getElementById('result-alt').value = data.medidas?.parametros_bioquimicos?.alt || '';
-            document.getElementById('result-ggt').value = data.medidas?.parametros_bioquimicos?.ggt || '';
-            document.getElementById('result-tsh').value = data.medidas?.parametros_bioquimicos?.tsh || '';
-            document.getElementById('result-testosterona').value = data.medidas?.parametros_bioquimicos?.testosterona || '';
-            document.getElementById('result-vitamina-d').value = data.medidas?.parametros_bioquimicos?.vitamina_d || '';
+        // Mapear claves de resultados a IDs de elementos, incluyendo parámetros bioquímicos
+        const resultMappings = {
+            // IMC
+            'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
+            // ICC
+            'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+            'iccSource': { id: 'icc-source', unit: '', format: (v) => v || '---' },
+            // % Grasa
+            'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
+            'grasaPctMetabolic': { id: 'result-grasa-pct-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'grasaPctMetabolicSource': { id: 'grasa-pct-metabolic-source', unit: '', format: (v) => v || '---' },
+            'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
+            'grasaPctDeurenberg': { id: 'result-grasa-pct-Deurenberg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'grasaPctDeurenbergSource': { id: 'grasa-pct-Deurenberg-source', unit: '', format: (v) => v || '---' },
+            'grasaPctCUNBAE': { id: 'result-grasa-pct-CUN-BAE', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'grasaPctCUNBAESource': { id: 'grasa-pct-CUN-BAE-source', unit: '', format: (v) => v || '---' },
+            // Masa Grasa
+            'masaGrasaActual': { id: 'result-masa-grasa-actual', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'masaGrasaActualSource': { id: 'masa-grasa-actual-source', unit: '', format: (v) => v || '---' },
+            'masaGrasaMetabolic': { id: 'result-masa-grasa-metabolic', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'masaGrasaMetabolicSource': { id: 'masa-grasa-metabolic-source', unit: '', format: (v) => v || '---' },
+            // Masa Magra
+            'masaMagraActual': { id: 'result-masa-magra-actual', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'masaMagraActualSource': { id: 'masa-magra-actual-source', unit: '', format: (v) => v || '---' },
+            'masaMagraMetabolic': { id: 'result-masa-magra-metabolic', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'masaMagraMetabolicSource': { id: 'masa-magra-metabolic-source', unit: '', format: (v) => v || '---' },
+            // IMLG
+            'imlgActual': { id: 'result-imlg-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'imlgActualSource': { id: 'imlg-actual-source', unit: '', format: (v) => v || '---' },
+            'imlgMetabolic': { id: 'result-imlg-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'imlgMetabolicSource': { id: 'imlg-metabolic-source', unit: '', format: (v) => v || '---' },
+            // IMG
+            'imgActual': { id: 'result-img-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'imgActualSource': { id: 'img-actual-source', unit: '', format: (v) => v || '---' },
+            'imgMetabolic': { id: 'result-img-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'imgMetabolicSource': { id: 'img-metabolic-source', unit: '', format: (v) => v || '---' },
+            // Tipología
+            'tipologiaActual': { id: 'result-tipologia-actual', unit: '', format: (v) => v || '---' },
+            'tipologiaActualSource': { id: 'tipologia-actual-source', unit: '', format: (v) => v || '---' },
+            'tipologiaMetabolic': { id: 'result-tipologia-metabolic', unit: '', format: (v) => v || '---' },
+            'tipologiaMetabolicSource': { id: 'tipologia-metabolic-source', unit: '', format: (v) => v || '---' },
+            // TMB
+            'BRMEstimado': { id: 'result-tmb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+            'BRMEstimadoSource': { id: 'tmb-source', unit: '', format: (v) => v || '---' },
+            // Edad Metabólica
+            'edadMetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+            'edadMetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
+            // Somatotipo
+            'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : (typeof v === 'string' ? v : '---') },
+            'somatotipoSource': { id: 'somatotipo-source', unit: '', format: (v) => v || '---' },
+            // AMB
+            'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
+            'ambSource': { id: 'amb-source', unit: '', format: (v) => v || '---' },
+            // MMT
+            'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'mmtSource': { id: 'mmt-source', unit: '', format: (v) => v || '---' },
+            'Pctmmt': { id: 'result-Pct-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed-ChristianMartinez-2025-05-30T16:50:45.166Z
+            // Masa Ósea
+            'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'masaOseaSource': { id: 'masa-osea-source', unit: '', format: (v) => v || '---' },
+            // Masa Residual
+            'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'masaResidualSource': { id: 'masa-residual-source', unit: '', format: (v) => v || '---' },
+            // Peso
+            'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'pesoIdealSource': { id: 'peso-ideal-source', unit: '', format: (v) => v || '---' },
+            'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+            'pesoObjetivoSource': { id: 'peso-objetivo-source', unit: '', format: (v) => v || '---' },
+            // Parámetros Bioquímicos
+            'albumina': { id: 'result-albumina', unit: 'g/dL', source: 'medidas.parametros_bioquimicos.albumina', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+            'prealbumina': { id: 'result-prealbumina', unit: 'mg/dL', source: 'medidas.parametros_bioquimicos.prealbumina', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+            'colesterolTotal': { id: 'result-colesterol-total', unit: 'mg/dL', source: 'medidas.parametros_bioquimicos.colesterol_total', format: (v) => typeof v === 'number' ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
+            'hdl': { id: 'result-hdl', unit: 'mg/dL', source: 'medidas.parametros_bioquimicos.hdl', format: (v) => typeof v === 'number' ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
+            'trigliceridos': { id: 'result-trigliceridos', unit: 'mg/dL', source: 'medidas.parametros_bioquimicos.trigliceridos', format: (v) => typeof v === 'number' ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
+            'glucosaAyunas': { id: 'result-glucosa-ayunas', unit: 'mg/dL', source: 'medidas.parametros_bioquimicos.glucosa_ayunas', format: (v) => typeof v === 'number' ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
+            'hba1c': { id: 'result-hba1c', unit: '%', source: 'medidas.parametros_bioquimicos.hba1c', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+            'insulina': { id: 'result-insulina', unit: 'µU/mL', source: 'medidas.parametros_bioquimicos.insulina', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+            'pcrUltrasensible': { id: 'result-pcr-ultrasensible', unit: 'mg/L', source: 'medidas.parametros_bioquimicos.pcr_ultrasensible', format: (v) => typeof v === 'number' ? v.toFixed(2) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(2) : '---') },
+            'leptina': { id: 'result-leptina', unit: 'ng/mL', source: 'medidas.parametros_bioquimicos.leptina', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+            'alt': { id: 'result-alt', unit: 'U/L', source: 'medidas.parametros_bioquimicos.alt', format: (v) => typeof v === 'number' ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
+            'ggt': { id: 'result-ggt', unit: 'U/L', source: 'medidas.parametros_bioquimicos.ggt', format: (v) => typeof v === 'number' ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
+            'tsh': { id: 'result-tsh', unit: 'µIU/mL', source: 'medidas.parametros_bioquimicos.tsh', format: (v) => typeof v === 'number' ? v.toFixed(2) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(2) : '---') },
+            'testosterona': { id: 'result-testosterona', unit: 'ng/dL', source: 'medidas.parametros_bioquimicos.testosterona', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+            'vitaminaD': { id: 'result-vitamina-d', unit: 'ng/mL', source: 'medidas.parametros_bioquimicos.vitamina_d', format: (v) => typeof v === 'number' ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') }
+        };
+
+        // Asignar valores a los elementos de resultados
+        Object.entries(resultMappings).forEach(([key, { id, unit, source, format }]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                let value;
+                if (source) {
+                    // Obtener valor desde la fuente especificada (por ejemplo, medidas.parametros_bioquimicos)
+                    const sourceParts = source.split('.');
+                    value = sourceParts.reduce((obj, part) => obj && obj[part], data);
+                } else {
+                    // Obtener valor desde resultados
+                    value = data.resultados ? data.resultados[key] : undefined;
+                }
+                // Asignar .value para inputs, .textContent para elementos de visualización
+                if (element.tagName === 'INPUT' || element.tagName === 'SELECT') {
+                    element.value = value !== undefined && value !== null ? format(value) : '';
+                } else {
+                    element.textContent = value !== undefined && value !== null ? `${format(value)} ${unit}`.trim() : '---';
+                }
+                console.log(`Asignando ${key} al elemento ${id}:`, value);
+            } else {
+                console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
+            }
+        });
 
         // Asegurarse de que los botones estén en el estado correcto
         const guardarDatosBtn = document.getElementById('guardar_datos');
@@ -857,169 +955,12 @@ async function cargarDatosToma(clienteId, tomaId) {
             console.log('Botón Guardar Datos ocultado al cargar toma');
         }
         if (enviarEmailBtn) {
-            // Mostrar mail-btn solo si hay un email válido
             const email = data.email || '';
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             enviarEmailBtn.style.display = email && emailRegex.test(email) ? 'inline-block' : 'none';
             console.log('Botón Enviar Email:', enviarEmailBtn.style.display === 'inline-block' ? 'mostrado' : 'ocultado', 'Email:', email);
         }
 
-        // Poblar resultados
-        if (data.resultados) {
-            const resultados = data.resultados;
-            console.log('Claves disponibles en resultados:', Object.keys(resultados));
-
-            // Mapear claves de resultados a IDs de elementos
-            const resultMappings = {
-                // IMC
-                'imc': { id: 'result-imc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imcSource': { id: 'imc-source', unit: '', format: (v) => v || '---' },
-                // ICC
-                'icc': { id: 'result-icc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-                'iccSource': { id: 'icc-source', unit: '', format: (v) => v || '---' },
-                // % Grasa
-                'grasaPctActual': { id: 'result-grasa-pct-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
-                'grasaPctMetabolic': { id: 'result-grasa-pct-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'grasaPctMetabolicSource': { id: 'grasa-pct-metabolic-source', unit: '', format: (v) => v || '---' },
-                'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'grasaPctDeseadoSource': { id: 'grasa-pct-deseado-source', unit: '', format: (v) => v || '---' },
-                'grasaPctDeurenberg': { id: 'result-grasa-pct-Deurenberg', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'grasaPctDeurenbergSource': { id: 'grasa-pct-Deurenberg-source', unit: '', format: (v) => v || '---' },
-                'grasaPctCUNBAE': { id: 'result-grasa-pct-CUN-BAE', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'grasaPctCUNBAESource': { id: 'grasa-pct-CUN-BAE-source', unit: '', format: (v) => v || '---' },
-                // Masa Grasa
-                'masaGrasaActual': { id: 'result-masa-grasa-actual', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaGrasaActualSource': { id: 'masa-grasa-actual-source', unit: '', format: (v) => v || '---' },
-                'masaGrasaMetabolic': { id: 'result-masa-grasa-metabolic', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaGrasaMetabolicSource': { id: 'masa-grasa-metabolic-source', unit: '', format: (v) => v || '---' },
-                // Masa Magra
-                'masaMagraActual': { id: 'result-masa-magra-actual', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaMagraActualSource': { id: 'masa-magra-actual-source', unit: '', format: (v) => v || '---' },
-                'masaMagraMetabolic': { id: 'result-masa-magra-metabolic', unit: 'k', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaMagraMetabolicSource': { id: 'masa-magra-metabolic-source', unit: '', format: (v) => v || '---' },
-                // IMLG
-                'imlgActual': { id: 'result-imlg-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imlgActualSource': { id: 'imlg-actual-source', unit: '', format: (v) => v || '---' },
-                'imlgMetabolic': { id: 'result-imlg-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imlgMetabolicSource': { id: 'imlg-metabolic-source', unit: '', format: (v) => v || '---' },
-                // IMG
-                'imgActual': { id: 'result-img-actual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imgActualSource': { id: 'img-actual-source', unit: '', format: (v) => v || '---' },
-                'imgMetabolic': { id: 'result-img-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'imgMetabolicSource': { id: 'img-metabolic-source', unit: '', format: (v) => v || '---' },
-                // Tipología
-                'tipologiaActual': { id: 'result-tipologia-actual', unit: '', format: (v) => v || '---' },
-                'tipologiaActualSource': { id: 'tipologia-actual-source', unit: '', format: (v) => v || '---' },
-                'tipologiaMetabolic': { id: 'result-tipologia-metabolic', unit: '', format: (v) => v || '---' },
-                'tipologiaMetabolicSource': { id: 'tipologia-metabolic-source', unit: '', format: (v) => v || '---' },
-                // TMB
-                'BRMEstimado': { id: 'result-tmb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                'BRMEstimadoSource': { id: 'tmb-source', unit: '', format: (v) => v || '---' },
-                // Edad Metabólica
-                'edadMetabolica': { id: 'result-edadmetabolica', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                'edadMetabolicaSource': { id: 'edadmetabolica-source', unit: '', format: (v) => v || '---' },
-                // Somatotipo
-                'somatotipo': { id: 'result-somatotipo', unit: '', format: (v) => typeof v === 'object' && v.formatted ? v.formatted : (typeof v === 'string' ? v : '---') },
-                'somatotipoSource': { id: 'somatotipo-source', unit: '', format: (v) => v || '---' },
-                // AMB
-                'amb': { id: 'result-amb', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                'ambSource': { id: 'amb-source', unit: '', format: (v) => v || '---' },
-                // AMBC
-                'ambc': { id: 'result-ambc', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                'ambcSource': { id: 'ambc-source', unit: '', format: (v) => v || '---' },
-                // MMT
-                'mmt': { id: 'result-mmt', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'mmtSource': { id: 'mmt-source', unit: '', format: (v) => v || '---' },
-                'mmt2': { id: 'result-mmt2', unit: 'kg', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'mmt2Source': { id: 'mmt2-source', unit: '', format: (v) => v || '---' },
-                'Pctmmt': { id: 'result-Pct-mmt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'PctmmtSource': { id: 'Pct-mmt-source', unit: '', format: (v) => v || '---' },
-                'Pctmmt2': { id: 'result-Pct-mmt2', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'Pctmmt2Source': { id: 'Pct-mmt2-source', unit: '', format: (v) => v || '---' },
-                // Masa Ósea
-                'masaOsea': { id: 'result-masa-osea', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaOseaSource': { id: 'masa-osea-source', unit: '', format: (v) => v || '---' },
-                // Masa Residual
-                'masaResidual': { id: 'result-masa-residual', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'masaResidualSource': { id: 'masa-residual-source', unit: '', format: (v) => v || '---' },
-                // Peso
-                'pesoIdeal': { id: 'result-peso-ideal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'pesoIdealSource': { id: 'peso-ideal-source', unit: '', format: (v) => v || '---' },
-                'pesoObjetivo': { id: 'result-peso-objetivo', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'pesoObjetivoSource': { id: 'peso-objetivo-source', unit: '', format: (v) => v || '---' },
-                'pesoMuscular': { id: 'result-peso-muscular', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                'pesoMuscularSource': { id: 'peso-muscular-source', unit: '', format: (v) => v || '---' },
-                // Agua Corporal
-                'aguacorporal': { id: 'result-agua-corporal', unit: '', format: (v) => v || '---' },
-                'aguacorporalSource': { id: 'agua-corporal-source', unit: '', format: (v) => v || '---' },
-                // Bioquímicos
-                    //'albumina': { id: 'result-albumina', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                    //'albuminaSource': { id: 'albumina-source', unit: '', format: (v) => v || '---' },
-                   // 'prealbumina': { id: 'result-prealbumina', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                    //'prealbuminaSource': { id: 'prealbumina-source', unit: '', format: (v) => v || '---' },
-                    //'colesterolTotal': { id: 'result-colesterol-total', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                    //'colesterolTotalSource': { id: 'colesterol-total-source', unit: '', format: (v) => v || '---' },
-                    //'hdl': { id: 'result-hdl', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                    //'hdlSource': { id: 'hdl-source', unit: '', format: (v) => v || '---' },
-                   // 'trigliceridos': { id: 'result-trigliceridos', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                   //'trigliceridosSource': { id: 'trigliceridos-source', unit: '', format: (v) => v || '---' },
-                    //'glucosaAyunas': { id: 'result-glucosa-ayunas', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                   // 'glucosaAyunasSource': { id: 'glucosa-ayunas-source', unit: '', format: (v) => v || '---' },
-                    //'hba1c': { id: 'result-hba1c', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-                    //'hba1cSource': { id: 'hba1c-source', unit: '', format: (v) => v || '---' },
-                    //'insulina': { id: 'result-insulina', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                    //'insulinaSource': { id: 'insulina-source', unit: '', format: (v) => v || '---' },
-                    //'pcrUltrasensible': { id: 'result-pcr-ultrasensible', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-                    //'pcrUltrasensibleSource': { id: 'pcr-ultrasensible-source', unit: '', format: (v) => v || '---' },
-                    //'leptina': { id: 'result-leptina', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                    //'leptinaSource': { id: 'leptina-source', unit: '', format: (v) => v || '---' },
-                    //'alt': { id: 'result-alt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                    //'altSource': { id: 'alt-source', unit: '', format: (v) => v || '---' },
-                   // 'ggt': { id: 'result-ggt', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(0) : '---' },
-                    //'ggtSource': { id: 'ggt-source', unit: '', format: (v) => v || '---' },
-                    //'tsh': { id: 'result-tsh', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
-                    //'tshSource': { id: 'tsh-source', unit: '', format: (v) => v || '---' },
-                    //'testosterona': { id: 'result-testosterona', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                    //'testosteronaSource': { id: 'testosterona-source', unit: '', format: (v) => v || '---' },
-                    //'vitaminaD': { id: 'result-vitamina-d', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
-                    //'vitaminaDSource': { id: 'vitamina-d-source', unit: '', format: (v) => v || '---' }
-            };
-
-            // Asignar valores a los elementos de resultados
-            Object.entries(resultMappings).forEach(([key, { id, unit, format }]) => {
-                const element = document.getElementById(id);
-                if (element) {
-                    const value = resultados[key];
-                    element.textContent = value !== undefined && value !== null ? `${format(value)} ${unit}`.trim() : '---';
-                } else {
-                    console.warn(`Elemento con ID ${id} no encontrado en el DOM`);
-                }
-            });
-        } else {
-            console.log('No hay resultados en la toma');
-            resultElementIds.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) element.textContent = '---';
-            });
-        }
-         // Poblar medidas.parametros_bioquimicos
-            document.getElementById('result-albumina').value = data.medidas?.parametros_bioquimicos?.albumina || '';
-            document.getElementById('result-prealbumina').value = data.medidas?.parametros_bioquimicos?.prealbumina || '';
-            document.getElementById('result-colesterol-total').value = data.medidas?.parametros_bioquimicos?.colesterol_total || '';
-            document.getElementById('result-hdl').value = data.medidas?.parametros_bioquimicos?.hdl || '';
-            document.getElementById('result-trigliceridos').value = data.medidas?.parametros_bioquimicos?.trigliceridos || '';
-            document.getElementById('result-glucosa-ayunas').value = data.medidas?.parametros_bioquimicos?.glucosa_ayunas || '';
-            document.getElementById('result-hba1c').value = data.medidas?.parametros_bioquimicos?.hba1c || '';
-            document.getElementById('result-insulina').value = data.medidas?.parametros_bioquimicos?.insulina || '';
-            document.getElementById('result-pcr-ultrasensible').value = data.medidas?.parametros_bioquimicos?.pcr_ultrasensible || '';
-            document.getElementById('result-leptina').value = data.medidas?.parametros_bioquimicos?.leptina || '';
-            document.getElementById('result-alt').value = data.medidas?.parametros_bioquimicos?.alt || '';
-            document.getElementById('result-ggt').value = data.medidas?.parametros_bioquimicos?.ggt || '';
-            document.getElementById('result-tsh').value = data.medidas?.parametros_bioquimicos?.tsh || '';
-            document.getElementById('result-testosterona').value = data.medidas?.parametros_bioquimicos?.testosterona || '';
-            document.getElementById('result-vitamina-d').value = data.medidas?.parametros_bioquimicos?.vitamina_d || '';
-        
         // Actualizar sección de explicación (si existe)
         const explanationSection = document.getElementById('explanation-section');
         if (explanationSection) {
@@ -1029,9 +970,16 @@ async function cargarDatosToma(clienteId, tomaId) {
         console.error('Error al cargar datos de la toma:', error);
         alert('Error al cargar datos: ' + error.message);
         form.reset();
-        resultElementIds.forEach(id => {
+        Object.keys(resultMappings).forEach(key => {
+            const { id } = resultMappings[key];
             const element = document.getElementById(id);
-            if (element) element.textContent = '---';
+            if (element) {
+                if (element.tagName === 'INPUT' || element.tagName === 'SELECT') {
+                    element.value = '';
+                } else {
+                    element.textContent = '---';
+                }
+            }
         });
         if (enviarEmailBtn) enviarEmailBtn.style.display = 'none';
         if (guardarDatosBtn) guardarDatosBtn.style.display = 'none';
