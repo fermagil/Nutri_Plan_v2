@@ -668,22 +668,23 @@ guardarDatosBtn.addEventListener('click', async () => {
                 femur: parseFloat(document.getElementById('diam_femur').value) || null,
                 muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
             },
+            
              parametros_bioquimicos: {
-                    albumina: parseFloat(document.getElementById('albumina').value) || null,
-                    prealbumina: parseFloat(document.getElementById('prealbumina').value) || null,
-                    colesterol_total: parseFloat(document.getElementById('colesterol-total').value) || null,
-                    hdl: parseFloat(document.getElementById('hdl').value) || null,
-                    trigliceridos: parseFloat(document.getElementById('trigliceridos').value) || null,
-                    glucosa_ayunas: parseFloat(document.getElementById('glucosa-ayunas').value) || null,
-                    hba1c: parseFloat(document.getElementById('hba1c').value) || null,
-                    insulina: parseFloat(document.getElementById('insulina').value) || null,
-                    pcr_ultrasensible: parseFloat(document.getElementById('pcr-ultrasensible').value) || null,
-                    leptina: parseFloat(document.getElementById('leptina').value) || null,
-                    alt: parseFloat(document.getElementById('alt').value) || null,
-                    ggt: parseFloat(document.getElementById('ggt').value) || null,
-                    tsh: parseFloat(document.getElementById('tsh').value) || null,
-                    testosterona: parseFloat(document.getElementById('testosterona').value) || null,
-                    vitamina_d: parseFloat(document.getElementById('vitamina-d').value) || null,
+                    albumina: parseFloat(document.getElementById('result-albumina').value) || null,
+                    prealbumina: parseFloat(document.getElementById('result-prealbumina').value) || null,
+                    colesterol_total: parseFloat(document.getElementById('result-colesterol-total').value) || null,
+                    hdl: parseFloat(document.getElementById('result-hdl').value) || null,
+                    trigliceridos: parseFloat(document.getElementById('result-trigliceridos').value) || null,
+                    glucosa_ayunas: parseFloat(document.getElementById('result-glucosa-ayunas').value) || null,
+                    hba1c: parseFloat(document.getElementById('result-hba1c').value) || null,
+                    insulina: parseFloat(document.getElementById('result-insulina').value) || null,
+                    pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible').value) || null,
+                    leptina: parseFloat(document.getElementById('result-leptina').value) || null,
+                    alt: parseFloat(document.getElementById('result-alt').value) || null,
+                    ggt: parseFloat(document.getElementById('result-ggt').value) || null,
+                    tsh: parseFloat(document.getElementById('result-tsh').value) || null,
+                    testosterona: parseFloat(document.getElementById('result-testosterona').value) || null,
+                    vitamina_d: parseFloat(document.getElementById('result-vitamina-d').value) || null,
                 },
             
         },
@@ -822,21 +823,21 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('diam_muneca').value = data.medidas?.diametros?.muneca || '';
 
         // Poblar medidas.parametros_bioquimicos
-            document.getElementById('albumina').value = data.medidas?.parametros_bioquimicos?.albumina || '';
-            document.getElementById('prealbumina').value = data.medidas?.parametros_bioquimicos?.prealbumina || '';
-            document.getElementById('colesterol-total').value = data.medidas?.parametros_bioquimicos?.colesterol_total || '';
-            document.getElementById('hdl').value = data.medidas?.parametros_bioquimicos?.hdl || '';
-            document.getElementById('trigliceridos').value = data.medidas?.parametros_bioquimicos?.trigliceridos || '';
-            document.getElementById('glucosa-ayunas').value = data.medidas?.parametros_bioquimicos?.glucosa_ayunas || '';
-            document.getElementById('hba1c').value = data.medidas?.parametros_bioquimicos?.hba1c || '';
-            document.getElementById('insulina').value = data.medidas?.parametros_bioquimicos?.insulina || '';
-            document.getElementById('pcr-ultrasensible').value = data.medidas?.parametros_bioquimicos?.pcr_ultrasensible || '';
-            document.getElementById('leptina').value = data.medidas?.parametros_bioquimicos?.leptina || '';
-            document.getElementById('alt').value = data.medidas?.parametros_bioquimicos?.alt || '';
-            document.getElementById('ggt').value = data.medidas?.parametros_bioquimicos?.ggt || '';
-            document.getElementById('tsh').value = data.medidas?.parametros_bioquimicos?.tsh || '';
-            document.getElementById('testosterona').value = data.medidas?.parametros_bioquimicos?.testosterona || '';
-            document.getElementById('vitamina-d').value = data.medidas?.parametros_bioquimicos?.vitamina_d || '';
+            document.getElementById('result-albumina').value = data.medidas?.parametros_bioquimicos?.albumina || '';
+            document.getElementById('result-prealbumina').value = data.medidas?.parametros_bioquimicos?.prealbumina || '';
+            document.getElementById('result-colesterol-total').value = data.medidas?.parametros_bioquimicos?.colesterol_total || '';
+            document.getElementById('result-hdl').value = data.medidas?.parametros_bioquimicos?.hdl || '';
+            document.getElementById('result-trigliceridos').value = data.medidas?.parametros_bioquimicos?.trigliceridos || '';
+            document.getElementById('result-glucosa-ayunas').value = data.medidas?.parametros_bioquimicos?.glucosa_ayunas || '';
+            document.getElementById('result-hba1c').value = data.medidas?.parametros_bioquimicos?.hba1c || '';
+            document.getElementById('result-insulina').value = data.medidas?.parametros_bioquimicos?.insulina || '';
+            document.getElementById('result-pcr-ultrasensible').value = data.medidas?.parametros_bioquimicos?.pcr_ultrasensible || '';
+            document.getElementById('result-leptina').value = data.medidas?.parametros_bioquimicos?.leptina || '';
+            document.getElementById('result-alt').value = data.medidas?.parametros_bioquimicos?.alt || '';
+            document.getElementById('result-ggt').value = data.medidas?.parametros_bioquimicos?.ggt || '';
+            document.getElementById('result-tsh').value = data.medidas?.parametros_bioquimicos?.tsh || '';
+            document.getElementById('result-testosterona').value = data.medidas?.parametros_bioquimicos?.testosterona || '';
+            document.getElementById('result-vitamina-d').value = data.medidas?.parametros_bioquimicos?.vitamina_d || '';
 
         // Asegurarse de que los botones estén en el estado correcto
         const guardarDatosBtn = document.getElementById('guardar_datos');
