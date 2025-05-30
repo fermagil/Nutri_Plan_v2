@@ -519,6 +519,7 @@ clientesResultados.addEventListener('change', async () => {
     console.log('Cliente seleccionado:', clienteId);
     const verProgresoBtn = document.getElementById('ver-progreso-btn');
     const enviarEmailBtn = document.getElementById('mail-btn');
+    
     if (!verProgresoBtn) {
         console.error('Botón Ver Progreso no encontrado en el DOM');
         return;
@@ -576,6 +577,9 @@ nuevoClienteBtn.addEventListener('click', () => {
     guardarDatosBtn.style.display = 'none';
     const verProgresoBtn = document.getElementById('ver-progreso-btn');
     const enviarEmailBtn = document.getElementById('mail-btn');
+    const pliegueAbdominalGroup = document.querySelector('.pliegue-abdominal-group');
+    pliegueAbdominalGroup.style.display = 'none';
+    
     if (verProgresoBtn) {
         verProgresoBtn.style.display = 'none';
     }
