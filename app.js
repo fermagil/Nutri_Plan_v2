@@ -669,7 +669,7 @@ guardarDatosBtn.addEventListener('click', async () => {
                 muneca: parseFloat(document.getElementById('diam_muneca').value) || null,
             },
             
-             parametros_bioquimicos = {
+             parametros_bioquimicos: {
                 albumina: parseFloat(document.getElementById('result-albumina').value) || null,
                 albuminaSource: document.getElementById('albumina-source')?.textContent || null,
                 prealbumina: parseFloat(document.getElementById('result-prealbumina').value) || null,
