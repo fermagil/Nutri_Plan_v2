@@ -798,9 +798,17 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('edad').value = data.edad || '';
         document.getElementById('peso').value = data.peso || '';
         document.getElementById('altura').value = data.altura || '';
-        document.getElementById('es_deportista').value = data.es_deportista || '';
-        //deportistaSelect.value = data.es_deportista || '';
-        console.log('Valor de es_deportista:', data.es_deportista);
+        //document.getElementById('es_deportista').value = data.es_deportista || '';
+        // Actualizar es_deportista y visibilidad de P. Abdominal
+        const esDeportistaValue = data.es_deportista || '';
+        document.getElementById('es_deportista').value = esDeportistaValue;
+        console.log('Valor de es_deportista:', esDeportistaValue);
+        // Llamar a la función global para actualizar visibilidad
+        if (window.updateDeportistaValue) {
+            window.updateDeportistaValue(esDeportistaValue);
+        } else {
+            console.warn('Función updateDeportistaValue no encontrada. Asegúrate de que el script de visibilidad esté cargado.');
+        }
         document.getElementById('grasa_actual_conocida').value = data.grasa_actual_conocida || '';
         document.getElementById('grasa_deseada').value = data.grasa_deseada || '';
 
