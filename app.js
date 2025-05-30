@@ -1159,6 +1159,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Save values to the table
         saveButton.addEventListener('click', function() {
+        console.log('saveButton clicked');
         const genero = document.getElementById('genero')?.value || 'masculino';
         const fields = [
             { input: 'albumina', result: 'result-albumina', source: 'albumina-source' },
@@ -1182,12 +1183,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById(field.input);
             const result = document.getElementById(field.result);
             const source = document.getElementById(field.source);
+            console.log(`Processing ${field.input}: input=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
             if (input && result && source && input.value) {
                 const value = parseFloat(input.value);
                 if (!isNaN(value)) {
-                    // Formatear según el parámetro
                     const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
-                    result.textContent = value.toFixed(decimals); // Asignar a <span>
+                    result.textContent = value.toFixed(decimals);
                     source.textContent = getBioquimicoExplanation(field.input, value, genero);
                     console.log(`Asignado ${field.input}: ${value.toFixed(decimals)} a ${field.result}, source: ${source.textContent}`);
                 } else {
@@ -1198,6 +1199,12 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 console.warn(`Falta elemento o valor para ${field.input}: input=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
             }
+        });
+    
+        // Verify DOM updates
+        console.log('Post-save DOM check:');
+        fields.forEach(field => {
+            console.log(`${field.result}: ${document.getElementById(field.result)?.textContent}, ${field.source}: ${document.getElementById(field.source)?.textContent}`);
         });
     
         bioquimicosContainer.style.display = 'none';
