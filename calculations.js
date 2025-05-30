@@ -5266,7 +5266,206 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						  }
 						    // Actualizar window.calculatedResults con el error y otros cálculos
 						   console.log('results.edadmetabolica:', results.edadmetabolica);
-							  
+
+					//Parametro Bioquimicos
+				
+					try {
+					    if (
+					        data.albumina &&
+					        data.prealbumina &&
+					        data.colesterol_total &&
+					        data.hdl &&
+					        data.trigliceridos &&
+					        data.glucosa_ayunas &&
+					        data.hba1c &&
+					        data.insulina &&
+					        data.pcr_ltrasensible &&
+					        data.leptina &&
+					        data.alt &&
+					        data.ggt &&
+					        data.tsh &&
+					        data.testosterona &&
+					        data.vitamina_d
+					    ) {
+					        // Convert and validate inputs
+					      
+						const albumina = parseFloatSafe(data.albumina);
+					        const prealbumina = parseFloatSafe(data.prealbumina);
+					        const colesterolTotal = parseFloatSafe(data.colesterol_total);
+					        const hdl = parseFloatSafe(data.hdl);
+					        const trigliceridos = parseFloatSafe(data.trigliceridos);
+					        const glucosaAyunas = parseFloatSafe(data.glucosa_ayunas);
+					        const hba1c = parseFloatSafe(data.hba1c);
+					        const insulina = parseFloatSafe(data.insulina);
+					        const pcrUltrasensible = parseFloatSafe(data.pcr_ultrasensible);
+					        const leptina = parseFloatSafe(data.leptina);
+					        const alt = parseFloatSafe(data.alt);
+					        const ggt = parseFloatSafe(data.ggt);
+					        const tsh = parseFloatSafe(data.tsh);
+					        const testosterona = parseFloatSafe(data.testosterona);
+					        const vitaminaD = parseFloatSafe(data.vitamina_d);
+					
+					        // Validate ranges and units
+					        if (albumina < 3.5 || albumina > 5.5) throw new Error('Albúmina fuera de rango (3.5–5.5 g/dL)');
+					        if (prealbumina < 10 || prealbumina > 40) throw new Error('Prealbúmina fuera de rango (10–40 mg/dL)');
+					        if (colesterolTotal < 100 || colesterolTotal > 300) throw new Error('Colesterol total fuera de rango (100–300 mg/dL)');
+					        if (hdl < 20 || hdl > 100) throw new Error('HDL fuera de rango (20–100 mg/dL)');
+					        if (trigliceridos < 30 || trigliceridos > 500) throw new Error('Triglicéridos fuera de rango (30–500 mg/dL)');
+					        if (glucosaAyunas < 50 || glucosaAyunas > 200) throw new Error('Glucosa en ayunas fuera de rango (50–200 mg/dL)');
+					        if (hba1c < 4 || hba1c > 14) throw new Error('HbA1c fuera de rango (4–14 %)');
+					        if (insulina < 2 || insulina > 100) throw new Error('Insulina fuera de rango (2–100 µU/mL)');
+					        if (pcrUltrasensible < 0.1 || pcrUltrasensible > 10) throw new Error('PCR ultrasensible fuera de rango (0.1–10 mg/L)');
+					        if (leptina < 1 || leptina > 100) throw new Error('Leptina fuera de rango (1–100 ng/mL)');
+					        if (alt < 5 || alt > 100) throw new Error('ALT fuera de rango (5–100 U/L)');
+					        if (ggt < 5 || ggt > 100) throw new Error('GGT fuera de rango (5–100 U/L)');
+					        if (tsh < 0.1 || tsh > 10) throw new Error('TSH fuera de rango (0.1–10 µIU/mL)');
+					        if (testosterona < 50 || testosterona > 1200) throw new Error('Testosterona fuera de rango (50–1200 ng/dL)');
+					        if (vitaminaD < 10 || vitaminaD > 100) throw new Error('Vitamina D fuera de rango (10–100 ng/mL)');
+					
+					        // Store results
+					        results.albumina = Math.max(0.1, albumina);
+					        results.prealbumina = Math.max(0.1, prealbumina);
+					        results.colesterolTotal = Math.max(0.1, colesterolTotal);
+					        results.hdl = Math.max(0.1, hdl);
+					        results.trigliceridos = Math.max(0.1, trigliceridos);
+					        results.glucosaAyunas = Math.max(0.1, glucosaAyunas);
+					        results.hba1c = Math.max(0.1, hba1c);
+					        results.insulina = Math.max(0.1, insulina);
+					        results.pcrUltrasensible = Math.max(0.1, pcrUltrasensible);
+					        results.leptina = Math.max(0.1, leptina);
+					        results.alt = Math.max(0.1, alt);
+					        results.ggt = Math.max(0.1, ggt);
+					        results.tsh = Math.max(0.1, tsh);
+					        results.testosterona = Math.max(0.1, testosterona);
+					        results.vitaminaD = Math.max(0.1, vitaminaD);
+					
+					        // Set source to indicate manual input
+					        results.albuminaSource = 'Ingresado manualmente';
+					        results.prealbuminaSource = 'Ingresado manualmente';
+					        results.colesterolTotalSource = 'Ingresado manualmente';
+					        results.hdlSource = 'Ingresado manualmente';
+					        results.trigliceridosSource = 'Ingresado manualmente';
+					        results.glucosaAyunasSource = 'Ingresado manualmente';
+					        results.hba1cSource = 'Ingresado manualmente';
+					        results.insulinaSource = 'Ingresado manualmente';
+					        results.pcrUltrasensibleSource = 'Ingresado manualmente';
+					        results.leptinaSource = 'Ingresado manualmente';
+					        results.altSource = 'Ingresado manualmente';
+					        results.ggtSource = 'Ingresado manualmente';
+					        results.tshSource = 'Ingresado manualmente';
+					        results.testosteronaSource = 'Ingresado manualmente';
+					        results.vitaminaDSource = 'Ingresado manualmente';
+					
+					        console.log('Parámetros bioquímicos validados:', {
+					            albumina: results.albumina,
+					            prealbumina: results.prealbumina,
+					            colesterolTotal: results.colesterolTotal,
+					            hdl: results.hdl,
+					            trigliceridos: results.trigliceridos,
+					            glucosaAyunas: results.glucosaAyunas,
+					            hba1c: results.hba1c,
+					            insulina: results.insulina,
+					            pcrUltrasensible: results.pcrUltrasensible,
+					            leptina: results.leptina,
+					            alt: results.alt,
+					            ggt: results.ggt,
+					            tsh: results.tsh,
+					            testosterona: results.testosterona,
+					            vitaminaD: results.vitaminaD
+					        });
+					
+					        // Store results
+						        results.albumina = Math.max(0.1, albumina);
+						        results.prealbumina = Math.max(0.1, prealbumina);
+						        results.colesterolTotal = Math.max(0.1, colesterolTotal);
+						        results.hdl = Math.max(0.1, hdl);
+						        results.trigliceridos = Math.max(0.1, trigliceridos);
+						        results.glucosaAyunas = Math.max(0.1, glucosaAyunas);
+						        results.hba1c = Math.max(0.1, hba1c);
+						        results.insulina = Math.max(0.1, insulina);
+						        results.pcrUltrasensible = Math.max(0.1, pcrUltrasensible);
+						        results.leptina = Math.max(0.1, leptina);
+						        results.alt = Math.max(0.1, alt);
+						        results.ggt = Math.max(0.1, ggt);
+						        results.tsh = Math.max(0.1, tsh);
+						        results.testosterona = Math.max(0.1, testosterona);
+						        results.vitaminaD = Math.max(0.1, vitaminaD);
+						
+						        // Set source to indicate manual input
+						        results.albuminaSource = 'Ingresado manualmente';
+						        results.prealbuminaSource = 'Ingresado manualmente';
+						        results.colesterolTotalSource = 'Ingresado manualmente';
+						        results.hdlSource = 'Ingresado manualmente';
+						        results.trigliceridosSource = 'Ingresado manualmente';
+						        results.glucosaAyunasSource = 'Ingresado manualmente';
+						        results.hba1cSource = 'Ingresado manualmente';
+						        results.insulinaSource = 'Ingresado manualmente';
+						        results.pcrUltrasensibleSource = 'Ingresado manualmente';
+						        results.leptinaSource = 'Ingresado manualmente';
+						        results.altSource = 'Ingresado manualmente';
+						        results.ggtSource = 'Ingresado manualmente';
+						        results.tshSource = 'Ingresado manualmente';
+						        results.testosteronaSource = 'Ingresado manualmente';
+						        results.vitaminaDSource = 'Ingresado manualmente';
+						
+						        console.log('Parámetros bioquímicos validados:', {
+						            albumina: results.albumina,
+						            prealbumina: results.prealbumina,
+						            colesterolTotal: results.colesterolTotal,
+						            hdl: results.hdl,
+						            trigliceridos: results.trigliceridos,
+						            glucosaAyunas: results.glucosaAyunas,
+						            hba1c: results.hba1c,
+						            insulina: results.insulina,
+						            pcrUltrasensible: results.pcrUltrasensible,
+						            leptina: results.leptina,
+						            alt: results.alt,
+						            ggt: results.ggt,
+						            tsh: results.tsh,
+						            testosterona: results.testosterona,
+						            vitaminaD: results.vitaminaD
+						        });
+						    } else {
+						        throw new Error('Datos insuficientes para parámetros bioquímicos');
+						    }
+						} catch (e) {
+						    console.error('Error procesando datos:', e.message);
+						   
+						    // Handle biochemical parameter errors
+						    results.albumina = NaN;
+						    results.prealbumina = NaN;
+						    results.colesterolTotal = NaN;
+						    results.hdl = NaN;
+						    results.trigliceridos = NaN;
+						    results.glucosaAyunas = NaN;
+						    results.hba1c = NaN;
+						    results.insulina = NaN;
+						    results.pcrUltrasensible = NaN;
+						    results.leptina = NaN;
+						    results.alt = NaN;
+						    results.ggt = NaN;
+						    results.tsh = NaN;
+						    results.testosterona = NaN;
+						    results.vitaminaD = NaN;
+						
+						    results.albuminaSource = `Error: ${e.message}`;
+						    results.prealbuminaSource = `Error: ${e.message}`;
+						    results.colesterolTotalSource = `Error: ${e.message}`;
+						    results.hdlSource = `Error: ${e.message}`;
+						    results.trigliceridosSource = `Error: ${e.message}`;
+						    results.glucosaAyunasSource = `Error: ${e.message}`;
+						    results.hba1cSource = `Error: ${e.message}`;
+						    results.insulinaSource = `Error: ${e.message}`;
+						    results.pcrUltrasensibleSource = `Error: ${e.message}`;
+						    results.leptinaSource = `Error: ${e.message}`;
+						    results.altSource = `Error: ${e.message}`;
+						    results.ggtSource = `Error: ${e.message}`;
+						    results.tshSource = `Error: ${e.message}`;
+						    results.testosteronaSource = `Error: ${e.message}`;
+						    results.vitaminaDSource = `Error: ${e.message}`;
+						
+						    content += `<p><strong>Error en Parámetros Bioquímicos:</strong> ${e.message}.</p>`;
+						}
 			            // Store results for app.js
 			           window.calculatedResults = {
 				    imc: formatResult(results.imc, 1),
