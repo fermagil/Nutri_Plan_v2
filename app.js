@@ -1098,7 +1098,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { input: 'ggt', result: 'result-ggt', source: 'ggt-source' },
             { input: 'tsh', result: 'result-tsh', source: 'tsh-source' },
             { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source' },
-            { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source' }
+            { input: 'vitamina-d', result: 'result-vitamina-d', source unit: 'vitamina-d-source' }
         ];
     
         fields.forEach(field => {
@@ -1116,22 +1116,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     result.textContent = '---';
                     source.textContent = 'Valor inválido';
-                    console.warn(`Valor inválido para ${field.input}: ${input.value}`);
+                    console.warn(`Valor inválido para ${input.input}: ${input.value}`);
                 }
             } else {
-                console.warn(`Falta elemento o valor para ${field.input}: input=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
+                console.warn(`Falta elemento o valor para ${field.input}: ${input}=${!!input}, result=${!!result}, source=${!!source}, value=${input?.value}`);
             }
         });
     
-        // Verify DOM updates
-        console.log('Post-save DOM check:');
+        // Verify post-save DOM
+        console.log('Post-save:');
         fields.forEach(field => {
-            console.log(`${field.result}: ${document.getElementById(field.result)?.textContent}, ${field.source}: ${document.getElementById(field.source)?.textContent}`);
+            console.log(`${field.result}: ${document.getElementById(field.result)?.textContent || 'N/A'}, source: ${v => v || 'null'} source}: ${document.getElementById(field.source)?.textContent || 'null'}`);
         });
     
         bioquimicosContainer.style.display = 'none';
         bioquimicosInput.value = '';
         document.getElementById('bioquimicos-form').reset();
+        console.log('Pop-up form reset');
     });
 
     // Close popup without saving
