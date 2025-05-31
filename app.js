@@ -1697,10 +1697,11 @@ async function showProgressCharts(clienteId) {
      // Utility function to merge edadMetabolica and edadmetabolica data
      // Utility function to merge edadMetabolica and edadmetabolica
 // Utility function to validate and convert data
-function preprocessData(data, datasetLabel) {
+// Utility function to validate and convert data
+function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = null) {
     if (data === null || data === undefined) {
         console.warn(`${datasetLabel} data is null or undefined.`);
-        return [];
+        return preserveLength ? Array(11).fill(defaultValue) : []; // Match expected length
     }
     
     const dataArray = Array.isArray(data) ? data : [data];
@@ -1708,20 +1709,26 @@ function preprocessData(data, datasetLabel) {
     const processed = dataArray.map((item, index) => {
         if (item === null || item === undefined) {
             console.warn(`Null or undefined value at index ${index} in ${datasetLabel}`);
-            return null;
+            return preserveLength ? defaultValue : null;
         }
         const value = parseFloat(item);
         if (isNaN(value)) {
             console.warn(`Invalid data at index ${index} in ${datasetLabel}: ${item}`);
-            return null;
+            return preserveLength ? defaultValue : null;
         }
         return value;
     });
     
-    if (processed.length === 0 && dataArray.length > 0) {
-        console.warn(`${datasetLabel} dataset has no valid numerical data, but contains ${dataArray.length} entries.`);
+    if (!preserveLength) {
+        const filtered = processed.filter(item => item !== null);
+        if (filtered.length === 0) {
+            console.warn(`${datasetLabel} dataset is empty after preprocessing. No valid numerical data found.`);
+            return [];
+        }
+        return filtered;
     }
-    return processed; // Keep null values to match dates
+    
+    return processed;
 }
 
 // Debug raw data and dates
@@ -1732,7 +1739,7 @@ console.log('Dates array:', JSON.stringify(dates, null, 2));
 const gastoEnergeticoDatasets = [
     { 
         label: 'Gasto Energético (kcal)', 
-        data: preprocessData(gastoEnergeticoData.gasto, 'Gasto Energético'), 
+        data: preprocessData(gastoEnergeticoData.gasto, 'Gasto Energético', true, null), 
         borderColor: '#4CAF50', 
         backgroundColor: 'rgba(76, 175, 80, 0.2)', 
         fill: false, 
@@ -1740,29 +1747,37 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica'), 
+        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 0), // Default to 0
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
         tension: 0.1,
-        yAxisID: 'y1'
+        yAxisID: 'y1' // Secondary axis
     },
     { 
         label: 'TMB (kcal)', 
-        data: preprocessData(gastoEnergeticoData.tmb, 'TMB'), 
+        data: preprocessData(gastoEnergeticoData.tmb, 'TMB', true, null), 
         borderColor: '#0275d8', 
         backgroundColor: 'rgba(2, 117, 216, 0.2)', 
         fill: false, 
         tension: 0.1 
     }
-].filter(ds => ds.data.some(val => val !== null)); // Keep datasets with at least one valid value
+].filter(ds => ds.data.length > 0); // Keep datasets with any data
+
+// Determine chart length
+const maxLength = Math.max(
+    dates ? dates.length : 0,
+    ...gastoEnergeticoDatasets.map(ds => ds.data.length)
+);
+const chartLabels = (dates && dates.length >= maxLength) ? dates.slice(0, maxLength) : 
+    Array.from({ length: maxLength }, (_, i) => `2025-05-${i + 1}`);
 
 if (gastoEnergeticoDatasets.length > 0) {
     console.log('Rendering chart with datasets:', JSON.stringify(gastoEnergeticoDatasets, null, 2));
     new Chart(document.getElementById('gasto-energetico-chart'), {
         type: 'line',
         data: { 
-            labels: dates || Array.from({ length: Math.max(...gastoEnergeticoDatasets.map(ds => ds.data.length)) }, (_, i) => `Date ${i + 1}`), 
+            labels: chartLabels, 
             datasets: gastoEnergeticoDatasets 
         },
         options: {
