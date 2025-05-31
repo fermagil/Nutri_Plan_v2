@@ -1445,7 +1445,7 @@ async function showProgressCharts(clienteId) {
             const tmb = safeToNumber(data.resultados.BRMEstimado);
             gastoEnergeticoData.gasto.push(tmb);
             gastoEnergeticoData.edadMetabolica.push(safeToNumber(data.resultados.edadmetabolica));
-            gastoEnergeticoData.BRMEstimado.push(BRMEstimado);
+           // gastoEnergeticoData.BRMEstimado.push(BRMEstimado);
 
             // Non-numerical data
             nonNumericalData.somatotipo.push(data.resultados.somatotipo?.formatted || '---');
