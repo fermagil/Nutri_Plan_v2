@@ -1137,45 +1137,61 @@ document.addEventListener('DOMContentLoaded', function() {
         { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source', label: 'Testosterona', unit: 'ng/dL', range: [20, 1500] },
         { input: 'cortisol', result: 'result-cortisol', source: 'cortisol-source', label: 'Cortisol', unit: 'µg/dL', range: [5, 25] },
         { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source', label: 'Vitamina D', unit: 'ng/mL', range: [5, 200] },
-        { input: 'fosfatasa-alcalina', result: 'result-fosfatasa-alcalina', source: 'fosfatasa-alcalina-source', label: 'Fosfatasa Alcalina', unit: 'U/L', range: [20, 140] }
-    ];
+        { input: 'fosfatasa-alcalina', result: 'result-fosfatasa-alcalina', source: 'fosfatasa-alcalina-source', label: 'Fosfatasa Alcalina', unit: 'U/L', range: [20, 140] },
+        { input: 'ast', result: 'result-ast', source: 'ast-source', label: 'AST', unit: 'U/L', range: [5, 200] },
+        { input: 'adiponectina', result: 'result-adiponectina', source: 'adiponectina-source', label: 'Adiponectina', unit: 'µg/mL', range: [2, 30] },
+   ];
 
     // Función para obtener la explicación de un parámetro bioquímico
     function getBioquimicoExplanation(param, value, genero = 'masculino') {
         const ranges = {
-            albumina: { min: 3.5, max: 5.0, unit: 'g/dL', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
-            prealbumina: { min: 15, max: 40, unit: 'mg/dL', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
-            proteinaTotal: { min: 6.0, max: 8.3, unit: 'g/dL', indica: 'Evaluación global de síntesis hepática y nutrición', alteracion: '↓ En desnutrición crónica o enfermedades hepáticas/renales' },
-            colesterolTotal: { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
-            hdl: { 
+            'albumina': { min: 3.5, max: 5.0, unit: 'g/dL', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
+            'prealbumina': { min: 15, max: 40, unit: 'mg/dL', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
+            'proteina-total': { min: 6.0, max: 8.3, unit: 'g/dL', indica: 'Evaluación global de síntesis hepática y nutrición', alteracion: '↓ En desnutrición crónica o enfermedades hepáticas/renales' },
+            'colesterol-total': { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
+            'hdl': { 
                 min: genero === 'masculino' ? 40 : 50, max: 100, unit: 'mg/dL', 
                 indica: 'Protege contra enfermedades cardíacas', alteracion: '↓ En obesidad visceral' 
             },
-            trigliceridos: { min: 0, max: 150, unit: 'mg/dL', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
-            apolipoproteinab: { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
-            glucosa_ayunas: { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
-            hba1c: { min: 0, max: 5.7, unit: '%', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
-            insulina: { min: 2, max: 25, unit: 'µU/mL', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
+            'trigliceridos': { min: 0, max: 150, unit: 'mg/dL', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
+            'apolipoproteina-b': { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
+            'glucosa-ayunas': { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
+            'hba1c': { min: 0, max: 5.7, unit: '%', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
+            'insulina': { min: 2, max: 25, unit: 'µU/mL', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
             'pcr-ultrasensible': { min: 0, max: 1.0, unit: 'mg/L', indica: 'Inflamación sistémica', alteracion: '↑ En obesidad (>3 mg/L = riesgo cardiovascular)' },
-            leptina: { 
+            'leptina': { 
                 min: genero === 'masculino' ? 0.5 : 3, max: genero === 'masculino' ? 15 : 30, unit: 'ng/mL', 
                 indica: 'Regula saciedad; alta en obesidad (resistencia leptínica)', alteracion: '↑ En obesidad (resistencia leptínica)' 
             },
-            alt: { 
+            'alt': { 
                 min: genero === 'masculino' ? 7 : 7, max: genero === 'masculino' ? 55 : 45, unit: 'U/L', 
                 indica: 'Daño hepático (hígado graso no alcohólico, NAFLD)', alteracion: '↑ En NAFLD (obesidad)' 
             },
-            ggt: { 
+            'gg't: { 
                 min: genero === 'masculino' ? 8 : 5, max: genero === 'masculino' ? 61 : 36, unit: 'U/L', 
                 indica: 'Sensible a acumulación de grasa en hígado', alteracion: '↑ En obesidad y consumo de alcohol' 
             },
-            creatinina: { min: 0.5, max: 1.5, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
-            bun: { min: 7, max: 25, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
-            tsh: { min: 0.4, max: 4.0, unit: 'µIU/mL', indica: 'Función tiroidea (hipotiroidismo → aumento de peso)', alteracion: '↑ En hipotiroidismo' },
-            testosterona: { min: 300, max: 1000, unit: 'ng/dL', indica: 'Bajos niveles asociados a ↑ grasa visceral', alteracion: '↓ En obesidad masculina', genderSpecific: 'masculino' },
-            cortisol: { min: 5, max: 25, unit: 'µg/dL', indica: 'Estrés crónico y acumulación de grasa abdominal', alteracion: '↑ En estrés crónico y síndrome metabólico' },
-            vitamina_d: { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' },
-            fosfatasa: { min: 20, max: 140, unit: 'U/L', indica: 'Remodelación ósea', alteracion: '↑ En osteoporosis secundaria o enfermedades metabólicas' }
+            'creatinina': { min: 0.5, max: 1.5, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
+            'bun': { min: 7, max: 25, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
+            'tsh': { min: 0.4, max: 4.0, unit: 'µIU/mL', indica: 'Función tiroidea (hipotiroidismo → aumento de peso)', alteracion: '↑ En hipotiroidismo' },
+            'testosterona': { min: 300, max: 1000, unit: 'ng/dL', indica: 'Bajos niveles asociados a ↑ grasa visceral', alteracion: '↓ En obesidad masculina', genderSpecific: 'masculino' },
+            'cortisol': { min: 5, max: 25, unit: 'µg/dL', indica: 'Estrés crónico y acumulación de grasa abdominal', alteracion: '↑ En estrés crónico y síndrome metabólico' },
+            'vitamina-d': { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' },
+            'fosfatasa-alcalina': { min: 20, max: 140, unit: 'U/L', indica: 'Remodelación ósea', alteracion: '↑ En osteoporosis secundaria o enfermedades metabólicas' },
+            'ast': { 
+                    min: 5, 
+                    max: 200, 
+                    unit: 'U/L', 
+                    indica: 'Daño hepático o muscular', 
+                    alteracion: '↑ En hígado graso, hepatitis o lesión muscular' 
+                },
+                'adiponectina': { 
+                    min: 2, 
+                    max: 30, 
+                    unit: 'µg/mL', 
+                    indica: 'Sensibilidad a la insulina y protección cardiovascular', 
+                    alteracion: '↓ En resistencia a insulina, obesidad o síndrome metabólico' 
+                }
         };
 
         const paramData = ranges[param];
