@@ -1677,7 +1677,7 @@ async function showProgressCharts(clienteId) {
         }
 
         // Gasto Energético Chart
-        / Utility function to validate and convert data
+        // Utility function to validate and convert data
         function preprocessData(data) {
             return data.map(item => {
                 // Attempt to convert to number, return null for invalid values
