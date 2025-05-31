@@ -1702,7 +1702,7 @@ async function showProgressCharts(clienteId) {
         }
         
         // Utility function to check if dataset has valid data
-        function hasValidData(data) {
+        function hasValidData2(data) {
             const isValid = Array.isArray(data) && data.length > 0 && data.some(item => typeof item === 'number');
             console.log('Checking dataset validity:', data, 'Is valid:', isValid);
             return isValid;
