@@ -1238,7 +1238,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });        
+        // Function to analyze biochemical results and generate clinical interpretation
+    function analyzeBioquimicoResults(entries, genero = 'masculino') {
+        const results = [];
+        const values = {};
+        entries.forEach(({ field, value }) => {
+            values[field.input] = value;
+        });
 
+        // Check for Obesidad Metabólica
+        const tg = values['trigliceridos'] || 0;
+        const hdl = values['hdl'] || 0;
+        const hba1c = values['hba1c'] || 0;
+        const pcr = values['pcr-ultrasensible'] || 0;
+        const tgHdlRatio = tg / hdl;
+        if (tg > 150 && hdl < (genero === 'masculino' ? 40 : 50) && hba1c > 5.7 && pcr > 3) {
+            results.push('**Obesidad Metabólica Detectada**: Elevados triglicéridos, bajo HDL, HbA1c elevado y PCR ultrasensible elevado indican resistencia a la insulina. Riesgos: diabetes, infarto, ACV. Se recomienda evaluación médica y cambios en el estilo de vida.');
+        } else if (tg > 150 || hdl < (genero === 'masculino' ? 40 : 50) || hba1c > 5.7 || pcr > 3) {
+            results.push('**Riesgo de Obesidad Metabólica**: Algunos marcadores (triglicéridos, HDL, HbA1c o PCR) están alterados. TG/HDL ratio: ' + tgHdlRatio.toFixed(2) + ' (>2.5 sugiere resistencia a insulina). Evaluar factores de riesgo cardiovascular.');
+        }
+
+        // Check for Desnutrición Proteica
+        const albumina = values['albumina'] || 0;
+        const prealbumina = values['prealbumina'] || 0;
+        const proteinaTotal = values['proteina-total'] || 0;
+        if (albumina < 3.5 && prealbumina < 15 && pcr > 3) {
+            results.push('**Desnutrición Proteica Detectada**: Baja albúmina, prealbúmina y elevada PCR sugieren déficit proteico e inflamación. Riesgos: infecciones, edema, mortalidad. Consultar con nutricionista.');
+        } else if (albumina < 3.5 || prealbumina < 15 || proteinaTotal < 6.0) {
+            results.push('**Riesgo de Desnutrición Proteica**: Baja albúmina, prealbúmina o proteína total. Evaluar estado nutricional y posible inflamación (PCR: ' + pcr.toFixed(2) + ' mg/L).');
+        }
+
+        // Check for Hígado Graso (NAFLD)
+        const alt = values['alt'] || 0;
+        const ggt = values['ggt'] || 0;
+        const ast = values['ast'] || 0; // Note: AST not in fields, assuming 0 if not provided
+        if (alt > (genero === 'masculino' ? 55 : 45) && ggt > (genero === 'masculino' ? 61 : 36) && alt > ast) {
+            results.push('**Hígado Graso (NAFLD) Detectado**: ALT elevado, GGT elevado y ALT > AST sugieren acumulación de grasa en el hígado. Riesgos: cirrosis, cáncer de hígado. Se recomienda ultrasonido hepático.');
+        } else if (alt > (genero === 'masculino' ? 55 : 45) || ggt > (genero === 'masculino' ? 61 : 36)) {
+            results.push('**Riesgo de Hígado Graso**: ALT o GGT elevados. Evaluar hígado graso no alcohólico (NAFLD) con pruebas adicionales.');
+        }
+
+        // Additional observations
+        if (values['testosterona'] && genero === 'masculino' && values['testosterona'] < 300) {
+            results.push('**Testosterona Baja**: Niveles bajos asociados con mayor grasa visceral y resistencia a insulina. Evaluar función hormonal.');
+        }
+        if (values['vitamina-d'] && values['vitamina-d'] < 30) {
+            results.push('**Deficiencia de Vitamina D**: Niveles bajos pueden contribuir a osteoporosis y debilidad muscular. Considerar suplementación.');
+        }
+        if (values['cortisol'] && values['cortisol'] > 25) {
+            results.push('**Cortisol Elevado**: Puede indicar estrés crónico, contribuyendo a grasa abdominal y síndrome metabólico. Evaluar eje adrenal.');
+        }
+
+        // Return analysis text
+        return results.length > 0 ? results.join('<br>') : 'No se detectaron patrones clínicos significativos. Los valores están dentro de rangos normales o no hay datos suficientes para análisis.';
+    }
     // Save values to the table with validation
     saveButton.addEventListener('click', function() {
         console.log('saveButton clicked');
@@ -1261,6 +1314,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
                         validEntries.push({ field, value, decimals });
+                        result.textContent = value.toFixed(decimals) + ' ' + field.unit;
+                        source.textContent = 'Usuario';
                     }
                 } else {
                     warnings.push(`${field.label} tiene un valor inválido (${input.value}).`);
@@ -1277,6 +1332,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return; // Stop and let user correct
         }
 
+        // Generate and display analysis
+        const analysisText = analyzeBioquimicoResults(validEntries, genero);
+        document.getElementById('analysis-text').innerHTML = analysisText;
+        accordionContent.style.display = 'block'; // Expand accordion to show results
+        warningContainer.style.display = 'none'; // Hide warnings if successful
+        
         // Save valid entries
         validEntries.forEach(({ field, value, decimals }) => {
             const result = document.getElementById(field.result);
