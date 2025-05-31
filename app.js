@@ -1696,7 +1696,6 @@ async function showProgressCharts(clienteId) {
         
      // Utility function to merge edadMetabolica and edadmetabolica data
 // Utility function to validate and convert data
-// Utility function to validate and convert data
 function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = 72) {
     if (data === null || data === undefined) {
         console.warn(`${datasetLabel} data is null or undefined.`);
@@ -1746,7 +1745,7 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 72), 
+        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 72), // Ensure uppercase M
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
