@@ -1139,19 +1139,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Show popup and load existing data when typing in the input field
         bioquimicosInput.addEventListener('input', function() {
+            console.log('Input event triggered on parametros-bioquimicos');
+            console.log(`bioquimicosInput value: "${this.value}"`);
             if (this.value.length > 0) {
                 bioquimicosContainer.style.display = 'flex';
                 warningContainer.style.display = 'none'; // Reset warnings
+
+                // Ensure form is not reset before loading values
+                    const form = document.getElementById('bioquimicos-form');
+                    if (!form) {
+                        console.error('Form bioquimicos-form not found');
+                        return;
+                    }
+                    console.log('bioquimicos-form found, proceeding to load values');
         
                 // Load existing values into the popup form
                    fields.forEach(field => {
+                       console.log(`Processing field: ${field.label} (ID: ${field.input})`);
                     const input = document.getElementById(field.input);
                     if (!input) {
                         console.error(`Input ${field.input} not found`);
                         return;
                     }
+                    console.log(`Input ${field.input} found, value: "${input.value}"`);
                     console.log(`Checking ${field.label}: input.value="${input.value}"`);
                     if (input.value && input.value.trim() !== '') {
+                        console.log(`Parsing value for ${field.label}: "${input.value}"`);
                         const value = parseFloat(input.value);
                         if (!isNaN(value)) {
                             // Format value based on field-specific decimals
