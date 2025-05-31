@@ -1137,13 +1137,33 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${param.replace(/-/g, ' ').toUpperCase()}: ${value} ${config.unit} (${estado}). ${config.indica}. ${config.alteracion}.`;
     }
 
-    // Show popup when typing in the input field
-    bioquimicosInput.addEventListener('input', function() {
-        if (this.value.length > 0) {
-            bioquimicosContainer.style.display = 'flex';
-            warningContainer.style.display = 'none'; // Reset warnings
-        }
-    });
+        // Show popup and load existing data when typing in the input field
+        bioquimicosInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                bioquimicosContainer.style.display = 'flex';
+                warningContainer.style.display = 'none'; // Reset warnings
+        
+                // Load existing values into the popup form
+                fields.forEach(field => {
+                    const input = document.getElementById(field.input);
+                    const result = document.getElementById(field.result);
+                    if (input && result && result.textContent) {
+                        // Only set the input value if result has a valid number
+                        const value = parseFloat(result.textContent);
+                        if (!isNaN(value)) {
+                            input.value = value.toString(); // Set the input value
+                            console.log(`Loaded ${field.label}: ${value} into ${field.input}`);
+                        } else {
+                            input.value = ''; // Clear input if result is empty or invalid
+                            console.log(`No valid data for ${field.label}, clearing ${field.input}`);
+                        }
+                    } else {
+                        input.value = ''; // Clear input if no result element or no value
+                        console.log(`No result data for ${field.label}, clearing ${field.input}`);
+                    }
+                });
+            }
+        });        
 
     // Save values to the table with validation
     saveButton.addEventListener('click', function() {
