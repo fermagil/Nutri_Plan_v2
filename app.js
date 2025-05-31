@@ -1679,18 +1679,66 @@ async function showProgressCharts(clienteId) {
         // Gasto Energético Chart
         // Utility function to validate and convert data
         function preprocessData(data) {
-            return data.map(item => {
-                // Attempt to convert to number, return null for invalid values
+            console.log('Processing data:', data); // Log the input data
+            if (!data) {
+                console.warn('Data is undefined or null');
+                return [];
+            }
+            if (!Array.isArray(data)) {
+                console.error('Data is not an array:', typeof data);
+                return [];
+            }
+        
+            return data.map((item, index) => {
+                console.log(`Item at index ${index}:`, item, 'Type:', typeof item); // Log each item and its type
                 const value = parseFloat(item);
-                return isNaN(value) ? null : value;
+                if (isNaN(value)) {
+                    console.warn(`Item at index ${index} is not a valid number:`, item);
+                    return null;
+                }
+                console.log(`Converted item at index ${index} to number:`, value);
+                return value;
             }).filter(item => item !== null); // Remove null values
         }
+        
+        // Utility function to check if dataset has valid data
+        function hasValidData(data) {
+            const isValid = Array.isArray(data) && data.length > 0 && data.some(item => typeof item === 'number');
+            console.log('Checking dataset validity:', data, 'Is valid:', isValid);
+            return isValid;
+        }
+        
         const gastoEnergeticoDatasets = [
-            { label: 'Gasto Energético (kcal)', data: preprocessData(gastoEnergeticoData.gasto), borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
-            { label: 'Edad Metabólica (años)', data: preprocessData(gastoEnergeticoData.edadMetabolica), borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
-            { label: 'TMB (kcal)', data: preprocessData(gastoEnergeticoData.tmb), borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 }
+            { 
+                label: 'Gasto Energético (kcal)', 
+                data: preprocessData(gastoEnergeticoData.gasto), 
+                borderColor: '#4CAF50', 
+                backgroundColor: 'rgba(76, 175, 80, 0.2)', 
+                fill: false, 
+                tension: 0.1 
+            },
+            { 
+                label: 'Edad Metabólica (años)', 
+                data: preprocessData(gastoEnergeticoData.edadMetabolica), 
+                borderColor: '#388E3C', 
+                backgroundColor: 'rgba(56, 142, 60, 0.2)', 
+                fill: false, 
+                tension: 0.1 
+            },
+            { 
+                label: 'TMB (kcal)', 
+                data: preprocessData(gastoEnergeticoData.tmb), 
+                borderColor: '#0275d8', 
+                backgroundColor: 'rgba(2, 117, 216, 0.2)', 
+                fill: false, 
+                tension: 0.1 
+            }
         ].filter(ds => hasValidData(ds.data));
+        
+        console.log('Filtered datasets:', gastoEnergeticoDatasets); // Log the filtered datasets
+        
         if (gastoEnergeticoDatasets.length > 0) {
+            console.log('Creating chart with datasets:', gastoEnergeticoDatasets);
             new Chart(document.getElementById('gasto-energetico-chart'), {
                 type: 'line',
                 data: { labels: dates, datasets: gastoEnergeticoDatasets },
@@ -1706,21 +1754,6 @@ async function showProgressCharts(clienteId) {
         } else {
             console.warn('No valid data for Gasto Energético Chart');
         }
-
-        // Populate non-numerical data table
-        const tableBody = document.getElementById('non-numerical-table-body');
-        tableBody.innerHTML = '';
-        dates.forEach((date, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
-                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolica[index]}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-
         // Show popup
         const popup = document.getElementById('progress-container');
         if (popup) {
