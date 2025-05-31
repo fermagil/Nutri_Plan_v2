@@ -1152,7 +1152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 indica: 'Protege contra enfermedades cardíacas', alteracion: '↓ En obesidad visceral' 
             },
             trigliceridos: { min: 0, max: 150, unit: 'mg/dL', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
-            apolipoproteinab': { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
+            apolipoproteinab: { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
             glucosa_ayunas: { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
             hba1c: { min: 0, max: 5.7, unit: '%', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
             insulina: { min: 2, max: 25, unit: 'µU/mL', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
