@@ -1279,6 +1279,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Additional observations
+        // Additional observations
         if (values['testosterona'] && genero === 'masculino' && values['testosterona'] < 300) {
             results.push('**Testosterona Baja**: Niveles bajos asociados con mayor grasa visceral y resistencia a insulina. Evaluar función hormonal.');
         }
@@ -1287,6 +1288,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (values['cortisol'] && values['cortisol'] > 25) {
             results.push('**Cortisol Elevado**: Puede indicar estrés crónico, contribuyendo a grasa abdominal y síndrome metabólico. Evaluar eje adrenal.');
+        }
+        if (values['creatinina'] && values['creatinina'] > 1.5 || values['bun'] && values['bun'] > 25) {
+            results.push('**Riesgo de Disfunción Renal**: Creatinina o BUN elevados sugieren posible enfermedad renal crónica. Evaluar función renal.');
+        }
+        if (values['fosfatasa-alcalina'] && values['fosfatasa-alcalina'] > 140) {
+            results.push('**Fosfatasa Alcalina Elevada**: Puede indicar osteoporosis secundaria o enfermedades metabólicas. Evaluar salud ósea.');
         }
 
         // Return analysis text
@@ -1332,10 +1339,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return; // Stop and let user correct
         }
 
-        // Generate and display analysis
+        // Generate and display analysis in result-analisis
         const analysisText = analyzeBioquimicoResults(validEntries, genero);
-        document.getElementById('analysis-text').innerHTML = analysisText;
-        accordionContent.style.display = 'block'; // Expand accordion to show results
+        const analysisElement = document.getElementById('result-analisis');
+        if (analysisElement) {
+            analysisElement.innerHTML = analysisText;
+        } else {
+            console.error('Element with id "result-analisis" not found.');
+        }
         warningContainer.style.display = 'none'; // Hide warnings if successful
         
         // Save valid entries
