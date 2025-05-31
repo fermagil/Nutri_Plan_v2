@@ -1146,7 +1146,7 @@ document.addEventListener('DOMContentLoaded', function() {
             albumina: { min: 3.5, max: 5.0, unit: 'g/dL', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
             prealbumina: { min: 15, max: 40, unit: 'mg/dL', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
             proteinaTotal: { min: 6.0, max: 8.3, unit: 'g/dL', indica: 'Evaluación global de síntesis hepática y nutrición', alteracion: '↓ En desnutrición crónica o enfermedades hepáticas/renales' },
-            colesterolTotal': { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
+            colesterolTotal: { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
             hdl: { 
                 min: genero === 'masculino' ? 40 : 50, max: 100, unit: 'mg/dL', 
                 indica: 'Protege contra enfermedades cardíacas', alteracion: '↓ En obesidad visceral' 
