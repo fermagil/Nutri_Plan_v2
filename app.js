@@ -1363,7 +1363,15 @@ async function showProgressCharts(clienteId) {
         const nonNumericalData = {
             somatotipo: [],
             tipologiaActual: [],
-            tipologiaMetabolica: []
+            tipologiaMetabolica: [],
+            imgActual: [],
+            imgActualSource: [],
+            imgMetabolic: [],
+            imgMetabolicSource: [],
+            imlgActual: [],
+            imlgActualSource: [],
+            imlgMetabolic: [],
+            imlgMetabolicSource: []
         };
 
         // Calculate initial weight for % loss
@@ -1451,6 +1459,14 @@ async function showProgressCharts(clienteId) {
             nonNumericalData.somatotipo.push(data.resultados.somatotipo?.formatted || '---');
             nonNumericalData.tipologiaActual.push(data.resultados.tipologiaActual || '---');
             nonNumericalData.tipologiaMetabolica.push(data.resultados.tipologiaMetabolic || '---');
+            nonNumericalData.imgActual.push(data.resultados.imgActual || '---');
+            nonNumericalData.imgActualSource.push(data.resultados.imgActualSource || '---');
+            nonNumericalData.imgMetabolic.push(data.resultados.imgMetabolic || '---');
+            nonNumericalData.imgMetabolicSource.push(data.resultados.imgMetabolicSource || '---');
+            nonNumericalData.imlgActual.push(data.resultados.imlgActual || '---');
+            nonNumericalData.imlgActualSource.push(data.resultados.imlgActualSource || '---');
+            nonNumericalData.imlgMetabolic.push(data.resultados.imlgMetabolic || '---');
+            nonNumericalData.imlgMetabolicSource.push(data.resultados.imlgMetabolicSource || '---');
         });
 
         // Destroy existing charts
@@ -1755,11 +1771,19 @@ async function showProgressCharts(clienteId) {
         tableBody.innerHTML = '';
         dates.forEach((date, index) => {
             const row = document.createElement('tr');
-            row.innerHTML = `
+           row.innerHTML = `
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
                 <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolica[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imgActual[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imgActualSource[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imgMetabolic[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imgMetabolicSource[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imlgActual[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imlgActualSource[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imlgMetabolic[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.imlgMetabolicSource[index]}</td>
             `;
             tableBody.appendChild(row);
         });
