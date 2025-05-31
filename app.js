@@ -1719,7 +1719,10 @@ async function showProgressCharts(clienteId) {
             },
             { 
                 label: 'Edad Metabólica (años)', 
-                data: preprocessData(gastoEnergeticoData.edadMetabolica), 
+                data: (() => {
+                        console.log('Raw edadMetabolica data:', gastoEnergeticoData.edadMetabolica); // Log raw data
+                        return preprocessData(gastoEnergeticoData.edadMetabolica);
+                    })(),
                 borderColor: '#388E3C', 
                 backgroundColor: 'rgba(56, 142, 60, 0.2)', 
                 fill: false, 
