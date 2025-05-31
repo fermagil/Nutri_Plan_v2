@@ -1696,7 +1696,7 @@ async function showProgressCharts(clienteId) {
         
      // Utility function to merge edadMetabolica and edadmetabolica data
 // Utility function to validate and convert data
-function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = 72) {
+function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = 55) {
     if (data === null || data === undefined) {
         console.warn(`${datasetLabel} data is null or undefined.`);
         return preserveLength ? Array(11).fill(defaultValue) : [];
@@ -1745,7 +1745,7 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 72), // Ensure uppercase M
+        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 36), // Ensure uppercase M
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
@@ -1768,7 +1768,7 @@ const maxLength = Math.max(
     ...gastoEnergeticoDatasets.map(ds => ds.data.length)
 );
 const chartLabels = (dates && dates.length >= maxLength) ? dates.slice(0, maxLength) : 
-    Array.from({ length: maxLength }, (_, i) => `2025-05-${i + 1}`);
+    Array.from({ length: maxLength }, (_, i) => `25-05-${i + 1}`);
 
 if (gastoEnergeticoDatasets.length > 0) {
     console.log('Rendering chart with datasets:', JSON.stringify(gastoEnergeticoDatasets, null, 2));
