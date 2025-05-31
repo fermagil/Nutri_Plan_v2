@@ -1695,11 +1695,8 @@ async function showProgressCharts(clienteId) {
         // Gasto Energético Chart
         
      // Utility function to merge edadMetabolica and edadmetabolica data
-     // Utility function to merge edadMetabolica and edadmetabolica
 // Utility function to validate and convert data
-// Utility function to validate and convert data
-// Utility function to validate and convert data
-function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = 0) {
+function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = 37.9) {
     if (data === null || data === undefined) {
         console.warn(`${datasetLabel} data is null or undefined.`);
         return preserveLength ? Array(11).fill(defaultValue) : []; // Match expected length
@@ -1732,7 +1729,7 @@ function preprocessData(data, datasetLabel, preserveLength = true, defaultValue 
     return processed;
 }
 
-// Debug raw data, dates, and Firestore response (if available)
+// Debug raw data and dates
 console.log('Raw gastoEnergeticoData:', JSON.stringify(gastoEnergeticoData, null, 2));
 console.log('Dates array:', JSON.stringify(dates, null, 2));
 
