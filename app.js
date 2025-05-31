@@ -1677,10 +1677,18 @@ async function showProgressCharts(clienteId) {
         }
 
         // Gasto Energético Chart
+        / Utility function to validate and convert data
+        function preprocessData(data) {
+            return data.map(item => {
+                // Attempt to convert to number, return null for invalid values
+                const value = parseFloat(item);
+                return isNaN(value) ? null : value;
+            }).filter(item => item !== null); // Remove null values
+        }
         const gastoEnergeticoDatasets = [
-            { label: 'Gasto Energético (kcal)', data: gastoEnergeticoData.gasto, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
-            { label: 'Edad Metabólica (años)', data: gastoEnergeticoData.edadMetabolica, borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
-            { label: 'TMB (kcal)', data: gastoEnergeticoData.tmb, borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 }
+            { label: 'Gasto Energético (kcal)', data: preprocessData(gastoEnergeticoData.gasto),, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
+            { label: 'Edad Metabólica (años)', data: preprocessData(gastoEnergeticoData.edadMetabolica), borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
+            { label: 'TMB (kcal)', data: preprocessData(gastoEnergeticoData.tmb), borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 }
         ].filter(ds => hasValidData(ds.data));
         if (gastoEnergeticoDatasets.length > 0) {
             new Chart(document.getElementById('gasto-energetico-chart'), {
