@@ -1283,7 +1283,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Function to analyze biochemical results and generate clinical interpretation
    function formatParentheticalValues(text) {
     return text.replace(/\((\D*)([^)]+)\)/g, (match, prefix, value) => {
-        return `(${prefix}<strong>${value}</strong>)`;
+        return `(${prefix}<span class="affected-value"><strong>${value}</strong></span>)`;
     });
 }
 
@@ -1306,7 +1306,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
         results.push('<h2>Deficiencia de Vitamina D</h2>' + formatParentheticalValues(
             '<strong>Deficiencia de Vitamina D Detectada</strong>: Niveles bajos (<30 ng/mL) por secuestro en tejido adiposo o baja exposición solar. Riesgos: osteoporosis, fracturas, debilidad muscular, resistencia a insulina. Recomendaciones: suplementar 50,000 UI semanales (8 semanas), luego 1,000–2,000 UI/día (objetivo: <strong>30–50 ng/mL</strong>), exposición solar 15–30 min/día, medir cada 3–6 meses, ejercicio con pesas.' +
             '<br><br><strong>Hallazgos Bioquímicos</strong>:<br>' +
-            '↓ Vitamina D (<strong>30 ng/mL</strong>): Deficiencia asociada a baja exposición solar o secuestro en tejido adiposo.<br>' +
+            '↓ Vitamina D (<30 ng/mL): Deficiencia asociada a baja exposición solar o secuestro en tejido adiposo.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
             'Secuestro en tejido adiposo: La vitamina D liposoluble se acumula en grasa, reduciendo su biodisponibilidad.<br>' +
             'Baja síntesis: Insuficiente exposición a UVB o problemas de absorción intestinal (ej. malabsorción).<br>' +
@@ -1358,7 +1358,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             'Fatiga crónica, ganancia de peso, hiperlipidemia, y riesgo de diabetes tipo 2.<br>' +
             '<strong>Manejo</strong>:<br>' +
             '- Diagnóstico: Medir T4 libre y anticuerpos anti-TPO para descartar tiroiditis autoinmune.<br>' +
-            '- Fármacos: Levotiroxina si T4 libre (<strong>0.8 ng/dL</strong>).<br>' +
+            '- Fármacos: Levotiroxina si T4 libre (<0.8 ng/dL).<br>' +
             '- Estilo de vida: Dieta equilibrada, ejercicio moderado.<br>' +
             '- Monitoreo: TSH cada 6–8 semanas hasta estabilización.<br>' +
             '<strong>Explicación Integrada</strong>: Hormonas y su Impacto en el Peso y Metabolismo: La TSH elevada contribuye a ganancia de peso y resistencia a insulina, afectando el metabolismo energético.'
@@ -1371,7 +1371,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
         results.push('<h2>Testosterona Baja</h2>' + formatParentheticalValues(
             '<strong>Testosterona Baja Detectada</strong>: Niveles bajos (<300 ng/dL) promueven grasa visceral y pérdida muscular, exacerbados por IL-6. Riesgos: síndrome metabólico, disfunción eréctil. Recomendaciones: ejercicio de fuerza, suplementos de zinc y vitamina D, terapia de reemplazo si (<200 ng/dL) con síntomas, evaluar resistencia a insulina.' +
             '<br><br><strong>Hallazgos Bioquímicos</strong>:<br>' +
-            '↓ Testosterona (<strong>300 ng/dL</strong>): Niveles bajos asociados a inflamación o edad.<br>' +
+            '↓ Testosterona (<300 ng/mL): Niveles bajos asociados a inflamación o edad.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
             'Inflamación: Citocinas (IL-6) inhiben la producción de testosterona en testículos.<br>' +
             'Resistencia a insulina: Aumenta aromatización de testosterona a estrógenos en tejido adiposo.<br>' +
@@ -1380,8 +1380,8 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<strong>Manejo</strong>:<br>' +
             '- Estilo de vida: Ejercicio de fuerza, mejorar sueño (7–8 h).<br>' +
             '- Suplementos: Zinc (30 mg/día), vitamina D (1,000–2,000 UI/día).<br>' +
-            '- Fármacos: Terapia de reemplazo testosterona si niveles (<strong>200 ng/dL</strong>) con síntomas.<br>' +
-            '- Monitoreo: Evaluar testosterona y marcadores inflamatorios cada 3–6 meses.<br>' +
+            '- Fármacos: Terapia de reemplazo testosterona si niveles (<200 ng/dL) con síntomas.<br>' +
+            '- Monitoreo: Evaluar tu peso en metabolismo basTestosterona y marcadores basales cadaicos basados en inflamación basales cada 3–6 meses.<br>' +
             '<strong>Explicación Integrada</strong>: Hormonas y su Impacto en el Peso y Metabolismo: La testosterona baja promueve acumulación de grasa visceral y resistencia a insulina.'
         ));
     }
@@ -1390,7 +1390,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const cortisol = values['cortisol'] || 0;
     if (cortisol > 25) {
         results.push('<h2>Cortisol Elevado</h2>' + formatParentheticalValues(
-            '<strong>Cortisol Elevado Detectado</strong>: Niveles altos (>25 µg/dL) por estrés crónico promueven grasa abdominal, hiperglucemia y resistencia a leptina. Riesgos: síndrome metabólico, hipertensión. Recomendaciones: reducir estrés (mindfulness, yoga, <strong>7-8 h sueño</strong>), dieta con magnesio (espinacas, almendras) y omega-3, evitar cafeína/azúcares, evaluar cortisol salival, descartar Cushing.' +
+            '<strong>Cortisol Elevado Detectado</strong>: Niveles altos (>25 µg/dL) por estrés crónico promueven grasa abdominal, hiperglucemia y resistencia a glucosa. Riesgos: síndrome metabólico, hipertensión. Recomendaciones: reducir estrés (mindfulness, yoga, <strong>7-8 h sommeil</strong>), dieta con magnesio (espinacas, almendras) y omega-3, evita cafeína/azúcares, evalúa cortisol salival, descarta Cushing.<br>' +
             '<br><br><strong>Hallazgos Bioquímicos</strong>:<br>' +
             '↑ Cortisol (>25 µg/dL): Estrés crónico o posible síndrome de Cushing.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
@@ -1474,7 +1474,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<strong>Riesgo de Fibrosis Hepática</strong>: AST > ALT y albúmina baja (<3.5 g/dL) sugieren progresión de NAFLD a fibrosis o cirrosis. Recomendaciones: elastografía hepática (FibroScan), consultar hepatólogo, controlar factores metabólicos.' +
             '<br><br><strong>Hallazgos Bioquímicos</strong>:<br>' +
             '↑ AST > ALT: Indica daño hepático avanzado.<br>' +
-            '↓ Albúmina (<strong>3.5 g/dL</strong>): Reducción de síntesis hepática.<br>' +
+            '↓ Albúmina (<3.5 g/dL): Reducción de síntesis hepática.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
             'Fibrosis: Inflamación crónica y acumulación de grasa en hígado.<br>' +
             'Disfunción hepática: Reducción de capacidad sintética del hígado.<br>' +
