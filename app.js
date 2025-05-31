@@ -1698,7 +1698,8 @@ async function showProgressCharts(clienteId) {
      // Utility function to merge edadMetabolica and edadmetabolica
 // Utility function to validate and convert data
 // Utility function to validate and convert data
-function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = null) {
+// Utility function to validate and convert data
+function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = 0) {
     if (data === null || data === undefined) {
         console.warn(`${datasetLabel} data is null or undefined.`);
         return preserveLength ? Array(11).fill(defaultValue) : []; // Match expected length
@@ -1731,7 +1732,7 @@ function preprocessData(data, datasetLabel, preserveLength = true, defaultValue 
     return processed;
 }
 
-// Debug raw data and dates
+// Debug raw data, dates, and Firestore response (if available)
 console.log('Raw gastoEnergeticoData:', JSON.stringify(gastoEnergeticoData, null, 2));
 console.log('Dates array:', JSON.stringify(dates, null, 2));
 
@@ -1747,7 +1748,7 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 0), // Default to 0
+        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 37.9), // Default to 37.9
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
@@ -1805,10 +1806,9 @@ if (gastoEnergeticoDatasets.length > 0) {
     if (chartElement) {
         chartElement.style.display = 'none';
         const container = chartElement.parentElement;
-        container.innerHTML += `<p style="color: red;">No valid data for ${gastoEnergeticoDatasets.map(ds => ds.label).join(', ')}. Please check the data source.</p>`;
+        container.innerHTML += `<p style="color: red;">No valid data for ${gastoEnergeticoDatasets.map(ds => ds.label).join(', ')}. Please check the Firestore data source.</p>`;
     }
 }
-
         // Populate non-numerical data table
         const tableBody = document.getElementById('non-numerical-table-body');
         tableBody.innerHTML = '';
