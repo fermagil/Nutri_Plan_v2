@@ -1160,53 +1160,58 @@ document.addEventListener('DOMContentLoaded', function() {
         bioquimicosInput.addEventListener('input', function() {
             console.log('Input event triggered on parametros-bioquimicos');
             console.log(`bioquimicosInput value: "${this.value}"`);
-            if (this.value.length > 0) {
+           if (this.value.length > 0) {
+                console.log('Showing bioquimicos popup');
                 bioquimicosContainer.style.display = 'flex';
-                warningContainer.style.display = 'none'; // Reset warnings
+                console.log(`bioquimicosContainer display: ${bioquimicosContainer.style.display}`);
+                warningContainer.style.display = 'none';
+                console.log(`warningContainer display: ${warningContainer.style.display}`);
 
-                // Ensure form is not reset before loading values
+                // Ensure form exists
                     const form = document.getElementById('bioquimicos-form');
                     if (!form) {
                         console.error('Form bioquimicos-form not found');
                         return;
                     }
-                    console.log('bioquimicos-form found, proceeding to load values');
+                console.log('bioquimicos-form found, proceeding to load values');
+                   
         
                 // // Load existing values from result spans into the popup form inputs
                    fields.forEach(field => {
-                       console.log(`Processing field: ${field.label} (ID: ${field.input})`);
+                    console.log(`Processing field: ${field.label} (input: ${field.input}, result: ${field.result})`);
                     const input = document.getElementById(field.input);
+                    const result = document.getElementById(field.result);
                     if (!input) {
                         console.error(`Input ${field.input} not found`);
                         return;
                     }
-                       if (!result) {
-                        console.error(`Result span ${field.result} not found in table`);
+                    if (!result) {
+                        console.error(`Result ${field.result} not found`);
                         input.value = '';
-                        console.log(`No result span for ${field.label}, clearing ${field.input}`);
+                        console.log(`No result element for ${field.label}, clearing ${field.input}`);
                         return;
                     }
-                       console.log(`Result span ${field.result} found, textContent: "${result.textContent}"`);
-                        console.log(`Input ${field.input} found, value: "${input.value}"`);
-                        console.log(`Checking ${field.label}: input.value="${input.value}"`);
-                    if (result.textContent && result.textContent.trim() !== '' && result.textContent !== '---') {
-                        console.log(`Parsing text value for ${field.label}: "${result.textContent}"`);
-                        const value = parseFloat(result.textContent);
+                    const spanValue = result.textContent.trim();
+                    console.log(`Result ${field.result} found, textContent: "${spanValue}"`);
+    
+                    if (spanValue && spanValue !== '---') {
+                        console.log(`Attempting to parse value for ${field.label}: "${spanValue}"`);
+                        const value = parseFloat(spanValue);
                         if (!isNaN(value)) {
                             // Format value based on field-specific decimals
                             const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
+                            console.log(`Formatting ${field.label} with ${decimals} decimals`);
                             input.value = value.toFixed(decimals);
-                            console.log(`Loaded ${field.label}: ${value.toFixed(decimals)} into ${field.input}`);
+                            console.log(`Loaded ${field.label}: ${input.value} into ${field.input}`);
                         } else {
-                            console.log(`Invalid number in ${field.label}, clearing ${field.input}`);
-                            input.value = ''; // Clear input if value is not a valid number
-                            
+                            console.log(`Non-numeric value "${spanValue}" in ${field.label}, clearing ${field.input}`);
+                            input.value = '';
                         }
                     } else {
-                         
-                        input.value = ''; // Clear input if no value
-                        console.log(`No data in ${field.label}, clearing ${field.input}`);
+                        console.log(`Empty or placeholder value "${spanValue}" in ${field.label}, clearing ${field.input}`);
+                        input.value = '';
                     }
+                    console.log(`Final value for ${field.input}: "${input.value}"`);
                 });
             }
         });        
@@ -1215,8 +1220,6 @@ document.addEventListener('DOMContentLoaded', function() {
     saveButton.addEventListener('click', function() {
         console.log('saveButton clicked');
         const genero = document.getElementById('genero')?.value || 'masculino';
-        
-
         const warnings = [];
         const validEntries = [];
 
