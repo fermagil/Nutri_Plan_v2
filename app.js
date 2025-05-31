@@ -1745,7 +1745,7 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 36), // Ensure uppercase M
+        data: preprocessData(gastoEnergeticoData.edadmetabolica, 'Edad Metabólica', true, 36), // Ensure uppercase M
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
