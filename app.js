@@ -1452,7 +1452,7 @@ async function showProgressCharts(clienteId) {
            // Gasto Energético
             const tmb = safeToNumber(data.resultados.BRMEstimado);
             gastoEnergeticoData.gasto.push(tmb);
-            gastoEnergeticoData.edadMetabolica.push(safeToNumber(data.resultados.edadmetabolica));
+            gastoEnergeticoData.edadmetabolica.push(safeToNumber(data.resultados.edadmetabolica));
            // gastoEnergeticoData.BRMEstimado.push(BRMEstimado);
 
             // Non-numerical data
