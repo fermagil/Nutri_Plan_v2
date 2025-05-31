@@ -733,7 +733,7 @@ let currentTomaSerial = null; // Track the loaded toma's serial
                     testosteronaSource: document.getElementById('cortisola-source')?.textContent || null,
                     vitamina_d: parseFloat(document.getElementById('result-vitamina-d')?.textContent) || null,
                     vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null,
-                    fosfatasa parseFloat(document.getElementById('result-fosfatasa-alcalina')?.textContent) || null,
+                    fosfatasa: parseFloat(document.getElementById('result-fosfatasa-alcalina')?.textContent) || null,
                     fosfatasaSource: document.getElementById('fosfatasa-alcalina-source')?.textContent || null,
                     creatinina: parseFloat(document.getElementById('result-creatinina')?.textContent) || null,
                     creatininaSource: document.getElementById('creatinina-source')?.textContent || null,
