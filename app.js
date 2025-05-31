@@ -1695,104 +1695,116 @@ async function showProgressCharts(clienteId) {
         // Gasto Energético Chart
         
      // Utility function to merge edadMetabolica and edadmetabolica data
-        // Utility function to validate and convert data
-            function preprocessData(data, datasetLabel) {
-                // Handle null/undefined data
-                if (data === null || data === undefined) {
-                    console.warn(`${datasetLabel} data is null or undefined.`);
-                    return [];
-                }
-                
-                const dataArray = Array.isArray(data) ? data : [data];
-                
-                const processed = dataArray.map((item, index) => {
-                    if (item === null || item === undefined) {
-                        console.warn(`Null or undefined value at index ${index} in ${datasetLabel}`);
-                        return null;
-                    }
-                    const value = parseFloat(item);
-                    if (isNaN(value)) {
-                        console.warn(`Invalid data at index ${index} in ${datasetLabel}: ${item}`);
-                        return null;
-                    }
-                    return value;
-                }).filter(item => item !== null);
-                
-                if (processed.length === 0) {
-                    console.warn(`${datasetLabel} dataset is empty after preprocessing. No valid numerical data found.`);
-                    return [];
-                }
-                return processed;
-            }
-            
-            // Debug raw data
-            console.log('Raw gastoEnergeticoData:', JSON.stringify(gastoEnergeticoData, null, 2));
-            
-            // Gasto Energético Chart
-            const gastoEnergeticoDatasets = [
-                { 
-                    label: 'Gasto Energético (kcal)', 
-                    data: preprocessData(gastoEnergeticoData.gasto, 'Gasto Energético'), 
-                    borderColor: '#4CAF50', 
-                    backgroundColor: 'rgba(76, 175, 80, 0.2)', 
-                    fill: false, 
-                    tension: 0.1 
+       // Utility function to validate and convert data
+function preprocessData(data, datasetLabel) {
+    if (data === null || data === undefined) {
+        console.warn(`${datasetLabel} data is null or undefined.`);
+        return [];
+    }
+    
+    const dataArray = Array.isArray(data) ? data : [data];
+    
+    const processed = dataArray.map((item, index) => {
+        if (item === null || item === undefined) {
+            console.warn(`Null or undefined value at index ${index} in ${datasetLabel}`);
+            return null;
+        }
+        const value = parseFloat(item);
+        if (isNaN(value)) {
+            console.warn(`Invalid data at index ${index} in ${datasetLabel}: ${item}`);
+            return null;
+        }
+        return value;
+    }).filter(item => item !== null);
+    
+    if (processed.length === 0) {
+        console.warn(`${datasetLabel} dataset is empty after preprocessing. No valid numerical data found.`);
+        return [];
+    }
+    return processed;
+}
+
+// Debug raw data and dates
+console.log('Raw gastoEnergeticoData:', JSON.stringify(gastoEnergeticoData, null, 2));
+console.log('Dates array:', JSON.stringify(dates, null, 2));
+
+// Gasto Energético Chart
+const gastoEnergeticoDatasets = [
+    { 
+        label: 'Gasto Energético (kcal)', 
+        data: preprocessData(gastoEnergeticoData.gasto, 'Gasto Energético'), 
+        borderColor: '#4CAF50', 
+        backgroundColor: 'rgba(76, 175, 80, 0.2)', 
+        fill: false, 
+        tension: 0.1 
+    },
+    { 
+        label: 'Edad Metabólica (años)', 
+        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica'), 
+        borderColor: '#388E3C', 
+        backgroundColor: 'rgba(56, 142, 60, 0.2)', 
+        fill: false, 
+        tension: 0.1,
+        yAxisID: 'y1' // Use secondary axis for different scale
+    },
+    { 
+        label: 'TMB (kcal)', 
+        data: preprocessData(gastoEnergeticoData.tmb, 'TMB'), 
+        borderColor: '#0275d8', 
+        backgroundColor: 'rgba(2, 117, 216, 0.2)', 
+        fill: false, 
+        tension: 0.1 
+    }
+].filter(ds => ds.data.length > 0); // Filter out datasets with no valid data
+
+// Align datasets to the shortest valid length
+const validLengths = gastoEnergeticoDatasets.map(ds => ds.data.length).filter(len => len > 0);
+const minLength = validLengths.length > 0 ? Math.min(...validLengths) : 0;
+if (minLength > 0) {
+    gastoEnergeticoDatasets.forEach(ds => {
+        ds.data = ds.data.slice(0, minLength);
+    });
+}
+
+// Generate fallback dates if not provided
+const fallbackDates = Array.from({ length: minLength || 1 }, (_, i) => `Date ${i + 1}`);
+
+if (gastoEnergeticoDatasets.length > 0) {
+    console.log('Rendering chart with datasets:', JSON.stringify(gastoEnergeticoDatasets, null, 2));
+    new Chart(document.getElementById('gasto-energetico-chart'), {
+        type: 'line',
+        data: { 
+            labels: (dates && dates.length >= minLength) ? dates.slice(0, minLength) : fallbackDates, 
+            datasets: gastoEnergeticoDatasets 
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                ...commonOptions.scales,
+                y: { 
+                    type: 'linear',
+                    position: 'left',
+                    title: { display: true, text: 'kcal', font: { size: 12 } }
                 },
-                { 
-                    label: 'Edad Metabólica (años)', 
-                    data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica'), 
-                    borderColor: '#388E3C', 
-                    backgroundColor: 'rgba(56, 142, 60, 0.2)', 
-                    fill: false, 
-                    tension: 0.1,
-                    yAxisID: 'y1' // Use secondary axis for different scale
-                },
-                { 
-                    label: 'TMB (kcal)', 
-                    data: preprocessData(gastoEnergeticoData.tmb, 'TMB'), 
-                    borderColor: '#0275d8', 
-                    backgroundColor: 'rgba(2, 117, 216, 0.2)', 
-                    fill: false, 
-                    tension: 0.1 
-                }
-            ].filter(ds => ds.data.length > 0); // Filter out datasets with no valid data
-            
-            // Generate fallback dates if not provided
-            const maxDataLength = Math.max(...gastoEnergeticoDatasets.map(ds => ds.data.length));
-            const fallbackDates = Array.from({ length: maxDataLength }, (_, i) => `Date ${i + 1}`);
-            
-            if (gastoEnergeticoDatasets.length > 0) {
-                new Chart(document.getElementById('gasto-energetico-chart'), {
-                    type: 'line',
-                    data: { labels: dates || fallbackDates, datasets: gastoEnergeticoDatasets },
-                    options: {
-                        ...commonOptions,
-                        scales: {
-                            ...commonOptions.scales,
-                            y: { 
-                                type: 'linear',
-                                position: 'left',
-                                title: { display: true, text: 'kcal', font: { size: 12 } }
-                            },
-                            y1: {
-                                type: 'linear',
-                                position: 'right',
-                                title: { display: true, text: 'Edad Metabólica (años)', font: { size: 12 } },
-                                grid: { drawOnChartArea: false }
-                            }
-                        }
-                    },
-                    plugins: [ChartDataLabels]
-                });
-            } else {
-                console.warn('No valid data for Gasto Energético Chart. Check input data for all datasets.');
-                const chartElement = document.getElementById('gasto-energetico-chart');
-                if (chartElement) {
-                    chartElement.style.display = 'none';
-                    const container = chartElement.parentElement;
-                    container.innerHTML += `<p style="color: red;">No valid data for ${gastoEnergeticoDatasets.map(ds => ds.label).join(', ')}. Please check the data source.</p>`;
+                y1: {
+                    type: 'linear',
+                    position: 'right',
+                    title: { display: true, text: 'Edad Metabólica (años)', font: { size: 12 } },
+                    grid: { drawOnChartArea: false }
                 }
             }
+        },
+        plugins: [ChartDataLabels]
+    });
+} else {
+    console.warn('No valid data for Gasto Energético Chart. Datasets:', gastoEnergeticoDatasets.map(ds => ds.label));
+    const chartElement = document.getElementById('gasto-energetico-chart');
+    if (chartElement) {
+        chartElement.style.display = 'none';
+        const container = chartElement.parentElement;
+        container.innerHTML += `<p style="color: red;">No valid data for ${gastoEnergeticoDatasets.map(ds => ds.label).join(', ')}. Please check the data source.</p>`;
+    }
+}
 
         // Populate non-numerical data table
         const tableBody = document.getElementById('non-numerical-table-body');
