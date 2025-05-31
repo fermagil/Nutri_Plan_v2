@@ -1452,8 +1452,9 @@ async function showProgressCharts(clienteId) {
            // Gasto Energético
             const tmb = safeToNumber(data.resultados.BRMEstimado);
             gastoEnergeticoData.gasto.push(tmb);
-            gastoEnergeticoData.edadmetabolica.push(safeToNumber(data.resultados.edadmetabolica));
-           gastoEnergeticoData.tmb.push(safeToNumber(data.resultados.tmb));    
+            gastoEnergeticoData.edadMetabolica.push(safeToNumber(data.resultados.edadMetabolica)); // Fix: uppercase M
+            gastoEnergeticoData.tmb.push(safeToNumber(data.resultados.tmb));
+      
             // Log constructed data
         console.log('Constructed gastoEnergeticoData:', JSON.stringify(gastoEnergeticoData, null, 2));
         console.log('Dates array:', JSON.stringify(dates, null, 2));
@@ -1811,7 +1812,7 @@ async function showProgressCharts(clienteId) {
         console.error('Error fetching data for charts:', error);
         alert('Ocurrió un error al cargar los datos. Por favor, intenta de nuevo.');
     }
-}
+
         // Populate non-numerical data table
         const tableBody = document.getElementById('non-numerical-table-body');
         tableBody.innerHTML = '';
