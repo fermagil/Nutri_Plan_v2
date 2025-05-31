@@ -1087,6 +1087,25 @@ document.addEventListener('DOMContentLoaded', function() {
     warningContainer.style.display = 'none';
     document.getElementById('bioquimicos-form')?.prepend(warningContainer);
 
+
+    // Define fields globally
+    const fields = [
+        { input: 'albumina', result: 'result-albumina', source: 'albumina-source', label: 'Albúmina', unit: 'g/dL', range: [2.5, 6.0] },
+        { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source', label: 'Prealbúmina', unit: 'mg/dL', range: [5, 50] },
+        { input: 'colesterol-total', result: 'result-colesterol-total', source: 'colesterol-total-source', label: 'Colesterol Total', unit: 'mg/dL', range: [50, 400] },
+        { input: 'hdl', result: 'result-hdl', source: 'hdl-source', label: 'HDL', unit: 'mg/dL', range: [10, 120] },
+        { input: 'trigliceridos', result: 'result-trigliceridos', source: 'trigliceridos-source', label: 'Triglicéridos', unit: 'mg/dL', range: [20, 1000] },
+        { input: 'glucosa-ayunas', result: 'result-glucosa-ayunas', source: 'glucosa-ayunas-source', label: 'Glucosa en ayunas', unit: 'mg/dL', range: [40, 300] },
+        { input: 'hba1c', result: 'result-hba1c', source: 'hba1c-source', label: 'HbA1c', unit: '%', range: [3, 15] },
+        { input: 'insulina', result: 'result-insulina', source: 'insulina-source', label: 'Insulina', unit: 'µU/mL', range: [1, 150] },
+        { input: 'pcr-ultrasensible', result: 'result-pcr-ultrasensible', source: 'pcr-ultrasensible-source', label: 'PCR ultrasensible', unit: 'mg/L', range: [0.05, 20] },
+        { input: 'leptina', result: 'result-leptina', source: 'leptina-source', label: 'Leptina', unit: 'ng/mL', range: [0.5, 200] },
+        { input: 'alt', result: 'result-alt', source: 'alt-source', label: 'ALT', unit: 'U/L', range: [5, 200] },
+        { input: 'ggt', result: 'result-ggt', source: 'ggt-source', label: 'GGT', unit: 'U/L', range: [5, 300] },
+        { input: 'tsh', result: 'result-tsh', source: 'tsh-source', label: 'TSH', unit: 'µIU/mL', range: [0.05, 15] },
+        { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source', label: 'Testosterona', unit: 'ng/dL', range: [20, 1500] },
+        { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source', label: 'Vitamina D', unit: 'ng/mL', range: [5, 200] }
+    ];
     // Función para obtener la explicación de un parámetro bioquímico (unchanged)
     function getBioquimicoExplanation(param, value, genero = 'masculino') {
         const ranges = {
@@ -1153,7 +1172,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     console.log('bioquimicos-form found, proceeding to load values');
         
-                // Load existing values into the popup form
+                // // Load existing values from result spans into the popup form inputs
                    fields.forEach(field => {
                        console.log(`Processing field: ${field.label} (ID: ${field.input})`);
                     const input = document.getElementById(field.input);
@@ -1187,23 +1206,7 @@ document.addEventListener('DOMContentLoaded', function() {
     saveButton.addEventListener('click', function() {
         console.log('saveButton clicked');
         const genero = document.getElementById('genero')?.value || 'masculino';
-        const fields = [
-            { input: 'albumina', result: 'result-albumina', source: 'albumina-source', label: 'Albúmina', unit: 'g/dL', range: [2.5, 6.0] },
-            { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source', label: 'Prealbúmina', unit: 'mg/dL', range: [5, 50] },
-            { input: 'colesterol-total', result: 'result-colesterol-total', source: 'colesterol-total-source', label: 'Colesterol Total', unit: 'mg/dL', range: [50, 400] },
-            { input: 'hdl', result: 'result-hdl', source: 'hdl-source', label: 'HDL', unit: 'mg/dL', range: [10, 120] },
-            { input: 'trigliceridos', result: 'result-trigliceridos', source: 'trigliceridos-source', label: 'Triglicéridos', unit: 'mg/dL', range: [20, 1000] },
-            { input: 'glucosa-ayunas', result: 'result-glucosa-ayunas', source: 'glucosa-ayunas-source', label: 'Glucosa en ayunas', unit: 'mg/dL', range: [40, 300] },
-            { input: 'hba1c', result: 'result-hba1c', source: 'hba1c-source', label: 'HbA1c', unit: '%', range: [3, 15] },
-            { input: 'insulina', result: 'result-insulina', source: 'insulina-source', label: 'Insulina', unit: 'µU/mL', range: [1, 150] },
-            { input: 'pcr-ultrasensible', result: 'result-pcr-ultrasensible', source: 'pcr-ultrasensible-source', label: 'PCR ultrasensible', unit: 'mg/L', range: [0.05, 20] },
-            { input: 'leptina', result: 'result-leptina', source: 'leptina-source', label: 'Leptina', unit: 'ng/mL', range: [0.5, 200] },
-            { input: 'alt', result: 'result-alt', source: 'alt-source', label: 'ALT', unit: 'U/L', range: [5, 200] },
-            { input: 'ggt', result: 'result-ggt', source: 'ggt-source', label: 'GGT', unit: 'U/L', range: [5, 300] },
-            { input: 'tsh', result: 'result-tsh', source: 'tsh-source', label: 'TSH', unit: 'µIU/mL', range: [0.05, 15] },
-            { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source', label: 'Testosterona', unit: 'ng/dL', range: [20, 1500] },
-            { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source', label: 'Vitamina D', unit: 'ng/mL', range: [5, 200] }
-        ];
+        
 
         const warnings = [];
         const validEntries = [];
@@ -1257,6 +1260,7 @@ document.addEventListener('DOMContentLoaded', function() {
         bioquimicosContainer.style.display = 'none';
         bioquimicosInput.value = '';
         document.getElementById('bioquimicos-form').reset();
+        warningContainer.style.display = 'none';
         console.log('Pop-up form reset');
     });
 
