@@ -1180,21 +1180,30 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error(`Input ${field.input} not found`);
                         return;
                     }
-                    console.log(`Input ${field.input} found, value: "${input.value}"`);
-                    console.log(`Checking ${field.label}: input.value="${input.value}"`);
-                    if (input.value && input.value.trim() !== '') {
-                        console.log(`Parsing value for ${field.label}: "${input.value}"`);
-                        const value = parseFloat(input.value);
+                       if (!result) {
+                        console.error(`Result span ${field.result} not found in table`);
+                        input.value = '';
+                        console.log(`No result span for ${field.label}, clearing ${field.input}`);
+                        return;
+                    }
+                       console.log(`Result span ${field.result} found, textContent: "${result.textContent}"`);
+                        console.log(`Input ${field.input} found, value: "${input.value}"`);
+                        console.log(`Checking ${field.label}: input.value="${input.value}"`);
+                    if (result.textContent && result.textContent.trim() !== '' && result.textContent !== '---') {
+                        console.log(`Parsing text value for ${field.label}: "${result.textContent}"`);
+                        const value = parseFloat(result.textContent);
                         if (!isNaN(value)) {
                             // Format value based on field-specific decimals
                             const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
                             input.value = value.toFixed(decimals);
                             console.log(`Loaded ${field.label}: ${value.toFixed(decimals)} into ${field.input}`);
                         } else {
-                            input.value = ''; // Clear input if value is not a valid number
                             console.log(`Invalid number in ${field.label}, clearing ${field.input}`);
+                            input.value = ''; // Clear input if value is not a valid number
+                            
                         }
                     } else {
+                         
                         input.value = ''; // Clear input if no value
                         console.log(`No data in ${field.label}, clearing ${field.input}`);
                     }
