@@ -697,9 +697,11 @@ let currentTomaSerial = null; // Track the loaded toma's serial
                 parametros_bioquimicos: {
                     albumina: parseFloat(document.getElementById('result-albumina')?.textContent) || null,
                     albuminaSource: document.getElementById('albumina-source')?.textContent || null,
+                    proteinaTotal: document.getElementById('result-proteina-total')?.textContent || null,
+                    proteinaTotalSource: document.getElementById('proteina-total-source')?.textContent || null,
                     prealbumina: parseFloat(document.getElementById('result-prealbumina')?.textContent) || null,
                     prealbuminaSource: document.getElementById('prealbumina-source')?.textContent || null,
-                    colesterol_total: parseFloat(document.getElementById('result-colesterol-total')?.textContent) || null,
+                    colesterolTotal: parseFloat(document.getElementById('result-colesterol-total')?.textContent) || null,
                     colesterolTotalSource: document.getElementById('colesterol-total-source')?.textContent || null,
                     hdl: parseFloat(document.getElementById('result-hdl')?.textContent) || null,
                     hdlSource: document.getElementById('hdl-source')?.textContent || null,
@@ -713,18 +715,30 @@ let currentTomaSerial = null; // Track the loaded toma's serial
                     insulinaSource: document.getElementById('insulina-source')?.textContent || null,
                     pcr_ultrasensible: parseFloat(document.getElementById('result-pcr-ultrasensible')?.textContent) || null,
                     pcrUltrasensibleSource: document.getElementById('pcr-ultrasensible-source')?.textContent || null,
+                    adiponectina: parseFloat(document.getElementById('result-adiponectina')?.textContent) || null,
+                    adiponectinaSource: document.getElementById('adiponectina-source')?.textContent || null,
                     leptina: parseFloat(document.getElementById('result-leptina')?.textContent) || null,
                     leptinaSource: document.getElementById('leptina-source')?.textContent || null,
                     alt: parseFloat(document.getElementById('result-alt')?.textContent) || null,
                     altSource: document.getElementById('alt-source')?.textContent || null,
                     ggt: parseFloat(document.getElementById('result-ggt')?.textContent) || null,
                     ggtSource: document.getElementById('ggt-source')?.textContent || null,
+                    ast: parseFloat(document.getElementById('result-ast')?.textContent) || null,
+                    astSource: document.getElementById('ast-source')?.textContent || null,
                     tsh: parseFloat(document.getElementById('result-tsh')?.textContent) || null,
                     tshSource: document.getElementById('tsh-source')?.textContent || null,
                     testosterona: parseFloat(document.getElementById('result-testosterona')?.textContent) || null,
                     testosteronaSource: document.getElementById('testosterona-source')?.textContent || null,
+                    cortisol: parseFloat(document.getElementById('result-cortisol')?.textContent) || null,
+                    testosteronaSource: document.getElementById('cortisola-source')?.textContent || null,
                     vitamina_d: parseFloat(document.getElementById('result-vitamina-d')?.textContent) || null,
                     vitaminaDSource: document.getElementById('vitamina-d-source')?.textContent || null,
+                    fosfatasa parseFloat(document.getElementById('result-fosfatasa-alcalina')?.textContent) || null,
+                    fosfatasaSource: document.getElementById('fosfatasa-alcalina-source')?.textContent || null,
+                    creatinina: parseFloat(document.getElementById('result-creatinina')?.textContent) || null,
+                    creatininaSource: document.getElementById('creatinina-source')?.textContent || null,
+                    bun: parseFloat(document.getElementById('result-bun')?.textContent) || null,
+                    bunSource: document.getElementById('bun-source')?.textContent || null,
                 },
             },
             resultados: window.calculatedResults || {},
@@ -979,6 +993,7 @@ async function cargarDatosToma(clienteId, tomaId) {
     // Parámetros Bioquímicos
     'albumina': { id: 'result-albumina', unit: '', source: 'medidas.parametros_bioquimicos.albumina', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
     'prealbumina': { id: 'result-prealbumina', unit: '', source: 'medidas.parametros_bioquimicos.prealbumina', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+     'proteinaTotal': { id: 'result-proteina-total', unit: '', source: 'medidas.parametros_bioquimicos.proteinaTotal', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },                 
     'colesterolTotal': { id: 'result-colesterol-total', unit: '', source: 'medidas.parametros_bioquimicos.colesterol_total', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
     'hdl': { id: 'result-hdl', unit: '', source: 'medidas.parametros_bioquimicos.hdl', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
     'trigliceridos': { id: 'result-trigliceridos', unit: '', source: 'medidas.parametros_bioquimicos.trigliceridos', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
@@ -987,14 +1002,20 @@ async function cargarDatosToma(clienteId, tomaId) {
     'insulina': { id: 'result-insulina', unit: '', source: 'medidas.parametros_bioquimicos.insulina', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
     'pcrUltrasensible': { id: 'result-pcr-ultrasensible', unit: '', source: 'medidas.parametros_bioquimicos.pcr_ultrasensible', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(2) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(2) : '---') },
     'leptina': { id: 'result-leptina', unit: '', source: 'medidas.parametros_bioquimicos.leptina', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+    'adiponectina': { id: 'result-adiponectina', unit: '', source: 'medidas.parametros_bioquimicos.adiponectina', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },       
     'alt': { id: 'result-alt', unit: '', source: 'medidas.parametros_bioquimicos.alt', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
     'ggt': { id: 'result-ggt', unit: '', source: 'medidas.parametros_bioquimicos.ggt', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(0) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(0) : '---') },
     'tsh': { id: 'result-tsh', unit: '', source: 'medidas.parametros_bioquimicos.tsh', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(2) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(2) : '---') },
     'testosterona': { id: 'result-testosterona', unit: '', source: 'medidas.parametros_bioquimicos.testosterona', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
     'vitaminaD': { id: 'result-vitamina-d', unit: '', source: 'medidas.parametros_bioquimicos.vitamina_d', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+    'fosfatasa': { id: 'result-fosfatasa', unit: '', source: 'medidas.parametros_bioquimicos.fosfatasa', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+     'creatinina': { id: 'result-creatinina', unit: '', source: 'medidas.parametros_bioquimicos.creatinina', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },
+     'bun': { id: 'result-bun', unit: '', source: 'medidas.parametros_bioquimicos.bun', format: (v) => typeof v === 'number' && !isNaN(v) ? v.toFixed(1) : (typeof v === 'string' && !isNaN(parseFloat(v)) ? parseFloat(v).toFixed(1) : '---') },       
+    // Parámetros Bioquímicos Sources        
     // Parámetros Bioquímicos Sources
     'albuminaSource': { id: 'albumina-source', unit: '', source: 'medidas.parametros_bioquimicos.albuminaSource', format: (v) => v || '(No calculado)' },
     'prealbuminaSource': { id: 'prealbumina-source', unit: '', source: 'medidas.parametros_bioquimicos.prealbuminaSource', format: (v) => v || '(No calculado)' },
+    'proteinaTotalSource': { id: 'proteina-total-source', unit: '', source: 'medidas.parametros_bioquimicos.proteinaTotalSource', format: (v) => v || '(No calculado)' },
     'colesterolTotalSource': { id: 'colesterol-total-source', unit: '', source: 'medidas.parametros_bioquimicos.colesterolTotalSource', format: (v) => v || '(No calculado)' },
     'hdlSource': { id: 'hdl-source', unit: '', source: 'medidas.parametros_bioquimicos.hdlSource', format: (v) => v || '(No calculado)' },
     'trigliceridosSource': { id: 'trigliceridos-source', unit: '', source: 'medidas.parametros_bioquimicos.trigliceridosSource', format: (v) => v || '(No calculado)' },
@@ -1003,11 +1024,16 @@ async function cargarDatosToma(clienteId, tomaId) {
     'insulinaSource': { id: 'insulina-source', unit: '', source: 'medidas.parametros_bioquimicos.insulinaSource', format: (v) => v || '(No calculado)' },
     'pcrUltrasensibleSource': { id: 'pcr-ultrasensible-source', unit: '', source: 'medidas.parametros_bioquimicos.pcrUltrasensibleSource', format: (v) => v || '(No calculado)' },
     'leptinaSource': { id: 'leptina-source', unit: '', source: 'medidas.parametros_bioquimicos.leptinaSource', format: (v) => v || '(No calculado)' },
+    'adiponectinaSource': { id: 'adiponectina-source', unit: '', source: 'medidas.parametros_bioquimicos.adiponectinaSource', format: (v) => v || '(No calculado)' },      
     'altSource': { id: 'alt-source', unit: '', source: 'medidas.parametros_bioquimicos.altSource', format: (v) => v || '(No calculado)' },
     'ggtSource': { id: 'ggt-source', unit: '', source: 'medidas.parametros_bioquimicos.ggtSource', format: (v) => v || '(No calculado)' },
     'tshSource': { id: 'tsh-source', unit: '', source: 'medidas.parametros_bioquimicos.tshSource', format: (v) => v || '(No calculado)' },
     'testosteronaSource': { id: 'testosterona-source', unit: '', source: 'medidas.parametros_bioquimicos.testosteronaSource', format: (v) => v || '(No calculado)' },
-    'vitaminaDSource': { id: 'vitamina-d-source', unit: '', source: 'medidas.parametros_bioquimicos.vitaminaDSource', format: (v) => v || '(No calculado)' }
+    'cortisolSource': { id: 'cortisol-source', unit: '', source: 'medidas.parametros_bioquimicos.cortisolSource', format: (v) => v || '(No calculado)' },        
+    'vitaminaDSource': { id: 'vitamina-d-source', unit: '', source: 'medidas.parametros_bioquimicos.vitaminaDSource', format: (v) => v || '(No calculado)' },
+    'fosfatasaSource': { id: 'fosfatasa-alcalina-source', unit: '', source: 'medidas.parametros_bioquimicos.fosfatasaSource', format: (v) => v || '(No calculado)' },
+    'creatininaSource': { id: 'fcreatinina-source', unit: '', source: 'medidas.parametros_bioquimicos.creatininaSource', format: (v) => v || '(No calculado)' },
+    'bunSource': { id: 'bun-source', unit: '', source: 'medidas.parametros_bioquimicos.bunSource', format: (v) => v || '(No calculado)' }
 };
         // Asignar valores a los elementos de resultados
         Object.entries(resultMappings).forEach(([key, { id, unit, source, format }]) => {
@@ -1093,11 +1119,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const fields = [
         { input: 'albumina', result: 'result-albumina', source: 'albumina-source', label: 'Albúmina', unit: 'g/dL', range: [2.5, 6.0] },
         { input: 'prealbumina', result: 'result-prealbumina', source: 'prealbumina-source', label: 'Prealbúmina', unit: 'mg/dL', range: [5, 50] },
-       // { input: 'proteina-total', result: 'result-proteina-total', source: 'proteina-total-source', label: 'Proteína Total', unit: 'g/dL', range: [6.0, 8.3] },
+        { input: 'proteina-total', result: 'result-proteina-total', source: 'proteina-total-source', label: 'Proteína Total', unit: 'g/dL', range: [6.0, 8.3] },
         { input: 'colesterol-total', result: 'result-colesterol-total', source: 'colesterol-total-source', label: 'Colesterol Total', unit: 'mg/dL', range: [50, 400] },
         { input: 'hdl', result: 'result-hdl', source: 'hdl-source', label: 'HDL', unit: 'mg/dL', range: [10, 120] },
         { input: 'trigliceridos', result: 'result-trigliceridos', source: 'trigliceridos-source', label: 'Triglicéridos', unit: 'mg/dL', range: [20, 1000] },
-        //{ input: 'apolipoproteina-b', result: 'result-apolipoproteina-b', source: 'apolipoproteina-b-source', label: 'Apolipoproteína B', unit: 'mg/dL', range: [50, 150] },
+        { input: 'apolipoproteina-b', result: 'result-apolipoproteina-b', source: 'apolipoproteina-b-source', label: 'Apolipoproteína B', unit: 'mg/dL', range: [50, 150] },
         { input: 'glucosa-ayunas', result: 'result-glucosa-ayunas', source: 'glucosa-ayunas-source', label: 'Glucosa en ayunas', unit: 'mg/dL', range: [40, 300] },
         { input: 'hba1c', result: 'result-hba1c', source: 'hba1c-source', label: 'HbA1c', unit: '%', range: [3, 15] },
         { input: 'insulina', result: 'result-insulina', source: 'insulina-source', label: 'Insulina', unit: 'µU/mL', range: [1, 150] },
@@ -1105,13 +1131,13 @@ document.addEventListener('DOMContentLoaded', function() {
         { input: 'leptina', result: 'result-leptina', source: 'leptina-source', label: 'Leptina', unit: 'ng/mL', range: [0.5, 200] },
         { input: 'alt', result: 'result-alt', source: 'alt-source', label: 'ALT', unit: 'U/L', range: [5, 200] },
         { input: 'ggt', result: 'result-ggt', source: 'ggt-source', label: 'GGT', unit: 'U/L', range: [5, 300] },
-        //{ input: 'creatinina', result: 'result-creatinina', source: 'creatinina-source', label: 'Creatinina', unit: 'mg/dL', range: [0.5, 1.5] },
-        //{ input: 'bun', result: 'result-bun', source: 'bun-source', label: 'BUN', unit: 'mg/dL', range: [7, 25] },
+        { input: 'creatinina', result: 'result-creatinina', source: 'creatinina-source', label: 'Creatinina', unit: 'mg/dL', range: [0.5, 1.5] },
+        { input: 'bun', result: 'result-bun', source: 'bun-source', label: 'BUN', unit: 'mg/dL', range: [7, 25] },
         { input: 'tsh', result: 'result-tsh', source: 'tsh-source', label: 'TSH', unit: 'µIU/mL', range: [0.05, 15] },
         { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source', label: 'Testosterona', unit: 'ng/dL', range: [20, 1500] },
-        //{ input: 'cortisol', result: 'result-cortisol', source: 'cortisol-source', label: 'Cortisol', unit: 'µg/dL', range: [5, 25] },
+        { input: 'cortisol', result: 'result-cortisol', source: 'cortisol-source', label: 'Cortisol', unit: 'µg/dL', range: [5, 25] },
         { input: 'vitamina-d', result: 'result-vitamina-d', source: 'vitamina-d-source', label: 'Vitamina D', unit: 'ng/mL', range: [5, 200] },
-        //{ input: 'fosfatasa-alcalina', result: 'result-fosfatasa-alcalina', source: 'fosfatasa-alcalina-source', label: 'Fosfatasa Alcalina', unit: 'U/L', range: [20, 140] }
+        { input: 'fosfatasa-alcalina', result: 'result-fosfatasa-alcalina', source: 'fosfatasa-alcalina-source', label: 'Fosfatasa Alcalina', unit: 'U/L', range: [20, 140] }
     ];
 
     // Función para obtener la explicación de un parámetro bioquímico
@@ -1119,15 +1145,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const ranges = {
             albumina: { min: 3.5, max: 5.0, unit: 'g/dL', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
             prealbumina: { min: 15, max: 40, unit: 'mg/dL', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
-            //'proteina-total': { min: 6.0, max: 8.3, unit: 'g/dL', indica: 'Evaluación global de síntesis hepática y nutrición', alteracion: '↓ En desnutrición crónica o enfermedades hepáticas/renales' },
-            'colesterol-total': { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
+            proteinaTotal: { min: 6.0, max: 8.3, unit: 'g/dL', indica: 'Evaluación global de síntesis hepática y nutrición', alteracion: '↓ En desnutrición crónica o enfermedades hepáticas/renales' },
+            colesterolTotal': { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
             hdl: { 
                 min: genero === 'masculino' ? 40 : 50, max: 100, unit: 'mg/dL', 
                 indica: 'Protege contra enfermedades cardíacas', alteracion: '↓ En obesidad visceral' 
             },
             trigliceridos: { min: 0, max: 150, unit: 'mg/dL', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
-            //'apolipoproteina-b': { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
-            'glucosa-ayunas': { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
+            apolipoproteinab': { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
+            glucosa_ayunas: { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
             hba1c: { min: 0, max: 5.7, unit: '%', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
             insulina: { min: 2, max: 25, unit: 'µU/mL', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
             'pcr-ultrasensible': { min: 0, max: 1.0, unit: 'mg/L', indica: 'Inflamación sistémica', alteracion: '↑ En obesidad (>3 mg/L = riesgo cardiovascular)' },
@@ -1143,13 +1169,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 min: genero === 'masculino' ? 8 : 5, max: genero === 'masculino' ? 61 : 36, unit: 'U/L', 
                 indica: 'Sensible a acumulación de grasa en hígado', alteracion: '↑ En obesidad y consumo de alcohol' 
             },
-           // creatinina: { min: 0.5, max: 1.5, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
-            //bun: { min: 7, max: 25, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
+            creatinina: { min: 0.5, max: 1.5, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
+            bun: { min: 7, max: 25, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
             tsh: { min: 0.4, max: 4.0, unit: 'µIU/mL', indica: 'Función tiroidea (hipotiroidismo → aumento de peso)', alteracion: '↑ En hipotiroidismo' },
             testosterona: { min: 300, max: 1000, unit: 'ng/dL', indica: 'Bajos niveles asociados a ↑ grasa visceral', alteracion: '↓ En obesidad masculina', genderSpecific: 'masculino' },
-            //cortisol: { min: 5, max: 25, unit: 'µg/dL', indica: 'Estrés crónico y acumulación de grasa abdominal', alteracion: '↑ En estrés crónico y síndrome metabólico' },
-            'vitamina-d': { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' }
-            //'fosfatasa-alcalina': { min: 20, max: 140, unit: 'U/L', indica: 'Remodelación ósea', alteracion: '↑ En osteoporosis secundaria o enfermedades metabólicas' }
+            cortisol: { min: 5, max: 25, unit: 'µg/dL', indica: 'Estrés crónico y acumulación de grasa abdominal', alteracion: '↑ En estrés crónico y síndrome metabólico' },
+            vitamina_d: { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' },
+            fosfatasa: { min: 20, max: 140, unit: 'U/L', indica: 'Remodelación ósea', alteracion: '↑ En osteoporosis secundaria o enfermedades metabólicas' }
         };
 
         const paramData = ranges[param];
@@ -1259,7 +1285,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Check for Fosfatasa Alcalina Elevada
-    const fosfatasaAlcalina = values['fosfatasa-alcalina'] || 0;
+    const fosfatasaAlcalina = values['fosfatasa'] || 0;
     const ggt = values['ggt'] || 0;
     if (fosfatasaAlcalina > 140) {
         results.push('**Fosfatasa Alcalina Elevada Detectada**: Niveles >140 U/L sugieren recambio óseo acelerado (por déficit de vitamina D) o daño hepático (NAFLD/colestasis). Riesgos: osteoporosis, fracturas, enfermedad hepática. Recomendaciones: medir vitamina D, PTH, calcio; realizar densitometría ósea (DEXA); evaluar hígado (ultrasonido, GGT: ' + ggt.toFixed(2) + ' U/L); suplementar vitamina D y calcio (1,200 mg/día), considerar bifosfonatos si osteoporosis confirmada.');
