@@ -1041,9 +1041,7 @@ button:hover {
         
 		
 		   <div id="bioquimicos-container" class="popup-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center;">
-    		   <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 600px; width: 30%; max-height: 70%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
-       
-
+		    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 600px; width: 30%; max-height: 70%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
 		        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center; font-size: 1.5em;">Parámetros Bioquímicos</h2>
 		        <form id="bioquimicos-form">
 		            <!-- Nutrición -->
@@ -1057,6 +1055,10 @@ button:hover {
 		                    <div>
 		                        <label for="prealbumina">Prealbúmina (mg/dL):</label>
 		                        <input type="number" id="prealbumina" name="prealbumina" step="0.1" min="0" placeholder="Ej: 20.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="proteina-total">Proteína Total (g/dL):</label>
+		                        <input type="number" id="proteina-total" name="proteina-total" step="0.1" min="0" placeholder="Ej: 6.5" style="width: 100%; padding: 5px;">
 		                    </div>
 		                </div>
 		            </fieldset>
@@ -1108,6 +1110,10 @@ button:hover {
 		                        <label for="leptina">Leptina (ng/mL):</label>
 		                        <input type="number" id="leptina" name="leptina" step="0.1" min="0" placeholder="Ej: 5.0" style="width: 100%; padding: 5px;">
 		                    </div>
+		                    <div>
+		                        <label for="adiponectina">Adiponectina (µg/mL):</label>
+		                        <input type="number" id="adiponectina" name="adiponectina" step="0.1" min="0" placeholder="Ej: 10.0" style="width: 100%; padding: 5px;">
+		                    </div>
 		                </div>
 		            </fieldset>
 		            <!-- Hígado -->
@@ -1117,6 +1123,10 @@ button:hover {
 		                    <div>
 		                        <label for="alt">ALT (U/L):</label>
 		                        <input type="number" id="alt" name="alt" step="0.1" min="0" placeholder="Ej: 30.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="ast">AST (U/L):</label>
+		                        <input type="number" id="ast" name="ast" step="0.1" min="0" placeholder="Ej: 25.0" style="width: 100%; padding: 5px;">
 		                    </div>
 		                    <div>
 		                        <label for="ggt">GGT (U/L):</label>
@@ -1136,6 +1146,10 @@ button:hover {
 		                        <label for="testosterona">Testosterona (H) (ng/dL):</label>
 		                        <input type="number" id="testosterona" name="testosterona" step="0.1" min="0" placeholder="Ej: 300.0" style="width: 100%; padding: 5px;">
 		                    </div>
+		                    <div>
+		                        <label for="cortisol">Cortisol (µg/dL):</label>
+		                        <input type="number" id="cortisol" name="cortisol" step="0.1" min="0" placeholder="Ej: 15.0" style="width: 100%; padding: 5px;">
+		                    </div>
 		                </div>
 		            </fieldset>
 		            <!-- Óseo -->
@@ -1145,6 +1159,24 @@ button:hover {
 		                    <div>
 		                        <label for="vitamina-d">Vitamina D (25-OH-D3) (ng/mL):</label>
 		                        <input type="number" id="vitamina-d" name="vitamina-d" step="0.1" min="0" placeholder="Ej: 30.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="fosfatasa-alcalina">Fosfatasa Alcalina (U/L):</label>
+		                        <input type="number" id="fosfatasa-alcalina" name="fosfatasa-alcalina" step="0.1" min="0" placeholder="Ej: 100.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                </div>
+		            </fieldset>
+		            <!-- Riñón -->
+		            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+		                <legend style="font-weight: bold; color: #388E3C;">Riñón</legend>
+		                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+		                    <div>
+		                        <label for="creatinina">Creatinina (mg/dL):</label>
+		                        <input type="number" id="creatinina" name="creatinina" step="0.1" min="0" placeholder="Ej: 1.0" style="width: 100%; padding: 5px;">
+		                    </div>
+		                    <div>
+		                        <label for="bun">BUN (mg/dL):</label>
+		                        <input type="number" id="bun" name="bun" step="0.1" min="0" placeholder="Ej: 15.0" style="width: 100%; padding: 5px;">
 		                    </div>
 		                </div>
 		            </fieldset>
@@ -1599,6 +1631,12 @@ button:hover {
                         <td><span id="result-prealbumina">---</span> <span class="unit">mg/dL</span></td>
                         <td><small id="prealbumina-source">(No calculado)</small></td>
                     </tr>
+		    <tr class="accordion-content">
+                        <th scope="row"><label>Proteina Total</label></th>
+                        <td><span id="result-proteina-total">---</span> <span class="unit">g/dL</span></td>
+                        <td><small id="proteina-total-source">(No calculado)</small></td>
+                    </tr>
+			
                     <!-- Subsección: Lípidos -->
                     <tr class="section-header accordion-content">
                         <th colspan="3">Lípidos</th>
@@ -1651,6 +1689,12 @@ button:hover {
                         <td><span id="result-leptina">---</span> <span class="unit">ng/mL</span></td>
                         <td><small id="leptina-source">(No calculado)</small></td>
                     </tr>
+		     <tr class="accordion-content">
+                        <th scope="row"><label>Adiponectina </label></th>
+                        <td><span id="result-adiponectina">---</span> <span class="unit">µg/mL</span></td>
+                        <td><small id="adiponectina-source">(No calculado)</small></td>
+                    </tr>
+		
                     <!-- Subsección: Hígado -->
                     <tr class="section-header accordion-content">
                         <th colspan="3">Hígado</th>
@@ -1665,6 +1709,13 @@ button:hover {
                         <td><span id="result-ggt">---</span> <span class="unit">U/L</span></td>
                         <td><small id="ggt-source">(No calculado)</small></td>
                     </tr>
+		     <tr class="accordion-content">
+                        <th scope="row"><label>AST</label></th>
+                        <td><span id="result-ast">---</span> <span class="unit">U/L</span></td>
+                        <td><small id="ast-source">(No calculado)</small></td>
+                    </tr>
+		                        
+		                    
                     <!-- Subsección: Hormonas -->
                     <tr class="section-header accordion-content">
                         <th colspan="3">Hormonas</th>
@@ -1679,6 +1730,12 @@ button:hover {
                         <td><span id="result-testosterona">---</span> <span class="unit">ng/dL</span></td>
                         <td><small id="testosterona-source">(No calculado)</small></td>
                     </tr>
+		    <tr class="accordion-content">
+                        <th scope="row"><label>Cortisol</label></th>
+                        <td><span id="result-cortisol">---</span> <span class="unit">ng/dL</span></td>
+                        <td><small id="cortisol-source">(No calculado)</small></td>
+                    </tr>
+			
                     <!-- Subsección: Óseo -->
                     <tr class="section-header accordion-content">
                         <th colspan="3">Óseo</th>
@@ -1688,6 +1745,26 @@ button:hover {
                         <td><span id="result-vitamina-d">---</span> <span class="unit">ng/mL</span></td>
                         <td><small id="vitamina-d-source">(No calculado)</small></td>
                     </tr>
+		    <tr class="accordion-content">
+                        <th scope="row"><label>Fosfatasa Alcalina</label></th>
+                        <td><span id="result-fosfatasa-alcalina">---</span> <span class="unit">ng/mL</span></td>
+                        <td><small id="fosfatasa-alcalina-source">(No calculado)</small></td>
+                    </tr>
+			<!-- Subsección: Riñon -->
+                    <tr class="section-header accordion-content">
+                        <th colspan="3">Renal</th>
+                    </tr>
+                    <tr class="accordion-content">
+                        <th scope="row"><label>Creatinina</label></th>
+                        <td><span id="result-creatinina">---</span> <span class="unit">mg/dL</span></td>
+                        <td><small id="creatinina-source">(No calculado)</small></td>
+                    </tr>
+		    <tr class="accordion-content">
+                        <th scope="row"><label>BUN</label></th>
+                        <td><span id="result-bun">---</span> <span class="unit">mg/dL</span></td>
+                        <td><small id="bun-source">(No calculado)</small></td>
+                    </tr>
+
                 </tbody>
 		<!-- Nueva Sección: Análisis -->
 		<tbody class="accordion-section">
