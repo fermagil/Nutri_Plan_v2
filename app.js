@@ -1694,23 +1694,29 @@ async function showProgressCharts(clienteId) {
 
         // Gasto Energético Chart
         
-       // Utility function to normalize key access
-        function getEdadMetabolica(data) {
-            // Check for both possible keys, prioritizing `edadMetabolica`
-            if (data.hasOwnProperty('edadMetabolica')) {
-                return data.edadMetabolica;
-            } else if (data.hasOwnProperty('edadmetabolica')) {
-                console.warn('Found "edadmetabolica" (lowercase) in data. Consider standardizing to "edadMetabolica".');
-                return data.edadmetabolica;
-            } else {
-                console.warn('No "edadMetabolica" or "edadmetabolica" found in data.');
-                return null; // or [] if expecting an array
+      // Utility function to merge edadMetabolica and edadmetabolica data
+        function getMergedEdadMetabolica(data) {
+            const edadMetabolica = data.hasOwnProperty('edadMetabolica') ? data.edadMetabolica : null;
+            const edadmetabolica = data.hasOwnProperty('edadmetabolica') ? data.edadmetabolica : null;
+            
+            // Convert to arrays for consistent handling
+            const edadMetabolicaArray = edadMetabolica === null ? [] : Array.isArray(edadMetabolica) ? edadMetabolica : [edadMetabolica];
+            const edadmetabolicaArray = edadmetabolica === null ? [] : Array.isArray(edadmetabolica) ? edadmetabolica : [edadmetabolica];
+            
+            // Merge arrays, removing duplicates if necessary (based on index or value)
+            const merged = [...edadMetabolicaArray, ...edadmetabolicaArray].filter(item => item !== null && item !== undefined);
+            
+            if (merged.length === 0) {
+                console.warn('No valid data found for Edad Metabólica (neither edadMetabolica nor edadmetabolica).');
+            } else if (edadMetabolica && edadmetabolica) {
+                console.warn('Both edadMetabolica and edadmetabolica found. Merging data:', merged);
             }
+            
+            return merged;
         }
         
         // Utility function to validate and convert data
         function preprocessData(data, datasetLabel) {
-            // Handle single value or array
             const dataArray = Array.isArray(data) ? data : [data];
             
             const processed = dataArray.map((item, index) => {
@@ -1718,7 +1724,6 @@ async function showProgressCharts(clienteId) {
                     console.warn(`Null or undefined value at index ${index} in ${datasetLabel}`);
                     return null;
                 }
-                // Convert string to number
                 const value = parseFloat(item);
                 if (isNaN(value)) {
                     console.warn(`Invalid data at index ${index} in ${datasetLabel}: ${item}`);
@@ -1738,7 +1743,7 @@ async function showProgressCharts(clienteId) {
         const gastoEnergeticoDatasets = [
             { 
                 label: 'Gasto Energético (kcal)', 
-                data: preprocessData(gastoEnergeticoData.BRMEstimado, 'Gasto Energético'), 
+                data: preprocessData(gastoEnergeticoData.resultados?.BRMEstimado, 'Gasto Energético'), 
                 borderColor: '#4CAF50', 
                 backgroundColor: 'rgba(76, 175, 80, 0.2)', 
                 fill: false, 
@@ -1746,7 +1751,7 @@ async function showProgressCharts(clienteId) {
             },
             { 
                 label: 'Edad Metabólica (años)', 
-                data: preprocessData(getEdadMetabolica(gastoEnergeticoData), 'Edad Metabólica'), 
+                data: preprocessData(getMergedEdadMetabolica(gastoEnergeticoData.resultados || {}), 'Edad Metabólica'), 
                 borderColor: '#388E3C', 
                 backgroundColor: 'rgba(56, 142, 60, 0.2)', 
                 fill: false, 
@@ -1754,7 +1759,7 @@ async function showProgressCharts(clienteId) {
             },
             { 
                 label: 'TMB (kcal)', 
-                data: preprocessData(gastoEnergeticoData.tmb, 'TMB'), 
+                data: preprocessData(gastoEnergeticoData.resultados?.tmb, 'TMB'), 
                 borderColor: '#0275d8', 
                 backgroundColor: 'rgba(2, 117, 216, 0.2)', 
                 fill: false, 
