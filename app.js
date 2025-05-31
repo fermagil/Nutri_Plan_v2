@@ -1696,26 +1696,6 @@ async function showProgressCharts(clienteId) {
         
      // Utility function to merge edadMetabolica and edadmetabolica data
      // Utility function to merge edadMetabolica and edadmetabolica
-function getMergedEdadMetabolica(data) {
-    if (!data || typeof data !== 'object') {
-        console.warn('Invalid data object for Edad Metabólica:', data);
-        return [];
-    }
-    const edadMetabolica = data.edadMetabolica || [];
-    const edadmetabolica = data.edadmetabolica || [];
-    const merged = [
-        ...(Array.isArray(edadMetabolica) ? edadMetabolica : [edadMetabolica]),
-        ...(Array.isArray(edadmetabolica) ? edadmetabolica : [edadmetabolica])
-    ].filter(item => item !== null && item !== undefined);
-    
-    if (merged.length === 0) {
-        console.warn('No valid data found for Edad Metabólica.');
-    } else if (data.edadMetabolica && data.edadmetabolica) {
-        console.warn('Both edadMetabolica and edadmetabolica found. Merged data:', merged);
-    }
-    return merged;
-}
-
 // Utility function to validate and convert data
 function preprocessData(data, datasetLabel) {
     if (data === null || data === undefined) {
@@ -1738,10 +1718,10 @@ function preprocessData(data, datasetLabel) {
         return value;
     });
     
-    if (processed.length === 0) {
-        console.warn(`${datasetLabel} dataset is empty after preprocessing. No valid numerical data found.`);
+    if (processed.length === 0 && dataArray.length > 0) {
+        console.warn(`${datasetLabel} dataset has no valid numerical data, but contains ${dataArray.length} entries.`);
     }
-    return processed; // Keep null values for full date range
+    return processed; // Keep null values to match dates
 }
 
 // Debug raw data and dates
@@ -1760,7 +1740,7 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(getMergedEdadMetabolica(gastoEnergeticoData), 'Edad Metabólica'), 
+        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica'), 
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
