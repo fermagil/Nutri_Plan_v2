@@ -1281,7 +1281,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });        
         // Function to analyze biochemical results and generate clinical interpretation
-    function analyzeBioquimicoResults(entries, genero = 'masculino') {
+    function formatParentheticalValues(text) {
+    return text.replace(/\((\D*)([^)]+)\)/g, (match, prefix, value) => {
+        // Handle cases like "(<30 ng/mL)" or "(ayunas ≥100 mg/dL)"
+        return `(${prefix}<strong>${value}</strong>)`;
+    });
+}
+    
+// Function to analyze biochemical results and generate clinical interpretation
+function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const results = [];
     const values = {};
     entries.forEach(({ field, value }) => {
@@ -1297,38 +1305,38 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check for Vitamina D Deficiency
     const vitaminaD = values['vitamina-d'] || 0;
     if (vitaminaD < 30) {
-        results.push('**Deficiencia de Vitamina D Detectada**: Niveles bajos (<30 ng/mL) por secuestro en tejido adiposo o baja exposición solar. Riesgos: osteoporosis, fracturas, debilidad muscular, resistencia a insulina. Recomendaciones: suplementar 50,000 UI semanales (8 semanas), luego 1,000–2,000 UI/día (objetivo: 30–50 ng/mL), exposición solar 15–30 min/día, medir cada 3–6 meses, ejercicio con pesas.');
+        results.push(formatParentheticalValues('<strong>Deficiencia de Vitamina D Detectada</strong>: Niveles bajos (<30 ng/mL) por secuestro en tejido adiposo o baja exposición solar. Riesgos: osteoporosis, fracturas, debilidad muscular, resistencia a insulina. Recomendaciones: suplementar 50,000 UI semanales (8 semanas), luego 1,000–2,000 UI/día (objetivo: <strong>30–50 ng/mL</strong>), exposición solar 15–30 min/día, medir cada 3–6 meses, ejercicio con pesas.'));
     }
 
     // Check for Fosfatasa Alcalina Elevada
     const fosfatasaAlcalina = values['fosfatasa'] || 0;
     const ggt = values['ggt'] || 0;
     if (fosfatasaAlcalina > 140) {
-        results.push('**Fosfatasa Alcalina Elevada Detectada**: Niveles >140 U/L sugieren recambio óseo acelerado (por déficit de vitamina D) o daño hepático (NAFLD/colestasis). Riesgos: osteoporosis, fracturas, enfermedad hepática. Recomendaciones: medir vitamina D, PTH, calcio; realizar densitometría ósea (DEXA); evaluar hígado (ultrasonido, GGT: ' + ggt.toFixed(2) + ' U/L); suplementar vitamina D y calcio (1,200 mg/día), considerar bifosfonatos si osteoporosis confirmada.');
+        results.push(formatParentheticalValues('<strong>Fosfatasa Alcalina Elevada Detectada</strong>: Niveles (>140 U/L) sugieren recambio óseo acelerado (por déficit de vitamina D) o daño hepático (NAFLD/colestasis). Riesgos: osteoporosis, fracturas, enfermedad hepática. Recomendaciones: medir vitamina D, PTH, calcio; realizar densitometría ósea (DEXA); evaluar hígado (ultrasonido, GGT: <strong>' + ggt.toFixed(2) + ' U/L</strong>); suplementar vitamina D y calcio (<strong>1,200 mg/día</strong>), considerar bifosfonatos si osteoporosis confirmada.'));
     }
 
     // Check for Hipotiroidismo (TSH > 4.5 mUI/L)
     const tsh = values['tsh'] || 0;
     if (tsh > 4.5) {
-        results.push('**Riesgo de Hipotiroidismo Detectado**: TSH elevada (>4.5 mUI/L) sugiere disfunción tiroidea, reduciendo metabolismo basal y favoreciendo ganancia de peso (5-10 kg). Riesgos: fatiga, aumento de LDL, resistencia a insulina. Recomendaciones: medir T4 libre (normal: 0.8–1.8 ng/dL), iniciar levotiroxina si T4 <0.8, monitorear TSH cada 6-8 semanas, descartar hipotiroidismo subclínico.');
+        results.push(formatParentheticalValues('<strong>Riesgo de Hipotiroidismo Detectado</strong>: TSH elevada (>4.5 mUI/L) sugiere disfunción tiroidea, reduciendo metabolismo basal y favoreciendo ganancia de peso (<strong>5-10 kg</strong>). Riesgos: fatiga, aumento de LDL, resistencia a insulina. Recomendaciones: medir T4 libre (normal: <strong>0.8–1.8 ng/dL</strong>), iniciar levotiroxina si T4 (<0.8), monitorear TSH cada 6-8 semanas, descartar hipotiroidismo subclínico.'));
     }
 
     // Check for Testosterona Baja (Hombres)
     const testosterona = values['testosterona'] || 0;
     if (genero === 'masculino' && testosterona < 300) {
-        results.push('**Testosterona Baja Detectada**: Niveles bajos (<300 ng/dL) promueven grasa visceral y pérdida muscular, exacerbados por IL-6. Riesgos: síndrome metabólico, disfunción eréctil. Recomendaciones: ejercicio de fuerza, suplementos de zinc y vitamina D, terapia de reemplazo si <200 ng/dL con síntomas, evaluar resistencia a insulina.');
+        results.push(formatParentheticalValues('<strong>Testosterona Baja Detectada</strong>: Niveles bajos (<300 ng/dL) promueven grasa visceral y pérdida muscular, exacerbados por IL-6. Riesgos: síndrome metabólico, disfunción eréctil. Recomendaciones: ejercicio de fuerza, suplementos de zinc y vitamina D, terapia de reemplazo si (<200 ng/dL) con síntomas, evaluar resistencia a insulina.'));
     }
 
     // Check for Cortisol Elevado
     const cortisol = values['cortisol'] || 0;
     if (cortisol > 25) {
-        results.push('**Cortisol Elevado Detectado**: Niveles altos (>25 µg/dL) por estrés crónico promueven grasa abdominal, hiperglucemia y resistencia a leptina. Riesgos: síndrome metabólico, hipertensión. Recomendaciones: reducir estrés (mindfulness, yoga, 7-8 h sueño), dieta con magnesio (espinacas, almendras) y omega-3, evitar cafeína/azúcares, evaluar cortisol salival, descartar Cushing.');
+        results.push(formatParentheticalValues('<strong>Cortisol Elevado Detectado</strong>: Niveles altos (>25 µg/dL) por estrés crónico promueven grasa abdominal, hiperglucemia y resistencia a leptina. Riesgos: síndrome metabólico, hipertensión. Recomendaciones: reducir estrés (mindfulness, yoga, <strong>7-8 h sueño</strong>), dieta con magnesio (espinacas, almendras) y omega-3, evitar cafeína/azúcares, evaluar cortisol salival, descartar Cushing.'));
     }
 
     // Check for Inflamación Sistémica (↑ PCR)
     const pcr = values['pcr-ultrasensible'] || 0;
     if (pcr > 3) {
-        results.push('**Inflamación Sistémica Detectada**: PCR elevada (>3 mg/L) indica inflamación crónica por IL-6/TNF-α desde tejido adiposo visceral. Riesgos: aterosclerosis, resistencia a insulina, pérdida muscular. Recomendaciones: dieta antiinflamatoria (omega-3, frutos rojos, fibra), ejercicio, estatinas o metformina, evaluar perfil cardiovascular.');
+        results.push(formatParentheticalValues('<strong>Inflamación Sistémica Detectada</strong>: PCR elevada (>3 mg/L) indica inflamación crónica por IL-6/TNF-α desde tejido adiposo visceral. Riesgos: aterosclerosis, resistencia a insulina, pérdida muscular. Recomendaciones: dieta antiinflamatoria (omega-3, frutos rojos, fibra), ejercicio, estatinas o metformina, evaluar perfil cardiovascular.'));
     }
 
     // Check for Hígado Graso (NAFLD) with ALT, AST, GGT
@@ -1336,47 +1344,47 @@ document.addEventListener('DOMContentLoaded', function() {
     const ast = values['ast'] || 0;
     const albumina = values['albumina'] || 0;
     if (alt > (genero === 'masculino' ? 55 : 45) && ggt > (genero === 'masculino' ? 61 : 36) && alt > ast) {
-        results.push('**Hígado Graso (NAFLD) Detectado**: ALT (>' + (genero === 'masculino' ? 55 : 45) + ' U/L) y GGT (>' + (genero === 'masculino' ? 61 : 36) + ' U/L) elevados, con ALT > AST, sugieren acumulación de grasa en hígado por ácidos grasos libres y resistencia a insulina. Riesgos: esteatohepatitis (NASH), fibrosis, cirrosis. Recomendaciones: pérdida de peso (5-10%), dieta mediterránea (aceite de oliva, nueces, evitar fructosa), pioglitazona (si diabetes), ultrasonido o elastografía hepática.');
+        results.push(formatParentheticalValues('<strong>Hígado Graso (NAFLD) Detectado</strong>: ALT (>' + (genero === 'masculino' ? 55 : 45) + ' U/L) y GGT (>' + (genero === 'masculino' ? 61 : 36) + ' U/L) elevados, con ALT > AST, sugieren acumulación de grasa en hígado por ácidos grasos libres y resistencia a insulina. Riesgos: esteatohepatitis (NASH), fibrosis, cirrosis. Recomendaciones: pérdida de peso (<strong>5-10%</strong>), dieta mediterránea (aceite de oliva, nueces, evitar fructosa), pioglitazona (si diabetes), ultrasonido o elastografía hepática.'));
     } else if (alt > (genero === 'masculino' ? 55 : 45) || ggt > (genero === 'masculino' ? 61 : 36)) {
-        results.push('**Riesgo de Hígado Graso (NAFLD)**: ALT o GGT elevados indican posible acumulación de grasa en hígado. Evaluar con pruebas hepáticas y PCR (PCR: ' + pcr.toFixed(2) + ' mg/L). Recomendaciones: pérdida de peso, dieta mediterránea, evitar alcohol, considerar vitamina E en NASH.');
+        results.push(formatParentheticalValues('<strong>Riesgo de Hígado Graso (NAFLD)</strong>: ALT o GGT elevados indican posible acumulación de grasa en hígado. Evaluar con pruebas hepáticas y PCR (PCR: <strong>' + pcr.toFixed(2) + ' mg/L</strong>). Recomendaciones: pérdida de peso, dieta mediterránea, evitar alcohol, considerar vitamina E en NASH.'));
     }
     if (ast > alt && albumina < 3.5) {
-        results.push('**Riesgo de Fibrosis Hepática**: AST > ALT y albúmina baja (<3.5 g/dL) sugieren progresión de NAFLD a fibrosis o cirrosis. Recomendaciones: elastografía hepática (FibroScan), consultar hepatólogo, controlar factores metabólicos.');
+        results.push(formatParentheticalValues('<strong>Riesgo de Fibrosis Hepática</strong>: AST > ALT y albúmina baja (<3.5 g/dL) sugieren progresión de NAFLD a fibrosis o cirrosis. Recomendaciones: elastografía hepática (FibroScan), consultar hepatólogo, controlar factores metabólicos.'));
     }
 
     // Check for Renal Dysfunction (Creatinina, BUN)
     const creatinina = values['creatinina'] || 0;
     const bun = values['bun'] || 0;
     if (creatinina > 1.2 || bun > 20) {
-        results.push('**Riesgo de Disfunción Renal Detectado**: Creatinina (>1.2 mg/dL) o BUN (>20 mg/dL) elevados sugieren hiperfiltración glomerular o daño renal crónico (ERC) por obesidad, resistencia a insulina o inflamación. Riesgos: nefropatía, proteinuria. Recomendaciones: controlar presión arterial (<130/80 mmHg, preferir IECA/ARA II), dieta baja en sodio y proteínas moderadas (0.8 g/kg), evitar nefrotóxicos (AINEs), evaluar microalbuminuria.');
+        results.push(formatParentheticalValues('<strong>Riesgo de Disfunción Renal Detectado</strong>: Creatinina (>1.2 mg/dL) o BUN (>20 mg/dL) elevados sugieren hiperfiltración glomerular o daño renal crónico (ERC) por obesidad, resistencia a insulina o inflamación. Riesgos: nefropatía, proteinuria. Recomendaciones: controlar presión arterial (<strong><130/80 mmHg</strong>, preferir IECA/ARA II), dieta baja en sodio y proteínas moderadas (<strong>0.8 g/kg</strong>), evitar nefrotóxicos (AINEs), evaluar microalbuminuria.'));
     }
 
     // Check for Resistencia Leptínica and ↓ Adiponectina
     const leptina = values['leptina'] || 0;
     const adiponectina = values['adiponectina'] || 0;
     if (leptina > (genero === 'masculino' ? 15 : 30) && adiponectina < 5) {
-        results.push('**Riesgo Metabólico Elevado**: Resistencia leptínica (leptina >' + (genero === 'masculino' ? 15 : 30) + ' ng/mL) y baja adiponectina (<5 µg/mL) reflejan disfunción hormonal por obesidad inflamatoria. Consecuencias: hambre constante, resistencia a insulina, síndrome metabólico. Recomendaciones: pérdida de peso (5-10%), ejercicio de fuerza, dieta mediterránea, GLP-1 (liraglutida) o pioglitazona, suplementos de omega-3 y magnesio.');
+        results.push(formatParentheticalValues('<strong>Riesgo Metabólico Elevado</strong>: Resistencia leptínica (leptina >' + (genero === 'masculino' ? 15 : 30) + ' ng/mL) y baja adiponectina (<5 µg/mL) reflejan disfunción hormonal por obesidad inflamatoria. Consecuencias: hambre constante, resistencia a insulina, síndrome metabólico. Recomendaciones: pérdida de peso (<strong>5-10%</strong>), ejercicio de fuerza, dieta mediterránea, GLP-1 (liraglutida) o pioglitazona, suplementos de omega-3 y magnesio.'));
     } else if (leptina > (genero === 'masculino' ? 15 : 30)) {
-        results.push('**Resistencia Leptínica Detectada**: Leptina elevada indica resistencia, con inflamación (IL-6/TNF-α) y hambre constante. Riesgo: obesidad metabólica. Recomendaciones: pérdida de peso, ejercicio de fuerza, mejorar sueño, considerar GLP-1.');
+        results.push(formatParentheticalValues('<strong>Resistencia Leptínica Detectada</strong>: Leptina elevada indica resistencia, con inflamación (IL-6/TNF-α) y hambre constante. Riesgo: obesidad metabólica. Recomendaciones: pérdida de peso, ejercicio de fuerza, mejorar sueño, considerar GLP-1.'));
     } else if (adiponectina < 5) {
-        results.push('**Adiponectina Baja**: Niveles bajos (<5 µg/mL) contribuyen a resistencia a insulina, inflamación y NAFLD. Recomendaciones: dieta rica en omega-3, ejercicio, pioglitazona o GLP-1, suplementos de magnesio.');
+        results.push(formatParentheticalValues('<strong>Adiponectina Baja</strong>: Niveles bajos (<5 µg/mL) contribuyen a resistencia a insulina, inflamación y NAFLD. Recomendaciones: dieta rica en omega-3, ejercicio, pioglitazona o GLP-1, suplementos de magnesio.'));
     }
 
     // Check for Diabetes No Controlada (↑ Glucosa + ↑ HbA1c)
     if (glucosa >= 126 && hba1c >= 6.5) {
-        results.push('**Diabetes No Controlada Detectada**: Glucosa en ayunas ≥126 mg/dL y HbA1c ≥6.5% indican hiperglucemia sostenida por resistencia o deficiencia de insulina. Riesgos: neuropatía, retinopatía, nefropatía, cetoacidosis. Recomendaciones: monitoreo glucémico frecuente, HbA1c cada 3 meses (objetivo <7%), metformina o insulina (según tipo), dieta baja en carbohidratos, consultar endocrinólogo.');
+        results.push(formatParentheticalValues('<strong>Diabetes No Controlada Detectada</strong>: Glucosa en ayunas ≥126 mg/dL y HbA1c ≥6.5% indican hiperglucemia sostenida por resistencia o deficiencia de insulina. Riesgos: neuropatía, retinopatía, nefropatía, cetoacidosis. Recomendaciones: monitoreo glucémico frecuente, HbA1c cada 3 meses (objetivo: <strong><7%</strong>), metformina o insulina (según tipo), dieta baja en carbohidratos, consultar endocrinólogo.'));
     }
 
     // Check for Prediabetes or Diabetes (↑ HbA1c)
     if (hba1c >= 5.7 && hba1c < 6.5) {
-        results.push('**Prediabetes Detectada**: HbA1c entre 5.7% y 6.4% indica riesgo elevado de diabetes. Recomendaciones: dieta baja en carbohidratos (evitar azúcar, harinas), ejercicio (aeróbico + fuerza), pérdida de peso (5-10%), monitoreo anual de HbA1c, evaluar glucosa en ayunas.');
+        results.push(formatParentheticalValues('<strong>Prediabetes Detectada</strong>: HbA1c entre 5.7% y 6.4% indica riesgo elevado de diabetes. Recomendaciones: dieta baja en carbohidratos (evitar azúcar, harinas), ejercicio (aeróbico + fuerza), pérdida de peso (<strong>5-10%</strong>), monitoreo anual de HbA1c, evaluar glucosa en ayunas.'));
     } else if (hba1c >= 6.5) {
-        results.push('**Diabetes Mellitus Detectada**: HbA1c ≥6.5% confirma diabetes. Riesgos: daño vascular, infecciones. Recomendaciones: metformina, inhibidores de SGLT2 o GLP-1, monitoreo glucémico, HbA1c cada 3 meses (objetivo <7%), dieta y ejercicio.');
+        results.push(formatParentheticalValues('<strong>Diabetes Mellitus Detectada</strong>: HbA1c ≥6.5% confirma diabetes. Riesgos: daño vascular, infecciones. Recomendaciones: metformina, inhibidores de SGLT2 o GLP-1, monitoreo glucémico, HbA1c cada 3 meses (objetivo: <strong><7%</strong>), dieta y ejercicio.'));
     }
 
     // Check for Insulin Resistance (↑ Insulina + HOMA-IR > 2.5)
     if (insulina > 25 && homaIR > 2.5) {
-        results.push('**Resistencia a la Insulina Detectada**: Insulina elevada (>25 µU/mL) y HOMA-IR ' + homaIR.toFixed(2) + ' (>2.5) indican resistencia a insulina, impulsada por obesidad visceral y citocinas (TNF-α, IL-6). Riesgos: síndrome metabólico, diabetes tipo 2, NAFLD. Recomendaciones: dieta baja en carbohidratos, ejercicio de fuerza, pérdida de peso, metformina o pioglitazona.');
+        results.push(formatParentheticalValues('<strong>Resistencia a la Insulina Detectada</strong>: Insulina elevada (>25 µU/mL) y HOMA-IR <strong>' + homaIR.toFixed(2) + '</strong> (>2.5) indican resistencia a insulina, impulsada por obesidad visceral y citocinas (TNF-α, IL-6). Riesgos: síndrome metabólico, diabetes tipo 2, NAFLD. Recomendaciones: dieta baja en carbohidratos, ejercicio de fuerza, pérdida de peso, metformina o pioglitazona.'));
     }
 
     // Check for Obesidad Metabólica (Síndrome Metabólico)
@@ -1384,23 +1392,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const hdl = values['hdl'] || 0;
     const tgHdlRatio = hdl !== 0 ? tg / hdl : 0;
     if (tg > 150 && hdl < (genero === 'masculino' ? 40 : 50) && (glucosa >= 100 || hba1c >= 5.7)) {
-        results.push('**Obesidad Metabólica (Síndrome Metabólico) Detectada**: Elevados triglicéridos (>150 mg/dL), bajo HDL (<' + (genero === 'masculino' ? 40 : 50) + ' mg/dL), y glucosa elevada (ayunas ≥100 mg/dL o HbA1c ≥5.7%) indican resistencia a insulina y dislipidemia aterogénica. Riesgos: diabetes tipo 2, infarto, ACV, NAFLD. TG/HDL ratio: ' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + ' (>2.5 sugiere resistencia a insulina). Recomendaciones: dieta mediterránea (fibra, omega-3), ejercicio (aeróbico + fuerza), pérdida de peso (5-10%), metformina, fibratos o GLP-1, monitoreo cada 3-6 meses.');
+        results.push(formatParentheticalValues('<strong>Obesidad Metabólica (Síndrome Metabólico) Detectada</strong>: Elevados triglicéridos (>150 mg/dL), bajo HDL (<' + (genero === 'masculino' ? 40 : 50) + ' mg/dL), y glucosa elevada (ayunas ≥100 mg/dL o HbA1c ≥5.7%) indican resistencia a insulina y dislipidemia aterogénica. Riesgos: diabetes tipo 2, infarto, ACV, NAFLD. TG/HDL ratio: <strong>' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + '</strong> (>2.5 sugiere resistencia a insulina). Recomendaciones: dieta mediterránea (fibra, omega-3), ejercicio (aeróbico + fuerza), pérdida de peso (<strong>5-10%</strong>), metformina, fibratos o GLP-1, monitoreo cada 3-6 meses.'));
     } else if (tg > 150 || hdl < (genero === 'masculino' ? 40 : 50) || glucosa >= 100 || hba1c >= 5.7) {
-        results.push('**Riesgo de Obesidad Metabólica**: Alteraciones en triglicéridos, HDL o glucosa (ayunas ≥100 mg/dL o HbA1c ≥5.7%) sugieren resistencia a insulina. TG/HDL ratio: ' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + ' (>2.5 indica riesgo). Recomendaciones: evaluar obesidad abdominal, dieta mediterránea, ejercicio, monitoreo cada 3-6 meses.');
+        results.push(formatParentheticalValues('<strong>Riesgo de Obesidad Metabólica</strong>: Alteraciones en triglicéridos, HDL o glucosa (ayunas ≥100 mg/dL o HbA1c ≥5.7%) sugieren resistencia a insulina. TG/HDL ratio: <strong>' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + '</strong> (>2.5 indica riesgo). Recomendaciones: evaluar obesidad abdominal, dieta mediterránea, ejercicio, monitoreo cada 3-6 meses.'));
     }
 
     // Check for Desnutrición Proteica
     const prealbumina = values['prealbumina'] || 0;
     const proteinaTotal = values['proteina-total'] || 0;
     if (albumina < 3.5 && prealbumina < 15 && pcr > 3) {
-        results.push('**Desnutrición Proteica Detectada**: Baja albúmina (<3.5 g/dL), prealbúmina (<15 mg/dL) y elevada PCR (>3 mg/L, por IL-6/TNF-α) sugieren déficit proteico e inflamación sistémica. Riesgos: infecciones, edema, mortalidad. Recomendaciones: aumentar ingesta proteica, dieta antiinflamatoria (omega-3, antioxidantes), consultar nutricionista.');
+        results.push(formatParentheticalValues('<strong>Desnutrición Proteica Detectada</strong>: Baja albúmina (<3.5 g/dL), prealbúmina (<15 mg/dL) y elevada PCR (>3 mg/L, por IL-6/TNF-α) sugieren déficit proteico e inflamación sistémica. Riesgos: infecciones, edema, mortalidad. Recomendaciones: aumentar ingesta proteica, dieta antiinflamatoria (omega-3, antioxidantes), consultar nutricionista.'));
     } else if (albumina < 3.5 || prealbumina < 15 || proteinaTotal < 6.0) {
-        results.push('**Riesgo de Desnutrición Proteica**: Baja albúmina, prealbúmina o proteína total, posiblemente con inflamación (PCR: ' + pcr.toFixed(2) + ' mg/L). Evaluar estado nutricional y posible inflamación sistémica.');
+        results.push(formatParentheticalValues('<strong>Riesgo de Desnutrición Proteica</strong>: Baja albúmina, prealbúmina o proteína total, posiblemente con inflamación (PCR: <strong>' + pcr.toFixed(2) + ' mg/L</strong>). Evaluar estado nutricional y posible inflamación sistémica.'));
     }
 
-    // Return analysis text
-    return results.length > 0 ? results.join('<br>') : 'No se detectaron patrones clínicos significativos. Los valores están dentro de rangos normales o no hay datos suficientes para análisis.';
+    // Return analysis text with blank lines between entries
+    return results.length > 0 ? results.join('<br><br>') : 'No se detectaron patrones clínicos significativos. Los valores están dentro de rangos normales o no hay datos suficientes para análisis.';
 }
+    
     // Save values to the table with validation
     saveButton.addEventListener('click', function() {
         console.log('saveButton clicked');
