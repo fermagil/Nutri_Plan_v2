@@ -1314,8 +1314,8 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             'Mayor riesgo de osteoporosis, fracturas óseas, debilidad muscular, y resistencia a insulina.<br>' +
             '<strong>Manejo</strong>:<br>' +
             '- Dieta: Alimentos ricos en vitamina D (pescado graso, yema de huevo, alimentos fortificados).<br>' +
-            '- Suplementos: 50,000 UI semanales por 8 semanas, luego 1,000–2,000 UI diarias.<br>' +
-            '- Estilo de vida: Exposición solar moderada (15–30 min/día), ejercicios de resistencia.<br>' +
+            '- Suplementos: (50,000 UI/sem) por 8 semanas, luego (1,000–2,000 UI/dia).<br>' +
+            '- Estilo de vida: Exposición solar moderada (15–30 min/día) y  ejercicios de resistencia.<br>' +
             '- Monitoreo: Medir niveles de vitamina D cada 3–6 meses.<br>' +
             '<strong>Explicación Integrada</strong>: Hormonas y su Impacto en el Peso y Metabolismo: La deficiencia de vitamina D contribuye a resistencia a insulina y aumento de grasa visceral, afectando el metabolismo general.'
         ));
@@ -1411,7 +1411,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const pcr = values['pcr-ultrasensible'] || 0;
     if (pcr > 3) {
         results.push('<h2>Inflamación Sistémica</h2>' + formatParentheticalValues(
-            '<strong>Inflamación Sistémica Detectada</strong>: PCR elevada (>3 mg/L) indica inflamación crónica por IL-6/TNF-α desde tejido adiposo visceral. Riesgos: aterosclerosis, resistencia a insulina, pérdida muscular. Recomendaciones: dieta antiinflamatoria (omega-3, frutos rojos, fibra), ejercicio, estatinas o metformina, evaluar perfil cardiovascular.' +
+            '<strong>Inflamación Sistémica Detectada</strong>: PCR elevada (>3 mg/L) indica inflamación crónica por IL-6/TNF-α desde tejido adiposo visceral. Riesgos: aterosclerosis, resistencia a insulina, pérdida muscular. Recomendaciones: dieta antiinflamatoria omega3, frutos rojos, fibra, ejercicio, estatinas o metformina, evaluar perfil cardiovascular.' +
             '<br><br><strong>Hallazgos Bioquímicos</strong>:<br>' +
             '↑ PCR ultrasensible (>3 mg/L): Inflamación sistémica por tejido adiposo disfuncional.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
@@ -1420,7 +1420,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<strong>Consecuencias Clínicas</strong>:<br>' +
             'Aterosclerosis, resistencia a insulina, pérdida muscular, y riesgo cardiovascular elevado.<br>' +
             '<strong>Manejo</strong>:<br>' +
-            '- Dieta: Antiinflamatoria (omega-3, frutos rojos, fibra, cúrcuma).<br>' +
+            '- Dieta: Antiinflamatoria, añade omega3, frutos rojos, fibra, cúrcuma.<br>' +
             '- Ejercicio: Combinar aeróbico y resistencia para reducir inflamación.<br>' +
             '- Fármacos: Estatinas (si LDL elevado), metformina (si resistencia a insulina).<br>' +
             '- Monitoreo: PCR y perfil lipídico cada 3–6 meses.<br>' +
@@ -1499,13 +1499,13 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '↑ BUN (>20 mg/dL): Sugiere disfunción renal o deshidratación.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
             'Hiperfiltración: Obesidad y resistencia a insulina sobrecargan los riñones.<br>' +
-            'Inflamación: Citocinas (IL-6) contribuyen a daño renal.<br>' +
+            'Inflamación: Citocinas IL-6 contribuyen a daño renal.<br>' +
             '<strong>Consecuencias Clínicas</strong>:<br>' +
             'Progresión a enfermedad renal crónica, proteinuria, y riesgo cardiovascular.<br>' +
             '<strong>Manejo</strong>:<br>' +
             '- Dieta: Baja en sodio, proteínas moderadas (0.8 g/kg).<br>' +
             '- Fármacos: IECA o ARA II para control de presión arterial.<br>' +
-            '- Evitar: Nefrotóxicos (AINEs, ciertos antibióticos).<br>' +
+            '- Evitar: Nefrotóxicos: AINEs, ciertos antibióticos.<br>' +
             '- Monitoreo: Microalbuminuria y creatinina cada 3–6 meses.<br>' +
             '<strong>Explicación Detallada</strong>: Marcadores Hepáticos y Renales en Obesidad y Síndrome Metabólico: Creatinina y BUN elevados reflejan daño renal por obesidad.'
         ));
@@ -1670,7 +1670,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '- Ejercicio: Aeróbico (30 min/día) y resistencia.<br>' +
             '- Fármacos: Metformina (si prediabetes), estatinas (si LDL elevado), fibratos (si TG elevados).<br>' +
             '- Monitoreo: Perfil lipídico y HbA1c cada 3–6 meses.<br>' +
-            '<strong>Explicación Detallada</strong>: ↑ TG + ↓ HDL + ↑ Glucosa = Obesidad Metabólica (Síndrome Metabólico): Estas alteraciones reflejan resistencia a insulina y dislipidemia aterogénica.'
+            '<strong>Explicación Detallada</strong>: ↑ TG + ↓ HDL + ↑ Glucosa = Obesidad Metabólica=Síndrome Metabólico: Estas alteraciones reflejan resistencia a insulina y dislipidemia aterogénica.'
         ));
     } else if (tg > 150 || hdl < (genero === 'masculino' ? 40 : 50) || glucosa >= 100 || hba1c >= 5.7) {
         results.push('<h2>Riesgo de Obesidad Metabólica</h2>' + formatParentheticalValues(
@@ -1707,9 +1707,9 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<strong>Consecuencias Clínicas</strong>:<br>' +
             'Edema, pérdida muscular, inmunosupresión, y retraso en cicatrización.<br>' +
             '<strong>Manejo</strong>:<br>' +
-            '- Suplementos: Proteínas de alto valor biológico (suero de leche, huevo).<br>' +
+            '- Suplementos: Proteínas de alto valor biológico como el suero de leche, huevo.<br>' +
             '- Dieta: Calorías suficientes, rica en antioxidantes.<br>' +
-            '- Diagnóstico: Evaluar causas (infecciones, cáncer, malabsorción).<br>' +
+            '- Diagnóstico: Evaluar causas como infecciones, cáncer, malabsorción.<br>' +
             '- Monitoreo: Prealbúmina semanal.<br>' +
             '<strong>Explicación Integrada</strong>: Marcadores Inflamatorios y Metabólicos: La combinación de baja albúmina/prealbúmina y alta PCR indica desnutrición e inflamación.'
         ));
