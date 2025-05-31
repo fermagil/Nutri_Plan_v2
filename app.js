@@ -1119,14 +1119,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const ranges = {
             albumina: { min: 3.5, max: 5.0, unit: 'g/dL', indica: 'Síntesis proteica y estado nutricional a largo plazo', alteracion: '↓ En desnutrición o inflamación crónica' },
             prealbumina: { min: 15, max: 40, unit: 'mg/dL', indica: 'Estado nutricional reciente (vida media corta)', alteracion: '↓ En déficit calórico-proteico agudo' },
-            'proteina-total': { min: 6.0, max: 8.3, unit: 'g/dL', indica: 'Evaluación global de síntesis hepática y nutrición', alteracion: '↓ En desnutrición crónica o enfermedades hepáticas/renales' },
+            //'proteina-total': { min: 6.0, max: 8.3, unit: 'g/dL', indica: 'Evaluación global de síntesis hepática y nutrición', alteracion: '↓ En desnutrición crónica o enfermedades hepáticas/renales' },
             'colesterol-total': { min: 0, max: 200, unit: 'mg/dL', indica: 'Riesgo cardiovascular', alteracion: '↑ En obesidad (especialmente LDL)' },
             hdl: { 
                 min: genero === 'masculino' ? 40 : 50, max: 100, unit: 'mg/dL', 
                 indica: 'Protege contra enfermedades cardíacas', alteracion: '↓ En obesidad visceral' 
             },
             trigliceridos: { min: 0, max: 150, unit: 'mg/dL', indica: 'Energía almacenada; alto nivel sugiere resistencia a insulina', alteracion: '↑ En síndrome metabólico' },
-            'apolipoproteina-b': { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
+            //'apolipoproteina-b': { min: 50, max: 150, unit: 'mg/dL', indica: 'Predictor de riesgo cardiovascular en obesidad', alteracion: '↑ En dislipidemias' },
             'glucosa-ayunas': { min: 70, max: 99, unit: 'mg/dL', indica: 'Niveles de azúcar en sangre', alteracion: '↑ En prediabetes/diabetes (≥100 mg/dL)' },
             hba1c: { min: 0, max: 5.7, unit: '%', indica: 'Control glucémico a 3 meses', alteracion: '≥5.7% indica riesgo de diabetes' },
             insulina: { min: 2, max: 25, unit: 'µU/mL', indica: 'Resistencia a insulina si elevada (HOMA-IR >2.5)', alteracion: '↑ En obesidad y síndrome metabólico' },
@@ -1143,13 +1143,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 min: genero === 'masculino' ? 8 : 5, max: genero === 'masculino' ? 61 : 36, unit: 'U/L', 
                 indica: 'Sensible a acumulación de grasa en hígado', alteracion: '↑ En obesidad y consumo de alcohol' 
             },
-            creatinina: { min: 0.5, max: 1.5, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
-            bun: { min: 7, max: 25, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
+           // creatinina: { min: 0.5, max: 1.5, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
+            //bun: { min: 7, max: 25, unit: 'mg/dL', indica: 'Función renal', alteracion: '↑ En enfermedad renal crónica' },
             tsh: { min: 0.4, max: 4.0, unit: 'µIU/mL', indica: 'Función tiroidea (hipotiroidismo → aumento de peso)', alteracion: '↑ En hipotiroidismo' },
             testosterona: { min: 300, max: 1000, unit: 'ng/dL', indica: 'Bajos niveles asociados a ↑ grasa visceral', alteracion: '↓ En obesidad masculina', genderSpecific: 'masculino' },
-            cortisol: { min: 5, max: 25, unit: 'µg/dL', indica: 'Estrés crónico y acumulación de grasa abdominal', alteracion: '↑ En estrés crónico y síndrome metabólico' },
-            'vitamina-d': { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' },
-            'fosfatasa-alcalina': { min: 20, max: 140, unit: 'U/L', indica: 'Remodelación ósea', alteracion: '↑ En osteoporosis secundaria o enfermedades metabólicas' }
+            //cortisol: { min: 5, max: 25, unit: 'µg/dL', indica: 'Estrés crónico y acumulación de grasa abdominal', alteracion: '↑ En estrés crónico y síndrome metabólico' },
+            'vitamina-d': { min: 30, max: 100, unit: 'ng/mL', indica: 'Metabolismo óseo y muscular', alteracion: '↓ En obesidad (secuestrada en tejido adiposo)' }
+            //'fosfatasa-alcalina': { min: 20, max: 140, unit: 'U/L', indica: 'Remodelación ósea', alteracion: '↑ En osteoporosis secundaria o enfermedades metabólicas' }
         };
 
         const paramData = ranges[param];
