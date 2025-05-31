@@ -1700,7 +1700,7 @@ async function showProgressCharts(clienteId) {
 function preprocessData(data, datasetLabel, preserveLength = true, defaultValue = 72) {
     if (data === null || data === undefined) {
         console.warn(`${datasetLabel} data is null or undefined.`);
-        return preserveLength ? Array(11).fill(defaultValue) : []; // Match expected length
+        return preserveLength ? Array(11).fill(defaultValue) : [];
     }
     
     const dataArray = Array.isArray(data) ? data : [data];
@@ -1746,12 +1746,12 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 72), // Default to 72
+        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica', true, 72), 
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
         tension: 0.1,
-        yAxisID: 'y1' // Secondary axis
+        yAxisID: 'y1'
     },
     { 
         label: 'TMB (kcal)', 
@@ -1761,7 +1761,7 @@ const gastoEnergeticoDatasets = [
         fill: false, 
         tension: 0.1 
     }
-].filter(ds => ds.data.length > 0); // Keep datasets with any data
+].filter(ds => ds.data.length > 0);
 
 // Determine chart length
 const maxLength = Math.max(
