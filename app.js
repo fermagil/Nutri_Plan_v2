@@ -1201,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const status = isOutOfRange ? 'alterado' : 'normal';
         const explanation = `El parámetro ${paramData.indica}. Valor: ${value} ${paramData.unit} (${status}). ${isOutOfRange ? paramData.alteracion : 'Dentro del rango normal.'}`;
         return explanation;
-    }
+    
 
         const config = ranges[param];
         if (!config) return 'Parámetro no reconocido';
