@@ -1695,7 +1695,28 @@ async function showProgressCharts(clienteId) {
         // Gasto Energético Chart
         
      // Utility function to merge edadMetabolica and edadmetabolica data
-       // Utility function to validate and convert data
+     // Utility function to merge edadMetabolica and edadmetabolica
+function getMergedEdadMetabolica(data) {
+    if (!data || typeof data !== 'object') {
+        console.warn('Invalid data object for Edad Metabólica:', data);
+        return [];
+    }
+    const edadMetabolica = data.edadMetabolica || [];
+    const edadmetabolica = data.edadmetabolica || [];
+    const merged = [
+        ...(Array.isArray(edadMetabolica) ? edadMetabolica : [edadMetabolica]),
+        ...(Array.isArray(edadmetabolica) ? edadmetabolica : [edadmetabolica])
+    ].filter(item => item !== null && item !== undefined);
+    
+    if (merged.length === 0) {
+        console.warn('No valid data found for Edad Metabólica.');
+    } else if (data.edadMetabolica && data.edadmetabolica) {
+        console.warn('Both edadMetabolica and edadmetabolica found. Merged data:', merged);
+    }
+    return merged;
+}
+
+// Utility function to validate and convert data
 function preprocessData(data, datasetLabel) {
     if (data === null || data === undefined) {
         console.warn(`${datasetLabel} data is null or undefined.`);
@@ -1715,13 +1736,12 @@ function preprocessData(data, datasetLabel) {
             return null;
         }
         return value;
-    }).filter(item => item !== null);
+    });
     
     if (processed.length === 0) {
         console.warn(`${datasetLabel} dataset is empty after preprocessing. No valid numerical data found.`);
-        return [];
     }
-    return processed;
+    return processed; // Keep null values for full date range
 }
 
 // Debug raw data and dates
@@ -1740,12 +1760,12 @@ const gastoEnergeticoDatasets = [
     },
     { 
         label: 'Edad Metabólica (años)', 
-        data: preprocessData(gastoEnergeticoData.edadMetabolica, 'Edad Metabólica'), 
+        data: preprocessData(getMergedEdadMetabolica(gastoEnergeticoData), 'Edad Metabólica'), 
         borderColor: '#388E3C', 
         backgroundColor: 'rgba(56, 142, 60, 0.2)', 
         fill: false, 
         tension: 0.1,
-        yAxisID: 'y1' // Use secondary axis for different scale
+        yAxisID: 'y1'
     },
     { 
         label: 'TMB (kcal)', 
@@ -1755,26 +1775,14 @@ const gastoEnergeticoDatasets = [
         fill: false, 
         tension: 0.1 
     }
-].filter(ds => ds.data.length > 0); // Filter out datasets with no valid data
-
-// Align datasets to the shortest valid length
-const validLengths = gastoEnergeticoDatasets.map(ds => ds.data.length).filter(len => len > 0);
-const minLength = validLengths.length > 0 ? Math.min(...validLengths) : 0;
-if (minLength > 0) {
-    gastoEnergeticoDatasets.forEach(ds => {
-        ds.data = ds.data.slice(0, minLength);
-    });
-}
-
-// Generate fallback dates if not provided
-const fallbackDates = Array.from({ length: minLength || 1 }, (_, i) => `Date ${i + 1}`);
+].filter(ds => ds.data.some(val => val !== null)); // Keep datasets with at least one valid value
 
 if (gastoEnergeticoDatasets.length > 0) {
     console.log('Rendering chart with datasets:', JSON.stringify(gastoEnergeticoDatasets, null, 2));
     new Chart(document.getElementById('gasto-energetico-chart'), {
         type: 'line',
         data: { 
-            labels: (dates && dates.length >= minLength) ? dates.slice(0, minLength) : fallbackDates, 
+            labels: dates || Array.from({ length: Math.max(...gastoEnergeticoDatasets.map(ds => ds.data.length)) }, (_, i) => `Date ${i + 1}`), 
             datasets: gastoEnergeticoDatasets 
         },
         options: {
