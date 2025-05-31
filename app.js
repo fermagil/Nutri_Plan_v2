@@ -1750,6 +1750,19 @@ async function showProgressCharts(clienteId) {
                 container.innerHTML += '<p style="color: red;">No valid data available for the chart.</p>';
             }
 
+        // Populate non-numerical data table
+        const tableBody = document.getElementById('non-numerical-table-body');
+        tableBody.innerHTML = '';
+        dates.forEach((date, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${date}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.somatotipo[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaActual[index]}</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">${nonNumericalData.tipologiaMetabolica[index]}</td>
+            `;
+            tableBody.appendChild(row);
+        });
         
         // Show popup
         const popup = document.getElementById('progress-container');
