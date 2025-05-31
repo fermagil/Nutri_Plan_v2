@@ -1483,15 +1483,15 @@ async function showProgressCharts(clienteId) {
                         const numValue = Number(value);
                         if (isNaN(numValue)) return '';
                         let formattedValue = numValue;
-                        if (context.dataset.label.includes('kg')) formattedValue = `${numValue.toFixed(1)} kg`;
-                        else if (context.dataset.label.includes('%')) formattedValue = `${numValue.toFixed(1)}%`;
+                        if (context.dataset.label.includes('kg')) formattedValue = `${numValue.toFixed(1)} `;
+                        else if (context.dataset.label.includes('%')) formattedValue = `${numValue.toFixed(1)}`;
                         else if (context.dataset.label.includes('mm')) formattedValue = `${numValue.toFixed(1)}`;
-                        else if (context.dataset.label.includes('cm²')) formattedValue = `${numValue.toFixed(1)} cm²`;
+                        else if (context.dataset.label.includes('cm²')) formattedValue = `${numValue.toFixed(1)} `;
                         else if (context.dataset.label.includes('cm')) formattedValue = `${numValue.toFixed(1)}`;
                         else if (context.dataset.label.includes('IMC')) formattedValue = `${numValue.toFixed(1)}`;
                         else if (context.dataset.label.includes('ICC')) formattedValue = `${numValue.toFixed(2)}`;
-                        else if (context.dataset.label.includes('kcal')) formattedValue = `${numValue.toFixed(0)} kcal`;
-                        else if (context.dataset.label.includes('años')) formattedValue = `${numValue.toFixed(0)} años`;
+                        else if (context.dataset.label.includes('kcal')) formattedValue = `${numValue.toFixed(0)} `;
+                        else if (context.dataset.label.includes('años')) formattedValue = `${numValue.toFixed(0)} `;
                         return `${formattedValue}`;
                     },
                     color: '#333',
@@ -1749,6 +1749,8 @@ async function showProgressCharts(clienteId) {
                 const container = document.getElementById('gasto-energetico-chart').parentElement;
                 container.innerHTML += '<p style="color: red;">No valid data available for the chart.</p>';
             }
+
+        
         // Show popup
         const popup = document.getElementById('progress-container');
         if (popup) {
