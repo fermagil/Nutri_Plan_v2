@@ -1167,7 +1167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 min: genero === 'masculino' ? 7 : 7, max: genero === 'masculino' ? 55 : 45, unit: 'U/L', 
                 indica: 'Daño hepático (hígado graso no alcohólico, NAFLD)', alteracion: '↑ En NAFLD (obesidad)' 
             },
-            'gg't: { 
+            'gg': { 
                 min: genero === 'masculino' ? 8 : 5, max: genero === 'masculino' ? 61 : 36, unit: 'U/L', 
                 indica: 'Sensible a acumulación de grasa en hígado', alteracion: '↑ En obesidad y consumo de alcohol' 
             },
