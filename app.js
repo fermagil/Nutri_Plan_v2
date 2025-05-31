@@ -1686,7 +1686,7 @@ async function showProgressCharts(clienteId) {
             }).filter(item => item !== null); // Remove null values
         }
         const gastoEnergeticoDatasets = [
-            { label: 'Gasto Energético (kcal)', data: preprocessData(gastoEnergeticoData.gasto),, borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
+            { label: 'Gasto Energético (kcal)', data: preprocessData(gastoEnergeticoData.gasto), borderColor: '#4CAF50', backgroundColor: 'rgba(76, 175, 80, 0.2)', fill: false, tension: 0.1 },
             { label: 'Edad Metabólica (años)', data: preprocessData(gastoEnergeticoData.edadMetabolica), borderColor: '#388E3C', backgroundColor: 'rgba(56, 142, 60, 0.2)', fill: false, tension: 0.1 },
             { label: 'TMB (kcal)', data: preprocessData(gastoEnergeticoData.tmb), borderColor: '#0275d8', backgroundColor: 'rgba(2, 117, 216, 0.2)', fill: false, tension: 0.1 }
         ].filter(ds => hasValidData(ds.data));
