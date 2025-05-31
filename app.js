@@ -1144,22 +1144,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 warningContainer.style.display = 'none'; // Reset warnings
         
                 // Load existing values into the popup form
-                fields.forEach(field => {
+                   fields.forEach(field => {
                     const input = document.getElementById(field.input);
-                    const result = document.getElementById(field.result);
-                    if (input && result && result.textContent) {
-                        // Only set the input value if result has a valid number
-                        const value = parseFloat(result.textContent);
+                    if (!input) {
+                        console.error(`Input ${field.input} not found`);
+                        return;
+                    }
+                    console.log(`Checking ${field.label}: input.value="${input.value}"`);
+                    if (input.value && input.value.trim() !== '') {
+                        const value = parseFloat(input.value);
                         if (!isNaN(value)) {
-                            input.value = value.toString(); // Set the input value
-                            console.log(`Loaded ${field.label}: ${value} into ${field.input}`);
+                            // Format value based on field-specific decimals
+                            const decimals = ['pcr-ultrasensible', 'hba1c', 'tsh'].includes(field.input) ? 2 : ['colesterol-total', 'hdl', 'trigliceridos', 'glucosa-ayunas', 'alt', 'ggt'].includes(field.input) ? 0 : 1;
+                            input.value = value.toFixed(decimals);
+                            console.log(`Loaded ${field.label}: ${value.toFixed(decimals)} into ${field.input}`);
                         } else {
-                            input.value = ''; // Clear input if result is empty or invalid
-                            console.log(`No valid data for ${field.label}, clearing ${field.input}`);
+                            input.value = ''; // Clear input if value is not a valid number
+                            console.log(`Invalid number in ${field.label}, clearing ${field.input}`);
                         }
                     } else {
-                        input.value = ''; // Clear input if no result element or no value
-                        console.log(`No result data for ${field.label}, clearing ${field.input}`);
+                        input.value = ''; // Clear input if no value
+                        console.log(`No data in ${field.label}, clearing ${field.input}`);
                     }
                 });
             }
