@@ -4440,7 +4440,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					
 					function calcularIAV(cintura, alturaCm) {
 						cintura= data.cintura
-						const alturaCm= data.altura
+						alturaCm= data.altura
 					    return parseFloat((cintura / alturaCm).toFixed(2));
 					}
 
