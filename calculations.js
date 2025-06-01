@@ -4439,7 +4439,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				     // Calcula el Índice de Adiposidad Visceral (IAV)
 					
 					function calcularIAV(cintura, alturaCm) {
-						const cintura= data.cintura
+						cintura= data.cintura
 						const alturaCm= data.altura
 					    return parseFloat((cintura / alturaCm).toFixed(2));
 					}
