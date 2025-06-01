@@ -4604,7 +4604,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                    cintura: data.circ_cintura || 0,
 			                };
 					 logData = (data) => {
-					    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
+					    let { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
 					    console.log('Datos de entrada:', {
 					        altura,
 					        edad,
