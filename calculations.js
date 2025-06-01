@@ -4585,20 +4585,52 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        }
 
 				    	//Funcion Calculo % Grasa Visceral
-				   
+				   // Collect form data
+				    const formData = new FormData(form);
+				    const data = {
+				        genero: formData.get('genero'),
+				        edad: formData.get('edad'),
+				        peso: formData.get('peso'),
+				        altura: formData.get('altura'),
+				        es_deportista: formData.get('es_deportista'),
+				        circ_cintura: formData.get('circ_cintura'),
+				        pliegue_tricipital: formData.get('pliegue_tricipital'),
+				        pliegue_subescapular: formData.get('pliegue_subescapular'),
+				        pliegue_suprailiaco: formData.get('pliegue_suprailiaco'),
+				        pliegue_bicipital: formData.get('pliegue_bicipital')
+				    };
+				
+				    console.log('Raw form data:', data); // Debug raw data
+				
+				    // Normalize data using createGrasaVisceralData
+				    const GrasaVisceralData = createGrasaVisceralData(data);
+				    console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
+				    logData(GrasaVisceralData);
 					
-				try {
-					
-					 
-				    if (!isNaN(data.altura) && data.edad && data.genero && data.circ_cintura && data.esDeportista !== undefined) {
-				        let resultados = calcularGrasaVisceral(data);
-				        results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
-				        results.grasavisceralActualSource = `${resultados.riesgo} - ${resultados.metodo}`;
-				        console.log('%Grasa Visceral calculado:', results.grasavisceralActual, results.grasavisceralActualSource);
-				    } else {
-				        content += `<p class="error">Faltan datos requeridos para el cálculo de grasa visceral.</p>`;
-				        console.log('Datos incompletos:', content);
-				    }
+				try { 
+				    // Validate normalized data
+				        if (!isNaN(GrasaVisceralData.altura) && GrasaVisceralData.altura > 0 &&
+				            !isNaN(GrasaVisceralData.edad) && GrasaVisceralData.edad > 0 &&
+				            ['masculino', 'femenino'].includes(GrasaVisceralData.genero) &&
+				            !isNaN(GrasaVisceralData.cintura) && GrasaVisceralData.cintura > 0 &&
+				            typeof GrasaVisceralData.esDeportista === 'boolean') {
+				            let resultados = calcularGrasaVisceral(GrasaVisceralData);
+				            results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
+				            results.grasavisceralActualSource = `${resultados.riesgo} - ${resultados.metodo}`;
+				            console.log('%Grasa Visceral calculado:', {
+				                grasavisceralActual: results.grasavisceralActual,
+				                grasavisceralActualSource: results.grasavisceralActualSource
+				            });
+					} else {
+				            console.warn('Datos incompletos o inválidos para el cálculo de grasa visceral:', GrasaVisceralData);
+				            content += `<p class="error">Faltan datos requeridos o son inválidos para el cálculo de grasa visceral.</p>`;
+				            results.grasavisceralActual = null;
+				            results.grasavisceralActualSource = '(No calculado)';
+				            window.calculatedResults = {
+				                grasavisceralActual: formatResult(null, 1),
+				                grasavisceralActualSource: '(No calculado)'
+				            };
+					}
 			            // --- Calculate IMC ---
 			            if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
 			                try {
@@ -5526,16 +5558,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								    console.warn('results.grasavisceralActual no está definido');
 								}
 							try {
-							    updateElement('grasavisceralActual', results.grasavisceralActual, 1);
-							        console.log('[updateDisplay] Resultado recibido:', results.grasavisceralActual);
-							        if (resultElements.grasavisceralActualSource) {
-							            resultElements.grasavisceralActualSource.textContent = results.grasavisceralActualSource || '(No calculado)';
-							            console.log('[updateDisplay] Resultado recibido:', results.grasavisceralActualSource);
-							        }
-							} catch (e) {
-								    console.error('Error calculando Grasa Visceral:', e.message);
-								    content += `<p class="error"><strong>Error en cálculo de Grasa Visceral:</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-								}
+						                updateElement('grasavisceralActual', results.grasavisceralActual, 1);
+						                if (resultElements.grasavisceralActualSource) {
+						                    resultElements.grasavisceralActualSource.textContent = results.grasavisceralActualSource || '(No calculado)';
+						                }
+						            } catch (e) {
+						                console.error('Error updating DOM:', e.message);
+						                content += `<p class="error">Error al actualizar el DOM: ${e.message}</p>`;
+						            }
 							// Update Actual Body Fat Results
 							updateElement('grasaPctActual', results.grasaPctActual, 1);
 							if (resultElements.grasaPctActualSource) {
