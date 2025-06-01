@@ -4585,7 +4585,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        logData(GrasaVisceralData);
 
 
-				    / Validate altura
+				    // Validate altura
 				        let alturaM = NaN;
 				        try {
 				            if (data.altura && !isNaN(data.altura)) {
