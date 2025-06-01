@@ -603,6 +603,11 @@ let currentTomaSerial = null; // Track the loaded toma's serial
             const element = document.getElementById(id);
             if (element) element.textContent = '---';
         });
+        // Limpiar específicamente el análisis bioquímico
+            const analisisElement = document.getElementById('result-analisis');
+            if (analisisElement) {
+                analisisElement.textContent = 'Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.';  // O puedes usar innerHTML = '' para limpiar completamente
+            }
         // Ocultar sección de explicación
         const explanationSection = document.getElementById('explanation-section');
         if (explanationSection) {
@@ -1668,7 +1673,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<strong>Manejo</strong>:<br>' +
             '- Dieta: Restricción de azúcares y grasas saturadas, priorizar fibra y omega-3.<br>' +
             '- Ejercicio: Aeróbico (30 min/día) y resistencia.<br>' +
-            '- Fármacos: Metformina (si prediabetes), estatinas (si LDL elevado), fibratos (si TG elevados).<br>' +
+            '- Fármacos: Metformina si prediabetes, estatinas si LDL elevado, fibratos si TG elevados.<br>' +
             '- Monitoreo: Perfil lipídico y HbA1c cada 3–6 meses.<br>' +
             '<strong>Explicación Detallada</strong>: ↑ TG + ↓ HDL + ↑ Glucosa = Obesidad Metabólica=Síndrome Metabólico: Estas alteraciones reflejan resistencia a insulina y dislipidemia aterogénica.'
         ));
@@ -1684,10 +1689,10 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<strong>Consecuencias Clínicas</strong>:<br>' +
             'Riesgo de síndrome metabólico, diabetes tipo 2, y enfermedad cardiovascular.<br>' +
             '<strong>Manejo</strong>:<br>' +
-            '- Dieta: Mediterránea, rica en fibra y omega-3.<br>' +
+            '- Dieta: Mediterránea, rica en fibra y omega3.<br>' +
             '- Ejercicio: Aeróbico y resistencia.<br>' +
             '- Monitoreo: Perfil lipídico y glucosa cada 3–6 meses.<br>' +
-            '<strong>Explicación Detallada</strong>: ↑ TG + ↓ HDL + ↑ Glucosa = Obesidad Metabólica (Síndrome Metabólico): Estas alteraciones indican riesgo incipiente de síndrome metabólico.'
+            '<strong>Explicación Detallada</strong>: ↑ TG + ↓ HDL + ↑ Glucosa = Obesidad Metabólica=Síndrome Metabólico: Estas alteraciones indican riesgo incipiente de síndrome metabólico.'
         ));
     }
 
