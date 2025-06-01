@@ -4501,14 +4501,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    
 			        try {
 					//Calculate Grasa Visceral Función principal para calcular grasa visceral
-					 if (!isNaN(altura) && data.edad && data.genero &&data.cintura && data.esDeportista !== undefined) {
+					 if (!isNaN(data.altura) && data.edad && data.genero &&data.cintura && data.esDeportista !== undefined) {
 			                try {
 					    function calcularGrasaVisceral(datos) {
 					    const { esDeportista, genero, edad, cintura, altura } = datos;
 					    let resultados = {};
 					    
 					    // Convertir altura a cm si viene en metros
-					    const alturaCm = altura > 3 ? altura * 100 : altura;
+					    const alturaCm = data.altura > 3 ? data.altura * 100 : data.altura;
 					    
 					    if (esDeportista) {
 						        // Para deportistas
