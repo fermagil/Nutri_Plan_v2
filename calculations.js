@@ -4588,21 +4588,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    // Función auxiliar para depuración
 					
 				try {
-					const GrasaVisceralData = {
-			                    genero: data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino',
-			                    edad: data.edad,
-			                    peso: data.peso,
-			                    altura: data.altura,
-			                    esDeportista: data.es_deportista === 'si',
-			                    pliegues: {
-			                        tricipital: data.pliegue_tricipital || 0,
-			                        subescapular: data.pliegue_subescapular || 0,
-			                        suprailiaco: data.pliegue_suprailiaco || 0,
-			                        bicipital: data.pliegue_bicipital || 0
-			                    },
-			                    porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
-			                    cintura: data.circ_cintura || 0,
-			                };
+					
 					 logData = (data) => {
 					    let { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
 					    console.log('Datos de entrada:', {
