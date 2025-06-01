@@ -5583,8 +5583,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							    }
 							} catch (e) {
 							    console.error('Error actualizando el DOM para Grasa Visceral:', e.message);
-							    content += `<p class="
-	   
+							    //content += `<p class="
+	   						}
 							// Update Actual Body Fat Results
 							updateElement('grasaPctActual', results.grasaPctActual, 1);
 							if (resultElements.grasaPctActualSource) {
