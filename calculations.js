@@ -4539,7 +4539,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        }
 
 				    	//Funcion Calculo % Grasa Visceral
-					
+				try {	
 				    if (!isNaN(data.altura) && data.edad && data.genero && data.cintura && data.esDeportista !== undefined) {
 				        let resultados = calcularGrasaVisceral(data);
 				        results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
@@ -5472,6 +5472,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                };
 							
 							// Update Actual Visceral Fat
+							if (typeof results.grasavisceralActual === 'undefined') {
+								    console.warn('results.grasavisceralActual no está definido');
+								}
 							try {
 							    updateElement('grasavisceralActual', results.grasavisceralActual, 1);
 							        console.log('[updateDisplay] Resultado recibido:', results.grasavisceralActual);
