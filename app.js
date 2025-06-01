@@ -1054,7 +1054,7 @@ async function cargarDatosToma(clienteId, tomaId) {
     'cortisolSource': { id: 'cortisol-source', unit: '', source: 'medidas.parametros_bioquimicos.cortisolSource', format: (v) => v || '(No calculado)' },        
     'vitaminaDSource': { id: 'vitamina-d-source', unit: '', source: 'medidas.parametros_bioquimicos.vitaminaDSource', format: (v) => v || '(No calculado)' },
     'fosfatasaSource': { id: 'fosfatasa-alcalina-source', unit: '', source: 'medidas.parametros_bioquimicos.fosfatasaSource', format: (v) => v || '(No calculado)' },
-    'creatininaSource': { id: 'fcreatinina-source', unit: '', source: 'medidas.parametros_bioquimicos.creatininaSource', format: (v) => v || '(No calculado)' },
+    'creatininaSource': { id: 'creatinina-source', unit: '', source: 'medidas.parametros_bioquimicos.creatininaSource', format: (v) => v || '(No calculado)' },
     'bunSource': { id: 'bun-source', unit: '', source: 'medidas.parametros_bioquimicos.bunSource', format: (v) => v || '(No calculado)' }
 };
         // Asignar valores a los elementos de resultados
