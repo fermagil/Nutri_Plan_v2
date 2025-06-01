@@ -4039,7 +4039,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', datos);
 				    const { esDeportista, genero, edad, cintura, altura } = datos;
 				    let resultados = {};
-				    const alturaCm = datos.altura > 3 ? datos.altura * 100 : datos.altura;
+				    const alturaCm = datos.altura <2.30 ? datos.altura * 100 : datos.altura;
 				    console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
 				
 				    if (esDeportista) {
