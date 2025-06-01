@@ -4539,6 +4539,18 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        }
 
 				    	//Funcion Calculo % Grasa Visceral
+				    // Función auxiliar para depuración
+					const logData = (data) => {
+					    console.log('Datos de entrada:', {
+					        altura: data.altura,
+					        edad: data.edad,
+					        genero: data.genero,
+					        cintura: data.cintura,
+					        esDeportista: data.esDeportista,
+					        porcentajeGrasaActual: data.porcentajeGrasaActual,
+					        pliegues: data.pliegues
+					    });
+					};
 				try {	
 				    if (!isNaN(data.altura) && data.edad && data.genero && data.cintura && data.esDeportista !== undefined) {
 				        let resultados = calcularGrasaVisceral(data);
