@@ -3924,7 +3924,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 				/// Función auxiliar para depuración Datos %Grasa Visceral
 				// Asegurarse de que results esté definido
-				let results = results || { grasaPctActual: null };
+				//let results = results || { grasaPctActual: null };
 				
 				// Función para validar y normalizar datos
 				const createGrasaVisceralData = (data) => {
