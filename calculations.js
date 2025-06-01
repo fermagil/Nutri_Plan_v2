@@ -4628,7 +4628,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				             const datos = calcularGrasaVisceral(GrasaVisceralData);
 						results.grasavisceralActual = datos.porcentajeGrasa || datos.iav;
 						results.grasavisceralActualSource = `${datos.riesgo} - ${datos.metodo}`;
-						
+						 
+						    
 						console.log('%Grasa Visceral calculado:', {
 						    grasaVisceralActual: results.grasavisceralActual,
 						    grasaVisceralActualSource: results.grasavisceralActualSource
@@ -4643,6 +4644,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                    grasavisceralActualSource: '(No calculado)'
 				                };
 				            }
+
+					
 			            // --- Calculate IMC ---
 			            if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
 			                try {
