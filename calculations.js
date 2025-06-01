@@ -4551,6 +4551,23 @@ const logData = (data) => {
 
 				    	//Funcion Calculo % Grasa Visceral
 				    // Función auxiliar para depuración
+					
+				try {
+					const GrasaVisceralData = {
+			                    genero: data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino',
+			                    edad: data.edad,
+			                    peso: data.peso,
+			                    altura: data.altura,
+			                    esDeportista: data.es_deportista === 'si',
+			                    pliegues: {
+			                        tricipital: data.pliegue_tricipital || 0,
+			                        subescapular: data.pliegue_subescapular || 0,
+			                        suprailiaco: data.pliegue_suprailiaco || 0,
+			                        bicipital: data.pliegue_bicipital || 0
+			                    },
+			                    porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
+			                    cintura: data.circ_cintura || 0,
+			                };
 					const logData = (data) => {
 					    console.log('Datos de entrada:', {
 					        altura: data.altura,
@@ -4558,12 +4575,16 @@ const logData = (data) => {
 					        genero: data.genero,
 					        cintura: data.cintura,
 					        esDeportista: data.esDeportista,
-					        porcentajeGrasaActual: data.porcentajeGrasaActual,
-					        pliegues: data.pliegues
+					        porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
+					       pliegues: {
+			                        tricipital: data.pliegue_tricipital || 0,
+			                        subescapular: data.pliegue_subescapular || 0,
+			                        suprailiaco: data.pliegue_suprailiaco || 0,
+			                        bicipital: data.pliegue_bicipital || 0
+						},
 					    });
 					};
-				try {	
-				    if (!isNaN(data.altura) && data.edad && data.genero && data.cintura && data.esDeportista !== undefined) {
+				    if (!isNaN(altura) && data.edad && data.genero && data.circ_cintura && data.esDeportista !== undefined) {
 				        let resultados = calcularGrasaVisceral(data);
 				        results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
 				        results.grasavisceralActualSource = `${resultados.riesgo} - ${resultados.metodo}`;
