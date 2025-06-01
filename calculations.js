@@ -4618,6 +4618,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    let results = {};
 					   let errors = [];
 					}
+				    	let errors = [];
 				try { 
 				    	if (isNaN(GrasaVisceralData.altura) || GrasaVisceralData.altura <= 0) errors.push('Altura inválida o faltante');
 				            if (isNaN(GrasaVisceralData.edad) || GrasaVisceralData.edad <= 0) errors.push('Edad inválida o faltante');
