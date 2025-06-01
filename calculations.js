@@ -4100,7 +4100,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			    } else {
 			        console.error('Guardar Datos button not found');
 			    }
-			
+			// Initialize variables
+		        let content = '';
+		        let results = { grasaPctActual: null };
 			    try {
 			        // --- 1. Get Data ---
 			        const formData = new FormData(form);
@@ -4152,7 +4154,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			       
 			        
 			        let content = ''; // For error messages
-				 const results = {};
+				let results = { grasaPctActual: null };
 			        // Initialize alturaM with validation (single definition)
 			        let alturaM = NaN;
 			        try {
@@ -4588,7 +4590,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				   // Collect form data
 				    
 				// Initial validation
-				        if (!data.peso || isNaN(data.altura) || !data.genero || isNaN(data.edad) || !data.es_deportista) {
+				       if (!data.peso || isNaN(data.altura) || !data.genero || isNaN(data.edad) || !data.es_deportista) {
 				            alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
 				            console.error('Missing required fields', {
 				                peso: data.peso,
@@ -4602,9 +4604,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				 
 				
 				    // Normalize data using createGrasaVisceralData
-				    const GrasaVisceralData = createGrasaVisceralData(data);
-				    console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
-				    logData(GrasaVisceralData);
+				   const GrasaVisceralData = createGrasaVisceralData(data);
+				        console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
+				        logData(GrasaVisceralData);
 					
 				try { 
 				    // Validate normalized data
