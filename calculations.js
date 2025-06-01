@@ -4589,24 +4589,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					
 				try {
 					
-					 logData = (data) => {
-					    let { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
-					    console.log('Datos de entrada:', {
-					        altura,
-					        edad,
-					        genero,
-					        cintura,
-					        esDeportista,
-					        porcentajeGrasa,
-					        pliegues: {
-					            tricipital: pliegues.tricipital,
-					            subescapular: pliegues.subescapular,
-					            suprailiaco: pliegues.suprailiaco,
-					            bicipital: pliegues.bicipital
-					        }
-					    });
-					};
-				    if (!isNaN(data.altura) && data.edad && data.genero && data.circ_cintura && data.esDeportista !== undefined) {
+					 
+				    if (!isNaN(altura) && data.edad && data.genero && data.circ_cintura && data.esDeportista !== undefined) {
 				        let resultados = calcularGrasaVisceral(data);
 				        results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
 				        results.grasavisceralActualSource = `${resultados.riesgo} - ${resultados.metodo}`;
