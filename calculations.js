@@ -3949,7 +3949,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				
 				// Función logData corregida
 				const logData = (data) => {
-				    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
+				    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegue_tricipital, pliegue_subescapular, pliegue_suprailiaco, pliegue_bicipital } = data;
 				    console.log('Datos de entrada:', {
 				        altura,
 				        edad,
