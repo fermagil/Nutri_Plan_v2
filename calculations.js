@@ -4083,10 +4083,36 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						}
 					});
 				};
-
+			
 			console.log('resultElements:', resultElements);
 			console.log('imcSource element:', resultElements.imcSource);
-
+			
+				// Placeholder calculateIMC
+				function calculateIMC(data) {
+				    const alturaM = data.altura / 100;
+				    const imc = data.peso / (alturaM * alturaM);
+				    let clasificacion = '';
+				    let riesgo = '';
+				
+				    if (imc < 18.5) {
+				        clasificacion = 'Bajo peso';
+				        riesgo = 'Riesgo moderado';
+				    } else if (imc >= 18.5 && imc < 25) {
+				        clasificacion = 'Normal';
+				        riesgo = 'Bajo riesgo';
+				    } else if (imc >= 25 && imc < 30) {
+				        clasificacion = 'Sobrepeso';
+				        riesgo = 'Riesgo moderado';
+				    } else {
+				        clasificacion = 'Obesidad';
+				        riesgo = 'Riesgo elevado';
+				    }
+				
+				    return {
+				        imc: imc,
+				        imcSource: { clasificacion, riesgo }
+				    };
+				}
 
 			// Form submission handler
 			form.addEventListener('submit', function (event) {
@@ -4109,42 +4135,17 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        const data = {};
 			        formData.forEach((value, key) => {
 			            const numericFields = [
-			                'edad',
-			                'peso',
-			                'altura',
-			                'pliegue_tricipital',
-			                'pliegue_subescapular',
-			                'pliegue_suprailiaco',
-			                'pliegue_bicipital',
-			                'pliegue_pantorrilla',
-			                'circ_cintura',
-			                'circ_cadera',
-			                'circ_cuello',
-			                'circ_pantorrilla',
-			                'circ_brazo',
-			                'circ_brazo_contraido',
-			                'diam_humero',
-			                'diam_femur',
-			                'diam_muneca',
-			                'grasa_actual_conocida',
-			                'grasa_deseada',
-					     // Bioquímicos
-					    'result-albumina',
-					    'result-prealbumina',
-					    'result-colesterol-total',
-					    'result-hdl',
-					    'result-trigliceridos',
-					    'result-glucosa-ayunas',
-					    'result-hba1c',
-					    'result-insulina',
-					    'result-pcr-ultrasensible',
-					    'result-leptina',
-					    'result-alt',
-					    'result-ggt',
-					    'result-tsh',
-					    'result-testosterona',
-					    'result-vitamina-d',
-				            ];
+			                'edad', 'peso', 'altura', 'pliegue_tricipital', 'pliegue_subescapular',
+			                'pliegue_suprailiaco', 'pliegue_bicipital', 'pliegue_pantorrilla',
+			                'circ_cintura', 'circ_cadera', 'circ_cuello', 'circ_pantorrilla',
+			                'circ_brazo', 'circ_brazo_contraido', 'diam_humero', 'diam_femur',
+			                'diam_muneca', 'grasa_actual_conocida', 'grasa_deseada',
+			                'result-albumina', 'result-prealbumina', 'result-colesterol-total',
+			                'result-hdl', 'result-trigliceridos', 'result-glucosa-ayunas',
+			                'result-hba1c', 'result-insulina', 'result-pcr-ultrasensible',
+			                'result-leptina', 'result-alt', 'result-ggt', 'result-tsh',
+			                'result-testosterona', 'result-vitamina-d'
+			            ];
 			            data[key] = numericFields.includes(key) ? parseFloatSafe(value) : value;
 			        });
 			
@@ -4607,11 +4608,41 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				   const GrasaVisceralData = createGrasaVisceralData(data);
 				        console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
 				        logData(GrasaVisceralData);
-					
+
+
+				    / Validate altura
+				        let alturaM = NaN;
+				        try {
+				            if (data.altura && !isNaN(data.altura)) {
+				                alturaM = Number(data.altura) / 100;
+				                if (alturaM < 1.2 || alturaM > 2.2) {
+				                    throw new Error('Altura debe estar entre 120 y 220 cm');
+				                }
+				            } else {
+				                throw new Error('Altura no proporcionada o inválida');
+				            }
+				        } catch (e) {
+				            console.error('Error inicializando alturaM:', e.message);
+				            content += `<p><strong>Error en Altura:</strong> ${e.message}. Por favor, revisa el valor ingresado para altura.</p>`;
+				        }
+				
+				        // Reset results display
+				        resetResultElements(resultElements);
+				        if (explanationSection) {
+				            explanationSection.style.display = 'none';
+				        }
+				        if (explanationContent) {
+				            explanationContent.innerHTML = '';
+				        }
+				
+				        // Normalize data
+				        const GrasaVisceralData = createGrasaVisceralData(data);
+				        console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
+				        logData(GrasaVisceralData); 
+				    
+				    // Visceral fat calculation
 				try { 
-				    // Validate normalized data
-					let errors = [];
-				        if (isNaN(GrasaVisceralData.altura) || GrasaVisceralData.altura <= 0) errors.push('Altura inválida o faltante');
+				    	if (isNaN(GrasaVisceralData.altura) || GrasaVisceralData.altura <= 0) errors.push('Altura inválida o faltante');
 				            if (isNaN(GrasaVisceralData.edad) || GrasaVisceralData.edad <= 0) errors.push('Edad inválida o faltante');
 				            if (!['masculino', 'femenino'].includes(GrasaVisceralData.genero)) errors.push('Género inválido');
 				            if (isNaN(GrasaVisceralData.cintura) || GrasaVisceralData.cintura <= 0) errors.push('Circunferencia de cintura inválida o faltante');
@@ -4625,16 +4656,16 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				                    grasavisceralActual: results.grasavisceralActual,
 				                    grasavisceralActualSource: results.grasavisceralActualSource
 				                });
-					} else {
-				            console.warn('Datos incompletos o inválidos para el cálculo de grasa visceral:', GrasaVisceralData);
-				            content += `<p class="error">Faltan datos requeridos o son inválidos para el cálculo de grasa visceral.</p>`;
-				            results.grasavisceralActual = null;
-				            results.grasavisceralActualSource = '(No calculado)';
-				            window.calculatedResults = {
-				                grasavisceralActual: formatResult(null, 1),
-				                grasavisceralActualSource: '(No calculado)'
-				            };
-					}
+				            } else {
+				                console.warn('Datos incompletos o inválidos para el cálculo de grasa visceral:', GrasaVisceralData);
+				                content += `<p class="error">Errores en grasa visceral: ${errors.join(', ')}</p>`;
+				                results.grasavisceralActual = null;
+				                results.grasavisceralActualSource = '(No calculado)';
+				                window.calculatedResults = {
+				                    grasavisceralActual: formatResult(null, 1),
+				                    grasavisceralActualSource: '(No calculado)'
+				                };
+				            }
 			            // --- Calculate IMC ---
 			            if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
 			                try {
@@ -5541,7 +5572,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            console.log('BRMEstimado element:', document.getElementById('result-tmb'));
 			            console.log('BRMEstimadoSource element:', document.getElementById('tmb-source'));
 				    console.log('[Submission Handler] Resultado de calcularACT:', resultadoAgua);		    
-				                  // Actualizar la interfaz
+				                  
+					
+					
+					// Actualizar la interfaz
 						  //updateDisplay(resultadoAgua);		
 						  
 			            // --- 3. Update Display ---
@@ -5563,12 +5597,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								}
 							
 						                try {
-						                    updateElement('grasavisceralActual', results.grasavisceralActual, 1);
-						                    updateElement('grasavisceralActualSource', results.grasavisceralActualSource || '(No calculado)');
-						                } catch (e) {
-						                    console.error('Error updating DOM:', e.message);
-						                    content += `<p class="error">Error al actualizar el DOM: ${e.message}</p>`;
-						                }
+							                updateElement('grasavisceralActual', results.grasavisceralActual, 1);
+							                updateElement('grasavisceralActualSource', results.grasavisceralActualSource || '(No calculado)');
+							                updateElement('imc', results.imc, 1);
+							                updateElement('imcSource', results.imcSource ? `${results.imcSource.clasificacion} (${results.imcSource.riesgo})` : '(No calculado)');
+							            } catch (e) {
+							                console.error('Error updating DOM:', e.message);
+							                content += `<p class="error">Error al actualizar DOM: ${e.message}</p>`;
+							            }
+							
 						            
 							// Update Actual Body Fat Results
 							updateElement('grasaPctActual', results.grasaPctActual, 1);
@@ -5855,6 +5892,16 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        explanationSection.style.display = 'block';
 			    }
 			}
+			// Display errors
+		            if (content) {
+		                const errorContainer = document.getElementById('error-container');
+		                if (errorContainer) {
+		                    errorContainer.innerHTML = content;
+		                } else {
+		                    console.warn('Error container not found');
+		                }
+		            }
+
 	} catch (calcError) {
 			console.error('Error durante los cálculos:', calcError.message);
 			    alert('Error en los cálculos: ' + calcError.message);
