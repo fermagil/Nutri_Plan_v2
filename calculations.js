@@ -4087,32 +4087,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			console.log('resultElements:', resultElements);
 			console.log('imcSource element:', resultElements.imcSource);
 			
-				// Placeholder calculateIMC
-				function calculateIMC(data) {
-				    const alturaM = data.altura / 100;
-				    const imc = data.peso / (alturaM * alturaM);
-				    let clasificacion = '';
-				    let riesgo = '';
 				
-				    if (imc < 18.5) {
-				        clasificacion = 'Bajo peso';
-				        riesgo = 'Riesgo moderado';
-				    } else if (imc >= 18.5 && imc < 25) {
-				        clasificacion = 'Normal';
-				        riesgo = 'Bajo riesgo';
-				    } else if (imc >= 25 && imc < 30) {
-				        clasificacion = 'Sobrepeso';
-				        riesgo = 'Riesgo moderado';
-				    } else {
-				        clasificacion = 'Obesidad';
-				        riesgo = 'Riesgo elevado';
-				    }
-				
-				    return {
-				        imc: imc,
-				        imcSource: { clasificacion, riesgo }
-				    };
-				}
 
 			// Form submission handler
 			form.addEventListener('submit', function (event) {
