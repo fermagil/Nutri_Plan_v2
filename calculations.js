@@ -5559,7 +5559,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							if (typeof results.grasavisceralActual === 'undefined') {
 								    console.warn('results.grasavisceralActual no está definido');
 								}
-							try {
+							
 						                try {
 						                    updateElement('grasavisceralActual', results.grasavisceralActual, 1);
 						                    updateElement('grasavisceralActualSource', results.grasavisceralActualSource || '(No calculado)');
