@@ -4053,9 +4053,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    return resultado;
 				}
 				
-				  function calcularGrasaVisceral(datos) {
-				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', datos);
-				    const { esDeportista, genero, edad, cintura, altura } = datos;
+				  function calcularGrasaVisceral(data) {
+				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', data);
+				    const { esDeportista, genero, edad, cintura, altura } = data;
 				    let resultados = {};
 				    const alturaCm = convertirAltura(datos);
 				    console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
@@ -4064,10 +4064,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        console.log('[calcularGrasaVisceral] Procesando deportista');
 				        
 				        if (datos.porcentajeGrasaActual) {
-				            resultados.porcentajeGrasa = datos.porcentajeGrasaActual;
+				            resultados.porcentajeGrasa = data.porcentajeGrasaActual;
 				            console.log(`[calcularGrasaVisceral] Usando %grasa proporcionado: ${resultados.porcentajeGrasa}%`);
-				        } else if  ( datos.pliegue_tricipital && datos.pliegue_subescapular && datos.pliegue_bicipital && datos.pliegue_suprailiaco) {
-				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat( datos.pliegue_tricipital && datos.pliegue_subescapular && datos.pliegue_bicipital && datos.pliegue_suprailiaco && edad);
+				        } else if  ( data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_bicipital && data.pliegue_suprailiaco) {
+				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat( data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_bicipital && data.pliegue_suprailiaco && edad);
 				            console.log(`[calcularGrasaVisceral] %grasa calculado por Jackson-Pollock: ${resultados.porcentajeGrasa}%`);
 				        } else {
 				            throw new Error('Para deportistas se requiere % de grasa o medidas de pliegues');
