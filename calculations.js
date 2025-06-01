@@ -4579,10 +4579,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        }
 				 
 				
-				    // Normalize data using createGrasaVisceralData
-				   const GrasaVisceralData = createGrasaVisceralData(data);
-				        console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
-				        logData(GrasaVisceralData);
+				
 
 
 				    // Validate altura
