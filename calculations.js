@@ -4616,6 +4616,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    // 1. Primero declara el objeto results si no existe
 					if (typeof results === 'undefined') {
 					    let results = {};
+					   let errors = [];
 					}
 				try { 
 				    	if (isNaN(GrasaVisceralData.altura) || GrasaVisceralData.altura <= 0) errors.push('Altura inválida o faltante');
