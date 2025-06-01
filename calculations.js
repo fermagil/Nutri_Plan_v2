@@ -3937,7 +3937,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        edad: Number(data.edad) || 0,
 				        peso: Number(data.peso) || 0,
 				        altura: data.altura || 0,
-				        esDeportista: data.es_deportista === 'si',
+				        esDeportista: data.es_deportista === 'si' ? true : data.es_deportista === 'no' ? false : false, // Your provided logic,
 				        pliegues: {
 				            tricipital: Number(data.pliegue_tricipital) || 0,
 				            subescapular: Number(data.pliegue_subescapular) || 0,
