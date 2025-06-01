@@ -3921,17 +3921,38 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
     };
 
 // Función auxiliar para depuración
-const logData = (data) => {
-    console.log('Datos de entrada:', {
-        altura: data.altura,
-        edad: data.edad,
-        genero: data.genero,
-        cintura: data.cintura,
-        esDeportista: data.esDeportista,
-        porcentajeGrasaActual: data.porcentajeGrasaActual,
-        pliegues: data.pliegues
-    });
-};
+				const GrasaVisceralData = {
+			                    genero: data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino',
+			                    edad: data.edad,
+			                    peso: data.peso,
+			                    altura: data.altura,
+			                    esDeportista: data.es_deportista === 'si',
+			                    pliegues: {
+			                        tricipital: data.pliegue_tricipital || 0,
+			                        subescapular: data.pliegue_subescapular || 0,
+			                        suprailiaco: data.pliegue_suprailiaco || 0,
+			                        bicipital: data.pliegue_bicipital || 0
+			                    },
+			                    porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
+			                    cintura: data.circ_cintura || 0,
+			                };
+					const logData = (data) => {
+					    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
+					    console.log('Datos de entrada:', {
+					        altura,
+					        edad,
+					        genero,
+					        cintura,
+					        esDeportista,
+					        porcentajeGrasa,
+					        pliegues: {
+					            tricipital: pliegues.tricipital,
+					            subescapular: pliegues.subescapular,
+					            suprailiaco: pliegues.suprailiaco,
+					            bicipital: pliegues.bicipital
+					        }
+					    });
+					};
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(cintura, alturaCm) {
 				    console.log(`[calcularIAV] cintura: ${cintura} cm, altura: ${alturaCm} cm`);
@@ -4568,23 +4589,24 @@ const logData = (data) => {
 			                    porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
 			                    cintura: data.circ_cintura || 0,
 			                };
-					const logData = (data) => {
+					 logData = (data) => {
+					    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
 					    console.log('Datos de entrada:', {
-					        altura: data.altura,
-					        edad: data.edad,
-					        genero: data.genero,
-					        cintura: data.cintura,
-					        esDeportista: data.esDeportista,
-					        porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
-					       pliegues: {
-			                        tricipital: data.pliegue_tricipital || 0,
-			                        subescapular: data.pliegue_subescapular || 0,
-			                        suprailiaco: data.pliegue_suprailiaco || 0,
-			                        bicipital: data.pliegue_bicipital || 0
-						},
+					        altura,
+					        edad,
+					        genero,
+					        cintura,
+					        esDeportista,
+					        porcentajeGrasa,
+					        pliegues: {
+					            tricipital: pliegues.tricipital,
+					            subescapular: pliegues.subescapular,
+					            suprailiaco: pliegues.suprailiaco,
+					            bicipital: pliegues.bicipital
+					        }
 					    });
 					};
-				    if (!isNaN(altura) && data.edad && data.genero && data.circ_cintura && data.esDeportista !== undefined) {
+				    if (!isNaN(data.altura) && data.edad && data.genero && data.circ_cintura && data.esDeportista !== undefined) {
 				        let resultados = calcularGrasaVisceral(data);
 				        results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
 				        results.grasavisceralActualSource = `${resultados.riesgo} - ${resultados.metodo}`;
