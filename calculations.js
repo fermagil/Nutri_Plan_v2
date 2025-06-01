@@ -3955,7 +3955,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        edad,
 				        genero,
 				        cintura,
-				        esDeportista,
+				        esDeportista: data.es_deportista === 'si' ? true : data.es_deportista === 'no' ? false : false, // Your provided logic,
 				        porcentajeGrasa,
 				        pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
 				        pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
