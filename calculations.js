@@ -3936,7 +3936,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        genero: data.genero && typeof data.genero === 'string' ? data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino' : 'femenino',
 				        edad: Number(data.edad) || 0,
 				        peso: Number(data.peso) || 0,
-				        altura: Number(data.altura) || 0,
+				        altura: data.altura || 0,
 				        esDeportista: data.es_deportista === 'si',
 				        pliegues: {
 				            tricipital: Number(data.pliegue_tricipital) || 0,
