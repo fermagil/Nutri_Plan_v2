@@ -3922,39 +3922,51 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 				
 
-				// Función auxiliar para depuración
-				const GrasaVisceralData = {
-			                    genero: data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino',
-			                    edad: data.edad,
-			                    peso: data.peso,
-			                    altura: data.altura,
-			                    esDeportista: data.es_deportista === 'si',
-			                    pliegues: {
-			                        tricipital: data.pliegue_tricipital || 0,
-			                        subescapular: data.pliegue_subescapular || 0,
-			                        suprailiaco: data.pliegue_suprailiaco || 0,
-			                        bicipital: data.pliegue_bicipital || 0
-			                    },
-			                    porcentajeGrasa: isNaN(results.grasaPctActual) ? null : results.grasaPctActual,
-			                    cintura: data.circ_cintura || 0,
-			                };
-					const logData = (data) => {
-					    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
-					    console.log('Datos de entrada:', {
-					        altura,
-					        edad,
-					        genero,
-					        cintura,
-					        esDeportista,
-					        porcentajeGrasa,
-					        pliegues: {
-					            tricipital: pliegues.tricipital,
-					            subescapular: pliegues.subescapular,
-					            suprailiaco: pliegues.suprailiaco,
-					            bicipital: pliegues.bicipital
-					        }
-					    });
-					};
+				/// Función auxiliar para depuración Datos %Grasa Visceral
+				// Asegurarse de que results esté definido
+				let results = results || { grasaPctActual: null };
+				
+				// Función para validar y normalizar datos
+				const createGrasaVisceralData = (data) => {
+				    if (!data || typeof data !== 'object') {
+				        console.warn('data no está definido o es inválido. Usando valores por defecto.');
+				        data = {};
+				    }
+				    return {
+				        genero: data.genero && typeof data.genero === 'string' ? data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino' : 'femenino',
+				        edad: Number(data.edad) || 0,
+				        peso: Number(data.peso) || 0,
+				        altura: Number(data.altura) || 0,
+				        esDeportista: data.es_deportista === 'si',
+				        pliegues: {
+				            tricipital: Number(data.pliegue_tricipital) || 0,
+				            subescapular: Number(data.pliegue_subescapular) || 0,
+				            suprailiaco: Number(data.pliegue_suprailiaco) || 0,
+				            bicipital: Number(data.pliegue_bicipital) || 0
+				        },
+				        porcentajeGrasa: isNaN(results.grasaPctActual) ? null : Number(results.grasaPctActual),
+				        cintura: Number(data.circ_cintura) || 0
+				    };
+				};
+				
+				// Función logData corregida
+				const logData = (data) => {
+				    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegues } = data;
+				    console.log('Datos de entrada:', {
+				        altura,
+				        edad,
+				        genero,
+				        cintura,
+				        esDeportista,
+				        porcentajeGrasa,
+				        pliegues: {
+				            tricipital: pliegues.tricipital,
+				            subescapular: pliegues.subescapular,
+				            suprailiaco: pliegues.suprailiaco,
+				            bicipital: pliegues.bicipital
+				        }
+				    });
+				};
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(cintura, alturaCm) {
 				    console.log(`[calcularIAV] cintura: ${cintura} cm, altura: ${alturaCm} cm`);
