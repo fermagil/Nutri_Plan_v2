@@ -3949,21 +3949,32 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				
 				// Función logData corregida
 				const logData = (data) => {
-				    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegue_tricipital, pliegue_subescapular, pliegue_suprailiaco, pliegue_bicipital } = data;
+				    const { 
+				        altura = 0, 
+				        edad = 0, 
+				        genero = '', 
+				        cintura = 0, 
+				        esDeportista = false, 
+				        porcentajeGrasa = 0, 
+				        pliegue_tricipital = 0, 
+				        pliegue_subescapular = 0, 
+				        pliegue_suprailiaco = 0, 
+				        pliegue_bicipital = 0 
+				    } = data;
+				
 				    console.log('Datos de entrada:', {
 				        altura,
 				        edad,
 				        genero,
 				        cintura,
-				        esDeportista: data.es_deportista === 'si' ? true : data.es_deportista === 'no' ? false : false, // Your provided logic,
+				        esDeportista: esDeportista === 'si' ? true : false, // Simplificado
 				        porcentajeGrasa,
-				        pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
-				        pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
-				        pliegue_suprailiaco: Number(data.pliegue_suprailiaco) || 0,
-				        pliegue_bicipital: Number(data.pliegue_bicipital) || 0,
+				        pliegue_tricipital: Number(pliegue_tricipital) || 0,
+				        pliegue_subescapular: Number(pliegue_subescapular) || 0,
+				        pliegue_suprailiaco: Number(pliegue_suprailiaco) || 0,
+				        pliegue_bicipital: Number(pliegue_bicipital) || 0,
 				    });
 				};
-
 				function convertirAltura(data) {
 				    // Asumimos que si la altura es mayor a 2.5 metros, probablemente está en cm
 				    // Pero mejoramos la lógica para mayor precisión
