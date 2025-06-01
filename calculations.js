@@ -3944,7 +3944,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            suprailiaco: Number(data.pliegue_suprailiaco) || 0,
 				            bicipital: Number(data.pliegue_bicipital) || 0
 				        },
-				        porcentajeGrasa: isNaN(results.grasaPctActual) ? null : Number(results.grasaPctActual),
+				       // porcentajeGrasa: isNaN(results.grasaPctActual) ? null : Number(results.grasaPctActual),
 				        cintura: Number(data.circ_cintura) || 0
 				    };
 				};
