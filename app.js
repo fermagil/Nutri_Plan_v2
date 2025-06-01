@@ -424,7 +424,9 @@ const resultElementIds = [
     'vitamina-d-source',
     'result-fosfatasa-alcalina',
     'result-creatinina',
-    'creatinina-source'
+    'creatinina-source',
+    'result-bun',
+    'bun-source'
 ];
 
 // Crear select para resultados de búsqueda
