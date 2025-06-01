@@ -4053,7 +4053,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    return resultado;
 				}
 				
-				function calcularGrasaVisceral(datos) {
+				  function calcularGrasaVisceral(datos) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', datos);
 				    const { esDeportista, genero, edad, cintura, altura } = datos;
 				    let resultados = {};
@@ -4062,27 +4062,33 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				
 				    if (esDeportista) {
 				        console.log('[calcularGrasaVisceral] Procesando deportista');
+				        
 				        if (datos.porcentajeGrasaActual) {
 				            resultados.porcentajeGrasa = datos.porcentajeGrasaActual;
-				        } else if {
-				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat(datos);
+				            console.log(`[calcularGrasaVisceral] Usando %grasa proporcionado: ${resultados.porcentajeGrasa}%`);
+				        } else if (datos.pliegues) {
+				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat(datos.pliegues, edad);
 				            console.log(`[calcularGrasaVisceral] %grasa calculado por Jackson-Pollock: ${resultados.porcentajeGrasa}%`);
 				        } else {
 				            throw new Error('Para deportistas se requiere % de grasa o medidas de pliegues');
 				        }
+				        
 				        resultados.indiceMixto = calcularIndiceMixto(
-				            resultados.porcentajeGrasa,
-				            cintura,
+				            resultados.porcentajeGrasa, 
+				            cintura, 
 				            alturaCm
 				        );
+				        
 				        resultados.riesgo = clasificarRiesgoMixto(genero, resultados.indiceMixto);
-				        resultados.metodo = 'Fórmula Mixta(Thomas et al. (2013)) para Deportistas';
+				        resultados.metodo = 'Fórmula Mixta (Thomas et al. 2013) para Deportistas';
+				        
 				    } else {
 				        console.log('[calcularGrasaVisceral] Procesando no deportista');
 				        resultados.iav = calcularIAV(cintura, alturaCm);
 				        resultados.riesgo = clasificarRiesgoIAV(genero, edad, resultados.iav);
 				        resultados.metodo = 'IAV (Krakauer)';
 				    }
+				    
 				    console.log('[calcularGrasaVisceral] Resultados completos:', resultados);
 				    return resultados;
 				}
