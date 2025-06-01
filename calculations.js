@@ -3938,12 +3938,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        peso: Number(data.peso) || 0,
 				        altura: data.altura || 0,
 				        esDeportista: data.es_deportista === 'si' ? true : data.es_deportista === 'no' ? false : false, // Your provided logic,
-				        pliegues: {
+				       
 				            pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
 				            pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
 				            pliegue_suprailiaco: Number(data.pliegue_suprailiaco) || 0,
 				            pliegue_bicipital: Number(data.pliegue_bicipital) || 0
-				        },
+				     
 				       // porcentajeGrasa: isNaN(results.grasaPctActual) ? null : Number(results.grasaPctActual),
 				        cintura: Number(data.circ_cintura) || 0
 				    };
@@ -3959,12 +3959,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        cintura,
 				        esDeportista,
 				        porcentajeGrasa,
-				        pliegues: {
+				       
 				            pliegue_tricipital: pliegues.tricipital,
 				            pliegue_subescapular: pliegues.subescapular,
 				            pliegue_suprailiaco: pliegues.suprailiaco,
 				            pliegue_bicipital: pliegues.bicipital
-				        }
+				       
 				    });
 				};
 
