@@ -3967,6 +3967,28 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        }
 				    });
 				};
+
+				function convertirAltura(datos) {
+				    // Asumimos que si la altura es mayor a 2.5 metros, probablemente está en cm
+				    // Pero mejoramos la lógica para mayor precisión
+				    
+				    // Primero verificamos si ya está en cm (alturas normales en cm son > 100)
+				    if (datos.altura > 100) {
+				        console.log('Altura ya está en cm, no se requiere conversión');
+				        return datos.altura;
+				    }
+				    
+				    // Si no, verificamos si está en metros y necesita conversión
+				    if (datos.altura > 0.5 && datos.altura <= 2.5) {
+				        const alturaCm = datos.altura * 100;
+				        console.log(`Convertida de metros a cm: ${datos.altura}m -> ${alturaCm}cm`);
+				        return alturaCm;
+				    }
+				    
+				    // Caso de error o valor inválido
+				    console.error('Altura inválida:', datos.altura);
+				    throw new Error(`Altura ${datos.altura} no es válida. Debe ser en cm (>100) o metros (0.5-2.5)`);
+				}
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(cintura, alturaCm) {
 				    console.log(`[calcularIAV] cintura: ${cintura} cm, altura: ${alturaCm} cm`);
@@ -4039,7 +4061,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', datos);
 				    const { esDeportista, genero, edad, cintura, altura } = datos;
 				    let resultados = {};
-				    const alturaCm = datos.altura <2.30 ? datos.altura * 100 : datos.altura;
+				    const alturaCm = convertirAltura(datos);
 				    console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
 				
 				    if (esDeportista) {
