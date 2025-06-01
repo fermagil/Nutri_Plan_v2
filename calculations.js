@@ -4558,7 +4558,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    return resultados;
 					    
 						     // Ejecutar el cálculo
-						        const resultados = calcularGrasaVisceral(data);
+						         resultados = calcularGrasaVisceral(data);
 						        
 						        // Asignar resultados
 						        results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
