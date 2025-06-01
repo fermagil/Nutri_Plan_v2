@@ -4586,7 +4586,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 
 				    // Validate altura
-				        let alturaM = NaN;
+				        
 				        try {
 				            if (data.altura && !isNaN(data.altura)) {
 				                alturaM = Number(data.altura) / 100;
