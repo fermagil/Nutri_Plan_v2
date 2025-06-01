@@ -3957,10 +3957,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        cintura,
 				        esDeportista,
 				        porcentajeGrasa,
-				        pliegue_tricipital,
-				        pliegue_subescapular,
-				        pliegue_suprailiaco,
-				        pliegue_bicipital
+				        pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
+				        pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
+				        pliegue_suprailiaco: Number(data.pliegue_suprailiaco) || 0,
+				        pliegue_bicipital: Number(data.pliegue_bicipital) || 0,
 				    });
 				};
 
