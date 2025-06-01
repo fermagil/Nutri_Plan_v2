@@ -4613,6 +4613,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        logData(GrasaVisceralData); 
 				    
 				    // Visceral fat calculation
+				    // 1. Primero declara el objeto results si no existe
+					if (typeof results === 'undefined') {
+					    var results = {};
+					}
 				try { 
 				    	if (isNaN(GrasaVisceralData.altura) || GrasaVisceralData.altura <= 0) errors.push('Altura inválida o faltante');
 				            if (isNaN(GrasaVisceralData.edad) || GrasaVisceralData.edad <= 0) errors.push('Edad inválida o faltante');
