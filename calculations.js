@@ -5496,8 +5496,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							
 							// Update Actual Visceral Fat
 							updateElement('grasavisceralActual', results.grasavisceralActual, 1);
-							if (resultElements.ggrasavisceralActualSource) {
+						console.log('[updateDisplay] Resultado recibido:', grasavisceralActual);
+							if (resultElements.grasavisceralActualSource) {
 							    resultElements.grasavisceralActualSource.textContent = results.grasavisceralActualtSource || '(No calculado)';
+								console.log('[updateDisplay] Resultado recibido:', grasavisceralActualtSource);
 							}
 							// Update Actual Body Fat Results
 							updateElement('grasaPctActual', results.grasaPctActual, 1);
