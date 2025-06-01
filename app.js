@@ -388,6 +388,8 @@ const resultElementIds = [
     'albumina-source',
     'result-prealbumina',
     'prealbumina-source',
+    'result-proteina-total',
+    'proteina-total-source',
     'result-colesterol-total',
     'colesterol-total-source',
     'result-hdl',
@@ -404,16 +406,25 @@ const resultElementIds = [
     'pcr-ultrasensible-source',
     'result-leptina',
     'leptina-source',
+    'result-adiponectina',
+    'adiponectina-source',
     'result-alt',
     'alt-source',
     'result-ggt',
     'ggt-source',
+    'result-ast',
+    'ast-source',
     'result-tsh',
     'tsh-source',
     'result-testosterona',
     'testosterona-source',
+    'result-cortisol',
+    'cortisol-source',
     'result-vitamina-d',
-    'vitamina-d-source'
+    'vitamina-d-source',
+    'result-fosfatasa-alcalina',
+    'result-creatinina',
+    'creatinina-source'
 ];
 
 // Crear select para resultados de búsqueda
@@ -600,7 +611,7 @@ let currentTomaSerial = null; // Track the loaded toma's serial
         }
         // Limpiar sección de resultados
         resultElementIds.forEach(id => {
-            const element = document.getElementById(id);
+                const element = document.getElementById(id);
             if (element) element.textContent = '---';
         });
         // Limpiar específicamente el análisis bioquímico
