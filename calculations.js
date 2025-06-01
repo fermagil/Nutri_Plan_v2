@@ -4064,7 +4064,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        console.log('[calcularGrasaVisceral] Procesando deportista');
 				        if (datos.porcentajeGrasaActual) {
 				            resultados.porcentajeGrasa = datos.porcentajeGrasaActual;
-				        } else if (datos.pliegues) {
+				        } else if {
 				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat(datos);
 				            console.log(`[calcularGrasaVisceral] %grasa calculado por Jackson-Pollock: ${resultados.porcentajeGrasa}%`);
 				        } else {
