@@ -4621,13 +4621,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            if (typeof GrasaVisceralData.esDeportista !== 'boolean') errors.push('Estado de deportista inválido');
 				
 				            if (errors.length === 0) {
-				                let resultados = calcularGrasaVisceral(GrasaVisceralData);
-				                results.grasavisceralActual = resultados.porcentajeGrasa || resultados.iav;
-				                results.grasavisceralActualSource = `${resultados.riesgo} - ${resultados.metodo}`;
-				                console.log('%Grasa Visceral calculado:', {
-				                    grasavisceralActual: results.grasavisceralActual,
-				                    grasavisceralActualSource: results.grasavisceralActualSource
-				                });
+				             const datos = calcularGrasaVisceral(GrasaVisceralData);
+						results.grasavisceralActual = datos.porcentajeGrasa || datos.iav;
+						results.grasavisceralActualSource = `${datos.riesgo} - ${datos.metodo}`;
+						
+						console.log('%Grasa Visceral calculado:', {
+						    grasaVisceralActual: results.grasavisceralActual,
+						    grasaVisceralActualSource: results.grasavisceralActualSource
+						});
 				            } else {
 				                console.warn('Datos incompletos o inválidos para el cálculo de grasa visceral:', GrasaVisceralData);
 				                content += `<p class="error">Errores en grasa visceral: ${errors.join(', ')}</p>`;
