@@ -3920,7 +3920,18 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
             return content;
     };
 
-
+// Función auxiliar para depuración
+const logData = (data) => {
+    console.log('Datos de entrada:', {
+        altura: data.altura,
+        edad: data.edad,
+        genero: data.genero,
+        cintura: data.cintura,
+        esDeportista: data.esDeportista,
+        porcentajeGrasaActual: data.porcentajeGrasaActual,
+        pliegues: data.pliegues
+    });
+};
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(cintura, alturaCm) {
 				    console.log(`[calcularIAV] cintura: ${cintura} cm, altura: ${alturaCm} cm`);
