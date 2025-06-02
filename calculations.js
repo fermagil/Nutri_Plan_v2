@@ -3937,7 +3937,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        edad: Number(data.edad) || 0,
 				        peso: Number(data.peso) || 0,
 				        altura: data.altura || 0,
-				        esDeportista: data.es_deportista === 'si' ? true : data.es_deportista === 'no' ? false : false, // Your provided logic,
+				        es_deportista: data.es_deportista //=== 'si' ? true : data.es_deportista === 'no' ? false : false, // Your provided logic,
 				        pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
 				        pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
 				        pliegue_suprailiaco: Number(data.pliegue_suprailiaco) || 0,
@@ -4651,7 +4651,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            if (isNaN(GrasaVisceralData.edad) || GrasaVisceralData.edad <= 0) errors.push('Edad inválida o faltante');
 				            if (!['masculino', 'femenino'].includes(GrasaVisceralData.genero)) errors.push('Género inválido');
 				            if (isNaN(GrasaVisceralData.cintura) || GrasaVisceralData.cintura <= 0) errors.push('Circunferencia de cintura inválida o faltante');
-				            if (typeof GrasaVisceralData.esDeportista !== 'boolean') errors.push('Estado de deportista inválido');
+				            if ( GrasaVisceralData.esDeportista !== 'si' && GrasaVisceralData.esDeportista !== 'no') { errors.push('Estado de deportista inválido');}
 				
 				            if (errors.length === 0) {
 				              datos = calcularGrasaVisceral(GrasaVisceralData);
