@@ -4104,7 +4104,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					
 					        if (!isNaN(bodyFat) && data.circ_cintura) {
-					            gat = bodyFat * 0.45 * data.circ_cintura;
+					            gat = (bodyFat/100) * 0.45 * data.circ_cintura;
 					            console.log(`GAT Method B: %Grasa=${bodyFat}, CC=${data.circ_cintura}, GAT=${gat} cm²`);
 					        } else {
 					            source = source || '(No calculado: Faltan datos para % Grasa o Circunferencia)';
@@ -4112,19 +4112,53 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    }
 					
 					    // Risk Assessment
-					    if (!isNaN(gat) && data.genero) {
+					    if (!isNaN(gat) && data.genero && data.edad) {
 					        if (data.genero === 'masculino') {
-					            if (gat < 200) risk = 'Normal';
-					            else if (gat <= 400) risk = 'Moderado (vigilar)';
-					            else risk = 'Alto (mayor riesgo cardiovascular)';
+					            if (data.edad >= 18 && data.edad <= 39) {
+					                if (gat < 20) risk = 'Normal';
+					                else if (gat <= 30) risk = 'Moderado (vigilar)';
+					                else risk = 'Alto (mayor riesgo cardiovascular)';
+					            } else if (data.edad <= 59) {
+					                if (gat < 22) risk = 'Normal';
+					                else if (gat <= 32) risk = 'Moderado (vigilar)';
+					                else risk = 'Alto (mayor riesgo cardiovascular)';
+					            } else {
+					                if (gat < 25) risk = 'Normal';
+					                else if (gat <= 35) risk = 'Moderado (vigilar)';
+					                else risk = 'Alto (mayor riesgo cardiovascular)';
+					            }
 					        } else if (data.genero === 'femenino') {
-					            if (gat < 150) risk = 'Normal';
-					            else if (gat <= 350) risk = 'Moderado';
-					            else risk = 'Alto';
+					            if (data.edad >= 18 && data.edad <= 39) {
+					                if (gat < 15) risk = 'Normal';
+					                else if (gat <= 25) risk = 'Moderado';
+					                else risk = 'Alto';
+					            } else if (data.edad <= 59) {
+					                if (gat < 18) risk = 'Normal';
+					                else if (gat <= 28) risk = 'Moderado';
+					                else risk = 'Alto';
+					            } else {
+					                if (gat < 20) risk = 'Normal';
+					                else if (gat <= 30) risk = 'Moderado';
+					                else risk = 'Alto';
+					            }
+					        } else if (data.edad >= 6 && data.edad < 18) {
+					            // Pediatric ranges based on percentiles
+					            if (data.edad <= 9) {
+					                if (gat < 10) risk = 'Normal';
+					                else if (gat <= 15) risk = 'Moderado';
+					                else risk = 'Alto';
+					            } else if (data.edad <= 13) {
+					                if (gat < 12) risk = 'Normal';
+					                else if (gat <= 18) risk = 'Moderado';
+					                else risk = 'Alto';
+					            } else {
+					                if (gat < 15) risk = 'Normal';
+					                else if (gat <= 20) risk = 'Moderado';
+					                else risk = 'Alto';
+					            }
 					        }
 					        source += `, Riesgo Metabólico: ${risk}`;
 					    }
-					
 					    return { value: gat, source: source };
 					};
 				
