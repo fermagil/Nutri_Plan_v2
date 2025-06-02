@@ -3968,16 +3968,16 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    throw new Error(`Altura ${data.altura} no es válida. Debe ser en cm (>100) o metros (0.5-2.5)`);
 				}
 				// Funciones de grasa visceral (del código anterior)
-				function calcularIAV(cintura,altura) {
-				    console.log(`[calcularIAV]cintura: $(circ_cintura} cm, altura: ${altura} cm`);
-				    const iav = parseFloat((cintura / altura).toFixed(2));
+				function calcularIAV {
+				    console.log(`[calcularIAV]cintura:data.circ_cintura, altura: data.altura`);
+				    const iav = Math.round((data.circ_cintura / data.altura) * 100) / 100;
 				    console.log(`[calcularIAV] IAV calculado: ${iav}`);
 				    return resultados.iav;
 				}
 				
-				function calcularIndiceMixto(porcentajeGrasa, cintura, alturaCm) {
-				    console.log(`[calcularIndiceMixto] %grasa: ${porcentajeGrasa}%, cintura: ${cintura} cm, altura: ${altura} cm`);
-				    const iav = cintura / altura;
+				function calcularIndiceMixto {
+				    console.log(`[calcularIndiceMixto] %grasa: data.procentajeGrasa, cintura: data.circ_cintura , altura: data.altura`);
+				    const iav = Math.round((data.circ_cintura / data.altura) * 100) / 100;
 				    const indice = parseFloat((0.4 * (porcentajeGrasa/100) + 0.6 * iav).toFixed(2));
 				    console.log(`[calcularIndiceMixto] Índice mixto calculado: ${indice}`);
 				    return resultados.indice;
@@ -4016,7 +4016,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    }
 				    const resultado = 'No aplicable';
 				    console.log(`[clasificarRiesgoIAV] Resultado: ${resultado}`);
-				    return resultado;
+				    return resultados.resultado;
 				}
 				
 				function clasificarRiesgoMixto(genero, indiceMixto) {
@@ -4042,7 +4042,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						    indiceMixto: null,
 						    iav: null,
 						    riesgo: null,
-						    metodo: null
+						    metodo: null,
+					    	    //resultado: null
+					    
 						};
 				 
 				    //const alturaCm = convertirAltura(data);
