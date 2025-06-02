@@ -3972,7 +3972,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    console.log(`[calcularIAV] cintura: ${cintura} cm, altura: ${alturaCm} cm`);
 				    const iav = parseFloat((cintura / alturaCm).toFixed(2));
 				    console.log(`[calcularIAV] IAV calculado: ${iav}`);
-				    return iav;
+				    return resultados.iav;
 				}
 				
 				function calcularIndiceMixto(porcentajeGrasa, cintura, alturaCm) {
@@ -3980,7 +3980,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    const iav = cintura / alturaCm;
 				    const indice = parseFloat((0.4 * (porcentajeGrasa/100) + 0.6 * iav).toFixed(2));
 				    console.log(`[calcularIndiceMixto] Índice mixto calculado: ${indice}`);
-				    return indice;
+				    return resultados.indice;
 				}
 				
 				function clasificarRiesgoIAV(genero, edad, iav) {
@@ -4016,7 +4016,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    }
 				    const resultado = 'No aplicable';
 				    console.log(`[clasificarRiesgoIAV] Resultado: ${resultado}`);
-				    return resultado;
+				    return resultados.resultado;
 				}
 				
 				function clasificarRiesgoMixto(genero, indiceMixto) {
