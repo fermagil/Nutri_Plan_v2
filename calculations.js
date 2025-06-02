@@ -4043,7 +4043,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    //const alturaCm = convertirAltura(data);
 				   // console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
 				     //esDeportista = esDeportista === false ? "no" : "si"; // Ahora es un string ("no" o "si")
-				    if (esDeportista) {
+				    if (es_deportista === "si") {
 				        console.log('[calcularGrasaVisceral] Procesando deportista');
 				        
 				        if (data.porcentajeGrasaActual) {
