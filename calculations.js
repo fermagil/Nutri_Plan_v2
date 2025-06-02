@@ -4064,8 +4064,69 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    return resultados;
 				}
 				    
-				    //console.log('[calcularGrasaVisceral] Resultados completos:', resultados);
-				    //return resultados;
+				    // Function to calculate Total Abdominal Fat (GAT)
+					const calculateTotalAbdominalFat = (data) => {
+					    console.log('Calculating Total Abdominal Fat (GAT)');
+					    let gat = NaN;
+					    let source = '';
+					    let risk = '';
+					
+					    // Method A: For athletes with abdominal skinfold
+					    if (data.es_deportista === 'si' && data.pliegue_abdominal && data.circ_cintura) {
+					        const cc = data.circ_cintura; // Circumference in cm
+					        const pca = data.pliegue_abdominal; // Abdominal skinfold in mm
+					        if (pca <= 40) { // Check for obesity limitation
+					            gat = (2 * cc * pca) - ((Math.PI * pca * pca) / 4);
+					            source = 'Método A: Pliegue Abdominal y Circunferencia de Cintura (Kvist et al., 1988)';
+					            console.log(`GAT Method A: CC=${cc}, PCA=${pca}, GAT=${gat} cm²`);
+					        } else {
+					            console.warn('Pliegue abdominal > 40 mm, método menos preciso');
+					            source = 'Método A: Pliegue Abdominal > 40 mm, resultado menos preciso';
+					        }
+					    } else {
+					        // Method B: Using % Body Fat and Circumference
+					        let bodyFat = data.grasa_actual_conocida;
+					        if (isNaN(bodyFat)) {
+					            if (data.edad >= 18) {
+					                bodyFat = calculateDurninWomersleyBodyFat(data);
+					                if (isNaN(bodyFat)) {
+					                    bodyFat = calculateCircumferenceBodyFat(data);
+					                    source = isNaN(bodyFat) ? '(No calculado: Faltan datos para % Grasa)' : 'Método B: % Grasa por Circunferencias';
+					                } else {
+					                    source = 'Método B: % Grasa por Durnin-Womersley';
+					                }
+					            } else {
+					                bodyFat = calculateSlaughterBodyFat(data);
+					                source = isNaN(bodyFat) ? '(No calculado: Faltan datos para % Grasa)' : 'Método B: % Grasa por Slaughter';
+					            }
+					        } else {
+					            source = 'Método B: % Grasa proporcionado por el usuario';
+					        }
+					
+					        if (!isNaN(bodyFat) && data.circ_cintura) {
+					            gat = bodyFat * 0.45 * data.circ_cintura;
+					            console.log(`GAT Method B: %Grasa=${bodyFat}, CC=${data.circ_cintura}, GAT=${gat} cm²`);
+					        } else {
+					            source = source || '(No calculado: Faltan datos para % Grasa o Circunferencia)';
+					        }
+					    }
+					
+					    // Risk Assessment
+					    if (!isNaN(gat) && data.genero) {
+					        if (data.genero === 'masculino') {
+					            if (gat < 200) risk = 'Normal';
+					            else if (gat <= 400) risk = 'Moderado (vigilar)';
+					            else risk = 'Alto (mayor riesgo cardiovascular)';
+					        } else if (data.genero === 'femenino') {
+					            if (gat < 150) risk = 'Normal';
+					            else if (gat <= 350) risk = 'Moderado';
+					            else risk = 'Alto';
+					        }
+					        source += `, Riesgo Metabólico: ${risk}`;
+					    }
+					
+					    return { value: gat, source: source };
+					};
 				
       
 			// Define resetResultElements (place before handler, after resultElements)
@@ -4120,7 +4181,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			                'result-hdl', 'result-trigliceridos', 'result-glucosa-ayunas',
 			                'result-hba1c', 'result-insulina', 'result-pcr-ultrasensible',
 			                'result-leptina', 'result-alt', 'result-ggt', 'result-tsh',
-			                'result-testosterona', 'result-vitamina-d'
+			                'result-testosterona', 'result-vitamina-d','pliegue_abdominal'
 			            ];
 			            data[key] = numericFields.includes(key) ? parseFloatSafe(value) : value;
 			        });
@@ -4131,7 +4192,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			       
 			        
 			        let content = ''; // For error messages
-				let results = { grasaPctActual: null };
+				let results = { grasaPctActual: null, grasaAbsActual: null, grasaAbsActualSource: null };
 			        // Initialize alturaM with validation (single definition)
 			        let alturaM = NaN;
 			        try {
@@ -4593,7 +4654,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    results.grasavisceralActual = null;
 					    results.grasavisceralActualSource = '(No calculado)';
 					}
-										
+					// Calculate Total Abdominal Fat
+					    const gatResult = calculateTotalAbdominalFat(data);
+					    results.grasaAbsActual = gatResult.value;
+					    results.grasaAbsActualSource = gatResult.source;	
+					
 			            // --- Calculate IMC ---
 			            if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
 			                try {
@@ -5490,8 +5555,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    somatotipoSource: results.somatotipoSource || '(No calculado)',
 				    grasavisceralActual: formatResult(results.grasavisceralActual, 2),
             			    grasavisceralActualSource: results.grasavisceralActualSource || '(No calculado)',
-				     grasaAbsActual: formatResult(results.grasaAbsActual, 2),
-				     grasaAbsActualSource: results.grasavisceralActualSource || '(No calculado)'
+				    grasaAbsActual: formatResult(results.grasaAbsActual, 1),
+            			    grasaAbsActualSource: results.grasaAbsActualSource || '(No calculado)'
 				};
 				    
 			            console.log('Resultados calculados:', window.calculatedResults);
@@ -5535,7 +5600,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							                console.error('Error updating DOM:', e.message);
 							                content += `<p class="error">Error al actualizar DOM: ${e.message}</p>`;
 							            }
-							// Update Grasa Abdominal
+							// Update Total Abdominal Fat
+							        updateElement('grasaAbsActual', results.grasaAbsActual, 1);
+							        updateElement('grasaAbsActualSource', results.grasaAbsActualSource || '(No calculado)');
 						            
 							// Update Actual Body Fat Results
 							updateElement('grasaPctActual', results.grasaPctActual, 1);
