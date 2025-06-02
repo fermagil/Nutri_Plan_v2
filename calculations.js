@@ -3927,25 +3927,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				//let results = results || { grasaPctActual: null };
 				
 				// Función para validar y normalizar datos
-				const createGrasaVisceralData = (data) => {
-				    if (!data || typeof data !== 'object') {
-				        console.warn('data no está definido o es inválido. Usando valores por defecto.');
-				        data = {};
-				    }
-				    return {
-				        genero: data.genero && typeof data.genero === 'string' ? data.genero.toLowerCase() === 'masculino' ? 'masculino' : 'femenino' : 'femenino',
-				        edad: Number(data.edad) || 0,
-				        peso: Number(data.peso) || 0,
-				        altura: data.altura || 0,
-				        es_deportista: data.es_deportista //=== 'si' ? true : data.es_deportista === 'no' ? false : false, // Your provided logic,
-				        pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
-				        pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
-				        pliegue_suprailiaco: Number(data.pliegue_suprailiaco) || 0,
-				        pliegue_bicipital: Number(data.pliegue_bicipital) || 0,
-				        cintura: Number(data.circ_cintura) || 0
-				       // porcentajeGrasa: isNaN(results.grasaPctActual) ? null : Number(results.grasaPctActual),
-				    };
-				};
+				const createGrasaVisceralData = (data) 
 				
 				// Función logData corregida
 				const logData = (data) => {
