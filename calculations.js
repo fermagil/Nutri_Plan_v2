@@ -5489,7 +5489,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    },
 				    somatotipoSource: results.somatotipoSource || '(No calculado)',
 				    grasavisceralActual: formatResult(results.grasavisceralActual, 2),
-            			    grasavisceralActualSource: results.grasavisceralActualSource || '(No calculado)'
+            			    grasavisceralActualSource: results.grasavisceralActualSource || '(No calculado)',
+				     grasaAbsActual: formatResult(results.grasaAbsActual, 2),
+				     grasaAbsActualSource: results.grasavisceralActualSource || '(No calculado)'
 				};
 				    
 			            console.log('Resultados calculados:', window.calculatedResults);
@@ -5533,7 +5535,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							                console.error('Error updating DOM:', e.message);
 							                content += `<p class="error">Error al actualizar DOM: ${e.message}</p>`;
 							            }
-							
+							// Update Grasa Abdominal
 						            
 							// Update Actual Body Fat Results
 							updateElement('grasaPctActual', results.grasaPctActual, 1);
