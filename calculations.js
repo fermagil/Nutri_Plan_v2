@@ -5493,7 +5493,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            `${formatResult(results.endomorfia, 1)} : ${formatResult(results.mesomorfia, 1)} : ${formatResult(results.ectomorfia, 1)}` : '---'
 				    },
 				    somatotipoSource: results.somatotipoSource || '(No calculado)',
-				    grasavisceralActual: formatResult(results.grasavisceralActual, 1),
+				    grasavisceralActual: formatResult(results.grasavisceralActual, 2),
             			    grasavisceralActualSource: results.grasavisceralActualSource || '(No calculado)'
 				};
 				    
