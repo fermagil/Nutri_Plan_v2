@@ -4111,23 +4111,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			console.log('resultElements:', resultElements);
 			console.log('imcSource element:', resultElements.imcSource);
       
-			// Define resetResultElements (place before handler, after resultElements)
-				const resetResultElements = (elements) => {
-					Object.values(elements).forEach(el => {
-						if (!el || !el.tagName) {
-							console.warn('Elemento nulo o inválido en resultElements:', el);
-							return;
-						}
-						if (el.tagName === 'SPAN') {
-							el.textContent = '---';
-						} else if (el.tagName === 'SMALL') {
-							el.textContent = '(No calculado/estimado)';
-						}
-					});
-				};
 			
-			console.log('resultElements:', resultElements);
-			console.log('imcSource element:', resultElements.imcSource);
 			
 				
 
