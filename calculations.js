@@ -3969,7 +3969,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    // Pero mejoramos la lógica para mayor precisión
 				    
 				    // Primero verificamos si ya está en cm (alturas normales en cm son > 100)
-				    if (datos.altura > 100) {
+				    if (data.altura > 100) {
 				        console.log('Altura ya está en cm, no se requiere conversión');
 				        return data.altura;
 				    }
