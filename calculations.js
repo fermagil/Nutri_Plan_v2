@@ -3959,28 +3959,28 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    // Si no, verificamos si está en metros y necesita conversión
 				    if (data.altura > 0.5 && data.altura <= 2.5) {
 				        const alturaCm = data.altura * 100;
-				        console.log(`Convertida de metros a cm: ${data.altura}m -> ${alturaCm}cm`);
-				        return alturaCm;
+				        console.log(`Convertida de metros a cm: ${data.altura}m -> ${altura}cm`);
+				        return altura;
 				    }
 				    
 				    // Caso de error o valor inválido
-				    console.error('Altura inválida:', datos.altura);
+				    console.error('Altura inválida:', data.altura);
 				    throw new Error(`Altura ${data.altura} no es válida. Debe ser en cm (>100) o metros (0.5-2.5)`);
 				}
 				// Funciones de grasa visceral (del código anterior)
-				function calcularIAV(cintura, alturaCm) {
-				    console.log(`[calcularIAV] cintura: ${cintura} cm, altura: ${alturaCm} cm`);
-				    const iav = parseFloat((cintura / alturaCm).toFixed(2));
+				function calcularIAV(cintura,altura) {
+				    console.log(`[calcularIAV] cintura: $cintura} cm, altura: ${.altura} cm`);
+				    const iav = parseFloat((cintura / altura).toFixed(2));
 				    console.log(`[calcularIAV] IAV calculado: ${iav}`);
 				    return resultados.iav;
 				}
 				
 				function calcularIndiceMixto(porcentajeGrasa, cintura, alturaCm) {
-				    console.log(`[calcularIndiceMixto] %grasa: ${porcentajeGrasa}%, cintura: ${cintura} cm, altura: ${alturaCm} cm`);
-				    const iav = cintura / alturaCm;
+				    console.log(`[calcularIndiceMixto] %grasa: ${porcentajeGrasa}%, cintura: ${cintura} cm, altura: ${altura} cm`);
+				    const iav = cintura / altura;
 				    const indice = parseFloat((0.4 * (porcentajeGrasa/100) + 0.6 * iav).toFixed(2));
 				    console.log(`[calcularIndiceMixto] Índice mixto calculado: ${indice}`);
-				    return resultados.indice;
+				    return indice;
 				}
 				
 				function clasificarRiesgoIAV(genero, edad, iav) {
@@ -4016,7 +4016,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    }
 				    const resultado = 'No aplicable';
 				    console.log(`[clasificarRiesgoIAV] Resultado: ${resultado}`);
-				    return resultados.resultado;
+				    return resultado;
 				}
 				
 				function clasificarRiesgoMixto(genero, indiceMixto) {
@@ -4048,7 +4048,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        
 				        if (data.porcentajeGrasaActual) {
 				            resultados.porcentajeGrasa = data.porcentajeGrasaActual;
-				            console.log(`[calcularGrasaVisceral] Usando %grasa proporcionado: ${resultados.porcentajeGrasa}%`);
+				            console.log(`[calcularGrasaVisceral] Usando %grasa proporcionado: ${data.porcentajeGrasa}%`);
 				        } else if  ( data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_bicipital && data.pliegue_suprailiaco) {
 				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat( data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_bicipital && data.pliegue_suprailiaco && edad);
 				            console.log(`[calcularGrasaVisceral] %grasa calculado por Jackson-Pollock: ${resultados.porcentajeGrasa}%`);
