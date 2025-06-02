@@ -3949,52 +3949,41 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				
 				// Función logData corregida
 				const logData = (data) => {
-				    const { 
-				        altura = 0, 
-				        edad = 0, 
-				        genero = '', 
-				        cintura = 0, 
-				        esDeportista = false, 
-				        porcentajeGrasa = 0, 
-				        pliegue_tricipital = 0, 
-				        pliegue_subescapular = 0, 
-				        pliegue_suprailiaco = 0, 
-				        pliegue_bicipital = 0 
-				    } = data;
-				
+				    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegue_tricipital, pliegue_subescapular, pliegue_suprailiaco, pliegue_bicipital } = data;
 				    console.log('Datos de entrada:', {
 				        altura,
 				        edad,
 				        genero,
 				        cintura,
-				        esDeportista: esDeportista === 'si' ? true : false, // Simplificado
+				        esDeportista,
 				        porcentajeGrasa,
-				        pliegue_tricipital: Number(pliegue_tricipital) || 0,
-				        pliegue_subescapular: Number(pliegue_subescapular) || 0,
-				        pliegue_suprailiaco: Number(pliegue_suprailiaco) || 0,
-				        pliegue_bicipital: Number(pliegue_bicipital) || 0,
+				        pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
+				        pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
+				        pliegue_suprailiaco: Number(data.pliegue_suprailiaco) || 0,
+				        pliegue_bicipital: Number(data.pliegue_bicipital) || 0,
 				    });
 				};
-				function convertirAltura(data) {
+
+				function convertirAltura(datos) {
 				    // Asumimos que si la altura es mayor a 2.5 metros, probablemente está en cm
 				    // Pero mejoramos la lógica para mayor precisión
 				    
 				    // Primero verificamos si ya está en cm (alturas normales en cm son > 100)
-				    if (data.altura > 100) {
+				    if (datos.altura > 100) {
 				        console.log('Altura ya está en cm, no se requiere conversión');
-				        return data.altura;
+				        return datos.altura;
 				    }
 				    
 				    // Si no, verificamos si está en metros y necesita conversión
-				    if (data.altura > 0.5 && data.altura <= 2.5) {
-				        const alturaCm = data.altura * 100;
-				        console.log(`Convertida de metros a cm: ${data.altura}m -> ${alturaCm}cm`);
+				    if (datos.altura > 0.5 && datos.altura <= 2.5) {
+				        const alturaCm = datos.altura * 100;
+				        console.log(`Convertida de metros a cm: ${datos.altura}m -> ${alturaCm}cm`);
 				        return alturaCm;
 				    }
 				    
 				    // Caso de error o valor inválido
-				    console.error('Altura inválida:', data.altura);
-				    throw new Error(`Altura ${data.altura} no es válida. Debe ser en cm (>100) o metros (0.5-2.5)`);
+				    console.error('Altura inválida:', datos.altura);
+				    throw new Error(`Altura ${datos.altura} no es válida. Debe ser en cm (>100) o metros (0.5-2.5)`);
 				}
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(cintura, alturaCm) {
@@ -4068,7 +4057,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', data);
 				    const { esDeportista, genero, edad, cintura, altura } = data;
 				    let resultados = {};
-				    const alturaCm = convertirAltura(data);
+				    const alturaCm = convertirAltura(datos);
 				    console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
 				
 				    if (esDeportista) {
@@ -4103,6 +4092,24 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    console.log('[calcularGrasaVisceral] Resultados completos:', resultados);
 				    return resultados;
 				}
+      
+			// Define resetResultElements (place before handler, after resultElements)
+				const resetResultElements = (elements) => {
+					Object.values(elements).forEach(el => {
+						if (!el || !el.tagName) {
+							console.warn('Elemento nulo o inválido en resultElements:', el);
+							return;
+						}
+						if (el.tagName === 'SPAN') {
+							el.textContent = '---';
+						} else if (el.tagName === 'SMALL') {
+							el.textContent = '(No calculado/estimado)';
+						}
+					});
+				};
+			
+			console.log('resultElements:', resultElements);
+			console.log('imcSource element:', resultElements.imcSource);
       
 			// Define resetResultElements (place before handler, after resultElements)
 				const resetResultElements = (elements) => {
