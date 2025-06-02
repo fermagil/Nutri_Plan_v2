@@ -4574,39 +4574,6 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        }
 
 				    	//Funcion Calculo % Grasa Visceral
-				   // Collect form data
-				    
-				try{
-				    
-				       if (!data.peso || isNaN(data.altura) || !data.genero || isNaN(data.edad) || !data.es_deportista) {
-				            alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
-				            console.error('Missing required fields', {
-				                peso: data.peso,
-				                altura: data.altura,
-				                genero: data.genero,
-				                edad: data.edad,
-				                es_deportista: data.es_deportista
-				            });
-				            return;
-				        }
-				 
-
-				    // Validate altura
-				        
-				        try {
-				            if (data.altura && !isNaN(data.altura)) {
-				                alturaM = Number(data.altura) / 100;
-				                if (alturaM < 1.2 || alturaM > 2.2) {
-				                    throw new Error('Altura debe estar entre 120 y 220 cm');
-				                }
-				            } else {
-				                throw new Error('Altura no proporcionada o inválida');
-				            }
-				        } catch (e) {
-				            console.error('Error inicializando alturaM:', e.message);
-				            content += `<p><strong>Error en Altura:</strong> ${e.message}. Por favor, revisa el valor ingresado para altura.</p>`;
-				        }
-				
 				        // Reset results display
 				        resetResultElements(resultElements);
 				        if (explanationSection) {
@@ -4615,12 +4582,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        if (explanationContent) {
 				            explanationContent.innerHTML = '';
 				        }
-				
-				        
 				    
 				    // Visceral fat calculation
-				   // Visceral fat calculation
-					let errors = [];
+				try { 
+				    	let errors = [];
 					if (typeof results === 'undefined') {
 					    results = {};
 					}
@@ -4638,8 +4603,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    results.grasavisceralActual = null;
 					    results.grasavisceralActualSource = '(No calculado)';
 					}
-
-					
+										
 			            // --- Calculate IMC ---
 			            if (!isNaN(alturaM) && data.peso && data.edad && data.genero) {
 			                try {
