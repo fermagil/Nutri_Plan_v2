@@ -4576,7 +4576,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    	//Funcion Calculo % Grasa Visceral
 				   // Collect form data
 				    
-				// Initial validation
+				try{
+				    
 				       if (!data.peso || isNaN(data.altura) || !data.genero || isNaN(data.edad) || !data.es_deportista) {
 				            alert('Por favor, complete los campos obligatorios: Género, Edad, Peso, Altura y si es Deportista.');
 				            console.error('Missing required fields', {
