@@ -3931,13 +3931,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				
 				// Función logData corregida
 				const logData = (data) => {
-				    const { altura, edad, genero, cintura, esDeportista, porcentajeGrasa, pliegue_tricipital, pliegue_subescapular, pliegue_suprailiaco, pliegue_bicipital } = data;
+				    const { altura, edad, genero, circ_cintura, es_eportista, porcentajeGrasa, pliegue_tricipital, pliegue_subescapular, pliegue_suprailiaco, pliegue_bicipital } = data;
 				    console.log('Datos de entrada:', {
 				        altura,
 				        edad,
 				        genero,
-				        cintura,
-				        esDeportista,
+				        circ_cintura,
+				        es_deportista,
 				        porcentajeGrasa,
 				        pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
 				        pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
@@ -4037,7 +4037,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				
 				  function calcularGrasaVisceral(datos) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', datos);
-				    const { esDeportista, genero, edad, cintura, altura } = datos;
+				    const { es_eportista, genero, edad, circ_cintura, altura } = datos;
 				    let resultados 
 				 
 				    //const alturaCm = convertirAltura(data);
@@ -4067,7 +4067,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        
 				    } else {
 				        console.log('[calcularGrasaVisceral] Procesando no deportista');
-				        resultados.iav = calcularIAV(cintura, alturaCm);
+				        resultados.iav = calcularIAV(circ_cintura, altura);
 				        resultados.riesgo = clasificarRiesgoIAV(genero, edad, resultados.iav);
 				        resultados.metodo = 'IAV (Krakauer)';
 				    }
@@ -4632,8 +4632,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    	if (isNaN(data.altura) || data.altura <= 0) errors.push('Altura inválida o faltante');
 				            if (isNaN(data.edad) || data.edad <= 0) errors.push('Edad inválida o faltante');
 				            if (!['masculino', 'femenino'].includes(data.genero)) errors.push('Género inválido');
-				            if (isNaN(data.cintura) || data.cintura <= 0) errors.push('Circunferencia de cintura inválida o faltante');
-				            if ( data.esDeportista !== 'si' && data.esDeportista !== 'no') { errors.push('Estado de deportista inválido');}
+				            if (isNaN(data.circ_cintura) || data.circ_cintura <= 0) errors.push('Circunferencia de cintura inválida o faltante');
+				            if ( data.es_deportista !== 'si' && data.es_deportista !== 'no') { errors.push('Estado de deportista inválido');}
 				
 				            if (errors.length === 0) {
 				              datos = calcularGrasaVisceral(data);
