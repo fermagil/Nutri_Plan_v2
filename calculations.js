@@ -4641,7 +4641,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            if ( data.es_deportista !== 'si' && data.es_deportista !== 'no') { errors.push('Estado de deportista inválido');}
 				
 				            if (errors.length === 0) {
-				              datos = calcularGrasaVisceral(data);
+				              calcularGrasaVisceral(data);
 						results.grasavisceralActual = datos.porcentajeGrasa || datos.iav;
 						results.grasavisceralActualSource = `${datos.riesgo} - ${datos.metodo}`;
 						 
