@@ -3920,12 +3920,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
             return content;
     };
 
-				
 
-				
-
-				
-				 
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(data) {
 				    console.log(`[calcularIAV] cintura: ${data.circ_cintura}, altura: ${data.altura}`);
@@ -5530,7 +5525,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 								}
 							
 						                try {
-							                updateElement('grasavisceralActual', results.grasavisceralActual, 1);
+							                updateElement('grasavisceralActual', results.grasavisceralActual, 2);
 							                updateElement('grasavisceralActualSource', results.grasavisceralActualSource || '(No calculado)');
 							                updateElement('imc', results.imc, 1);
 							                updateElement('imcSource', results.imcSource ? `${results.imcSource.clasificacion} (${results.imcSource.riesgo})` : '(No calculado)');
