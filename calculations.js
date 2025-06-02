@@ -4089,7 +4089,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        resultados.metodo = 'IAV (Krakauer)';
 				    }
 				    
-				    console.log('[calcularGrasaVisceral] Resultados completos:', resultados);
+				    //console.log('[calcularGrasaVisceral] Resultados completos:', resultados);
 				    //return resultados;
 				}
       
