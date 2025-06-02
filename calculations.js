@@ -4033,14 +4033,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            console.log(`[calcularGrasaVisceral] Usando %grasa proporcionado: ${data.porcentajeGrasaActual}%`);
 				        } else if (data.pliegue_tricipital && data.pliegue_subescapular && 
 				                  data.pliegue_bicipital && data.pliegue_suprailiaco) {
-				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat(
-				                data.pliegue_tricipital,
-				                data.pliegue_subescapular,
-				                data.pliegue_bicipital,
-				                data.pliegue_suprailiaco,
-				                data.edad,
-				                data.genero
-				            );
+				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat(data);
+				                
+				           
 				            console.log(`[calcularGrasaVisceral] %grasa calculado por Jackson-Pollock: ${resultados.porcentajeGrasa}%`);
 				        } else {
 				            throw new Error('Para deportistas se requiere % de grasa o medidas de pliegues');
