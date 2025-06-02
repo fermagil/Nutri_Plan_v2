@@ -4053,9 +4053,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    return resultado2;
 				}
 				
-				  function calcularGrasaVisceral(data) {
-				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', data);
-				    const { esDeportista, genero, edad, cintura, altura } = data;
+				  function calcularGrasaVisceral(datos) {
+				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', datos);
+				    const { esDeportista, genero, edad, cintura, altura } = datos;
 				    let resultados 
 				 
 				    //const alturaCm = convertirAltura(data);
@@ -4654,9 +4654,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            if (typeof GrasaVisceralData.esDeportista !== 'boolean') errors.push('Estado de deportista inválido');
 				
 				            if (errors.length === 0) {
-				              data = calcularGrasaVisceral(GrasaVisceralData);
-						results.grasavisceralActual = data.porcentajeGrasa || data.iav;
-						results.grasavisceralActualSource = `${data.riesgo} - ${data.metodo}`;
+				              datos = calcularGrasaVisceral(GrasaVisceralData);
+						results.grasavisceralActual = datos.porcentajeGrasa || datosa.iav;
+						results.grasavisceralActualSource = `${datos.riesgo} - ${datos.metodo}`;
 						 
 						    
 						console.log('%Grasa Visceral calculado:', {
