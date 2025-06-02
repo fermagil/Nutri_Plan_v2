@@ -3927,7 +3927,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				//let results = results || { grasaPctActual: null };
 				
 				// Función para validar y normalizar datos
-				const createGrasaVisceralData = (data) 
+				//const createGrasaVisceralData = (data) 
 				
 				// Función logData corregida
 				const logData = (data) => {
@@ -4042,7 +4042,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				 
 				    //const alturaCm = convertirAltura(data);
 				   // console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
-				     esDeportista = esDeportista === false ? "no" : "si"; // Ahora es un string ("no" o "si")
+				     //esDeportista = esDeportista === false ? "no" : "si"; // Ahora es un string ("no" o "si")
 				    if (esDeportista) {
 				        console.log('[calcularGrasaVisceral] Procesando deportista');
 				        
@@ -4617,9 +4617,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        }
 				
 				        // Normalize data
-				        const GrasaVisceralData = createGrasaVisceralData(data);
-				        console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
-				        logData(GrasaVisceralData); 
+				        //const GrasaVisceralData = createGrasaVisceralData(data);
+				        //console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
+				        //logData(GrasaVisceralData); 
 				    
 				    // Visceral fat calculation
 				    // 1. Primero declara el objeto results si no existe
@@ -4629,15 +4629,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					}
 				    	let errors = [];
 				try { 
-				    	if (isNaN(GrasaVisceralData.altura) || GrasaVisceralData.altura <= 0) errors.push('Altura inválida o faltante');
-				            if (isNaN(GrasaVisceralData.edad) || GrasaVisceralData.edad <= 0) errors.push('Edad inválida o faltante');
-				            if (!['masculino', 'femenino'].includes(GrasaVisceralData.genero)) errors.push('Género inválido');
-				            if (isNaN(GrasaVisceralData.cintura) || GrasaVisceralData.cintura <= 0) errors.push('Circunferencia de cintura inválida o faltante');
-				            if ( GrasaVisceralData.esDeportista !== 'si' && GrasaVisceralData.esDeportista !== 'no') { errors.push('Estado de deportista inválido');}
+				    	if (isNaN(data.altura) || data.altura <= 0) errors.push('Altura inválida o faltante');
+				            if (isNaN(data.edad) || data.edad <= 0) errors.push('Edad inválida o faltante');
+				            if (!['masculino', 'femenino'].includes(data.genero)) errors.push('Género inválido');
+				            if (isNaN(data.cintura) || data.cintura <= 0) errors.push('Circunferencia de cintura inválida o faltante');
+				            if ( data.esDeportista !== 'si' && data.esDeportista !== 'no') { errors.push('Estado de deportista inválido');}
 				
 				            if (errors.length === 0) {
-				              datos = calcularGrasaVisceral(GrasaVisceralData);
-						results.grasavisceralActual = datos.porcentajeGrasa || datosa.iav;
+				              datos = calcularGrasaVisceral(data);
+						results.grasavisceralActual = datos.porcentajeGrasa || datos.iav;
 						results.grasavisceralActualSource = `${datos.riesgo} - ${datos.metodo}`;
 						 
 						    
