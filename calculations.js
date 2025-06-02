@@ -3969,7 +3969,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				}
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(cintura,altura) {
-				    console.log(`[calcularIAV] cintura: $cintura} cm, altura: ${.altura} cm`);
+				    console.log(`[calcularIAV] cintura: $cintura} cm, altura: ${altura} cm`);
 				    const iav = parseFloat((cintura / altura).toFixed(2));
 				    console.log(`[calcularIAV] IAV calculado: ${iav}`);
 				    return resultados.iav;
