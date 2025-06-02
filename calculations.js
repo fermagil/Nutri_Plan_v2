@@ -4038,7 +4038,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				  function calcularGrasaVisceral(data) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', data);
 				    //const { es_eportista, genero, edad, circ_cintura, altura } = datos;
-				    let resultados 
+				    let resultados = {
+						    indiceMixto: null,
+						    iav: null,
+						    riesgo: null,
+						    metodo: null
+						};
 				 
 				    //const alturaCm = convertirAltura(data);
 				   // console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
