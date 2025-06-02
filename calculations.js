@@ -4048,17 +4048,18 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				        if (indiceMixto >= 0.40 && indiceMixto <= 0.50) return 'Riesgo moderado';
 				        return 'Alto riesgo';
 				    }
-				    const resultado = 'No aplicable';
-				    console.log(`[clasificarRiesgoMixto] Resultado: ${resultado}`);
-				    return resultado;
+				    const resultado2 = 'No aplicable';
+				    console.log(`[clasificarRiesgoMixto] Resultado: ${resultado2}`);
+				    return resultado2;
 				}
 				
 				  function calcularGrasaVisceral(data) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', data);
 				    const { esDeportista, genero, edad, cintura, altura } = data;
-				    let resultados = {};
-				    const alturaCm = convertirAltura(data);
-				    console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
+				    let resultados 
+				 
+				    //const alturaCm = convertirAltura(data);
+				   // console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
 				
 				    if (esDeportista) {
 				        console.log('[calcularGrasaVisceral] Procesando deportista');
