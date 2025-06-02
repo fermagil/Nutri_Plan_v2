@@ -326,6 +326,8 @@ const resultElementIds = [
     'result-grasa-pct-actual',
     'grasa-pct-actual-source',
     'result-grasa-pct-visceral',
+    'result-grasa-abdominal',
+    'grasa-abdominal-source',
     'grasa-pct-visceral-source',
     'result-grasa-pct-metabolic',
     'grasa-pct-metabolic-source',
@@ -700,6 +702,7 @@ let currentTomaSerial = null; // Track the loaded toma's serial
                     suprailiaco: parseFloat(document.getElementById('pliegue_suprailiaco').value) || null,
                     bicipital: parseFloat(document.getElementById('pliegue_bicipital').value) || null,
                     pantorrilla: parseFloat(document.getElementById('pliegue_pantorrilla').value) || null,
+                    abdominal: parseFloat(document.getElementById('pliegue_abdominal').value) || null,
                 },
                 circunferencias: {
                     cintura: parseFloat(document.getElementById('circ_cintura').value) || null,
@@ -925,6 +928,7 @@ async function cargarDatosToma(clienteId, tomaId) {
         document.getElementById('pliegue_suprailiaco').value = data.medidas?.pliegues?.suprailiaco || '';
         document.getElementById('pliegue_bicipital').value = data.medidas?.pliegues?.bicipital || '';
         document.getElementById('pliegue_pantorrilla').value = data.medidas?.pliegues?.pantorrilla || '';
+        document.getElementById('pliegue_abdominal').value = data.medidas?.pliegues?.abdonimal || '';
 
         // Poblar medidas.circunferencias
         document.getElementById('circ_cintura').value = data.medidas?.circunferencias?.cintura || '';
@@ -952,6 +956,8 @@ async function cargarDatosToma(clienteId, tomaId) {
     'grasaPctActualSource': { id: 'grasa-pct-actual-source', unit: '', format: (v) => v || '---' },
     'grasavisceralActual': { id: 'result-grasa-pct-visceral', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
     'grasavisceralActualSource': { id: 'grasa-pct-visceral-source', unit: '', format: (v) => v || '---' },
+    'grasaAbsActual': { id: 'result-grasa-abdominal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
+    'grasaAbsActualSource': { id: 'grasa-abdominal-source', unit: '', format: (v) => v || '---' },
     'grasaPctMetabolic': { id: 'result-grasa-pct-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
     'grasaPctMetabolicSource': { id: 'grasa-pct-metabolic-source', unit: '', format: (v) => v || '---' },
     'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
