@@ -3922,162 +3922,157 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 
 				
 
-				/// Función auxiliar para depuración Datos %Grasa Visceral
-				// Asegurarse de que results esté definido
-				//let results = results //| { grasaPctActual: null };
 				
-				// Función para validar y normalizar datos
-				//const createGrasaVisceralData = (data) 
-				
-				// Función logData corregida
-				//const logData = (data) => {
-				    //const { altura, edad, genero, circ_cintura, es_eportista, porcentajeGrasa, pliegue_tricipital, pliegue_subescapular, pliegue_suprailiaco, pliegue_bicipital } = data;
-				    //console.log('Datos de entrada:', {
-				        //altura,
-				        //edad,
-				        //genero,
-				        //circ_cintura,
-				        //es_deportista,
-				        //porcentajeGrasa,
-				       // pliegue_tricipital: Number(data.pliegue_tricipital) || 0,
-				        //pliegue_subescapular: Number(data.pliegue_subescapular) || 0,
-				       // pliegue_suprailiaco: Number(data.pliegue_suprailiaco) || 0,
-				       //pliegue_bicipital: Number(data.pliegue_bicipital) || 0,
-				    //});
-				//};
 
-				function convertirAltura(data) {
-				    // Asumimos que si la altura es mayor a 2.5 metros, probablemente está en cm
-				    // Pero mejoramos la lógica para mayor precisión
-				    
-				    // Primero verificamos si ya está en cm (alturas normales en cm son > 100)
-				    if (data.altura > 100) {
-				        console.log('Altura ya está en cm, no se requiere conversión');
-				        return data.altura;
-				    }
-				    
-				    // Si no, verificamos si está en metros y necesita conversión
-				    if (data.altura > 0.5 && data.altura <= 2.5) {
-				        const alturaCm = data.altura * 100;
-				        console.log(`Convertida de metros a cm: ${data.altura}m -> ${altura}cm`);
-				        return altura;
-				    }
-				    
-				    // Caso de error o valor inválido
-				    console.error('Altura inválida:', data.altura);
-				    throw new Error(`Altura ${data.altura} no es válida. Debe ser en cm (>100) o metros (0.5-2.5)`);
-				}
+				
+				 
 				// Funciones de grasa visceral (del código anterior)
-				function calcularIAV {
-				    console.log(`[calcularIAV]cintura:data.circ_cintura, altura: data.altura`);
+				function calcularIAV(data) {
+				    console.log(`[calcularIAV] cintura: ${data.circ_cintura}, altura: ${data.altura}`);
 				    const iav = Math.round((data.circ_cintura / data.altura) * 100) / 100;
 				    console.log(`[calcularIAV] IAV calculado: ${iav}`);
-				    return resultados.iav;
+				    return iav; // Retorna el valor calculado, no "resultados.iav"
 				}
 				
-				function calcularIndiceMixto {
-				    console.log(`[calcularIndiceMixto] %grasa: data.procentajeGrasa, cintura: data.circ_cintura , altura: data.altura`);
+				function calcularIndiceMixto(data) {
+				    console.log(`[calcularIndiceMixto] %grasa: ${data.porcentajeGrasa}, cintura: ${data.circ_cintura}, altura: ${data.altura}`);
+				    
 				    const iav = Math.round((data.circ_cintura / data.altura) * 100) / 100;
-				    const indice = parseFloat((0.4 * (porcentajeGrasa/100) + 0.6 * iav).toFixed(2));
+				    const indice = parseFloat((0.4 * (data.porcentajeGrasa / 100) + 0.6 * iav).toFixed(2));
+				    
 				    console.log(`[calcularIndiceMixto] Índice mixto calculado: ${indice}`);
-				    return resultados.indice;
+				    return indice; // Retorna el valor calculado directamente
 				}
 				
-				function clasificarRiesgoIAV(genero, edad, iav) {
-				    console.log(`[clasificarRiesgoIAV] genero: ${genero}, edad: ${edad}, IAV: ${iav}`);
-				    if (genero === 'masculino') {
-				        if (edad >= 18 && edad <= 39) {
+					function clasificarRiesgoIAV(data, iav) {
+				     console.log(`[clasificarRiesgoIAV] género: ${data.genero}, edad: ${data.edad}, IAV: ${iav}`);
+				
+				    // Validaciones básicas
+				    if (typeof iav !== 'number' || iav < 0) return 'IAV no válido';
+				    if (!data.genero || !data.edad) return 'Datos incompletos (género/edad requeridos)';
+				
+				    // Usando data.genero directamente en el if
+				    if (data.genero === 'masculino') {
+				        if (data.edad >= 18 && data.edad <= 39) {
 				            if (iav < 0.50) return 'Normal (Bajo riesgo)';
-				            if (iav >= 0.50 && iav <= 0.59) return 'Elevado (Riesgo moderado)';
+				            if (iav <= 0.59) return 'Elevado (Riesgo moderado)';
 				            return 'Alto (Riesgo elevado)';
-				        } else if (edad >= 40 && edad <= 59) {
+				        } else if (data.edad >= 40 && data.edad <= 59) {
 				            if (iav < 0.55) return 'Normal (Bajo riesgo)';
-				            if (iav >= 0.55 && iav <= 0.64) return 'Elevado (Riesgo moderado)';
+				            if (iav <= 0.64) return 'Elevado (Riesgo moderado)';
 				            return 'Alto (Riesgo elevado)';
-				        } else if (edad >= 60) {
+				        } else if (data.edad >= 60) {
 				            if (iav < 0.60) return 'Normal (Bajo riesgo)';
-				            if (iav >= 0.60 && iav <= 0.69) return 'Elevado (Riesgo moderado)';
+				            if (iav <= 0.69) return 'Elevado (Riesgo moderado)';
 				            return 'Alto (Riesgo elevado)';
 				        }
-				    } else if (genero === 'femenino') {
-				        if (edad >= 18 && edad <= 39) {
+				    } else if (data.genero === 'femenino') {
+				        if (data.edad >= 18 && data.edad <= 39) {
 				            if (iav < 0.45) return 'Normal (Bajo riesgo)';
-				            if (iav >= 0.45 && iav <= 0.54) return 'Elevado (Riesgo moderado)';
+				            if (iav <= 0.54) return 'Elevado (Riesgo moderado)';
 				            return 'Alto (Riesgo elevado)';
-				        } else if (edad >= 40 && edad <= 59) {
+				        } else if (data.edad >= 40 && data.edad <= 59) {
 				            if (iav < 0.50) return 'Normal (Bajo riesgo)';
-				            if (iav >= 0.50 && iav <= 0.59) return 'Elevado (Riesgo moderado)';
+				            if (iav <= 0.59) return 'Elevado (Riesgo moderado)';
 				            return 'Alto (Riesgo elevado)';
-				        } else if (edad >= 60) {
+				        } else if (data.edad >= 60) {
 				            if (iav < 0.55) return 'Normal (Bajo riesgo)';
-				            if (iav >= 0.55 && iav <= 0.64) return 'Elevado (Riesgo moderado)';
+				            if (iav <= 0.64) return 'Elevado (Riesgo moderado)';
 				            return 'Alto (Riesgo elevado)';
 				        }
 				    }
+				
 				    const resultado = 'No aplicable';
 				    console.log(`[clasificarRiesgoIAV] Resultado: ${resultado}`);
-				    return resultados.resultado;
+				    return resultado;
 				}
 				
-				function clasificarRiesgoMixto(genero, indiceMixto) {
-				    console.log(`[clasificarRiesgoMixto] genero: ${genero}, índice mixto: ${indiceMixto}`);
-				    if (genero === 'masculino') {
+				function clasificarRiesgoMixto(data, indiceMixto) {
+				    console.log(`[clasificarRiesgoMixto] género: ${data.genero}, índice mixto: ${indiceMixto}`);
+				
+				    // Validaciones básicas
+				    if (typeof indiceMixto !== 'number' || indiceMixto < 0) return 'Índice no válido';
+				    if (!data.genero) return 'Género no especificado';
+				
+				    if (data.genero === 'masculino') {
 				        if (indiceMixto < 0.35) return 'Bajo riesgo';
-				        if (indiceMixto >= 0.35 && indiceMixto <= 0.45) return 'Riesgo moderado';
+				        if (indiceMixto <= 0.45) return 'Riesgo moderado'; // Simplificado
 				        return 'Alto riesgo';
-				    } else if (genero === 'femenino') {
+				    } else if (data.genero === 'femenino') {
 				        if (indiceMixto < 0.40) return 'Bajo riesgo';
-				        if (indiceMixto >= 0.40 && indiceMixto <= 0.50) return 'Riesgo moderado';
+				        if (indiceMixto <= 0.50) return 'Riesgo moderado'; // Simplificado
 				        return 'Alto riesgo';
 				    }
-				    const resultado2 = 'No aplicable';
-				    console.log(`[clasificarRiesgoMixto] Resultado: ${resultado2}`);
-				    return resultado2;
+				
+				    const resultado = 'No aplicable';
+				    console.log(`[clasificarRiesgoMixto] Resultado: ${resultado}`);
+				    return resultado;
 				}
 				
 				  function calcularGrasaVisceral(data) {
 				    console.log('[calcularGrasaVisceral] Iniciando cálculo con datos:', data);
-				    //const { es_eportista, genero, edad, circ_cintura, altura } = datos;
+				    
 				    let resultados = {
-						    indiceMixto: null,
-						    iav: null,
-						    riesgo: null,
-						    metodo: null,
-					    	    //resultado: null
-					    
-						};
-				 
-				    //const alturaCm = convertirAltura(data);
-				   // console.log(`[calcularGrasaVisceral] Altura convertida: ${alturaCm} cm`);
-				     //esDeportista = esDeportista === false ? "no" : "si"; // Ahora es un string ("no" o "si")
-				    if (es_deportista === "si") {
+				        indiceMixto: null,
+				        iav: null,
+				        riesgo: null,
+				        metodo: null,
+				        porcentajeGrasa: null
+				    };
+				
+				    // Validate required fields
+				    if (!data.genero || !data.edad || !data.circ_cintura || !data.altura) {
+				        throw new Error('Datos incompletos. Se requieren: genero, edad, circ_cintura, altura');
+				    }
+				
+				    if (data.es_deportista === "si") {
 				        console.log('[calcularGrasaVisceral] Procesando deportista');
 				        
 				        if (data.porcentajeGrasaActual) {
 				            resultados.porcentajeGrasa = data.porcentajeGrasaActual;
-				            console.log(`[calcularGrasaVisceral] Usando %grasa proporcionado: ${data.porcentajeGrasa}%`);
-				        } else if  ( data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_bicipital && data.pliegue_suprailiaco) {
-				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat( data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_bicipital && data.pliegue_suprailiaco && edad);
+				            console.log(`[calcularGrasaVisceral] Usando %grasa proporcionado: ${data.porcentajeGrasaActual}%`);
+				        } else if (data.pliegue_tricipital && data.pliegue_subescapular && 
+				                  data.pliegue_bicipital && data.pliegue_suprailiaco) {
+				            resultados.porcentajeGrasa = calculateJacksonPollockBodyFat(
+				                data.pliegue_tricipital,
+				                data.pliegue_subescapular,
+				                data.pliegue_bicipital,
+				                data.pliegue_suprailiaco,
+				                data.edad,
+				                data.genero
+				            );
 				            console.log(`[calcularGrasaVisceral] %grasa calculado por Jackson-Pollock: ${resultados.porcentajeGrasa}%`);
 				        } else {
 				            throw new Error('Para deportistas se requiere % de grasa o medidas de pliegues');
 				        }
 				        
-				        resultados.indiceMixto = calcularIndiceMixto(
-				            resultados.porcentajeGrasa, 
-				            cintura, 
-				            alturaCm
-				        );
+				        resultados.indiceMixto = calcularIndiceMixto({
+				            porcentajeGrasa: resultados.porcentajeGrasa,
+				            circ_cintura: data.circ_cintura,
+				            altura: data.altura
+				        });
 				        
-				        resultados.riesgo = clasificarRiesgoMixto(genero, resultados.indiceMixto);
+				        resultados.riesgo = clasificarRiesgoMixto({
+				            genero: data.genero
+				        }, resultados.indiceMixto);
+				        
 				        resultados.metodo = 'Fórmula Mixta (Thomas et al. 2013) para Deportistas';
 				        
 				    } else {
 				        console.log('[calcularGrasaVisceral] Procesando no deportista');
-				        resultados.iav = calcularIAV(circ_cintura, altura);
-				        resultados.riesgo = clasificarRiesgoIAV(genero, edad, resultados.iav);
+				        resultados.iav = calcularIAV({
+				            circ_cintura: data.circ_cintura,
+				            altura: data.altura
+				        });
+				        resultados.riesgo = clasificarRiesgoIAV({
+				            genero: data.genero,
+				            edad: data.edad
+				        }, resultados.iav);
 				        resultados.metodo = 'IAV (Krakauer)';
 				    }
+				
+				    return resultados;
+				}
 				    
 				    //console.log('[calcularGrasaVisceral] Resultados completos:', resultados);
 				    //return resultados;
@@ -4594,9 +4589,6 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            return;
 				        }
 				 
-				
-				
-
 
 				    // Validate altura
 				        
@@ -4623,45 +4615,28 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            explanationContent.innerHTML = '';
 				        }
 				
-				        // Normalize data
-				        //const GrasaVisceralData = createGrasaVisceralData(data);
-				        //console.log('Normalized GrasaVisceralData:', GrasaVisceralData);
-				        //logData(GrasaVisceralData); 
+				        
 				    
 				    // Visceral fat calculation
-				    // 1. Primero declara el objeto results si no existe
+				   // Visceral fat calculation
+					let errors = [];
 					if (typeof results === 'undefined') {
-					    let results = {};
-					   let errors = [];
+					    results = {};
 					}
-				    	let errors = [];
-				try { 
-				    	if (isNaN(data.altura) || data.altura <= 0) errors.push('Altura inválida o faltante');
-				            if (isNaN(data.edad) || data.edad <= 0) errors.push('Edad inválida o faltante');
-				            if (!['masculino', 'femenino'].includes(data.genero)) errors.push('Género inválido');
-				            if (isNaN(data.circ_cintura) || data.circ_cintura <= 0) errors.push('Circunferencia de cintura inválida o faltante');
-				            if ( data.es_deportista !== 'si' && data.es_deportista !== 'no') { errors.push('Estado de deportista inválido');}
-				
-				            if (errors.length === 0) {
-				              calcularGrasaVisceral(data);
-						results.grasavisceralActual = datos.porcentajeGrasa || datos.iav;
-						results.grasavisceralActualSource = `${datos.riesgo} - ${datos.metodo}`;
-						 
-						    
-						console.log('%Grasa Visceral calculado:', {
-						    grasaVisceralActual: results.grasavisceralActual,
-						    grasaVisceralActualSource: results.grasavisceralActualSource
-						});
-				            } else {
-				                console.warn('Datos incompletos o inválidos para el cálculo de grasa visceral:', GrasaVisceralData);
-				                content += `<p class="error">Errores en grasa visceral: ${errors.join(', ')}</p>`;
-				                results.grasavisceralActual = null;
-				                results.grasavisceralActualSource = '(No calculado)';
-				                window.calculatedResults = {
-				                    grasavisceralActual: formatResult(null, 1),
-				                    grasavisceralActualSource: '(No calculado)'
-				                };
-				            }
+					try {
+					    const resultados = calcularGrasaVisceral(data);
+					    results.grasavisceralActual = resultados.indiceMixto || resultados.iav;
+					    results.grasavisceralActualSource = `${resultados.riesgo} - ${resultados.metodo}`;
+					    console.log('%Grasa Visceral calculado:', {
+					        grasaVisceralActual: results.grasavisceralActual,
+					        grasaVisceralActualSource: results.grasavisceralActualSource
+					    });
+					} catch (e) {
+					    console.warn('Error en cálculo de grasa visceral:', e.message);
+					    content += `<p class="error">Error en grasa visceral: ${e.message}</p>`;
+					    results.grasavisceralActual = null;
+					    results.grasavisceralActualSource = '(No calculado)';
+					}
 
 					
 			            // --- Calculate IMC ---
