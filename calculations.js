@@ -4076,7 +4076,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    
 				    //console.log('[calcularGrasaVisceral] Resultados completos:', resultados);
 				    //return resultados;
-				}
+				
       
 			// Define resetResultElements (place before handler, after resultElements)
 				const resetResultElements = (elements) => {
