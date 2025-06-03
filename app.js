@@ -430,7 +430,9 @@ const resultElementIds = [
     'result-creatinina',
     'creatinina-source',
     'result-bun',
-    'bun-source'
+    'bun-source',
+    'result-abdominal-fat-thickness',
+    'abdominal-fat-thickness-source'
 ];
 
 // Crear select para resultados de búsqueda
@@ -958,6 +960,8 @@ async function cargarDatosToma(clienteId, tomaId) {
     'grasavisceralActualSource': { id: 'grasa-pct-visceral-source', unit: '', format: (v) => v || '---' },
     'grasaAbsActual': { id: 'result-grasa-abdominal', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(2) : '---' },
     'grasaAbsActualSource': { id: 'grasa-abdominal-source', unit: '', format: (v) => v || '---' },
+    'abdominalFatThickness': { id: 'result-abdominal-fat-thickness', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
+    'abdominalFatThicknessSource': { id: 'abdominal-fat-thickness-source', unit: '', format: (v) => v || '---' },
     'grasaPctMetabolic': { id: 'result-grasa-pct-metabolic', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
     'grasaPctMetabolicSource': { id: 'grasa-pct-metabolic-source', unit: '', format: (v) => v || '---' },
     'grasaPctDeseado': { id: 'result-grasa-pct-deseado', unit: '', format: (v) => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))) ? toNumber(v).toFixed(1) : '---' },
