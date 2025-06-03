@@ -4083,6 +4083,52 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					            console.warn('Pliegue abdominal > 40 mm, método menos preciso');
 					            source = 'Método A: Pliegue Abdominal > 40 mm, resultado menos preciso';
 					        }
+						    // Risk Assessment for Method A
+						        if (!isNaN(gat) && data.genero && data.edad) {
+						            if (data.genero === 'masculino') {
+						                if (data.edad >= 18 && data.edad <= 39) {
+						                    if (gat < 180) risk = 'Normal';
+						                    else if (gat <= 360) risk = 'Moderado (vigilar)';
+						                    else risk = 'Alto (mayor riesgo cardiovascular)';
+						                } else if (data.edad <= 59) {
+						                    if (gat < 200) risk = 'Normal';
+						                    else if (gat <= 400) risk = 'Moderado (vigilar)';
+						                    else risk = 'Alto (mayor riesgo cardiovascular)';
+						                } else {
+						                    if (gat < 220) risk = 'Normal';
+						                    else if (gat <= 440) risk = 'Moderado (vigilar)';
+						                    else risk = 'Alto (mayor riesgo cardiovascular)';
+						                }
+						            } else if (data.genero === 'femenino') {
+						                if (data.edad >= 18 && data.edad <= 39) {
+						                    if (gat < 135) risk = 'Normal';
+						                    else if (gat <= 315) risk = 'Moderado';
+						                    else risk = 'Alto';
+						                } else if (data.edad <= 59) {
+						                    if (gat < 150) risk = 'Normal';
+						                    else if (gat <= 350) risk = 'Moderado';
+						                    else risk = 'Alto';
+						                } else {
+						                    if (gat < 165) risk = 'Normal';
+						                    else if (gat <= 385) risk = 'Moderado';
+						                    else risk = 'Alto';
+						                }
+						            } else if (data.edad >= 6 && data.edad < 18) {
+						                if (data.edad <= 9) {
+						                    if (gat < 100) risk = 'Normal';
+						                    else if (gat <= 150) risk = 'Moderado';
+						                    else risk = 'Alto';
+						                } else if (data.edad <= 13) {
+						                    if (gat < 120) risk = 'Normal';
+						                    else if (gat <= 180) risk = 'Moderado';
+						                    else risk = 'Alto';
+						                } else {
+						                    if (gat < 150) risk = 'Normal';
+						                    else if (gat <= 200) risk = 'Moderado';
+						                    else risk = 'Alto';
+						                }
+						            }
+						            source += `, Riesgo Metabólico: ${risk}`;
 					    } else {
 					        // Method B: Using % Body Fat and Circumference
 					        let bodyFat = data.grasa_actual_conocida;
@@ -4109,7 +4155,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        } else {
 					            source = source || '(No calculado: Faltan datos para % Grasa o Circunferencia)';
 					        }
-					    }
+					   
 					
 					    // Risk Assessment
 					    if (!isNaN(gat) && data.genero && data.edad) {
@@ -4159,6 +4205,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					        source += `, Riesgo Metabólico: ${risk}`;
 					    }
+					}
 					    return { value: gat, source: source };
 					};
 				
