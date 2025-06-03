@@ -4129,6 +4129,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 						                }
 						            }
 						            source += `, Riesgo Metabólico: ${risk}`;
+							}
 					    } else {
 					        // Method B: Using % Body Fat and Circumference
 					        let bodyFat = data.grasa_actual_conocida;
