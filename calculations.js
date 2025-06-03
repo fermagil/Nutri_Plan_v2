@@ -4434,17 +4434,22 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        const data = {};
 			        formData.forEach((value, key) => {
 			            const numericFields = [
-			                'edad', 'peso', 'altura', 'pliegue_tricipital', 'pliegue_subescapular',
-			                'pliegue_suprailiaco', 'pliegue_bicipital', 'pliegue_pantorrilla',
-			                'circ_cintura', 'circ_cadera', 'circ_cuello', 'circ_pantorrilla',
-			                'circ_brazo', 'circ_brazo_contraido', 'diam_humero', 'diam_femur',
-			                'diam_muneca', 'grasa_actual_conocida', 'grasa_deseada',
-			                'result-albumina', 'result-prealbumina', 'result-colesterol-total',
-			                'result-hdl', 'result-trigliceridos', 'result-glucosa-ayunas',
-			                'result-hba1c', 'result-insulina', 'result-pcr-ultrasensible',
-			                'result-leptina', 'result-alt', 'result-ggt', 'result-tsh',
-			                'result-testosterona', 'result-vitamina-d','pliegue_abdominal'
-			            ];
+						    // Datos antropométricos
+						    'edad', 'peso', 'altura', 'pliegue_tricipital', 'pliegue_subescapular',
+						    'pliegue_suprailiaco', 'pliegue_bicipital', 'pliegue_pantorrilla',
+						    'pliegue_abdominal', 'circ_cintura', 'circ_cadera', 'circ_cuello', 
+						    'circ_pantorrilla', 'circ_brazo', 'circ_brazo_contraido', 'diam_humero', 
+						    'diam_femur', 'diam_muneca', 'grasa_actual_conocida', 'grasa_deseada',
+						    
+						    // Resultados de laboratorio
+						    'result-albumina', 'result-prealbumina', 'result-proteina-total',
+						    'result-colesterol-total', 'result-hdl', 'result-trigliceridos',
+						    'result-glucosa-ayunas', 'result-hba1c', 'result-insulina',
+						    'result-pcr-ultrasensible', 'result-leptina', 'result-adiponectina',
+						    'result-alt', 'result-ggt', 'result-ast', 'result-tsh',
+						    'result-testosterona', 'result-cortisol', 'result-vitamina-d',
+						    'result-fosfatasa-alcalina', 'result-creatinina', 'result-bun',
+						];
 			            data[key] = numericFields.includes(key) ? parseFloatSafe(value) : value;
 			        });
 			
