@@ -4076,7 +4076,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        const cc = data.circ_cintura; // Circumference in cm
 					        const pca = data.pliegue_abdominal; // Abdominal skinfold in mm
 					        if (pca <= 40) { // Check for obesity limitation
-					            gat = (2 * cc * pca) - ((Math.PI * pca * pca) / 4);
+					            gat = ((2 * cc * pca) - ((Math.PI * pca * pca) / 4))/10;
 					            source = 'Método A: Pliegue Abdominal y Circunferencia de Cintura (Kvist et al., 1988)';
 					            console.log(`GAT Method A: CC=${cc}, PCA=${pca}, GAT=${gat} cm²`);
 					        } else {
