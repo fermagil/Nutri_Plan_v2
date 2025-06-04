@@ -4330,7 +4330,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					
 					        if (!isNaN(bodyFat) && data.circ_cintura) {
-					            gat = bodyFat * 0.45 * data.circ_cintura;
+					            gat = ((bodyFat)/100) * 0.45 * data.circ_cintura;
 					            console.log(`GAT Method B: %Grasa=${bodyFat}, CC=${data.circ_cintura}, GAT=${gat} cm²`);
 					
 					            // Calculate abdominal fat thickness for Method B
