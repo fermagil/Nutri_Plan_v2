@@ -4742,7 +4742,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        // Nueva función para formatear PctmmtSource
 			        function formatPctmmtSource(pctmmt, gender, isAthlete, peso, mmt) {
 				    if (isNaN(pctmmt) || !gender) {
-				        return '(No calculado)';
+				        return { text: '(No calculado)', muscleToGain: null };
 				    }
 				    gender = gender.toLowerCase();
 				    let healthyRange, minHealthyPct, resultText;
@@ -4792,24 +4792,28 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				            }
 				        }
 				    } else {
-				        return '(No calculado)';
+				        return { text: '(No calculado)', muscleToGain: null };
 				    }
 				
 				    // Calculate muscle mass to gain to reach the minimum healthy %MMT
 				    let muscleToGain = null;
+				    let muscleToGainSource = '(No calculado)';
 				    if (pctmmt < minHealthyPct && !isNaN(peso) && !isNaN(mmt)) {
 				        const targetMMT = (minHealthyPct / 100) * peso; // Target MMT to reach min healthy %
 				        muscleToGain = targetMMT - mmt; // Muscle mass to gain in kg
-				        muscleToGain = Math.max(0, muscleToGain.toFixed(1)); // Ensure non-negative, round to 1 decimal
+				        muscleToGain = Math.max(0, Number(muscleToGain.toFixed(1))); // Ensure non-negative, round to 1 decimal
 				        resultText += `; Gana ${muscleToGain} kg para alcanzar ${minHealthyPct}%`;
+				        muscleToGainSource = `(Para alcanzar el rango saludable)`;
 				    } else if (pctmmt >= minHealthyPct) {
 				        muscleToGain = 0; // Already in or above healthy range
 				        resultText += `; No necesitas ganar masa muscular`;
+				        muscleToGainSource = `(No necesitas ganar masa muscular)`;
 				    }
 				
 				    return {
 				        text: resultText,
-				        muscleToGain: muscleToGain
+				        muscleToGain: muscleToGain,
+				        muscleToGainSource: muscleToGainSource
 				    };
 				}
 			
@@ -5681,62 +5685,65 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        const pctmmtResult = formatPctmmtSource(results.Pctmmt, gender, isAthlete, peso, results.mmt);
 					        results.PctmmtSource = pctmmtResult.text;
 					        results.muscleToGain = pctmmtResult.muscleToGain;
+					        results.muscleToGainSource = pctmmtResult.muscleToGainSource;
 					        results.mmtSportType = sportType;
+					
+					        // Update DOM elements
+					        if (resultElements.pesoMuscular) {
+					            resultElements.pesoMuscular.textContent = results.muscleToGain !== null ? results.muscleToGain : '---';
+					        }
+					        if (resultElements.pesoMuscularSource) {
+					            resultElements.pesoMuscularSource.textContent = results.muscleToGainSource || '(No calculado)';
+					        }
 					
 					        console.log('MMT y %MMT calculados:', {
 					            mmt: results.mmt,
 					            Pctmmt: results.Pctmmt,
 					            PctmmtSource: results.PctmmtSource,
 					            muscleToGain: results.muscleToGain,
+					            muscleToGainSource: results.muscleToGainSource,
 					            sportType: sportType
 					        });
 					
 					        // Update HTML content
-					        content += `
-					            <tr class="accordion-content">
-					                <th scope="row"><label>Masa Muscular Total (MMT)</label></th>
-					                <td><span id="result-mmt">${results.mmt.toFixed(1)}</span> <span class="unit">kg</span></td>
-					                <td><small id="mmt-source">(Calculado)</small></td>
-					            </tr>
-					            <tr class="accordion-content">
-					                <th scope="row"><label>% Masa Muscular</label></th>
-					                <td><span id="result-pctmmt">${results.Pctmmt.toFixed(1)}</span> <span class="unit">%</span></td>
-					                <td><small id="pctmmt-source">${results.PctmmtSource}</small></td>
-					            </tr>
-					            <tr class="accordion-content">
-					                <th scope="row"><label>Masa Muscular a Ganar</label></th>
-					                <td><span id="result-peso-muscular">${results.muscleToGain !== null ? results.muscleToGain : '---'}</span> <span class="unit">kg</span></td>
-					                <td><small id="peso-muscular-source">${results.muscleToGain !== null ? `(Para alcanzar el rango saludable)` : '(No calculado)'}</small></td>
-					            </tr>
-					        `;
+						   
+						    results.PctmmtSource;
+						    results.muscleToGain
+						    results.muscleToGainSource 
+					        
 					    } catch (e) {
 					        console.error('Error calculando MMT:', e.message);
 					        results.mmt = NaN;
 					        results.Pctmmt = NaN;
 					        results.PctmmtSource = 'Error: ' + e.message;
 					        results.muscleToGain = null;
-					        content += `
-					            <p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>
-					            <tr class="accordion-content">
-					                <th scope="row"><label>Masa Muscular a Ganar</label></th>
-					                <td><span id="result-peso-muscular">---</span> <span class="unit">kg</span></td>
-					                <td><small id="peso-muscular-source">(No calculado)</small></td>
-					            </tr>
-					        `;
-					    }
+					        results.muscleToGainSource = '(No calculado)';
+					        
+					       
+					
+					         // Update DOM elements in case of error
+					        if (resultElements.pesoMuscular) {
+					            resultElements.pesoMuscular.textContent = '---';
+					        }
+					        if (resultElements.pesoMuscularSource) {
+					            resultElements.pesoMuscularSource.textContent = '(No calculado)';
+					        }
 					} else {
 					    results.mmt = NaN;
 					    results.Pctmmt = NaN;
 					    results.PctmmtSource = '(No calculado: Datos insuficientes)';
 					    results.muscleToGain = null;
-					    content += `
-					        <p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>
-					        <tr class="accordion-content">
-					            <th scope="row"><label>Masa Muscular a Ganar</label></th>
-					            <td><span id="result-peso-muscular">---</span> <span class="unit">kg</span></td>
-					            <td><small id="peso-muscular-source">(No calculado)</small></td>
-					        </tr>
-					    `;
+					    results.muscleToGainSource = '(No calculado)';
+					    
+					    // Update DOM elements for insufficient data
+					    if (resultElements.pesoMuscular) {
+					        resultElements.pesoMuscular.textContent = '---';
+					    }
+					    if (resultElements.pesoMuscularSource) {
+					        resultElements.pesoMuscularSource.textContent = '(No calculado)';
+					    }
+					
+					    
 					}
 			
 			            // Masa Ósea Calculation
