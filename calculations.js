@@ -5707,7 +5707,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					
 					        // Update HTML content
 						   
-						    results.PctmmtSource;
+						    results.PctmmtSource
 						    results.muscleToGain
 						    results.muscleToGainSource 
 					        
@@ -5719,8 +5719,6 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        results.muscleToGain = null;
 					        results.muscleToGainSource = '(No calculado)';
 					        
-					       
-					
 					         // Update DOM elements in case of error
 					        if (resultElements.pesoMuscular) {
 					            resultElements.pesoMuscular.textContent = '---';
@@ -5728,6 +5726,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        if (resultElements.pesoMuscularSource) {
 					            resultElements.pesoMuscularSource.textContent = '(No calculado)';
 					        }
+					    }
 					} else {
 					    results.mmt = NaN;
 					    results.Pctmmt = NaN;
