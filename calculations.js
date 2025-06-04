@@ -4740,50 +4740,78 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        }
 			
 			        // Nueva función para formatear PctmmtSource
-			        function formatPctmmtSource(pctmmt, gender, isAthlete) {
-			            if (isNaN(pctmmt) || !gender) {
-			                return '(No calculado)';
-			            }
-			            gender = gender.toLowerCase();
-			            if (gender === 'masculino') {
-			                if (isAthlete) {
-			                    if (pctmmt >= 45 && pctmmt <= 55) {
-			                        return 'Rango saludable (45–55%)';
-			                    } else if (pctmmt < 45) {
-			                        return 'Por debajo del rango saludable (45–55%)';
-			                    } else {
-			                        return 'Por encima del rango saludable (45–55%)';
-			                    }
-			                } else {
-			                    if (pctmmt >= 38 && pctmmt <= 48) {
-			                        return 'Rango saludable (38–48%)';
-			                    } else if (pctmmt < 38) {
-			                        return 'Por debajo del rango saludable (38–48%)';
-			                    } else {
-			                        return 'Por encima del rango saludable (38–48%)';
-			                    }
-			                }
-			            } else if (gender === 'femenino') {
-			                if (isAthlete) {
-			                    if (pctmmt >= 35 && pctmmt <= 45) {
-			                        return 'Rango saludable (35–45%)';
-			                    } else if (pctmmt < 35) {
-			                        return 'Por debajo del rango saludable (35–45%)';
-			                    } else {
-			                        return 'Por encima del rango saludable (35–45%)';
-			                    }
-			                } else {
-			                    if (pctmmt >= 30 && pctmmt <= 40) {
-			                        return 'Rango saludable (30–40%)';
-			                    } else if (pctmmt < 30) {
-			                        return 'Por debajo del rango saludable (30–40%)';
-			                    } else {
-			                        return 'Por encima del rango saludable (30–40%)';
-			                    }
-			                }
-			            }
-			            return '(No calculado)';
-			        }
+			        function formatPctmmtSource(pctmmt, gender, isAthlete, peso, mmt) {
+				    if (isNaN(pctmmt) || !gender) {
+				        return '(No calculado)';
+				    }
+				    gender = gender.toLowerCase();
+				    let healthyRange, minHealthyPct, resultText;
+				
+				    if (gender === 'masculino') {
+				        if (isAthlete) {
+				            healthyRange = '45–55%';
+				            minHealthyPct = 45;
+				            if (pctmmt >= 45 && pctmmt <= 55) {
+				                resultText = `Rango saludable (${healthyRange})`;
+				            } else if (pctmmt < 45) {
+				                resultText = `Por debajo del rango saludable (${healthyRange})`;
+				            } else {
+				                resultText = `Por encima del rango saludable (${healthyRange})`;
+				            }
+				        } else {
+				            healthyRange = '38–48%';
+				            minHealthyPct = 38;
+				            if (pctmmt >= 38 && pctmmt <= 48) {
+				                resultText = `Rango saludable (${healthyRange})`;
+				            } else if (pctmmt < 38) {
+				                resultText = `Por debajo del rango saludable (${healthyRange})`;
+				            } else {
+				                resultText = `Por encima del rango saludable (${healthyRange})`;
+				            }
+				        }
+				    } else if (gender === 'femenino') {
+				        if (isAthlete) {
+				            healthyRange = '35–45%';
+				            minHealthyPct = 35;
+				            if (pctmmt >= 35 && pctmmt <= 45) {
+				                resultText = `Rango saludable (${healthyRange})`;
+				            } else if (pctmmt < 35) {
+				                resultText = `Por debajo del rango saludable (${healthyRange})`;
+				            } else {
+				                resultText = `Por encima del rango saludable (${healthyRange})`;
+				            }
+				        } else {
+				            healthyRange = '30–40%';
+				            minHealthyPct = 30;
+				            if (pctmmt >= 30 && pctmmt <= 40) {
+				                resultText = `Rango saludable (${healthyRange})`;
+				            } else if (pctmmt < 30) {
+				                resultText = `Por debajo del rango saludable (${healthyRange})`;
+				            } else {
+				                resultText = `Por encima del rango saludable (${healthyRange})`;
+				            }
+				        }
+				    } else {
+				        return '(No calculado)';
+				    }
+				
+				    // Calculate muscle mass to gain to reach the minimum healthy %MMT
+				    let muscleToGain = null;
+				    if (pctmmt < minHealthyPct && !isNaN(peso) && !isNaN(mmt)) {
+				        const targetMMT = (minHealthyPct / 100) * peso; // Target MMT to reach min healthy %
+				        muscleToGain = targetMMT - mmt; // Muscle mass to gain in kg
+				        muscleToGain = Math.max(0, muscleToGain.toFixed(1)); // Ensure non-negative, round to 1 decimal
+				        resultText += `; Gana ${muscleToGain} kg para alcanzar ${minHealthyPct}%`;
+				    } else if (pctmmt >= minHealthyPct) {
+				        muscleToGain = 0; // Already in or above healthy range
+				        resultText += `; No necesitas ganar masa muscular`;
+				    }
+				
+				    return {
+				        text: resultText,
+				        muscleToGain: muscleToGain
+				    };
+				}
 			
 			        // Nueva función para formatear masaResidualSource
 			        function formatMasaResidualSource(masaResidualPct, gender) {
@@ -5620,56 +5648,96 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            }
 			
 			            // MMT Calculation and %MMT
-			            if (!isNaN(alturaM) && !isNaN(results.amb)  && data.edad && ['masculino', 'femenino'].includes(data.genero.toLowerCase()) && data.peso) {
-			                try {
-			                    const alturaCm = Number(data.altura);
-			                    const amb = Number(results.amb);
-			                    const edad = Number(data.edad);
-			                    const gender = data.genero.toLowerCase();
-			                    const isAthlete = data.es_deportista === 'si';
-			                
-			                    if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
-			                    if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
-			                    if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
-			                    if (data.peso <= 0) throw new Error('Peso debe ser mayor a 0');
-			        
-			                    const sportType = data.tipo_deporte || 'general';
-			                    let ambMultiplier = 0.0029;
-			                    if (data.es_deportista === 'si') {
-			                        switch (sportType) {
-			                            case 'fuerza': ambMultiplier = 0.0030; break;
-			                            case 'resistencia': ambMultiplier = 0.0028; break;
-			                            case 'estetico': ambMultiplier = 0.00285; break;
-			                            default: ambMultiplier = 0.0029;
-			                        }
-			                    } else { // No es deportista
-			                        ambMultiplier = 0.0024;
-			                    }
-			                    
-			                    results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
-			                    results.Pctmmt = (results.mmt / data.peso) * 100;
-			                    results.PctmmtSource = formatPctmmtSource(results.Pctmmt, gender, isAthlete);
-			                    results.mmtSportType = sportType;
-			
-			                    console.log('MMT y %MMT calculados:', {
-			                        mmt: results.mmt,
-			                        Pctmmt: results.Pctmmt,
-			                        PctmmtSource: results.PctmmtSource,
-			                        sportType: sportType
-			                    });
-			                } catch (e) {
-			                    console.error('Error calculando MMT:', e.message);
-			                    results.mmt = NaN;
-			                    results.Pctmmt = NaN;
-			                    results.PctmmtSource = 'Error: ' + e.message;
-			                    content += `<p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>`;
-			                }
-			            } else {
-			                results.mmt = NaN;
-			                results.Pctmmt = NaN;
-			                results.PctmmtSource = '(No calculado: Datos insuficientes)';
-			                content += `<p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>`;
-			            }
+			            // MMT Calculation and %MMT
+					if (!isNaN(alturaM) && !isNaN(results.amb) && data.edad && ['masculino', 'femenino'].includes(data.genero.toLowerCase()) && data.peso) {
+					    try {
+					        const alturaCm = Number(data.altura);
+					        const amb = Number(results.amb);
+					        const edad = Number(data.edad);
+					        const gender = data.genero.toLowerCase();
+					        const isAthlete = data.es_deportista === 'si';
+					        const peso = Number(data.peso);
+					
+					        if (alturaCm < 120 || alturaCm > 220) throw new Error('Altura debe estar entre 120 y 220 cm');
+					        if (amb < 10 || amb > 100) throw new Error('Área Muscular Brazo (AMB) debe estar entre 10 y 100 cm²');
+					        if (edad < 15) throw new Error('Edad debe ser mayor o igual a 15 años para MMT');
+					        if (peso <= 0) throw new Error('Peso debe ser mayor a 0');
+					
+					        const sportType = data.tipo_deporte || 'general';
+					        let ambMultiplier = 0.0029;
+					        if (isAthlete) {
+					            switch (sportType) {
+					                case 'fuerza': ambMultiplier = 0.0030; break;
+					                case 'resistencia': ambMultiplier = 0.0028; break;
+					                case 'estetico': ambMultiplier = 0.00285; break;
+					                default: ambMultiplier = 0.0029;
+					            }
+					        } else {
+					            ambMultiplier = 0.0024;
+					        }
+					
+					        results.mmt = alturaCm * (0.0264 + ambMultiplier * amb);
+					        results.Pctmmt = (results.mmt / peso) * 100;
+					        const pctmmtResult = formatPctmmtSource(results.Pctmmt, gender, isAthlete, peso, results.mmt);
+					        results.PctmmtSource = pctmmtResult.text;
+					        results.muscleToGain = pctmmtResult.muscleToGain;
+					        results.mmtSportType = sportType;
+					
+					        console.log('MMT y %MMT calculados:', {
+					            mmt: results.mmt,
+					            Pctmmt: results.Pctmmt,
+					            PctmmtSource: results.PctmmtSource,
+					            muscleToGain: results.muscleToGain,
+					            sportType: sportType
+					        });
+					
+					        // Update HTML content
+					        content += `
+					            <tr class="accordion-content">
+					                <th scope="row"><label>Masa Muscular Total (MMT)</label></th>
+					                <td><span id="result-mmt">${results.mmt.toFixed(1)}</span> <span class="unit">kg</span></td>
+					                <td><small id="mmt-source">(Calculado)</small></td>
+					            </tr>
+					            <tr class="accordion-content">
+					                <th scope="row"><label>% Masa Muscular</label></th>
+					                <td><span id="result-pctmmt">${results.Pctmmt.toFixed(1)}</span> <span class="unit">%</span></td>
+					                <td><small id="pctmmt-source">${results.PctmmtSource}</small></td>
+					            </tr>
+					            <tr class="accordion-content">
+					                <th scope="row"><label>Masa Muscular a Ganar</label></th>
+					                <td><span id="result-peso-muscular">${results.muscleToGain !== null ? results.muscleToGain : '---'}</span> <span class="unit">kg</span></td>
+					                <td><small id="peso-muscular-source">${results.muscleToGain !== null ? `(Para alcanzar el rango saludable)` : '(No calculado)'}</small></td>
+					            </tr>
+					        `;
+					    } catch (e) {
+					        console.error('Error calculando MMT:', e.message);
+					        results.mmt = NaN;
+					        results.Pctmmt = NaN;
+					        results.PctmmtSource = 'Error: ' + e.message;
+					        results.muscleToGain = null;
+					        content += `
+					            <p><strong>Error en Masa Muscular Total (MMT):</strong> ${e.message}. Por favor, revisa los datos ingresados.</p>
+					            <tr class="accordion-content">
+					                <th scope="row"><label>Masa Muscular a Ganar</label></th>
+					                <td><span id="result-peso-muscular">---</span> <span class="unit">kg</span></td>
+					                <td><small id="peso-muscular-source">(No calculado)</small></td>
+					            </tr>
+					        `;
+					    }
+					} else {
+					    results.mmt = NaN;
+					    results.Pctmmt = NaN;
+					    results.PctmmtSource = '(No calculado: Datos insuficientes)';
+					    results.muscleToGain = null;
+					    content += `
+					        <p><strong>Masa Muscular Total (MMT):</strong> No calculado debido a datos insuficientes.</p>
+					        <tr class="accordion-content">
+					            <th scope="row"><label>Masa Muscular a Ganar</label></th>
+					            <td><span id="result-peso-muscular">---</span> <span class="unit">kg</span></td>
+					            <td><small id="peso-muscular-source">(No calculado)</small></td>
+					        </tr>
+					    `;
+					}
 			
 			            // Masa Ósea Calculation
 			            if (!isNaN(alturaM) && data.diam_muneca && data.diam_femur && data.peso && data.edad && data.genero) {
