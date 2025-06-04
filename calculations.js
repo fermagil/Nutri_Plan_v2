@@ -4331,7 +4331,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					
 					        if (!isNaN(bodyFat) && data.circ_cintura) {
-					            gat = bodyFat * 0.45 * data.circ_cintura;
+					            gat = ((bodyFat)/100) * 0.45 * data.circ_cintura;
 					            console.log(`GAT Method B: %Grasa=${bodyFat}, CC=${data.circ_cintura}, GAT=${gat} cm²`);
 					
 					            // Calculate abdominal fat thickness for Method B
@@ -4352,8 +4352,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                else k = 1.5; // 14–18
 					            }
 					            if (k !== undefined) {
-					                thickness = (0.05 * data.circ_cintura) + (0.1 * bodyFat) - k;
-					                console.log(`Method B Thickness: %Grasa=${bodyFat}, CC=${data.circ_cintura}, k=${k}, Thickness=${thickness} cm`);
+					                thickness = (0.05 * data.circ_cintura) + (0.1 * (bodyFat/100)) - k;
+					                console.log(`Method B Thickness: %Grasa=${bodyFat/100}, CC=${data.circ_cintura}, k=${k}, Thickness=${thickness} cm`);
 					
 					                // Calculate abdominal fat mass (unscaled GAT for mass)
 					                const density = 0.00092; // kg/cm³
