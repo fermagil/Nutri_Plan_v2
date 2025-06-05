@@ -4393,7 +4393,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                                massRisk = 'Alto';
 					                                healthyRange = '<1.35 kg';
 					                            }
-					                        } FIG: Method B GAT Risk Assessment
+					                        } // FIG: Method B GAT Risk Assessment
 					                        else if (data.edad <= 59) {
 					                            if (abdominalFatMass < 1.5) {
 					                                massRisk = 'Normal';
