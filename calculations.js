@@ -4066,7 +4066,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    return resultados;
 				}
 				    
-				    // Function to calculate Total Abdominal Fat (GAT), Thickness, and Mass
+				    	// Function to calculate Total Abdominal Fat (GAT), Thickness, and Mass
 					// Function to calculate Total Abdominal Fat (GAT), Thickness, and Mass
 					// Function to calculate Total Abdominal Fat (GAT), Thickness, and Mass
 					const calculateTotalAbdominalFat = (data) => {
@@ -4077,8 +4077,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					    let thickness = NaN;
 					    let thicknessSource = '';
 					    let abdominalFatMass = NaN;
+					    let unscaledGat = NaN; // For Method B unscaled GAT
+					    let unscaledRisk = ''; // For Method B unscaled GAT risk
 					
-					    // Calculate BMI for Kvist formula
+					    // Calculate BMI for Kvist formula (Method B)
 					    const bmi = data.peso && data.altura ? data.peso / ((data.altura / 100) ** 2) : NaN;
 					
 					    // Method A: For athletes with abdominal skinfold
@@ -4111,101 +4113,121 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                thickness = (0.1 * pca) + (0.05 * cc) - k;
 					                console.log(`Method A Thickness: PCA=${pca}, CC=${cc}, k=${k}, Thickness=${thickness} cm`);
 					
-					                // Calculate abdominal fat mass using Kvist et al. (1988)
-					                if (!isNaN(bmi) && data.genero) {
-					                    if (data.genero === 'masculino') {
-					                        abdominalFatMass = (0.062 * cc) - (0.073 * bmi) - 1.018;
-					                    } else if (data.genero === 'femenino') {
-					                        abdominalFatMass = (0.055 * cc) - (0.065 * bmi) - 0.95;
-					                    }
-					                    console.log(`Kvist Abdominal Fat Mass: CC=${cc}, BMI=${bmi}, Mass=${abdominalFatMass} kg`);
+					                // Calculate abdominal fat mass using volume
+					                const density = 0.00092; // kg/cm³
+					                const volume = gat * thickness; // cm³
+					                abdominalFatMass = volume * density; // kg
+					                console.log(`Method A Abdominal Fat Mass: Volume=${volume} cm³, Mass=${abdominalFatMass} kg`);
 					
-					                    // Risk assessment for fat mass
-					                    let massRisk = '';
-					                    let healthyRange = '';
-					                    if (data.genero === 'masculino') {
-					                        if (data.edad >= 18 && data.edad <= 39) {
-					                            if (abdominalFatMass < 1.8) {
-					                                massRisk = 'Normal';
-					                                healthyRange = '<1.8 kg';
-					                            } else if (abdominalFatMass <= 3.6) {
-					                                massRisk = 'Moderado (vigilar)';
-					                                healthyRange = '<1.8 kg';
-					                            } else {
-					                                massRisk = 'Alto (mayor riesgo cardiovascular)';
-					                                healthyRange = '<1.8 kg';
-					                            }
-					                        } else if (data.edad <= 59) {
-					                            if (abdominalFatMass < 2.0) {
-					                                massRisk = 'Normal';
-					                                healthyRange = '<2.0 kg';
-					                            } else if (abdominalFatMass <= 4.0) {
-					                                massRisk = 'Moderado (vigilar)';
-					                                healthyRange = '<2.0 kg';
-					                            } else {
-					                                massRisk = 'Alto (mayor riesgo cardiovascular)';
-					                                healthyRange = '<2.0 kg';
-					                            }
-					                        } else if (data.edad >= 60) {
-					                            if (abdominalFatMass < 2.2) {
-					                                massRisk = 'Normal';
-					                                healthyRange = '<2.2 kg';
-					                            } else if (abdominalFatMass <= 4.4) {
-					                                massRisk = 'Moderado (vigilar)';
-					                                healthyRange = '<2.2 kg';
-					                            } else {
-					                                massRisk = 'Alto (mayor riesgo cardiovascular)';
-					                                healthyRange = '<2.2 kg';
-					                            }
-					                        } else if (data.edad >= 6 && data.edad <= 18) {
-					                            massRisk = 'No aplicable (Kvist no validado para menores)';
-					                            healthyRange = 'Consultar especialista';
-					                            abdominalFatMass = NaN; // Fallback for children
+					                // Risk assessment for fat mass
+					                let massRisk = '';
+					                let healthyRange = '';
+					                if (data.genero === 'masculino') {
+					                    if (data.edad >= 18 && data.edad <= 39) {
+					                        if (abdominalFatMass < 1.8) {
+					                            massRisk = 'Normal';
+					                            healthyRange = '<1.8 kg';
+					                        } else if (abdominalFatMass <= 3.6) {
+					                            massRisk = 'Moderado (vigilar)';
+					                            healthyRange = '<1.8 kg';
+					                        } else {
+					                            massRisk = 'Alto (mayor riesgo cardiovascular)';
+					                            healthyRange = '<1.8 kg';
 					                        }
-					                    } else if (data.genero === 'femenino') {
-					                        if (data.edad >= 18 && data.edad <= 39) {
-					                            if (abdominalFatMass < 1.35) {
-					                                massRisk = 'Normal';
-					                                healthyRange = '<1.35 kg';
-					                            } else if (abdominalFatMass <= 3.15) {
-					                                massRisk = 'Moderado';
-					                                healthyRange = '<1.35 kg';
-					                            } else {
-					                                massRisk = 'Alto';
-					                                healthyRange = '<1.35 kg';
-					                            }
-					                        } else if (data.edad <= 59) {
-					                            if (abdominalFatMass < 1.5) {
-					                                massRisk = 'Normal';
-					                                healthyRange = '<1.5 kg';
-					                            } else if (abdominalFatMass <= 3.5) {
-					                                massRisk = 'Moderado';
-					                                healthyRange = '<1.5 kg';
-					                            } else {
-					                                massRisk = 'Alto';
-					                                healthyRange = '<1.5 kg';
-					                            }
-					                        } else if (data.edad >= 60) {
-					                            if (abdominalFatMass < 1.65) {
-					                                massRisk = 'Normal';
-					                                healthyRange = '<1.65 kg';
-					                            } else if (abdominalFatMass <= 3.85) {
-					                                massRisk = 'Moderado';
-					                                healthyRange = '<1.65 kg';
-					                            } else {
-					                                massRisk = 'Alto';
-					                                healthyRange = '<1.65 kg';
-					                            }
-					                        } else if (data.edad >= 6 && data.edad <= 18) {
-					                            massRisk = 'No aplicable (Kvist no validado para menores)';
-					                            healthyRange = 'Consultar especialista';
-					                            abdominalFatMass = NaN; // Fallback for children
+					                    } else if (data.edad <= 59) {
+					                        if (abdominalFatMass < 2.0) {
+					                            massRisk = 'Normal';
+					                            healthyRange = '<2.0 kg';
+					                        } else if (abdominalFatMass <= 4.0) {
+					                            massRisk = 'Moderado (vigilar)';
+					                            healthyRange = '<2.0 kg';
+					                        } else {
+					                            massRisk = 'Alto (mayor riesgo cardiovascular)';
+					                            healthyRange = '<2.0 kg';
+					                        }
+					                    } else if (data.edad >= 60) {
+					                        if (abdominalFatMass < 2.2) {
+					                            massRisk = 'Normal';
+					                            healthyRange = '<2.2 kg';
+					                        } else if (abdominalFatMass <= 4.4) {
+					                            massRisk = 'Moderado (vigilar)';
+					                            healthyRange = '<2.2 kg';
+					                        } else {
+					                            massRisk = 'Alto (mayor riesgo cardiovascular)';
+					                            healthyRange = '<2.2 kg';
+					                        }
+					                    } else if (data.edad >= 6 && data.edad <= 18) {
+					                        if (data.edad <= 9) {
+					                            if (abdominalFatMass < 0.3) massRisk = 'Normal';
+					                            else if (abdominalFatMass <= 0.45) massRisk = 'Moderado';
+					                            else massRisk = 'Alto';
+					                            healthyRange = '<0.3 kg';
+					                        } else if (data.edad <= 13) {
+					                            if (abdominalFatMass < 0.36) massRisk = 'Normal';
+					                            else if (abdominalFatMass <= 0.54) massRisk = 'Moderado';
+					                            else massRisk = 'Alto';
+					                            healthyRange = '<0.36 kg';
+					                        } else {
+					                            if (abdominalFatMass < 0.45) massRisk = 'Normal';
+					                            else if (abdominalFatMass <= 0.6) massRisk = 'Moderado';
+					                            else massRisk = 'Alto';
+					                            healthyRange = '<0.45 kg';
 					                        }
 					                    }
-					                    thicknessSource = `Estimación de espesor (Método A): ${formatResult(thickness, 1)} cm, Masa grasa abdominal (Kvist et al., 1988): ${formatResult(abdominalFatMass, 1)} kg, Riesgo: ${massRisk} (Rango saludable: ${healthyRange})`;
-					                } else {
-					                    thicknessSource = 'Masa no calculada: Faltan datos de peso, altura o género';
+					                } else if (data.genero === 'femenino') {
+					                    if (data.edad >= 18 && data.edad <= 39) {
+					                        if (abdominalFatMass < 1.35) {
+					                            massRisk = 'Normal';
+					                            healthyRange = '<1.35 kg';
+					                        } else if (abdominalFatMass <= 3.15) {
+					                            massRisk = 'Moderado';
+					                            healthyRange = '<1.35 kg';
+					                        } else {
+					                            massRisk = 'Alto';
+					                            healthyRange = '<1.35 kg';
+					                        }
+					                    } else if (data.edad <= 59) {
+					                        if (abdominalFatMass < 1.5) {
+					                            massRisk = 'Normal';
+					                            healthyRange = '<1.5 kg';
+					                        } else if (abdominalFatMass <= 3.5) {
+					                            massRisk = 'Moderado';
+					                            healthyRange = '<1.5 kg';
+					                        } else {
+					                            massRisk = 'Alto';
+					                            healthyRange = '<1.5 kg';
+					                        }
+					                    } else if (data.edad >= 60) {
+					                        if (abdominalFatMass < 1.65) {
+					                            massRisk = 'Normal';
+					                            healthyRange = '<1.65 kg';
+					                        } else if (abdominalFatMass <= 3.85) {
+					                            massRisk = 'Moderado';
+					                            healthyRange = '<1.65 kg';
+					                        } else {
+					                            massRisk = 'Alto';
+					                            healthyRange = '<1.65 kg';
+					                        }
+					                    } else if (data.edad >= 6 && data.edad <= 18) {
+					                        if (data.edad <= 9) {
+					                            if (abdominalFatMass < 0.3) massRisk = 'Normal';
+					                            else if (abdominalFatMass <= 0.45) massRisk = 'Moderado';
+					                            else massRisk = 'Alto';
+					                            healthyRange = '<0.3 kg';
+					                        } else if (data.edad <= 13) {
+					                            if (abdominalFatMass < 0.36) massRisk = 'Normal';
+					                            else if (abdominalFatMass <= 0.54) massRisk = 'Moderado';
+					                            else massRisk = 'Alto';
+					                            healthyRange = '<0.36 kg';
+					                        } else {
+					                            if (abdominalFatMass < 0.45) massRisk = 'Normal';
+					                            else if (abdominalFatMass <= 0.6) massRisk = 'Moderado';
+					                            else massRisk = 'Alto';
+					                            healthyRange = '<0.45 kg';
+					                        }
+					                    }
 					                }
+					                thicknessSource = `Estimación de espesor (Método A): ${formatResult(thickness, 1)} cm, Masa grasa abdominal: ${formatResult(abdominalFatMass, 1)} kg, Riesgo: ${massRisk} (Rango saludable: ${healthyRange})`;
 					            } else {
 					                thicknessSource = '(No calculado: Faltan datos de género o edad)';
 					            }
@@ -4260,7 +4282,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                    else risk = 'Alto';
 					                }
 					            }
-					            source += `, Riesgo Metabólico: ${risk}`;
+					            source += `, Riesgo Metabólico: ${risk} (subcutáneo)`;
 					        }
 					    } else {
 					        // Method B: Using % Body Fat and Circumference
@@ -4283,8 +4305,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					
 					        if (!isNaN(bodyFat) && data.circ_cintura) {
-					            gat = (bodyFat/100) * 0.45 * data.circ_cintura;
-					            console.log(`GAT Method B: %Grasa=${bodyFat}, CC=${data.circ_cintura}, GAT=${gat} cm²`);
+					            gat = bodyFat * 0.45 * data.circ_cintura;
+					            unscaledGat = data.genero === 'masculino' ? gat * 10 : gat * 15; // Unscaled GAT for comparison
+					            console.log(`GAT Method B: %Grasa=${bodyFat}, CC=${data.circ_cintura}, Scaled GAT=${gat} cm², Unscaled GAT=${unscaledGat} cm²`);
 					
 					            // Calculate abdominal fat thickness for Method B
 					            let k;
@@ -4316,7 +4339,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                    }
 					                    console.log(`Kvist Abdominal Fat Mass: CC=${data.circ_cintura}, BMI=${bmi}, Mass=${abdominalFatMass} kg`);
 					
-					                    // Risk assessment for fat mass
+					                    // Risk assessment for fat mass (using Method A thresholds)
 					                    let massRisk = '';
 					                    let healthyRange = '';
 					                    if (data.genero === 'masculino') {
@@ -4370,7 +4393,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                                massRisk = 'Alto';
 					                                healthyRange = '<1.35 kg';
 					                            }
-					                        } else if (data.edad <= 59) {
+					                        } FIG: Method B GAT Risk Assessment
+					                        else if (data.edad <= 59) {
 					                            if (abdominalFatMass < 1.5) {
 					                                massRisk = 'Normal';
 					                                healthyRange = '<1.5 kg';
@@ -4398,7 +4422,95 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					                            abdominalFatMass = NaN; // Fallback for children
 					                        }
 					                    }
-					                    thicknessSource = `Estimación de espesor (Método B): ${formatResult(thickness, 1)} cm, Masa grasa abdominal (Kvist et al., 1988): ${formatResult(abdominalFatMass, 1)} kg, Riesgo: ${massRisk} (Rango saludable: ${healthyRange})`;
+					                    // Risk assessment for scaled GAT (Method B thresholds)
+					                    if (data.genero === 'masculino') {
+					                        if (data.edad >= 18 && data.edad <= 39) {
+					                            if (gat < 20) risk = 'Normal';
+					                            else if (gat <= 30) risk = 'Moderado (vigilar)';
+					                            else risk = 'Alto (mayor riesgo cardiovascular)';
+					                        } else if (data.edad <= 59) {
+					                            if (gat < 22) risk = 'Normal';
+					                            else if (gat <= 32) risk = 'Moderado (vigilar)';
+					                            else risk = 'Alto (mayor riesgo cardiovascular)';
+					                        } else {
+					                            if (gat < 25) risk = 'Normal';
+					                            else if (gat <= 35) risk = 'Moderado (vigilar)';
+					                            else risk = 'Alto (mayor riesgo cardiovascular)';
+					                        }
+					                    } else if (data.genero === 'femenino') {
+					                        if (data.edad >= 18 && data.edad <= 39) {
+					                            if (gat < 15) risk = 'Normal';
+					                            else if (gat <= 25) risk = 'Moderado';
+					                            else risk = 'Alto';
+					                        } else if (data.edad <= 59) {
+					                            if (gat < 18) risk = 'Normal';
+					                            else if (gat <= 28) risk = 'Moderado';
+					                            else risk = 'Alto';
+					                        } else {
+					                            if (gat < 20) risk = 'Normal';
+					                            else if (gat <= 30) risk = 'Moderado';
+					                            else risk = 'Alto';
+					                        }
+					                    } else if (data.edad >= 6 && data.edad < 18) {
+					                        if (data.edad <= 9) {
+					                            if (gat < 10) risk = 'Normal';
+					                            else if (gat <= 15) risk = 'Moderado';
+					                            else risk = 'Alto';
+					                        } else if (data.edad <= 13) {
+					                            if (gat < 12) risk = 'Normal';
+					                            else if (gat <= 18) risk = 'Moderado';
+					                            else risk = 'Alto';
+					                        } else {
+					                            if (gat < 15) risk = 'Normal';
+					                            else if (gat <= 20) risk = 'Moderado';
+					                            else risk = 'Alto';
+					                        }
+					                    }
+					                    // Risk assessment for unscaled GAT (Method A thresholds)
+					                    if (data.genero === 'masculino') {
+					                        if (data.edad >= 18 && data.edad <= 39) {
+					                            if (unscaledGat < 180) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 360) unscaledRisk = 'Moderado (vigilar)';
+					                            else unscaledRisk = 'Alto (mayor riesgo cardiovascular)';
+					                        } else if (data.edad <= 59) {
+					                            if (unscaledGat < 200) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 400) unscaledRisk = 'Moderado (vigilar)';
+					                            else unscaledRisk = 'Alto (mayor riesgo cardiovascular)';
+					                        } else {
+					                            if (unscaledGat < 220) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 440) unscaledRisk = 'Moderado (vigilar)';
+					                            else unscaledRisk = 'Alto (mayor riesgo cardiovascular)';
+					                        }
+					                    } else if (data.genero === 'femenino') {
+					                        if (data.edad >= 18 && data.edad <= 39) {
+					                            if (unscaledGat < 135) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 315) unscaledRisk = 'Moderado';
+					                            else unscaledRisk = 'Alto';
+					                        } else if (data.edad <= 59) {
+					                            if (unscaledGat < 150) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 350) unscaledRisk = 'Moderado';
+					                            else unscaledRisk = 'Alto';
+					                        } else {
+					                            if (unscaledGat < 165) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 385) unscaledRisk = 'Moderado';
+					                            else unscaledRisk = 'Alto';
+					                        }
+					                    } else if (data.edad >= 6 && data.edad < 18) {
+					                        if (data.edad <= 9) {
+					                            if (unscaledGat < 100) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 150) unscaledRisk = 'Moderado';
+					                            else unscaledRisk = 'Alto';
+					                        } else if (data.edad <= 13) {
+					                            if (unscaledGat < 120) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 180) unscaledRisk = 'Moderado';
+					                            else unscaledRisk = 'Alto';
+					                        } else {
+					                            if (unscaledGat < 150) unscaledRisk = 'Normal';
+					                            else if (unscaledGat <= 200) unscaledRisk = 'Moderado';
+					                            else unscaledRisk = 'Alto';
+					                        }
+					                    }
+					                    thicknessSource = `Estimación de espesor (Método B): ${formatResult(thickness, 1)} cm, Masa grasa abdominal (Kvist et al., 1988, total): ${formatResult(abdominalFatMass, 1)} kg, Riesgo: ${massRisk} (Rango saludable: ${healthyRange}), GAT escalado: ${formatResult(gat, 1)} cm² (Riesgo visceral: ${risk}), GAT sin escalar: ${formatResult(unscaledGat, 1)} cm² (Riesgo subcutáneo: ${unscaledRisk})`;
 					                } else {
 					                    thicknessSource = 'Masa no calculada: Faltan datos de peso, altura o género';
 					                }
@@ -4410,58 +4522,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					            thicknessSource = 'No calculado: Faltan datos para espesor y masa';
 					        }
 					
-					        // Risk Assessment for GAT (Method B)
-					        if (!isNaN(gat) && data.genero && data.edad) {
-					            if (data.genero === 'masculino') {
-					                if (data.edad >= 18 && data.edad <= 39) {
-					                    if (gat < 20) risk = 'Normal';
-					                    else if (gat <= 30) risk = 'Moderado (vigilar)';
-					                    else risk = 'Alto (mayor riesgo cardiovascular)';
-					                } else if (data.edad <= 59) {
-					                    if (gat < 22) risk = 'Normal';
-					                    else if (gat <= 32) risk = 'Moderado (vigilar)';
-					                    else risk = 'Alto (mayor riesgo cardiovascular)';
-					                } else {
-					                    if (gat < 25) risk = 'Normal';
-					                    else if (gat <= 35) risk = 'Moderado (vigilar)';
-					                    else risk = 'Alto (mayor riesgo cardiovascular)';
-					                }
-					            } else if (data.genero === 'femenino') {
-					                if (data.edad >= 18 && data.edad <= 39) {
-					                    if (gat < 15) risk = 'Normal';
-					                    else if (gat <= 25) risk = 'Moderado';
-					                    else risk = 'Alto';
-					                } else if (data.edad <= 59) {
-					                    if (gat < 18) risk = 'Normal';
-					                    else if (gat <= 28) risk = 'Moderado';
-					                    else risk = 'Alto';
-					                } else {
-					                    if (gat < 20) risk = 'Normal';
-					                    else if (gat <= 30) risk = 'Moderado';
-					                    else risk = 'Alto';
-					                }
-					            } else if (data.edad >= 6 && data.edad < 18) {
-					                if (data.edad <= 9) {
-					                    if (gat < 10) risk = 'Normal';
-					                    else if (gat <= 15) risk = 'Moderado';
-					                    else risk = 'Alto';
-					                } else if (data.edad <= 13) {
-					                    if (gat < 12) risk = 'Normal';
-					                    else if (gat <= 18) risk = 'Moderado';
-					                    else risk = 'Alto';
-					                } else {
-					                    if (gat < 15) risk = 'Normal';
-					                    else if (gat <= 20) risk = 'Moderado';
-					                    else risk = 'Alto';
-					                }
-					            }
-					            source += `, Riesgo Metabólico: ${risk}`;
-					        }
+					        // Risk Assessment for GAT (Method B scaled, already handled above)
+					        source += `, Riesgo Metabólico: ${risk} (visceral)`;
 					    }
 					
-					    return { value: gat, source: source, thickness: thickness, thicknessSource: thicknessSource, abdominalFatMass: abdominalFatMass };
+					    return { value: gat, source: source, thickness: thickness, thicknessSource: thicknessSource, abdominalFatMass: abdominalFatMass, unscaledGat: unscaledGat, unscaledRisk: unscaledRisk };
 					};
-				
       
 			// Define resetResultElements (place before handler, after resultElements)
 				const resetResultElements = (elements) => {
