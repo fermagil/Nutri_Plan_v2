@@ -4305,7 +4305,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        }
 					
 					        if (!isNaN(bodyFat) && data.circ_cintura) {
-					            gat = bodyFat * 0.45 * data.circ_cintura;
+					            gat = (bodyFat/10) * 0.45 * data.circ_cintura;
 					            unscaledGat = data.genero === 'masculino' ? gat * 10 : gat * 15; // Unscaled GAT for comparison
 					            console.log(`GAT Method B: %Grasa=${bodyFat}, CC=${data.circ_cintura}, Scaled GAT=${gat} cm², Unscaled GAT=${unscaledGat} cm²`);
 					
@@ -5464,6 +5464,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			            } else {
 			                results.pesoObjetivo = NaN;
 			            }
+				    if (data.peso && !isNaN(results.pesoIdealMetabolic)) {
+			                results.pesoObjetivoMetabolic = results.pesoIdealMetabolic - data.peso;
+			            } else {
+			                results.pesoObjetivoMetabolic = NaN;
+			            }
 			
 			            if (!isNaN(alturaM)) {
 			                results.imc = data.peso / (alturaM * alturaM);
@@ -6023,6 +6028,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 				    pesoIdealActual: formatResult(results.pesoIdealActual, 1),
 				    pesoIdealMetabolic: formatResult(results.pesoIdealMetabolic, 1),
 				    pesoObjetivo: formatResult(results.pesoObjetivo, 1),
+				    pesoObjetivoMetabolic: formatResult(results.pesoObjetivoMetabolic, 1),
 				    edadMetabolica: formatResult(results.edadmetabolica, 0),
 				    edadMetabolicaSource: results.edadmetabolicaSource || '(No calculado)',
 				    amb: formatResult(results.amb, 1),
@@ -6298,6 +6304,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					
 					    updateElement('pesoIdeal', results.pesoIdeal, 1);
 					    updateElement('pesoObjetivo', results.pesoObjetivo, 1);
+					     updateElement('pesoIdealMetabolic', results.pesoIdealMetabolic, 1);
+					    updateElement('pesoObjetivoMetabolic', results.pesoObjetivoMetabolic, 1);
+						
 					    updateElement('mmt', results.mmt, 1);
 					    updateElement('Pctmmt', results.Pctmmt, 1);
 					    if (resultElements.PctmmtSource) {
