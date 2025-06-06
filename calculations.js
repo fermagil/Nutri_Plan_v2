@@ -1924,9 +1924,12 @@ import { auth } from './app.js';
             <h3>Tipología del Cuerpo según Índices de Masa (IMLG e IMG)</h3>
             <p>Utilizando los estándares de referencia NHANES/Frisancho 2008, calculamos los siguientes índices:</p>
             
-                <p><strong>Índice de Masa Libre de Grasa (IMLG):</strong> ${formatResult(imlg, 1)} kg/m² (Categoría: ${imlgCategory}). <br><em>${imlgRangeDesc}</em></p>
-                <p><strong>Índice de Masa Grasa (IMG):</strong> ${formatResult(img, 1)} kg/m² (Categoría: ${imgCategory}). <br><em>${imgRangeDesc}</em></p>
-           
+                <p><strong>Índice de Masa Libre de Grasa (IMLG):</strong> <strong>${formatResult(imlg, 1)} kg/m² </strong>(Categoría: ${imlgCategory}). <br><em>${imlgRangeDesc}</em></p>
+                <p><strong>Índice de Masa Grasa (IMG):</strong> <strong>${formatResult(img, 1)} kg/m²</strong> (Categoría: ${imgCategory}). <br><em>${imgRangeDesc}</em></p>
+
+	    <div id="typology-legend-container" style="margin-bottom: 20px;"></div>
+            <div id="typology-chart-container"></div>
+            <p><strong>Nota:</strong> <em>Estos rangos son guías generales basadas en estándares de población. La interpretación debe considerar tu nivel de actividad física, salud general y otros indicadores clínicos. Consulta a un profesional para un análisis más detallado.</em></p>
             <p>El plano está dividido en una cuadrícula de 3x3, creando 9 secciones distintas. Cada sección corresponde a una tipología de físico, y las fronteras de estas secciones se ajustan dinámicamente según el sexo, la edad y el nivel de actividad física:</p>
             
                 <p>Las secciones en la parte inferior del eje Y (IMG bajo) representan físicos con baja grasa corporal.</p>
@@ -1952,9 +1955,7 @@ import { auth } from './app.js';
                 <li><strong>Esbelto Magro Atleta:</strong> Bajo IMG, IMLG moderado a alto. Poca grasa y buena cantidad de masa magra/muscular (físico definido).</li>
                 <li><strong>Musculoso Atleta:</strong> Bajo IMG, IMLG muy alto. Muy poca grasa y una gran cantidad de masa magra/muscular.</li>
             </ol>
-            <div id="typology-legend-container" style="margin-bottom: 20px;"></div>
-            <div id="typology-chart-container"></div>
-            <p><em>Nota:</em> Estos rangos son guías generales basadas en estándares de población. La interpretación debe considerar tu nivel de actividad física, salud general y otros indicadores clínicos. Consulta a un profesional para un análisis más detallado.</p>
+           
         `;
     } else {
         content += '<p>No se pudieron calcular los índices de composición corporal debido a datos insuficientes (falta peso, altura o porcentaje de grasa).</p>';
