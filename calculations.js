@@ -6374,12 +6374,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							    });
 							}
 							explanationContent.innerHTML = analysisHtml + content; // Append error messages
-							if (explanationContent && content) {
-							    explanationContent.innerHTML = content;
-							    console.log('Explicaciones actualizadas:', content);
-							}
+							
 							if (explanationSection) {
-							    explanationSection.style.display = 'block';
+							    explanationSection.style.display = isExplanationsTabActive ? 'block' : '';
+							    console.log(`Sección de explicaciones: ${isExplanationsTabActive ? 'mostrada' : 'estilo display restablecido a CSS'} en generación`);
 							} else {
 							    console.warn('explanationSection no encontrado');
 							}
@@ -6400,9 +6398,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 			        explanationContent.innerHTML = content;
 			    }
 			    if (explanationSection) {
-			        explanationSection.style.display = 'block';
-			    }
-			}
+				    explanationSection.style.display = isExplanationsTabActive ? 'block' : '';
+				    console.log(`Sección de explicaciones: ${isExplanationsTabActive ? 'mostrada' : 'estilo display restablecido a CSS'} en error`);
+				}
 			// Display errors
 		            if (content) {
 		                const errorContainer = document.getElementById('error-container');
