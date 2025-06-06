@@ -1340,11 +1340,11 @@ import { auth } from './app.js';
 				let explanation = `
 					<h3>Medición del Somatotipo</h3>
 					<p>Tu somatotipo, calculado mediante el método Heath-Carter, es <strong>${formatResult(endomorfia, 1)}-${formatResult(mesomorfia, 1)}-${formatResult(ectomorfia, 1)}</strong>. Esto indica:</p>
-					<ul>
-						<li><strong>Endomorfia (${formatResult(endomorfia, 1)})</strong>: Representa la tendencia a almacenar grasa corporal. Una puntuación alta (cercana a 7 o más) indica una constitución más redondeada con mayor grasa corporal. <br><em>${endoDesc}</em></li>
-						<li><strong>Mesomorfia (${formatResult(mesomorfia, 1)})</strong>: Representa la muscularidad y fuerza. Una puntuación alta indica una constitución atlética, con facilidad para ganar músculo. <br><em>${mesoDesc}</em></li>
-						<li><strong>Ectomorfia (${formatResult(ectomorfia, 1)})</strong>: Representa la delgadez y estructura ósea ligera. Una puntuación alta indica un cuerpo delgado, con poca grasa y músculo. <br><em>${ectoDesc}</em></li>
-					</ul>
+					
+						<p><strong>Endomorfia (${formatResult(endomorfia, 1)})</strong>: Representa la tendencia a almacenar grasa corporal. Una puntuación alta (cercana a 7 o más) indica una constitución más redondeada con mayor grasa corporal. <br><em>${endoDesc}</em></p>
+						<p><strong>Mesomorfia (${formatResult(mesomorfia, 1)})</strong>: Representa la muscularidad y fuerza. Una puntuación alta indica una constitución atlética, con facilidad para ganar músculo. <br><em>${mesoDesc}</em></p>
+						<p><strong>Ectomorfia (${formatResult(ectomorfia, 1)})</strong>: Representa la delgadez y estructura ósea ligera. Una puntuación alta indica un cuerpo delgado, con poca grasa y músculo. <br><em>${ectoDesc}</em></p>
+				
 				`;
 
 				// Determinar si el somatotipo es equilibrado o dominante
@@ -1883,9 +1883,9 @@ import { auth } from './app.js';
 		content += `
         
         <p>Basado en tu porcentaje de grasa corporal (${formatResult(porcentajeGrasa, 1)}%) y peso (${formatResult(peso, 1)} kg):</p>
-        <ul>
-            <li><strong>Masa Grasa:</strong> ${formatResult(masaGrasa, 1)} kg. Esto representa la cantidad total de grasa corporal.</li>
-            <li><strong>Masa Magra (MLG):</strong> ${formatResult(masaMagra, 1)} kg. Incluye músculos, huesos, órganos y agua.</li>
+        
+            <p><strong>Masa Grasa:</strong> ${formatResult(masaGrasa, 1)} kg. Esto representa la cantidad total de grasa corporal.</p>
+            <p><strong>Masa Magra (MLG):</strong> ${formatResult(masaMagra, 1)} kg. Incluye músculos, huesos, órganos y agua.</p>
         </ul>
     `;
 
@@ -1895,17 +1895,17 @@ import { auth } from './app.js';
         content += `
             <h3>Tipología del Cuerpo según Índices de Masa (IMLG e IMG)</h3>
             <p>Utilizando los estándares de referencia NHANES/Frisancho 2008, calculamos los siguientes índices:</p>
-            <ul>
-                <li><strong>Índice de Masa Libre de Grasa (IMLG):</strong> ${formatResult(imlg, 1)} kg/m² (Categoría: ${imlgCategory}). <br><em>${imlgRangeDesc}</em></li>
-                <li><strong>Índice de Masa Grasa (IMG):</strong> ${formatResult(img, 1)} kg/m² (Categoría: ${imgCategory}). <br><em>${imgRangeDesc}</em></li>
-            </ul>
+            
+                <p><strong>Índice de Masa Libre de Grasa (IMLG):</strong> ${formatResult(imlg, 1)} kg/m² (Categoría: ${imlgCategory}). <br><em>${imlgRangeDesc}</em></p>
+                <p><strong>Índice de Masa Grasa (IMG):</strong> ${formatResult(img, 1)} kg/m² (Categoría: ${imgCategory}). <br><em>${imgRangeDesc}</em></p>
+           
             <p>El plano está dividido en una cuadrícula de 3x3, creando 9 secciones distintas. Cada sección corresponde a una tipología de físico, y las fronteras de estas secciones se ajustan dinámicamente según el sexo, la edad y el nivel de actividad física:</p>
-            <ul>
-                <li>Las secciones en la parte inferior del eje Y (IMG bajo) representan físicos con baja grasa corporal.</li>
-                <li>Las secciones en la parte superior del eje Y (IMG alto) representan físicos con alta grasa corporal (adiposos u obesos).</li>
-                <li>Las secciones en la parte izquierda del eje X (IMLG bajo) representan físicos con baja masa libre de grasa (delgados o sedentarios).</li>
-                <li>Las secciones en la parte derecha del eje X (IMLG alto) representan físicos con alta masa libre de grasa (musculosos o atletas).</li>
-            </ul>
+            
+                <p>Las secciones en la parte inferior del eje Y (IMG bajo) representan físicos con baja grasa corporal.</p>
+                <p>Las secciones en la parte superior del eje Y (IMG alto) representan físicos con alta grasa corporal (adiposos u obesos).</p>
+                <p>Las secciones en la parte izquierda del eje X (IMLG bajo) representan físicos con baja masa libre de grasa (delgados o sedentarios).</p>
+                <p>Las secciones en la parte derecha del eje X (IMLG alto) representan físicos con alta masa libre de grasa (musculosos o atletas).</p>
+            
             <p>Los valores de IMLG e IMG se clasifican como "Fuera de rango" si están por debajo de los límites mínimos (IMLG: 11.5 kg/m², IMG: 2 kg/m²) o por encima de los límites máximos definidos para tu sexo, edad y nivel de actividad física.</p>
             <h4>Interpretación de las Tipologías</h4>
             <p>Basado en estos índices, tu tipología corporal se clasifica como <strong>${tipologia} (#${typologyNumber})</strong>:</p>
@@ -1965,12 +1965,12 @@ import { auth } from './app.js';
         }
         content += '<ul>';
         if (cinturaImpact > 0) {
-            content += `<li><strong>Circunferencia de cintura (${formatResult(data.circ_cintura, 1)} cm):</strong> Contribuye aproximadamente +${formatResult(cinturaImpact, 1)} años debido a la grasa visceral acumulada.</li>`;
+            content += `<p><strong>Circunferencia de cintura (${formatResult(data.circ_cintura, 1)} cm):</strong> Contribuye aproximadamente +${formatResult(cinturaImpact, 1)} años debido a la grasa visceral acumulada.</p>`;
         }
         if (grasaImpact > 0) {
-            content += `<li><strong>Porcentaje de grasa (${formatResult(results.grasaPctActual, 1)}%):</strong> Añade aproximadamente +${formatResult(grasaImpact, 1)} años por estar por encima del rango saludable.</li>`;
+            content += `<p><strong>Porcentaje de grasa (${formatResult(results.grasaPctActual, 1)}%):</strong> Añade aproximadamente +${formatResult(grasaImpact, 1)} años por estar por encima del rango saludable.</p>`;
         }
-        content += `<li><strong>Nivel de actividad:</strong> ${data.es_deportista === 'si' ? 'Tu actividad física reduce unos -2.8 años.' : 'El sedentarismo añade unos +3.0 años.'}</li>`;
+        content += `<p><strong>Nivel de actividad:</strong> ${data.es_deportista === 'si' ? 'Tu actividad física reduce unos -2.8 años.' : 'El sedentarismo añade unos +3.0 años.'}</p>`;
         content += '</ul>';
 
         // Interpretación
@@ -1989,53 +1989,53 @@ import { auth } from './app.js';
 
         content += '<h5>1. Disminuir la Grasa Corporal</h5>';
         content += '<ul>';
-        content += '<li><strong>Haz Cardio:</strong> El ejercicio cardiovascular quema calorías y grasa. Prueba el <strong>HIIT</strong> (intervalos de alta intensidad) para maximizar calorías en menos tiempo, o <strong>LISS</strong> (cardio de baja intensidad, como caminar rápido) para quemar más grasa por minuto. Apunta a 150 min/semana (ej.: 30 min/día, 5 días).</li>';
-        content += '<li><strong>Crea un Déficit Calórico:</strong> Come menos calorías de las que quemas (déficit de 300-500 kcal/día). Calcula tu <strong>TDEE</strong> (gasto energético diario total) y mantén la ingesta entre tu BMR y TDEE para perder grasa de forma sostenible.</li>';
-        content += '<li><strong>Reduce Carbohidratos:</strong> Limita los carbohidratos al 30% de tus calorías diarias, ajustándolos según tu actividad (más actividad, más carbohidratos). Esto fomenta que tu cuerpo use grasa almacenada como energía.</li>';
-        content += '<li><strong>Come Alimentos Saludables:</strong> Prioriza alimentos integrales (verduras, frutas, proteínas magras, grasas saludables). Evita azúcares refinados y grasas trans para mejorar tu salud general.</li>';
+        content += '<p><strong>Haz Cardio:</strong> El ejercicio cardiovascular quema calorías y grasa. Prueba el <strong>HIIT</strong> (intervalos de alta intensidad) para maximizar calorías en menos tiempo, o <strong>LISS</strong> (cardio de baja intensidad, como caminar rápido) para quemar más grasa por minuto. Apunta a 150 min/semana (ej.: 30 min/día, 5 días).</p>';
+        content += '<p><strong>Crea un Déficit Calórico:</strong> Come menos calorías de las que quemas (déficit de 300-500 kcal/día). Calcula tu <strong>TDEE</strong> (gasto energético diario total) y mantén la ingesta entre tu BMR y TDEE para perder grasa de forma sostenible.</p>';
+        content += '<p><strong>Reduce Carbohidratos:</strong> Limita los carbohidratos al 30% de tus calorías diarias, ajustándolos según tu actividad (más actividad, más carbohidratos). Esto fomenta que tu cuerpo use grasa almacenada como energía.</p>';
+        content += '<p><strong>Come Alimentos Saludables:</strong> Prioriza alimentos integrales (verduras, frutas, proteínas magras, grasas saludables). Evita azúcares refinados y grasas trans para mejorar tu salud general.</p>';
         if (data.circ_cintura && ((data.genero === 'masculino' && data.circ_cintura > 94) || (data.genero === 'femenino' && data.circ_cintura > 80))) {
-            content += `<li><strong>Reduce la Cintura:</strong> Tu circunferencia de cintura (${formatResult(data.circ_cintura, 1)} cm) está por encima del rango saludable. Apunta a <${data.genero === 'masculino' ? '94' : '80'} cm con dieta y cardio.</li>`;
+            content += `<p><strong>Reduce la Cintura:</strong> Tu circunferencia de cintura (${formatResult(data.circ_cintura, 1)} cm) está por encima del rango saludable. Apunta a <${data.genero === 'masculino' ? '94' : '80'} cm con dieta y cardio.</p>`;
         }
         content += '</ul>';
 
         content += '<h5>2. Aumentar la Masa Magra</h5>';
         content += '<ul>';
-        content += '<li><strong>Levanta Pesas:</strong> Incorpora entrenamientos de resistencia 2-3 veces por semana para construir músculo, lo que acelera tu metabolismo. Ejercicios como sentadillas, peso muerto y press de banca son ideales.</li>';
-        content += '<li><strong>Come Suficientes Calorías:</strong> Para ganar músculo, consume al menos tu TDEE o un ligero exceso calórico (100-200 kcal). Aumenta calorías gradualmente después de perder grasa.</li>';
-        content += '<li><strong>Aumenta Proteínas:</strong> Consume 1.6-2.2 g de proteína por kg de peso corporal (aprox. 30% de tus calorías). Fuentes como pollo, pescado, huevos, tofu o legumbres son excelentes.</li>';
+        content += '<p><strong>Levanta Pesas:</strong> Incorpora entrenamientos de resistencia 2-3 veces por semana para construir músculo, lo que acelera tu metabolismo. Ejercicios como sentadillas, peso muerto y press de banca son ideales.</p>';
+        content += '<p><strong>Come Suficientes Calorías:</strong> Para ganar músculo, consume al menos tu TDEE o un ligero exceso calórico (100-200 kcal). Aumenta calorías gradualmente después de perder grasa.</p>';
+        content += '<p><strong>Aumenta Proteínas:</strong> Consume 1.6-2.2 g de proteína por kg de peso corporal (aprox. 30% de tus calorías). Fuentes como pollo, pescado, huevos, tofu o legumbres son excelentes.</p>';
         content += '</ul>';
 
         if ((data.genero === 'masculino' && results.grasaPctActual > 18) || (data.genero === 'femenino' && results.grasaPctActual > 24)) {
             content += '<h5>3. Recomendaciones para Obesidad</h5>';
             content += '<ul>';
-            content += '<li><strong>Pérdida de Peso Gradual:</strong> Apunta a reducir un 5-10% de tu peso corporal para mejorar tu metabolismo. Hazlo lentamente (0.5-1 kg/semana).</li>';
-            content += '<li><strong>Dieta Mediterránea:</strong> Adopta una dieta rica en frutas, verduras, pescado, aceite de oliva y frutos secos para combatir la inflamación y el estrés oxidativo.</li>';
-            content += '<li><strong>Suplementos:</strong> Considera omega-3 (antiinflamatorio) y vitamina D (mejora sensibilidad a la insulina), pero consulta a un médico primero.</li>';
-            content += '<li><strong>Consulta Profesional:</strong> Trabaja con un endocrinólogo o nutricionista para un plan personalizado.</li>';
+            content += '<p><strong>Pérdida de Peso Gradual:</strong> Apunta a reducir un 5-10% de tu peso corporal para mejorar tu metabolismo. Hazlo lentamente (0.5-1 kg/semana).</p>';
+            content += '<p><strong>Dieta Mediterránea:</strong> Adopta una dieta rica en frutas, verduras, pescado, aceite de oliva y frutos secos para combatir la inflamación y el estrés oxidativo.</p>';
+            content += '<p><strong>Suplementos:</strong> Considera omega-3 (antiinflamatorio) y vitamina D (mejora sensibilidad a la insulina), pero consulta a un médico primero.</p>';
+            content += '<p><strong>Consulta Profesional:</strong> Trabaja con un endocrinólogo o nutricionista para un plan personalizado.</p>';
             content += '</ul>';
         }
 		
 		
         // Riesgos asociados
         content += '<h4>Riesgos Asociados</h4>';
-        content += '<ul>';
+        content += '<p>';
         if (data.circ_cintura && ((data.genero === 'masculino' && data.circ_cintura > 100) || (data.genero === 'femenino' && data.circ_cintura > 88))) {
-            content += `<li>Tu cintura (${formatResult(data.circ_cintura, 1)} cm) aumenta significativamente el riesgo de problemas cardiovasculares y resistencia a la insulina.</li>`;
+            content += `<p>Tu cintura (${formatResult(data.circ_cintura, 1)} cm) aumenta significativamente el riesgo de problemas cardiovasculares y resistencia a la insulina.</p>`;
         }
         if (data.es_deportista !== 'si' && results.grasaPctActual > (data.genero === 'masculino' ? 18 : 24)) {
-            content += '<li>El sedentarismo combinado con un exceso de grasa corporal puede acelerar el envejecimiento celular y problemas metabólicos.</li>';
+            content += '<p>El sedentarismo combinado con un exceso de grasa corporal puede acelerar el envejecimiento celular y problemas metabólicos.</p>';
         }
-        content += '</ul>';
+        content += '</p>';
 
         // Conclusión
         content += '<h4>Conclusión</h4>';
         content += `<p>Tu metabolismo funciona como el de una persona de ${formatResult(results.edadmetabolica, 1)} años. Para optimizarlo:</p>`;
         content += '<ul>';
-        content += '<li><strong>Prioriza:</strong> Reducir la grasa visceral (cintura) con dieta y cardio.</li>';
-        content += '<li><strong>Combina:</strong> Ejercicio aeróbico y de fuerza para mejorar la composición corporal.</li>';
-        content += '<li><strong>Consulta:</strong> Un profesional para un plan personalizado.</li>';
+        content += '<p><strong>Prioriza:</strong> Reducir la grasa visceral (cintura) con dieta y cardio.</p>';
+        content += '<p><strong>Combina:</strong> Ejercicio aeróbico y de fuerza para mejorar la composición corporal.</p>';
+        content += '<p><strong>Consulta:</strong> Un profesional para un plan personalizado.</p>';
         content += '</ul>';
-        content += '<p><strong>¿Listo para empezar?</strong> Si necesitas un plan detallado, ¡puedes consultar a un nutricionista o entrenador! 😊</p>';
+        content += '<p><strong>¿Listo para empezar?</strong> Si necesitas un plan detallado, ¡puedes consultar a un nutricionista o entrenador! </p>';
     } else {
         content += '<p>No se pudo calcular la edad metabólica debido a datos insuficientes (falta porcentaje de grasa, medidas de pliegues o cintura).</p>';
     }
