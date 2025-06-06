@@ -1168,7 +1168,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { input: 'leptina', result: 'result-leptina', source: 'leptina-source', label: 'Leptina', unit: 'ng/mL', range: [0.5, 200] },
         { input: 'alt', result: 'result-alt', source: 'alt-source', label: 'ALT', unit: 'U/L', range: [5, 200] },
         { input: 'ggt', result: 'result-ggt', source: 'ggt-source', label: 'GGT', unit: 'U/L', range: [5, 300] },
-        { input: 'creatinina', result: 'creatinina', source: 'creatinina-source', label: 'Creatinina', unit: 'mg/dL', range: [0.5, 1.5] },
+        { input: 'creatinina', result: 'result-creatinina', source: 'creatinina-source', label: 'Creatinina', unit: 'mg/dL', range: [0.5, 1.5] },
         { input: 'bun', result: 'result-bun', source: 'bun-source', label: 'BUN', unit: 'mg/dL', range: [7, 25] },
         { input: 'tsh', result: 'result-tsh', source: 'tsh-source', label: 'TSH', unit: 'µIU/mL', range: [0.05, 15] },
         { input: 'testosterona', result: 'result-testosterona', source: 'testosterona-source', label: 'Testosterona', unit: 'ng/dL', range: [20, 1500] },
