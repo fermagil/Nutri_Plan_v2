@@ -1107,10 +1107,10 @@ async function cargarDatosToma(clienteId, tomaId) {
         }
 
         // Actualizar sección de explicación (si existe)
-        //const explanationSection = document.getElementById('explanation-section');
-        //if (explanationSection) {
-            //explanationSection.style.display = data.resultados ? 'block' : 'none';
-        //}
+        const explanationSection = document.getElementById('explanation-section');
+        if (explanationSection) {
+            explanationSection.style.display = data.resultados ? 'block' : 'none';
+        }
     } catch (error) {
         console.error('Error al cargar datos de la toma:', error);
         alert('Error al cargar datos: ' + error.message);
