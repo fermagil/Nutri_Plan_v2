@@ -6347,12 +6347,16 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        console.warn('explanationContent no está definido');
 					    }
 					
-					    if (explanationSection) {
-					        explanationSection.style.display = 'block';
-					        console.log('Sección de explicaciones mostrada');
-					    } else {
-					        console.warn('explanationSection no está definido');
-					    }
+					    const isExplanationsTabActive = document.querySelector('#tab4').checked;
+						if (explanationSection && isExplanationsTabActive) {
+						    explanationSection.style.display = 'block';
+						    console.log('Sección de explicaciones mostrada');
+						} else if (explanationSection && !isExplanationsTabActive) {
+						    explanationSection.style.display = 'none';
+						    console.log('Sección de explicaciones oculta porque no está en la pestaña Explicaciones');
+						} else {
+						    console.warn('explanationSection no encontrado');
+						}
 						// --- 4. Generate and Display Explanations ---
 							if (!explanationContent) {
 							    throw new Error('Elemento explanation-content no encontrado');
@@ -6373,8 +6377,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							    });
 							}
 							explanationContent.innerHTML = analysisHtml + content; // Append error messages
-							if (explanationSection) {
+							if (explanationSection && isExplanationsTabActive) {
 							    explanationSection.style.display = 'block';
+							    console.log('Sección de explicaciones mostrada');
+							} else if (explanationSection && !isExplanationsTabActive) {
+							    explanationSection.style.display = 'none';
+							    console.log('Sección de explicaciones oculta porque no está en la pestaña Explicaciones');
 							} else {
 							    console.warn('explanationSection no encontrado');
 							}
