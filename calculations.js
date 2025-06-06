@@ -2485,9 +2485,9 @@ import { auth } from './app.js';
 
 				// Compare MMT to references
 				content += `<p><strong>Comparación con Valores de Referencia (Edad ${ageRange}, ${data.genero}):</strong></p>`;
-				content += '<ul>';
+				content += '';
 				if (!isAthlete) {
-					content += `<li><strong>Población General:</strong> Tu MMT de ${mmtKg} kg está `;
+					content += `<p><strong>Población General:</strong> Tu MMT de ${mmtKg} kg está `;
 					if (results.mmt < refs.p5) {
 						content += `por debajo del percentil 5 (${refs.p5} kg). Esto sugiere una masa muscular baja; considera entrenamiento de fuerza para mejorar tu salud y prevenir fragilidad.`;
 					} else if (results.mmt >= refs.p5 && results.mmt <= refs.p50) {
@@ -2497,9 +2497,9 @@ import { auth } from './app.js';
 					} else {
 						content += `por encima del percentil 95 (${refs.p95} kg). Esto es poco común en no deportistas; consulta con un profesional para evaluar tu composición corporal.`;
 					}
-					content += '</li>';
+					content += '</p>';
 				} else {
-					content += `<li><strong>Deportistas:</strong> Tu MMT de ${mmtKg} kg está `;
+					content += `<p><strong>Deportistas:</strong> Tu MMT de ${mmtKg} kg está `;
 					const [p50Low, p50High] = refs.athlete.p50;
 					const [p75Low, p75High] = refs.athlete.p75;
 					const [p90Low, p90High] = refs.athlete.p90;
@@ -2512,9 +2512,9 @@ import { auth } from './app.js';
 					} else {
 						content += `por encima del rango de alto rendimiento (${p90High} kg). Esto es excepcional; consulta con un entrenador para optimizar tu rendimiento.`;
 					}
-					content += '</li>';
+					content += '</p>';
 				}
-				content += '</ul>';
+				content += '';
 
 				// Reference table (simplified for display)
 				content += `<p><strong>Valores de Referencia (kg):</strong></p>`;
@@ -2638,7 +2638,7 @@ import { auth } from './app.js';
 			 // Sugerencias y Consideraciones Personalizadas
 			content += '<h4>Sugerencias y Consideraciones Personalizadas</h4>';
 			content += '<p>Basado en tus resultados de Área Muscular Brazo (AMB), Masa Ósea y Masa Residual (MR), aquí tienes recomendaciones personalizadas para optimizar tu salud y rendimiento:</p>';
-			content += '<ul>';
+			content += '<p>';
 
     // AMB Suggestions
     if (!isNaN(results.amb) && data.edad && ['masculino', 'femenino'].includes(data.genero)) {
@@ -2731,7 +2731,7 @@ import { auth } from './app.js';
         // Select ranges
         const ranges = isAthlete ? ambRanges[gender].athlete[ageRange] : ambRanges[gender].general[ageRange];
 
-        content += '<li><strong>Área Muscular Brazo (AMB):</strong> ';
+        content += '<p><strong>Área Muscular Brazo (AMB):</strong> ';
         if (isAthlete) {
             if (results.amb < ranges.P50) {
                 content += `Tu AMB está por debajo del promedio para deportistas. Inicia un programa de entrenamiento de fuerza (ej., levantamiento de pesas, ejercicios con bandas elásticas) enfocado en el tren superior, 2–3 veces por semana. Asegura una ingesta de proteínas de 1.6–2.2 g/kg de peso corporal al día para apoyar el crecimiento muscular. Consulta a un entrenador para optimizar tu rendimiento.`;
@@ -2756,10 +2756,10 @@ import { auth } from './app.js';
         if (isObese) {
             content += ` Dado tu estado de obesidad, prioriza ejercicios de fuerza para preservar músculo mientras reduces grasa. Una dieta controlada en calorías con alto contenido proteico es esencial.`;
         }
-        content += '</li>';
+        content += '</p>';
         console.log(`AMB suggestions took ${performance.now() - startTime}ms`);
     } else {
-        content += '<li><strong>Área Muscular Brazo (AMB):</strong> No calculado. Proporciona datos de circunferencia del brazo, pliegue tricipital, edad y género para recibir recomendaciones personalizadas.</li>';
+        content += '<p><strong>Área Muscular Brazo (AMB):</strong> No calculado. Proporciona datos de circunferencia del brazo, pliegue tricipital, edad y género para recibir recomendaciones personalizadas.</p>';
     }
 
     // Masa Ósea Suggestions
@@ -2806,7 +2806,7 @@ import { auth } from './app.js';
         const boneRanges = isAthlete ? boneMassRanges[gender].athlete : boneMassRanges[gender][boneAgeRange];
         const [min, max] = boneRanges;
 
-        content += '<li><strong>Masa Ósea:</strong> ';
+        content += '<p><strong>Masa Ósea:</strong> ';
         if (boneMassPct < min) {
             content += `Tu masa ósea está por debajo del rango saludable. Incorpora ejercicios de impacto y resistencia (ej., caminar rápido, levantar pesas) 3–4 veces por semana. Asegura 1000–1200 mg de calcio al día (ej., lácteos, brócoli) y 800–1000 IU de vitamina D. Consulta a un médico para evaluar tu densidad ósea, especialmente si eres mayor o mujer postmenopáusica.`;
         } else if (boneMassPct >= min && boneMassPct <= max) {
@@ -2819,7 +2819,7 @@ import { auth } from './app.js';
         } else if (age >= 60) {
             content += ` A partir de los 60 años, los ejercicios de resistencia son clave para prevenir la osteoporosis. Consulta a un profesional para un plan personalizado.`;
         }
-        content += '</li>';
+        content += '</p>';
         console.log(`Masa Ósea suggestions took ${performance.now() - startTime}ms`);
     } else {
         content += '<p><strong>Masa Ósea:</strong> No calculado. Proporciona datos de altura, diámetros óseos, peso, edad y género para recomendaciones personalizadas.</p>';
@@ -2855,7 +2855,7 @@ import { auth } from './app.js';
 
         const ranges = mrRanges[gender][ageGroup][activityLevel];
 
-        content += '<li><strong>Masa Residual (MR):</strong> ';
+        content += '<p><strong>Masa Residual (MR):</strong> ';
         if (mrPercent < ranges.min) {
             content += `Tu MR está baja, lo que puede indicar déficits nutricionales o menor resiliencia metabólica. Adopta una dieta equilibrada con suficiente proteína (1.0–1.4 g/kg), micronutrientes (ej., frutas, verduras) y mantén una hidratación adecuada (2–3 L de agua al día). Consulta a un nutricionista para optimizar tu estado nutricional.`;
         } else if (mrPercent >= ranges.min && mrPercent <= ranges.max) {
@@ -2866,14 +2866,14 @@ import { auth } from './app.js';
         if (isObese) {
             content += ` Dado tu estado de obesidad, una dieta controlada en calorías y ejercicio regular son esenciales para optimizar tu composición corporal sin comprometer la MR.`;
         }
-        content += '</li>';
+        content += '</p>';
         console.log(`Masa Residual suggestions took ${performance.now() - startTime}ms`);
     } else {
         content += '<p><strong>Masa Residual (MR):</strong> No calculado. Proporciona datos de peso, género y edad para recomendaciones personalizadas.</p>';
     }
 
     content += '<p><strong>Consideraciones Generales:</strong> Consulta a un nutricionista, entrenador o médico para personalizar tu plan de entrenamiento y dieta según tus objetivos. Realiza evaluaciones antropométricas periódicas para monitorear tu progreso y ajustar estas recomendaciones.</p>';
-    content += '</ul>';
+    content += '</p>';
 
     
 	
