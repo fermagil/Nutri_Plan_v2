@@ -6347,13 +6347,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        console.warn('explanationContent no está definido');
 					    }
 					
-					    const isExplanationsTabActive = document.querySelector('#tab4').checked;
-						if (explanationSection && isExplanationsTabActive) {
-						    explanationSection.style.display = 'block';
-						    console.log('Sección de explicaciones mostrada');
-						} else if (explanationSection && !isExplanationsTabActive) {
-						    explanationSection.style.display = 'none';
-						    console.log('Sección de explicaciones oculta porque no está en la pestaña Explicaciones');
+					    if (explanationSection) {
+						    explanationSection.style.display = ''; // Remove inline display style
+						    console.log('Sección de explicaciones: estilo display restablecido a CSS');
 						} else {
 						    console.warn('explanationSection no encontrado');
 						}
@@ -6377,12 +6373,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 							    });
 							}
 							explanationContent.innerHTML = analysisHtml + content; // Append error messages
-							if (explanationSection && isExplanationsTabActive) {
+							if (explanationContent && content) {
+							    explanationContent.innerHTML = content;
+							    console.log('Explicaciones actualizadas:', content);
+							}
+							if (explanationSection) {
 							    explanationSection.style.display = 'block';
-							    console.log('Sección de explicaciones mostrada');
-							} else if (explanationSection && !isExplanationsTabActive) {
-							    explanationSection.style.display = 'none';
-							    console.log('Sección de explicaciones oculta porque no está en la pestaña Explicaciones');
 							} else {
 							    console.warn('explanationSection no encontrado');
 							}
