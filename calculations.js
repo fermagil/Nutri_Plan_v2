@@ -2141,64 +2141,64 @@ import { auth } from './app.js';
             if (bodyCompResults.imlg < refs.imlg.p25) {
                 scenarioText = `Escenario 3: Tu IMLG (${formatResult(bodyCompResults.imlg, 1)} kg/m²) está por debajo del rango típico (P25: ${refs.imlg.p25} kg/m²) para tu edad y sexo, indicando baja masa magra debido a alta grasa corporal, típico en obesidad. Enfócate en entrenamiento de fuerza y reducción de grasa para mejorar tu metabolismo.`;
                 suggestionsText = `
-                    <ul>
-                        <li><strong>Aumenta IMLG:</strong> Realiza entrenamiento de fuerza (p. ej., pesas o ejercicios de peso corporal, 3 veces/semana) para construir masa magra${ageGroup === '45+' ? ', crucial para prevenir sarcopenia' : ''}.</li>
-                        <li><strong>Eleva TMB:</strong> Consume una dieta rica en proteínas (1.6–2.2 g/kg de peso) para apoyar el crecimiento muscular y metabolismo.</li>
-                        <li><strong>Optimiza GET:</strong> Incorpora actividad moderada (p. ej., caminar, ciclismo, 30 min/día) para aumentar GET y crear un déficit calórico para perder grasa.</li>
-                    </ul>`;
+                    
+                        <p><strong>Aumenta IMLG:</strong> Realiza entrenamiento de fuerza (p. ej., pesas o ejercicios de peso corporal, 3 veces/semana) para construir masa magra${ageGroup === '45+' ? ', crucial para prevenir sarcopenia' : ''}.</p>
+                        <p><strong>Eleva TMB:</strong> Consume una dieta rica en proteínas (1.6–2.2 g/kg de peso) para apoyar el crecimiento muscular y metabolismo.</p>
+                        <p><strong>Optimiza GET:</strong> Incorpora actividad moderada (p. ej., caminar, ciclismo, 30 min/día) para aumentar GET y crear un déficit calórico para perder grasa.</p>
+                    `;
             } else {
                 scenarioText = `Escenario 3: Tu IMLG (${formatResult(bodyCompResults.imlg, 1)} kg/m²) está dentro o por encima del rango típico (P25: ${refs.imlg.p25} kg/m²) para tu edad y sexo, lo cual es positivo a pesar de la obesidad. Mantén o aumenta masa magra mientras reduces grasa para optimizar tu salud metabólica.`;
                 suggestionsText = `
-                    <ul>
-                        <li><strong>Preserva IMLG:</strong> Continúa con entrenamiento de fuerza (3 veces/semana) para mantener masa magra mientras reduces grasa${ageGroup === '45+' ? ', previniendo pérdida muscular' : ''}.</li>
-                        <li><strong>Mantén TMB:</strong> Asegura un aporte adecuado de proteínas (1.2–1.6 g/kg) para sostener tu metabolismo durante la pérdida de peso.</li>
-                        <li><strong>Incrementa GET:</strong> Aumenta la actividad (p. ej., 200 min/semana de ejercicio moderado) y controla la ingesta calórica para favorecer la pérdida de grasa.</li>
-                    </ul>`;
+                   
+                        <p><strong>Preserva IMLG:</strong> Continúa con entrenamiento de fuerza (3 veces/semana) para mantener masa magra mientras reduces grasa${ageGroup === '45+' ? ', previniendo pérdida muscular' : ''}.</p>
+                        <p><strong>Mantén TMB:</strong> Asegura un aporte adecuado de proteínas (1.2–1.6 g/kg) para sostener tu metabolismo durante la pérdida de peso.</p>
+                        <p><strong>Incrementa GET:</strong> Aumenta la actividad (p. ej., 200 min/semana de ejercicio moderado) y controla la ingesta calórica para favorecer la pérdida de grasa.</p>
+                    `;
             }
         } else if (isAthlete) {
             if (bodyCompResults.imlg >= refs.imlg.p75 && bmr >= refs.tmb.p75) {
                 scenarioText = `Escenario 4: Tu IMLG (${formatResult(bodyCompResults.imlg, 1)} kg/m²) y TMB (${formatResult(bmr, 1)} kcal/día) están en el rango óptimo (≥P75: IMLG ${refs.imlg.p75} kg/m², TMB ${refs.tmb.p75} kcal/día), ideales para alto rendimiento deportivo. Continúa con tu entrenamiento y nutrición para mantener este nivel.`;
                 suggestionsText = `
-                    <ul>
-                        <li><strong>Sostén IMLG:</strong> Mantén masa magra con entrenamiento avanzado de fuerza e hipertrofia (5–6 veces/semana)${gender === 'femenino' ? ', maximizando tu potencial muscular' : ''}.</li>
-                        <li><strong>Optimiza TMB:</strong> Consume comidas ricas en proteínas y nutrientes, sincronizadas con tus entrenamientos, para maximizar el metabolismo.</li>
-                        <li><strong>Equilibra GET:</strong> Asegura que tu ingesta calórica coincida con tu GET (${formatResult(get, 1)} kcal/día) para apoyar el rendimiento y recuperación.</li>
-                    </ul>`;
+                    
+                        <p><strong>Sostén IMLG:</strong> Mantén masa magra con entrenamiento avanzado de fuerza e hipertrofia (5–6 veces/semana)${gender === 'femenino' ? ', maximizando tu potencial muscular' : ''}.</p>
+                        <p><strong>Optimiza TMB:</strong> Consume comidas ricas en proteínas y nutrientes, sincronizadas con tus entrenamientos, para maximizar el metabolismo.</p>
+                        <p><strong>Equilibra GET:</strong> Asegura que tu ingesta calórica coincida con tu GET (${formatResult(get, 1)} kcal/día) para apoyar el rendimiento y recuperación.</p>
+                    >`;
             } else if (bodyCompResults.imlg >= refs.imlg.p50) {
                 scenarioText = `Escenario 5: Tu IMLG (${formatResult(bodyCompResults.imlg, 1)} kg/m²) y TMB (${formatResult(bmr, 1)} kcal/día) están en un rango competitivo (P50–P75: IMLG ${refs.imlg.p50}–${refs.imlg.p75} kg/m²), adecuado para deportistas recreativos o competitivos. Considera entrenamiento específico para optimizar masa magra y rendimiento.`;
                 suggestionsText = `
-                    <ul>
-                        <li><strong>Mejora IMLG:</strong> Implementa programas de fuerza periodizados (4–5 veces/semana) para aumentar masa magra${gender === 'femenino' ? ', elevando tu TMB' : ''}.</li>
-                        <li><strong>Apoya TMB:</strong> Incluye proteínas (1.6–2.0 g/kg) y carbohidratos complejos para sostener energía y metabolismo.</li>
-                        <li><strong>Eleva GET:</strong> Optimiza el volumen e intensidad del entrenamiento, asegurando calorías suficientes para ganancias de rendimiento.</li>
-                    </ul>`;
+                    
+                        <p><strong>Mejora IMLG:</strong> Implementa programas de fuerza periodizados (4–5 veces/semana) para aumentar masa magra${gender === 'femenino' ? ', elevando tu TMB' : ''}.</p>
+                        <p><strong>Apoya TMB:</strong> Incluye proteínas (1.6–2.0 g/kg) y carbohidratos complejos para sostener energía y metabolismo.</p>
+                        <p><strong>Eleva GET:</strong> Optimiza el volumen e intensidad del entrenamiento, asegurando calorías suficientes para ganancias de rendimiento.</p>
+                    `;
             } else {
                 scenarioText = `Escenario 6: Tu IMLG (${formatResult(bodyCompResults.imlg, 1)} kg/m²) está por debajo del rango esperado para deportistas (<P50: ${refs.imlg.p50} kg/m²), indicando masa magra insuficiente para tu nivel deportivo. Consulta a un entrenador para aumentar músculo y mejorar rendimiento.`;
                 suggestionsText = `
-                    <ul>
-                        <li><strong>Aumenta IMLG:</strong> Prioriza entrenamiento de fuerza intensivo (4–5 veces/semana) para ganar masa magra${ageGroup === '45+' ? ', contrarrestando pérdida muscular' : ''}.</li>
-                        <li><strong>Impulsa TMB:</strong> Consume una dieta alta en proteínas (1.8–2.2 g/kg) con comidas frecuentes para apoyar el crecimiento muscular.</li>
-                        <li><strong>Incrementa GET:</strong> Aumenta la frecuencia de entrenamiento y calorías para elevar GET y alcanzar objetivos de musculación.</li>
-                    </ul>`;
+                    
+                        <p><strong>Aumenta IMLG:</strong> Prioriza entrenamiento de fuerza intensivo (4–5 veces/semana) para ganar masa magra${ageGroup === '45+' ? ', contrarrestando pérdida muscular' : ''}.</p>
+                        <p><strong>Impulsa TMB:</strong> Consume una dieta alta en proteínas (1.8–2.2 g/kg) con comidas frecuentes para apoyar el crecimiento muscular.</p>
+                        <p><strong>Incrementa GET:</strong> Aumenta la frecuencia de entrenamiento y calorías para elevar GET y alcanzar objetivos de musculación.</p>
+                    `;
             }
         } else {
             if (bodyCompResults.imlg >= refs.imlg.p25 && bodyCompResults.imlg <= refs.imlg.p75 &&
                 bmr >= refs.tmb.p25 && bmr <= refs.tmb.p75) {
                 scenarioText = `Escenario 1: Tu IMLG (${formatResult(bodyCompResults.imlg, 1)} kg/m²) y TMB (${formatResult(bmr, 1)} kcal/día) están dentro del rango saludable (P25–P75: IMLG ${refs.imlg.p25}–${refs.imlg.p75} kg/m², TMB ${refs.tmb.p25}–${refs.tmb.p75} kcal/día), reflejando una composición corporal y metabolismo equilibrados. Mantén un estilo de vida activo para preservar esta salud.`;
                 suggestionsText = `
-                    <ul>
-                        <li><strong>Mantén IMLG:</strong> Realiza entrenamiento de fuerza regular (2–3 veces/semana) para preservar masa magra${ageGroup === '45+' ? ', previniendo sarcopenia' : ''}.</li>
-                        <li><strong>Sostén TMB:</strong> Sigue una dieta equilibrada con proteínas (1.2–1.6 g/kg) para mantener tu metabolismo.</li>
-                        <li><strong>Mejora GET:</strong> Aumenta la actividad (p. ej., 150 min/semana de ejercicio moderado) para optimizar GET y salud general.</li>
-                    </ul>`;
+                    
+                        <p><strong>Mantén IMLG:</strong> Realiza entrenamiento de fuerza regular (2–3 veces/semana) para preservar masa magra${ageGroup === '45+' ? ', previniendo sarcopenia' : ''}.</p>
+                        <p><strong>Sostén TMB:</strong> Sigue una dieta equilibrada con proteínas (1.2–1.6 g/kg) para mantener tu metabolismo.</p>
+                        <p><strong>Mejora GET:</strong> Aumenta la actividad (p. ej., 150 min/semana de ejercicio moderado) para optimizar GET y salud general.</p>
+                    `;
             } else {
                 scenarioText = `Escenario 2: Tu IMLG (${formatResult(bodyCompResults.imlg, 1)} kg/m²) o TMB (${formatResult(bmr, 1)} kcal/día) están fuera del rango típico (P25–P75: IMLG ${refs.imlg.p25}–${refs.imlg.p75} kg/m², TMB ${refs.tmb.p25}–${refs.tmb.p75} kcal/día), sugiriendo masa muscular baja o alta. Evalúa con un profesional para ajustar dieta o ejercicio según tu caso.`;
                 suggestionsText = `
-                    <ul>
-                        <li><strong>Ajusta IMLG:</strong> Si es bajo (<${refs.imlg.p25} kg/m²), prioriza entrenamiento de fuerza; si es alto (>${refs.imlg.p75} kg/m²), mantén con ejercicio equilibrado${ageGroup === '45+' ? ', crucial para la salud muscular' : ''}.</li>
-                        <li><strong>Optimiza TMB:</strong> Para TMB bajo (<${refs.tmb.p25} kcal/día), consume proteínas y entrena fuerza; para TMB alto, mantén actividad constante.</li>
-                        <li><strong>Equilibra GET:</strong> Agrega ejercicio estructurado (3–5 días/semana) para alinear GET con tus metas de peso o musculatura.</li>
-                    </ul>`;
+                    
+                        <p><strong>Ajusta IMLG:</strong> Si es bajo (<${refs.imlg.p25} kg/m²), prioriza entrenamiento de fuerza; si es alto (>${refs.imlg.p75} kg/m²), mantén con ejercicio equilibrado${ageGroup === '45+' ? ', crucial para la salud muscular' : ''}.</p>
+                        <p><strong>Optimiza TMB:</strong> Para TMB bajo (<${refs.tmb.p25} kcal/día), consume proteínas y entrena fuerza; para TMB alto, mantén actividad constante.</p>
+                        <p><strong>Equilibra GET:</strong> Agrega ejercicio estructurado (3–5 días/semana) para alinear GET con tus metas de peso o musculatura.</p>
+                    `;
             }
         }
 
@@ -2580,11 +2580,11 @@ import { auth } from './app.js';
 
 				// Educational notes
 				content += `<p><strong>Consideraciones Clave:</strong></p>`;
-				content += `<ul>
-					<li><strong>Tipo de Deporte:</strong> Los deportes de fuerza/potencia (e.g., halterofilia, rugby) requieren mayor MMT, mientras que los de resistencia (e.g., ciclismo, running) tienden a valores intermedios. Los deportes estéticos (e.g., gimnasia) buscan un equilibrio.</li>
-					<li><strong>Edad y Sarcopenia:</strong> A partir de los 40–50 años, la masa muscular puede disminuir (sarcopenia) si no se mantiene con ejercicio. Para mayores de 55, mantener MMT es crucial para la movilidad y prevención de caídas.</li>
-					<li><strong>Salud Metabólica:</strong> Una MMT adecuada mejora la sensibilidad a la insulina, el metabolismo y reduce el riesgo de fragilidad o problemas metabólicos.</li>
-					<li><strong>Consulta Profesional:</strong> Si tu MMT está fuera de los rangos, consulta con un entrenador o nutricionista para personalizar tu plan de entrenamiento o dieta.</li>
+				content += `
+					<p><strong>Tipo de Deporte:</strong> Los deportes de fuerza/potencia (e.g., halterofilia, rugby) requieren mayor MMT, mientras que los de resistencia (e.g., ciclismo, running) tienden a valores intermedios. Los deportes estéticos (e.g., gimnasia) buscan un equilibrio.</p>
+					<p><strong>Edad y Sarcopenia:</strong> A partir de los 40–50 años, la masa muscular puede disminuir (sarcopenia) si no se mantiene con ejercicio. Para mayores de 55, mantener MMT es crucial para la movilidad y prevención de caídas.</p>
+					<p><strong>Salud Metabólica:</strong> Una MMT adecuada mejora la sensibilidad a la insulina, el metabolismo y reduce el riesgo de fragilidad o problemas metabólicos.</p>
+					<p><strong>Consulta Profesional:</strong> Si tu MMT está fuera de los rangos, consulta con un entrenador o nutricionista para personalizar tu plan de entrenamiento o dieta.</p>
 				</ul>`;
 			} else {
 				content += `<p><strong>Tu MMT:</strong> No calculado debido a datos insuficientes (falta altura, circunferencia del brazo o pliegue tricipital).</p>`;
@@ -2822,7 +2822,7 @@ import { auth } from './app.js';
         content += '</li>';
         console.log(`Masa Ósea suggestions took ${performance.now() - startTime}ms`);
     } else {
-        content += '<li><strong>Masa Ósea:</strong> No calculado. Proporciona datos de altura, diámetros óseos, peso, edad y género para recomendaciones personalizadas.</li>';
+        content += '<p><strong>Masa Ósea:</strong> No calculado. Proporciona datos de altura, diámetros óseos, peso, edad y género para recomendaciones personalizadas.</p>';
     }
 
     // Masa Residual Suggestions
@@ -2869,10 +2869,10 @@ import { auth } from './app.js';
         content += '</li>';
         console.log(`Masa Residual suggestions took ${performance.now() - startTime}ms`);
     } else {
-        content += '<li><strong>Masa Residual (MR):</strong> No calculado. Proporciona datos de peso, género y edad para recomendaciones personalizadas.</li>';
+        content += '<p><strong>Masa Residual (MR):</strong> No calculado. Proporciona datos de peso, género y edad para recomendaciones personalizadas.</p>';
     }
 
-    content += '<li><strong>Consideraciones Generales:</strong> Consulta a un nutricionista, entrenador o médico para personalizar tu plan de entrenamiento y dieta según tus objetivos. Realiza evaluaciones antropométricas periódicas para monitorear tu progreso y ajustar estas recomendaciones.</li>';
+    content += '<p><strong>Consideraciones Generales:</strong> Consulta a un nutricionista, entrenador o médico para personalizar tu plan de entrenamiento y dieta según tus objetivos. Realiza evaluaciones antropométricas periódicas para monitorear tu progreso y ajustar estas recomendaciones.</p>';
     content += '</ul>';
 
     
@@ -2946,36 +2946,36 @@ import { auth } from './app.js';
                     goal = 'perdida';
                     content += '<p><strong>Objetivo: Pérdida de grasa</strong></p>';
                     content += '<ul>';
-                    content += '<li><strong>Dieta:</strong> Crea un déficit calórico moderado (300-500 kcal menos por día). Prioriza proteínas (2 g/kg de peso), vegetales, y grasas saludables. Reduce carbohidratos refinados.</li>';
-                    content += '<li><strong>Ejercicio:</strong> Combina cardio (3-4 veces/semana, 30 min) y entrenamiento de fuerza (3-5 veces/semana) para preservar músculo. ';
-                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Mantén un déficit pequeño para no afectar el rendimiento. Incluye ejercicios específicos para tu deporte.</li>';
-                    content += '<li><strong>Hábitos:</strong> Duerme 7-8 horas, controla el estrés, y mantén una hidratación adecuada.</li>';
-                    content += '</ul>';
+                    content += '<p><strong>Dieta:</strong> Crea un déficit calórico moderado (300-500 kcal menos por día). Prioriza proteínas (2 g/kg de peso), vegetales, y grasas saludables. Reduce carbohidratos refinados.</p>';
+                    content += '<p><strong>Ejercicio:</strong> Combina cardio (3-4 veces/semana, 30 min) y entrenamiento de fuerza (3-5 veces/semana) para preservar músculo. ';
+                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Mantén un déficit pequeño para no afectar el rendimiento. Incluye ejercicios específicos para tu deporte.</p>';
+                    content += '<p><strong>Hábitos:</strong> Duerme 7-8 horas, controla el estrés, y mantén una hidratación adecuada.</p>';
+                    content += '';
                 } else if (results.pesoObjetivo > 2) {
                     goal = 'ganancia';
                     content += '<p><strong>Objetivo: Ganancia muscular</strong></p>';
-                    content += '<ul>';
-                    content += '<li><strong>Dieta:</strong> Crea un superávit calórico moderado (300-500 kcal más por día). Aumenta proteínas (2-2.5 g/kg de peso) y carbohidratos complejos.</li>';
-                    content += '<li><strong>Ejercicio:</strong> Enfócate en entrenamiento de fuerza progresivo (4-5 veces/semana). Incluye ejercicios compuestos (sentadillas, peso muerto, press).</li>';
-                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Ajusta el superávit según demandas energéticas de tu deporte. Considera suplementos como creatina tras consultar un profesional.</li>';
-                    content += '<li><strong>Hábitos:</strong> Descansa lo suficiente (7-8 horas) y optimiza la recuperación con estiramientos o masajes.</li>';
-                    content += '</ul>';
+                    content += '';
+                    content += '<p><strong>Dieta:</strong> Crea un superávit calórico moderado (300-500 kcal más por día). Aumenta proteínas (2-2.5 g/kg de peso) y carbohidratos complejos.</p>';
+                    content += '<p><strong>Ejercicio:</strong> Enfócate en entrenamiento de fuerza progresivo (4-5 veces/semana). Incluye ejercicios compuestos (sentadillas, peso muerto, press).</p>';
+                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Ajusta el superávit según demandas energéticas de tu deporte. Considera suplementos como creatina tras consultar un profesional.</p>';
+                    content += '<p><strong>Hábitos:</strong> Descansa lo suficiente (7-8 horas) y optimiza la recuperación con estiramientos o masajes.</p>';
+                    content += '';
                 } else {
                     goal = 'mantenimiento';
                     content += '<p><strong>Objetivo: Mantenimiento</strong></p>';
-                    content += '<ul>';
-                    content += '<li><strong>Dieta:</strong> Mantén un balance calórico. Consume proteínas adecuadas (1.6-2 g/kg), carbohidratos y grasas balanceados.</li>';
-                    content += '<li><strong>Ejercicio:</strong> Realiza entrenamiento de fuerza (3-4 veces/semana) y algo de cardio (2-3 veces/semana) para mantener salud y composición.</li>';
-                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Ajusta la dieta y entrenamiento según las demandas de tu deporte para optimizar rendimiento.</li>';
-                    content += '<li><strong>Hábitos:</strong> Prioriza sueño, hidratación, y manejo del estrés.</li>';
-                    content += '</ul>';
+                    content += '';
+                    content += '<p><strong>Dieta:</strong> Mantén un balance calórico. Consume proteínas adecuadas (1.6-2 g/kg), carbohidratos y grasas balanceados.</p>';
+                    content += '<p><strong>Ejercicio:</strong> Realiza entrenamiento de fuerza (3-4 veces/semana) y algo de cardio (2-3 veces/semana) para mantener salud y composición.</p>';
+                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Ajusta la dieta y entrenamiento según las demandas de tu deporte para optimizar rendimiento.</p>';
+                    content += '<p><strong>Hábitos:</strong> Prioriza sueño, hidratación, y manejo del estrés.</p>';
+                    content += '';
                 }
             } else {
                 content += '<p><strong>Sin datos suficientes para sugerencias específicas.</strong> Completa más medidas para obtener recomendaciones personalizadas.</p>';
                 content += '<ul>';
-                content += '<li><strong>Dieta:</strong> Sigue una alimentación equilibrada con proteínas, carbohidratos complejos, grasas saludables y vegetales.</li>';
-                content += '<li><strong>Ejercicio:</strong> Incluye fuerza y cardio moderados (3-5 veces/semana).</li>';
-                content += '<li><strong>Hábitos:</strong> Duerme 7-8 horas, hidrátate y reduce el estrés.</li>';
+                content += '<p><strong>Dieta:</strong> Sigue una alimentación equilibrada con proteínas, carbohidratos complejos, grasas saludables y vegetales.</p>';
+                content += '<p><strong>Ejercicio:</strong> Incluye fuerza y cardio moderados (3-5 veces/semana).</p>';
+                content += '<p><strong>Hábitos:</strong> Duerme 7-8 horas, hidrátate y reduce el estrés.</p>';
                 content += '</ul>';
             }
 
