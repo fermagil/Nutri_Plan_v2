@@ -6410,7 +6410,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		                    console.warn('Error container not found');
 		                }
 		            }
-
+		}
 	} catch (calcError) {
 			console.error('Error durante los cálculos:', calcError.message);
 			    alert('Error en los cálculos: ' + calcError.message);
