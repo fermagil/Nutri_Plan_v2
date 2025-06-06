@@ -6347,9 +6347,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 					        console.warn('explanationContent no está definido');
 					    }
 					
-					    if (explanationSection) {
-						    explanationSection.style.display = ''; // Remove inline display style
-						    console.log('Sección de explicaciones: estilo display restablecido a CSS');
+					   const isExplanationsTabActive = document.querySelector('#tab4').checked;
+						if (explanationSection) {
+						    explanationSection.style.display = isExplanationsTabActive ? 'block' : '';
+						    console.log(`Sección de explicaciones: ${isExplanationsTabActive ? 'mostrada' : 'estilo display restablecido a CSS'}`);
 						} else {
 						    console.warn('explanationSection no encontrado');
 						}
