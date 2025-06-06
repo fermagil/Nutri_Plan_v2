@@ -1780,6 +1780,34 @@ import { auth } from './app.js';
 					content += 'No calculado. ';
 				}
 				content += '</p>';
+		
+					 // Peso Ideal
+						content += '<h3>Peso Ideal Estimado</h3>';
+			            content += '<p><strong>Peso Ideal:</strong> Peso estimado para alcanzar tu % de grasa deseado y/o estimado. ';
+			            if (!isNaN(results.pesoIdeal)) {
+			                content += 'Tu peso ideal es ' + formatResult(results.pesoIdeal, 1) + ' kg. ';
+			                content += 'Es un objetivo basado en tu composición corporal deseada. ';
+			                content += '<div class="chart-container"><canvas id="weight-chart" width="440" height="400" style="display: block; box-sizing: border-box; height: 400px; width: 440px;"></canvas></div>';
+			            } else {
+			                content += 'No calculado. ';
+			            }
+			            content += '</p>';
+			
+			            // Peso a Perder/Ganar
+			            content += '<p><strong>Peso a Perder/Ganar:</strong> Diferencia entre tu peso ideal y el actual. ';
+			            if (!isNaN(results.pesoObjetivo)) {
+			                content += 'Tu peso actual es ' + formatResult(data.peso, 1) + ' kg y tu peso ideal es ' + formatResult(results.pesoIdeal, 1) + ' kg. ';
+			                if (results.pesoObjetivo > 0) {
+			                    content += 'Necesitas ganar ' + formatResult(results.pesoObjetivo, 1) + ' kg. Enfócate en ganar masa magra (músculo). ';
+			                } else if (results.pesoObjetivo < 0) {
+			                    content += 'Necesitas perder ' + formatResult(Math.abs(results.pesoObjetivo), 1) + ' kg. Enfócate en reducir grasa. ';
+			                } else {
+			                    content += 'Estás en tu peso ideal. ';
+			                }
+			            } else {
+			                content += 'No calculado. ';
+			            }
+			            content += '</p>';
 
             // Masa Grasa
 				content += '<h3>Masa Grasa y Masa Magra(MLG)</h3>';
@@ -2878,33 +2906,7 @@ import { auth } from './app.js';
     
 	
 	
-            // Peso Ideal
-			content += '<h3>Peso Ideal Estimado</h3>';
-            content += '<p><strong>Peso Ideal:</strong> Peso estimado para alcanzar tu % de grasa deseado y/o estimado. ';
-            if (!isNaN(results.pesoIdeal)) {
-                content += 'Tu peso ideal es ' + formatResult(results.pesoIdeal, 1) + ' kg. ';
-                content += 'Es un objetivo basado en tu composición corporal deseada. ';
-                content += '<div class="chart-container"><canvas id="weight-chart" width="440" height="400" style="display: block; box-sizing: border-box; height: 400px; width: 440px;"></canvas></div>';
-            } else {
-                content += 'No calculado. ';
-            }
-            content += '</p>';
-
-            // Peso a Perder/Ganar
-            content += '<p><strong>Peso a Perder/Ganar:</strong> Diferencia entre tu peso ideal y el actual. ';
-            if (!isNaN(results.pesoObjetivo)) {
-                content += 'Tu peso actual es ' + formatResult(data.peso, 1) + ' kg y tu peso ideal es ' + formatResult(results.pesoIdeal, 1) + ' kg. ';
-                if (results.pesoObjetivo > 0) {
-                    content += 'Necesitas ganar ' + formatResult(results.pesoObjetivo, 1) + ' kg. Enfócate en ganar masa magra (músculo). ';
-                } else if (results.pesoObjetivo < 0) {
-                    content += 'Necesitas perder ' + formatResult(Math.abs(results.pesoObjetivo), 1) + ' kg. Enfócate en reducir grasa. ';
-                } else {
-                    content += 'Estás en tu peso ideal. ';
-                }
-            } else {
-                content += 'No calculado. ';
-            }
-            content += '</p>';
+           
 
            
             // Somatotipo
