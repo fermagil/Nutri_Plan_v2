@@ -1913,8 +1913,8 @@ import { auth } from './app.js';
         <p>Basado en tu porcentaje de grasa corporal (${formatResult(porcentajeGrasa, 1)}%) y peso (${formatResult(peso, 1)} kg):</p>
         
             <p><strong>Masa Grasa:</strong> <strong style="color: black;">${formatResult(masaGrasa, 1)} kg</strong>. Esto representa la cantidad total de grasa corporal.</p>
-            <p><strong>Masa Magra (MLG):</strong> strong style="color: black;">${formatResult(masaMagra, 1)} kg</strong>.. Incluye músculos, huesos, órganos y agua.</p>
-        </ul>
+            <p><strong>Masa Magra (MLG):</strong> <strong style="color: black;">${formatResult(masaMagra, 1)} kg</strong>. Incluye músculos, huesos, órganos y agua.</p>
+        
     `;
 
     // Nueva sección: Tipología del cuerpo según IMLG e IMG
