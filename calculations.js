@@ -1924,8 +1924,8 @@ import { auth } from './app.js';
             <h3>Tipología del Cuerpo según Índices de Masa (IMLG e IMG)</h3>
             <p>Utilizando los estándares de referencia NHANES/Frisancho 2008, calculamos los siguientes índices:</p>
             
-                <p><strong>Índice de Masa Libre de Grasa (IMLG):</strong> <strong>${formatResult(imlg, 1)} kg/m² </strong>(Categoría: ${imlgCategory}). <br><em>${imlgRangeDesc}</em></p>
-                <p><strong>Índice de Masa Grasa (IMG):</strong> <strong>${formatResult(img, 1)} kg/m²</strong> (Categoría: ${imgCategory}). <br><em>${imgRangeDesc}</em></p>
+                <p><strong>Índice de Masa Libre de Grasa (IMLG):</strong> <strong style="color: black;>${formatResult(imlg, 1)} kg/m² </strong>(Categoría: ${imlgCategory}). <br><em>${imlgRangeDesc}</em></p>
+                <p><strong>Índice de Masa Grasa (IMG):</strong> <strong style="color: black;>${formatResult(img, 1)} kg/m²</strong> (Categoría: ${imgCategory}). <br><em>${imgRangeDesc}</em></p>
 
 	    <div id="typology-legend-container" style="margin-bottom: 20px;"></div>
             <div id="typology-chart-container"></div>
@@ -1992,7 +1992,7 @@ import { auth } from './app.js';
                 grasaImpact = results.grasaPctActual > 32 ? 10.5 : 5.0;
             }
         }
-        content += '<ul>';
+        content += '';
         if (cinturaImpact > 0) {
             content += `<p><strong>Circunferencia de cintura (${formatResult(data.circ_cintura, 1)} cm):</strong> Contribuye aproximadamente +${formatResult(cinturaImpact, 1)} años debido a la grasa visceral acumulada.</p>`;
         }
@@ -2000,7 +2000,7 @@ import { auth } from './app.js';
             content += `<p><strong>Porcentaje de grasa (${formatResult(results.grasaPctActual, 1)}%):</strong> Añade aproximadamente +${formatResult(grasaImpact, 1)} años por estar por encima del rango saludable.</p>`;
         }
         content += `<p><strong>Nivel de actividad:</strong> ${data.es_deportista === 'si' ? 'Tu actividad física reduce unos -2.8 años.' : 'El sedentarismo añade unos +3.0 años.'}</p>`;
-        content += '</ul>';
+        content += '';
 
         // Interpretación
         content += '<h4>Interpretación</h4>';
@@ -2017,7 +2017,7 @@ import { auth } from './app.js';
         content += '<p>Para reducir tu edad metabólica, enfócate en <strong>disminuir la grasa corporal</strong>, <strong>aumentar la masa magra</strong> o ambas. Aquí tienes estrategias prácticas:</p>';
 
         content += '<h5>1. Disminuir la Grasa Corporal</h5>';
-        content += '<ul>';
+        content += '';
         content += '<p><strong>Haz Cardio:</strong> El ejercicio cardiovascular quema calorías y grasa. Prueba el <strong>HIIT</strong> (intervalos de alta intensidad) para maximizar calorías en menos tiempo, o <strong>LISS</strong> (cardio de baja intensidad, como caminar rápido) para quemar más grasa por minuto. Apunta a 150 min/semana (ej.: 30 min/día, 5 días).</p>';
         content += '<p><strong>Crea un Déficit Calórico:</strong> Come menos calorías de las que quemas (déficit de 300-500 kcal/día). Calcula tu <strong>TDEE</strong> (gasto energético diario total) y mantén la ingesta entre tu BMR y TDEE para perder grasa de forma sostenible.</p>';
         content += '<p><strong>Reduce Carbohidratos:</strong> Limita los carbohidratos al 30% de tus calorías diarias, ajustándolos según tu actividad (más actividad, más carbohidratos). Esto fomenta que tu cuerpo use grasa almacenada como energía.</p>';
@@ -2025,23 +2025,23 @@ import { auth } from './app.js';
         if (data.circ_cintura && ((data.genero === 'masculino' && data.circ_cintura > 94) || (data.genero === 'femenino' && data.circ_cintura > 80))) {
             content += `<p><strong>Reduce la Cintura:</strong> Tu circunferencia de cintura (${formatResult(data.circ_cintura, 1)} cm) está por encima del rango saludable. Apunta a <${data.genero === 'masculino' ? '94' : '80'} cm con dieta y cardio.</p>`;
         }
-        content += '</ul>';
+        content += '';
 
         content += '<h5>2. Aumentar la Masa Magra</h5>';
-        content += '<ul>';
+        content += '';
         content += '<p><strong>Levanta Pesas:</strong> Incorpora entrenamientos de resistencia 2-3 veces por semana para construir músculo, lo que acelera tu metabolismo. Ejercicios como sentadillas, peso muerto y press de banca son ideales.</p>';
         content += '<p><strong>Come Suficientes Calorías:</strong> Para ganar músculo, consume al menos tu TDEE o un ligero exceso calórico (100-200 kcal). Aumenta calorías gradualmente después de perder grasa.</p>';
         content += '<p><strong>Aumenta Proteínas:</strong> Consume 1.6-2.2 g de proteína por kg de peso corporal (aprox. 30% de tus calorías). Fuentes como pollo, pescado, huevos, tofu o legumbres son excelentes.</p>';
-        content += '</ul>';
+        content += '';
 
         if ((data.genero === 'masculino' && results.grasaPctActual > 18) || (data.genero === 'femenino' && results.grasaPctActual > 24)) {
             content += '<h5>3. Recomendaciones para Obesidad</h5>';
-            content += '<ul>';
+            content += '';
             content += '<p><strong>Pérdida de Peso Gradual:</strong> Apunta a reducir un 5-10% de tu peso corporal para mejorar tu metabolismo. Hazlo lentamente (0.5-1 kg/semana).</p>';
             content += '<p><strong>Dieta Mediterránea:</strong> Adopta una dieta rica en frutas, verduras, pescado, aceite de oliva y frutos secos para combatir la inflamación y el estrés oxidativo.</p>';
             content += '<p><strong>Suplementos:</strong> Considera omega-3 (antiinflamatorio) y vitamina D (mejora sensibilidad a la insulina), pero consulta a un médico primero.</p>';
             content += '<p><strong>Consulta Profesional:</strong> Trabaja con un endocrinólogo o nutricionista para un plan personalizado.</p>';
-            content += '</ul>';
+            content += '';
         }
 		
 		
@@ -2059,11 +2059,11 @@ import { auth } from './app.js';
         // Conclusión
         content += '<h4>Conclusión</h4>';
         content += `<p>Tu metabolismo funciona como el de una persona de ${formatResult(results.edadmetabolica, 1)} años. Para optimizarlo:</p>`;
-        content += '<ul>';
+        content += '';
         content += '<p><strong>Prioriza:</strong> Reducir la grasa visceral (cintura) con dieta y cardio.</p>';
         content += '<p><strong>Combina:</strong> Ejercicio aeróbico y de fuerza para mejorar la composición corporal.</p>';
         content += '<p><strong>Consulta:</strong> Un profesional para un plan personalizado.</p>';
-        content += '</ul>';
+        content += '';
         content += '<p><strong>¿Listo para empezar?</strong> Si necesitas un plan detallado, ¡puedes consultar a un nutricionista o entrenador! </p>';
     } else {
         content += '<p>No se pudo calcular la edad metabólica debido a datos insuficientes (falta porcentaje de grasa, medidas de pliegues o cintura).</p>';
