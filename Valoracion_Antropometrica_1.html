@@ -671,11 +671,25 @@
             text-align: left;
            
         }
-
-        .table-wrapper {
-            overflow-x: auto;
-            min-width: 300px;
-        }
+	.section-header {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    width: 100%;
+	    margin-bottom: 20px; /* Space below header */
+	}
+	.section-header h2 {
+	    margin: 0; /* Remove default h2 margins */
+	    font-size: 1.5em; /* Match existing h2 style if needed */
+	}
+	.button-container {
+	    display: flex;
+	    gap: 10px; /* Space between buttons */
+	}
+	        .table-wrapper {
+	            overflow-x: auto;
+	            min-width: 300px;
+	        }
 
         .results-table {
             width: 100%;
