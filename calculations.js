@@ -1616,7 +1616,7 @@ import { auth } from './app.js';
 				masaMagra = NaN
 			} = bodyCompResults || {};
             
-            content += '<h3>Explicación de los Resultados</h3>';
+            content += '<h3>Explicación de los Resultados del IMC, ICC y % Grasa Actual</h3>';
 
             // IMC
             content += '<p><strong>Índice de Masa Corporal (IMC):</strong> Mide la relación entre tu peso y altura. ';
@@ -1912,8 +1912,8 @@ import { auth } from './app.js';
         
         <p>Basado en tu porcentaje de grasa corporal (${formatResult(porcentajeGrasa, 1)}%) y peso (${formatResult(peso, 1)} kg):</p>
         
-            <p><strong>Masa Grasa:</strong> ${formatResult(masaGrasa, 1)} kg. Esto representa la cantidad total de grasa corporal.</p>
-            <p><strong>Masa Magra (MLG):</strong> ${formatResult(masaMagra, 1)} kg. Incluye músculos, huesos, órganos y agua.</p>
+            <p><strong>Masa Grasa:</strong> <strong style="color: black;">${formatResult(masaGrasa, 1)} kg</strong>. Esto representa la cantidad total de grasa corporal.</p>
+            <p><strong>Masa Magra (MLG):</strong> strong style="color: black;">${formatResult(masaMagra, 1)} kg</strong>.. Incluye músculos, huesos, órganos y agua.</p>
         </ul>
     `;
 
@@ -1966,7 +1966,7 @@ import { auth } from './app.js';
     if (!isNaN(results.edadmetabolica)) {
         const ageDifference = results.edadmetabolica - data.edad;
         const ageDiffText = ageDifference > 0 ? `+${formatResult(ageDifference, 1)}` : formatResult(ageDifference, 1);
-        content += `<p>Tu <strong>Edad Metabólica</strong> es de ${formatResult(results.edadmetabolica, 1)} años (${ageDiffText} vs. edad cronológica).</p>`;
+        content += `<p>Tu <strong>Edad Metabólica</strong> es de <strong style="color: black;">${formatResult(results.edadmetabolica, 1)}</strong> años (${ageDiffText} vs. edad cronológica).</p>`;
         content += '<p>La <strong>edad metabólica</strong> refleja cómo tu tasa metabólica basal (BMR) se compara con la de otras personas de tu edad. La BMR es el número de calorías que tu cuerpo quema en reposo. Un BMR más alto indica un metabolismo más eficiente y una edad metabólica más baja, mientras que un BMR más bajo sugiere una edad metabólica más alta.</p>';
         content += '<p><strong>Nota:</strong> La edad metabólica no mide directamente tu salud general o expectativa de vida, pero puede ser un indicador útil para ajustar tu estilo de vida.</p>';
 		
