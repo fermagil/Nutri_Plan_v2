@@ -238,32 +238,7 @@
             margin-top: -2px;
         }
 
-        #explanation-section {
-            background-color: #f1f8f1;
-            padding: 25px 30px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-            border: 1px solid #c8e6c9;
-            box-sizing: border-box;
-        }
-
-        #explanation-section p {
-            margin: 10px 0;
-            color: #343a40;
-        }
-
-        #explanation-section ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        #explanation-section ul li {
-            margin-bottom: 8px;
-        }
-
-        #explanation-section strong {
-            color: #2e7d32;
-        }
+      
 
         footer {
             background-color: #e9ecef;
@@ -328,85 +303,7 @@
                 padding: 10px 12px;
             }
         }
-
-        #explanation-section canvas {
-            max-width: 100%;
-            margin: 10px auto;
-            display: block;
-        }
-
-        .chart-container {
-            max-width: 6000px;
-            width: 100%;
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e0e0;
-            box-sizing: border-box;
-            transition: transform 0.2s ease;
-        }
-
-        .chart-container:hover {
-            transform: translateY(-3px);
-        }
-
-        .chart-container canvas {
-            width: 100% !important;
-            height: 400px !important;
-        }
-
-        .chart-container:has(#weight-chart),
-        .chart-container:has(#imc-chart),
-        .chart-container:has(#icc-chart),
-        .chart-container:has(#bodyfat-chart),
-        .chart-container:has(#somatotype-chart),
-        .chart-container:has(#typology-chart) {
-            max-width: 800px;
-        }
-
-        #explanation-section {
-            max-width: 900px;
-            margin: 0 auto;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            border: 1px solid #c8e6c9;
-        }
-
-        .chart-container:has(#somatotype-image) {
-            max-width: 800px;
-            max-height: 800px;
-            position: relative;
-        }
-
-        .chart-container img#somatotype-image {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-        .chart-container canvas#typology-point-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-
-        #typology-chart-wrapper {
-            border: 2px solid white;
-            padding: 10px;
-            background-color: #f8f9fa;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        #typology-chart {
-            width: 100%;
-            height: 400px;
-        }
+	 
 
         section.data-section.anthropometric-section {
             padding: 15px 20px;
@@ -448,49 +345,7 @@
             font-size: 0.9em;
             border-radius: 4px;
         }
-
-        .tooltip {
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #212529;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 0.85em;
-            line-height: 1.4;
-            pointer-events: none;
-            display: none;
-            z-index: 10;
-            white-space: nowrap;
-            border: 1px solid #ced4da;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .legend-container {
-            margin: 15px 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            padding: 10px;
-            background-color: #f1f8f1;
-            border-radius: 8px;
-            border: 1px solid #c8e6c9;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            font-size: 0.9em;
-            color: #343a40;
-        }
-
-        .legend-color {
-            width: 18px;
-            height: 18px;
-            margin-right: 6px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
+	 
 
         @media (max-width: 768px) {
             section.data-section.anthropometric-section {
@@ -934,6 +789,154 @@
 	    display: flex;
 	    gap: 10px;
 	}
+	    /*Explanation Section and Charts */
+	    #explanation-section { 
+            background-color: #f1f8f1;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+            box-sizing: border-box;
+        }
+
+        #explanation-section p {
+            margin: 10px 0;
+            color: #343a40;
+        }
+
+        #explanation-section ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        #explanation-section ul li {
+            margin-bottom: 8px;
+        }
+
+        #explanation-section strong {
+            color: #2e7d32;
+        }
+        #explanation-section canvas {
+            max-width: 100%;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .chart-container {
+            max-width: 6000px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+            transition: transform 0.2s ease;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-3px);
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+
+        .chart-container:has(#weight-chart),
+        .chart-container:has(#imc-chart),
+        .chart-container:has(#icc-chart),
+        .chart-container:has(#bodyfat-chart),
+        .chart-container:has(#somatotype-chart),
+        .chart-container:has(#typology-chart) {
+            max-width: 800px;
+        }
+
+        #explanation-section {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .chart-container:has(#somatotype-image) {
+            max-width: 800px;
+            max-height: 800px;
+            position: relative;
+        }
+
+        .chart-container img#somatotype-image {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .chart-container canvas#typology-point-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        #typology-chart-wrapper {
+            border: 2px solid white;
+            padding: 10px;
+            background-color: #f8f9fa;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #typology-chart {
+            width: 100%;
+            height: 400px;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #212529;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            line-height: 1.4;
+            pointer-events: none;
+            display: none;
+            z-index: 10;
+            white-space: nowrap;
+            border: 1px solid #ced4da;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-container {
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px;
+            background-color: #f1f8f1;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+            color: #343a40;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+	    
         /* Tab Navigation Styles */
         .tabs {
             max-width: 900px;
