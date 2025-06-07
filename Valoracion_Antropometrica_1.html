@@ -1999,17 +1999,26 @@
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
    	<script type="module">
-        // Importa las clases necesarias desde docx@9.5.0
+        // Importa todo el módulo para inspeccionar su estructura
         import * as docx from 'https://cdn.jsdelivr.net/npm/docx@9.5.0/+esm';
 
-        // Depuración: Inspecciona las exportaciones disponibles
-        console.log('Exportaciones de docx:', Object.keys(docx));
+        // Depuración: Inspecciona la estructura completa del módulo
+        console.log('Módulo docx:', docx);
+        console.log('Exportaciones de nivel superior:', Object.keys(docx));
 
-        // Verifica que las clases necesarias estén definidas
-        const { Document, Paragraph, TextRun, Packer, HeadingLevel, Media } = docx;
+        // Verifica las clases necesarias manualmente
+        const Document = docx.Document;
+        const Paragraph = docx.Paragraph;
+        const TextRun = docx.TextRun;
+        const Packer = docx.Packer;
+        const HeadingLevel = docx.HeadingLevel;
+        const Media = docx.Media;
+
+        // Verifica que las clases estén definidas
         if (!Document || !Paragraph || !TextRun || !Packer || !HeadingLevel || !Media) {
-            console.error('Una o más clases de docx no están definidas:', {
+            console.error('Una o más clases no están definidas:', {
                 Document: !!Document,
                 Paragraph: !!Paragraph,
                 TextRun: !!TextRun,
@@ -2020,7 +2029,13 @@
             alert('Error: No se pudieron cargar las clases necesarias de docx. Verifica la consola.');
             throw new Error('Clases de docx no disponibles');
         }
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+ // Verifica que FileSaver.js esté cargado
+        if (typeof saveAs === 'undefined') {
+            console.error('FileSaver.js no se cargó correctamente.');
+            alert('Error: FileSaver.js no se cargó. Verifica la conexión a cdnjs.');
+            throw new Error('FileSaver.js no disponible');
+        }
 <script>
     // Accordion Effect
 document.addEventListener('DOMContentLoaded', () => {
@@ -2089,8 +2104,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 	
-// Configura el botón de exportación
-// Configura el botón de exportación
+// Renderiza un gráfico de ejemplo en el canvas
+        const canvas = document.getElementById('myChart');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['A', 'B', 'C'],
+                    datasets: [{
+                        label: 'Ejemplo',
+                        data: [10, 20, 30],
+                        backgroundColor: '#388E3C',
+                    }],
+                },
+                options: {
+                    responsive: false,
+                }
+            });
+        } else {
+            console.error('Canvas no encontrado.');
+            alert('Error: Canvas no encontrado.');
+        }
+
+        // Configura el botón de exportación
         const exportarBtn = document.getElementById('exportar-btn');
         if (exportarBtn) {
             exportarBtn.addEventListener('click', async () => {
