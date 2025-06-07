@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-	
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 	
 	
 	
@@ -2072,13 +2072,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	//pdf create 
 	 document.addEventListener('DOMContentLoaded', () => {
-        // Verifica que jsPDF esté cargado
+        // Verifica que jsPDF y html2canvas estén cargados
         if (!window.jspdf || !window.jspdf.jsPDF) {
             console.error('Error: Biblioteca jsPDF no está cargada.');
             alert('Error: No se pudo cargar la biblioteca jsPDF. Verifica la inclusión del script.');
             return;
         }
-        console.log('Biblioteca jsPDF cargada correctamente:', window.jspdf);
+        if (!window.html2canvas) {
+            console.error('Error: Biblioteca html2canvas no está cargada.');
+            alert('Error: No se pudo cargar la biblioteca html2canvas. Verifica la inclusión del script.');
+            return;
+        }
+        console.log('Bibliotecas jsPDF y html2canvas cargadas correctamente.');
 
         const exportarBtn = document.getElementById('exportar-btn');
         if (!exportarBtn) {
@@ -2087,7 +2092,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        exportarBtn.addEventListener('click', () => {
+        exportarBtn.addEventListener('click', async () => {
             console.log('Exportar button clicked. Starting PDF export.');
             try {
                 const explanationContent = document.getElementById('explanation-content');
@@ -2157,6 +2162,36 @@ document.addEventListener('DOMContentLoaded', () => {
                             doc.setFontSize(12);
                             doc.setTextColor(52, 58, 64); // Restaurar color
                         }
+                    } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
+                        // Maneja gráficos (canvas o div que contenga un canvas)
+                        const canvasElement = tag === 'canvas' ? element : element.querySelector('canvas');
+                        if (canvasElement) {
+                            try {
+                                const canvas = await html2canvas(canvasElement, {
+                                    scale: 2, // Aumenta la resolución
+                                    useCORS: true // Habilita CORS para imágenes externas
+                                });
+                                const imgData = canvas.toDataURL('image/png');
+                                const imgProps = doc.getImageProperties(imgData);
+                                const pdfWidth = 500; // Ancho máximo en el PDF (500pt)
+                                const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                                // Verifica si hay espacio suficiente en la página
+                                if (yPosition + imgHeight > 750) {
+                                    doc.addPage();
+                                    yPosition = 40;
+                                    console.log('Nueva página añadida para gráfico, yPosition reiniciada:', yPosition);
+                                }
+
+                                doc.addImage(imgData, 'PNG', 40, yPosition, pdfWidth, imgHeight);
+                                yPosition += imgHeight + 20; // Espacio después del gráfico
+                                console.log('Gráfico añadido en yPosition:', yPosition);
+                            } catch (error) {
+                                console.error('Error al procesar el gráfico:', error.message);
+                                doc.text('Error: No se pudo incluir un gráfico en el PDF.', 40, yPosition);
+                                yPosition += 20;
+                            }
+                        }
                     }
 
                     // Verifica si es necesario añadir una nueva página
@@ -2181,7 +2216,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
