@@ -1164,27 +1164,26 @@ body {
 .animated-title {
   text-align: center;
   margin: 50px auto;
-  font-size: 2.5em; /* Letras más grandes */
+  font-size: 2.5em;
   font-weight: bold;
   white-space: pre;
   color: transparent;
-  letter-spacing: 4px; /* Espacio entre letras para mejor visualización */
+  letter-spacing: 1px; /* 👈 Controla el espacio entre letras */
 }
 
-/* Cada letra individual */
 .letter {
   display: inline-block;
   position: relative;
   overflow: hidden;
   vertical-align: top;
-  line-height: 1.2em; /* Ajuste dinámico según el tamaño de fuente */
+  line-height: 1.2em;
   height: 1.2em;
   width: auto;
   min-width: 0.4em;
-  margin-right: 2px;
   font-family: 'Roboto', sans-serif;
-  font-size: 1em; /* Usa el tamaño definido en .animated-title */
+  font-size: 1em;
   color: #388E3C;
+  margin-right: 0; /* 👈 Desactivamos margen individual */
 }
 
 /* Efecto glitch con transformación */
@@ -1202,93 +1201,159 @@ body {
   animation: scramble 4s forwards ease-in-out;
 }
 
-/* Animación de caída rápida */
+/* Animación principal */
 @keyframes scramble {
   0%   { transform: translateY(0); opacity: 1; }
   100% { transform: translateY(-100%); opacity: 1; }
 }
 
-/* Contenido aleatorio para cada letra */
-.letter:nth-child(1)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.05s; }
-.letter:nth-child(2)::before { content: "ABCDEFGRHIJKLMNOPLQRSTUXY"; animation-delay: 0.1s; }
-.letter:nth-child(3)::before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.15s; }
-.letter:nth-child(4)::before { content: "XYZPQRSTUVMNOPABCDCEFGHIJ"; animation-delay: 0.2s; }
-.letter:nth-child(5)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.25s; }
-.letter:nth-child(6)::before { content: "KLMNOPQRSTUVWXYYZABCDEFGRH"; animation-delay: 0.3s; }
-.letter:nth-child(7)::before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.35s; }
-.letter:nth-child(8)::before { content: "IJKLMNOPQRSTUXYZABCDEFFG"; animation-delay: 0.4s; }
-.letter:nth-child(9)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.45s; }
-.letter:nth-child(10)::before{ content: "QRSTUVWXYZABCDEFGHIJKLLMNOP"; animation-delay: 0.5s; }
-.letter:nth-child(17):before {
-  content: "ANTROPOMETRICAVALORACION"; animation: letter1 1.5s forwards ease-in-out; animation-delay: 0.6s;
-}
-.letter:nth-child(18):before {
-  content: "IJKLMNOPQRSTUXYZABCDEFFG"; animation: letter2 1.5s forwards ease-in-out; animation-delay: 0.65s;
-}
-.letter:nth-child(19):before {
-  content: "VALORACIONANTROPOMETRICAAPP"; animation: letter3 1.5s forwards ease-in-out; animation-delay: 0.7s;
-}
-.letter:nth-child(20):before {
-  content: "QRSTUVWXYZABCDEFGHIJKLLMNOP"; animation: letter4 1.5s forwards ease-in-out; animation-delay: 0.75s;
-}
-.letter:nth-child(21):before {
-  content: " "; animation: letter5 1.5s forwards ease-in-out; animation-delay: 0.8s;
-}
-.letter:nth-child(22):before {
-  content: "VALORACIONANTROPOMETRICAAPP"; animation: letter6 1.5s forwards ease-in-out; animation-delay: 0.85s;
-}
-.letter:nth-child(23):before {
-  content: "QRSTUVWXYZABCDEFGHIJKLMNOPQ"; animation: letter7 1.5s forwards ease-in-out; animation-delay: 0.9s;
-}
-.letter:nth-child(24):before {
-  content: "XYZPQRSTUVWLMNOPQRSTUVWXYZ"; animation: letter1 1.5s forwards ease-in-out; animation-delay: 0.95s;
-}
-.letter:nth-child(25):before {
-  content: "WXYZABCDEFGHIJKLMNOPQRSTUV"; animation: letter2 1.5s forwards ease-in-out; animation-delay: 1s;
-}
-.letter:nth-child(26):before {
-  content: "QRSTUVWXYZABCDEFGHIJKLMNOP"; animation: letter3 1.5s forwards ease-in-out; animation-delay: 1.05s;
-}
-.letter:nth-child(27):before {
-  content: "STUVWXYZABCDEFGHIJKLMNOPQRS"; animation: letter4 1.5s forwards ease-in-out; animation-delay: 1.1s;
-}
-.letter:nth-child(28):before {
-  content: "OPQRSTUVWXYZABCDEFGHIJKLMNOP"; animation: letter5 1.5s forwards ease-in-out; animation-delay: 1.15s;
-}
-.letter:nth-child(29):before {
-  content: "MNOPQRSTUVWXYZABCDEFGHIJKLMNOP"; animation: letter6 1.5s forwards ease-in-out; animation-delay: 1.2s;
-}
-.letter:nth-child(30):before {
-  content: "ÉÍÓÚÜÑÇÀÈÙÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×"; animation: letter7 1.5s forwards ease-in-out; animation-delay: 1.25s;
-}
-.letter:nth-child(31):before {
-  content: "TUVWXYZABCDEFGHIJKLMNOPQRS"; animation: letter1 1.5s forwards ease-in-out; animation-delay: 1.3s;
-}
-.letter:nth-child(32):before {
-  content: "RSTUVWXYZABCDEFGHIJKLMNOPQ"; animation: letter2 1.5s forwards ease-in-out; animation-delay: 1.35s;
-}
-.letter:nth-child(33):before {
-  content: "IJKLMNOPQRSTUVWXYZABCDEFGH"; animation: letter3 1.5s forwards ease-in-out; animation-delay: 1.4s;
-}
-.letter:nth-child(34):before {
-  content: "CDEFGHIJKLMNOPQRSTUVWXYZAB"; animation: letter4 1.5s forwards ease-in-out; animation-delay: 1.45s;
-}
-.letter:nth-child(35):before {
-  content: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; animation: letter5 1.5s forwards ease-in-out; animation-delay: 1.5s;
-}
-.letter:nth-child(36):before {
-  content: " "; animation: letter6 1.5s forwards ease-in-out; animation-delay: 1.55s;
-}
-.letter:nth-child(37):before {
-  content: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; animation: letter7 1.5s forwards ease-in-out; animation-delay: 1.6s;
-}
-.letter:nth-child(38):before {
-  content: "PQRSTUVWXYZABCDEFGHIJKLMNO"; animation: letter1 1.5s forwards ease-in-out; animation-delay: 1.65s;
-}
-.letter:nth-child(39):before {
-  content: "PQRSTUVWXYZABCDEFGHIJKLMNO"; animation: letter2 1.5s forwards ease-in-out; animation-delay: 1.7s;
-}
+/* Asignamos contenido aleatorio y animación a cada letra */
 
+.letter:nth-child(1)::before {
+  content: "VALORACIONANTROPOMETRICAAPP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.05s;
+}
+.letter:nth-child(2)::before {
+  content: "ABCDEFGRHIJKLMNOPLQRSTUXY";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.1s;
+}
+.letter:nth-child(3)::before {
+  content: "ANTROPOMETRICAVALORACION";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.15s;
+}
+.letter:nth-child(4)::before {
+  content: "XYZPQRSTUVMNOPABCDCEFGHIJ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.2s;
+}
+.letter:nth-child(5)::before {
+  content: "VALORACIONANTROPOMETRICAAPP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.25s;
+}
+.letter:nth-child(6)::before {
+  content: "KLMNOPQRSTUVWXYYZABCDEFGRH";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.3s;
+}
+.letter:nth-child(7)::before {
+  content: "ANTROPOMETRICAVALORACION";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.35s;
+}
+.letter:nth-child(8)::before {
+  content: "IJKLMNOPQRSTUXYZABCDEFFG";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.4s;
+}
+.letter:nth-child(9)::before {
+  content: "VALORACIONANTROPOMETRICAAPP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.45s;
+}
+.letter:nth-child(10)::before {
+  content: "QRSTUVWXYZABCDEFGHIJKLLMNOP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.5s;
+}
+.letter:nth-child(11)::before {
+  content: " ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.55s;
+}
+.letter:nth-child(12)::before {
+  content: "VALORACIONANTROPOMETRICAAPP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.6s;
+}
+.letter:nth-child(13)::before {
+  content: "QRSTUVWXYZABCDEFGHIJKLMNOPQ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.65s;
+}
+.letter:nth-child(14)::before {
+  content: "XYZPQRSTUVWLMNOPQRSTUVWXYZ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.7s;
+}
+.letter:nth-child(15)::before {
+  content: "WXYZABCDEFGHIJKLMNOPQRSTUV";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.75s;
+}
+.letter:nth-child(16)::before {
+  content: "QRSTUVWXYZABCDEFGHIJKLMNOP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.8s;
+}
+.letter:nth-child(17)::before {
+  content: "STUVWXYZABCDEFGHIJKLMNOPQRS";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.85s;
+}
+.letter:nth-child(18)::before {
+  content: "OPQRSTUVWXYZABCDEFGHIJKLMNOP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.9s;
+}
+.letter:nth-child(19)::before {
+  content: "MNOPQRSTUVWXYZABCDEFGHIJKLMNOP";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 0.95s;
+}
+.letter:nth-child(20)::before {
+  content: "ÉÍÓÚÜÑÇÀÈÙÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1s;
+}
+.letter:nth-child(21)::before {
+  content: "TUVWXYZABCDEFGHIJKLMNOPQRS";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.05s;
+}
+.letter:nth-child(22)::before {
+  content: "RSTUVWXYZABCDEFGHIJKLMNOPQ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.1s;
+}
+.letter:nth-child(23)::before {
+  content: "IJKLMNOPQRSTUVWXYZABCDEFGH";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.15s;
+}
+.letter:nth-child(24)::before {
+  content: "CDEFGHIJKLMNOPQRSTUVWXYZAB";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.2s;
+}
+.letter:nth-child(25)::before {
+  content: "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.25s;
+}
+.letter:nth-child(26)::before {
+  content: " ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.3s;
+}
+.letter:nth-child(27)::before {
+  content: "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.35s;
+}
+.letter:nth-child(28)::before {
+  content: "PQRSTUVWXYZABCDEFGHIJKLMNO";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.4s;
+}
+.letter:nth-child(29)::before {
+  content: "PQRSTUVWXYZABCDEFGHIJKLMNO";
+  animation: scramble 1.5s forwards ease-in-out;
+  animation-delay: 1.45s;
+}
 /* Continúa asignando contenido aleatorio a las demás si quieres que todas tengan animación */
     </style>
 </head>
