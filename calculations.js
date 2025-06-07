@@ -1644,7 +1644,8 @@ import { auth } from './app.js';
             // ICC
             content += '<p><strong>Índice Cintura-Cadera (ICC):</strong> Mide la distribución de grasa corporal (cintura/cadera) y evalúa el riesgo cardiovascular. Un ICC alto indica acumulación de grasa abdominal (tipo androide, forma de "manzana"), asociada a mayor riesgo de diabetes tipo 2, síndrome metabólico, enfermedades hepáticas, cánceres relacionados con obesidad, apnea del sueño y problemas cardiovasculares (hipertensión, infarto). Un ICC bajo sugiere grasa en caderas/muslos (tipo ginoide, forma de "pera"), de menor riesgo. En hombres, la tipología androide es más común debido a andrógenos. En mujeres, la tipología ginoide predomina por estrógenos, pero cambios hormonales (menopausia, embarazo) pueden desplazar la grasa hacia un patrón androide, aumentando riesgos. </p>';
 			if (!isNaN(results.icc)) {
-				content += '<p>Tu ICC es <strong>' + formatResult(results.icc, 2) + '</strong>.';
+				content += '<p>Tu ICC es <strong>' + formatResult(results.icc, 2) + '</strong>.</p>';
+				content += '<p>';
 				if (gender === 'masculino') {
 					if (results.icc < 0.78) {
 						content += 'ICC < 0.78 (tipo ginoide): Bajo riesgo cardiovascular. ¡Buen indicador de salud! ';
