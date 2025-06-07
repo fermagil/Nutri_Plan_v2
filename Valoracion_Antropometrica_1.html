@@ -2072,201 +2072,150 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	//pdf create 
 	 document.addEventListener('DOMContentLoaded', () => {
-        // Verifica que jsPDF y html2canvas estén cargados
-        if (!window.jspdf || !window.jspdf.jsPDF) {
-            console.error('Error: Biblioteca jsPDF no está cargada.');
-            alert('Error: No se pudo cargar la biblioteca jsPDF. Verifica la inclusión del script.');
-            return;
-        }
-        if (!window.html2canvas) {
-            console.error('Error: Biblioteca html2canvas no está cargada.');
-            alert('Error: No se pudo cargar la biblioteca html2canvas. Verifica la inclusión del script.');
-            return;
-        }
-        console.log('Bibliotecas jsPDF y html2canvas cargadas correctamente.');
-
-        const exportarBtn = document.getElementById('exportar-btn');
-        if (!exportarBtn) {
-            console.error('Botón exportar-btn no encontrado.');
-            alert('Error: Botón exportar-btn no encontrado.');
-            return;
-        }
-
-        exportarBtn.addEventListener('click', async () => {
-            console.log('Exportar button clicked. Starting PDF export.');
-            try {
-                const explanationContent = document.getElementById('explanation-content');
-                if (!explanationContent) {
-                    throw new Error('Elemento explanation-content no encontrado');
-                }
-
-                // Crea un nuevo documento PDF
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'pt',
-                    format: 'a4'
-                });
-                console.log('Documento PDF creado:', doc);
-
-                // Define márgenes
-                const margin = {
-                    top: 40,
-                    bottom: 90,
-                    left: 40,
-                    right: 40
-                };
-                const pageWidth = doc.internal.pageSize.getWidth(); // ~595pt para A4
-                const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
-                const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
-                const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
-
-                let yPosition = margin.top; // Posición vertical inicial
-                const processedElements = new Set(); // Evita procesar elementos repetidos
-
-                // Añade título
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(18);
-                doc.setTextColor(56, 142, 60); // Verde (#388E3C)
-                const title = 'Explicación de los Resultados y Sugerencias';
-                const titleLines = doc.splitTextToSize(title, contentWidth);
-                doc.text(titleLines, margin.left, yPosition, { align: 'center' });
-                yPosition += titleLines.length * 20 + 20;
-                console.log('Título añadido en yPosition:', yPosition);
-
-                // Configura fuente para contenido normal
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(12);
-                doc.setTextColor(52, 58, 64); // Gris oscuro (#343A40)
-
-                // Procesa el contenido de explanation-content
-                const elements = Array.from(explanationContent.children); // Solo elementos hijos directos
-                for (const element of elements) {
-                    if (element.nodeType !== Node.ELEMENT_NODE) continue;
-
-                    const elementKey = element.outerHTML; // Identificador único
-                    if (processedElements.has(elementKey)) {
-                        console.warn('Elemento repetido detectado, omitiendo:', elementKey.substring(0, 50));
-                        continue;
-                    }
-                    processedElements.add(elementKey);
-
-                    const tag = element.tagName.toLowerCase();
-                    console.log('Procesando elemento:', tag, 'yPosition:', yPosition);
-
-                    if (tag === 'p') {
-                        const text = element.textContent.trim();
-                        if (text) {
-                            const lines = doc.splitTextToSize(text, contentWidth);
-                            const textHeight = lines.length * 14 + 10;
-                            if (yPosition + textHeight > pageHeight - margin.bottom) {
-                                doc.addPage();
-                                yPosition = margin.top;
-                                console.log('Nueva página añadida para párrafo, yPosition reiniciada:', yPosition);
-                            }
-                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
-                            yPosition += textHeight;
-                        }
-                    } else if (tag === 'ul' || tag === 'ol') {
-                        const items = element.querySelectorAll('li');
-                        let index = 1;
-                        for (const li of items) {
-                            const text = li.textContent.trim();
-                            if (text) {
-                                const bullet = tag === 'ul' ? '•' : `${index++}.`;
-                                const lines = doc.splitTextToSize(`${bullet} ${text}`, contentWidth - 10);
-                                const itemHeight = lines.length * 14 + 8;
-                                if (yPosition + itemHeight > pageHeight - margin.bottom) {
-                                    doc.addPage();
-                                    yPosition = margin.top;
-                                    console.log('Nueva página añadida para lista, yPosition reiniciada:', yPosition);
-                                }
-                                doc.text(lines, margin.left + 10, yPosition, { align: 'justify' });
-                                yPosition += itemHeight;
-                            }
-                        }
-                    } else if (['h1', 'h2', 'h3'].includes(tag)) {
-                        const text = element.textContent.trim();
-                        if (text) {
-                            doc.setFont('helvetica', 'bold');
-                            doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
-                            doc.setTextColor(56, 142, 60);
-                            const lines = doc.splitTextToSize(text, contentWidth);
-                            const textHeight = lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
-                            if (yPosition + textHeight > pageHeight - margin.bottom) {
-                                doc.addPage();
-                                yPosition = margin.top;
-                                console.log('Nueva página añadida para encabezado, yPosition reiniciada:', yPosition);
-                            }
-                            doc.text(lines, margin.left, yPosition);
-                            yPosition += textHeight;
-                            doc.setFont('helvetica', 'normal');
-                            doc.setFontSize(12);
-                            doc.setTextColor(52, 58, 64);
-                        }
-                    } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
-                        const canvasElement = tag === 'canvas' ? element : element.querySelector('canvas');
-                        if (canvasElement) {
-                            try {
-                                const canvas = await html2canvas(canvasElement, {
-                                    scale: 2,
-                                    useCORS: true,
-                                    logging: true
-                                });
-                                const imgData = canvas.toDataURL('image/png');
-                                const imgProps = doc.getImageProperties(imgData);
-                                const maxImgWidth = contentWidth;
-                                const imgHeight = (imgProps.height * maxImgWidth) / imgProps.width;
-
-                                if (imgHeight < 10 || imgHeight > pageHeight * 2) {
-                                    throw new Error('Altura de imagen inválida: ' + imgHeight);
-                                }
-
-                                if (yPosition + imgHeight > pageHeight - margin.bottom) {
-                                    doc.addPage();
-                                    yPosition = margin.top;
-                                    console.log('Nueva página añadida para gráfico, yPosition reiniciada:', yPosition);
-                                }
-
-                                doc.addImage(imgData, 'PNG', margin.left, yPosition, maxImgWidth, imgHeight);
-                                yPosition += imgHeight + 20;
-                                console.log('Gráfico añadido en yPosition:', yPosition);
-                            } catch (error) {
-                                console.error('Error al procesar el gráfico:', error.message);
-                                const errorText = 'Error: No se pudo incluir un gráfico en el PDF.';
-                                const lines = doc.splitTextToSize(errorText, contentWidth);
-                                if (yPosition + 20 > pageHeight - margin.bottom) {
-                                    doc.addPage();
-                                    yPosition = margin.top;
-                                }
-                                doc.text(lines, margin.left, yPosition);
-                                yPosition += 20;
-                            }
-                        }
-                    }
-
-                    // Verifica si es necesario añadir una nueva página
-                    if (yPosition > pageHeight - margin.bottom) {
-                        doc.addPage();
-                        yPosition = margin.top;
-                        console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
-                    }
-                }
-
-                // Genera el blob y descárgalo
-                const blob = doc.output('blob');
-                if (!blob) {
-                    throw new Error('No se pudo generar el blob del PDF.');
-                }
-                saveAs(blob, 'Explicacion_Resultados.pdf');
-                console.log('Documento PDF generado y descargado.');
-                alert('Documento PDF exportado exitosamente.');
-            } catch (error) {
-                console.error('Error en exportación a PDF:', error.message, error.stack);
-                alert('Error al exportar a PDF: ' + error.message);
+            // Verifica que jsPDF y html2canvas estén cargados
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                console.error('Error: Biblioteca jsPDF no está cargada.');
+                alert('Error: No se pudo cargar la biblioteca jsPDF. Verifica la inclusión del script.');
+                return;
             }
+            if (!window.html2canvas) {
+                console.error('Error: Biblioteca html2canvas no está cargada.');
+                alert('Error: No se pudo cargar la biblioteca html2canvas. Verifica la inclusión del script.');
+                return;
+            }
+            console.log('Bibliotecas jsPDF y html2canvas cargadas correctamente.');
+
+            const exportarBtn = document.getElementById('exportar-btn');
+            if (!exportarBtn) {
+                console.error('Botón exportar-btn no encontrado.');
+                alert('Error: Botón exportar-btn no encontrado.');
+                return;
+            }
+
+            exportarBtn.addEventListener('click', async () => {
+                console.log('Exportar button clicked. Starting PDF export.');
+                try {
+                    const explanationContent = document.getElementById('explanation-content');
+                    if (!explanationContent) {
+                        throw new Error('Elemento explanation-content no encontrado');
+                    }
+
+                    // Crea un nuevo documento PDF
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({
+                        orientation: 'portrait',
+                        unit: 'pt',
+                        format: 'a4'
+                    });
+                    console.log('Documento PDF creado:', doc);
+
+                    let yPosition = 40; // Posición vertical inicial (en puntos)
+
+                    // Añade título
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(18);
+                    doc.setTextColor(56, 142, 60); // Verde (#388E3C)
+                    doc.text('Explicación de los Resultados y Sugerencias', 40, yPosition);
+                    yPosition += 30;
+                    console.log('Título añadido en yPosition:', yPosition);
+
+                    // Configura fuente para contenido normal
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(12);
+                    doc.setTextColor(52, 58, 64); // Gris oscuro (#343A40)
+
+                    // Procesa el contenido de explanation-content
+                    const elements = explanationContent.childNodes;
+                    for (const element of elements) {
+                        if (element.nodeType !== Node.ELEMENT_NODE) continue;
+
+                        const tag = element.tagName.toLowerCase();
+                        if (tag === 'p') {
+                            const text = element.textContent.trim();
+                            if (text) {
+                                const lines = doc.splitTextToSize(text, 500); // Divide en líneas de 500pt
+                                doc.text(lines, 40, yPosition);
+                                yPosition += lines.length * 14 + 10; // 14pt por línea + espacio
+                            }
+                        } else if (tag === 'ul' || tag === 'ol') {
+                            const items = element.querySelectorAll('li');
+                            let index = 1; // Contador para <ol>
+                            for (const li of items) {
+                                const text = li.textContent.trim();
+                                if (text) {
+                                    const bullet = tag === 'ul' ? '•' : `${index++}.`;
+                                    const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para bullet
+                                    doc.text(lines, 50, yPosition); // Indentado 10pt
+                                    yPosition += lines.length * 14 + 8; // 14pt por línea + espacio
+                                }
+                            }
+                        } else if (['h1', 'h2', 'h3'].includes(tag)) {
+                            const text = element.textContent.trim();
+                            if (text) {
+                                doc.setFont('helvetica', 'bold');
+                                doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
+                                doc.setTextColor(56, 142, 60); // Verde (#388E3C)
+                                const lines = doc.splitTextToSize(text, 500);
+                                doc.text(lines, 40, yPosition);
+                                yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
+                                doc.setFont('helvetica', 'normal');
+                                doc.setFontSize(12);
+                                doc.setTextColor(52, 58, 64); // Restaurar color
+                            }
+                        } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
+                            // Maneja gráficos (canvas o div que contenga un canvas)
+                            const canvasElement = tag === 'canvas' ? element : element.querySelector('canvas');
+                            if (canvasElement) {
+                                try {
+                                    const canvas = await html2canvas(canvasElement, {
+                                        scale: 2, // Aumenta la resolución
+                                        useCORS: true // Habilita CORS para imágenes externas
+                                    });
+                                    const imgData = canvas.toDataURL('image/png');
+                                    const imgProps = doc.getImageProperties(imgData);
+                                    const pdfWidth = 500; // Ancho máximo en el PDF (500pt)
+                                    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                                    // Verifica si hay espacio suficiente en la página
+                                    if (yPosition + imgHeight > 750) {
+                                        doc.addPage();
+                                        yPosition = 40;
+                                        console.log('Nueva página añadida para gráfico, yPosition reiniciada:', yPosition);
+                                    }
+
+                                    doc.addImage(imgData, 'PNG', 40, yPosition, pdfWidth, imgHeight);
+                                    yPosition += imgHeight + 20; // Espacio después del gráfico
+                                    console.log('Gráfico añadido en yPosition:', yPosition);
+                                } catch (error) {
+                                    console.error('Error al procesar el gráfico:', error.message);
+                                    doc.text('Error: No se pudo incluir un gráfico en el PDF.', 40, yPosition);
+                                    yPosition += 20;
+                                }
+                            }
+                        }
+
+                        // Verifica si es necesario añadir una nueva página
+                        if (yPosition > 750) { // A4 height ~842pt, margen inferior ~90pt
+                            doc.addPage();
+                            yPosition = 40;
+                            console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
+                        }
+                    }
+
+                    // Genera el blob y descárgalo
+                    const blob = doc.output('blob');
+                    if (!blob) {
+                        throw new Error('No se pudo generar el blob del PDF.');
+                    }
+                    saveAs(blob, 'Explicacion_Resultados.pdf');
+                    console.log('Documento PDF generado y descargado.');
+                    alert('Documento PDF exportado exitosamente.');
+                } catch (error) {
+                    console.error('Error en exportación a PDF:', error.message, error.stack);
+                    alert('Error al exportar a PDF: ' + error.message);
+                }
+            });
         });
-    });
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
