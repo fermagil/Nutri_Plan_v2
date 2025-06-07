@@ -2134,18 +2134,20 @@ document.addEventListener('DOMContentLoaded', () => {
 			    const tipologia = document.getElementById('result-tipologia-actual')?.textContent?.trim() || 'N/A';
 			
 			    // Obtener y formatear la fecha
+			    // Obtener y formatear la fecha
 			    const fechaInput = document.getElementById('seleccionar_fecha')?.value?.trim();
 			    let fecha = 'N/A';
 			    if (fechaInput) {
 			        try {
-			            const date = new Date(fechaInput);
-			            if (!isNaN(date)) {
-			                const day = String(date.getDate()).padStart(2, '0');
-			                const month = String(date.getMonth() + 1).padStart(2, '0');
-			                const year = String(date.getFullYear()).slice(-2);
+			            // Parsear fecha en formato DD/MM/YYYY, HH:MM
+			            const match = fechaInput.match(/^(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2})$/);
+			            if (match) {
+			                const day = match[1];
+			                const month = match[2];
+			                const year = match[3].slice(-2); // Últimos 2 dígitos del año
 			                fecha = `${day}/${month}/${year}`;
 			            } else {
-			                console.warn('Fecha inválida:', fechaInput);
+			                console.warn('Formato de fecha inválido:', fechaInput);
 			            }
 			        } catch (error) {
 			            console.warn('Error al formatear la fecha:', error.message);
