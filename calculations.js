@@ -1736,7 +1736,7 @@
             content += '</p>';
 
             // % Grasa Corporal Deseado
-				content += '<h3><strong>% Grasa Corporal Deseado:</strong> Porcentaje de grasa ideal según tu género y nivel de actividad. <h3>';
+				content += '<p><strong>% Grasa Corporal Deseado:</strong> Porcentaje de grasa ideal según tu género y nivel de actividad. </p>';
 				if (!isNaN(results.grasaPctDeseado)) {
 					content += '<p>Tu % de grasa corporal deseado es <strong>' + formatResult(results.grasaPctDeseado, 1) + '%.</strong> </p>';
 					content += '<p>Tu % de grasa actual es ' + formatResult(results.grasaPctActual, 1) + '%. </p>';
