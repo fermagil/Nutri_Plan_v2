@@ -2202,7 +2202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             const isHeader = row.querySelector('th') !== null;
                             const rowText = cellTexts.join(' | ');
-                            const lines = doc.splitTextToSize(rowText, contentWidth);
+                            const lines = doc.splitTextToSize(rowText);
                             const rowHeight = lines.length * 14 + (isHeader ? 10 : 8);
 
                             if (yPosition + rowHeight > pageHeight - margin.bottom) {
