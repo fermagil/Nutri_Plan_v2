@@ -2001,7 +2001,7 @@
     </footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
    	
-	 <script src="https://cdn.jsdelivr.net/npm/docx@7.1.0/build/index.js"></script>
+	 <script src="https://cdn.jsdelivr.net/npm/docx@6.0.3/build/index.js"></script>
 <script>
     // Accordion Effect
 document.addEventListener('DOMContentLoaded', () => {
@@ -2071,7 +2071,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 	
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
         // Verifica que docx esté cargado
         if (!window.docx || !window.docx.Document) {
             console.error('Error: Biblioteca docx no está cargada.');
@@ -2095,12 +2095,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error('Elemento explanation-content no encontrado');
                 }
 
-                // Crea el documento con metadatos explícitos
-                const doc = new window.docx.Document({
-                    creator: 'Nutri Plan',
-                    title: 'Explicación de Resultados',
-                    description: 'Documento generado automáticamente'
-                });
+                // Crea el documento sin opciones
+                const doc = new window.docx.Document();
                 console.log('Documento creado:', doc);
 
                 // Añade una sección manualmente
