@@ -1999,7 +1999,7 @@
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/9.1.2/docx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
     // Accordion Effect
@@ -2069,11 +2069,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 	
-// Verifica si las bibliotecas se cargaron correctamente
+
+  
+
         window.onload = function() {
-            if (typeof docx === 'undefined') {
-                console.error('La biblioteca docx no se cargó correctamente.');
-                alert('Error: La biblioteca docx no se cargó.');
+            if (typeof htmlDocx === 'undefined') {
+                console.error('La biblioteca html-docx-js no se cargó correctamente.');
+                alert('Error: La biblioteca html-docx-js no se cargó.');
                 return;
             }
             if (typeof saveAs === 'undefined') {
@@ -2081,12 +2083,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error: La biblioteca FileSaver no se cargó.');
                 return;
             }
-            console.log('Bibliotecas docx y FileSaver cargadas correctamente.');
+            console.log('Bibliotecas html-docx-js y FileSaver cargadas correctamente.');
 
-            // Configura el evento del botón
+            // Convierte el canvas a imagen
+            const canvas = document.getElementById('myChart');
+            const chartImage = document.getElementById('chartImage');
+            if (canvas && chartImage) {
+                chartImage.src = canvas.toDataURL('image/png');
+            } else {
+                console.warn('Canvas o imagen no encontrados.');
+            }
+
             const exportarBtn = document.getElementById('exportar-btn');
             if (exportarBtn) {
-                exportarBtn.addEventListener('click', async () => {
+                exportarBtn.addEventListener('click', () => {
                     console.log('Exportar button clicked. Starting Word export.');
                     try {
                         const explanationContent = document.getElementById('explanation-content');
@@ -2094,94 +2104,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             throw new Error('Elemento explanation-content no encontrado');
                         }
 
-                        // Crea un nuevo documento
-                        const doc = new docx.Document({
-                            sections: [{
-                                properties: {},
-                                children: [
-                                    // Encabezado
-                                    new docx.Paragraph({
-                                        children: [
-                                            new docx.TextRun({
-                                                text: 'Explicación de los Resultados y Sugerencias',
-                                                bold: true,
-                                                size: 36, // 18pt
-                                                color: '388E3C',
-                                            }),
-                                        ],
-                                        heading: docx.HeadingLevel.HEADING_2,
-                                        spacing: { after: 200 },
-                                    }),
-                                ],
-                            }],
+                        // Obtén el HTML del contenedor
+                        const contentHtml = explanationContent.outerHTML;
+
+                        // Convierte HTML a .docx
+                        const blob = htmlDocx.asBlob(contentHtml, {
+                            orientation: 'portrait',
+                            margins: {
+                                top: 720, // 1 pulgada = 720 twips
+                                bottom: 720,
+                                left: 720,
+                                right: 720,
+                            },
                         });
 
-                        // Obtiene la sección actual
-                        const currentSection = doc.sections[0];
-
-                        // Parsea el contenido de explanation-content
-                        const elements = explanationContent.childNodes;
-                        for (const element of elements) {
-                            if (element.nodeType === Node.ELEMENT_NODE) {
-                                const tag = element.tagName.toLowerCase();
-                                if (tag === 'p') {
-                                    // Párrafo
-                                    const text = element.innerText || '';
-                                    currentSection.children.push(
-                                        new docx.Paragraph({
-                                            children: [
-                                                new docx.TextRun({
-                                                    text: text,
-                                                    size: 24,
-                                                    color: '343A40',
-                                                }),
-                                            ],
-                                            spacing: { after: 200 },
-                                        })
-                                    );
-                                } else if (tag === 'ul') {
-                                    // Lista desordenada
-                                    const items = element.querySelectorAll('li');
-                                    for (const li of items) {
-                                        const text = li.innerText || '';
-                                        currentSection.children.push(
-                                            new docx.Paragraph({
-                                                children: [
-                                                    new docx.TextRun({
-                                                        text: text,
-                                                        size: 24,
-                                                        color: '343A40',
-                                                    }),
-                                                ],
-                                                bullet: { level: 0 },
-                                                spacing: { after: 150 },
-                                            })
-                                        );
-                                    }
-                                } else if (tag === 'canvas') {
-                                    // Imagen desde canvas
-                                    const dataUrl = element.toDataURL('image/png');
-                                    // Convierte dataURL a Uint8Array
-                                    const base64String = dataUrl.replace(/^data:image\/png;base64,/, '');
-                                    const binaryString = atob(base64String);
-                                    const len = binaryString.length;
-                                    const bytes = new Uint8Array(len);
-                                    for (let i = 0; i < len; i++) {
-                                        bytes[i] = binaryString.charCodeAt(i);
-                                    }
-                                    const image = docx.Media.addImage(doc, bytes, 600, 400);
-                                    currentSection.children.push(
-                                        new docx.Paragraph({
-                                            children: [image],
-                                            spacing: { after: 200 },
-                                        })
-                                    );
-                                }
-                            }
-                        }
-
-                        // Genera y descarga el archivo
-                        const blob = await docx.Packer.toBlob(doc);
+                        // Descarga el archivo
                         saveAs(blob, 'Explicacion_Resultados.docx');
                         console.log('Documento Word generado y descargado.');
                         alert('Documento Word exportado exitosamente.');
@@ -2192,13 +2129,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             } else {
                 console.error('Botón exportar-btn no encontrado.');
+                alert('Error: Botón exportar-btn no encontrado.');
             }
         };
-
-        // Depuración inicial
-        console.log('Verificando docx...');
-        console.log('docx definido:', typeof docx !== 'undefined' ? 'Sí' : 'No');
-        console.log('window.docx:', window.docx);
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
