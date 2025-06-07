@@ -2091,9 +2091,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error: Botón exportar-btn no encontrado.');
                 return;
             }
-
+	
             exportarBtn.addEventListener('click', async () => {
                 console.log('Exportar button clicked. Starting PDF export.');
+		    const btn = document.getElementById('exportar-btn');
+		    btn.textContent = 'Creando PDF...';
+		    btn.disabled = true;
                 try {
                     const explanationContent = document.getElementById('explanation-content');
                     if (!explanationContent) {
@@ -2315,7 +2318,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (error) {
                     console.error('Error en exportación a PDF:', error.message, error.stack);
                     alert('Error al exportar a PDF: ' + error.message);
-                }
+                } finally {
+		        btn.textContent = 'Informe';
+		        btn.disabled = false;
+		    }
             });
         });
 </script>
