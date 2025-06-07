@@ -2068,92 +2068,87 @@ document.addEventListener('DOMContentLoaded', () => {
         handleValueChange(newValue);
     };
 });
-document.addEventListener('DOMContentLoaded', () => {
-        // Verifica que la biblioteca docx esté cargada
-        if (typeof docx === 'undefined' || !docx.Document) {
-            console.error('Error: Biblioteca docx no está cargada.');
-            alert('Error: No se pudo cargar la biblioteca docx. Verifica la inclusión del script.');
-            return;
+// Asegúrate de incluir en tu HTML:
+
+    // Función para esperar a que docx esté cargado
+    async function waitForDocx() {
+        const maxAttempts = 50;
+        let attempts = 0;
+        while (!window.docx || !window.docx.Document) {
+            if (attempts >= maxAttempts) {
+                throw new Error('Biblioteca docx no se cargó después de varios intentos.');
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
         }
+        return window.docx;
+    }
 
-        const exportarBtn = document.getElementById('exportar-btn');
-        if (!exportarBtn) {
-            console.error('Botón exportar-btn no encontrado.');
-            alert('Error: Botón exportar-btn no encontrado.');
-            return;
-        }
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            // Espera a que la biblioteca docx esté cargada
+            const docx = await waitForDocx();
 
-        exportarBtn.addEventListener('click', async () => {
-            console.log('Exportar button clicked. Starting Word export.');
-            try {
-                const explanationContent = document.getElementById('explanation-content');
-                if (!explanationContent) {
-                    throw new Error('Elemento explanation-content no encontrado');
-                }
+            const exportarBtn = document.getElementById('exportar-btn');
+            if (!exportarBtn) {
+                console.error('Botón exportar-btn no encontrado.');
+                alert('Error: Botón exportar-btn no encontrado.');
+                return;
+            }
 
-                // Crea el documento
-                const { Document, Paragraph, TextRun, Media, HeadingLevel, Packer } = docx;
-                const doc = new Document({
-                    sections: [{
-                        properties: {
-                            page: {
-                                margin: {
-                                    top: 720,
-                                    right: 720,
-                                    bottom: 720,
-                                    left: 720,
+            exportarBtn.addEventListener('click', async () => {
+                console.log('Exportar button clicked. Starting Word export.');
+                try {
+                    const explanationContent = document.getElementById('explanation-content');
+                    if (!explanationContent) {
+                        throw new Error('Elemento explanation-content no encontrado');
+                    }
+
+                    // Crea el documento
+                    const { Document, Paragraph, TextRun, Media, HeadingLevel, Packer } = docx;
+                    const doc = new Document({
+                        sections: [{
+                            properties: {
+                                page: {
+                                    margin: {
+                                        top: 720,
+                                        right: 720,
+                                        bottom: 720,
+                                        left: 720,
+                                    },
                                 },
                             },
-                        },
-                        children: [
-                            new Paragraph({
-                                children: [
-                                    new TextRun({
-                                        text: 'Explicación de los Resultados y Sugerencias',
-                                        bold: true,
-                                        size: 36,
-                                        color: '388E3C',
-                                    }),
-                                ],
-                                heading: HeadingLevel.HEADING_1,
-                                spacing: { after: 240 },
-                            }),
-                        ],
-                    }],
-                });
-
-                // Verifica que el documento se creó correctamente
-                if (!doc.sections || !doc.sections[0]) {
-                    throw new Error('No se pudo crear el documento Word correctamente.');
-                }
-
-                const currentSection = doc.sections[0];
-                const elements = explanationContent.childNodes;
-
-                for (const element of elements) {
-                    if (element.nodeType !== Node.ELEMENT_NODE) continue;
-
-                    const tag = element.tagName.toLowerCase();
-                    if (tag === 'p') {
-                        const text = element.textContent.trim();
-                        if (text) {
-                            currentSection.children.push(
+                            children: [
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: text,
-                                            size: 24,
-                                            color: '343A40',
+                                            text: 'Explicación de los Resultados y Sugerencias',
+                                            bold: true,
+                                            size: 36,
+                                            color: '388E3C',
                                         }),
                                     ],
-                                    spacing: { after: 200 },
-                                })
-                            );
-                        }
-                    } else if (tag === 'ul' || tag === 'ol') {
-                        const items = element.querySelectorAll('li');
-                        for (const li of items) {
-                            const text = li.textContent.trim();
+                                    heading: HeadingLevel.HEADING_1,
+                                    spacing: { after: 240 },
+                                }),
+                            ],
+                        }],
+                    });
+
+                    // Verifica que el documento se creó correctamente
+                    if (!doc || !doc.sections || !Array.isArray(doc.sections) || doc.sections.length === 0) {
+                        throw new Error('No se pudo crear el documento Word: estructura de secciones inválida.');
+                    }
+
+                    const currentSection = doc.sections[0];
+                    const elements = explanationContent.childNodes;
+
+                    for (const element of elements) {
+                        if (element.nodeType !== Node.ELEMENT_NODE) continue;
+
+                        const tag = element.tagName.toLowerCase();
+                        if (tag === 'p') {
+                            const text = element.textContent.trim();
                             if (text) {
                                 currentSection.children.push(
                                     new Paragraph({
@@ -2164,64 +2159,89 @@ document.addEventListener('DOMContentLoaded', () => {
                                                 color: '343A40',
                                             }),
                                         ],
-                                        bullet: tag === 'ul' ? { level: 0 } : { level: 0, type: 'decimal' },
-                                        spacing: { after: 150 },
-                                    })
-                                );
-                            }
-                        }
-                    } else if (tag === 'canvas') {
-                        try {
-                            const dataUrl = element.toDataURL('image/png');
-                            if (dataUrl.length > 100) {
-                                const image = Media.addImage(doc, dataUrl, 600, 400, {
-                                    floating: {
-                                        horizontalPosition: { offset: 0 },
-                                        verticalPosition: { offset: 0 },
-                                        margins: { top: 200, bottom: 200 },
-                                    },
-                                });
-                                currentSection.children.push(
-                                    new Paragraph({
-                                        children: [image],
                                         spacing: { after: 200 },
                                     })
                                 );
                             }
-                        } catch (imgError) {
-                            console.warn('Error al procesar canvas:', imgError.message);
-                        }
-                    } else if (['h1', 'h2', 'h3'].includes(tag)) {
-                        const text = element.textContent.trim();
-                        if (text) {
-                            currentSection.children.push(
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: text,
-                                            bold: true,
-                                            size: tag === 'h1' ? 32 : tag === 'h2' ? 28 : 24,
-                                            color: '388E3C',
-                                        }),
-                                    ],
-                                    heading: tag === 'h1' ? HeadingLevel.HEADING_1 : tag === 'h2' ? HeadingLevel.HEADING_2 : HeadingLevel.HEADING_3,
-                                    spacing: { after: 200 },
-                                })
-                            );
+                        } else if (tag === 'ul' || tag === 'ol') {
+                            const items = element.querySelectorAll('li');
+                            for (const li of items) {
+                                const text = li.textContent.trim();
+                                if (text) {
+                                    currentSection.children.push(
+                                        new Paragraph({
+                                            children: [
+                                                new TextRun({
+                                                    text: text,
+                                                    size: 24,
+                                                    color: '343A40',
+                                                }),
+                                            ],
+                                            bullet: tag === 'ul' ? { level: 0 } : { level: 0, type: 'decimal' },
+                                            spacing: { after: 150 },
+                                        })
+                                    );
+                                }
+                            }
+                        } else if (tag === 'canvas') {
+                            try {
+                                const dataUrl = element.toDataURL('image/png');
+                                if (dataUrl.length > 100) {
+                                    const image = Media.addImage(doc, dataUrl, 600, 400, {
+                                        floating: {
+                                            horizontalPosition: { offset: 0 },
+                                            verticalPosition: { offset: 0 },
+                                            margins: { top: 200, bottom: 200 },
+                                        },
+                                    });
+                                    currentSection.children.push(
+                                        new Paragraph({
+                                            children: [image],
+                                            spacing: { after: 200 },
+                                        })
+                                    );
+                                }
+                            } catch (imgError) {
+                                console.warn('Error al procesar canvas:', imgError.message);
+                            }
+                        } else if (['h1', 'h2', 'h3'].includes(tag)) {
+                            const text = element.textContent.trim();
+                            if (text) {
+                                currentSection.children.push(
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: text,
+                                                bold: true,
+                                                size: tag === 'h1' ? 32 : tag === 'h2' ? 28 : 24,
+                                                color: '388E3C',
+                                            }),
+                                        ],
+                                        heading: tag === 'h1' ? HeadingLevel.HEADING_1 : tag === 'h2' ? HeadingLevel.HEADING_2 : HeadingLevel.HEADING_3,
+                                        spacing: { after: 200 },
+                                    })
+                                );
+                            }
                         }
                     }
-                }
 
-                // Genera el blob y descárgalo
-                const blob = await Packer.toBlob(doc);
-                saveAs(blob, 'Explicacion_Resultados.docx');
-                console.log('Documento Word generado y descargado.');
-                alert('Documento Word exportado exitosamente.');
-            } catch (error) {
-                console.error('Error en exportación a Word:', error.message);
-                alert('Error al exportar a Word: ' + error.message);
-            }
-        });
+                    // Genera el blob y descárgalo
+                    const blob = await Packer.toBlob(doc);
+                    if (!blob) {
+                        throw new Error('No se pudo generar el blob del documento.');
+                    }
+                    saveAs(blob, 'Explicacion_Resultados.docx');
+                    console.log('Documento Word generado y descargado.');
+                    alert('Documento Word exportado exitosamente.');
+                } catch (error) {
+                    console.error('Error en exportación a Word:', error.message, error.stack);
+                    alert('Error al exportar a Word: ' + error.message);
+                }
+            });
+        } catch (error) {
+            console.error('Error al inicializar exportación:', error.message, error.stack);
+            alert('Error al inicializar exportación: ' + error.message);
+        }
     });
 </script>
  <!-- Firebase -->
