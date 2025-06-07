@@ -2071,7 +2071,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 	
-  document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
         // Verifica que docx esté cargado
         if (!window.docx || !window.docx.Document) {
             console.error('Error: Biblioteca docx no está cargada.');
@@ -2095,8 +2095,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error('Elemento explanation-content no encontrado');
                 }
 
-                // Crea el documento sin secciones iniciales
-                const doc = new window.docx.Document();
+                // Crea el documento con metadatos explícitos
+                const doc = new window.docx.Document({
+                    creator: 'Nutri Plan',
+                    title: 'Explicación de Resultados',
+                    description: 'Documento generado automáticamente'
+                });
                 console.log('Documento creado:', doc);
 
                 // Añade una sección manualmente
@@ -2186,8 +2190,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Añade la sección al documento
                 doc.addSection(section);
                 console.log('Sección añadida:', section);
-
-                // Verifica que el documento tenga secciones
                 console.log('Secciones finales:', doc.sections);
 
                 // Genera el blob y descárgalo
