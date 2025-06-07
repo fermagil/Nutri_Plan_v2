@@ -2068,9 +2068,8 @@ document.addEventListener('DOMContentLoaded', () => {
         handleValueChange(newValue);
     };
 });
-// Asegúrate de incluir en tu HTML:
 
-    // Función para esperar a que docx esté cargado
+	// Función para esperar a que docx esté cargado
     async function waitForDocx() {
         const maxAttempts = 50;
         let attempts = 0;
@@ -2088,6 +2087,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Espera a que la biblioteca docx esté cargada
             const docx = await waitForDocx();
+            console.log('Biblioteca docx cargada correctamente:', docx);
 
             const exportarBtn = document.getElementById('exportar-btn');
             if (!exportarBtn) {
@@ -2104,20 +2104,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         throw new Error('Elemento explanation-content no encontrado');
                     }
 
-                    // Crea el documento
+                    // Crea el documento con una estructura simplificada
                     const { Document, Paragraph, TextRun, Media, HeadingLevel, Packer } = docx;
                     const doc = new Document({
                         sections: [{
-                            properties: {
-                                page: {
-                                    margin: {
-                                        top: 720,
-                                        right: 720,
-                                        bottom: 720,
-                                        left: 720,
-                                    },
-                                },
-                            },
                             children: [
                                 new Paragraph({
                                     children: [
@@ -2136,11 +2126,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     // Verifica que el documento se creó correctamente
+                    console.log('Documento creado:', doc);
                     if (!doc || !doc.sections || !Array.isArray(doc.sections) || doc.sections.length === 0) {
                         throw new Error('No se pudo crear el documento Word: estructura de secciones inválida.');
                     }
 
                     const currentSection = doc.sections[0];
+                    console.log('Section obtenida:', currentSection);
                     const elements = explanationContent.childNodes;
 
                     for (const element of elements) {
