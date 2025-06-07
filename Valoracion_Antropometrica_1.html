@@ -2137,10 +2137,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('Documento creado:', doc);
 
                     // Verifica que sections sea iterable
-                    if (!doc.sections || !Array.isArray(doc.sections) || doc.sections.length === 0) {
-                        throw new Error('Estructura de secciones inválida en el documento.');
-                    }
-                    console.log('Secciones del documento:', doc.sections);
+                    
 
                     const section = doc.sections[0];
 
