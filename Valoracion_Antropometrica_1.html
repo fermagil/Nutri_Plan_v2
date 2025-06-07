@@ -1177,14 +1177,14 @@ body {
   position: relative;
   overflow: hidden;
   vertical-align: top;
-  line-height: 24px;
-  height: 24px;
-  width: auto;
+  line-height: 40px;
+  height: 40px;
+  width: 40px;
   min-width: 6px;
   margin-right: 2px;
   font-family: 'Atkinson Hyperlegible', sans-serif;
-  font-size: 24px;
-  line-height: 24px;
+  font-size: 40px;
+  line-height: 40px;
   text-transform: uppercase;
   color: #388E3C; /* Verde principal */
 }
@@ -1202,22 +1202,22 @@ body {
 }
 
 /* Definición de las animaciones */
-@keyframes letter1 { from { margin-top: 0px; } to { margin-top: 24px; } }
-@keyframes letter2 { from { margin-top: 0px; } to { margin-top: 24px; } }
-@keyframes letter3 { from { margin-top: -48px; } to { margin-top: 24px; } }
-@keyframes letter4 { from { margin-top: -96px; } to { margin-top: 24px; } }
-@keyframes letter5 { from { margin-top: -48px; } to { margin-top: 24px; } }
-@keyframes letter6 { from { margin-top: -24px; } to { margin-top: 24px; } }
-@keyframes letter7 { from { margin-top: -144px; } to { margin-top: 24px; } }
-@keyframes letter8 { from { margin-top: -72px; } to { margin-top: 24px; } }
-@keyframes letter9 { from { margin-top: -72px; } to { margin-top: 24px; } }
-@keyframes letter10 { from { margin-top: -144px; } to { margin-top: 24px; } }
-@keyframes letter11 { from { margin-top: -72px; } to { margin-top: 24px; } }
-@keyframes letter12 { from { margin-top: -72px; } to { margin-top: 24px; } }
-@keyframes letter13 { from { margin-top: -120px; } to { margin-top: 24px; } }
-@keyframes letter14 { from { margin-top: -48px; } to { margin-top: 24px; } }
-@keyframes letter15 { from { margin-top: -24px; } to { margin-top: 24px; } }
-@keyframes letter16 { from { margin-top: -96px; } to { margin-top: 24px; } }
+@keyframes letter1 { from { margin-top: 0px; } to { margin-top: 40px; } }
+@keyframes letter2 { from { margin-top: 0px; } to { margin-top: 40px; } }
+@keyframes letter3 { from { margin-top: -80px; } to { margin-top: 40px; } }
+@keyframes letter4 { from { margin-top: -120px; } to { margin-top: 40px; } }
+@keyframes letter5 { from { margin-top: -80px; } to { margin-top: 40px; } }
+@keyframes letter6 { from { margin-top: -40px; } to { margin-top: 40px; } }
+@keyframes letter7 { from { margin-top: -160px; } to { margin-top: 40px; } }
+@keyframes letter8 { from { margin-top: -120px; } to { margin-top: 40px; } }
+@keyframes letter9 { from { margin-top: -120px; } to { margin-top: 40px; } }
+@keyframes letter10 { from { margin-top: -160px; } to { margin-top: 40px; } }
+@keyframes letter11 { from { margin-top: -120px; } to { margin-top: 40px; } }
+@keyframes letter12 { from { margin-top: -120px; } to { margin-top: 40px; } }
+@keyframes letter13 { from { margin-top: -200px; } to { margin-top: 40px; } }
+@keyframes letter14 { from { margin-top: -80px; } to { margin-top: 40px; } }
+@keyframes letter15 { from { margin-top: -40px; } to { margin-top: 40px; } }
+@keyframes letter16 { from { margin-top: -120px; } to { margin-top: 40px; } }
 
 /* Asignamos animaciones a cada letra */
 .letter:nth-child(1):before {
@@ -1422,6 +1422,12 @@ body {
   animation-duration: 1.45s;
   animation-delay: 1.45s;
   animation-fill-mode: forwards;
+}
+.letter-static {
+  display: inline-block;
+  font-size: 40px;
+  color: #388E3C;
+  margin-right: 3px;
 }
 /* Continúa asignando contenido aleatorio a las demás si quieres que todas tengan animación */
     </style>
