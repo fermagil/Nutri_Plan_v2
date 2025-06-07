@@ -2175,7 +2175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (text) {
                                 const bullet = tag === 'ul' ? '•' : `${index++}.`;
                                 const lines = doc.splitTextToSize(`${bullet} ${text}`, contentWidth - 10);
-                                const itemHeight = lines.length * 14 + ევ
+                                const itemHeight = lines.length * 14 + 8;
                                 if (yPosition + itemHeight > pageHeight - margin.bottom) {
                                     doc.addPage();
                                     yPosition = margin.top;
