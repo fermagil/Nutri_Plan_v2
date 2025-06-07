@@ -2116,8 +2116,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		                    right: 40
 		                };
 	                let yPosition = 40; // Posición vertical inicial (en puntos)
-			const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
-	                
+			const pageWidth = doc.internal.pageSize.getWidth(); // ~595pt para A4
+	                const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
+	                const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
 	                const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
                     // Añade título
                     doc.setFont('helvetica', 'bold');
@@ -2210,7 +2211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             const isHeader = row.querySelector('th') !== null;
                             const rowText = cellTexts.join(' | ');
-                            const lines = doc.splitTextToSize(rowText);
+                            const lines = doc.splitTextToSize(rowText, contentWidth);
                             const rowHeight = lines.length * 14 + (isHeader ? 10 : 8);
 
                             if (yPosition + rowHeight > pageHeight - margin.bottom) {
@@ -2227,7 +2228,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 doc.setFontSize(12);
                                 yPosition += rowHeight;
                                 // Añadir separador de encabezado
-                                
+                                const separator = '-'.repeat(Math.floor(contentWidth / 6));
+                                doc.text(separator, margin.left, yPosition);
                                 yPosition += 14;
                             } else {
                                 doc.text(lines, margin.left, yPosition, { align: 'justify' });
@@ -2238,12 +2240,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         yPosition += 10; // Espacio extra después de la tabla
                     }
 
+
                         // Verifica si es necesario añadir una nueva página
-                        if (yPosition > 750) { // A4 height ~842pt, margen inferior ~90pt
-                            doc.addPage();
-                            yPosition = 40;
-                            console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
-                        }
+                        if (yPosition > pageHeight - margin.bottom) {
+	                        doc.addPage();
+	                        yPosition = margin.top;
+	                        console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
+	                    }
                     }
 
                     // Genera el blob y descárgalo
