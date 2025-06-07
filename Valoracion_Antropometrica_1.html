@@ -1152,13 +1152,66 @@
 	    0% { transform: rotate(0deg); }
 	    100% { transform: rotate(360deg); }
 	}
+	    
+	    .animated-title {
+    font-size: 2.2em;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #388E3C;
+}
+
+.letter {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    vertical-align: top;
+    font-family: sans-serif;
+    font-size: 24px;
+    line-height: 24px;
+    color: #eee;
+    text-transform: uppercase;
+}
+
+.letter:before {
+    content: attr(data-characters);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    word-break: break-all;
+    background-color: #1d1f20;
+    animation-name: scramble;
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+}
+
+/* Letras individuales con diferentes conjuntos de caracteres */
+.letter:nth-child(1):before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.05s; }
+.letter:nth-child(2):before { content: "ABCDEFGRHIJKLMNOPLQRSTUXY"; animation-delay: 0.1s; }
+.letter:nth-child(3):before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.15s; }
+.letter:nth-child(4):before { content: "XYZPQRSTUVMNOPABCDCEFGHIJ"; animation-delay: 0.2s; }
+.letter:nth-child(5):before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.25s; }
+.letter:nth-child(6):before { content: "KLMNOPQRSTUVWXYYZABCDEFGRH"; animation-delay: 0.3s; }
+.letter:nth-child(7):before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.35s; }
+.letter:nth-child(8):before { content: "IJKLMNOPQRSTUXYZABCDEFFG"; animation-delay: 0.4s; }
+.letter:nth-child(9):before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.45s; }
+.letter:nth-child(10):before{ content: "QRSTUVWXYZABCDEFGHIJKLLMNOP"; animation-delay: 0.5s; }
+
+/* Continúa asignando contenido aleatorio para otras letras si lo deseas */
+
+@keyframes scramble {
+    0%   { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100%); opacity: 1; }
+}
     </style>
 </head>
 <body>
 <header>
     <div class="logo"><a href="#" id="logo">NutriPlan_v2</a></div>
     <div class="dropdown" id="dropdown">
-        <a href="#" onclick="logout()">Cerrar Sesiónout</a>
+        <a href="#" onclick="logout()">Cerrar Sesión</a>
     </div>
     <nav id="nav-menu">
         <ul>
@@ -1410,7 +1463,13 @@
 		    </div>
 		</div>
     <main>
-        <h1>Valoración Antropométrica App</h1>
+        <h1 class="animated-title">
+	    <span class="letter">V</span><span class="letter">a</span><span class="letter">l</span><span class="letter">o</span><span class="letter">r</span><span class="letter">a</span><span class="letter">c</span><span class="letter">i</span><span class="letter">ó</span><span class="letter">n</span>
+	    <span class="letter">&nbsp;</span>
+	    <span class="letter">A</span><span class="letter">n</span><span class="letter">t</span><span class="letter">r</span><span class="letter">o</span><span class="letter">p</span><span class="letter">o</span><span class="letter">m</span><span class="letter">é</span><span class="letter">t</span><span class="letter">r</span><span class="letter">i</span><span class="letter">c</span><span class="letter">a</span>
+	    <span class="letter">&nbsp;</span>
+	    <span class="letter">A</span><span class="letter">p</span><span class="letter">p</span>
+	</h1>
         <form id="anthropometry-form">
             <div class="tabs">
                 <input type="radio" id="tab1" name="tab-control" checked>
