@@ -2948,9 +2948,9 @@ import { auth } from './app.js';
                 if (results.pesoObjetivo < -2) {
                     goal = 'perdida';
                     content += '<p><strong>Objetivo: Pérdida de grasa</strong></p>';
-                    content += '<ul>';
+                    content += '';
                     content += '<p><strong>Dieta:</strong> Crea un déficit calórico moderado (300-500 kcal menos por día). Prioriza proteínas (2 g/kg de peso), vegetales, y grasas saludables. Reduce carbohidratos refinados.</p>';
-                    content += '<p><strong>Ejercicio:</strong> Combina cardio (3-4 veces/semana, 30 min) y entrenamiento de fuerza (3-5 veces/semana) para preservar músculo. ';
+                    content += '<p><strong>Ejercicio:</strong> Combina cardio (3-4 veces/semana, 30 min) y entrenamiento de fuerza (3-5 veces/semana) para preservar músculo.</p> ';
                     if (isAthlete) content += '<li><strong>Para deportistas:</strong> Mantén un déficit pequeño para no afectar el rendimiento. Incluye ejercicios específicos para tu deporte.</p>';
                     content += '<p><strong>Hábitos:</strong> Duerme 7-8 horas, controla el estrés, y mantén una hidratación adecuada.</p>';
                     content += '';
@@ -2960,7 +2960,7 @@ import { auth } from './app.js';
                     content += '';
                     content += '<p><strong>Dieta:</strong> Crea un superávit calórico moderado (300-500 kcal más por día). Aumenta proteínas (2-2.5 g/kg de peso) y carbohidratos complejos.</p>';
                     content += '<p><strong>Ejercicio:</strong> Enfócate en entrenamiento de fuerza progresivo (4-5 veces/semana). Incluye ejercicios compuestos (sentadillas, peso muerto, press).</p>';
-                    if (isAthlete) content += '<li><strong>Para deportistas:</strong> Ajusta el superávit según demandas energéticas de tu deporte. Considera suplementos como creatina tras consultar un profesional.</p>';
+                    if (isAthlete) content += '<p><strong>Para deportistas:</strong> Ajusta el superávit según demandas energéticas de tu deporte. Considera suplementos como creatina tras consultar un profesional.</p>';
                     content += '<p><strong>Hábitos:</strong> Descansa lo suficiente (7-8 horas) y optimiza la recuperación con estiramientos o masajes.</p>';
                     content += '';
                 } else {
@@ -2975,11 +2975,11 @@ import { auth } from './app.js';
                 }
             } else {
                 content += '<p><strong>Sin datos suficientes para sugerencias específicas.</strong> Completa más medidas para obtener recomendaciones personalizadas.</p>';
-                content += '<ul>';
+                content += '';
                 content += '<p><strong>Dieta:</strong> Sigue una alimentación equilibrada con proteínas, carbohidratos complejos, grasas saludables y vegetales.</p>';
                 content += '<p><strong>Ejercicio:</strong> Incluye fuerza y cardio moderados (3-5 veces/semana).</p>';
                 content += '<p><strong>Hábitos:</strong> Duerme 7-8 horas, hidrátate y reduce el estrés.</p>';
-                content += '</ul>';
+                content += '';
             }
 
             // Explicación personalizada de somatotipo (reemplazo del bloque anterior)
