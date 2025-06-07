@@ -2120,18 +2120,46 @@ document.addEventListener('DOMContentLoaded', () => {
 	                const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
 	                const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
 	                const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
-                    // Añade título
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(18);
-                    doc.setTextColor(56, 142, 60); // Verde (#388E3C)
-                    doc.text('Explicación de los Resultados y Sugerencias', 40, yPosition);
-                    yPosition += 30;
-                    console.log('Título añadido en yPosition:', yPosition);
-
-                    // Configura fuente para contenido normal
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(12);
-                    doc.setTextColor(52, 58, 64); // Gris oscuro (#343A40)
+                    // Añade título personalizado
+			    doc.setFont('helvetica', 'bold');
+			    doc.setFontSize(18);
+			    doc.setTextColor(56, 142, 60); // Verde (#388E3C)
+			
+			    // Obtener datos personales y resultados desde el HTML
+			    const nombre = document.getElementById('nombre')?.value || 'Cliente';
+			    const edad = document.getElementById('edad')?.value || 'N/A';
+			    const genero = document.getElementById('genero')?.value || 'N/A';
+			    const edadMetabolica = document.getElementById('result-edadmetabolica')?.textContent || 'N/A';
+			    const tipologia = document.getElementById('result-tipologia-actual')?.textContent || 'N/A';
+			    // Obtener y formatear la fecha
+			    const fechaInput = document.getElementById('seleccionar_fecha')?.value;
+			    let fecha = 'N/A';
+			    if (fechaInput) {
+			        try {
+			            const date = new Date(fechaInput);
+			            if (!isNaN(date)) {
+			                const day = String(date.getDate()).padStart(2, '0');
+			                const month = String(date.getMonth() + 1).padStart(2, '0');
+			                const year = String(date.getFullYear()).slice(-2);
+			                fecha = `${day}/${month}/${year}`;
+			            }
+			        } catch (error) {
+			            console.warn('Error al formatear la fecha:', error.message);
+			        }
+			    }
+			    // Construir el título dinámico
+			    const title = `Explicación de los Resultados para ${nombre}, con fecha de ${fecha}. Sujeto de ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años y Tipología ${tipologia}`;
+			    
+			    const titleLines = doc.splitTextToSize(title, contentWidth);
+			    const titleHeight = titleLines.length * 20 + 20;
+			    if (yPosition + titleHeight > pageHeight - margin.bottom) {
+			        doc.addPage();
+			        yPosition = margin.top;
+			        console.log('Nueva página añadida para título, yPosition reiniciada:', yPosition);
+			    }
+			    doc.text(titleLines, margin.left, yPosition, { align: 'center' });
+			    yPosition += titleHeight;
+			    console.log('Título personalizado añadido en yPosition:', yPosition);
 
                     // Procesa el contenido de explanation-content
                     const elements = explanationContent.childNodes;
