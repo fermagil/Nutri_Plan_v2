@@ -1156,10 +1156,10 @@
 	.animated-title {
     font-size: 24px;
     text-align: center;
-    margin: 50px auto;
+    margin: 30px auto;
     font-family: sans-serif;
     white-space: pre;
-    color: transparent; /* Para ocultar el texto real hasta que termine la animación */
+    color: transparent;
 }
 
 .letter {
@@ -1172,6 +1172,7 @@
     width: auto;
     min-width: 6px;
     margin-right: 2px;
+    color: #388E3C; /* Verde principal */
 }
 
 .letter::before {
@@ -1184,6 +1185,14 @@
     background-color: #fff;
     color: #388E3C;
     animation: scramble 1.5s forwards ease-in-out;
+}
+
+/* Muestra la letra real después de la animación */
+.letter::after {
+    content: attr(data-letter);
+    visibility: hidden;
+    display: block;
+    position: relative;
 }
 
 @keyframes scramble {
@@ -1448,40 +1457,40 @@
 		    </div>
 		</div>
     <main>
-       <h1 class="animated-title">
-    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP"></span>
-    <span class="letter" data-characters="ABCDEFGRHIJKLMNOPLQRSTUXY"></span>
-    <span class="letter" data-characters="ANTROPOMETRICAVALORACION"></span>
-    <span class="letter" data-characters="XYZPQRSTUVMNOPABCDCEFGHIJ"></span>
-    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP"></span>
-    <span class="letter" data-characters="KLMNOPQRSTUVWXYYZABCDEFGRH"></span>
-    <span class="letter" data-characters="ANTROPOMETRICAVALORACION"></span>
-    <span class="letter" data-characters="IJKLMNOPQRSTUXYZABCDEFFG"></span>
-    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP"></span>
-    <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLLMNOP"></span>
+      <h1 class="animated-title">
+    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP" data-letter="V"></span>
+    <span class="letter" data-characters="ABCDEFGRHIJKLMNOPLQRSTUXY" data-letter="a"></span>
+    <span class="letter" data-characters="ANTROPOMETRICAVALORACION" data-letter="l"></span>
+    <span class="letter" data-characters="XYZPQRSTUVMNOPABCDCEFGHIJ" data-letter="o"></span>
+    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP" data-letter="r"></span>
+    <span class="letter" data-characters="KLMNOPQRSTUVWXYYZABCDEFGRH" data-letter="a"></span>
+    <span class="letter" data-characters="ANTROPOMETRICAVALORACION" data-letter="c"></span>
+    <span class="letter" data-characters="IJKLMNOPQRSTUXYZABCDEFFG" data-letter="i"></span>
+    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP" data-letter="ó"></span>
+    <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLLMNOP" data-letter="n"></span>
 
-    <span class="letter" data-characters=" "></span>
+    <span class="letter" data-characters=" " data-letter=" "></span>
 
-    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP"></span>
-    <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLMNOPQ"></span>
-    <span class="letter" data-characters="XYZPQRSTUVWLMNOPQRSTUVWXYZ"></span>
-    <span class="letter" data-characters="WXYZABCDEFGHIJKLMNOPQRSTUV"></span>
-    <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLMNOP"></span>
-    <span class="letter" data-characters="STUVWXYZABCDEFGHIJKLMNOPQRS"></span>
-    <span class="letter" data-characters="OPQRSTUVWXYZABCDEFGHIJKLMNOP"></span>
-    <span class="letter" data-characters="MNOPQRSTUVWXYZABCDEFGHIJKLMNOP"></span>
-    <span class="letter" data-characters="ÉÍÓÚÜÑÇÀÈÙÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ"></span>
-    <span class="letter" data-characters="TUVWXYZABCDEFGHIJKLMNOPQRS"></span>
-    <span class="letter" data-characters="RSTUVWXYZABCDEFGHIJKLMNOPQ"></span>
-    <span class="letter" data-characters="IJKLMNOPQRSTUVWXYZABCDEFGH"></span>
-    <span class="letter" data-characters="CDEFGHIJKLMNOPQRSTUVWXYZAB"></span>
-    <span class="letter" data-characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"></span>
+    <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP" data-letter="A"></span>
+    <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLMNOPQ" data-letter="n"></span>
+    <span class="letter" data-characters="XYZPQRSTUVWLMNOPQRSTUVWXYZ" data-letter="t"></span>
+    <span class="letter" data-characters="WXYZABCDEFGHIJKLMNOPQRSTUV" data-letter="r"></span>
+    <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLMNOP" data-letter="o"></span>
+    <span class="letter" data-characters="STUVWXYZABCDEFGHIJKLMNOPQRS" data-letter="p"></span>
+    <span class="letter" data-characters="OPQRSTUVWXYZABCDEFGHIJKLMNOP" data-letter="o"></span>
+    <span class="letter" data-characters="MNOPQRSTUVWXYZABCDEFGHIJKLMNOP" data-letter="m"></span>
+    <span class="letter" data-characters="ÉÍÓÚÜÑÇÀÈÙÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×" data-letter="é"></span>
+    <span class="letter" data-characters="TUVWXYZABCDEFGHIJKLMNOPQRS" data-letter="t"></span>
+    <span class="letter" data-characters="RSTUVWXYZABCDEFGHIJKLMNOPQ" data-letter="r"></span>
+    <span class="letter" data-characters="IJKLMNOPQRSTUVWXYZABCDEFGH" data-letter="i"></span>
+    <span class="letter" data-characters="CDEFGHIJKLMNOPQRSTUVWXYZAB" data-letter="c"></span>
+    <span class="letter" data-characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ" data-letter="a"></span>
 
-    <span class="letter" data-characters=" "></span>
+    <span class="letter" data-characters=" " data-letter=" "></span>
 
-    <span class="letter" data-characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"></span>
-    <span class="letter" data-characters="PQRSTUVWXYZABCDEFGHIJKLMNO"></span>
-    <span class="letter" data-characters="PQRSTUVWXYZABCDEFGHIJKLMNO"></span>
+    <span class="letter" data-characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ" data-letter="A"></span>
+    <span class="letter" data-characters="PQRSTUVWXYZABCDEFGHIJKLMNO" data-letter="p"></span>
+    <span class="letter" data-characters="PQRSTUVWXYZABCDEFGHIJKLMNO" data-letter="p"></span>
 </h1>
         <form id="anthropometry-form">
             <div class="tabs">
