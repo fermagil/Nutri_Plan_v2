@@ -2000,8 +2000,8 @@
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
    	<script type="module">
-	import docx from 'https://cdn.jsdelivr.net/npm/docx@9.5.0/+esm'
-	</script>
+        // Importa las clases necesarias desde docx@9.5.0
+        import { Document, Paragraph, TextRun, Packer, HeadingLevel, Media } from 'https://cdn.jsdelivr.net/npm/docx@9.5.0/+esm';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
     // Accordion Effect
@@ -2071,30 +2071,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 	
-// Renderiza un gráfico de ejemplo en el canvas
-        const canvas = document.getElementById('myChart');
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['A', 'B', 'C'],
-                    datasets: [{
-                        label: 'Ejemplo',
-                        data: [10, 20, 30],
-                        backgroundColor: '#388E3C',
-                    }],
-                },
-                options: {
-                    responsive: false,
-                }
-            });
-        } else {
-            console.error('Canvas no encontrado.');
-            alert('Error: Canvas no encontrado.');
-        }
-
-        // Configura el botón de exportación
+// Configura el botón de exportación
         const exportarBtn = document.getElementById('exportar-btn');
         if (exportarBtn) {
             exportarBtn.addEventListener('click', async () => {
