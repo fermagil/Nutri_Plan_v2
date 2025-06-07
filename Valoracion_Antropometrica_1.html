@@ -2122,7 +2122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	                const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
                     // Añade título personalizado
 			    doc.setFont('helvetica', 'bold');
-			    doc.setFontSize(18);
+			    doc.setFontSize(16);
 			    doc.setTextColor(56, 142, 60); // Verde (#388E3C)
 			
 			    // Obtener datos personales y resultados desde el HTML
@@ -2150,14 +2150,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			    // Construir el título dinámico
 			    const title = `Explicación de los Resultados para ${nombre}, con fecha de ${fecha}. Sujeto de ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años y Tipología ${tipologia}`;
 			    
-			    const titleLines = doc.splitTextToSize(title, contentWidth);
+			    const titleLines = doc.splitTextToSize(title);
 			    const titleHeight = titleLines.length * 20 + 20;
 			    if (yPosition + titleHeight > pageHeight - margin.bottom) {
 			        doc.addPage();
 			        yPosition = margin.top;
 			        console.log('Nueva página añadida para título, yPosition reiniciada:', yPosition);
 			    }
-			    doc.text(titleLines, margin.left, yPosition, { align: 'center' });
+			    doc.text(titleLines, yPosition, { align: 'center' });
 			    yPosition += titleHeight;
 			    console.log('Título personalizado añadido en yPosition:', yPosition);
 
