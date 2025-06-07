@@ -2071,7 +2071,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 	//pdf create 
-	document.addEventListener('DOMContentLoaded', () => {
+	 document.addEventListener('DOMContentLoaded', () => {
         // Verifica que jsPDF esté cargado
         if (!window.jspdf || !window.jspdf.jsPDF) {
             console.error('Error: Biblioteca jsPDF no está cargada.');
@@ -2134,13 +2134,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     } else if (tag === 'ul' || tag === 'ol') {
                         const items = element.querySelectorAll('li');
+                        let index = 1; // Contador para <ol>
                         for (const li of items) {
                             const text = li.textContent.trim();
                             if (text) {
-                                const bullet = tag === 'ul' ? '•' : `${items.indexOf(li) + 1}.`;
-                                const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para dejar espacio al bullet
+                                const bullet = tag === 'ul' ? '•' : `${index++}.`;
+                                const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para bullet
                                 doc.text(lines, 50, yPosition); // Indentado 10pt
-                                yPosition += lines.length * 14 + 8; // 14pt por línea + espacio reducido
+                                yPosition += lines.length * 14 + 8; // 14pt por línea + espacio
                             }
                         }
                     } else if (['h1', 'h2', 'h3'].includes(tag)) {
@@ -2154,7 +2155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
                             doc.setFont('helvetica', 'normal');
                             doc.setFontSize(12);
-                            doc.setTextColor(52, 58, 64); // Restaurar color normal
+                            doc.setTextColor(52, 58, 64); // Restaurar color
                         }
                     }
 
