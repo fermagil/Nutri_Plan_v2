@@ -483,7 +483,36 @@
                 min-width: 120px;
             }
         }
-
+	#personal-data-section .personal-data-header {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    width: 100%;
+	    margin-bottom: 20px;
+	}
+	#personal-data-section .personal-data-header h2 {
+	    margin: 0;
+	    padding: 0;
+	    font-size: 1.8em; /* Match global h2 */
+	    color: #388E3C; /* Match global h2 */
+	    font-weight: 600;
+	    border-bottom: none; /* Remove default border */
+	    position: relative; /* For pseudo-element */
+	}
+	#personal-data-section .personal-data-header h2::after {
+	    content: '';
+	    display: block;
+	    position: absolute;
+	    bottom: -4px; /* Position below h2 */
+	    left: 0;
+	    width: 85%; /* Extend toward buttons */
+	    height: 2px;
+	    background-color: #a5d6a7; /* Match global h2 border */
+	}
+	#personal-data-section .button-container {
+	    display: flex;
+	    gap: 10px;
+	}
         #results-section .result-item label {
             color: #367839;
             font-weight: bold;
@@ -1343,13 +1372,15 @@
                 </ul>
                 <div class="slider"><div class="indicator"></div></div>
                 <div class="content">
-                    <section class="data-section">
-                        <h2>Datos Personales</h2>
-			<div class="button-container">
-                            <button type="button" id="nuevo_cliente" class="button">Nuevo Cliente</button>
-                            <button type="button" id="ver-progreso-btn" style="display: none;" class="button">Ver Progreso</button>
-                            <button type="button" id="mail-btn" style="display: none;" class="button">E-mail</button>
-                        </div>
+                    <section class="data-section" id="personal-data-section">
+			    <div class="personal-data-header">
+			        <h2>Datos Personales</h2>
+			        <div class="button-container">
+			            <button type="button" id="nuevo_cliente" class="button">Nuevo Cliente</button>
+			            <button type="button" id="ver-progreso-btn" style="display: none;" class="button">Ver Progreso</button>
+			            <button type="button" id="mail-btn" style="display: none;" class="button">E-mail</button>
+			        </div>
+			    </div>
 			    
                         <div class="form-grid">
                             <div class="form-group">
