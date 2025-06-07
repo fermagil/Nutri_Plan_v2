@@ -2071,171 +2071,138 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 	
-   // Función para esperar a que docx esté cargado
-     // Función para esperar a que docx esté cargado
-    async function waitForDocx() {
-        const maxAttempts = 50;
-        let attempts = 0;
-        while (!window.docx || !window.docx.Document) {
-            if (attempts >= maxAttempts) {
-                throw new Error('Biblioteca docx no se cargó después de varios intentos.');
-            }
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
+  document.addEventListener('DOMContentLoaded', () => {
+        // Verifica que docx esté cargado
+        if (!window.docx || !window.docx.Document) {
+            console.error('Error: Biblioteca docx no está cargada.');
+            alert('Error: No se pudo cargar la biblioteca docx. Verifica la inclusión del script.');
+            return;
         }
-        return window.docx;
-    }
+        console.log('Biblioteca docx cargada correctamente:', window.docx);
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            // Espera a que la biblioteca docx esté cargada
-            const docx = await waitForDocx();
-            console.log('Biblioteca docx cargada correctamente:', docx);
+        const exportarBtn = document.getElementById('exportar-btn');
+        if (!exportarBtn) {
+            console.error('Botón exportar-btn no encontrado.');
+            alert('Error: Botón exportar-btn no encontrado.');
+            return;
+        }
 
-            // Verifica que las clases necesarias estén disponibles
-            if (!docx.Document || !docx.Paragraph || !docx.TextRun || !docx.Packer) {
-                throw new Error('Clases necesarias de docx no están disponibles.');
-            }
+        exportarBtn.addEventListener('click', async () => {
+            console.log('Exportar button clicked. Starting Word export.');
+            try {
+                const explanationContent = document.getElementById('explanation-content');
+                if (!explanationContent) {
+                    throw new Error('Elemento explanation-content no encontrado');
+                }
 
-            const exportarBtn = document.getElementById('exportar-btn');
-            if (!exportarBtn) {
-                console.error('Botón exportar-btn no encontrado.');
-                alert('Error: Botón exportar-btn no encontrado.');
-                return;
-            }
+                // Crea el documento sin secciones iniciales
+                const doc = new window.docx.Document();
+                console.log('Documento creado:', doc);
 
-            exportarBtn.addEventListener('click', async () => {
-                console.log('Exportar button clicked. Starting Word export.');
-                try {
-                    const explanationContent = document.getElementById('explanation-content');
-                    if (!explanationContent) {
-                        throw new Error('Elemento explanation-content no encontrado');
-                    }
+                // Añade una sección manualmente
+                const section = { children: [] };
+                section.children.push(
+                    new window.docx.Paragraph({
+                        children: [
+                            new window.docx.TextRun({
+                                text: 'Explicación de los Resultados y Sugerencias',
+                                bold: true,
+                                size: 36, // 18pt
+                                color: '388E3C',
+                            }),
+                        ],
+                        heading: window.docx.HeadingLevel ? window.docx.HeadingLevel.HEADING_1 : undefined,
+                        spacing: { after: 240 },
+                    })
+                );
 
-                    // Crea el documento con una sección inicial explícita
-                    const doc = new docx.Document({
-                        creator: 'Nutri Plan',
-                        title: 'Explicación de Resultados',
-                        description: 'Documento generado automáticamente',
-                        sections: [{
-                            children: [
-                                new docx.Paragraph({
+                // Procesa el contenido de explanation-content
+                const elements = explanationContent.childNodes;
+                for (const element of elements) {
+                    if (element.nodeType !== Node.ELEMENT_NODE) continue;
+
+                    const tag = element.tagName.toLowerCase();
+                    if (tag === 'p') {
+                        const text = element.textContent.trim();
+                        if (text) {
+                            section.children.push(
+                                new window.docx.Paragraph({
                                     children: [
-                                        new docx.TextRun({
-                                            text: 'Explicación de los Resultados y Sugerencias',
-                                            bold: true,
-                                            size: 36,
-                                            color: '388E3C',
+                                        new window.docx.TextRun({
+                                            text: text,
+                                            size: 24, // 12pt
+                                            color: '343A40',
                                         }),
                                     ],
-                                    heading: docx.HeadingLevel.HEADING_1,
-                                    spacing: { after: 240 },
-                                }),
-                            ],
-                        }],
-                    });
-                    console.log('Documento creado:', doc);
-
-                    // Verifica que sections sea iterable
-                    
-
-                    const section = doc.sections[0];
-
-                    // Procesa el contenido de explanation-content
-                    const elements = explanationContent.childNodes;
-                    for (const element of elements) {
-                        if (element.nodeType !== Node.ELEMENT_NODE) continue;
-
-                        const tag = element.tagName.toLowerCase();
-                        if (tag === 'p') {
-                            const text = element.textContent.trim();
+                                    spacing: { after: 200 },
+                                })
+                            );
+                        }
+                    } else if (tag === 'ul' || tag === 'ol') {
+                        const items = element.querySelectorAll('li');
+                        for (const li of items) {
+                            const text = li.textContent.trim();
                             if (text) {
                                 section.children.push(
-                                    new docx.Paragraph({
+                                    new window.docx.Paragraph({
                                         children: [
-                                            new docx.TextRun({
+                                            new window.docx.TextRun({
                                                 text: text,
-                                                size: 24,
+                                                size: 24, // 12pt
                                                 color: '343A40',
                                             }),
                                         ],
-                                        spacing: { after: 200 },
-                                    })
-                                );
-                            }
-                        } else if (tag === 'ul' || tag === 'ol') {
-                            const items = element.querySelectorAll('li');
-                            for (const li of items) {
-                                const text = li.textContent.trim();
-                                if (text) {
-                                    section.children.push(
-                                        new docx.Paragraph({
-                                            children: [
-                                                new docx.TextRun({
-                                                    text: text,
-                                                    size: 24,
-                                                    color: '343A40',
-                                                }),
-                                            ],
-                                            bullet: tag === 'ul' ? { level: 0 } : { level: 0, type: 'decimal' },
-                                            spacing: { after: 150 },
-                                        })
-                                    );
-                                }
-                            }
-                        } else if (tag === 'canvas' && docx.Media) {
-                            try {
-                                const dataUrl = element.toDataURL('image/png');
-                                if (dataUrl.length > 100) {
-                                    const image = docx.Media.addImage(doc, dataUrl, 600, 400);
-                                    section.children.push(
-                                        new docx.Paragraph({
-                                            children: [image],
-                                            spacing: { after: 200 },
-                                        })
-                                    );
-                                }
-                            } catch (imgError) {
-                                console.warn('Error al procesar canvas:', imgError.message);
-                            }
-                        } else if (['h1', 'h2', 'h3'].includes(tag)) {
-                            const text = element.textContent.trim();
-                            if (text) {
-                                section.children.push(
-                                    new docx.Paragraph({
-                                        children: [
-                                            new docx.TextRun({
-                                                text: text,
-                                                bold: true,
-                                                size: tag === 'h1' ? 32 : tag === 'h2' ? 28 : 24,
-                                                color: '388E3C',
-                                            }),
-                                        ],
-                                        heading: tag === 'h1' ? docx.HeadingLevel.HEADING_1 : tag === 'h2' ? docx.HeadingLevel.HEADING_2 : docx.HeadingLevel.HEADING_3,
-                                        spacing: { after: 200 },
+                                        bullet: tag === 'ul' ? { level: 0 } : { level: 0, type: 'decimal' },
+                                        spacing: { after: 150 },
                                     })
                                 );
                             }
                         }
+                    } else if (['h1', 'h2', 'h3'].includes(tag)) {
+                        const text = element.textContent.trim();
+                        if (text) {
+                            section.children.push(
+                                new window.docx.Paragraph({
+                                    children: [
+                                        new window.docx.TextRun({
+                                            text: text,
+                                            bold: true,
+                                            size: tag === 'h1' ? 32 : tag === 'h2' ? 28 : 24,
+                                            color: '388E3C',
+                                        }),
+                                    ],
+                                    heading: window.docx.HeadingLevel ? (
+                                        tag === 'h1' ? window.docx.HeadingLevel.HEADING_1 :
+                                        tag === 'h2' ? window.docx.HeadingLevel.HEADING_2 :
+                                        window.docx.HeadingLevel.HEADING_3
+                                    ) : undefined,
+                                    spacing: { after: 200 },
+                                })
+                            );
+                        }
                     }
-
-                    // Genera el blob y descárgalo
-                    const blob = await docx.Packer.toBlob(doc);
-                    if (!blob) {
-                        throw new Error('No se pudo generar el blob del documento.');
-                    }
-                    saveAs(blob, 'Explicacion_Resultados.docx');
-                    console.log('Documento Word generado y descargado.');
-                    alert('Documento Word exportado exitosamente.');
-                } catch (error) {
-                    console.error('Error en exportación a Word:', error.message, error.stack);
-                    alert('Error al exportar a Word: ' + error.message);
                 }
-            });
-        } catch (error) {
-            console.error('Error al inicializar exportación:', error.message, error.stack);
-            alert('Error al inicializar exportación: ' + error.message);
-        }
+
+                // Añade la sección al documento
+                doc.addSection(section);
+                console.log('Sección añadida:', section);
+
+                // Verifica que el documento tenga secciones
+                console.log('Secciones finales:', doc.sections);
+
+                // Genera el blob y descárgalo
+                const blob = await window.docx.Packer.toBlob(doc);
+                if (!blob) {
+                    throw new Error('No se pudo generar el blob del documento.');
+                }
+                saveAs(blob, 'Explicacion_Resultados.docx');
+                console.log('Documento Word generado y descargado.');
+                alert('Documento Word exportado exitosamente.');
+            } catch (error) {
+                console.error('Error en exportación a Word:', error.message, error.stack);
+                alert('Error al exportar a Word: ' + error.message);
+            }
+        });
     });
 </script>
  <!-- Firebase -->
