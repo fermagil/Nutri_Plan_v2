@@ -2134,28 +2134,35 @@ document.addEventListener('DOMContentLoaded', () => {
 			    const tipologia = document.getElementById('result-tipologia-actual')?.textContent?.trim() || 'N/A';
 			
 			    // Obtener y formatear la fecha
-			    // Obtener y formatear la fecha
-				    const fechaInput = document.getElementById('seleccionar_fecha')?.value?.trim();
-				    console.log('Valor crudo de seleccionar_fecha:', JSON.stringify(fechaInput)); // Depuración con JSON.stringify para capturar caracteres invisibles
+			    // Obtener y formatear la fecha desde el texto de la opción seleccionada
+				    const selectElement = document.getElementById('seleccionar_fecha');
+				    const fechaId = selectElement?.value?.trim();
+				    console.log('Valor crudo de seleccionar_fecha (value):', JSON.stringify(fechaId)); // Depuración
 				    let fecha = 'N/A';
-				    if (fechaInput) {
+				    if (selectElement && fechaId && fechaId !== '') {
 				        try {
-				            // Normalizar el input eliminando espacios extra
-				            const normalizedInput = fechaInput.replace(/\s+/g, ' ').trim();
-				            // Parsear fecha en formato DD/MM/YYYY, HH:MM o DD/MM/YYYY
-				            const match = normalizedInput.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:,.*(\d{2}:\d{2}))?$/);
-				            if (match) {
-				                const day = match[1];
-				                const month = match[2];
-				                const year = match[3].slice(-2); // Últimos 2 dígitos del año
-				                fecha = `${day}/${month}/${year}`;
-				                console.log('Fecha parseada:', fecha);
+				            const fechaText = selectElement.selectedOptions[0]?.text?.trim();
+				            console.log('Texto de la opción seleccionada:', JSON.stringify(fechaText)); // Depuración
+				            if (fechaText && fechaText !== 'Seleccionar fecha...') {
+				                // Parsear texto como "06/06/2025, 19:25" o "06/06/2025"
+				                const match = fechaText.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:,.*(\d{2}:\d{2}))?$/);
+				                if (match) {
+				                    const day = match[1];
+				                    const month = match[2];
+				                    const year = match[3].slice(-2); // Últimos 2 dígitos del año
+				                    fecha = `${day}/${month}/${year}`;
+				                    console.log('Fecha parseada:', fecha);
+				                } else {
+				                    console.warn('Formato de texto de fecha inválido:', JSON.stringify(fechaText));
+				                }
 				            } else {
-				                console.warn('Formato de fecha inválido:', JSON.stringify(normalizedInput));
+				                console.warn('No se seleccionó una fecha válida o es el placeholder:', JSON.stringify(fechaText));
 				            }
 				        } catch (error) {
-				            console.warn('Error al formatear la fecha:', error.message);
+				            console.error('Error al formatear la fecha:', error.message);
 				        }
+				    } else {
+				        console.warn('No se seleccionó ninguna fecha o select inválido:', JSON.stringify(fechaId));
 				    }
 			
 			    // Construir el título dinámico
