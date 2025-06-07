@@ -1660,7 +1660,7 @@ import { auth } from './app.js';
 					if (results.icc < 0.71) {
 						content += '<p>ICC < 0.71 (tipo ginoide): Bajo riesgo cardiovascular. ¡Buen indicador de salud! </p>';
 					} else if (results.icc >= 0.71 && results.icc <= 0.84) {
-						content += <p>'ICC 0.71-0.84: Normal. Riesgo cardiovascular bajo. </p>';
+						content += '<p>ICC 0.71-0.84: Normal. Riesgo cardiovascular bajo. </p>';
 					} else if (results.icc > 0.84 && results.icc < 1.0) {
 						content += '<p>ICC > 0.84 (tipo androide): Riesgo cardiovascular elevado debido a grasa visceral. Considera reducir grasa abdominal. Acumulación de grasa visceral (alrededor de órganos internos) y subcutánea abdominal. La grasa visceral libera ácidos grasos libres y citoquinas proinflamatorias (como IL-6 y TNF-α), aumentando el riesgo de hipertensión, aterosclerosis y eventos cardíacos (infarto, angina). Riesgo aumentado de contraer Diabetes tipo II, La grasa abdominal contribuye a la resistencia a la insulina al alterar la señalización de glucosa en hígado, músculo y tejido adiposo. Riesgo de Síndrome Metabólico, Mayor prevalencia de dislipidemia (triglicéridos altos, HDL bajo), hipertensión y glucosa elevada, componentes clave del síndrome metabólico. Riesgo de Enfermedades Hepáticas, Acumulación de grasa en el hígado (esteatosis hepática no alcohólica) debido al exceso de lípidos provenientes de la grasa visceral.Cancer: Mayor riesgo de cánceres relacionados con obesidad (colon, mama, endometrio), ya que la grasa visceral promueve inflamación crónica y desregulación hormonal.Apenea del Sueño: Apnea obstructiva del sueño, osteoartritis (por estrés en articulaciones) .</p>';
 					} else {
