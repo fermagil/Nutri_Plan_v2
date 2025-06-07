@@ -1198,7 +1198,7 @@ body {
   100% { transform: translateY(-100%); opacity: 1; }
 }
 
-/* Cada letra tiene un conjunto diferente de caracteres aleatorios */
+/* Asignamos contenido aleatorio a cada letra para animación */
 .letter:nth-child(1)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.05s; }
 .letter:nth-child(2)::before { content: "ABCDEFGRHIJKLMNOPLQRSTUXY"; animation-delay: 0.1s; }
 .letter:nth-child(3)::before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.15s; }
@@ -1210,7 +1210,7 @@ body {
 .letter:nth-child(9)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.45s; }
 .letter:nth-child(10)::before{ content: "QRSTUVWXYZABCDEFGHIJKLLMNOP"; animation-delay: 0.5s; }
 
-/* Continúa asignando contenido aleatorio a las demás letras si lo deseas */
+/* Continúa con las demás si quieres que todas tengan animación */
     </style>
 </head>
 <body>
@@ -1470,8 +1470,9 @@ body {
 		</div>
     <main>
 <h1 class="animated-title">
-  <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP">V</span>
-  <span class="letter" data-characters="ABCDEFGRHIJKLMNOPLQRSTUXY">a</span>
+  <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP">V
+  </span><span class="letter" data-characters="ABCDEFGRHIJKLMNOPLQRSTUXY">a</span>
+  
   <span class="letter" data-characters="ANTROPOMETRICAVALORACION">l</span>
   <span class="letter" data-characters="XYZPQRSTUVMNOPABCDCEFGHIJ">o</span>
   <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP">r</span>
