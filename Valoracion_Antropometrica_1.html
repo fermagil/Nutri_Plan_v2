@@ -1156,10 +1156,10 @@
 	.animated-title {
     font-size: 24px;
     text-align: center;
-    color: #388E3C;
     margin: 50px auto;
     font-family: sans-serif;
     white-space: pre;
+    color: transparent; /* Para ocultar el texto real hasta que termine la animación */
 }
 
 .letter {
@@ -1169,6 +1169,9 @@
     vertical-align: top;
     line-height: 24px;
     height: 24px;
+    width: auto;
+    min-width: 6px;
+    margin-right: 2px;
 }
 
 .letter::before {
@@ -1186,31 +1189,6 @@
 @keyframes scramble {
     0%   { transform: translateY(0); opacity: 1; }
     100% { transform: translateY(-100%); opacity: 1; }
-}
-
-/* Cada letra tiene diferente conjunto de carácteres */
-.letter:nth-child(1)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.05s; }
-.letter:nth-child(2)::before { content: "ABCDEFGRHIJKLMNOPLQRSTUXY"; animation-delay: 0.1s; }
-.letter:nth-child(3)::before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.15s; }
-.letter:nth-child(4)::before { content: "XYZPQRSTUVMNOPABCDCEFGHIJ"; animation-delay: 0.2s; }
-.letter:nth-child(5)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.25s; }
-.letter:nth-child(6)::before { content: "KLMNOPQRSTUVWXYYZABCDEFGRH"; animation-delay: 0.3s; }
-.letter:nth-child(7)::before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.35s; }
-.letter:nth-child(8)::before { content: "IJKLMNOPQRSTUXYZABCDEFFG"; animation-delay: 0.4s; }
-.letter:nth-child(9)::before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.45s; }
-.letter:nth-child(10)::before{ content: "QRSTUVWXYZABCDEFGHIJKLLMNOP"; animation-delay: 0.5s; }
-
-/* Continúa asignando contenido aleatorio para otras letras si lo deseas */
-
-@keyframes scramble {
-    0% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100%);
-        opacity: 1;
-    }
 }
     </style>
 </head>
@@ -1470,7 +1448,7 @@
 		    </div>
 		</div>
     <main>
-        <h1 class="animated-title">
+       <h1 class="animated-title">
     <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP"></span>
     <span class="letter" data-characters="ABCDEFGRHIJKLMNOPLQRSTUXY"></span>
     <span class="letter" data-characters="ANTROPOMETRICAVALORACION"></span>
@@ -1481,6 +1459,7 @@
     <span class="letter" data-characters="IJKLMNOPQRSTUXYZABCDEFFG"></span>
     <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP"></span>
     <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLLMNOP"></span>
+
     <span class="letter" data-characters=" "></span>
 
     <span class="letter" data-characters="VALORACIONANTROPOMETRICAAPP"></span>
@@ -1488,10 +1467,10 @@
     <span class="letter" data-characters="XYZPQRSTUVWLMNOPQRSTUVWXYZ"></span>
     <span class="letter" data-characters="WXYZABCDEFGHIJKLMNOPQRSTUV"></span>
     <span class="letter" data-characters="QRSTUVWXYZABCDEFGHIJKLMNOP"></span>
-    <span class="letter" data-characters="STUVWXYZABCDEFGHIJKLMNOPQR"></span>
+    <span class="letter" data-characters="STUVWXYZABCDEFGHIJKLMNOPQRS"></span>
     <span class="letter" data-characters="OPQRSTUVWXYZABCDEFGHIJKLMNOP"></span>
     <span class="letter" data-characters="MNOPQRSTUVWXYZABCDEFGHIJKLMNOP"></span>
-    <span class="letter" data-characters="ÉÍÓÚÜÑÇÀÈÙÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×</span>
+    <span class="letter" data-characters="ÉÍÓÚÜÑÇÀÈÙÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ"></span>
     <span class="letter" data-characters="TUVWXYZABCDEFGHIJKLMNOPQRS"></span>
     <span class="letter" data-characters="RSTUVWXYZABCDEFGHIJKLMNOPQ"></span>
     <span class="letter" data-characters="IJKLMNOPQRSTUVWXYZABCDEFGH"></span>
