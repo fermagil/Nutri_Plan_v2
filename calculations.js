@@ -1642,9 +1642,9 @@ import { auth } from './app.js';
             content += '</p>';
 
             // ICC
-            content += '<p><strong>Índice Cintura-Cadera (ICC):</strong> Mide la distribución de grasa corporal (cintura/cadera) y evalúa el riesgo cardiovascular. Un ICC alto indica acumulación de grasa abdominal (tipo androide, forma de "manzana"), asociada a mayor riesgo de diabetes tipo 2, síndrome metabólico, enfermedades hepáticas, cánceres relacionados con obesidad, apnea del sueño y problemas cardiovasculares (hipertensión, infarto). Un ICC bajo sugiere grasa en caderas/muslos (tipo ginoide, forma de "pera"), de menor riesgo. En hombres, la tipología androide es más común debido a andrógenos. En mujeres, la tipología ginoide predomina por estrógenos, pero cambios hormonales (menopausia, embarazo) pueden desplazar la grasa hacia un patrón androide, aumentando riesgos. ';
+            content += '<p><strong>Índice Cintura-Cadera (ICC):</strong> Mide la distribución de grasa corporal (cintura/cadera) y evalúa el riesgo cardiovascular. Un ICC alto indica acumulación de grasa abdominal (tipo androide, forma de "manzana"), asociada a mayor riesgo de diabetes tipo 2, síndrome metabólico, enfermedades hepáticas, cánceres relacionados con obesidad, apnea del sueño y problemas cardiovasculares (hipertensión, infarto). Un ICC bajo sugiere grasa en caderas/muslos (tipo ginoide, forma de "pera"), de menor riesgo. En hombres, la tipología androide es más común debido a andrógenos. En mujeres, la tipología ginoide predomina por estrógenos, pero cambios hormonales (menopausia, embarazo) pueden desplazar la grasa hacia un patrón androide, aumentando riesgos. </p>';
 			if (!isNaN(results.icc)) {
-				content += 'Tu ICC es ' + formatResult(results.icc, 2) + '. ';
+				content += '<p>Tu ICC es <strong>' + formatResult(results.icc, 2) + '</strong>.';
 				if (gender === 'masculino') {
 					if (results.icc < 0.78) {
 						content += 'ICC < 0.78 (tipo ginoide): Bajo riesgo cardiovascular. ¡Buen indicador de salud! ';
@@ -1666,6 +1666,7 @@ import { auth } from './app.js';
 						content += 'ICC ≥ 1.0: Riesgo cardiovascular muy alto. Consulta a un profesional de inmediato, para un plan de acción de reducción de grasa abdominal. Factores Agravantes, Sedentarismo, dieta alta en grasas saturadas/azúcares, estrés crónico (elevación de cortisol) y predisposición genética. ';
 					}
 				}
+				content += '</p>';
 				content += '<div class="chart-container"><canvas id="icc-chart" width="440" height="400" style="display: block; box-sizing: border-box; height: 400px; width: 440px;"></canvas></div>';
 				content += '<p><strong>Sugerencias y Recomendaciones:</strong> ';
 				if (gender === 'masculino') {
