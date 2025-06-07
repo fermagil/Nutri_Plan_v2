@@ -2015,17 +2015,17 @@
         const Document = docx.document?.Document || docx.Document;
         const Paragraph = docx.paragraph?.Paragraph || docx.PARAGRAPH;
         const TextRun = docx.textRun?.TextRun || docx.TextRun;
-        const Packer = docx.packer?.Packer || docx.Packer;
+        
         const HeadingLevel = docx.headingLevel?.HeadingLevel || docx.HeadingLevel;
         const Media = docx.media?.Media || docx.Media;
 
         // Verifica que las clases estén definidas
-        if (!Document || !Paragraph || !TextRun || !Packer || !HeadingLevel || !Media) {
+        if (!Document || !Paragraph || !TextRun || !HeadingLevel || !Media) {
             console.error('Una o más clases no están definidas:', {
                 Document: !!Document,
                 Paragraph: !!Paragraph,
                 TextRun: !!TextRun,
-                Packer: !!Packer,
+               
                 HeadingLevel: !!HeadingLevel,
                 Media: !!Media,
             });
