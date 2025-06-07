@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.2.2/docx.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <title>Valoración Antropométrica con Resultados</title>
     <style>
         body {
@@ -2062,6 +2064,21 @@ document.addEventListener('DOMContentLoaded', () => {
         handleValueChange(newValue);
     };
 });
+	
+	//Exportar Informe a Word
+	const exportarBtn = document.getElementById('exportar-btn');
+	if (exportarBtn) {
+	    exportarBtn.addEventListener('click', () => {
+	        console.log('Exportar button clicked. Starting Word export.');
+	        try {
+	            // Placeholder for export logic
+	            alert('Exportando a Word: Funcionalidad en implementación.');
+	        } catch (error) {
+	            console.error('Error en exportación a Word:', error.message);
+	            alert('Error al exportar a Word: ' + error.message);
+	        }
+	    });
+	}
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
@@ -2076,6 +2093,9 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+	
+
+	
     <!-- Your app.js -->
     <script type="module" src="app.js"></script>
     <script type="module" src="calculations.js"></script>
