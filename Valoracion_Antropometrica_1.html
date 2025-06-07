@@ -2001,7 +2001,7 @@
     </footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
    	
-	 <script src="https://cdn.jsdelivr.net/npm/docx@7.3.0/build/index.js"></script>
+	 <script src="https://cdn.jsdelivr.net/npm/docx@7.1.0/build/index.js"></script>
 <script>
     // Accordion Effect
 document.addEventListener('DOMContentLoaded', () => {
@@ -2072,6 +2072,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	
    // Función para esperar a que docx esté cargado
+     // Función para esperar a que docx esté cargado
     async function waitForDocx() {
         const maxAttempts = 50;
         let attempts = 0;
@@ -2111,30 +2112,37 @@ document.addEventListener('DOMContentLoaded', () => {
                         throw new Error('Elemento explanation-content no encontrado');
                     }
 
-                    // Crea el documento con configuración mínima
+                    // Crea el documento con una sección inicial explícita
                     const doc = new docx.Document({
-                        creator: 'Nutri Plan', // Añade creator explícitamente
+                        creator: 'Nutri Plan',
                         title: 'Explicación de Resultados',
-                        description: 'Documento generado automáticamente'
+                        description: 'Documento generado automáticamente',
+                        sections: [{
+                            children: [
+                                new docx.Paragraph({
+                                    children: [
+                                        new docx.TextRun({
+                                            text: 'Explicación de los Resultados y Sugerencias',
+                                            bold: true,
+                                            size: 36,
+                                            color: '388E3C',
+                                        }),
+                                    ],
+                                    heading: docx.HeadingLevel.HEADING_1,
+                                    spacing: { after: 240 },
+                                }),
+                            ],
+                        }],
                     });
                     console.log('Documento creado:', doc);
 
-                    // Añade una sección
-                    const section = { children: [] };
-                    section.children.push(
-                        new docx.Paragraph({
-                            children: [
-                                new docx.TextRun({
-                                    text: 'Explicación de los Resultados y Sugerencias',
-                                    bold: true,
-                                    size: 36,
-                                    color: '388E3C',
-                                }),
-                            ],
-                            heading: docx.HeadingLevel.HEADING_1,
-                            spacing: { after: 240 },
-                        })
-                    );
+                    // Verifica que sections sea iterable
+                    if (!doc.sections || !Array.isArray(doc.sections) || doc.sections.length === 0) {
+                        throw new Error('Estructura de secciones inválida en el documento.');
+                    }
+                    console.log('Secciones del documento:', doc.sections);
+
+                    const section = doc.sections[0];
 
                     // Procesa el contenido de explanation-content
                     const elements = explanationContent.childNodes;
@@ -2213,10 +2221,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     }
-
-                    // Añade la sección al documento
-                    doc.addSection(section);
-                    console.log('Sección añadida:', section);
 
                     // Genera el blob y descárgalo
                     const blob = await docx.Packer.toBlob(doc);
