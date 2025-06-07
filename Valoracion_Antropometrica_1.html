@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 	
-	
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.2.2/docx.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+	
     <title>Valoración Antropométrica con Resultados</title>
     <style>
         body {
@@ -2066,7 +2067,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 	
-	
+// Verifica si la biblioteca se cargó correctamente
+        window.onload = function() {
+            if (typeof docx === 'undefined') {
+                console.error('La biblioteca docx no se cargó correctamente.');
+            } else {
+                console.log('Biblioteca docx cargada correctamente.');
+            }
+        };	
 console.log('Verificando docx...');
 console.log('docx definido:', typeof docx !== 'undefined' ? 'Sí' : 'No');
 console.log('window.docx:', window.docx);
@@ -2188,8 +2196,8 @@ console.log('window.docx:', window.docx);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.2.2/docx.min.js"></script>
-	<script src="https://unpkg.com/docx@7.2.2/build/index.js"></script>
+   
+	
 
 	
     <!-- Your app.js -->
