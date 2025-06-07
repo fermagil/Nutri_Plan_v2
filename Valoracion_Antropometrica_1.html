@@ -2135,24 +2135,28 @@ document.addEventListener('DOMContentLoaded', () => {
 			
 			    // Obtener y formatear la fecha
 			    // Obtener y formatear la fecha
-			    const fechaInput = document.getElementById('seleccionar_fecha')?.value?.trim();
-			    let fecha = 'N/A';
-			    if (fechaInput) {
-			        try {
-			            // Parsear fecha en formato DD/MM/YYYY, HH:MM
-			            const match = fechaInput.match(/^(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2})$/);
-			            if (match) {
-			                const day = match[1];
-			                const month = match[2];
-			                const year = match[3].slice(-2); // Últimos 2 dígitos del año
-			                fecha = `${day}/${month}/${year}`;
-			            } else {
-			                console.warn('Formato de fecha inválido:', fechaInput);
-			            }
-			        } catch (error) {
-			            console.warn('Error al formatear la fecha:', error.message);
-			        }
-			    }
+				    const fechaInput = document.getElementById('seleccionar_fecha')?.value?.trim();
+				    console.log('Valor crudo de seleccionar_fecha:', JSON.stringify(fechaInput)); // Depuración con JSON.stringify para capturar caracteres invisibles
+				    let fecha = 'N/A';
+				    if (fechaInput) {
+				        try {
+				            // Normalizar el input eliminando espacios extra
+				            const normalizedInput = fechaInput.replace(/\s+/g, ' ').trim();
+				            // Parsear fecha en formato DD/MM/YYYY, HH:MM o DD/MM/YYYY
+				            const match = normalizedInput.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:,.*(\d{2}:\d{2}))?$/);
+				            if (match) {
+				                const day = match[1];
+				                const month = match[2];
+				                const year = match[3].slice(-2); // Últimos 2 dígitos del año
+				                fecha = `${day}/${month}/${year}`;
+				                console.log('Fecha parseada:', fecha);
+				            } else {
+				                console.warn('Formato de fecha inválido:', JSON.stringify(normalizedInput));
+				            }
+				        } catch (error) {
+				            console.warn('Error al formatear la fecha:', error.message);
+				        }
+				    }
 			
 			    // Construir el título dinámico
 			    const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}, `;
