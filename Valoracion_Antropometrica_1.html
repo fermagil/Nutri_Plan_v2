@@ -1136,6 +1136,22 @@
                 margin-top: 10px;
             }
         }
+	    .spinner {
+	    display: none;
+	    border: 4px solid #f3f3f3;
+	    border-top: 4px solid #388e3c; /* Color verde */
+	    border-radius: 50%;
+	    width: 20px;
+	    height: 20px;
+	    animation: spin 1s linear infinite;
+	    margin-right: 10px;
+	    vertical-align: middle;
+	}
+	
+	@keyframes spin {
+	    0% { transform: rotate(0deg); }
+	    100% { transform: rotate(360deg); }
+	}
     </style>
 </head>
 <body>
@@ -1986,9 +2002,15 @@
 		    <div class="explanation-header">
 		        <h2>Explicación de los Resultados</h2>
 		        <div class="button-container">
+		            <!-- Botón Informe -->
 		            <button type="button" id="exportar-btn" class="button">Informe</button>
+		            
+		            <!-- Spinner (dentro del mismo contenedor para alinearlo con el botón) -->
+		            <div id="pdf-spinner" class="spinner"></div>
 		        </div>
 		    </div>
+		    
+		    <!-- Contenido dinámico para la explicación -->
 		    <div id="explanation-content"></div>
 		</section>
 			
@@ -2095,6 +2117,9 @@ document.addEventListener('DOMContentLoaded', () => {
             exportarBtn.addEventListener('click', async () => {
                 console.log('Exportar button clicked. Starting PDF export.');
 		    const btn = document.getElementById('exportar-btn');
+		    const spinner = document.getElementById('pdf-spinner');
+		   // Mostrar spinner y cambiar texto
+		    spinner.style.display = 'inline-block';
 		    btn.textContent = 'Creando PDF...';
 		    btn.disabled = true;
                 try {
@@ -2319,6 +2344,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Error en exportación a PDF:', error.message, error.stack);
                     alert('Error al exportar a PDF: ' + error.message);
                 } finally {
+		        // Restaurar botón
+		        spinner.style.display = 'none';
 		        btn.textContent = 'Informe';
 		        btn.disabled = false;
 		    }
