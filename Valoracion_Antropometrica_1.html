@@ -2119,8 +2119,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pageWidth = doc.internal.pageSize.getWidth(); // ~595pt para A4
                 const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
                 const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
+                const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
 
                 let yPosition = margin.top; // Posición vertical inicial
+                const processedElements = new Set(); // Evita procesar elementos repetidos
 
                 // Añade título
                 doc.setFont('helvetica', 'bold');
@@ -2129,7 +2131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const title = 'Explicación de los Resultados y Sugerencias';
                 const titleLines = doc.splitTextToSize(title, contentWidth);
                 doc.text(titleLines, margin.left, yPosition, { align: 'center' });
-                yPosition += titleLines.length * 20 + 20; // Espacio después del título
+                yPosition += titleLines.length * 20 + 20;
                 console.log('Título añadido en yPosition:', yPosition);
 
                 // Configura fuente para contenido normal
@@ -2138,28 +2140,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 doc.setTextColor(52, 58, 64); // Gris oscuro (#343A40)
 
                 // Procesa el contenido de explanation-content
-                const elements = explanationContent.childNodes;
+                const elements = Array.from(explanationContent.children); // Solo elementos hijos directos
                 for (const element of elements) {
                     if (element.nodeType !== Node.ELEMENT_NODE) continue;
 
+                    const elementKey = element.outerHTML; // Identificador único
+                    if (processedElements.has(elementKey)) {
+                        console.warn('Elemento repetido detectado, omitiendo:', elementKey.substring(0, 50));
+                        continue;
+                    }
+                    processedElements.add(elementKey);
+
                     const tag = element.tagName.toLowerCase();
+                    console.log('Procesando elemento:', tag, 'yPosition:', yPosition);
+
                     if (tag === 'p') {
                         const text = element.textContent.trim();
                         if (text) {
                             const lines = doc.splitTextToSize(text, contentWidth);
+                            const textHeight = lines.length * 14 + 10;
+                            if (yPosition + textHeight > pageHeight - margin.bottom) {
+                                doc.addPage();
+                                yPosition = margin.top;
+                                console.log('Nueva página añadida para párrafo, yPosition reiniciada:', yPosition);
+                            }
                             doc.text(lines, margin.left, yPosition, { align: 'justify' });
-                            yPosition += lines.length * 14 + 10; // 14pt por línea + espacio
+                            yPosition += textHeight;
                         }
                     } else if (tag === 'ul' || tag === 'ol') {
                         const items = element.querySelectorAll('li');
-                        let index = 1; // Contador para <ol>
+                        let index = 1;
                         for (const li of items) {
                             const text = li.textContent.trim();
                             if (text) {
                                 const bullet = tag === 'ul' ? '•' : `${index++}.`;
-                                const lines = doc.splitTextToSize(`${bullet} ${text}`, contentWidth - 10); // 10pt para indentación
+                                const lines = doc.splitTextToSize(`${bullet} ${text}`, contentWidth - 10);
+                                const itemHeight = lines.length * 14 + 8;
+                                if (yPosition + itemHeight > pageHeight - margin.bottom) {
+                                    doc.addPage();
+                                    yPosition = margin.top;
+                                    console.log('Nueva página añadida para lista, yPosition reiniciada:', yPosition);
+                                }
                                 doc.text(lines, margin.left + 10, yPosition, { align: 'justify' });
-                                yPosition += lines.length * 14 + 8; // 14pt por línea + espacio
+                                yPosition += itemHeight;
                             }
                         }
                     } else if (['h1', 'h2', 'h3'].includes(tag)) {
@@ -2167,29 +2190,38 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (text) {
                             doc.setFont('helvetica', 'bold');
                             doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
-                            doc.setTextColor(56, 142, 60); // Verde (#388E3C)
+                            doc.setTextColor(56, 142, 60);
                             const lines = doc.splitTextToSize(text, contentWidth);
+                            const textHeight = lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
+                            if (yPosition + textHeight > pageHeight - margin.bottom) {
+                                doc.addPage();
+                                yPosition = margin.top;
+                                console.log('Nueva página añadida para encabezado, yPosition reiniciada:', yPosition);
+                            }
                             doc.text(lines, margin.left, yPosition);
-                            yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
+                            yPosition += textHeight;
                             doc.setFont('helvetica', 'normal');
                             doc.setFontSize(12);
-                            doc.setTextColor(52, 58, 64); // Restaurar color
+                            doc.setTextColor(52, 58, 64);
                         }
                     } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
-                        // Maneja gráficos (canvas o div que contenga un canvas)
                         const canvasElement = tag === 'canvas' ? element : element.querySelector('canvas');
                         if (canvasElement) {
                             try {
                                 const canvas = await html2canvas(canvasElement, {
-                                    scale: 2, // Aumenta la resolución
-                                    useCORS: true // Habilita CORS para imágenes externas
+                                    scale: 2,
+                                    useCORS: true,
+                                    logging: true
                                 });
                                 const imgData = canvas.toDataURL('image/png');
                                 const imgProps = doc.getImageProperties(imgData);
-                                const maxImgWidth = contentWidth; // Ancho máximo en el PDF
+                                const maxImgWidth = contentWidth;
                                 const imgHeight = (imgProps.height * maxImgWidth) / imgProps.width;
 
-                                // Verifica si hay espacio suficiente en la página
+                                if (imgHeight < 10 || imgHeight > pageHeight * 2) {
+                                    throw new Error('Altura de imagen inválida: ' + imgHeight);
+                                }
+
                                 if (yPosition + imgHeight > pageHeight - margin.bottom) {
                                     doc.addPage();
                                     yPosition = margin.top;
@@ -2197,11 +2229,17 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
 
                                 doc.addImage(imgData, 'PNG', margin.left, yPosition, maxImgWidth, imgHeight);
-                                yPosition += imgHeight + 20; // Espacio después del gráfico
+                                yPosition += imgHeight + 20;
                                 console.log('Gráfico añadido en yPosition:', yPosition);
                             } catch (error) {
                                 console.error('Error al procesar el gráfico:', error.message);
-                                doc.text('Error: No se pudo incluir un gráfico en el PDF.', margin.left, yPosition);
+                                const errorText = 'Error: No se pudo incluir un gráfico en el PDF.';
+                                const lines = doc.splitTextToSize(errorText, contentWidth);
+                                if (yPosition + 20 > pageHeight - margin.bottom) {
+                                    doc.addPage();
+                                    yPosition = margin.top;
+                                }
+                                doc.text(lines, margin.left, yPosition);
                                 yPosition += 20;
                             }
                         }
