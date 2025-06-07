@@ -1,4 +1,4 @@
-import { auth } from './app.js';
+	import { auth } from './app.js';
 			const ChartAnnotation = window['chartjs-plugin-annotation'];
 			const form = document.getElementById('anthropometry-form');
 			const resultElements = {
@@ -1736,10 +1736,11 @@ import { auth } from './app.js';
             content += '</p>';
 
             // % Grasa Corporal Deseado
-				content += '<p><strong>% Grasa Corporal Deseado:</strong> Porcentaje de grasa ideal según tu género y nivel de actividad. ';
+				content += '<p><strong>% Grasa Corporal Deseado:</strong> Porcentaje de grasa ideal según tu género y nivel de actividad. </p>';
 				if (!isNaN(results.grasaPctDeseado)) {
-					content += 'Tu % de grasa corporal deseado es ' + formatResult(results.grasaPctDeseado, 1) + '%. ';
-					content += 'Tu % de grasa actual es ' + formatResult(results.grasaPctActual, 1) + '%. ';
+					content += '<p>Tu % de grasa corporal deseado es ' + formatResult(results.grasaPctDeseado, 1) + '%. </p>';
+					content += '<p>Tu % de grasa actual es ' + formatResult(results.grasaPctActual, 1) + '%. </p>';
+					content += '<p>'
 					if (gender === 'masculino') {
 						if (isAthlete) {
 							if (results.grasaPctDeseado >= 6 && results.grasaPctDeseado <= 15) {
