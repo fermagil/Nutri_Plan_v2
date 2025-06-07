@@ -1153,13 +1153,20 @@
 	    100% { transform: rotate(360deg); }
 	}
 	    
+body {
+  background-color: #fff; /* Fondo claro */
+  color: #388E3C;
+  font-family: sans-serif;
+}
+
 .animated-title {
-  font-size: 24px;
+  display: block;
   text-align: center;
   margin: 30px auto;
-  font-family: sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #388E3C;
   white-space: pre;
-  color: transparent;
 }
 
 .letter {
@@ -1172,10 +1179,10 @@
   width: auto;
   min-width: 6px;
   margin-right: 2px;
-  color: #388E3C; /* Verde principal */
+  color: #388E3C;
 }
 
-.letter::before {
+.letter:before {
   content: attr(data-characters);
   position: absolute;
   top: 0;
@@ -1184,20 +1191,128 @@
   word-break: break-all;
   background-color: #fff;
   color: #388E3C;
-  animation: scramble 1.5s forwards ease-in-out;
+  animation-fill-mode: forwards;
 }
 
-/* Muestra la letra real después de la animación */
-.letter::after {
-  content: attr(data-letter);
-  visibility: hidden;
-  display: block;
-  position: relative;
+/* Definición de las animaciones para cada letra */
+
+@keyframes letter1 {
+  from { margin-top: 0px; }
+  to   { margin-top: 24px; }
+}
+@keyframes letter2 {
+  from { margin-top: -24px; }
+  to   { margin-top: 24px; }
+}
+@keyframes letter3 {
+  from { margin-top: -48px; }
+  to   { margin-top: 24px; }
+}
+@keyframes letter4 {
+  from { margin-top: -72px; }
+  to   { margin-top: 24px; }
+}
+@keyframes letter5 {
+  from { margin-top: -96px; }
+  to   { margin-top: 24px; }
+}
+@keyframes letter6 {
+  from { margin-top: -120px; }
+  to   { margin-top: 24px; }
+}
+@keyframes letter7 {
+  from { margin-top: -144px; }
+  to   { margin-top: 24px; }
 }
 
-@keyframes scramble {
-  0%   { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-100%); opacity: 1; }
+/* Asignamos animaciones diferentes a cada letra */
+
+.letter:nth-child(1):before {
+  content: "VALORACIONANTROPOMETRICAAPP"; animation: letter1 1.5s ease-in-out forwards; animation-delay: 0.05s;
+}
+.letter:nth-child(2):before {
+  content: "ABCDEFGRHIJKLMNOPLQRSTUXY"; animation: letter2 1.5s ease-in-out forwards; animation-delay: 0.1s;
+}
+.letter:nth-child(3):before {
+  content: "ANTROPOMETRICAVALORACION"; animation: letter3 1.5s ease-in-out forwards; animation-delay: 0.15s;
+}
+.letter:nth-child(4):before {
+  content: "XYZPQRSTUVMNOPABCDCEFGHIJ"; animation: letter4 1.5s ease-in-out forwards; animation-delay: 0.2s;
+}
+.letter:nth-child(5):before {
+  content: "VALORACIONANTROPOMETRICAAPP"; animation: letter5 1.5s ease-in-out forwards; animation-delay: 0.25s;
+}
+.letter:nth-child(6):before {
+  content: "KLMNOPQRSTUVWXYYZABCDEFGRH"; animation: letter6 1.5s ease-in-out forwards; animation-delay: 0.3s;
+}
+.letter:nth-child(7):before {
+  content: "ANTROPOMETRICAVALORACION"; animation: letter7 1.5s ease-in-out forwards; animation-delay: 0.35s;
+}
+.letter:nth-child(8):before {
+  content: "IJKLMNOPQRSTUXYZABCDEFFG"; animation: letter1 1.5s ease-in-out forwards; animation-delay: 0.4s;
+}
+.letter:nth-child(9):before {
+  content: "VALORACIONANTROPOMETRICAAPP"; animation: letter2 1.5s ease-in-out forwards; animation-delay: 0.45s;
+}
+.letter:nth-child(10):before {
+  content: "QRSTUVWXYZABCDEFGHIJKLLMNOP"; animation: letter3 1.5s ease-in-out forwards; animation-delay: 0.5s;
+}
+.letter:nth-child(11):before {
+  content: " "; animation: letter4 1.5s ease-in-out forwards; animation-delay: 0.55s;
+}
+.letter:nth-child(12):before {
+  content: "VALORACIONANTROPOMETRICAAPP"; animation: letter5 1.5s ease-in-out forwards; animation-delay: 0.6s;
+}
+.letter:nth-child(13):before {
+  content: "QRSTUVWXYZABCDEFGHIJKLMNOPQ"; animation: letter6 1.5s ease-in-out forwards; animation-delay: 0.65s;
+}
+.letter:nth-child(14):before {
+  content: "XYZPQRSTUVWLMNOPQRSTUVWXYZ"; animation: letter7 1.5s ease-in-out forwards; animation-delay: 0.7s;
+}
+.letter:nth-child(15):before {
+  content: "WXYZABCDEFGHIJKLMNOPQRSTUV"; animation: letter1 1.5s ease-in-out forwards; animation-delay: 0.75s;
+}
+.letter:nth-child(16):before {
+  content: "QRSTUVWXYZABCDEFGHIJKLMNOP"; animation: letter2 1.5s ease-in-out forwards; animation-delay: 0.8s;
+}
+.letter:nth-child(17):before {
+  content: "STUVWXYZABCDEFGHIJKLMNOPQRS"; animation: letter3 1.5s ease-in-out forwards; animation-delay: 0.85s;
+}
+.letter:nth-child(18):before {
+  content: "OPQRSTUVWXYZABCDEFGHIJKLMNOP"; animation: letter4 1.5s ease-in-out forwards; animation-delay: 0.9s;
+}
+.letter:nth-child(19):before {
+  content: "MNOPQRSTUVWXYZABCDEFGHIJKLMNOP"; animation: letter5 1.5s ease-in-out forwards; animation-delay: 0.95s;
+}
+.letter:nth-child(20):before {
+  content: "ÉÍÓÚÜÑÇÀÈÙÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×"; animation: letter6 1.5s ease-in-out forwards; animation-delay: 1s;
+}
+.letter:nth-child(21):before {
+  content: "TUVWXYZABCDEFGHIJKLMNOPQRS"; animation: letter7 1.5s ease-in-out forwards; animation-delay: 1.05s;
+}
+.letter:nth-child(22):before {
+  content: "RSTUVWXYZABCDEFGHIJKLMNOPQ"; animation: letter1 1.5s ease-in-out forwards; animation-delay: 1.1s;
+}
+.letter:nth-child(23):before {
+  content: "IJKLMNOPQRSTUVWXYZABCDEFGH"; animation: letter2 1.5s ease-in-out forwards; animation-delay: 1.15s;
+}
+.letter:nth-child(24):before {
+  content: "CDEFGHIJKLMNOPQRSTUVWXYZAB"; animation: letter3 1.5s ease-in-out forwards; animation-delay: 1.2s;
+}
+.letter:nth-child(25):before {
+  content: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; animation: letter4 1.5s ease-in-out forwards; animation-delay: 1.25s;
+}
+.letter:nth-child(26):before {
+  content: " "; animation: letter5 1.5s ease-in-out forwards; animation-delay: 1.3s;
+}
+.letter:nth-child(27):before {
+  content: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; animation: letter6 1.5s ease-in-out forwards; animation-delay: 1.35s;
+}
+.letter:nth-child(28):before {
+  content: "PQRSTUVWXYZABCDEFGHIJKLMNO"; animation: letter7 1.5s ease-in-out forwards; animation-delay: 1.4s;
+}
+.letter:nth-child(29):before {
+  content: "PQRSTUVWXYZABCDEFGHIJKLMNO"; animation: letter1 1.5s ease-in-out forwards; animation-delay: 1.45s;
 }
     </style>
 </head>
@@ -1457,8 +1572,7 @@
 		    </div>
 		</div>
     <main>
-     <h1 class="animated-title">
-  <div class="letters">
+    <h1 class="animated-title">
   <span class="letter">V</span>
   <span class="letter">a</span>
   <span class="letter">l</span>
@@ -1469,7 +1583,9 @@
   <span class="letter">i</span>
   <span class="letter">ó</span>
   <span class="letter">n</span>
+
   <span class="letter">&nbsp;</span>
+
   <span class="letter">A</span>
   <span class="letter">n</span>
   <span class="letter">t</span>
@@ -1484,11 +1600,12 @@
   <span class="letter">i</span>
   <span class="letter">c</span>
   <span class="letter">a</span>
+
   <span class="letter">&nbsp;</span>
+
   <span class="letter">A</span>
   <span class="letter">p</span>
   <span class="letter">p</span>
-</div>
 </h1>
         <form id="anthropometry-form">
             <div class="tabs">
