@@ -1153,41 +1153,41 @@
 	    100% { transform: rotate(360deg); }
 	}
 	    
-	    .animated-title {
+	.animated-title {
     font-size: 2.2em;
     text-align: center;
     margin-bottom: 30px;
     font-weight: 600;
-    color: #388E3C;
+    color: #388E3C; /* Verde principal */
 }
 
 .letter {
+    width: 24px;
     display: inline-block;
+    vertical-align: middle;
     position: relative;
     overflow: hidden;
-    vertical-align: top;
     font-family: sans-serif;
     font-size: 24px;
     line-height: 24px;
-    color: #eee;
     text-transform: uppercase;
 }
 
 .letter:before {
-    content: attr(data-characters);
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     word-break: break-all;
-    background-color: #1d1f20;
-    animation-name: scramble;
-    animation-duration: 1.5s;
+    background-color: #fff; /* 👈 Fondo claro */
+    color: #333;             /* 👈 Texto oscuro */
+    animation-name: letter1;
+    animation-duration: 0s;
+    animation-delay: 0.21s;
     animation-fill-mode: forwards;
-    animation-timing-function: ease-in-out;
 }
 
-/* Letras individuales con diferentes conjuntos de caracteres */
+/* Cada letra tiene un conjunto diferente de caracteres aleatorios */
 .letter:nth-child(1):before { content: "VALORACIONANTROPOMETRICAAPP"; animation-delay: 0.05s; }
 .letter:nth-child(2):before { content: "ABCDEFGRHIJKLMNOPLQRSTUXY"; animation-delay: 0.1s; }
 .letter:nth-child(3):before { content: "ANTROPOMETRICAVALORACION"; animation-delay: 0.15s; }
@@ -1202,8 +1202,14 @@
 /* Continúa asignando contenido aleatorio para otras letras si lo deseas */
 
 @keyframes scramble {
-    0%   { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-100%); opacity: 1; }
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100%);
+        opacity: 1;
+    }
 }
     </style>
 </head>
@@ -1464,11 +1470,39 @@
 		</div>
     <main>
         <h1 class="animated-title">
-	    <span class="letter">V</span><span class="letter">a</span><span class="letter">l</span><span class="letter">o</span><span class="letter">r</span><span class="letter">a</span><span class="letter">c</span><span class="letter">i</span><span class="letter">ó</span><span class="letter">n</span>
-	    <span class="letter">&nbsp;</span>
-	    <span class="letter">A</span><span class="letter">n</span><span class="letter">t</span><span class="letter">r</span><span class="letter">o</span><span class="letter">p</span><span class="letter">o</span><span class="letter">m</span><span class="letter">é</span><span class="letter">t</span><span class="letter">r</span><span class="letter">i</span><span class="letter">c</span><span class="letter">a</span>
-	    <span class="letter">&nbsp;</span>
-	    <span class="letter">A</span><span class="letter">p</span><span class="letter">p</span>
+	    <span class="letter" data-letter="V"></span>
+	    <span class="letter" data-letter="a"></span>
+	    <span class="letter" data-letter="l"></span>
+	    <span class="letter" data-letter="o"></span>
+	    <span class="letter" data-letter="r"></span>
+	    <span class="letter" data-letter="a"></span>
+	    <span class="letter" data-letter="c"></span>
+	    <span class="letter" data-letter="i"></span>
+	    <span class="letter" data-letter="ó"></span>
+	    <span class="letter" data-letter="n"></span>
+	
+	    <span class="letter" data-letter=" "></span>
+	
+	    <span class="letter" data-letter="A"></span>
+	    <span class="letter" data-letter="n"></span>
+	    <span class="letter" data-letter="t"></span>
+	    <span class="letter" data-letter="r"></span>
+	    <span class="letter" data-letter="o"></span>
+	    <span class="letter" data-letter="p"></span>
+	    <span class="letter" data-letter="o"></span>
+	    <span class="letter" data-letter="m"></span>
+	    <span class="letter" data-letter="é"></span>
+	    <span class="letter" data-letter="t"></span>
+	    <span class="letter" data-letter="r"></span>
+	    <span class="letter" data-letter="i"></span>
+	    <span class="letter" data-letter="c"></span>
+	    <span class="letter" data-letter="a"></span>
+	
+	    <span class="letter" data-letter=" "></span>
+	
+	    <span class="letter" data-letter="A"></span>
+	    <span class="letter" data-letter="p"></span>
+	    <span class="letter" data-letter="p"></span>
 	</h1>
         <form id="anthropometry-form">
             <div class="tabs">
