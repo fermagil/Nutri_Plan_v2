@@ -2001,7 +2001,7 @@
     </footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
    	
-	 <script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js"></script>
+	 <script src="https://cdn.jsdelivr.net/npm/docx@7.3.0/build/index.js"></script>
 <script>
     // Accordion Effect
 document.addEventListener('DOMContentLoaded', () => {
@@ -2070,7 +2070,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-	// Función para esperar a que docx esté cargado
+	
+   // Función para esperar a que docx esté cargado
     async function waitForDocx() {
         const maxAttempts = 50;
         let attempts = 0;
@@ -2091,7 +2092,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Biblioteca docx cargada correctamente:', docx);
 
             // Verifica que las clases necesarias estén disponibles
-            if (!docx.Document || !docx.Paragraph || !docx.TextRun ) {
+            if (!docx.Document || !docx.Paragraph || !docx.TextRun || !docx.Packer) {
                 throw new Error('Clases necesarias de docx no están disponibles.');
             }
 
@@ -2110,11 +2111,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         throw new Error('Elemento explanation-content no encontrado');
                     }
 
-                    // Crea el documento sin desestructuración
-                    const doc = new docx.Document();
-                    const section = { children: [] };
+                    // Crea el documento con configuración mínima
+                    const doc = new docx.Document({
+                        creator: 'Nutri Plan', // Añade creator explícitamente
+                        title: 'Explicación de Resultados',
+                        description: 'Documento generado automáticamente'
+                    });
+                    console.log('Documento creado:', doc);
 
-                    // Añade un título simple
+                    // Añade una sección
+                    const section = { children: [] };
                     section.children.push(
                         new docx.Paragraph({
                             children: [
@@ -2210,6 +2216,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Añade la sección al documento
                     doc.addSection(section);
+                    console.log('Sección añadida:', section);
 
                     // Genera el blob y descárgalo
                     const blob = await docx.Packer.toBlob(doc);
