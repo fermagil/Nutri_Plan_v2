@@ -2109,14 +2109,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 console.log('Documento PDF creado:', doc);
 
-                let yPosition = 40; // Posición vertical inicial (en puntos)
+                // Define márgenes
+                const margin = {
+                    top: 40,
+                    bottom: 90,
+                    left: 40,
+                    right: 40
+                };
+                const pageWidth = doc.internal.pageSize.getWidth(); // ~595pt para A4
+                const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
+                const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
+
+                let yPosition = margin.top; // Posición vertical inicial
 
                 // Añade título
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(18);
                 doc.setTextColor(56, 142, 60); // Verde (#388E3C)
-                doc.text('Explicación de los Resultados y Sugerencias', 40, yPosition);
-                yPosition += 30;
+                const title = 'Explicación de los Resultados y Sugerencias';
+                const titleLines = doc.splitTextToSize(title, contentWidth);
+                doc.text(titleLines, margin.left, yPosition, { align: 'center' });
+                yPosition += titleLines.length * 20 + 20; // Espacio después del título
                 console.log('Título añadido en yPosition:', yPosition);
 
                 // Configura fuente para contenido normal
@@ -2133,8 +2146,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (tag === 'p') {
                         const text = element.textContent.trim();
                         if (text) {
-                            const lines = doc.splitTextToSize(text, 500); // Divide en líneas de 500pt
-                            doc.text(lines, 40, yPosition);
+                            const lines = doc.splitTextToSize(text, contentWidth);
+                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
                             yPosition += lines.length * 14 + 10; // 14pt por línea + espacio
                         }
                     } else if (tag === 'ul' || tag === 'ol') {
@@ -2144,8 +2157,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             const text = li.textContent.trim();
                             if (text) {
                                 const bullet = tag === 'ul' ? '•' : `${index++}.`;
-                                const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para bullet
-                                doc.text(lines, 50, yPosition); // Indentado 10pt
+                                const lines = doc.splitTextToSize(`${bullet} ${text}`, contentWidth - 10); // 10pt para indentación
+                                doc.text(lines, margin.left + 10, yPosition, { align: 'justify' });
                                 yPosition += lines.length * 14 + 8; // 14pt por línea + espacio
                             }
                         }
@@ -2155,8 +2168,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             doc.setFont('helvetica', 'bold');
                             doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
                             doc.setTextColor(56, 142, 60); // Verde (#388E3C)
-                            const lines = doc.splitTextToSize(text, 500);
-                            doc.text(lines, 40, yPosition);
+                            const lines = doc.splitTextToSize(text, contentWidth);
+                            doc.text(lines, margin.left, yPosition);
                             yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
                             doc.setFont('helvetica', 'normal');
                             doc.setFontSize(12);
@@ -2173,31 +2186,31 @@ document.addEventListener('DOMContentLoaded', () => {
                                 });
                                 const imgData = canvas.toDataURL('image/png');
                                 const imgProps = doc.getImageProperties(imgData);
-                                const pdfWidth = 500; // Ancho máximo en el PDF (500pt)
-                                const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                                const maxImgWidth = contentWidth; // Ancho máximo en el PDF
+                                const imgHeight = (imgProps.height * maxImgWidth) / imgProps.width;
 
                                 // Verifica si hay espacio suficiente en la página
-                                if (yPosition + imgHeight > 750) {
+                                if (yPosition + imgHeight > pageHeight - margin.bottom) {
                                     doc.addPage();
-                                    yPosition = 40;
+                                    yPosition = margin.top;
                                     console.log('Nueva página añadida para gráfico, yPosition reiniciada:', yPosition);
                                 }
 
-                                doc.addImage(imgData, 'PNG', 40, yPosition, pdfWidth, imgHeight);
+                                doc.addImage(imgData, 'PNG', margin.left, yPosition, maxImgWidth, imgHeight);
                                 yPosition += imgHeight + 20; // Espacio después del gráfico
                                 console.log('Gráfico añadido en yPosition:', yPosition);
                             } catch (error) {
                                 console.error('Error al procesar el gráfico:', error.message);
-                                doc.text('Error: No se pudo incluir un gráfico en el PDF.', 40, yPosition);
+                                doc.text('Error: No se pudo incluir un gráfico en el PDF.', margin.left, yPosition);
                                 yPosition += 20;
                             }
                         }
                     }
 
                     // Verifica si es necesario añadir una nueva página
-                    if (yPosition > 750) { // A4 height ~842pt, margen inferior ~90pt
+                    if (yPosition > pageHeight - margin.bottom) {
                         doc.addPage();
-                        yPosition = 40;
+                        yPosition = margin.top;
                         console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
                     }
                 }
