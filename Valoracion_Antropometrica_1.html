@@ -2227,8 +2227,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 doc.setFontSize(12);
                                 yPosition += rowHeight;
                                 // Añadir separador de encabezado
-                                const separator = '-'.repeat(Math.floor(contentWidth / 6));
-                                doc.text(separator, margin.left, yPosition);
+                                
                                 yPosition += 14;
                             } else {
                                 doc.text(lines, margin.left, yPosition, { align: 'justify' });
