@@ -2000,46 +2000,7 @@
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
     </footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-   	<script type="module">
-        // Importa todo el módulo para inspeccionar su estructura
-        import * as docx from 'https://cdn.jsdelivr.net/npm/docx@9.5.0/+esm';
-
-        // Depuración: Inspecciona la estructura completa del módulo
-        console.log('Módulo docx:', docx);
-        console.log('Exportaciones de nivel superior:', Object.keys(docx));
-        if (docx.paragraph) {
-            console.log('Exportaciones en docx.paragraph:', Object.keys(docx.paragraph));
-        }
-
-        // Accede a las clases desde el submódulo correspondiente
-        const Document = docx.document?.Document || docx.Document;
-        const Paragraph = docx.paragraph?.Paragraph || docx.PARAGRAPH;
-        const TextRun = docx.textRun?.TextRun || docx.TextRun;
-        
-        const HeadingLevel = docx.headingLevel?.HeadingLevel || docx.HeadingLevel;
-        const Media = docx.media?.Media || docx.Media;
-
-        // Verifica que las clases estén definidas
-        if (!Document || !Paragraph || !TextRun || !HeadingLevel || !Media) {
-            console.error('Una o más clases no están definidas:', {
-                Document: !!Document,
-                Paragraph: !!Paragraph,
-                TextRun: !!TextRun,
-               
-                HeadingLevel: !!HeadingLevel,
-                Media: !!Media,
-            });
-            alert('Error: No se pudieron cargar las clases necesarias de docx. Verifica la consola.');
-            throw new Error('Clases de docx no disponibles');
-        }
-
-        // Verifica que FileSaver.js esté cargado
-        if (typeof saveAs === 'undefined') {
-            console.error('FileSaver.js no se cargó correctamente.');
-            alert('Error: FileSaver.js no se cargó. Verifica la conexión a cdnjs.');
-            throw new Error('FileSaver.js no disponible');
-        }
-</script>
+   	<script src="https://cdn.jsdelivr.net/npm/docx@9.5.0/dist/index.iife.min.js"></script>
 <script>
     // Accordion Effect
 document.addEventListener('DOMContentLoaded', () => {
@@ -2108,7 +2069,33 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 	
-// Renderiza un gráfico de ejemplo en el canvas
+// Accede a las clases desde el objeto global docx
+        const { Document, Paragraph, TextRun, Packer, HeadingLevel, Media } = docx;
+
+        // Depuración: Verifica que las clases estén definidas
+        console.log('Clases de docx disponibles:', {
+            Document: !!Document,
+            Paragraph: !!Paragraph,
+            TextRun: !!TextRun,
+            Packer: !!Packer,
+            HeadingLevel: !!HeadingLevel,
+            Media: !!Media,
+        });
+
+        if (!Document || !Paragraph || !TextRun || !Packer || !HeadingLevel || !Media) {
+            console.error('Error: Una o más clases de docx no están definidas.');
+            alert('Error: No se pudieron cargar las clases de docx. Verifica la consola.');
+            throw new Error('Clases de docx no disponibles');
+        }
+
+        // Verifica que FileSaver.js esté cargado
+        if (typeof saveAs === 'undefined') {
+            console.error('FileSaver.js no se cargó correctamente.');
+            alert('Error: FileSaver.js no se cargó. Verifica la conexión a cdnjs.');
+            throw new Error('FileSaver.js no disponible');
+        }
+
+        // Renderiza un gráfico de ejemplo en el canvas
         const canvas = document.getElementById('myChart');
         if (canvas) {
             const ctx = canvas.getContext('2d');
@@ -2119,7 +2106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     datasets: [{
                         label: 'Ejemplo',
                         data: [10, 20, 30],
-                        backgroundColor: '#388E3C',
+                        backgroundColor: '#388E3c',
                     }],
                 },
                 options: {
