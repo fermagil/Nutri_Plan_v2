@@ -2108,9 +2108,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         format: 'a4'
                     });
                     console.log('Documento PDF creado:', doc);
-
-                    let yPosition = 40; // Posición vertical inicial (en puntos)
-
+			 // Define márgenes
+		                const margin = {
+		                    top: 40,
+		                    bottom: 90,
+		                    left: 40,
+		                    right: 40
+		                };
+	                let yPosition = 40; // Posición vertical inicial (en puntos)
+			const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
+	                const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
+	                const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
                     // Añade título
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(18);
