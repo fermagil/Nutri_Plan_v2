@@ -2121,18 +2121,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	                const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
 	                const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
                     // Añade título personalizado
+			    // Añade título personalizado
 			    doc.setFont('helvetica', 'bold');
-			    doc.setFontSize(16);
+			    doc.setFontSize(18);
 			    doc.setTextColor(56, 142, 60); // Verde (#388E3C)
 			
 			    // Obtener datos personales y resultados desde el HTML
-			    const nombre = document.getElementById('nombre')?.value || 'Cliente';
-			    const edad = document.getElementById('edad')?.value || 'N/A';
-			    const genero = document.getElementById('genero')?.value || 'N/A';
-			    const edadMetabolica = document.getElementById('result-edadmetabolica')?.textContent || 'N/A';
-			    const tipologia = document.getElementById('result-tipologia-actual')?.textContent || 'N/A';
+			    const nombre = document.getElementById('nombre')?.value?.trim() || 'Cliente';
+			    const edad = document.getElementById('edad')?.value?.trim() || 'N/A';
+			    const genero = document.getElementById('genero')?.value?.trim() || 'N/A';
+			    const edadMetabolica = document.getElementById('result-edadmetabolica')?.textContent?.trim() || 'N/A';
+			    const tipologia = document.getElementById('result-tipologia-actual')?.textContent?.trim() || 'N/A';
+			
 			    // Obtener y formatear la fecha
-			    const fechaInput = document.getElementById('seleccionar_fecha')?.value;
+			    const fechaInput = document.getElementById('seleccionar_fecha')?.value?.trim();
 			    let fecha = 'N/A';
 			    if (fechaInput) {
 			        try {
@@ -2142,22 +2144,34 @@ document.addEventListener('DOMContentLoaded', () => {
 			                const month = String(date.getMonth() + 1).padStart(2, '0');
 			                const year = String(date.getFullYear()).slice(-2);
 			                fecha = `${day}/${month}/${year}`;
+			            } else {
+			                console.warn('Fecha inválida:', fechaInput);
 			            }
 			        } catch (error) {
 			            console.warn('Error al formatear la fecha:', error.message);
 			        }
 			    }
+			
 			    // Construir el título dinámico
-			    const title = `Explicación de los Resultados para ${nombre}, con fecha de ${fecha}. Sujeto de ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años y Tipología ${tipologia}`;
+			    const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}, `;
 			    
-			    const titleLines = doc.splitTextToSize(title);
+			    // Validar y dividir el título
+			    const titleLines = doc.splitTextToSize(title, contentWidth);
+			    if (!Array.isArray(titleLines) || titleLines.length === 0) {
+			        console.error('Error: titleLines no es un arreglo válido:', titleLines);
+			        throw new Error('No se pudo generar el título del PDF.');
+			    }
+			
 			    const titleHeight = titleLines.length * 20 + 20;
 			    if (yPosition + titleHeight > pageHeight - margin.bottom) {
 			        doc.addPage();
 			        yPosition = margin.top;
 			        console.log('Nueva página añadida para título, yPosition reiniciada:', yPosition);
 			    }
-			    doc.text(title, yPosition, { align: 'center' });
+			
+			    // Ajustar alineación para compatibilidad con jsPDF 2.5.1
+			    const xCenter = margin.left + (contentWidth / 2);
+			    doc.text(titleLines, xCenter, yPosition, { align: 'center' });
 			    yPosition += titleHeight;
 			    console.log('Título personalizado añadido en yPosition:', yPosition);
 
