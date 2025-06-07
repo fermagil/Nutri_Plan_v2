@@ -2007,14 +2007,17 @@
         // Depuración: Inspecciona la estructura completa del módulo
         console.log('Módulo docx:', docx);
         console.log('Exportaciones de nivel superior:', Object.keys(docx));
+        if (docx.paragraph) {
+            console.log('Exportaciones en docx.paragraph:', Object.keys(docx.paragraph));
+        }
 
-        // Verifica las clases necesarias manualmente
-        const Document = docx.Document;
-        const Paragraph = docx.Paragraph;
-        const TextRun = docx.TextRun;
-        const Packer = docx.Packer;
-        const HeadingLevel = docx.HeadingLevel;
-        const Media = docx.Media;
+        // Accede a las clases desde el submódulo correspondiente
+        const Document = docx.document?.Document || docx.Document;
+        const Paragraph = docx.paragraph?.Paragraph || docx.PARAGRAPH;
+        const TextRun = docx.textRun?.TextRun || docx.TextRun;
+        const Packer = docx.packer?.Packer || docx.Packer;
+        const HeadingLevel = docx.headingLevel?.HeadingLevel || docx.HeadingLevel;
+        const Media = docx.media?.Media || docx.Media;
 
         // Verifica que las clases estén definidas
         if (!Document || !Paragraph || !TextRun || !Packer || !HeadingLevel || !Media) {
@@ -2029,8 +2032,8 @@
             alert('Error: No se pudieron cargar las clases necesarias de docx. Verifica la consola.');
             throw new Error('Clases de docx no disponibles');
         }
-    
- // Verifica que FileSaver.js esté cargado
+
+        // Verifica que FileSaver.js esté cargado
         if (typeof saveAs === 'undefined') {
             console.error('FileSaver.js no se cargó correctamente.');
             alert('Error: FileSaver.js no se cargó. Verifica la conexión a cdnjs.');
