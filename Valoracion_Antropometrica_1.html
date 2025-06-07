@@ -2090,6 +2090,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const docx = await waitForDocx();
             console.log('Biblioteca docx cargada correctamente:', docx);
 
+            // Verifica que las clases necesarias estén disponibles
+            if (!docx.Document || !docx.Paragraph || !docx.TextRun ) {
+                throw new Error('Clases necesarias de docx no están disponibles.');
+            }
+
             const exportarBtn = document.getElementById('exportar-btn');
             if (!exportarBtn) {
                 console.error('Botón exportar-btn no encontrado.');
@@ -2105,37 +2110,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         throw new Error('Elemento explanation-content no encontrado');
                     }
 
-                    // Crea el documento con una estructura simplificada
-                    const { Document, Paragraph, TextRun, Media, HeadingLevel, Packer } = docx;
-                    const doc = new Document({
-                        sections: [{
+                    // Crea el documento sin desestructuración
+                    const doc = new docx.Document();
+                    const section = { children: [] };
+
+                    // Añade un título simple
+                    section.children.push(
+                        new docx.Paragraph({
                             children: [
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: 'Explicación de los Resultados y Sugerencias',
-                                            bold: true,
-                                            size: 36,
-                                            color: '388E3C',
-                                        }),
-                                    ],
-                                    heading: HeadingLevel.HEADING_1,
-                                    spacing: { after: 240 },
+                                new docx.TextRun({
+                                    text: 'Explicación de los Resultados y Sugerencias',
+                                    bold: true,
+                                    size: 36,
+                                    color: '388E3C',
                                 }),
                             ],
-                        }],
-                    });
+                            heading: docx.HeadingLevel.HEADING_1,
+                            spacing: { after: 240 },
+                        })
+                    );
 
-                    // Verifica que el documento se creó correctamente
-                    console.log('Documento creado:', doc);
-                    if (!doc || !doc.sections || !Array.isArray(doc.sections) || doc.sections.length === 0) {
-                        throw new Error('No se pudo crear el documento Word: estructura de secciones inválida.');
-                    }
-
-                    const currentSection = doc.sections[0];
-                    console.log('Section obtenida:', currentSection);
+                    // Procesa el contenido de explanation-content
                     const elements = explanationContent.childNodes;
-
                     for (const element of elements) {
                         if (element.nodeType !== Node.ELEMENT_NODE) continue;
 
@@ -2143,10 +2139,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (tag === 'p') {
                             const text = element.textContent.trim();
                             if (text) {
-                                currentSection.children.push(
-                                    new Paragraph({
+                                section.children.push(
+                                    new docx.Paragraph({
                                         children: [
-                                            new TextRun({
+                                            new docx.TextRun({
                                                 text: text,
                                                 size: 24,
                                                 color: '343A40',
@@ -2161,10 +2157,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             for (const li of items) {
                                 const text = li.textContent.trim();
                                 if (text) {
-                                    currentSection.children.push(
-                                        new Paragraph({
+                                    section.children.push(
+                                        new docx.Paragraph({
                                             children: [
-                                                new TextRun({
+                                                new docx.TextRun({
                                                     text: text,
                                                     size: 24,
                                                     color: '343A40',
@@ -2176,19 +2172,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                     );
                                 }
                             }
-                        } else if (tag === 'canvas') {
+                        } else if (tag === 'canvas' && docx.Media) {
                             try {
                                 const dataUrl = element.toDataURL('image/png');
                                 if (dataUrl.length > 100) {
-                                    const image = Media.addImage(doc, dataUrl, 600, 400, {
-                                        floating: {
-                                            horizontalPosition: { offset: 0 },
-                                            verticalPosition: { offset: 0 },
-                                            margins: { top: 200, bottom: 200 },
-                                        },
-                                    });
-                                    currentSection.children.push(
-                                        new Paragraph({
+                                    const image = docx.Media.addImage(doc, dataUrl, 600, 400);
+                                    section.children.push(
+                                        new docx.Paragraph({
                                             children: [image],
                                             spacing: { after: 200 },
                                         })
@@ -2200,17 +2190,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else if (['h1', 'h2', 'h3'].includes(tag)) {
                             const text = element.textContent.trim();
                             if (text) {
-                                currentSection.children.push(
-                                    new Paragraph({
+                                section.children.push(
+                                    new docx.Paragraph({
                                         children: [
-                                            new TextRun({
+                                            new docx.TextRun({
                                                 text: text,
                                                 bold: true,
                                                 size: tag === 'h1' ? 32 : tag === 'h2' ? 28 : 24,
                                                 color: '388E3C',
                                             }),
                                         ],
-                                        heading: tag === 'h1' ? HeadingLevel.HEADING_1 : tag === 'h2' ? HeadingLevel.HEADING_2 : HeadingLevel.HEADING_3,
+                                        heading: tag === 'h1' ? docx.HeadingLevel.HEADING_1 : tag === 'h2' ? docx.HeadingLevel.HEADING_2 : docx.HeadingLevel.HEADING_3,
                                         spacing: { after: 200 },
                                     })
                                 );
@@ -2218,8 +2208,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
 
+                    // Añade la sección al documento
+                    doc.addSection(section);
+
                     // Genera el blob y descárgalo
-                    const blob = await Packer.toBlob(doc);
+                    const blob = await docx.Packer.toBlob(doc);
                     if (!blob) {
                         throw new Error('No se pudo generar el blob del documento.');
                     }
