@@ -2001,7 +2001,7 @@
     </footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
    	
-	 <script src="https://cdn.jsdelivr.net/npm/docx@6.0.3/build/index.js"></script>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
     // Accordion Effect
 document.addEventListener('DOMContentLoaded', () => {
@@ -2070,15 +2070,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-	
-document.addEventListener('DOMContentLoaded', () => {
-        // Verifica que docx esté cargado
-        if (!window.docx || !window.docx.Document) {
-            console.error('Error: Biblioteca docx no está cargada.');
-            alert('Error: No se pudo cargar la biblioteca docx. Verifica la inclusión del script.');
+	//pdf create 
+	document.addEventListener('DOMContentLoaded', () => {
+        // Verifica que jsPDF esté cargado
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            console.error('Error: Biblioteca jsPDF no está cargada.');
+            alert('Error: No se pudo cargar la biblioteca jsPDF. Verifica la inclusión del script.');
             return;
         }
-        console.log('Biblioteca docx cargada correctamente:', window.docx);
+        console.log('Biblioteca jsPDF cargada correctamente:', window.jspdf);
 
         const exportarBtn = document.getElementById('exportar-btn');
         if (!exportarBtn) {
@@ -2087,34 +2087,37 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        exportarBtn.addEventListener('click', async () => {
-            console.log('Exportar button clicked. Starting Word export.');
+        exportarBtn.addEventListener('click', () => {
+            console.log('Exportar button clicked. Starting PDF export.');
             try {
                 const explanationContent = document.getElementById('explanation-content');
                 if (!explanationContent) {
                     throw new Error('Elemento explanation-content no encontrado');
                 }
 
-                // Crea el documento sin opciones
-                const doc = new window.docx.Document();
-                console.log('Documento creado:', doc);
+                // Crea un nuevo documento PDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'pt',
+                    format: 'a4'
+                });
+                console.log('Documento PDF creado:', doc);
 
-                // Añade una sección manualmente
-                const section = { children: [] };
-                section.children.push(
-                    new window.docx.Paragraph({
-                        children: [
-                            new window.docx.TextRun({
-                                text: 'Explicación de los Resultados y Sugerencias',
-                                bold: true,
-                                size: 36, // 18pt
-                                color: '388E3C',
-                            }),
-                        ],
-                        heading: window.docx.HeadingLevel ? window.docx.HeadingLevel.HEADING_1 : undefined,
-                        spacing: { after: 240 },
-                    })
-                );
+                let yPosition = 40; // Posición vertical inicial (en puntos)
+
+                // Añade título
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(18);
+                doc.setTextColor(56, 142, 60); // Verde (#388E3C)
+                doc.text('Explicación de los Resultados y Sugerencias', 40, yPosition);
+                yPosition += 30;
+                console.log('Título añadido en yPosition:', yPosition);
+
+                // Configura fuente para contenido normal
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(12);
+                doc.setTextColor(52, 58, 64); // Gris oscuro (#343A40)
 
                 // Procesa el contenido de explanation-content
                 const elements = explanationContent.childNodes;
@@ -2125,83 +2128,59 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (tag === 'p') {
                         const text = element.textContent.trim();
                         if (text) {
-                            section.children.push(
-                                new window.docx.Paragraph({
-                                    children: [
-                                        new window.docx.TextRun({
-                                            text: text,
-                                            size: 24, // 12pt
-                                            color: '343A40',
-                                        }),
-                                    ],
-                                    spacing: { after: 200 },
-                                })
-                            );
+                            const lines = doc.splitTextToSize(text, 500); // Divide en líneas de 500pt
+                            doc.text(lines, 40, yPosition);
+                            yPosition += lines.length * 14 + 10; // 14pt por línea + espacio
                         }
                     } else if (tag === 'ul' || tag === 'ol') {
                         const items = element.querySelectorAll('li');
                         for (const li of items) {
                             const text = li.textContent.trim();
                             if (text) {
-                                section.children.push(
-                                    new window.docx.Paragraph({
-                                        children: [
-                                            new window.docx.TextRun({
-                                                text: text,
-                                                size: 24, // 12pt
-                                                color: '343A40',
-                                            }),
-                                        ],
-                                        bullet: tag === 'ul' ? { level: 0 } : { level: 0, type: 'decimal' },
-                                        spacing: { after: 150 },
-                                    })
-                                );
+                                const bullet = tag === 'ul' ? '•' : `${items.indexOf(li) + 1}.`;
+                                const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para dejar espacio al bullet
+                                doc.text(lines, 50, yPosition); // Indentado 10pt
+                                yPosition += lines.length * 14 + 8; // 14pt por línea + espacio reducido
                             }
                         }
                     } else if (['h1', 'h2', 'h3'].includes(tag)) {
                         const text = element.textContent.trim();
                         if (text) {
-                            section.children.push(
-                                new window.docx.Paragraph({
-                                    children: [
-                                        new window.docx.TextRun({
-                                            text: text,
-                                            bold: true,
-                                            size: tag === 'h1' ? 32 : tag === 'h2' ? 28 : 24,
-                                            color: '388E3C',
-                                        }),
-                                    ],
-                                    heading: window.docx.HeadingLevel ? (
-                                        tag === 'h1' ? window.docx.HeadingLevel.HEADING_1 :
-                                        tag === 'h2' ? window.docx.HeadingLevel.HEADING_2 :
-                                        window.docx.HeadingLevel.HEADING_3
-                                    ) : undefined,
-                                    spacing: { after: 200 },
-                                })
-                            );
+                            doc.setFont('helvetica', 'bold');
+                            doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
+                            doc.setTextColor(56, 142, 60); // Verde (#388E3C)
+                            const lines = doc.splitTextToSize(text, 500);
+                            doc.text(lines, 40, yPosition);
+                            yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
+                            doc.setFont('helvetica', 'normal');
+                            doc.setFontSize(12);
+                            doc.setTextColor(52, 58, 64); // Restaurar color normal
                         }
+                    }
+
+                    // Verifica si es necesario añadir una nueva página
+                    if (yPosition > 750) { // A4 height ~842pt, margen inferior ~90pt
+                        doc.addPage();
+                        yPosition = 40;
+                        console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
                     }
                 }
 
-                // Añade la sección al documento
-                doc.addSection(section);
-                console.log('Sección añadida:', section);
-                console.log('Secciones finales:', doc.sections);
-
                 // Genera el blob y descárgalo
-                const blob = await window.docx.Packer.toBlob(doc);
+                const blob = doc.output('blob');
                 if (!blob) {
-                    throw new Error('No se pudo generar el blob del documento.');
+                    throw new Error('No se pudo generar el blob del PDF.');
                 }
-                saveAs(blob, 'Explicacion_Resultados.docx');
-                console.log('Documento Word generado y descargado.');
-                alert('Documento Word exportado exitosamente.');
+                saveAs(blob, 'Explicacion_Resultados.pdf');
+                console.log('Documento PDF generado y descargado.');
+                alert('Documento PDF exportado exitosamente.');
             } catch (error) {
-                console.error('Error en exportación a Word:', error.message, error.stack);
-                alert('Error al exportar a Word: ' + error.message);
+                console.error('Error en exportación a PDF:', error.message, error.stack);
+                alert('Error al exportar a PDF: ' + error.message);
             }
         });
     });
+
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
