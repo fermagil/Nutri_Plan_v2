@@ -2068,15 +2068,22 @@ document.addEventListener('DOMContentLoaded', () => {
         handleValueChange(newValue);
     };
 });
-// Configura el botón de exportación
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+        // Verifica que la biblioteca docx esté cargada
+        if (typeof docx === 'undefined' || !docx.Document) {
+            console.error('Error: Biblioteca docx no está cargada.');
+            alert('Error: No se pudo cargar la biblioteca docx. Verifica la inclusión del script.');
+            return;
+        }
+
         const exportarBtn = document.getElementById('exportar-btn');
         if (!exportarBtn) {
             console.error('Botón exportar-btn no encontrado.');
             alert('Error: Botón exportar-btn no encontrado.');
             return;
-        }	
-exportarBtn.addEventListener('click', async () => {
+        }
+
+        exportarBtn.addEventListener('click', async () => {
             console.log('Exportar button clicked. Starting Word export.');
             try {
                 const explanationContent = document.getElementById('explanation-content');
@@ -2091,7 +2098,7 @@ exportarBtn.addEventListener('click', async () => {
                         properties: {
                             page: {
                                 margin: {
-                                    top: 720, // 1 pulgada
+                                    top: 720,
                                     right: 720,
                                     bottom: 720,
                                     left: 720,
@@ -2104,7 +2111,7 @@ exportarBtn.addEventListener('click', async () => {
                                     new TextRun({
                                         text: 'Explicación de los Resultados y Sugerencias',
                                         bold: true,
-                                        size: 36, // 18pt
+                                        size: 36,
                                         color: '388E3C',
                                     }),
                                 ],
@@ -2114,6 +2121,11 @@ exportarBtn.addEventListener('click', async () => {
                         ],
                     }],
                 });
+
+                // Verifica que el documento se creó correctamente
+                if (!doc.sections || !doc.sections[0]) {
+                    throw new Error('No se pudo crear el documento Word correctamente.');
+                }
 
                 const currentSection = doc.sections[0];
                 const elements = explanationContent.childNodes;
@@ -2130,7 +2142,7 @@ exportarBtn.addEventListener('click', async () => {
                                     children: [
                                         new TextRun({
                                             text: text,
-                                            size: 24, // 12pt
+                                            size: 24,
                                             color: '343A40',
                                         }),
                                     ],
@@ -2148,7 +2160,7 @@ exportarBtn.addEventListener('click', async () => {
                                         children: [
                                             new TextRun({
                                                 text: text,
-                                                size: 24, // 12pt
+                                                size: 24,
                                                 color: '343A40',
                                             }),
                                         ],
@@ -2161,7 +2173,7 @@ exportarBtn.addEventListener('click', async () => {
                     } else if (tag === 'canvas') {
                         try {
                             const dataUrl = element.toDataURL('image/png');
-                            if (dataUrl.length > 100) { // Verifica que la imagen no esté vacía
+                            if (dataUrl.length > 100) {
                                 const image = Media.addImage(doc, dataUrl, 600, 400, {
                                     floating: {
                                         horizontalPosition: { offset: 0 },
