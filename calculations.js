@@ -1736,9 +1736,9 @@
             content += '</p>';
 
             // % Grasa Corporal Deseado
-				content += '<p><strong>% Grasa Corporal Deseado:</strong> Porcentaje de grasa ideal según tu género y nivel de actividad. </p>';
+				content = '<h3><strong>% Grasa Corporal Deseado:</strong> Porcentaje de grasa ideal según tu género y nivel de actividad. <h3>';
 				if (!isNaN(results.grasaPctDeseado)) {
-					content += '<p>Tu % de grasa corporal deseado es ' + formatResult(results.grasaPctDeseado, 1) + '%. </p>';
+					content += '<p>Tu % de grasa corporal deseado es <strong>' + formatResult(results.grasaPctDeseado, 1) + '%.</strong> </p>';
 					content += '<p>Tu % de grasa actual es ' + formatResult(results.grasaPctActual, 1) + '%. </p>';
 					content += '<p>'
 					if (gender === 'masculino') {
@@ -1778,7 +1778,7 @@
 							}
 						}
 					}
-					content += 'Mantener un porcentaje de grasa corporal saludable es crucial porque la grasa es necesaria para la regulación hormonal, el almacenamiento de energía y la salud general. Un porcentaje demasiado bajo puede interrumpir las funciones hormonales y debilitar el sistema inmunológico, mientras que un porcentaje demasiado alto aumenta el riesgo de enfermedades cardiovasculares y trastornos metabólicos. ';
+					content = '<h4>Mantener un porcentaje de grasa corporal saludable es crucial porque la grasa es necesaria para la regulación hormonal, el almacenamiento de energía y la salud general. Un porcentaje demasiado bajo puede interrumpir las funciones hormonales y debilitar el sistema inmunológico, mientras que un porcentaje demasiado alto aumenta el riesgo de enfermedades cardiovasculares y trastornos metabólicos. <h4>';
 				} else {
 					content += 'No calculado. ';
 				}
