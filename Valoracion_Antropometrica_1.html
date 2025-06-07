@@ -967,6 +967,37 @@
             border: 1px solid #ccc;
             border-radius: 3px;
         }
+	    #explanation-section .explanation-header {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    width: 100%;
+	    margin-bottom: 20px;
+	}
+	#explanation-section .explanation-header h2 {
+	    margin: 0;
+	    padding: 0;
+	    font-size: 1.8em; /* Match global h2 */
+	    color: #388E3C; /* Match global h2 */
+	    font-weight: 600;
+	    border-bottom: none; /* Remove default border */
+	    position: relative; /* For pseudo-element */
+	    width: 500px;
+	}
+	#explanation-section .explanation-header h2::after {
+	    content: '';
+	    display: block;
+	    position: absolute;
+	    bottom: -4px; /* Position below h2 */
+	    left: 0;
+	    width: 85%; /* Extend toward button */
+	    height: 2px;
+	    background-color: #a5d6a7; /* Match global h2 border */
+	}
+	#explanation-section .button-container {
+	    display: flex;
+	    gap: 10px;
+	}
 	    
         /* Tab Navigation Styles */
         .tabs {
@@ -1948,9 +1979,14 @@
                         </div>
                     </section>
                     <section class="data-section" id="explanation-section" style="display: none;">
-                        <h2>Explicación de los Resultados y Sugerencias</h2>
-                        <div id="explanation-content"></div>
-                    </section>
+		    <div class="explanation-header">
+		        <h2>Explicación de los Resultados y Sugerencias</h2>
+		        <div class="button-container">
+		            <button type="button" id="exportar-btn" class="button">Informe</button>
+		        </div>
+		    </div>
+		    <div id="explanation-content"></div>
+		</section>
 			
                 </div>
             </div>
