@@ -3809,7 +3809,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	
 	        const centerX = chartOffsetX + chartWidth / 2;
 	        const centerY = chartOffsetY + chartHeight / 2;
-	        const xAxisY = centerY + 80;
+	        const xAxisY = centerY; // Alinear el eje X con el centro vertical (y=0)
 	
 	       const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth; // Correcto, sin cambios
 		const pixelY = yClamped >= 0 
@@ -3867,6 +3867,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
 	
 	       // Dibujar el eje Y (a la derecha, donde termina el eje X)
+		// Dibujar el eje Y (a la derecha, donde termina el eje X)
 		const yAxisX = chartOffsetX + chartWidth;
 		ctxSomatotype.beginPath();
 		ctxSomatotype.moveTo(yAxisX, xAxisY); // y=-10, alineado con el eje X
