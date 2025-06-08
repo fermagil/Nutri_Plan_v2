@@ -3818,15 +3818,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	
 	        // Dibujar el punto
 	        ctxSomatotype.beginPath();
-	        ctxSomatotype.arc(pixelX, pixelY, 8, 0, 2 * Math.PI);
-	        ctxSomatotype.fillStyle = '#007bff';
+	        ctxSomatotype.arc(pixelX, pixelY, 12, 0, 2 * Math.PI);
+	        ctxSomatotype.fillStyle = '#0056b3';
 	        ctxSomatotype.fill();
-	        ctxSomatotype.strokeStyle = '#0056b3';
-	        ctxSomatotype.lineWidth = 2;
+	        ctxSomatotype.strokeStyle = '#003087';
+	        ctxSomatotype.lineWidth = 5;
 	        ctxSomatotype.stroke();
 	
 	        // Etiqueta del punto
-	        ctxSomatotype.font = 'bold 20px Inter, sans-serif';
+	        ctxSomatotype.font = 'bold 24px Inter, sans-serif';
 	        ctxSomatotype.fillStyle = '#000000';
 	        ctxSomatotype.strokeStyle = '#ffffff';
 	        ctxSomatotype.lineWidth = 3;
@@ -3834,12 +3834,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.strokeText(
 	            `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	            pixelX,
-	            pixelY - 20
+	            pixelY - 25
 	        );
 	        ctxSomatotype.fillText(
 	            `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	            pixelX,
-	            pixelY - 20
+	            pixelY - 25
 	        );
 	
 	        // Dibujar el eje X
