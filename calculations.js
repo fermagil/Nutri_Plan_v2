@@ -3821,15 +3821,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	
 	    // Draw the blue point
 	    ctxSomatotype.beginPath();
-	    ctxSomatotype.arc(pixelX, pixelY, 12, 0, 2 * Math.PI);
+	    ctxSomatotype.arc(pixelX, pixelY, 40, 0, 2 * Math.PI);
 	    ctxSomatotype.fillStyle = '#0056b3';
 	    ctxSomatotype.fill();
 	    ctxSomatotype.strokeStyle = '#003087';
-	    ctxSomatotype.lineWidth = 4;
+	    ctxSomatotype.lineWidth = 6;
 	    ctxSomatotype.stroke();
 	
 	    // Point label (unchanged)
-	    ctxSomatotype.font = 'bold 50px Inter, sans-serif';
+	    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
 	    ctxSomatotype.fillStyle = '#000000';
 	    ctxSomatotype.strokeStyle = '#ffffff';
 	    ctxSomatotype.lineWidth = 5;
@@ -3837,12 +3837,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.strokeText(
 	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	        pixelX,
-	        pixelY - 35
+	        pixelY - 55
 	    );
 	    ctxSomatotype.fillText(
 	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	        pixelX,
-	        pixelY - 35
+	        pixelY - 55
 	    );
 	
 	    // Draw X-axis
@@ -3863,10 +3863,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.moveTo(xPos, xAxisY - 5);
 	        ctxSomatotype.lineTo(xPos, xAxisY + 5);
 	        ctxSomatotype.stroke();
-	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 35);
+	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 55);
 	    }
-	    ctxSomatotype.font = '60px Inter, sans-serif';
-	    ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 80);
+	    ctxSomatotype.font = '75px Inter, sans-serif';
+	    ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
 	
 	    // Draw Y-axis (at x=8)
 	    const yAxisX = chartOffsetX + chartWidth;
@@ -3894,7 +3894,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.save();
 	    ctxSomatotype.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
 	    ctxSomatotype.rotate(-Math.PI / 2);
-	    ctxSomatotype.font = '55px Inter, sans-serif';
+	    ctxSomatotype.font = '75px Inter, sans-serif';
 	    ctxSomatotype.textAlign = 'center';
 	    ctxSomatotype.fillText('Mesomorfia', 0, 0);
 	    ctxSomatotype.restore();
