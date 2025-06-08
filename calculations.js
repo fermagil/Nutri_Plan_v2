@@ -3807,16 +3807,15 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        const xClamped = Math.min(Math.max(x, -8), 8);
 	        const yClamped = Math.min(Math.max(y, -10), 14);
 	
-	        const centerX = chartOffsetX + chartWidth / 2;
-	        const centerY = chartOffsetY + chartHeight / 2;
-	        const xAxisY = centerY; // Alinear el eje X con el centro vertical (y=0)
-	
-	       const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
+	       const centerX = chartOffsetX + chartWidth / 2;
+		const centerY = chartOffsetY + chartHeight / 2;
+		const xAxisY = chartOffsetY + 0.8 * chartHeight; // Eje X al 80% de la altura (debajo de la imagen)
+		    
+			//Ajustar las coordenadas del punto azul (pixelX, pixelY)
+	        const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
 		const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
-		
 		console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
-		
-		console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+		    
 		// Dibujar el punto
 		ctxSomatotype.beginPath();
 		ctxSomatotype.arc(pixelX, pixelY, 34, 0, 2 * Math.PI); // Radio a 12
@@ -3877,7 +3876,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		ctxSomatotype.stroke();
 		
 		// Graduaciones del eje Y (de -10 a 12, con y=0 en centerY)
-		ctxSomatotype.font = '50px Inter, sans-serif';
+		ctxSomatotype.font = '55px Inter, sans-serif';
 		ctxSomatotype.fillStyle = '#000000';
 		ctxSomatotype.textAlign = 'center';
 		for (let i = -10; i <= 12; i += 2) {
@@ -3902,7 +3901,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    imgSomatotype.onerror = () => {
 	        console.error('Error al cargar la imagen #somatotype-image');
 	    };
-	
+		console.log("y=0 yPos:", centerY - (0 / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY)), "centerY:", centerY);
+		console.log("y=-10 yPos:", centerY - (-10 / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY)), "xAxisY:", xAxisY);
+		console.log("y=12 yPos:", centerY - (12 / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY)), "chartOffsetY:", chartOffsetY);
 	   // Si la imagen ya está cargada (por ejemplo, si está en caché), disparar el evento onload manualmente
 	        if (imgSomatotype.complete) {
 	        drawSomatotypeChart();
