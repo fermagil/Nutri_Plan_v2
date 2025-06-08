@@ -3812,9 +3812,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        const xAxisY = centerY + 80;
 	
 	       const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth; // Correcto, sin cambios
-		const pixelY = centerY - (yClamped / 22) * (xAxisY - chartOffsetY); // Nueva fórmula
-
-		    console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+		const pixelY = yClamped >= 0 
+		    ? centerY - (yClamped / 12) * (centerY - chartOffsetY) // y=0 a y=12
+		    : centerY + (Math.abs(yClamped) / 10) * (xAxisY - centerY); // y=-10 a y=0
+		
+		console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 		// Dibujar el punto
 		ctxSomatotype.beginPath();
 		ctxSomatotype.arc(pixelX, pixelY, 34, 0, 2 * Math.PI); // Radio a 12
@@ -3874,11 +3876,13 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		ctxSomatotype.stroke();
 		
 		// Graduaciones del eje Y (de -10 a 12, con y=0 en centerY)
-		ctxSomatotype.font = '50px Inter, sans-serif';
+		ctxSomatotype.font = '22px Inter, sans-serif';
 		ctxSomatotype.fillStyle = '#000000';
 		ctxSomatotype.textAlign = 'center';
 		for (let i = -10; i <= 12; i += 2) {
-		    const yPos = centerY - (i / 22) * (xAxisY - chartOffsetY);
+		    const yPos = i >= 0 
+		        ? centerY - (i / 12) * (centerY - chartOffsetY) // y=0 a y=12
+		        : centerY + (Math.abs(i) / 10) * (xAxisY - centerY); // y=-10 a y=0
 		    ctxSomatotype.beginPath();
 		    ctxSomatotype.moveTo(yAxisX - 5, yPos);
 		    ctxSomatotype.lineTo(yAxisX + 5, yPos);
