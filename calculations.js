@@ -3876,7 +3876,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		ctxSomatotype.stroke();
 		
 		// Graduaciones del eje Y (de -10 a 12, con y=0 en centerY)
-		ctxSomatotype.font = '22px Inter, sans-serif';
+		ctxSomatotype.font = '50px Inter, sans-serif';
 		ctxSomatotype.fillStyle = '#000000';
 		ctxSomatotype.textAlign = 'center';
 		for (let i = -10; i <= 12; i += 2) {
@@ -3894,7 +3894,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		ctxSomatotype.save();
 		ctxSomatotype.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
 		ctxSomatotype.rotate(-Math.PI / 2);
-		ctxSomatotype.font = '24px Inter, sans-serif';
+		ctxSomatotype.font = '65px Inter, sans-serif';
 		ctxSomatotype.textAlign = 'center';
 		ctxSomatotype.fillText('Mesomorfia', 0, 0);
 		ctxSomatotype.restore();
