@@ -3788,115 +3788,117 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    }
 	
 	    function drawSomatotypeChart() {
-	        const ctxSomatotype = canvasSomatotype.getContext('2d');
-	        canvasSomatotype.width = imgSomatotype.width;
-	        canvasSomatotype.height = imgSomatotype.height;
-	        ctxSomatotype.clearRect(0, 0, canvasSomatotype.width, canvasSomatotype.height);
+	    const ctxSomatotype = canvasSomatotype.getContext('2d');
+	    canvasSomatotype.width = imgSomatotype.width;
+	    canvasSomatotype.height = imgSomatotype.height;
+	    ctxSomatotype.clearRect(0, 0, canvasSomatotype.width, canvasSomatotype.height);
 	
-	        const chartWidth = imgSomatotype.width * 0.8;
-	        const chartHeight = imgSomatotype.height * 0.8;
-	        const chartOffsetX = (imgSomatotype.width - chartWidth) / 2;
-	        const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
+	    const chartWidth = imgSomatotype.width * 0.8;
+	    const chartHeight = imgSomatotype.height * 0.8;
+	    const chartOffsetX = (imgSomatotype.width - chartWidth) / 2;
+	    const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
 	
-	        console.log(`Image Dimensions: width=${imgSomatotype.width}, height=${imgSomatotype.height}`);
-	        console.log(`Canvas Dimensions: width=${canvasSomatotype.width}, height=${canvasSomatotype.height}`);
-	        console.log(`Chart Area: offsetX=${chartOffsetX}, offsetY=${chartOffsetY}, width=${chartWidth}, height=${chartHeight}`);
+	    // Define centerY and other variables
+	    const centerX = chartOffsetX + chartWidth / 2;
+	    const centerY = chartOffsetY + chartHeight / 2; // Ensure centerY is defined (~250px)
+	    const xAxisY = chartOffsetY + 0.8 * chartHeight; // X-axis at 80% height (~400px)
 	
-	        const x = results.ectomorfia - results.endomorfia;
-	        const y = 2 * results.mesomorfia - (results.endomorfia + results.ectomorfia);
-	        const xClamped = Math.min(Math.max(x, -8), 8);
-	        const yClamped = Math.min(Math.max(y, -10), 14);
+	    console.log(`Image Dimensions: width=${imgSomatotype.width}, height=${imgSomatotype.height}`);
+	    console.log(`Canvas Dimensions: width=${canvasSomatotype.width}, height=${canvasSomatotype.height}`);
+	    console.log(`Chart Area: offsetX=${chartOffsetX}, offsetY=${chartOffsetY}, width=${chartWidth}, height=${chartHeight}`);
+	    console.log(`centerY: ${centerY}, xAxisY: ${xAxisY}`);
 	
-	       const centerX = chartOffsetX + chartWidth / 2;
-		const centerY = chartOffsetY + chartHeight / 2;
-		const xAxisY = chartOffsetY + 0.8 * chartHeight; // Eje X al 80% de la altura (debajo de la imagen)
-		    
-			//Ajustar las coordenadas del punto azul (pixelX, pixelY)
-	        const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
-		const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
-		console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
-		    
-		// Dibujar el punto
-		ctxSomatotype.beginPath();
-		ctxSomatotype.arc(pixelX, pixelY, 34, 0, 2 * Math.PI); // Radio a 12
-		ctxSomatotype.fillStyle = '#0056b3'; // Color más oscuro
-		ctxSomatotype.fill();
-		ctxSomatotype.strokeStyle = '#003087'; // Borde más oscuro
-		ctxSomatotype.lineWidth = 5; // Grosor aumentado
-		ctxSomatotype.stroke();
+	    const x = results.ectomorfia - results.endomorfia;
+	    const y = 2 * results.mesomorfia - (results.endomorfia + results.ectomorfia);
+	    const xClamped = Math.min(Math.max(x, -8), 8);
+	    const yClamped = Math.min(Math.max(y, -10), 12);
 	
-	        // Etiqueta del punto
-	        ctxSomatotype.font = 'bold 50px Inter, sans-serif';
-	        ctxSomatotype.fillStyle = '#000000';
-	        ctxSomatotype.strokeStyle = '#ffffff';
-	        ctxSomatotype.lineWidth = 8;
-	        ctxSomatotype.textAlign = 'center';
-	        ctxSomatotype.strokeText(
-		    `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
-		    pixelX,
-		    pixelY - 40 // Ajustar posición
-		);
-		ctxSomatotype.fillText(
-		    `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
-		    pixelX,
-		    pixelY - 40
-		);
+	    // Calculate pixel coordinates for the blue point
+	    const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
+	    const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
 	
-	        // Dibujar el eje X
+	    console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+	
+	    // Draw the blue point
+	    ctxSomatotype.beginPath();
+	    ctxSomatotype.arc(pixelX, pixelY, 12, 0, 2 * Math.PI);
+	    ctxSomatotype.fillStyle = '#0056b3';
+	    ctxSomatotype.fill();
+	    ctxSomatotype.strokeStyle = '#003087';
+	    ctxSomatotype.lineWidth = 4;
+	    ctxSomatotype.stroke();
+	
+	    // Point label (unchanged)
+	    ctxSomatotype.font = 'bold 24px Inter, sans-serif';
+	    ctxSomatotype.fillStyle = '#000000';
+	    ctxSomatotype.strokeStyle = '#ffffff';
+	    ctxSomatotype.lineWidth = 3;
+	    ctxSomatotype.textAlign = 'center';
+	    ctxSomatotype.strokeText(
+	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
+	        pixelX,
+	        pixelY - 25
+	    );
+	    ctxSomatotype.fillText(
+	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
+	        pixelX,
+	        pixelY - 25
+	    );
+	
+	    // Draw X-axis
+	    ctxSomatotype.beginPath();
+	    ctxSomatotype.moveTo(chartOffsetX, xAxisY);
+	    ctxSomatotype.lineTo(chartOffsetX + chartWidth, xAxisY);
+	    ctxSomatotype.strokeStyle = '#000000';
+	    ctxSomatotype.lineWidth = 3;
+	    ctxSomatotype.stroke();
+	
+	    // X-axis graduations
+	    ctxSomatotype.font = '22px Inter, sans-serif';
+	    ctxSomatotype.fillStyle = '#000000';
+	    ctxSomatotype.textAlign = 'center';
+	    for (let i = -8; i <= 8; i += 2) {
+	        const xPos = chartOffsetX + ((i + 8) / 16) * chartWidth;
 	        ctxSomatotype.beginPath();
-	        ctxSomatotype.moveTo(chartOffsetX, xAxisY);
-	        ctxSomatotype.lineTo(chartOffsetX + chartWidth, xAxisY);
-	        ctxSomatotype.strokeStyle = '#000000';
-	        ctxSomatotype.lineWidth = 5;
+	        ctxSomatotype.moveTo(xPos, xAxisY - 5);
+	        ctxSomatotype.lineTo(xPos, xAxisY + 5);
 	        ctxSomatotype.stroke();
-	
-	        // Graduaciones del eje X
-	        ctxSomatotype.font = '50px Inter, sans-serif';
-	        ctxSomatotype.fillStyle = '#000000';
-	        ctxSomatotype.textAlign = 'center';
-	        for (let i = -8; i <= 8; i += 2) {
-	            const xPos = chartOffsetX + ((i + 8) / 16) * chartWidth;
-	            ctxSomatotype.beginPath();
-	            ctxSomatotype.moveTo(xPos, xAxisY - 5);
-	            ctxSomatotype.lineTo(xPos, xAxisY + 5);
-	            ctxSomatotype.stroke();
-	            ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 70);
-	        }
-	        ctxSomatotype.font = '65px Inter, sans-serif';
-	        ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
-	
-	       // Dibujar el eje Y (a la derecha, donde termina el eje X)
-		// Dibujar el eje Y (a la derecha, donde termina el eje X)
-		const yAxisX = chartOffsetX + chartWidth;
-		ctxSomatotype.beginPath();
-		ctxSomatotype.moveTo(yAxisX, xAxisY); // y=-10, alineado con el eje X
-		ctxSomatotype.lineTo(yAxisX, chartOffsetY); // y=12, parte superior
-		ctxSomatotype.strokeStyle = '#000000';
-		ctxSomatotype.lineWidth = 3;
-		ctxSomatotype.stroke();
-		
-		// Graduaciones del eje Y (de -10 a 12, con y=0 en centerY)
-		ctxSomatotype.font = '55px Inter, sans-serif';
-		ctxSomatotype.fillStyle = '#000000';
-		ctxSomatotype.textAlign = 'center';
-		for (let i = -10; i <= 12; i += 2) {
-		    const yPos = centerY - (i / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
-		    ctxSomatotype.beginPath();
-		    ctxSomatotype.moveTo(yAxisX - 5, yPos);
-		    ctxSomatotype.lineTo(yAxisX + 5, yPos);
-		    ctxSomatotype.stroke();
-		    ctxSomatotype.fillText(i.toString(), yAxisX + 35, yPos + 5);
-		}
-		
-		// Etiqueta del eje Y (centrada en x=7)
-		ctxSomatotype.save();
-		ctxSomatotype.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
-		ctxSomatotype.rotate(-Math.PI / 2);
-		ctxSomatotype.font = '65px Inter, sans-serif';
-		ctxSomatotype.textAlign = 'center';
-		ctxSomatotype.fillText('Mesomorfia', 0, 0);
-		ctxSomatotype.restore();
+	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 35);
 	    }
+	    ctxSomatotype.font = '24px Inter, sans-serif';
+	    ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 80);
+	
+	    // Draw Y-axis (at x=8)
+	    const yAxisX = chartOffsetX + chartWidth;
+	    ctxSomatotype.beginPath();
+	    ctxSomatotype.moveTo(yAxisX, xAxisY); // y=-10, aligned with X-axis
+	    ctxSomatotype.lineTo(yAxisX, chartOffsetY); // y=12, top
+	    ctxSomatotype.strokeStyle = '#000000';
+	    ctxSomatotype.lineWidth = 3;
+	    ctxSomatotype.stroke();
+	
+	    // Y-axis graduations (scaled with y=0 at centerY)
+	    ctxSomatotype.font = '22px Inter, sans-serif';
+	    ctxSomatotype.fillStyle = '#000000';
+	    ctxSomatotype.textAlign = 'center';
+	    for (let i = -10; i <= 12; i += 2) {
+	        const yPos = centerY - (i / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
+	        ctxSomatotype.beginPath();
+	        ctxSomatotype.moveTo(yAxisX - 5, yPos);
+	        ctxSomatotype.lineTo(yAxisX + 5, yPos);
+	        ctxSomatotype.stroke();
+	        ctxSomatotype.fillText(i.toString(), yAxisX + 35, yPos + 5);
+	    }
+	
+	    // Y-axis label (at x=7)
+	    ctxSomatotype.save();
+	    ctxSomatotype.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
+	    ctxSomatotype.rotate(-Math.PI / 2);
+	    ctxSomatotype.font = '24px Inter, sans-serif';
+	    ctxSomatotype.textAlign = 'center';
+	    ctxSomatotype.fillText('Mesomorfia', 0, 0);
+	    ctxSomatotype.restore();
+	}
 	
 	    imgSomatotype.onerror = () => {
 	        console.error('Error al cargar la imagen #somatotype-image');
