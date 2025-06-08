@@ -3876,7 +3876,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        // Graduaciones del eje Y
 	        ctxSomatotype.font = '50px Inter, sans-serif';
 	        ctxSomatotype.textAlign = 'center';
-	        for (let i = -10; i <= 16; i += 2) {
+	        for (let i = -10; i <= 12; i += 2) {
 	            const yPos = xAxisY - ((i + 10) / 22) * (xAxisY - chartOffsetY);
 		    ctxSomatotype.beginPath();
 		    ctxSomatotype.moveTo(yAxisX - 5, yPos);
