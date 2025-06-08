@@ -3850,11 +3850,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.moveTo(chartOffsetX, xAxisY);
 	    ctxSomatotype.lineTo(chartOffsetX + chartWidth, xAxisY);
 	    ctxSomatotype.strokeStyle = '#000000';
-	    ctxSomatotype.lineWidth = 5;
+	    ctxSomatotype.lineWidth = 6;
 	    ctxSomatotype.stroke();
 	
 	    // X-axis graduations
-	    ctxSomatotype.font = '50px Inter, sans-serif';
+	    ctxSomatotype.font = '60px Inter, sans-serif';
 	    ctxSomatotype.fillStyle = '#000000';
 	    ctxSomatotype.textAlign = 'center';
 	    for (let i = -8; i <= 8; i += 2) {
@@ -3863,9 +3863,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.moveTo(xPos, xAxisY - 5);
 	        ctxSomatotype.lineTo(xPos, xAxisY + 5);
 	        ctxSomatotype.stroke();
-	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 55);
+	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 60);
 	    }
-	    ctxSomatotype.font = '75px Inter, sans-serif';
+	    ctxSomatotype.font = '85px Inter, sans-serif';
 	    ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
 	
 	    // Draw Y-axis (at x=8)
@@ -3874,11 +3874,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.moveTo(yAxisX, xAxisY); // y=-10, aligned with X-axis
 	    ctxSomatotype.lineTo(yAxisX, chartOffsetY); // y=12, top
 	    ctxSomatotype.strokeStyle = '#000000';
-	    ctxSomatotype.lineWidth = 5;
+	    ctxSomatotype.lineWidth = 6;
 	    ctxSomatotype.stroke();
 	
 	    // Y-axis graduations (scaled with y=0 at centerY)
-	    ctxSomatotype.font = '50px Inter, sans-serif';
+	    ctxSomatotype.font = '60px Inter, sans-serif';
 	    ctxSomatotype.fillStyle = '#000000';
 	    ctxSomatotype.textAlign = 'center';
 	    for (let i = -10; i <= 12; i += 2) {
@@ -3887,7 +3887,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.moveTo(yAxisX - 5, yPos);
 	        ctxSomatotype.lineTo(yAxisX + 5, yPos);
 	        ctxSomatotype.stroke();
-	        ctxSomatotype.fillText(i.toString(), yAxisX + 35, yPos + 5);
+	        ctxSomatotype.fillText(i.toString(), yAxisX + 50, yPos + 10);
 	    }
 	
 	    // Y-axis label (at x=7)
