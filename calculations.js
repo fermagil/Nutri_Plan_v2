@@ -3829,20 +3829,20 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.stroke();
 	
 	    // Point label (unchanged)
-	    ctxSomatotype.font = 'bold 24px Inter, sans-serif';
+	    ctxSomatotype.font = 'bold 50px Inter, sans-serif';
 	    ctxSomatotype.fillStyle = '#000000';
 	    ctxSomatotype.strokeStyle = '#ffffff';
-	    ctxSomatotype.lineWidth = 3;
+	    ctxSomatotype.lineWidth = 5;
 	    ctxSomatotype.textAlign = 'center';
 	    ctxSomatotype.strokeText(
 	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	        pixelX,
-	        pixelY - 25
+	        pixelY - 35
 	    );
 	    ctxSomatotype.fillText(
 	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	        pixelX,
-	        pixelY - 25
+	        pixelY - 35
 	    );
 	
 	    // Draw X-axis
@@ -3850,11 +3850,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.moveTo(chartOffsetX, xAxisY);
 	    ctxSomatotype.lineTo(chartOffsetX + chartWidth, xAxisY);
 	    ctxSomatotype.strokeStyle = '#000000';
-	    ctxSomatotype.lineWidth = 3;
+	    ctxSomatotype.lineWidth = 5;
 	    ctxSomatotype.stroke();
 	
 	    // X-axis graduations
-	    ctxSomatotype.font = '22px Inter, sans-serif';
+	    ctxSomatotype.font = '50px Inter, sans-serif';
 	    ctxSomatotype.fillStyle = '#000000';
 	    ctxSomatotype.textAlign = 'center';
 	    for (let i = -8; i <= 8; i += 2) {
@@ -3865,7 +3865,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.stroke();
 	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 35);
 	    }
-	    ctxSomatotype.font = '24px Inter, sans-serif';
+	    ctxSomatotype.font = '60px Inter, sans-serif';
 	    ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 80);
 	
 	    // Draw Y-axis (at x=8)
@@ -3874,11 +3874,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.moveTo(yAxisX, xAxisY); // y=-10, aligned with X-axis
 	    ctxSomatotype.lineTo(yAxisX, chartOffsetY); // y=12, top
 	    ctxSomatotype.strokeStyle = '#000000';
-	    ctxSomatotype.lineWidth = 3;
+	    ctxSomatotype.lineWidth = 5;
 	    ctxSomatotype.stroke();
 	
 	    // Y-axis graduations (scaled with y=0 at centerY)
-	    ctxSomatotype.font = '22px Inter, sans-serif';
+	    ctxSomatotype.font = '50px Inter, sans-serif';
 	    ctxSomatotype.fillStyle = '#000000';
 	    ctxSomatotype.textAlign = 'center';
 	    for (let i = -10; i <= 12; i += 2) {
@@ -3894,7 +3894,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.save();
 	    ctxSomatotype.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
 	    ctxSomatotype.rotate(-Math.PI / 2);
-	    ctxSomatotype.font = '24px Inter, sans-serif';
+	    ctxSomatotype.font = '55px Inter, sans-serif';
 	    ctxSomatotype.textAlign = 'center';
 	    ctxSomatotype.fillText('Mesomorfia', 0, 0);
 	    ctxSomatotype.restore();
