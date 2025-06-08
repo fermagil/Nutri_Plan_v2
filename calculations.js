@@ -3904,7 +3904,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
             imgSomatotype.onload();
         }
     }
-}
+
 }, 100);
 
             return content;
