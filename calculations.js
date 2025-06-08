@@ -3900,6 +3900,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
     } else {
         imgSomatotype.onload = drawSomatotypeChart;
     }
+}
 }, 100);
 
             return content;
