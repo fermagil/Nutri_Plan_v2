@@ -1161,48 +1161,57 @@ body {
   color: #eee;
 }
 
-.animated-title {
-  position: relative;
-  display: block;
-  text-align: center;
-  margin: 50px auto;
-  font-size: 2.5em;
-  font-family: Roboto, sans-serif;
-  font-weight: bold;
-  white-space: pre;
-  color: transparent;
- letter-spacing: -2px; /* 👈 Opcional: reduce aún más el espacio */
-}
+ .animated-title {
+      position: relative;
+      display: block;
+      text-align: center;
+      margin: 50px auto;
+      font-size: 2.5em;
+      font-family: Roboto, sans-serif;
+      font-weight: bold;
+      white-space: pre;
+      color: transparent;
+      letter-spacing: -2px;
+      transition: opacity 0.5s ease; /* For fade effect */
+    }
 
-.letter {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  vertical-align: top;
-   font-family: Roboto, sans-serif;
-  height: 40px;
-  width: 40px;
-  min-width: 6px;
-  margin-right: -12px;
-  padding-right: 0px;
-  font-family: 'Roboto, sans-serif;
-  font-size: 40px;
-  line-height: 40px;
-  text-transform: uppercase;
-  color: #388E3C; /* Verde principal */
-}
+    .animated-title.fade-out {
+      opacity: 0;
+    }
 
-.letter::before {
-  content: attr(data-characters);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  word-break: break-all;
-  background-color: #eeee;
-  color: #388E3C;
-  animation-fill-mode: forwards;
-}
+    .animated-title.fade-in {
+      opacity: 1;
+      color: #388E3C; /* Final text color */
+    }
+
+    .letter {
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      vertical-align: top;
+      font-family: Roboto, sans-serif;
+      height: 40px;
+      width: 40px;
+      min-width: 6px;
+      margin-right: -12px;
+      padding-right: 0px;
+      font-size: 40px;
+      line-height: 40px;
+      text-transform: uppercase;
+      color: #388E3C;
+    }
+
+    .letter::before {
+      content: attr(data-characters);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      word-break: break-all;
+      background-color: #eeee;
+      color: #388E3C;
+      animation-fill-mode: forwards;
+    }
 
 /* Definición de las animaciones */
 @keyframes letter1 { from { margin-top: 0px; } to { margin-top: 40px; } }
@@ -1432,7 +1441,7 @@ body {
   color: #388E3C;
   margin-right: 1px;
 }
-/* Continúa asignando contenido aleatorio a las demás si quieres que todas tengan animación */
+
     </style>
 </head>
 <body>
@@ -2314,6 +2323,19 @@ body {
    	
 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+	//Fade out in Title
+	const title = document.getElementById('title');
+    setTimeout(() => {
+      // Start fade-out
+      title.classList.add('fade-out');
+      setTimeout(() => {
+        // Change content and remove glitch classes
+        title.innerHTML = 'Valoracion Antropometrica App';
+        title.classList.remove('animated-title', 'fade-out');
+        title.classList.add('fade-in');
+      }, 500); // Duration of fade-out
+    }, 3500); // Wait for glitch animation to complete (3.345s rounded up)
+	
     // Accordion Effect
 document.addEventListener('DOMContentLoaded', () => {
     const accordionSections = document.querySelectorAll('.accordion-section');
