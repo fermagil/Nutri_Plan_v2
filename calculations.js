@@ -3899,16 +3899,17 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        console.error('Error al cargar la imagen #somatotype-image');
 	    };
 	
-	    if (imgSomatotype.complete) {
-	        drawSomatotypeChart();
-	    } else {
-	        imgSomatotype.onload = drawSomatotypeChart;
-	    }
-	}, 100);
-	
-	            return content;
-	    };
+	   // Si la imagen ya está cargada (por ejemplo, si está en caché), disparar el evento onload manualmente
+        if (imgSomatotype.complete) {
+            imgSomatotype.onload();
+        }
+    }
+}
+}, 100);
 
+            return content;
+    };
+	
 
 				// Funciones de grasa visceral (del código anterior)
 				function calcularIAV(data) {
