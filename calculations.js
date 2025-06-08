@@ -1577,7 +1577,7 @@
 				categories.forEach(cat => {
 					const isClosest = cat.category === closestCategory.category;
 					explanation += `
-						<tr style="${isClosest ? 'background-color: #f1f8f1; font-weight: bold;' : ''}">
+						<tr style="${isClosest ? 'background-color: #f1f8f1; font-weight: bold; color: black;' : 'color: black;'}">
 							<td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.category}</td>
 							<td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.sports}</td>
 							<td style="border: 1px solid #c8e6c9; padding: 10px;">${cat.somatotype.endo}-${cat.somatotype.meso}-${cat.somatotype.ecto}</td>
