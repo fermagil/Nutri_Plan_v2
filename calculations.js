@@ -3901,9 +3901,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    imgSomatotype.onerror = () => {
 	        console.error('Error al cargar la imagen #somatotype-image');
 	    };
-		console.log("y=0 yPos:", centerY - (0 / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY)), "centerY:", centerY);
-		console.log("y=-10 yPos:", centerY - (-10 / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY)), "xAxisY:", xAxisY);
-		console.log("y=12 yPos:", centerY - (12 / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY)), "chartOffsetY:", chartOffsetY);
+		
 	   // Si la imagen ya está cargada (por ejemplo, si está en caché), disparar el evento onload manualmente
 	        if (imgSomatotype.complete) {
 	        drawSomatotypeChart();
