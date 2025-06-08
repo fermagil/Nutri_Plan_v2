@@ -3900,9 +3900,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    };
 	
 	   // Si la imagen ya está cargada (por ejemplo, si está en caché), disparar el evento onload manualmente
-        if (imgSomatotype.complete) {
-            imgSomatotype.onload();
-        }
+	        if (imgSomatotype.complete) {
+	        drawSomatotypeChart();
+	    } else {
+	        imgSomatotype.onload = drawSomatotypeChart;
+	    }
     }
 
 }, 100);
