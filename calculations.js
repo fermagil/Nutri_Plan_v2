@@ -3811,19 +3811,18 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        const centerY = chartOffsetY + chartHeight / 2;
 	        const xAxisY = centerY + 80;
 	
-	        const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
-	        const pixelY = xAxisY - (yClamped / 14) * (chartHeight / 2);
-	
-	        console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
-	
-	        // Dibujar el punto
-	        ctxSomatotype.beginPath();
-	        ctxSomatotype.arc(pixelX, pixelY, 24, 0, 2 * Math.PI);
-	        ctxSomatotype.fillStyle = '#0056b3';
-	        ctxSomatotype.fill();
-	        ctxSomatotype.strokeStyle = '#003087';
-	        ctxSomatotype.lineWidth = 5;
-	        ctxSomatotype.stroke();
+	       const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth; // Correcto, sin cambios
+		const pixelY = xAxisY - ((yClamped + 10) / 22) * (xAxisY - chartOffsetY); // Correcto, sin cambios
+
+		    console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+		// Dibujar el punto
+		ctxSomatotype.beginPath();
+		ctxSomatotype.arc(pixelX, pixelY, 34, 0, 2 * Math.PI); // Radio a 12
+		ctxSomatotype.fillStyle = '#0056b3'; // Color más oscuro
+		ctxSomatotype.fill();
+		ctxSomatotype.strokeStyle = '#003087'; // Borde más oscuro
+		ctxSomatotype.lineWidth = 5; // Grosor aumentado
+		ctxSomatotype.stroke();
 	
 	        // Etiqueta del punto
 	        ctxSomatotype.font = 'bold 50px Inter, sans-serif';
@@ -3862,8 +3861,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	            ctxSomatotype.stroke();
 	            ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 70);
 	        }
-	        ctxSomatotype.font = '120px Inter, sans-serif';
-	        ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 120);
+	        ctxSomatotype.font = '65px Inter, sans-serif';
+	        ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
 	
 	       // Dibujar el eje Y (a la derecha, donde termina el eje X)
 		const yAxisX = chartOffsetX + chartWidth; // Eje Y en x=8
@@ -3887,12 +3886,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        }
 	
 	        // Etiqueta del eje Y
-	        ctxSomatotype.save();
-	        ctxSomatotype.translate(yAxisX + 90, chartOffsetY + chartHeight / 2);
-	        ctxSomatotype.rotate(-Math.PI / 2);
-	        ctxSomatotype.font = '80px Inter, sans-serif';
-	        ctxSomatotype.fillText('Mesomorfia', 0, 0);
-	        ctxSomatotype.restore();
+		ctxSomatotype.save();
+		ctxSomatotype.translate(yAxisX + 70, chartOffsetY + chartHeight / 2); // Cambiar a:
+		ctxSomatotype.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
+		ctxSomatotype.rotate(-Math.PI / 2);
+		ctxSomatotype.font = '65px Inter, sans-serif';
+		ctxSomatotype.textAlign = 'center'; // Asegurar que la etiqueta esté centrada
+		ctxSomatotype.fillText('Mesomorfia', 0, 0);
+		ctxSomatotype.restore();
 	    }
 	
 	    imgSomatotype.onerror = () => {
