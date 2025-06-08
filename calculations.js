@@ -3865,32 +3865,32 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.font = '120px Inter, sans-serif';
 	        ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 120);
 	
-	        // Dibujar el eje Y
-	        const yAxisX = chartOffsetX + chartWidth + 50;
-	        ctxSomatotype.beginPath();
-	        ctxSomatotype.moveTo(yAxisX, chartOffsetY);
-	        ctxSomatotype.lineTo(yAxisX, chartOffsetY + chartHeight);
-	        ctxSomatotype.strokeStyle = '#000000';
-	        ctxSomatotype.lineWidth = 3;
-	        ctxSomatotype.stroke();
+	        // Dibujar el eje Y (centrado en la imagen)
+		const yAxisX = centerX; // Eje Y centrado horizontalmente
+		ctxSomatotype.beginPath();
+		ctxSomatotype.moveTo(yAxisX, xAxisY); // Comienza en y=-10, alineado con el eje X
+		ctxSomatotype.lineTo(yAxisX, chartOffsetY); // Termina en y=12, parte superior de la imagen
+		ctxSomatotype.strokeStyle = '#000000';
+		ctxSomatotype.lineWidth = 3;
+		ctxSomatotype.stroke();
 	
 	        // Graduaciones del eje Y
 	        ctxSomatotype.font = '50px Inter, sans-serif';
 	        ctxSomatotype.textAlign = 'center';
 	        for (let i = -10; i <= 16; i += 2) {
-	            const yPos = xAxisY - (i / 11) * (chartHeight / 2);
-	            ctxSomatotype.beginPath();
-	            ctxSomatotype.moveTo(yAxisX - 5, yPos);
-	            ctxSomatotype.lineTo(yAxisX + 5, yPos);
-	            ctxSomatotype.stroke();
+	            const yPos = xAxisY - ((i + 10) / 22) * (xAxisY - chartOffsetY);
+		    ctxSomatotype.beginPath();
+		    ctxSomatotype.moveTo(yAxisX - 5, yPos);
+		    ctxSomatotype.lineTo(yAxisX + 5, yPos);
+		    ctxSomatotype.stroke();
 	            ctxSomatotype.fillText(i.toString(), yAxisX + 90, yPos + 5);
 	        }
 	
 	        // Etiqueta del eje Y
 	        ctxSomatotype.save();
-	        ctxSomatotype.translate(yAxisX + 120, chartOffsetY + chartHeight / 2);
+	        ctxSomatotype.translate(yAxisX + 90, chartOffsetY + chartHeight / 2);
 	        ctxSomatotype.rotate(-Math.PI / 2);
-	        ctxSomatotype.font = '120px Inter, sans-serif';
+	        ctxSomatotype.font = '90px Inter, sans-serif';
 	        ctxSomatotype.fillText('Mesomorfia', 0, 0);
 	        ctxSomatotype.restore();
 	    }
