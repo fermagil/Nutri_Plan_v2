@@ -3895,17 +3895,19 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.restore();
 	    }
 	
+	    imgSomatotype.onerror = () => {
+	        console.error('Error al cargar la imagen #somatotype-image');
+	    };
+	
 	    if (imgSomatotype.complete) {
 	        drawSomatotypeChart();
 	    } else {
 	        imgSomatotype.onload = drawSomatotypeChart;
 	    }
-	}
-}
-}, 100);
-
-            return content;
-    };
+	}, 100);
+	
+	            return content;
+	    };
 
 
 				// Funciones de grasa visceral (del código anterior)
