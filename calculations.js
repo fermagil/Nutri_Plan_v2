@@ -3801,7 +3801,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    // Define centerY and other variables
 	    const centerX = chartOffsetX + chartWidth / 2;
 	    const centerY = chartOffsetY + chartHeight / 2; // Ensure centerY is defined (~250px)
-	    const xAxisY = chartOffsetY + 0.8 * chartHeight; // X-axis at 80% height (~400px)
+	    const xAxisY = chartOffsetY + 1 * chartHeight; // X-axis at 80% height (~400px)
 	
 	    console.log(`Image Dimensions: width=${imgSomatotype.width}, height=${imgSomatotype.height}`);
 	    console.log(`Canvas Dimensions: width=${canvasSomatotype.width}, height=${canvasSomatotype.height}`);
