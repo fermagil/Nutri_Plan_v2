@@ -3826,20 +3826,20 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.stroke();
 	
 	        // Etiqueta del punto
-	        ctxSomatotype.font = 'bold 34px Inter, sans-serif';
+	        ctxSomatotype.font = 'bold 50px Inter, sans-serif';
 	        ctxSomatotype.fillStyle = '#000000';
 	        ctxSomatotype.strokeStyle = '#ffffff';
-	        ctxSomatotype.lineWidth = 5;
+	        ctxSomatotype.lineWidth = 8;
 	        ctxSomatotype.textAlign = 'center';
 	        ctxSomatotype.strokeText(
 	            `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	            pixelX,
-	            pixelY - 35
+	            pixelY - 50
 	        );
 	        ctxSomatotype.fillText(
 	            `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
 	            pixelX,
-	            pixelY - 35
+	            pixelY - 50
 	        );
 	
 	        // Dibujar el eje X
@@ -3847,11 +3847,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.moveTo(chartOffsetX, xAxisY);
 	        ctxSomatotype.lineTo(chartOffsetX + chartWidth, xAxisY);
 	        ctxSomatotype.strokeStyle = '#000000';
-	        ctxSomatotype.lineWidth = 3;
+	        ctxSomatotype.lineWidth = 5;
 	        ctxSomatotype.stroke();
 	
 	        // Graduaciones del eje X
-	        ctxSomatotype.font = '34px Inter, sans-serif';
+	        ctxSomatotype.font = '50px Inter, sans-serif';
 	        ctxSomatotype.fillStyle = '#000000';
 	        ctxSomatotype.textAlign = 'center';
 	        for (let i = -8; i <= 8; i += 2) {
@@ -3860,10 +3860,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	            ctxSomatotype.moveTo(xPos, xAxisY - 5);
 	            ctxSomatotype.lineTo(xPos, xAxisY + 5);
 	            ctxSomatotype.stroke();
-	            ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 50);
+	            ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 70);
 	        }
-	        ctxSomatotype.font = '34px Inter, sans-serif';
-	        ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 90);
+	        ctxSomatotype.font = '120px Inter, sans-serif';
+	        ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 120);
 	
 	        // Dibujar el eje Y
 	        const yAxisX = chartOffsetX + chartWidth + 50;
@@ -3875,7 +3875,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.stroke();
 	
 	        // Graduaciones del eje Y
-	        ctxSomatotype.font = '34px Inter, sans-serif';
+	        ctxSomatotype.font = '50px Inter, sans-serif';
 	        ctxSomatotype.textAlign = 'center';
 	        for (let i = -10; i <= 16; i += 2) {
 	            const yPos = xAxisY - (i / 11) * (chartHeight / 2);
@@ -3883,14 +3883,14 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	            ctxSomatotype.moveTo(yAxisX - 5, yPos);
 	            ctxSomatotype.lineTo(yAxisX + 5, yPos);
 	            ctxSomatotype.stroke();
-	            ctxSomatotype.fillText(i.toString(), yAxisX + 50, yPos + 5);
+	            ctxSomatotype.fillText(i.toString(), yAxisX + 90, yPos + 5);
 	        }
 	
 	        // Etiqueta del eje Y
 	        ctxSomatotype.save();
-	        ctxSomatotype.translate(yAxisX + 90, chartOffsetY + chartHeight / 2);
+	        ctxSomatotype.translate(yAxisX + 120, chartOffsetY + chartHeight / 2);
 	        ctxSomatotype.rotate(-Math.PI / 2);
-	        ctxSomatotype.font = '34px Inter, sans-serif';
+	        ctxSomatotype.font = '120px Inter, sans-serif';
 	        ctxSomatotype.fillText('Mesomorfia', 0, 0);
 	        ctxSomatotype.restore();
 	    }
