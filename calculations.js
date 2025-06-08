@@ -3811,10 +3811,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        const centerY = chartOffsetY + chartHeight / 2;
 	        const xAxisY = centerY; // Alinear el eje X con el centro vertical (y=0)
 	
-	       const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth; // Correcto, sin cambios
-		const pixelY = yClamped >= 0 
-		    ? centerY - (yClamped / 12) * (centerY - chartOffsetY) // y=0 a y=12
-		    : centerY + (Math.abs(yClamped) / 10) * (xAxisY - centerY); // y=-10 a y=0
+	       const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
+		const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
+		
+		console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 		
 		console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 		// Dibujar el punto
@@ -3881,9 +3881,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		ctxSomatotype.fillStyle = '#000000';
 		ctxSomatotype.textAlign = 'center';
 		for (let i = -10; i <= 12; i += 2) {
-		    const yPos = i >= 0 
-		        ? centerY - (i / 12) * (centerY - chartOffsetY) // y=0 a y=12
-		        : centerY + (Math.abs(i) / 10) * (xAxisY - centerY); // y=-10 a y=0
+		    const yPos = centerY - (i / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
 		    ctxSomatotype.beginPath();
 		    ctxSomatotype.moveTo(yAxisX - 5, yPos);
 		    ctxSomatotype.lineTo(yAxisX + 5, yPos);
