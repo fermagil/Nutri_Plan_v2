@@ -910,23 +910,26 @@
         }
 
         .chart-container:has(#somatotype-image) {
-            max-width: 800px;
-            max-height: 800px;
-            position: relative;
-        }
-
-        .chart-container img#somatotype-image {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-        .chart-container canvas#typology-point-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
+	    max-width: 800px;
+	    max-height: 800px;
+	    position: relative;
+	    aspect-ratio: 1 / 1; /* Mantener proporciones cuadradas */
+	}
+	
+	.chart-container img#somatotype-image {
+	    display: block;
+	    width: 100%;
+	    height: auto;
+	}
+	
+	.chart-container canvas#somatotype-point-canvas {
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    width: 100% !important;
+	    height: 100% !important; /* Ajustar altura al contenedor */
+	    pointer-events: none;
+	}
 
         #typology-chart-wrapper {
             border: 2px solid white;
