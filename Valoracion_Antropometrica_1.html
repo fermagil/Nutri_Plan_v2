@@ -2945,7 +2945,7 @@ for (const imageItem of images) {
                 console.log('Nueva página añadida para imagen, yPosition reiniciada:', yPosition);
             }
 
-            doc.text(`Chart ${chartIndex + 1} añadido:`, margin.left, yPosition);
+            //doc.text(`Chart ${chartIndex + 1} añadido:`, margin.left, yPosition);
             yPosition += 15;
             doc.addImage(imageItem.content, 'PNG', margin.left + 4, yPosition + 4, pdfWidth, imgHeight);
             console.log(`Imagen renderizada directamente en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight}${isLastChart ? ' (somatotype con <img>)' : ''}`);
