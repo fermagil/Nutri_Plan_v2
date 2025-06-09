@@ -4044,8 +4044,17 @@ for (let i = 0; i < canvasElements.length; i++) {
             }
         });
 
-        document.getElementById('updateButton').addEventListener('click', updateChart);
-        document.getElementById('downloadButton').addEventListener('click', downloadChart);
+       document.getElementById('updateButton').addEventListener('click', function(e) {
+	    e.stopPropagation();
+	    e.preventDefault();
+	    updateChart();
+	});
+
+	document.getElementById('downloadButton').addEventListener('click', function(e) {
+	    e.stopPropagation();
+	    e.preventDefault();
+	    downloadChart();
+	});
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
