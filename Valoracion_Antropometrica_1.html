@@ -1177,59 +1177,63 @@ body {
   color: #eee;
 }
 
- .animated-title {
-      position: relative;
-      display: block;
-      text-align: center;
-      margin: 20px auto;
-      font-size: 2.5em;
-      font-family: Roboto, sans-serif;
-      font-weight: bold;
-      white-space: pre;
-      color: transparent;
-      letter-spacing: -2px;
-      transition: opacity 0.5s ease; /* For fade effect */
-    }
+.animated-title {
+  position: relative;
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  font-size: 2.5em;
+  font-family: Roboto, sans-serif;
+  font-weight: bold;
+  white-space: pre;
+  color: transparent;
+  letter-spacing: -2px;
+  transition: opacity 0.5s ease;
+}
 
-    .animated-title.fade-out {
-      opacity: 0;
-    }
+.animated-title.fade-out {
+  opacity: 0;
+}
 
-    .animated-title.fade-in {
-      opacity: 1;
-      color: #388E3C; /* Final text color */
-    }
+.animated-title.fade-in {
+  opacity: 1;
+  color: #388E3C;
+}
 
-    .letter {
-      display: inline-block;
-      position: relative;
-      overflow: hidden;
-      vertical-align: top;
-      font-family: Roboto, sans-serif;
-      height: 40px;
-      width: 40px;
-      min-width: 6px;
-      margin-right: -12px;
-      padding-right: 0px;
-      font-size: 40px;
-      line-height: 40px;
-      text-transform: uppercase;
-      color: #388E3C;
-    }
+.letter {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: top;
+  font-family: Roboto, sans-serif;
+  height: 40px;
+  width: 24px; /* Ajustado para mejor alineación */
+  min-width: 6px;
+  margin-right: -6px; /* Reducido para evitar espacios */
+  padding-right: 0px;
+  font-size: 40px;
+  line-height: 40px;
+  text-transform: uppercase;
+  color: #388E3C;
+}
 
-    .letter::before {
-      content: attr(data-characters);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      word-break: break-all;
-      background-color: #eeee;
-      color: #388E3C;
-      animation-fill-mode: forwards;
-    }
+.letter::before {
+  content: attr(data-characters);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  word-break: break-all;
+  background-color: #eeee;
+  color: #388E3C;
+  animation-fill-mode: forwards;
+  text-align: center; /* Centra los números */
+  font-feature-settings: "tnum"; /* Usa números tabulares (mismo ancho) */
+  font-variant-numeric: tabular-nums; /* Alternativa para navegadores modernos */
+}
 
-/* Definición de las animaciones */
+/* Animaciones (sin cambios) */
 @keyframes letter1 { from { margin-top: 0px; } to { margin-top: 40px; } }
 @keyframes letter2 { from { margin-top: 0px; } to { margin-top: 40px; } }
 @keyframes letter3 { from { margin-top: -80px; } to { margin-top: 40px; } }
