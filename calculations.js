@@ -3865,8 +3865,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.stroke();
 	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 60);
 	    }
-	    ctxSomatotype.font = '85px Inter, sans-serif';
-	    ctxSomatotype.fillText('Ectomorfia - Endomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
+	    ctxSomatotype.font = '85px Roboto, sans-serif';
+	    ctxSomatotype.fillText('Endomorfia - Ectomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
 	
 	    // Draw Y-axis (at x=8)
 	    const yAxisX = chartOffsetX + chartWidth;
@@ -3894,7 +3894,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.save();
 	    ctxSomatotype.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
 	    ctxSomatotype.rotate(-Math.PI / 2);
-	    ctxSomatotype.font = '75px Inter, sans-serif';
+	    ctxSomatotype.font = '75px Roboto, sans-serif';
 	    ctxSomatotype.textAlign = 'center';
 	    ctxSomatotype.fillText('Mesomorfia', 0, 0);
 	    ctxSomatotype.restore();
