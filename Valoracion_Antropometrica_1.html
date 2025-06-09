@@ -2457,370 +2457,344 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	//pdf create 
 	 document.addEventListener('DOMContentLoaded', () => {
-	    // Verifica que jsPDF y html2canvas estén cargados
-	    if (!window.jspdf || !window.jspdf.jsPDF) {
-	        console.error('Error: Biblioteca jsPDF no está cargada.');
-	        alert('Error: No se pudo cargar la biblioteca jsPDF. Verifica la inclusión del script.');
-	        return;
-	    }
-	    if (!window.html2canvas) {
-	        console.error('Error: Biblioteca html2canvas no está cargada.');
-	        alert('Error: No se pudo cargar la biblioteca html2canvas. Verifica la inclusión del script.');
-	        return;
-	    }
-	    console.log('Bibliotecas jsPDF y html2canvas cargadas correctamente.');
-	
-	    const exportarBtn = document.getElementById('exportar-btn');
-	    if (!exportarBtn) {
-	        console.error('Botón exportar-btn no encontrado.');
-	        alert('Error: Botón exportar-btn no encontrado.');
-	        return;
-	    }
-	
-	    exportarBtn.addEventListener('click', async () => {
-	        console.log('Exportar button clicked. Starting PDF export.');
-	        const btn = document.getElementById('exportar-btn');
-	        const spinner = document.getElementById('pdf-spinner');
-	        // Mostrar spinner y cambiar texto
-	        spinner.style.display = 'inline-block';
-	        btn.textContent = 'Creando PDF...';
-	        btn.disabled = true;
-	
-	        try {
-	            const explanationContent = document.getElementById('explanation-content');
-	            if (!explanationContent) {
-	                throw new Error('Elemento explanation-content no encontrado');
-	            }
-	
-	            // Crea un nuevo documento PDF
-	            const { jsPDF } = window.jspdf;
-	            const doc = new jsPDF({
-	                orientation: 'portrait',
-	                unit: 'pt',
-	                format: 'a4'
-	            });
-	            console.log('Documento PDF creado:', doc);
-	
-	            // Verifica que autoTable esté disponible
-	            if (!doc.autoTable) {
-	                throw new Error('El plugin jspdf-autotable no está cargado. Asegúrate de incluir el script jspdf.plugin.autotable.min.js.');
-	            }
-	
-	            // Define márgenes
-	            const margin = {
-	                top: 40,
-	                bottom: 90,
-	                left: 40,
-	                right: 40
-	            };
-	            let yPosition = 40; // Posición vertical inicial (en puntos)
-	            const pageWidth = doc.internal.pageSize.getWidth(); // ~595pt para A4
-	            const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
-	            const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
-	            const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
-	
-	            // Añade título personalizado
-	            doc.setFont('helvetica', 'bold');
-	            doc.setFontSize(18);
-	            doc.setTextColor(56, 142, 60); // Verde (#388E3C)
-	
-	            // Obtener datos personales y resultados desde el HTML
-	            const nombre = document.getElementById('nombre')?.value?.trim() || 'Cliente';
-	            const edad = document.getElementById('edad')?.value?.trim() || 'N/A';
-	            const genero = document.getElementById('genero')?.value?.trim() || 'N/A';
-	            const edadMetabolica = document.getElementById('result-edadmetabolica')?.textContent?.trim() || 'N/A';
-	            const tipologia = document.getElementById('result-tipologia-actual')?.textContent?.trim() || 'N/A';
-	
-	            // Obtener y formatear la fecha
-	            const selectElement = document.getElementById('seleccionar_fecha');
-	            const fechaId = selectElement?.value?.trim();
-	            console.log('Valor crudo de seleccionar_fecha (value):', JSON.stringify(fechaId)); // Depuración
-	            let fecha = 'N/A';
-	            if (selectElement && fechaId && fechaId !== '') {
-	                try {
-	                    const fechaText = selectElement.selectedOptions[0]?.text?.trim();
-	                    console.log('Texto de la opción seleccionada:', JSON.stringify(fechaText)); // Depuración
-	                    if (fechaText && fechaText !== 'Seleccionar fecha...') {
-	                        const match = fechaText.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:,.*(\d{2}:\d{2}))?$/);
-	                        if (match) {
-	                            const day = match[1];
-	                            const month = match[2];
-	                            const year = match[3].slice(-2); // Últimos 2 dígitos del año
-	                            fecha = `${day}/${month}/${year}`;
-	                            console.log('Fecha parseada:', fecha);
-	                        } else {
-	                            console.warn('Formato de texto de fecha inválido:', JSON.stringify(fechaText));
-	                        }
-	                    } else {
-	                        console.warn('No se seleccionó una fecha válida o es el placeholder:', JSON.stringify(fechaText));
-	                    }
-	                } catch (error) {
-	                    console.error('Error al formatear la fecha:', error.message);
-	                }
-	            } else {
-	                console.warn('No se seleccionó ninguna fecha o select inválido:', JSON.stringify(fechaId));
-	            }
-	
-	            // Construir el título dinámico
-	            const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}`;
-	            
-	            // Validar y dividir el título
-	            const titleLines = doc.splitTextToSize(title, contentWidth);
-	            if (!Array.isArray(titleLines) || titleLines.length === 0) {
-	                console.error('Error: titleLines no es un arreglo válido:', titleLines);
-	                throw new Error('No se pudo generar el título del PDF.');
-	            }
-	
-	            const titleHeight = titleLines.length * 20 + 20;
-	            if (yPosition + titleHeight > pageHeight - margin.bottom) {
-	                doc.addPage();
-	                yPosition = margin.top;
-	                console.log('Nueva página añadida para título, yPosition reiniciada:', yPosition);
-	            }
-	
-	            // Ajustar alineación para compatibilidad con jsPDF 2.5.1
-	            const xCenter = margin.left + (contentWidth / 2);
-	            doc.text(titleLines, xCenter, yPosition, { align: 'center' });
-	            yPosition += titleHeight;
-	            console.log('Título personalizado añadido en yPosition:', yPosition);
-	
-	            // Añadir tabla con resultados
-	            doc.setFont('helvetica', 'normal');
-	            doc.setFontSize(12);
-	            doc.setTextColor(0, 0, 0); // Negro para la tabla
-	
-	            // Definir datos de la tabla, organizados por secciones
-	            const tableData = [
-	                // Composición Corporal
-	                { section: 'Composición Corporal', metric: '', value: '', note: '' },
-	                { metric: 'IMC', value: `${document.getElementById('result-imc')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imc-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'ICC', value: document.getElementById('result-icc')?.textContent?.trim() || '---', note: document.getElementById('icc-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: '% Grasa Deseado', value: `${document.getElementById('result-grasa-pct-deseado')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-deseado-source')?.textContent?.trim() || '(No estimado)' },
-	                { metric: '% Grasa Actual', value: `${document.getElementById('result-grasa-pct-actual')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-actual-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: '% Grasa Metabólico', value: `${document.getElementById('result-grasa-pct-metabolic')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-metabolic-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: '% Grasa Visceral', value: `${document.getElementById('result-grasa-pct-visceral')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-visceral-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Masa Grasa Actual (MGa)', value: `${document.getElementById('result-masa-grasa-actual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-grasa-actual-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Masa Grasa Metabólico (MG)', value: `${document.getElementById('result-masa-grasa-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-grasa-metabolic-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: '% Grasa (Deurenberg)', value: `${document.getElementById('result-grasa-pct-Deurenberg')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-Deurenberg-source')?.textContent?.trim() || '(No estimado)' },
-	                { metric: '% Grasa (CUN-BAE)', value: `${document.getElementById('result-grasa-pct-CUN-BAE')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-CUN-BAE-source')?.textContent?.trim() || '(No estimado)' },
-	                { metric: 'Grasa Abdominal Total', value: `${document.getElementById('result-grasa-abdominal')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('grasa-abdominal-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Espesor Grasa Abdominal', value: `${document.getElementById('result-abdominal-fat-thickness')?.textContent?.trim() || '---'} cm`, note: document.getElementById('abdominal-fat-thickness-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Agua Corporal Total', value: document.getElementById('result-agua-corporal')?.textContent?.trim() || '---', note: document.getElementById('agua-corporal-source')?.textContent?.trim() || '(No calculado)' },
-	                // Métricas Metabólicas
-	                { section: 'Métricas Metabólicas', metric: '', value: '', note: '' },
-	                { metric: 'Edad Metabólica', value: `${document.getElementById('result-edadmetabolica')?.textContent?.trim() || '---'} años`, note: document.getElementById('edadmetabolica-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'TMB', value: `${document.getElementById('result-tmb')?.textContent?.trim() || '---'} Kcal`, note: document.getElementById('tmb-source')?.textContent?.trim() || '(No calculado)' },
-	                // Masa Libre de Grasa
-	                { section: 'Masa Libre de Grasa', metric: '', value: '', note: '' },
-	                { metric: 'Masa Magra Actual (MLG)', value: `${document.getElementById('result-masa-magra-actual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-magra-actual-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Masa Magra Metabólico (MLG)', value: `${document.getElementById('result-masa-magra-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-magra-metabolic-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'IMLG Actual', value: `${document.getElementById('result-imlg-actual')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imlg-actual-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'IMLG Metabólico', value: `${document.getElementById('result-imlg-metabolic')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imlg-metabolic-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'IMG Actual', value: `${document.getElementById('result-img-actual')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('img-actual-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'IMG Metabólico', value: `${document.getElementById('result-img-metabolic')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('img-metabolic-source')?.textContent?.trim() || '(No calculado)' },
-	                // Estructurales
-	                { section: 'Estructurales', metric: '', value: '', note: '' },
-	                { metric: 'Somatotipo', value: document.getElementById('result-somatotipo')?.textContent?.trim() || '---', note: document.getElementById('somatotipo-source')?.textContent?.trim() || '(Endo: Meso: Ecto)' },
-	                { metric: 'Tipología Actual', value: document.getElementById('result-tipologia-actual')?.textContent?.trim() || '---', note: document.getElementById('tipologia-actual-source')?.textContent?.trim() || '(Relación IMLG/IMG)' },
-	                { metric: 'Tipología Metabólico', value: document.getElementById('result-tipologia-metabolic')?.textContent?.trim() || '---', note: document.getElementById('tipologia-metabolic-source')?.textContent?.trim() || '(Relación IMLG/IMG)' },
-	                { metric: 'Área Muscular Brazo (AMB)', value: `${document.getElementById('result-amb')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('amb-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Masa Muscular Total (MMT)', value: `${document.getElementById('result-mmt')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt-source')?.textContent?.trim() || '(Estimado según AMB)' },
-	                { metric: '% Masa Muscular', value: `${document.getElementById('result-Pct-mmt')?.textContent?.trim() || '---'} %`, note: document.getElementById('Pct-mmt-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'AMB(c) Corregida', value: `${document.getElementById('result-ambc')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('ambc-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Masa Muscular Total (MMT2)', value: `${document.getElementById('result-mmt2')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt2-source')?.textContent?.trim() || '(Estimado según AMB(c) Heymsfield, 1982)' },
-	                { metric: '% Masa Muscular (MMT2)', value: `${document.getElementById('result-Pct-mmt2')?.textContent?.trim() || '---'} %`, note: document.getElementById('Pct-mmt2-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Area Grasa Brazo', value: `${document.getElementById('result-agb')?.textContent?.trim() || '---'} %`, note: document.getElementById('agb-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Masa Ósea', value: `${document.getElementById('result-masa-osea')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-osea-source')?.textContent?.trim() || '(No calculado)' },
-	                { metric: 'Masa Residual', value: `${document.getElementById('result-masa-residual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-residual-source')?.textContent?.trim() || '(No calculado)' },
-	                // Objetivos
-	                { section: 'Objetivos', metric: '', value: '', note: '' },
-	                { metric: 'Peso Ideal (% Grasa)', value: `${document.getElementById('result-peso-ideal')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-ideal-source')?.textContent?.trim() || '(Según % GC Actual Rango de Edad, Sexo y AF)' },
-	                { metric: 'Peso Ideal (% Grasa Mtb)', value: `${document.getElementById('result-peso-ideal-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('pesometabolico-source')?.textContent?.trim() || '(Según % GC Metabolico Edad, Sexo y AF)' },
-	                { metric: 'Peso a Perder/Ganar', value: `${document.getElementById('result-peso-objetivo')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-source')?.textContent?.trim() || 'Peso Actual - Masa Grasa' },
-	                { metric: 'Peso a Perder/Ganar (Mtb)', value: `${document.getElementById('result-peso-objetivo-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-metabolicsource')?.textContent?.trim() || 'Peso Actual - Masa Grasa Metabolica' },
-	                { metric: 'Masa Muscular a Ganar', value: `${document.getElementById('result-peso-muscular')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-source')?.textContent?.trim() || '' },
-	                { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-matabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-metabolicsource')?.textContent?.trim() || '' }
-	            ];
-	
-	            // Crear tabla con autoTable
-	            doc.autoTable({
-	                startY: yPosition,
-	                head: [['Métrica', 'Valor', 'Nota']],
-	                body: tableData.map(row => {
-	                    if (row.section) {
-	                        return [{ content: row.section, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } }];
-	                    }
-	                    return [row.metric, row.value, row.note];
-	                }),
-	                theme: 'grid',
-	                styles: {
-	                    font: 'helvetica',
-	                    fontSize: 9,
-	                    textColor: [0, 0, 0],
-	                    lineColor: [0, 0, 0],
-	                    lineWidth: 0.5,
-	                    cellPadding: 4
-	                },
-	                headStyles: {
-	                    fillColor: [56, 142, 60], // Verde para el encabezado
-	                    textColor: [255, 255, 255], // Texto blanco
-	                    fontStyle: 'bold',
-	                    fontSize: 10
-	                },
-	                margin: { left: margin.left, right: margin.right },
-	                didDrawPage: (data) => {
-	                    yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
-	                }
-	            });
-	
-	            console.log('Tabla de resultados añadida en yPosition:', yPosition);
-	
-	            // Añadir título para el contenido de explanation-content
-	            yPosition += 20; // Espacio después de la tabla
-	            if (yPosition + 50 > pageHeight - margin.bottom) {
-	                doc.addPage();
-	                yPosition = margin.top;
-	                console.log('Nueva página añadida para explicación, yPosition reiniciada:', yPosition);
-	            }
-	            doc.setFontSize(12);
-	            doc.setTextColor(0, 0, 0);
-	            doc.text('Detalles de la Explicación:', margin.left, yPosition);
-	            yPosition += 20;
-	
-	            // Procesa el contenido de explanation-content
-	            const elements = explanationContent.childNodes;
-	            for (const element of elements) {
-	                if (element.nodeType !== Node.ELEMENT_NODE) continue;
-	
-	                const tag = element.tagName.toLowerCase();
-	                if (tag === 'p') {
-	                    const text = element.textContent.trim();
-	                    if (text) {
-	                        const lines = doc.splitTextToSize(text, 500); // Divide en líneas de 500pt
-	                        doc.text(lines, 40, yPosition);
-	                        yPosition += lines.length * 14 + 10; // 14pt por línea + espacio
-	                    }
-	                } else if (tag === 'ul' || tag === 'ol') {
-	                    const items = element.querySelectorAll('li');
-	                    let index = 1; // Contador para <ol>
-	                    for (const li of items) {
-	                        const text = li.textContent.trim();
-	                        if (text) {
-	                            const bullet = tag === 'ul' ? '•' : `${index++}.`;
-	                            const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para bullet
-	                            doc.text(lines, 50, yPosition); // Indentado 10pt
-	                            yPosition += lines.length * 14 + 8; // 14pt por línea + espacio
-	                        }
-	                    }
-	                } else if (['h1', 'h2', 'h3'].includes(tag)) {
-	                    const text = element.textContent.trim();
-	                    if (text) {
-	                        doc.setFont('helvetica', 'bold');
-	                        doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
-	                        doc.setTextColor(56, 142, 60); // Verde (#388E3C)
-	                        const lines = doc.splitTextToSize(text, 500);
-	                        doc.text(lines, 40, yPosition);
-	                        yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
-	                        doc.setFont('helvetica', 'normal');
-	                        doc.setFontSize(12);
-	                        doc.setTextColor(52, 58, 64); // Restaurar color
-	                    }
-	                } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
-	                    // Maneja gráficos (canvas o div que contenga un canvas)
-	                    const canvasElement = tag === 'canvas' ? element : element.querySelector('canvas');
-	                    if (canvasElement) {
-	                        try {
-	                            const canvas = await html2canvas(canvasElement, {
-	                                scale: 2, // Aumenta la resolución
-	                                useCORS: true // Habilita CORS para imágenes externas
-	                            });
-	                            const imgData = canvas.toDataURL('image/png');
-	                            const imgProps = doc.getImageProperties(imgData);
-	                            const pdfWidth = 500; // Ancho máximo en el PDF (500pt)
-	                            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-	
-	                            // Verifica si hay espacio suficiente en la página
-	                            if (yPosition + imgHeight > 750) {
-	                                doc.addPage();
-	                                yPosition = 40;
-	                                console.log('Nueva página añadida para gráfico, yPosition reiniciada:', yPosition);
-	                            }
-	
-	                            doc.addImage(imgData, 'PNG', 40, yPosition, pdfWidth, imgHeight);
-	                            yPosition += imgHeight + 20; // Espacio después del gráfico
-	                            console.log('Gráfico añadido en yPosition:', yPosition);
-	                        } catch (error) {
-	                            console.error('Error al procesar el gráfico:', error.message);
-	                            doc.text('Error: No se pudo incluir un gráfico en el PDF.', 40, yPosition);
-	                            yPosition += 20;
-	                        }
-	                    }
-	                } else if (tag === 'table') {
-	                    const rows = element.querySelectorAll('tr');
-	                    let rowIndex = 0;
-	                    for (const row of rows) {
-	                        const cells = row.querySelectorAll('td, th');
-	                        let cellTexts = Array.from(cells).map(cell => cell.textContent.trim()).filter(text => text);
-	                        if (cellTexts.length === 0) continue;
-	
-	                        const isHeader = row.querySelector('th') !== null;
-	                        const rowText = cellTexts.join(' | ');
-	                        const lines = doc.splitTextToSize(rowText, contentWidth);
-	                        const rowHeight = lines.length * 14 + (isHeader ? 10 : 8);
-	
-	                        if (yPosition + rowHeight > pageHeight - margin.bottom) {
-	                            doc.addPage();
-	                            yPosition = margin.top;
-	                            console.log('Nueva página añadida para tabla, yPosition reiniciada:', yPosition);
-	                        }
-	
-	                        if (isHeader) {
-	                            doc.setFont('helvetica', 'bold');
-	                            doc.setFontSize(12);
-	                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
-	                            doc.setFont('helvetica', 'normal');
-	                            doc.setFontSize(12);
-	                            yPosition += rowHeight;
-	                            // Añadir separador de encabezado
-	                            const separator = '-'.repeat(Math.floor(contentWidth / 6));
-	                            doc.text(separator, margin.left, yPosition);
-	                            yPosition += 14;
-	                        } else {
-	                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
-	                            yPosition += rowHeight;
-	                        }
-	                        rowIndex++;
-	                    }
-	                    yPosition += 10; // Espacio extra después de la tabla
-	                }
-	
-	                // Verifica si es necesario añadir una nueva página
-	                if (yPosition > pageHeight - margin.bottom) {
-	                    doc.addPage();
-	                    yPosition = margin.top;
-	                    console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
-	                }
-	            }
-	
-	            // Genera el blob y descárgalo
-	            const blob = doc.output('blob');
-	            if (!blob) {
-	                throw new Error('No se pudo generar el blob del PDF.');
-	            }
-	            saveAs(blob, `Resultados_${nombre}_${fecha}.pdf`);
-	            console.log('Documento PDF generado y descargado.');
-	            alert('Documento PDF exportado exitosamente.');
-	        } catch (error) {
-	            console.error('Error en exportación a PDF:', error.message, error.stack);
-	            alert('Error al exportar a PDF: ' + error.message);
-	        } finally {
-	            // Restaurar botón
-	            spinner.style.display = 'none';
-	            btn.textContent = 'Informe';
-	            btn.disabled = false;
-	        }
-	    });
-	});
+    // Verifica que jsPDF y html2canvas estén cargados
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        console.error('Error: Biblioteca jsPDF no está cargada.');
+        alert('Error: No se pudo cargar la biblioteca jsPDF. Verifica la inclusión del script.');
+        return;
+    }
+    if (!window.html2canvas) {
+        console.error('Error: Biblioteca html2canvas no está cargada.');
+        alert('Error: No se pudo cargar la biblioteca html2canvas. Verifica la inclusión del script.');
+        return;
+    }
+    console.log('Bibliotecas jsPDF y html2canvas cargadas correctamente.');
+
+    const exportarBtn = document.getElementById('exportar-btn');
+    if (!exportarBtn) {
+        console.error('Botón exportar-btn no encontrado.');
+        alert('Error: Botón exportar-btn no encontrado.');
+        return;
+    }
+
+    exportarBtn.addEventListener('click', async () => {
+        console.log('Exportar button clicked. Starting PDF export.');
+        const btn = document.getElementById('exportar-btn');
+        const spinner = document.getElementById('pdf-spinner');
+        // Mostrar spinner y cambiar texto
+        spinner.style.display = 'inline-block';
+        btn.textContent = 'Creando PDF...';
+        btn.disabled = true;
+
+        try {
+            const explanationContent = document.getElementById('explanation-content');
+            if (!explanationContent) {
+                throw new Error('Elemento explanation-content no encontrado');
+            }
+
+            // Crea un nuevo documento PDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'pt',
+                format: 'a4'
+            });
+            console.log('Documento PDF creado:', doc);
+
+            // Verifica que autoTable esté disponible
+            if (!doc.autoTable) {
+                throw new Error('El plugin jspdf-autotable no está cargado. Asegúrate de incluir el script jspdf.plugin.autotable.min.js.');
+            }
+
+            // Define márgenes
+            const margin = {
+                top: 40,
+                bottom: 90,
+                left: 40,
+                right: 40
+            };
+            let yPosition = 40; // Posición vertical inicial (en puntos)
+            const pageWidth = doc.internal.pageSize.getWidth(); // ~595pt para A4
+            const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
+            const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
+            const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
+
+            // Obtener datos personales y resultados desde el HTML
+            const nombre = document.getElementById('nombre')?.value?.trim() || 'Cliente';
+            const edad = document.getElementById('edad')?.value?.trim() || 'N/A';
+            const genero = document.getElementById('genero')?.value?.trim() || 'N/A';
+            const edadMetabolica = document.getElementById('result-edadmetabolica')?.textContent?.trim() || 'N/A';
+            const tipologia = document.getElementById('result-tipologia-actual')?.textContent?.trim() || 'N/A';
+
+            // Obtener y formatear la fecha
+            const selectElement = document.getElementById('seleccionar_fecha');
+            const fechaId = selectElement?.value?.trim();
+            console.log('Valor crudo de seleccionar_fecha (value):', JSON.stringify(fechaId)); // Depuración
+            let fecha = 'N/A';
+            if (selectElement && fechaId && fechaId !== '') {
+                try {
+                    const fechaText = selectElement.selectedOptions[0]?.text?.trim();
+                    console.log('Texto de la opción seleccionada:', JSON.stringify(fechaText)); // Depuración
+                    if (fechaText && fechaText !== 'Seleccionar fecha...') {
+                        const match = fechaText.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:,.*(\d{2}:\d{2}))?$/);
+                        if (match) {
+                            const day = match[1];
+                            const month = match[2];
+                            const year = match[3].slice(-2); // Últimos 2 dígitos del año
+                            fecha = `${day}/${month}/${year}`;
+                            console.log('Fecha parseada:', fecha);
+                        } else {
+                            console.warn('Formato de texto de fecha inválido:', JSON.stringify(fechaText));
+                        }
+                    } else {
+                        console.warn('No se seleccionó una fecha válida o es el placeholder:', JSON.stringify(fechaText));
+                    }
+                } catch (error) {
+                    console.error('Error al formatear la fecha:', error.message);
+                }
+            } else {
+                console.warn('No se seleccionó ninguna fecha o select inválido:', JSON.stringify(fechaId));
+            }
+
+            // Construir el título dinámico
+            const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}`;
+
+            // Definir datos de la tabla, organizados por secciones
+            const tableData = [
+                // Composición Corporal
+                { section: 'Composición Corporal', metric: '', value: '', note: '' },
+                { metric: 'IMC', value: `${document.getElementById('result-imc')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imc-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'ICC', value: document.getElementById('result-icc')?.textContent?.trim() || '---', note: document.getElementById('icc-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: '% Grasa Deseado', value: `${document.getElementById('result-grasa-pct-deseado')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-deseado-source')?.textContent?.trim() || '(No estimado)' },
+                { metric: '% Grasa Actual', value: `${document.getElementById('result-grasa-pct-actual')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-actual-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: '% Grasa Metabólico', value: `${document.getElementById('result-grasa-pct-metabolic')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-metabolic-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: '% Grasa Visceral', value: `${document.getElementById('result-grasa-pct-visceral')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-visceral-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Grasa Actual (MGa)', value: `${document.getElementById('result-masa-grasa-actual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-grasa-actual-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Grasa Metabólico (MG)', value: `${document.getElementById('result-masa-grasa-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-grasa-metabolic-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: '% Grasa (Deurenberg)', value: `${document.getElementById('result-grasa-pct-Deurenberg')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-Deurenberg-source')?.textContent?.trim() || '(No estimado)' },
+                { metric: '% Grasa (CUN-BAE)', value: `${document.getElementById('result-grasa-pct-CUN-BAE')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-CUN-BAE-source')?.textContent?.trim() || '(No estimado)' },
+                { metric: 'Grasa Abdominal Total', value: `${document.getElementById('result-grasa-abdominal')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('grasa-abdominal-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Espesor Grasa Abdominal', value: `${document.getElementById('result-abdominal-fat-thickness')?.textContent?.trim() || '---'} cm`, note: document.getElementById('abdominal-fat-thickness-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Agua Corporal Total', value: document.getElementById('result-agua-corporal')?.textContent?.trim() || '---', note: document.getElementById('agua-corporal-source')?.textContent?.trim() || '(No calculado)' },
+                // Métricas Metabólicas
+                { section: 'Métricas Metabólicas', metric: '', value: '', note: '' },
+                { metric: 'Edad Metabólica', value: `${document.getElementById('result-edadmetabolica')?.textContent?.trim() || '---'} años`, note: document.getElementById('edadmetabolica-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'TMB', value: `${document.getElementById('result-tmb')?.textContent?.trim() || '---'} Kcal`, note: document.getElementById('tmb-source')?.textContent?.trim() || '(No calculado)' },
+                // Masa Libre de Grasa
+                { section: 'Masa Libre de Grasa', metric: '', value: '', note: '' },
+                { metric: 'Masa Magra Actual (MLG)', value: `${document.getElementById('result-masa-magra-actual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-magra-actual-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Magra Metabólico (MLG)', value: `${document.getElementById('result-masa-magra-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-magra-metabolic-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'IMLG Actual', value: `${document.getElementById('result-imlg-actual')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imlg-actual-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'IMLG Metabólico', value: `${document.getElementById('result-imlg-metabolic')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imlg-metabolic-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'IMG Actual', value: `${document.getElementById('result-img-actual')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('img-actual-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'IMG Metabólico', value: `${document.getElementById('result-img-metabolic')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('img-metabolic-source')?.textContent?.trim() || '(No calculado)' },
+                // Estructurales
+                { section: 'Estructurales', metric: '', value: '', note: '' },
+                { metric: 'Somatotipo', value: document.getElementById('result-somatotipo')?.textContent?.trim() || '---', note: document.getElementById('somatotipo-source')?.textContent?.trim() || '(Endo: Meso: Ecto)' },
+                { metric: 'Tipología Actual', value: document.getElementById('result-tipologia-actual')?.textContent?.trim() || '---', note: document.getElementById('tipologia-actual-source')?.textContent?.trim() || '(Relación IMLG/IMG)' },
+                { metric: 'Tipología Metabólico', value: document.getElementById('result-tipologia-metabolic')?.textContent?.trim() || '---', note: document.getElementById('tipologia-metabolic-source')?.textContent?.trim() || '(Relación IMLG/IMG)' },
+                { metric: 'Área Muscular Brazo (AMB)', value: `${document.getElementById('result-amb')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('amb-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Muscular Total (MMT)', value: `${document.getElementById('result-mmt')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt-source')?.textContent?.trim() || '(Estimado según AMB)' },
+                { metric: '% Masa Muscular', value: `${document.getElementById('result-Pct-mmt')?.textContent?.trim() || '---'} %`, note: document.getElementById('Pct-mmt-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'AMB(c) Corregida', value: `${document.getElementById('result-ambc')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('ambc-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Muscular Total (MMT2)', value: `${document.getElementById('result-mmt2')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt2-source')?.textContent?.trim() || '(Estimado según AMB(c) Heymsfield, 1982)' },
+                { metric: '% Masa Muscular (MMT2)', value: `${document.getElementById('result-Pct-mmt2')?.textContent?.trim() || '---'} %`, note: document.getElementById('Pct-mmt2-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Area7986  Grasa Brazo', value: `${document.getElementById('result-agb')?.textContent?.trim() || '---'} %`, note: document.getElementById('agb-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Ósea', value: `${document.getElementById('result-masa-osea')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-osea-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Residual', value: `${document.getElementById('result-masa-residual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-residual-source')?.textContent?.trim() || '(No calculado)' },
+                // Objetivos
+                { section: 'Objetivos', metric: '', value: '', note: '' },
+                { metric: 'Peso Ideal (% Grasa)', value: `${document.getElementById('result-peso-ideal')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-ideal-source')?.textContent?.trim() || '(Según % GC Actual Rango de Edad, Sexo y AF)' },
+                { metric: 'Peso Ideal (% Grasa Mtb)', value: `${document.getElementById('result-peso-ideal-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('pesometabolico-source')?.textContent?.trim() || '(Según % GC Metabolico Edad, Sexo y AF)' },
+                { metric: 'Peso a Perder/Ganar', value: `${document.getElementById('result-peso-objetivo')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-source')?.textContent?.trim() || 'Peso Actual - Masa Grasa' },
+                { metric: 'Peso a Perder/Ganar (Mtb)', value: `${document.getElementById('result-peso-objetivo-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-metabolicsource')?.textContent?.trim() || 'Peso Actual - Masa Grasa Metabolica' },
+                { metric: 'Masa Muscular a Ganar', value: `${document.getElementById('result-peso-muscular')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-source')?.textContent?.trim() || '' },
+                { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-matabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-metabolicsource')?.?.textContent?.trim() || '' }
+            ];
+
+            // Crear tabla con autoTable, incluyendo el título como encabezado
+            doc.autoTable({
+                startY: yPosition,
+                head: [
+                    [{ content: title, colSpan: 3, styles: { fontStyle: 'bold', fontSize: 14, fillColor: [255, 255, 255], textColor: [56, 142, 60], halign: 'center' } }],
+                    ['Métrica', 'Valor', 'Nota']
+                ],
+                body: tableData.map(row => {
+                    if (row.section) {
+                        return [{ content: row.section, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } }];
+                    }
+                    return [row.metric, row.value, row.note];
+                }),
+                theme: 'grid',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: 9,
+                    textColor: [0, 0, 0],
+                    lineColor: [0, 0, 0],
+                    lineWidth: 0.5,
+                    cellPadding: 4
+                },
+                headStyles: {
+                    fillColor: [56, 142, 60], // Verde para el encabezado de columnas
+                    textColor: [255, 255, 255], // Texto blanco
+                    fontStyle: 'bold',
+                    fontSize: 10
+                },
+                margin: { left: margin.left, right: margin.right },
+                didDrawPage: (data) => {
+                    yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
+                }
+            });
+
+            console.log('Tabla de resultados con título añadido en yPosition:', yPosition);
+
+            // Añadir título para el contenido de explanation-content
+            yPosition += 20; // Espacio después de la tabla
+            if (yPosition + 50 > pageHeight - margin.bottom) {
+                doc.addPage();
+                yPosition = margin.top;
+                console.log('Nueva página añadida para explicación, yPosition reiniciada:', yPosition);
+            }
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Detalles de la Explicación:', margin.left, yPosition);
+            yPosition += 20;
+
+            // Procesa el contenido de explanation-content
+            const elements = explanationContent.childNodes;
+            for (const element of elements) {
+                if (element.nodeType !== Node.ELEMENT_NODE) continue;
+
+                const tag = element.tagName.toLowerCase();
+                if (tag === 'p') {
+                    const text = element.textContent.trim();
+                    if (text) {
+                        const lines = doc.splitTextToSize(text, 500); // Divide en líneas de 500pt
+                        doc.text(lines, 40, yPosition);
+                        yPosition += lines.length * 14 + 10; // 14pt por línea + espacio
+                    }
+                } else if (tag === 'ul' || tag === 'ol') {
+                    const items = element.querySelectorAll('li');
+                    let index = 1; // Contador para <ol>
+                    for (const li of items) {
+                        const text = li.textContent.trim();
+                        if (text) {
+                            const bullet = tag === 'ul' ? '•' : `${index++}.`;
+                            const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para bullet
+                            doc.text(lines, 50, yPosition); // Indentado 10pt
+                            yPosition += lines.length * 14 + 8; // 14pt por línea + espacio
+                        }
+                    }
+                } else if (['h1', 'h2', 'h3'].includes(tag)) {
+                    const text = element.textContent.trim();
+                    if (text) {
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
+                        doc.setTextColor(56, 142, 60); // Verde (#388E3C)
+                        const lines = doc.splitTextToSize(text, 500);
+                        doc.text(lines, 40, yPosition);
+                        yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(12);
+                        doc.setTextColor(52, 58, 64); // Restaurar color
+                    }
+                } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
+                    // Maneja gráficos (canvas o div que contenga un canvas)
+                    const canvasElement = tag === 'canvas' ? element : element.querySelector('canvas');
+                    if (canvasElement) {
+                        try {
+                            const canvas = await html2canvas(canvasElement, {
+                                scale: 2, // Aumenta la resolución
+                                useCORS: true // Habilita CORS para imágenes externas
+                            });
+                            const imgData = canvas.toDataURL('image/png');
+                            const imgProps = doc.getImageProperties(imgData);
+                            const pdfWidth = 500; // Ancho máximo en el PDF (500pt)
+                            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                            // Verifica si hay espacio suficiente en la página
+                            if (yPosition + imgHeight > 750) {
+                                doc.addPage();
+                                yPosition = 40;
+                                console.log('Nueva página añadida para gráfico, yPosition reiniciada:', yPosition);
+                            }
+
+                            doc.addImage(imgData, 'PNG', 40, yPosition, pdfWidth, imgHeight);
+                            yPosition += imgHeight + 20; // Espacio después del gráfico
+                            console.log('Gráfico añadido en yPosition:', yPosition);
+                        } catch (error) {
+                            console.error('Error al procesar el gráfico:', error.message);
+                            doc.text('Error: No se pudo incluir un gráfico en el PDF.', 40, yPosition);
+                            yPosition += 20;
+                        }
+                    }
+                } else if (tag === 'table') {
+                    const rows = element.querySelectorAll('tr');
+                    let rowIndex = 0;
+                    for (const row of rows) {
+                        const cells = row.querySelectorAll('td, th');
+                        let cellTexts = Array.from(cells).map(cell => cell.textContent.trim()).filter(text => text);
+                        if (cellTexts.length === 0) continue;
+
+                        const isHeader = row.querySelector('th') !== null;
+                        const rowText = cellTexts.join(' | ');
+                        const lines = doc.splitTextToSize(rowText, contentWidth);
+                        const rowHeight = lines.length * 14 + (isHeader ? 10 : 8);
+
+                        if (yPosition + rowHeight > pageHeight - margin.bottom) {
+                            doc.addPage();
+                            yPosition = margin.top;
+                            console.log('Nueva página añadida para tabla, yPosition reiniciada:', yPosition);
+                        }
+
+                        if (isHeader) {
+                            doc.setFont('helvetica', 'bold');
+                            doc.setFontSize(12);
+                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
+                            doc.setFont('helvetica', 'normal');
+                            doc.setFontSize(12);
+                            yPosition += rowHeight;
+                            // Añadir separador de encabezado
+                            const separator = '-'.repeat(Math.floor(contentWidth / 6));
+                            doc.text(separator, margin.left, yPosition);
+                            yPosition += 14;
+                        } else {
+                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
+                            yPosition += rowHeight;
+                        }
+                        rowIndex++;
+                    }
+                    yPosition += 10; // Espacio extra después de la tabla
+                }
+
+                // Verifica si es necesario añadir una nueva página
+                if (yPosition > pageHeight - margin.bottom) {
+                    doc.addPage();
+                    yPosition = margin.top;
+                    console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
+                }
+            }
+
+            // Genera el blob y descárgalo
+            const blob = doc.output('blob');
+            if (!blob) {
+                throw new Error('No se pudo generar el blob del PDF.');
+            }
+            saveAs(blob, `Resultados_${nombre}_${fecha}.pdf`);
+            console.log('Documento PDF generado y descargado.');
+            alert('Documento PDF exportado exitosamente.');
+        } catch (error) {
+            console.error('Error en exportación a PDF:', error.message, error.stack);
+            alert('Error al exportar a PDF: ' + error.message);
+        } finally {
+            // Restaurar botón
+            spinner.style.display = 'none';
+            btn.textContent = 'Informe';
+            btn.disabled = false;
+        }
+    });
+});
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
