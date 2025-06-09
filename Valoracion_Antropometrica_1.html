@@ -2517,7 +2517,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const pageWidth = doc.internal.pageSize.getWidth(); // ~595pt para A4
             const pageHeight = doc.internal.pageSize.getHeight(); // ~842pt para A4
             const contentWidth = pageWidth - margin.left - margin.right; // ~515pt
-            const contentHeight = pageHeight - margin.top - margin.bottom; // ~712pt
 
             // Obtener datos personales y resultados desde el HTML
             const nombre = document.getElementById('nombre')?.value?.trim() || 'Cliente';
@@ -2661,138 +2660,174 @@ document.addEventListener('DOMContentLoaded', () => {
             doc.text('Detalles de la Explicación:', margin.left, yPosition);
             yPosition += 20;
 
-            // Procesa el contenido de explanation-content
+            // Preparar datos para la tabla de explanation-content
+            const explanationTableData = [];
+            let currentSection = null;
+            let currentSubsection = null;
+            let chartDataUrl = null;
+
+            // Capturar el chart para la primera sección
+            const canvasElement = explanationContent.querySelector('canvas, div canvas');
+            if (canvasElement) {
+                try {
+                    const canvas = await html2canvas(canvasElement, {
+                        scale: 2, // Aumenta la resolución
+                        useCORS: true // Habilita CORS para imágenes externas
+                    });
+                    chartDataUrl = canvas.toDataURL('image/png');
+                    console.log('Chart capturado exitosamente.');
+                } catch (error) {
+                    console.error('Error al capturar el chart:', error.message);
+                    chartDataUrl = null;
+                }
+            }
+
+            // Procesar los elementos de explanation-content
             const elements = explanationContent.childNodes;
+            let sectionIndex = 0;
+            const sections = [
+                'Explicación de los Resultados del IMC, ICC y % Grasa Actual',
+                'Masa Grasa y Masa Magra(MLG), Tipología del Cuerpo según Índices de Masa (IMLG e IMG), Interpretación de las Tipologías',
+                'Edad Metabólica, ¿Cómo Mejorar tu Edad Metabólica?',
+                'Relación entre IMLG, TMB y GET, Sugerencias Personalizadas',
+                'Reserva Proteica AMB, Masa Ósea y Masa Residual',
+                'Estimacion del Somatotipo, Sugerencias para Mejorar tu Composición Corporal, Medición del Somatotipo, Categorías de Predominancia Física y Recomendaciones'
+            ];
+            const subsections = [
+                ['Índice de Masa Corporal (IMC)', 'Índice Cintura-Cadera (ICC)', '% Grasa Corporal Actual', '% Grasa Corporal Deseado', 'Peso Ideal Estimado'],
+                [], // Subsecciones dinámicas para la segunda sección
+                ['¿Cómo Mejorar tu Edad Metabólica?'],
+                ['Sugerencias Personalizadas'],
+                ['Área Muscular Brazo (AMB)', 'Masa Ósea', 'Masa Muscular Total (MMT) Estimada', 'Masa Residual', 'Sugerencias y Consideraciones Personalizadas'],
+                ['Sugerencias para Mejorar tu Composición Corporal', 'Medición del Somatotipo', 'Categorías de Predominancia Física y Recomendaciones']
+            ];
+
             for (const element of elements) {
                 if (element.nodeType !== Node.ELEMENT_NODE) continue;
 
                 const tag = element.tagName.toLowerCase();
-                if (tag === 'p') {
+                let content = '';
+
+                if (['h1', 'h2', 'h3'].includes(tag)) {
                     const text = element.textContent.trim();
-                    if (text) {
-                        const lines = doc.splitTextToSize(text, 500); // Divide en líneas de 500pt
-                        doc.text(lines, 40, yPosition);
-                        yPosition += lines.length * 14 + 10; // 14pt por línea + espacio
+                    if (sections.includes(text) || sectionIndex < sections.length) {
+                        currentSection = sections[sectionIndex];
+                        explanationTableData.push({
+                            section: currentSection,
+                            content: '',
+                            isSection: true
+                        });
+                        sectionIndex++;
+                        currentSubsection = null;
+                    } else if (subsections[sectionIndex - 1]?.includes(text)) {
+                        currentSubsection = text;
+                    }
+                } else if (tag === 'p') {
+                    content = element.textContent.trim();
+                    if (content) {
+                        explanationTableData.push({
+                            section: currentSubsection || '',
+                            content: content,
+                            isSection: false
+                        });
                     }
                 } else if (tag === 'ul' || tag === 'ol') {
                     const items = element.querySelectorAll('li');
-                    let index = 1; // Contador para <ol>
+                    let index = 1;
                     for (const li of items) {
                         const text = li.textContent.trim();
                         if (text) {
                             const bullet = tag === 'ul' ? '•' : `${index++}.`;
-                            const lines = doc.splitTextToSize(`${bullet} ${text}`, 480); // 480pt para bullet
-                            doc.text(lines, 50, yPosition); // Indentado 10pt
-                            yPosition += lines.length * 14 + 8; // 14pt por línea + espacio
-                        }
-                    }
-                } else if (['h1', 'h2', 'h3'].includes(tag)) {
-                    const text = element.textContent.trim();
-                    if (text) {
-                        doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(tag === 'h1' ? 16 : tag === 'h2' ? 14 : 12);
-                        doc.setTextColor(56, 142, 60); // Verde (#388E3C)
-                        const lines = doc.splitTextToSize(text, 500);
-                        doc.text(lines, 40, yPosition);
-                        yPosition += lines.length * (tag === 'h1' ? 18 : tag === 'h2' ? 16 : 14) + 10;
-                        doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(12);
-                        doc.setTextColor(52, 58, 64); // Restaurar color
-                    }
-                } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
-                    // Maneja gráficos (canvas o div que contenga un canvas)
-                    const canvasElement = tag === 'canvas' ? element : element.querySelector('canvas');
-                    if (canvasElement) {
-                        try {
-                            const canvas = await html2canvas(canvasElement, {
-                                scale: 2, // Aumenta la resolución
-                                useCORS: true // Habilita CORS para imágenes externas
+                            content = `${bullet} ${text}`;
+                            explanationTableData.push({
+                                section: currentSubsection || '',
+                                content: content,
+                                isSection: false
                             });
-                            const imgData = canvas.toDataURL('image/png');
-                            const imgProps = doc.getImageProperties(imgData);
-                            const pdfWidth = 500; // Ancho máximo en el PDF (500pt)
-                            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-                            // Verifica si hay espacio suficiente en la página
-                            if (yPosition + imgHeight > 750) {
-                                doc.addPage();
-                                yPosition = 40;
-                                console.log('Nueva página añadida para gráfico, yPosition reiniciada:', yPosition);
-                            }
-
-                            doc.addImage(imgData, 'PNG', 40, yPosition, pdfWidth, imgHeight);
-                            yPosition += imgHeight + 20; // Espacio después del gráfico
-                            console.log('Gráfico añadido en yPosition:', yPosition);
-                        } catch (error) {
-                            console.error('Error al procesar el gráfico:', error.message);
-                            doc.text('Error: No se pudo incluir un gráfico en el PDF.', 40, yPosition);
-                            yPosition += 20;
                         }
                     }
                 } else if (tag === 'table') {
-                    // Extraer datos de la tabla
                     const rows = element.querySelectorAll('tr');
-                    const tableContent = {
-                        head: [],
-                        body: []
-                    };
-
-                    rows.forEach((row, rowIndex) => {
+                    rows.forEach(row => {
                         const cells = row.querySelectorAll('th, td');
                         const cellTexts = Array.from(cells).map(cell => cell.textContent.trim()).filter(text => text);
                         if (cellTexts.length === 0) return;
-
-                        if (row.querySelector('th')) {
-                            // Es una fila de encabezado
-                            tableContent.head.push(cellTexts);
-                        } else {
-                            // Es una fila de datos
-                            tableContent.body.push(cellTexts);
-                        }
+                        content = cellTexts.join(' | ');
+                        explanationTableData.push({
+                            section: currentSubsection || '',
+                            content: content,
+                            isSection: false
+                        });
                     });
-
-                    if (tableContent.head.length === 0 && tableContent.body.length === 0) {
-                        console.warn('Tabla vacía encontrada en explanation-content, omitiendo.');
-                        return;
+                } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
+                    if (chartDataUrl && sectionIndex === 1) { // Solo para la primera sección
+                        explanationTableData.push({
+                            section: 'Gráfico',
+                            content: chartDataUrl,
+                            isImage: true
+                        });
                     }
-
-                    // Renderizar la tabla con autoTable
-                    doc.autoTable({
-                        startY: yPosition,
-                        head: tableContent.head.length > 0 ? tableContent.head : [Array(tableContent.body[0]?.length || 1).fill('')], // Fallback si no hay encabezados
-                        body: tableContent.body,
-                        theme: 'grid',
-                        styles: {
-                            font: 'helvetica',
-                            fontSize: 9,
-                            textColor: [0, 0, 0],
-                            lineColor: [0, 0, 0],
-                            lineWidth: 0.5,
-                            cellPadding: 4
-                        },
-                        headStyles: {
-                            fillColor: [56, 142, 60], // Verde para el encabezado
-                            textColor: [255, 255, 255], // Texto blanco
-                            fontStyle: 'bold',
-                            fontSize: 10
-                        },
-                        margin: { left: margin.left, right: margin.right },
-                        didDrawPage: (data) => {
-                            yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
-                        }
-                    });
-
-                    yPosition += 10; // Espacio extra después de la tabla
-                    console.log('Tabla de explanation-content añadida en yPosition:', yPosition);
-                }
-
-                // Verifica si es necesario añadir una nueva página
-                if (yPosition > pageHeight - margin.bottom) {
-                    doc.addPage();
-                    yPosition = margin.top;
-                    console.log('Nueva página añadida, yPosition reiniciada:', yPosition);
                 }
             }
+
+            // Renderizar la tabla de explanation-content con autoTable
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Sección/Subsección', 'Descripción']],
+                body: explanationTableData.map(row => {
+                    if (row.isSection) {
+                        return [{ content: row.section, colSpan: 2, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } }];
+                    } else if (row.isImage) {
+                        return [row.section, { content: '', image: row.content }];
+                    }
+                    return [row.section, row.content];
+                }),
+                theme: 'grid',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: 9,
+                    textColor: [0, 0, 0],
+                    lineColor: [0, 0, 0],
+                    lineWidth: 0.5,
+                    cellPadding: 4
+                },
+                headStyles: {
+                    fillColor: [56, 142, 60], // Verde para el encabezado
+                    textColor: [255, 255, 255], // Texto blanco
+                    fontStyle: 'bold',
+                    fontSize: 10
+                },
+                columnStyles: {
+                    0: { cellWidth: 150, fontStyle: 'bold' }, // Sección/Subsección más estrecha y en negrita
+                    1: { cellWidth: contentWidth - 150 } // Descripción ocupa el resto
+                },
+                margin: { left: margin.left, right: margin.right },
+                didParseCell: (data) => {
+                    if (data.row.raw && data.row.raw.isImage && data.column.index === 1) {
+                        data.cell.text = ''; // Limpiar texto para la celda de la imagen
+                        data.cell.contentWidth = contentWidth - 150; // Ajustar ancho
+                        data.cell.contentHeight = 200; // Altura fija para la imagen
+                        data.cell.image = data.row.raw.content; // Asignar la imagen
+                    }
+                },
+                didDrawCell: (data) => {
+                    if (data.row.raw && data.row.raw.isImage && data.column.index === 1 && data.cell.image) {
+                        try {
+                            const imgProps = doc.getImageProperties(data.cell.image);
+                            const pdfWidth = data.cell.contentWidth - 8; // Restar padding
+                            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                            doc.addImage(data.cell.image, 'PNG', data.cell.x + 4, data.cell.y + 4, pdfWidth, imgHeight);
+                        } catch (error) {
+                            console.error('Error al renderizar la imagen en la tabla:', error.message);
+                        }
+                    }
+                },
+                didDrawPage: (data) => {
+                    yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
+                }
+            });
+
+            console.log('Tabla de explanation-content añadida en yPosition:', yPosition);
 
             // Genera el blob y descárgalo
             const blob = doc.output('blob');
