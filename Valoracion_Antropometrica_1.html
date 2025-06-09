@@ -2456,7 +2456,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 	//pdf create 
-	document.addEventListener('DOMContentLoaded', () => {
+		document.addEventListener('DOMContentLoaded', () => {
     // Verifica que jsPDF y html2canvas estén cargados
     if (!window.jspdf || !window.jspdf.jsPDF) {
         console.error('Error: Biblioteca jsPDF no está cargada.');
@@ -2476,6 +2476,18 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Error: Botón exportar-btn no encontrado.');
         return;
     }
+
+    // Función para convertir data URL a blob
+    const dataURLToBlob = (dataURL) => {
+        const byteString = atob(dataURL.split(',')[1]);
+        const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+    };
 
     exportarBtn.addEventListener('click', async () => {
         console.log('Exportar button clicked. Starting PDF export.');
@@ -2641,11 +2653,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 margin: { left: margin.left, right: margin.right },
                 didDrawPage: (data) => {
-                    yPosition = data.cursor.y; // Actualizar yPosition después de la tabla
+                    yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
                 }
             });
 
-            console.log('Tabla principal de resultados con el título añadido en yPosition:', yPosition);
+            console.log('Tabla principal de resultados con título añadida en yPosition:', yPosition);
 
             // Añadir título para el contenido de explanation-content
             yPosition += 20; // Espacio después de la tabla
@@ -2677,7 +2689,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Masa Grasa y Masa Magra(MLG)': 1,
                 'Tipología del Cuerpo según Índices de Masa (IMLG e IMG)': 1,
                 'Edad Metabólica': 2,
-                'Sugerencias Personalizadas': [2, 3], // Puede pertenecer a dos secciones, priorizar por contexto
+                'Sugerencias Personalizadas': [2, 3],
                 'Relación entre IMLG, TMB y GET': 3,
                 'Reserva Proteica AMB, Masa Ósea y Masa Residual': 4,
                 'Estimacion del Somatotipo': 5,
@@ -2685,16 +2697,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Medición del Somatotipo': 5
             };
 
-            // Normalizar texto para comparación flexible
-            const normalizeText = (text) => text.toLowerCase().replace(/[\s.,!?]+/g, '');
-
             // Recolectar todas las imágenes (charts)
             const canvasElements = explanationContent.querySelectorAll('canvas, div canvas');
             const chartDataUrls = [];
             for (let i = 0; i < canvasElements.length; i++) {
                 const canvas = canvasElements[i];
                 try {
-                    // Configurar willReadFrequently para optimizar
                     const ctx = canvas.getContext('2d', { willReadFrequently: true });
                     const renderedCanvas = await html2canvas(canvas, {
                         scale: 2,
@@ -2703,8 +2711,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         logging: true
                     });
                     const dataUrl = renderedCanvas.toDataURL('image/png');
+                    console.log(`Chart ${i + 1} capturado:`, {
+                        dataUrlLength: dataUrl.length,
+                        width: renderedCanvas.width,
+                        height: renderedCanvas.height
+                    });
                     chartDataUrls.push(dataUrl);
-                    console.log(`Chart ${i + 1} capturado exitosamente:`, dataUrl.substring(0, 50) + '...');
+
+                    // Guardar imagen como PNG para depuración
+                    const blob = dataURLToBlob(dataUrl);
+                    saveAs(blob, `chart_${i + 1}.png`);
+                    console.log(`Chart ${i + 1} guardado como chart_${i + 1}.png`);
                 } catch (error) {
                     console.error(`Error al capturar chart ${i + 1}:`, error.message);
                     chartDataUrls.push(null);
@@ -2715,7 +2732,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const sectionContents = sections.map(() => []);
             let currentSectionIndex = 0;
             let chartIndex = 0;
-            let lastSugerenciasSection = 2; // Para manejar "Sugerencias Personalizadas"
+            let lastSugerenciasSection = 2;
 
             const elements = explanationContent.childNodes;
             console.log('Encabezados encontrados en explanation-content:');
@@ -2731,7 +2748,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (text in headerMapping) {
                         const mapping = headerMapping[text];
                         if (Array.isArray(mapping)) {
-                            // Para "Sugerencias Personalizadas", elegir según el contexto
                             currentSectionIndex = text === 'Sugerencias Personalizadas' && lastSugerenciasSection === 2 ? 2 : 3;
                             lastSugerenciasSection = currentSectionIndex;
                         } else {
@@ -2767,86 +2783,98 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (chartIndex < chartDataUrls.length) {
                         sectionContents[currentSectionIndex].push({
                             type: 'image',
-                            content: chartDataUrls[chartIndex] || `Error: No se pudo cargar el chart ${chartIndex + 1}.`
+                            content: chartDataUrls[chartIndex] || `Error: No se pudo cargar el chart ${chartIndex + 1}.`,
+                            sectionIndex: currentSectionIndex
                         });
+                        console.log(`Chart ${chartIndex + 1} asignado a sección ${sections[currentSectionIndex]}`);
                     }
                     chartIndex++;
                 }
             }
 
-            // Renderizar una tabla por sección
+            // Renderizar una tabla por sección (solo texto) y añadir imágenes después
             for (let i = 0; i < sections.length; i++) {
                 const section = sections[i];
-                const content = sectionContents[i];
+                const content = sectionContents[i].filter(item => item.type === 'text');
 
-                if (content.length === 0) {
+                if (content.length === 0 && !sectionContents[i].some(item => item.type === 'image')) {
                     console.warn(`Sección "${section}" está vacía, omitiendo tabla.`);
                     continue;
                 }
 
-                // Añadir espacio antes de la tabla si es necesario
-                if (yPosition + 50 > pageHeight - margin.bottom) {
-                    doc.addPage();
-                    yPosition = margin.top;
-                    console.log('Nueva página añadida para tabla de sección, yPosition reiniciada:', yPosition);
+                // Añadir tabla para texto
+                if (content.length > 0) {
+                    if (yPosition + 50 > pageHeight - margin.bottom) {
+                        doc.addPage();
+                        yPosition = margin.top;
+                        console.log('Nueva página añadida para tabla de sección, yPosition reiniciada:', yPosition);
+                    }
+
+                    doc.autoTable({
+                        startY: yPosition,
+                        head: [[section]],
+                        body: content.map(item => [item.content]),
+                        theme: 'grid',
+                        styles: {
+                            font: 'helvetica',
+                            fontSize: 9,
+                            textColor: [0, 0, 0],
+                            lineColor: [0, 0, 0],
+                            lineWidth: 0.5,
+                            cellPadding: 4
+                        },
+                        headStyles: {
+                            fillColor: [56, 142, 60],
+                            textColor: [255, 255, 255],
+                            fontStyle: 'bold',
+                            fontSize: 10
+                        },
+                        columnStyles: {
+                            0: { cellWidth: contentWidth }
+                        },
+                        margin: { left: margin.left, right: margin.right },
+                        didDrawPage: (data) => {
+                            yPosition = data.cursor.y + 10;
+                        }
+                    });
+
+                    console.log(`Tabla de texto para sección "${section}" añadida en yPosition:`, yPosition);
                 }
 
-                doc.autoTable({
-                    startY: yPosition,
-                    head: [[section]],
-                    body: content.map(item => {
-                        if (item.type === 'image') {
-                            return [{ content: item.content.startsWith('data:') ? '' : item.content, image: item.content.startsWith('data:') ? item.content : null }];
-                        }
-                        return [item.content];
-                    }),
-                    theme: 'grid',
-                    styles: {
-                        font: 'helvetica',
-                        fontSize: 9,
-                        textColor: [0, 0, 0],
-                        lineColor: [0, 0, 0],
-                        lineWidth: 0.5,
-                        cellPadding: 4
-                    },
-                    headStyles: {
-                        fillColor: [56, 142, 60], // Verde para el encabezado
-                        textColor: [255, 255, 255], // Texto blanco
-                        fontStyle: 'bold',
-                        fontSize: 10
-                    },
-                    columnStyles: {
-                        0: { cellWidth: contentWidth } // Columna ocupa todo el ancho
-                    },
-                    margin: { left: margin.left, right: margin.right },
-                    didParseCell: (data) => {
-                        if (data.row.raw && data.row.raw.image) {
-                            data.cell.text = ''; // Limpiar texto para la celda de la imagen
-                            data.cell.contentWidth = contentWidth - 8; // Restar padding
-                            data.cell.contentHeight = 300; // Altura mayor para imágenes
-                            console.log(`Procesando imagen para sección "${section}"`);
-                        }
-                    },
-                    didDrawCell: (data) => {
-                        if (data.row.raw && data.row.raw.image && data.column.index === 0 && data.row.raw.image.startsWith('data:')) {
-                            try {
-                                const imgProps = doc.getImageProperties(data.row.raw.image);
-                                const pdfWidth = data.cell.contentWidth - 8; // Restar padding
-                                const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                                doc.addImage(data.row.raw.image, 'PNG', data.cell.x + 4, data.cell.y + 4, pdfWidth, imgHeight);
-                                console.log(`Imagen renderizada en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight}`);
-                            } catch (error) {
-                                console.error(`Error al renderizar imagen en sección "${section}":`, error.message);
-                                data.cell.text = 'Error al renderizar la imagen.';
-                            }
-                        }
-                    },
-                    didDrawPage: (data) => {
-                        yPosition = data.cursor.y + 10; // Actualiza yPosition con espacio extra
-                    }
-                });
+                // Añadir imágenes directamente con doc.addImage
+                const images = sectionContents[i].filter(item => item.type === 'image');
+                for (const imageItem of images) {
+                    if (imageItem.content.startsWith('data:')) {
+                        try {
+                            const imgProps = doc.getImageProperties(imageItem.content);
+                            console.log(`Propiedades de imagen para sección "${section}":`, {
+                                width: imgProps.width,
+                                height: imgProps.height,
+                                dataLength: imageItem.content.length
+                            });
 
-                console.log(`Tabla para sección "${section}" añadida en yPosition:`, yPosition);
+                            const pdfWidth = contentWidth - 8;
+                            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                            if (yPosition + imgHeight + 20 > pageHeight - margin.bottom) {
+                                doc.addPage();
+                                yPosition = margin.top;
+                                console.log('Nueva página añadida para imagen, yPosition reiniciada:', yPosition);
+                            }
+
+                            doc.addImage(imageItem.content, 'PNG', margin.left + 4, yPosition + 4, pdfWidth, imgHeight);
+                            console.log(`Imagen renderizada directamente en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight} en yPosition ${yPosition}`);
+                            yPosition += imgHeight + 20;
+                        } catch (error) {
+                            console.error(`Error al renderizar imagen directamente en sección "${section}":`, error.message);
+                            doc.text(`Error: No se pudo renderizar el chart ${chartIndex + 1}.`, margin.left, yPosition + 20);
+                            yPosition += 30;
+                        }
+                    } else {
+                        doc.text(imageItem.content, margin.left, yPosition + 20);
+                        yPosition += 30;
+                    }
+                }
             }
 
             // Genera el blob y descárgalo
