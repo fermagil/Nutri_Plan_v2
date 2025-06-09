@@ -2679,6 +2679,7 @@ body {
 		</section>
 			<!-- Placeholder for fetched content -->
 			<div id="containerTipologiaPlaceholder"></div>
+		    <div id="containerSomatotipoPlaceholder"></div>
 			
 			<!-- Modal container (initially hidden) -->
 			<!-- Modal container (initially hidden) -->
@@ -4097,6 +4098,16 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    e.stopPropagation();
 	    e.preventDefault();
 	    downloadChart();
+	});
+	const button = document.getElementById('abrirContainerSomatotipo');
+	button.addEventListener('click', function(e) {
+	    e.stopPropagation();
+	    e.preventDefault();
+	    const modal = document.getElementById('modalContainer');
+	    modal.style.display = 'flex';
+	    populateFormFields(); // Populate form fields when modal opens
+	    createLegend();
+	    updateChart();
 	});
 </script>
  <!-- Firebase -->
