@@ -2086,6 +2086,7 @@ body {
 				                <span class="accordion-toggle">Estructurales</span>
 				                <span class="accordion-icon">▼</span>
 				                <button id="abrirContainerTipologia" style="padding: 5px 10px; font-size: 14px;">Abrir Container</button>
+						<div id="containerTipologiaPlaceholder"></div>
 				            </div>
 				        </th>
 				    </tr>
@@ -3096,6 +3097,21 @@ for (let i = 0; i < canvasElements.length; i++) {
             btn.disabled = false;
         }
     });
+});
+	//Abrir Container MapaTipologia Corporal
+	document.getElementById('abrirContainerTipologia').addEventListener('click', function() {
+    // Cargar el archivo HTML del container
+    fetch('Mapa_de_Composicion_Corporal.html')  // Asegúrate que este nombre coincida con tu archivo 
+        .then(response => response.text())
+        .then(html => {
+            // Insertar el HTML en el placeholder
+            document.getElementById('containerTipologiaPlaceholder').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error al cargar el container:', error);
+            document.getElementById('containerTipologiaPlaceholder').innerHTML = 
+                '<p>Error al cargar el container. Verifica que el archivo exista.</p>';
+        });
 });
 </script>
  <!-- Firebase -->
