@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>	
+ <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>	
 	
 	
     <title>Valoración Antropométrica con Resultados</title>
@@ -3109,123 +3109,498 @@ for (let i = 0; i < canvasElements.length; i++) {
     });
 });
 	//Abrir Container MapaTipologia Corporal
-// Remove any existing event listeners to avoid duplicates
+// XLSX-related functions
+var gk_isXlsx = false;
+var gk_xlsxFileLookup = {};
+var gk_fileData = {};
+function filledCell(cell) {
+    return cell !== '' && cell != null;
+}
+function loadFileData(filename) {
+    if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+            var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+            var filteredData = jsonData.filter(row => row.some(filledCell));
+
+            var headerRowIndex = filteredData.findIndex((row, index) =>
+                row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+            );
+            if (headerRowIndex === -1 || headerRowIndex > 25) {
+                headerRowIndex = 0;
+            }
+
+            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+            csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+            return csv;
+        } catch (e) {
+            console.error(e);
+            return "";
+        }
+    }
+    return gk_fileData[filename] || "";
+}
+
+// Canvas drawing functions
+const typologies = [
+    { name: 'Obeso Sedentario', color: 'rgba(255, 153, 153, 0.5)', emoji: '📺🥔' },
+    { name: 'Adiposo Sedentario', color: 'rgba(255, 0, 0, 0.5)', emoji: '🥐🍩' },
+    { name: 'Obeso Sólido', color: 'rgba(255, 165, 0, 0.5)', emoji: '🍔🦍' },
+    { name: 'Delgado Adiposo', color: 'rgba(255, 204, 153, 0.5)', emoji: '🚶🍩' },
+    { name: 'Promedio', color: 'rgba(212, 237, 145, 0.5)', emoji: '😊' },
+    { name: 'Atleta Promedio', color: 'rgba(0, 128, 0, 0.5)', emoji: '🏃' },
+    { name: 'Delgado', color: 'rgba(255, 255, 153, o.5)', emoji: '🌱🧘' },
+    { name: 'Esbelto Magro Atleta', color: 'rgba(0, 128, 0, 0.5)', emoji: '💪🔥' },
+    { name: 'Musculoso Atleta', color: 'rgba(0, 128, 0, 0.5)', emoji: '🏋️💪' }
+];
+
+function createLegend(container) {
+    container.innerHTML = '';
+    typologies.forEach(typology => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `
+            <span class="legend-color" style="background-color: ${typology.color};"></span>
+            <span>${typology.emoji} ${typology.name}</span>
+        `;
+        container.appendChild(legendItem);
+    });
+}
+
+const xMin = 11.5;
+const xMax = 26.7;
+const yMin = 2;
+const yMax = 14.3;
+const pointRadius = 7;
+
+function mapToCanvas(value, min, max, canvasSize) {
+    return ((value - min) / (max - min)) * canvasSize;
+}
+
+function drawGrid(ctx, canvas, sexo, actividad, edad) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let ranges = getRanges(sexo, actividad, edad);
+    if (!ranges) return;
+
+    let imlgRanges = ranges.imlgRanges;
+    let imgRanges = ranges.imgRanges;
+    let maxIMLG = ranges.maxIMLG;
+    let maxIMG = ranges.maxIMG;
+
+    const xBajo = mapToCanvas(imlgRanges.bajo, xMin, xMax, canvas.width);
+    const xMedio = mapToCanvas(imlgRanges.medio, xMin, xMax, canvas.width);
+    const xAlto = mapToCanvas(imlgRanges.alto, xMin, xMax, canvas.width);
+    const xMaxCanvas = mapToCanvas(maxIMLG, xMin, xMax, canvas.width);
+
+    const yBajo = canvas.height - mapToCanvas(imgRanges.bajo, yMin, yMax, canvas.height);
+    const yMedio = canvas.height - mapToCanvas(imgRanges.medio, yMin, yMax, canvas.height);
+    const yAlto = canvas.height - mapToCanvas(imgRanges.alto, yMin, yMax, canvas.height);
+    const yMaxCanvas = canvas.height - mapToCanvas(maxIMG, yMin, yMax, canvas.height);
+
+    const regions = [
+        { xStart: 0, xEnd: xMedio, yStart: 0, yEnd: yAlto, typology: 'Obeso Sedentario' },
+        { xStart: xMedio, xEnd: xAlto, yStart: 0, yEnd: yAlto, typology: 'Adiposo Sedentario' },
+        { xStart: xAlto, xEnd: canvas.width, yStart: 0, yEnd: yAlto, typology: 'Obeso Sólido' },
+        { xStart: 0, xEnd: xMedio, yStart: yAlto, yEnd: yMedio, typology: 'Delgado Adiposo' },
+        { xStart: xMedio, xEnd: xAlto, yStart: yAlto, yEnd: yMedio, typology: 'Promedio' },
+        { xStart: xAlto, xEnd: canvas.width, yStart: yAlto, yEnd: yMedio, typology: 'Atleta Promedio' },
+        { xStart: 0, xEnd: xMedio, yStart: yMedio, yEnd: canvas.height, typology: 'Delgado' },
+        { xStart: xMedio, xEnd: xAlto, yStart: yMedio, yEnd: canvas.height, typology: 'Esbelto Magro Atleta' },
+        { xStart: xAlto, xEnd: canvas.width, yStart: yMedio, yEnd: canvas.height, typology: 'Musculoso Atleta' }
+    ];
+
+    regions.forEach(region => {
+        const typologyObj = typologies.find(t => t.name === region.typology);
+        const color = typologyObj ? typologyObj.color : 'rgba(200, 200, 200, 0.5)';
+        ctx.fillStyle = color;
+        ctx.fillRect(region.xStart, region.yStart, region.xEnd - region.xStart, region.yEnd - region.yStart);
+
+        ctx.fillStyle = 'black';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const labelX = (region.xStart + region.xEnd) / 2;
+        const labelY = (region.yStart + region.yEnd) / 2;
+        ctx.fillText(region.typology, labelX, labelY);
+    });
+
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(xMedio, 0);
+    ctx.lineTo(xMedio, canvas.height);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(xAlto, 0);
+    ctx.lineTo(xAlto, canvas.height);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, yMedio);
+    ctx.lineTo(canvas.width, yMedio);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, yAlto);
+    ctx.lineTo(canvas.width, yAlto);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height);
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, canvas.height);
+    ctx.stroke();
+
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (let imlg = 12; imlg <= 26; imlg += 2) {
+        const x = mapToCanvas(imlg, xMin, xMax, canvas.width);
+        ctx.fillText(imlg, x, canvas.height - 15);
+        ctx.beginPath();
+        ctx.moveTo(x, canvas.height);
+        ctx.lineTo(x, canvas.height - 5);
+        ctx.stroke();
+    }
+
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let img = 2; img <= 14; img += 2) {
+        const y = canvas.height - mapToCanvas(img, yMin, yMax, canvas.height);
+        ctx.fillText(img, 15, y);
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(5, y);
+        ctx.stroke();
+    }
+
+    ctx.textAlign = 'center';
+    ctx.fillText('IMLG (kg/m²)', canvas.width / 2, canvas.height - 30);
+    ctx.save();
+    ctx.translate(30, canvas.height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('IMG (kg/m²)', 0, 0);
+    ctx.restore();
+}
+
+function drawPoint(ctx, canvas, imlg, img, color) {
+    const x = mapToCanvas(imlg, xMin, xMax, canvas.width);
+    const y = canvas.height - mapToCanvas(img, yMin, yMax, canvas.height);
+    ctx.beginPath();
+    ctx.arc(x, y, pointRadius, 0, 2 * Math.PI);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+    return { x, y };
+}
+
+function isCursorOverPoint(mouseX, mouseY, currentPointX, currentPointY) {
+    const dx = mouseX - currentPointX;
+    const dy = mouseY - currentPointY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance <= pointRadius + 5;
+}
+
+function getRanges(sexo, actividad, edad) {
+    if (edad < 18) return null;
+
+    let ageGroup;
+    if (edad >= 18 && edad <= 29) ageGroup = '18-29';
+    else if (edad >= 30 && edad <= 49) ageGroup = '30-49';
+    else ageGroup = '50+';
+
+    let imlgRanges, imgRanges, maxIMLG, maxIMG;
+
+    if (sexo === 'mujer') {
+        if (ageGroup === '18-29') {
+            if (actividad === 'sedentario') {
+                imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
+                imgRanges = { bajo: 4, medio: 7, alto: 9 };
+                maxIMLG = 18.5;
+                maxIMG = 13;
+            } else if (actividad === 'pocoActivo') {
+                imlgRanges = { bajo: 13, medio: 15, alto: 17 };
+                imgRanges = { bajo: 3.5, medio: 6.5, alto: 8.5 };
+                maxIMLG = 19;
+                maxIMG = 12;
+            } else if (actividad === 'activo') {
+                imlgRanges = { bajo: 13.5, medio: 15.5, alto: 17.5 };
+                imgRanges = { bajo: 3, medio: 6, alto: 8 };
+                maxIMLG = 20;
+                maxIMG = 10;
+            } else {
+                imlgRanges = { bajo: 14, medio: 16, alto: 18.5 };
+                imgRanges = { bajo: 3, medio: 5, alto: 7 };
+                maxIMLG = 22;
+                maxIMG = 9;
+            }
+        } else if (ageGroup === '30-49') {
+            if (actividad === 'sedentario') {
+                imlgRanges = { bajo: 12, medio: 14, alto: 16 };
+                imgRanges = { bajo: 5, medio: 8, alto: 10 };
+                maxIMLG = 18;
+                maxIMG = 14.3;
+            } else if (actividad === 'pocoActivo') {
+                imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
+                imgRanges = { bajo: 4, medio: 7, alto: 9 };
+                maxIMLG = 18.5;
+                maxIMG = 13;
+            } else if (actividad === 'activo') {
+                imlgRanges = { bajo: 13, medio: 15, alto: 17 };
+                imgRanges = { bajo: 3.5, medio: 6.5, alto: 8.5 };
+                maxIMLG = 19;
+                maxIMG = 11;
+            } else {
+                imlgRanges = { bajo: 13.5, medio: 15.5, alto: 17.5 };
+                imgRanges = { bajo: 3, medio: 5.5, alto: 7.5 };
+                maxIMLG = 20;
+                maxIMG = 9.5;
+            }
+        } else {
+            if (actividad === 'sedentario') {
+                imlgRanges = { bajo: 11.5, medio: 13.5, alto: 15.5 };
+                imgRanges = { bajo: 6, medio: 9, alto: 11 };
+                maxIMLG = 17.5;
+                maxIMG = 14.3;
+            } else if (actividad === 'pocoActivo') {
+                imlgRanges = { bajo: 12, medio: 14, alto: 16 };
+                imgRanges = { bajo: 5, medio: 8, alto: 10 };
+                maxIMLG = 18;
+                maxIMG = 13;
+            } else if (actividad === 'activo') {
+                imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
+                imgRanges = { bajo: 4, medio: 7, alto: 9 };
+                maxIMLG = 18.5;
+                maxIMG = 11;
+            } else {
+                imlgRanges = { bajo: 13, medio: 15, alto: 17 };
+                imgRanges = { bajo: 3.5, medio: 6, alto: 8 };
+                maxIMLG = 19;
+                maxIMG = 10;
+            }
+        }
+    } else {
+        if (ageGroup === '18-29') {
+            if (actividad === 'sedentario') {
+                imlgRanges = { bajo: 15, medio: 17, alto: 19 };
+                imgRanges = { bajo: 3, medio: 6, alto: 8 };
+                maxIMLG = 21;
+                maxIMG = 11;
+            } else if (actividad === 'pocoActivo') {
+                imlgRanges = { bajo: 15.5, medio: 17.5, alto: 19.5 };
+                imgRanges = { bajo: 2.5, medio: 5.5, alto: 7.5 };
+                maxIMLG = 21.5;
+                maxIMG = 10;
+            } else if (actividad === 'activo') {
+                imlgRanges = { bajo: 16, medio: 18, alto: 20 };
+                imgRanges = { bajo: 2, medio: 5, alto: 7 };
+                maxIMLG = 23;
+                maxIMG = 9;
+            } else {
+                imlgRanges = { bajo: 17, medio: 19, alto: 21.5 };
+                imgRanges = { bajo: 2, medio: 4, alto: 6 };
+                maxIMLG = 25;
+                maxIMG = 8;
+            }
+        } else if (ageGroup === '30-49') {
+            if (actividad === 'sedentario') {
+                imlgRanges = { bajo: 14.5, medio: 16.5, alto: 18.5 };
+                imgRanges = { bajo: 4, medio: 7, alto: 9 };
+                maxIMLG = 20.5;
+                maxIMG = 12;
+            } else if (actividad === 'pocoActivo') {
+                imlgRanges = { bajo: 15, medio: 17, alto: 19 };
+                imgRanges = { bajo: 3, medio: 6, alto: 8 };
+                maxIMLG = 21;
+                maxIMG = 11;
+            } else if (actividad === 'activo') {
+                imlgRanges = { bajo: 15.5, medio: 17.5, alto: 19.5 };
+                imgRanges = { bajo: 2.5, medio: 5.5, alto: 7.5 };
+                maxIMLG = 22;
+                maxIMG = 9.5;
+            } else {
+                imlgRanges = { bajo: 16, medio: 18, alto: 20 };
+                imgRanges = { bajo: 2, medio: 4.5, alto: 6.5 };
+                maxIMLG = 23;
+                maxIMG = 8.5;
+            }
+        } else {
+            if (actividad === 'sedentario') {
+                imlgRanges = { bajo: 14, medio: 16, alto: 18 };
+                imgRanges = { bajo: 5, medio: 8, alto: 10 };
+                maxIMLG = 20;
+                maxIMG = 12;
+            } else if (actividad === 'pocoActivo') {
+                imlgRanges = { bajo: 14.5, medio: 16.5, alto: 18.5 };
+                imgRanges = { bajo: 4, medio: 7, alto: 9 };
+                maxIMLG = 20.5;
+                maxIMG = 11;
+            } else if (actividad === 'activo') {
+                imlgRanges = { bajo: 15, medio: 17, alto: 19 };
+                imgRanges = { bajo: 3, medio: 6, alto: 8 };
+                maxIMLG = 21;
+                maxIMG = 10;
+            } else {
+                imlgRanges = { bajo: 15.5, medio: 17.5, alto: 19.5 };
+                imgRanges = { bajo: 2.5, medio: 5, alto: 7 };
+                maxIMLG = 22;
+                maxIMG = 9;
+            }
+        }
+    }
+
+    return { imlgRanges, imgRanges, maxIMLG, maxIMG };
+}
+
+// Placeholder for detectarTipologia (please provide the actual function)
+function detectarTipologia(cliente, sexo, actividad, edad) {
+    // Replace with actual implementation
+    const imlg = cliente[0].x;
+    const img = cliente[0].y;
+    const ranges = getRanges(sexo, actividad, edad);
+    if (!ranges) return { tipologia: 'Desconocido' };
+
+    const imlgRanges = ranges.imlgRanges;
+    const imgRanges = ranges.imgRanges;
+
+    if (imlg < imlgRanges.medio && img > imgRanges.alto) return { tipologia: 'Obeso Sedentario' };
+    if (imlg >= imlgRanges.medio && imlg < imlgRanges.alto && img > imgRanges.alto) return { tipologia: 'Adiposo Sedentario' };
+    if (imlg >= imlgRanges.alto && img > imgRanges.alto) return { tipologia: 'Obeso Sólido' };
+    if (imlg < imlgRanges.medio && img >= imgRanges.medio && img <= imgRanges.alto) return { tipologia: 'Delgado Adiposo' };
+    if (imlg >= imlgRanges.medio && imlg < imlgRanges.alto && img >= imgRanges.medio && img <= imgRanges.alto) return { tipologia: 'Promedio' };
+    if (imlg >= imlgRanges.alto && img >= imgRanges.medio && img <= imgRanges.alto) return { tipologia: 'Atleta Promedio' };
+    if (imlg < imlgRanges.medio && img < imgRanges.medio) return { tipologia: 'Delgado' };
+    if (imlg >= imlgRanges.medio && imlg < imlgRanges.alto && img < imgRanges.medio) return { tipologia: 'Esbelto Magro Atleta' };
+    if (imlg >= imlgRanges.alto && img < imgRanges.medio) return { tipologia: 'Musculoso Atleta' };
+    return { tipologia: 'Desconocido' };
+}
+
+// Modal event listeners
 const button = document.getElementById('abrirContainerTipologia');
 button.replaceWith(button.cloneNode(true)); // Clone to remove all listeners
 const newButton = document.getElementById('abrirContainerTipologia');
 
 newButton.addEventListener('click', function(e) {
-    e.stopPropagation(); // Stop event bubbling
-    e.preventDefault(); // Prevent default behavior
+    e.stopPropagation();
+    e.preventDefault();
 
-    // Show the modal
     const modal = document.getElementById('modalContainer');
     const modalBody = document.getElementById('modalBody');
-    
-    // Fetch the HTML content
+
     fetch('Mapa_de_Composicion_Corporal.html')
         .then(response => {
             if (!response.ok) throw new Error('Archivo no encontrado');
             return response.text();
         })
         .then(html => {
-            // Insert the fetched HTML into the modal body
             modalBody.innerHTML = html;
             modal.style.display = 'flex';
 
-            // Debugging: Log the inserted HTML and canvas existence
+            // Debugging logs
             console.log('Modal HTML:', modalBody.innerHTML);
-            const canvas = modalBody.querySelector('#somatotipoChart');
+            const canvas = modalBody.querySelector('#somatotype-canvas');
             console.log('Canvas element:', canvas);
 
-            // Ensure Chart.js is loaded before initializing
-            if (typeof Chart === 'undefined') {
-                console.error('Chart.js no está cargado');
-                modalBody.innerHTML += '<p>Error: Chart.js no está disponible.</p>';
-                return;
+            if (canvas) {
+                canvas.width = 700;
+                canvas.height = 350;
+                const ctx = canvas.getContext('2d');
+
+                // Initialize legend
+                const legendContainer = modalBody.querySelector('#legendContainer');
+                if (legendContainer) createLegend(legendContainer);
+
+                // Draw grid and point
+                const sexo = modalBody.querySelector('#sexoInput').value || 'mujer';
+                const actividad = modalBody.querySelector('#actividadInput').value || 'sedentario';
+                const edad = parseInt(modalBody.querySelector('#edadInput').value) || 30;
+                const imlg = parseFloat(modalBody.querySelector('#imlg').value) || 18;
+                const img = parseFloat(modalBody.querySelector('#img').value) || 6;
+
+                drawGrid(ctx, canvas, sexo, actividad, edad);
+                const point = drawPoint(ctx, canvas, imlg, img, 'red');
+
+                // Tooltip functionality
+                const tooltip = modalBody.querySelector('#tooltip');
+                canvas.addEventListener('mousemove', (event) => {
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = event.clientX - rect.left;
+                    const mouseY = event.clientY - rect.top;
+
+                    if (isCursorOverPoint(mouseX, mouseY, point.x, point.y)) {
+                        const result = detectarTipologia([{ x: imlg, y: img }], sexo, actividad, edad);
+                        const tipologia = result.tipologia;
+                        const typologyObj = typologies.find(t => t.name === tipologia);
+                        const emoji = typologyObj ? typologyObj.emoji : '';
+                        tooltip.style.display = 'block';
+                        tooltip.innerHTML = `Cliente: IMLG=${imlg}, IMG=${img}, Tipología=${emoji} ${tipologia}`;
+
+                        let tooltipX = point.x - tooltip.offsetWidth / 2;
+                        let tooltipY = point.y - tooltip.offsetHeight - pointRadius - 5;
+
+                        if (tooltipX < 0) tooltipX = 0;
+                        if (tooltipX + tooltip.offsetWidth > canvas.width) tooltipX = canvas.width - tooltip.offsetWidth;
+                        if (tooltipY < 0) tooltipY = point.y + pointRadius + 5;
+                        if (tooltipY + tooltip.offsetHeight > canvas.height) tooltipY = canvas.height - tooltip.offsetHeight;
+
+                        tooltip.style.left = `${tooltipX}px`;
+                        tooltip.style.top = `${tooltipY}px`;
+                    } else {
+                        tooltip.style.display = 'none';
+                    }
+                });
+
+                canvas.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                });
+            } else {
+                console.error('Canvas #somatotype-canvas no encontrado');
+                modalBody.innerHTML += '<p>Error: Canvas del gráfico no encontrado.</p>';
             }
 
-            // Initialize the Chart.js chart after a slight delay to ensure DOM rendering
-            setTimeout(() => {
-                if (canvas) {
-                    // Destroy any existing chart instance to avoid conflicts
-                    const existingChart = Chart.getChart(canvas);
-                    if (existingChart) {
-                        existingChart.destroy();
-                    }
-
-                    // Initialize scatter chart for IMLG vs. IMG
-                    new Chart(canvas, {
-                        type: 'scatter',
-                        data: {
-                            datasets: [{
-                                label: 'Composición Corporal',
-                                data: [{
-                                    x: parseFloat(modalBody.querySelector('#img').value) || 0,
-                                    y: parseFloat(modalBody.querySelector('#imlg').value) || 0
-                                }],
-                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1,
-                                pointRadius: 5
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                x: {
-                                    title: { display: true, text: 'IMG (Índice de Masa Grasa)' },
-                                    beginAtZero: true
-                                },
-                                y: {
-                                    title: { display: true, text: 'IMLG (Índice de Masa Libre de Grasa)' },
-                                    beginAtZero: true
-                                }
-                            },
-                            plugins: {
-                                legend: { display: true },
-                                tooltip: { enabled: true }
-                            }
-                        }
-                    });
-                    console.log('Chart initialized');
-                } else {
-                    console.error('Canvas #somatotipoChart no encontrado');
-                    modalBody.innerHTML += '<p>Error: Canvas del gráfico no encontrado.</p>';
-                }
-            }, 100); // Small delay to ensure DOM is ready
-
-            // Re-attach event listener for "Actualizar" button
+            // Actualizar button
             const actualizarBtn = modalBody.querySelector('#actualizarChart');
             if (actualizarBtn) {
                 actualizarBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    const canvas = modalBody.querySelector('#somatotipoChart');
-                    const existingChart = Chart.getChart(canvas);
-                    if (existingChart) {
-                        existingChart.data.datasets[0].data = [{
-                            x: parseFloat(modalBody.querySelector('#img').value) || 0,
-                            y: parseFloat(modalBody.querySelector('#imlg').value) || 0
-                        }];
-                        existingChart.update();
-                        console.log('Chart updated');
+                    if (canvas) {
+                        const sexo = modalBody.querySelector('#sexoInput').value || 'mujer';
+                        const actividad = modalBody.querySelector('#actividadInput').value || 'sedentario';
+                        const edad = parseInt(modalBody.querySelector('#edadInput').value) || 30;
+                        const imlg = parseFloat(modalBody.querySelector('#imlg').value) || 18;
+                        const img = parseFloat(modalBody.querySelector('#img').value) || 6;
+
+                        drawGrid(ctx, canvas, sexo, actividad, edad);
+                        drawPoint(ctx, canvas, imlg, img, 'red');
+                        console.log('Canvas updated');
                     }
                 });
             }
 
-            // Re-attach event listener for "Descargar Gráfico" button
+            // Descargar Gráfico button
             const descargarBtn = modalBody.querySelector('#descargarChart');
             if (descargarBtn) {
                 descargarBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    const canvas = modalBody.querySelector('#somatotipoChart');
                     if (canvas) {
                         const link = document.createElement('a');
                         link.href = canvas.toDataURL('image/png');
                         link.download = 'somatotipoChart.png';
                         link.click();
-                        console.log('Chart download triggered');
+                        console.log('Canvas download triggered');
                     }
                 });
             }
@@ -3237,21 +3612,21 @@ newButton.addEventListener('click', function(e) {
         });
 });
 
-// Close the modal when the close button is clicked
+// Close the modal
 document.getElementById('closeModal').addEventListener('click', function(e) {
     e.stopPropagation();
     e.preventDefault();
     document.getElementById('modalContainer').style.display = 'none';
-    document.getElementById('modalBody').innerHTML = ''; // Clear content
+    document.getElementById('modalBody').innerHTML = '';
 });
 
-// Close the modal when clicking outside the modal content
+// Close modal on outside click
 document.getElementById('modalContainer').addEventListener('click', function(e) {
     if (e.target === this) {
         e.stopPropagation();
         e.preventDefault();
         this.style.display = 'none';
-        document.getElementById('modalBody').innerHTML = ''; // Clear content
+        document.getElementById('modalBody').innerHTML = '';
     }
 });
 </script>
