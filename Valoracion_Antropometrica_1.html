@@ -1181,14 +1181,17 @@ body {
   position: relative;
   display: block;
   text-align: center;
-  margin: 10px auto;
+  margin: 10px auto 20px auto;
   font-size: 2.5em;
   font-family: Roboto, sans-serif;
   font-weight: bold;
   white-space: pre;
   color: transparent;
-  letter-spacing: 0px;
+  letter-spacing: -2px;
   transition: opacity 0.5s ease;
+  background-color: #f8f9fa; /* Cubre todo el contenedor (texto + glitch) */
+  padding: 10px; /* Espaciado interno para que el fondo no quede pegado */
+  border-radius: 4px; /* Opcional */
 }
 
 .animated-title.fade-out {
