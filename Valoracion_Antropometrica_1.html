@@ -3972,21 +3972,46 @@ for (let i = 0; i < canvasElements.length; i++) {
             link.click();
         }
 
-        // Leer parámetros de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const imlg = parseFloat(urlParams.get('imlg')) || 17.0;
-        const img = parseFloat(urlParams.get('img')) || 11.1;
-        const sexo = urlParams.get('sexo') === 'hombre' ? 'hombre' : 'mujer';
-        const edad = parseInt(urlParams.get('edad')) || 30;
-        const actividad = ['sedentario', 'pocoActivo', 'activo', 'deportista'].includes(urlParams.get('actividad'))
-            ? urlParams.get('actividad')
-            : 'sedentario';
-
-        document.getElementById('imlgInput').value = isNaN(imlg) ? 17.0 : imlg;
-        document.getElementById('imgInput').value = isNaN(img) ? 11.1 : img;
-        document.getElementById('sexoInput').value = sexo;
-        document.getElementById('edadInput').value = isNaN(edad) || edad < 18 ? 30 : edad;
-        document.getElementById('actividadInput').value = actividad;
+        // Initialize modal form fields with values from HTML, URL parameters, or defaults
+	const generoElement = document.getElementById('genero');
+	const edadElement = document.getElementById('edad');
+	const esDeportistaElement = document.getElementById('es_deportista');
+	const imlgElement = document.getElementById('result-imlg-actual');
+	const imgElement = document.getElementById('result-img-actual');
+	const urlParams = new URLSearchParams(window.location.search);
+	
+	// Map genero to sexoInput values
+	const genero = generoElement && generoElement.value ? 
+	    (generoElement.value === 'masculino' ? 'hombre' : generoElement.value === 'femenino' ? 'mujer' : 'mujer') : 
+	    (urlParams.get('sexo') === 'hombre' ? 'hombre' : 'mujer');
+	
+	// Map edad, ensuring it's at least 18
+	const edadFromHtml = edadElement && edadElement.value ? parseFloat(edadElement.value) : NaN;
+	const edadFromUrl = parseInt(urlParams.get('edad'));
+	const edad = !isNaN(edadFromHtml) && edadFromHtml >= 18 ? edadFromHtml : 
+	    (!isNaN(edadFromUrl) && edadFromUrl >= 18 ? edadFromUrl : 30);
+	
+	// Map es_deportista to actividad levels
+	const actividadFromHtml = esDeportistaElement && esDeportistaElement.value ? 
+	    (esDeportistaElement.value === 'sí' ? 'deportista' : 'sedentario') : null;
+	const actividadFromUrl = urlParams.get('actividad');
+	const actividad = actividadFromHtml ? actividadFromHtml : 
+	    (['sedentario', 'pocoActivo', 'activo', 'deportista'].includes(actividadFromUrl) ? actividadFromUrl : 'sedentario');
+	
+	// Get IMLG and IMG values, checking for '---' or invalid values
+	const imlgFromHtml = imlgElement && imlgElement.textContent !== '---' ? parseFloat(imlgElement.textContent) : NaN;
+	const imgFromHtml = imgElement && imgElement.textContent !== '---' ? parseFloat(imgElement.textContent) : NaN;
+	const imlgFromUrl = parseFloat(urlParams.get('imlg'));
+	const imgFromUrl = parseFloat(urlParams.get('img'));
+	const imlg = !isNaN(imlgFromHtml) ? imlgFromHtml : (!isNaN(imlgFromUrl) ? imlgFromUrl : 17.0);
+	const img = !isNaN(imgFromHtml) ? imgFromHtml : (!isNaN(imgFromUrl) ? imgFromUrl : 11.1);
+	
+	// Set form field values
+	document.getElementById('sexoInput').value = genero;
+	document.getElementById('edadInput').value = edad;
+	document.getElementById('actividadInput').value = actividad;
+	document.getElementById('imlgInput').value = imlg;
+	document.getElementById('imgInput').value = img;
 
         // Modal event listeners
         const button = document.getElementById('abrirContainerTipologia');
