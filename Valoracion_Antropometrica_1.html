@@ -3842,43 +3842,42 @@ for (let i = 0; i < canvasElements.length; i++) {
 
             return { imlgRanges, imgRanges, maxIMLG, maxIMG };
         }
-
-        function validateInputs(sexo, actividad, edad, imlg, img) {
-            const imlgWarning = document.getElementById('imlgWarning');
-            const imgWarning = document.getElementById('imgWarning');
-            imlgWarning.style.display = 'none';
-            imgWarning.style.display = 'none';
-
-            const ranges = getRanges(sexo, actividad, edad);
-            if (!ranges) {
-                return false;
-            }
-            const { maxIMLG, maxIMG } = ranges;
-
-            let isValid = true;
-
-            if (imlg < xMin) {
-                imlgWarning.textContent = `IMLG debe ser al menos ${xMin} kg/m²`;
-                imlgWarning.style.display = 'block';
-                isValid = false;
-            } else if (imlg > maxIMLG) {
-                imlgWarning.textContent = `IMLG no puede exceder ${maxIMLG} kg/m² para ${sexo === 'mujer' ? 'mujeres' : 'hombres'} de ${edad >= 50 ? '50+' : (edad >= 30 ? '30-49' : '18-29')} años ${actividad}`;
-                imlgWarning.style.display = 'block';
-                isValid = false;
-            }
-
-            if (img < yMin) {
-                imgWarning.textContent = `IMG debe ser al menos ${yMin} kg/m²`;
-                imgWarning.style.display = 'block';
-                isValid = false;
-            } else if (img > maxIMG) {
-                imgWarning.textContent = `IMG no puede exceder ${maxIMG} kg/m² para ${sexo === 'mujer' ? 'mujeres' : 'hombres'} de ${edad >= 50 ? '50+' : (edad >= 30 ? '30-49' : '18-29')} años ${actividad}`;
-                imgWarning.style.display = 'block';
-                isValid = false;
-            }
-
-            return isValid;
-        }
+		//Validaciones
+           function validateInputs(sexo, actividad, edad, imlg, img) {
+	    const imlgWarning = document.getElementById('imlgWarning');
+	    const imgWarning = document.getElementById('imgWarning');
+	    imlgWarning.style.display = 'none';
+	    imgWarning.style.display = 'none';
+	
+	    const ranges = getRanges(sexo, actividad, edad);
+	    if (!ranges) {
+	        // Display a warning for invalid age, but allow processing
+	        document.getElementById('edadWarning').textContent = 'Edad debe ser mayor o igual a 18';
+	        document.getElementById('edadWarning').style.display = 'block';
+	        return true; // Allow calculation to proceed
+	    }
+	    const { maxIMLG, maxIMG } = ranges;
+	
+	    // Check IMLG and display warnings if out of range
+	    if (imlg < xMin) {
+	        imlgWarning.textContent = `IMLG debe ser al menos ${xMin} kg/m²`;
+	        imlgWarning.style.display = 'block';
+	    } else if (imlg > maxIMLG) {
+	        imlgWarning.textContent = `IMLG no puede exceder ${maxIMLG} kg/m² para ${sexo === 'mujer' ? 'mujeres' : 'hombres'} de ${edad >= 50 ? '50+' : (edad >= 30 ? '30-49' : '18-29')} años ${actividad}`;
+	        imlgWarning.style.display = 'block';
+	    }
+	
+	    // Check IMG and display warnings if out of range
+	    if (img < yMin) {
+	        imgWarning.textContent = `IMG debe ser al menos ${yMin} kg/m²`;
+	        imgWarning.style.display = 'block';
+	    } else if (img > maxIMG) {
+	        imgWarning.textContent = `IMG no puede exceder ${maxIMG} kg/m² para ${sexo === 'mujer' ? 'mujeres' : 'hombres'} de ${edad >= 50 ? '50+' : (edad >= 30 ? '30-49' : '18-29')} años ${actividad}`;
+	        imgWarning.style.display = 'block';
+	    }
+	
+	    return true; // Always allow calculation to proceed
+	}
 
         function detectarTipologia(cliente, sexo, actividad, edad) {
             if (!cliente || !cliente[0] || typeof cliente[0].x !== 'number' || typeof cliente[0].y !== 'number') {
