@@ -2617,11 +2617,12 @@ const downloadFile = (blob, filename) => {
             const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}`;
 
             // Función auxiliar para parsear subsecciones de result-analisis
+		// Función auxiliar para parsear subsecciones de result-analisis
 		const parseBioquimicosSubsections = () => {
 		    const resultAnalisis = document.getElementById('result-analisis');
 		    if (!resultAnalisis) {
 		        console.warn('Elemento result-analisis no encontrado.');
-		        return [{ metric: '', value: '---', note: '' }];
+		        return [{ fullWidth: true, value: '---' }];
 		    }
 		
 		    const subsections = [
@@ -2649,37 +2650,32 @@ const downloadFile = (blob, filename) => {
 		    ];
 		
 		    const result = [];
-		    const content = resultAnalisis.innerHTML; // Usar innerHTML para preservar estructura
 		    let currentSubsection = null;
 		    let currentText = '';
-		
-		    // Procesar nodos hijos para identificar subsecciones
 		    const nodes = resultAnalisis.childNodes;
+		
 		    for (const node of nodes) {
 		        if (node.nodeType === Node.ELEMENT_NODE) {
-		            const text = node.textContent.trim();
 		            const tag = node.tagName.toLowerCase();
+		            const text = node.textContent.trim();
 		
-		            // Verificar si el nodo es un título de subsección
-		            if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b'].includes(tag)) {
+		            if (tag === 'h2') {
+		                // Guardar la subsección anterior si existe
 		                if (currentSubsection && currentText) {
-		                    result.push({
-		                        metric: currentSubsection,
-		                        value: currentText.trim() || '---',
-		                        note: ''
-		                    });
+		                    result.push({ subsectionTitle: true, content: currentSubsection });
+		                    result.push({ fullWidth: true, value: currentText.trim() || '---' });
+		                    console.log(`Subsección procesada: ${currentSubsection}`);
 		                    currentText = '';
 		                }
+		                // Verificar si el h2 es una subsección válida
 		                if (subsections.includes(text)) {
 		                    currentSubsection = text;
-		                    console.log(`Subsección encontrada: ${text}`);
 		                } else {
 		                    currentSubsection = null;
 		                }
-		            } else if (['p', 'div', 'span', 'li', 'h6'].includes(tag)) {
-		                if (currentSubsection) {
-		                    currentText += (currentText ? '\n' : '') + text;
-		                }
+		            } else if (['p', 'div', 'span', 'li'].includes(tag) && currentSubsection) {
+		                // Añadir texto asociado a la subsección
+		                currentText += (currentText ? '\n' : '') + text;
 		            }
 		        } else if (node.nodeType === Node.TEXT_NODE && currentSubsection) {
 		            const text = node.textContent.trim();
@@ -2691,17 +2687,15 @@ const downloadFile = (blob, filename) => {
 		
 		    // Añadir la última subsección si existe
 		    if (currentSubsection && currentText) {
-		        result.push({
-		            metric: currentSubsection,
-		            value: currentText.trim() || '---',
-		            note: ''
-		        });
+		        result.push({ subsectionTitle: true, content: currentSubsection });
+		        result.push({ fullWidth: true, value: currentText.trim() || '---' });
+		        console.log(`Subsección procesada: ${currentSubsection}`);
 		    }
 		
 		    // Si no se encontraron subsecciones, añadir fila por defecto
 		    if (result.length === 0) {
-		        console.warn('No se encontraron subsecciones en result-analisis.');
-		        result.push({ metric: '', value: '---', note: '' });
+		        console.warn('No se encontraron subsecciones <h2> en result-analisis.');
+		        result.push({ fullWidth: true, value: '---' });
 		    }
 		
 		    return result;
@@ -2774,6 +2768,12 @@ const downloadFile = (blob, filename) => {
 		    body: tableData.map(row => {
 		        if (row.section) {
 		            return [{ content: row.section, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } }];
+		        }
+		        if (row.subsectionTitle) {
+		            return [{ content: row.content, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [220, 220, 220] } }];
+		        }
+		        if (row.fullWidth) {
+		            return [{ content: row.value, colSpan: 3, styles: { fontStyle: 'normal', fillColor: [255, 255, 255] } }];
 		        }
 		        return [row.metric, row.value, row.note];
 		    }),
