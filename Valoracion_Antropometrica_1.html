@@ -2801,17 +2801,27 @@ const downloadFile = (blob, filename) => {
             console.log('Tabla principal de resultados con título añadida en yPosition:', yPosition);
 
             // Añadir título para el contenido de explanation-content
-            yPosition += 20; // Espacio después de la tabla
-            if (yPosition + 50 > pageHeight - margin.bottom) {
-                doc.addPage();
-                yPosition = margin.top;
-                console.log('Nueva página añadida para explicación, yPosition reiniciada:', yPosition);
-            }
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(12);
-            doc.setTextColor(0, 0, 0);
-            doc.text('Detalles de la Explicación:', margin.left, yPosition);
-            yPosition += 20;
+		yPosition += 20; // Espacio después de la tabla
+		if (yPosition + 50 > pageHeight - margin.bottom) {
+		    doc.addPage();
+		    yPosition = margin.top;
+		    console.log('Nueva página añadida para explicación, yPosition reiniciada:', yPosition);
+		}
+		
+		// Configurar estilo similar a <h2> (título destacado)
+		doc.setFont('helvetica', 'bold');  // Fuente en negrita
+		doc.setFontSize(14);  // Tamaño más grande (12 es normal, 14-16 para h2)
+		doc.setTextColor(56, 142, 60);  // Verde oscuro (como en tu tabla) o [0, 0, 0] para negro
+		
+		// Escribir el título
+		doc.text('Detalles de la Explicación de los Resultados por Secciones:', margin.left, yPosition);
+		
+		// Restaurar estilo normal para el texto siguiente
+		doc.setFont('helvetica', 'normal');
+		doc.setFontSize(10);  // Tamaño estándar
+		doc.setTextColor(0, 0, 0);  // Negro
+		
+		yPosition += 10;  // Espacio después del título (ajusta según necesidad)
 
             // Definir secciones principales
             const sections = [
