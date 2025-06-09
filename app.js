@@ -681,16 +681,22 @@ let currentTomaSerial = null; // Track the loaded toma's serial
             alert('Por favor, ingrese el email del cliente.');
             return;
         }
-        if (!analisisbioquimico || analisisbioquimico === 'Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.') {
-            const confirmarGuardar = confirm('El análisis de los parámetros bioquímicos no está realizado. ¿Desea guardar los datos sin el análisis bioquímico?');
+        if (!analisisbioquimico || 
+            analisisbioquimico === '---' || 
+            analisisbioquimico === null  || 
+            analisisbioquimico === 'Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.') {
+            
+            const confirmarGuardar = confirm('El análisis bioquímico no se ha realizado.\n\n¿Desea guardar los datos sin el análisis bioquímico?\n\nSi necesita realizarlo, cancele este mensaje y complete el análisis en el pop-up correspondiente.');
             
             if (!confirmarGuardar) {
-                alert('Por favor, realice el análisis en el pop-up de parámetros bioquímicos antes de guardar.');
-                return false; // Detiene la ejecución si el usuario cancela
+                alert('Por favor, complete el análisis bioquímico antes de guardar.\nPuede hacerlo en el pop-up de parámetros bioquímicos.');
+                return false; // Detiene la ejecución
             }
             
-            // Continúa con el guardado si el usuario confirma
-            alert('Los datos se guardarán sin el análisis bioquímico.');
+            // Si el usuario confirma, continuamos con el guardado
+            alert('Advertencia: Los datos se guardarán sin el análisis bioquímico.');
+            // Aquí puedes opcionalmente asignar un valor vacío o null al análisis
+            // analisisbioquimico = null;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const validatedEmail = email && emailRegex.test(email) ? email : null;
