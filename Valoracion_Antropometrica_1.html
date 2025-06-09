@@ -2720,31 +2720,54 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Recolectar todas las imágenes (charts)
-            const canvasElements = explanationContent.querySelectorAll('canvas, div canvas');
-            const chartDataUrls = [];
-            for (let i = 0; i < canvasElements.length; i++) {
-                const canvas = canvasElements[i];
-                try {
-                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                    const renderedCanvas = await html2canvas(canvas, {
-                        scale: 2,
-                        useCORS: true,
-                        allowTaint: false,
-                        logging: true
-                    });
-                    const dataUrl = renderedCanvas.toDataURL('image/png');
-                    console.log(`Chart ${i + 1} capturado:`, {
-                        dataUrlLength: dataUrl.length,
-                        width: renderedCanvas.width,
-                        height: renderedCanvas.height
-                    });
-                    chartDataUrls.push(dataUrl);
-                    // No descargar PNG automáticamente, guardar para depuración
-                    console.log(`Chart ${i + 1} listo para depuración.`);
-                } catch (error) {
-                    console.error(`Error al capturar chart ${i + 1}:`, error.message);
-                    chartDataUrls.push(null);
-                }
+            // Recolectar todas las imágenes (charts)
+		const canvasElements = explanationContent.querySelectorAll('canvas, div canvas');
+		const chartDataUrls = [];
+		for (let i = 0; i < canvasElements.length; i++) {
+		    const canvas = canvasElements[i];
+		    try {
+		        // Capturar el contenedor padre si contiene la imagen de fondo (especialmente para el último chart)
+		        let elementToCapture = canvas;
+		        if (i === canvasElements.length - 1) { // Último chart
+		            const parent = canvas.closest('div'); // Buscar el div padre más cercano
+		            if (parent && getComputedStyle(parent).backgroundImage !== 'none') {
+		                elementToCapture = parent; // Capturar el div con la imagen de fondo
+		                console.log(`Capturando contenedor padre para chart ${i + 1} con imagen de fondo.`);
+		            }
+		        }
+		        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+		        const renderedCanvas = await html2canvas(elementToCapture, {
+		            scale: 2,
+		            useCORS: true,
+		            allowTaint: false,
+		            logging: true,
+		            backgroundColor: null, // Preservar fondo transparente o imagen de fondo
+		            onclone: (document, element) => {
+		                // Forzar carga de imagen de fondo
+		                const bgImage = getComputedStyle(element).backgroundImage;
+		                if (bgImage && bgImage !== 'none') {
+		                    const url = bgImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+		                    const img = new Image();
+		                    img.src = url;
+		                    img.crossOrigin = 'Anonymous';
+		                    document.body.appendChild(img);
+		                    setTimeout(() => document.body.removeChild(img), 1000);
+		                }
+		            }
+		        });
+		        const dataUrl = renderedCanvas.toDataURL('image/png');
+		        console.log(`Chart ${i + 1} capturado:`, {
+		            dataUrlLength: dataUrl.length,
+		            width: renderedCanvas.width,
+		            height: renderedCanvas.height
+		        });
+		        chartDataUrls.push(dataUrl);
+		        console.log(`Chart ${i + 1} listo para depuración.`);
+		    } catch (error) {
+		        console.error(`Error al capturar chart ${i + 1}:`, error.message);
+		        chartDataUrls.push(null);
+		    }
+		}
             }
 
             // Procesar el contenido de explanation-content por secciones
@@ -2861,42 +2884,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Añadir imágenes directamente con doc.addImage
-                const images = sectionContents[i].filter(item => item.type === 'image');
-                for (const imageItem of images) {
-                    if (imageItem.content.startsWith('data:')) {
-                        try {
-                            const imgProps = doc.getImageProperties(imageItem.content);
-                            console.log(`Propiedades de imagen para sección "${section}":`, {
-                                width: imgProps.width,
-                                height: imgProps.height,
-                                dataLength: imageItem.content.length
-                            });
-
-                            const pdfWidth = contentWidth - 8;
-                            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-                            if (yPosition + imgHeight + 20 > pageHeight - margin.bottom) {
-                                doc.addPage();
-                                yPosition = margin.top;
-                                console.log('Nueva página añadida para imagen, yPosition reiniciada:', yPosition);
-                            }
-
-                            doc.text(`Chart ${chartIndex + 1} añadido:`, margin.left, yPosition);
-                            yPosition += 15;
-                            doc.addImage(imageItem.content, 'PNG', margin.left + 4, yPosition + 4, pdfWidth, imgHeight);
-                            console.log(`Imagen renderizada directamente en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight} en yPosition ${yPosition}`);
-                            yPosition += imgHeight + 20;
-                        } catch (error) {
-                            console.error(`Error al renderizar imagen directamente en sección "${section}":`, error.message);
-                            doc.text(`Error: No se pudo renderizar el chart ${chartIndex + 1}.`, margin.left, yPosition + 20);
-                            yPosition += 30;
-                        }
-                    } else {
-                        doc.text(imageItem.content, margin.left, yPosition + 20);
-                        yPosition += 30;
-                    }
-                    chartIndex++;
-                }
+                // Añadir imágenes directamente con doc.addImage
+		const images = sectionContents[i].filter(item => item.type === 'image');
+		for (const imageItem of images) {
+		    if (imageItem.content.startsWith('data:')) {
+		        try {
+		            const imgProps = doc.getImageProperties(imageItem.content);
+		            console.log(`Propiedades de imagen para sección "${section}":`, {
+		                width: imgProps.width,
+		                height: imgProps.height,
+		                dataLength: imageItem.content.length
+		            });
+		
+		            const pdfWidth = contentWidth - 8;
+		            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+		
+		            if (yPosition + imgHeight + 20 > pageHeight - margin.bottom) {
+		                doc.addPage();
+		                yPosition = margin.top;
+		                console.log('Nueva página añadida para imagen, yPosition reiniciada:', yPosition);
+		            }
+		
+		            doc.text(`Chart ${chartIndex + 1} añadido:`, margin.left, yPosition);
+		            yPosition += 15;
+		            doc.addImage(imageItem.content, 'PNG', margin.left + 4, yPosition + 4, pdfWidth, imgHeight);
+		            console.log(`Imagen renderizada directamente en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight} en yPosition ${yPosition}`);
+		            yPosition += imgHeight + 20;
+		        } catch (error) {
+		            console.error(`Error al renderizar imagen directamente en sección "${section}":`, error.message);
+		            doc.text(`Error: No se pudo renderizar el chart ${chartIndex + 1}.`, margin.left, yPosition + 20);
+		            yPosition += 30;
+		        }
+		    } else {
+		        doc.text(imageItem.content, margin.left, yPosition + 20);
+		        yPosition += 30;
+		    }
+		    chartIndex++;
+		}
             }
 
             // Genera el blob y descárgalo
