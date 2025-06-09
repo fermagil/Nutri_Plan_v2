@@ -433,7 +433,8 @@ const resultElementIds = [
     'result-bun',
     'bun-source',
     'result-abdominal-fat-thickness',
-    'abdominal-fat-thickness-source'
+    'abdominal-fat-thickness-source',
+    'result-analisis'
 ];
 
 // Crear select para resultados de búsqueda
@@ -766,6 +767,7 @@ let currentTomaSerial = null; // Track the loaded toma's serial
                     creatininaSource: document.getElementById('creatinina-source')?.textContent || null,
                     bun: parseFloat(document.getElementById('result-bun')?.textContent) || null,
                     bunSource: document.getElementById('bun-source')?.textContent || null,
+                    bioquimicosanalisis: document.getElementById('result-analisis')?.textContent || null,
                 },
             },
             resultados: window.calculatedResults || {},
@@ -1070,7 +1072,9 @@ async function cargarDatosToma(clienteId, tomaId) {
     'vitaminaDSource': { id: 'vitamina-d-source', unit: '', source: 'medidas.parametros_bioquimicos.vitaminaDSource', format: (v) => v || '(No calculado)' },
     'fosfatasaSource': { id: 'fosfatasa-alcalina-source', unit: '', source: 'medidas.parametros_bioquimicos.fosfatasaSource', format: (v) => v || '(No calculado)' },
     'creatininaSource': { id: 'creatinina-source', unit: '', source: 'medidas.parametros_bioquimicos.creatininaSource', format: (v) => v || '(No calculado)' },
-    'bunSource': { id: 'bun-source', unit: '', source: 'medidas.parametros_bioquimicos.bunSource', format: (v) => v || '(No calculado)' }
+    'bunSource': { id: 'bun-source', unit: '', source: 'medidas.parametros_bioquimicos.bunSource', format: (v) => v || '(No calculado)' },
+    'bioquimicosanalisis': { id: 'result-analisis',  unit: '',  source: 'medidas.parametros_bioquimicos.bioquimicosanalisis',format: (v) => v || '(No calculado)' }
+    
 };
         // Asignar valores a los elementos de resultados
         Object.entries(resultMappings).forEach(([key, { id, unit, source, format }]) => {
