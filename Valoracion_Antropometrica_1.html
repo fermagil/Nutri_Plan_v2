@@ -2559,8 +2559,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Construir el título dinámico
             const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}`;
 
-            // Definir datos de la tabla, organizados por secciones
-            // Definir datos de la tabla, organizados por secciones
+            // Definir datos de la tabla principal, organizados por secciones
             const tableData = [
                 // Composición Corporal
                 { section: 'Composición Corporal', metric: '', value: '', note: '' },
@@ -2613,7 +2612,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-matabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-metabolicsource')?.textContent?.trim() || '' }
             ];
 
-            // Crear tabla con autoTable, incluyendo el título como encabezado
+            // Crear tabla principal con autoTable, incluyendo el título como encabezado
             doc.autoTable({
                 startY: yPosition,
                 head: [
@@ -2647,7 +2646,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            console.log('Tabla de resultados con título añadido en yPosition:', yPosition);
+            console.log('Tabla principal de resultados con título añadida en yPosition:', yPosition);
 
             // Añadir título para el contenido de explanation-content
             yPosition += 20; // Espacio después de la tabla
@@ -2731,42 +2730,60 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 } else if (tag === 'table') {
+                    // Extraer datos de la tabla
                     const rows = element.querySelectorAll('tr');
-                    let rowIndex = 0;
-                    for (const row of rows) {
-                        const cells = row.querySelectorAll('td, th');
-                        let cellTexts = Array.from(cells).map(cell => cell.textContent.trim()).filter(text => text);
-                        if (cellTexts.length === 0) continue;
+                    const tableContent = {
+                        head: [],
+                        body: []
+                    };
 
-                        const isHeader = row.querySelector('th') !== null;
-                        const rowText = cellTexts.join(' | ');
-                        const lines = doc.splitTextToSize(rowText, contentWidth);
-                        const rowHeight = lines.length * 14 + (isHeader ? 10 : 8);
+                    rows.forEach((row, rowIndex) => {
+                        const cells = row.querySelectorAll('th, td');
+                        const cellTexts = Array.from(cells).map(cell => cell.textContent.trim()).filter(text => text);
+                        if (cellTexts.length === 0) return;
 
-                        if (yPosition + rowHeight > pageHeight - margin.bottom) {
-                            doc.addPage();
-                            yPosition = margin.top;
-                            console.log('Nueva página añadida para tabla, yPosition reiniciada:', yPosition);
-                        }
-
-                        if (isHeader) {
-                            doc.setFont('helvetica', 'bold');
-                            doc.setFontSize(12);
-                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
-                            doc.setFont('helvetica', 'normal');
-                            doc.setFontSize(12);
-                            yPosition += rowHeight;
-                            // Añadir separador de encabezado
-                            const separator = '-'.repeat(Math.floor(contentWidth / 6));
-                            doc.text(separator, margin.left, yPosition);
-                            yPosition += 14;
+                        if (row.querySelector('th')) {
+                            // Es una fila de encabezado
+                            tableContent.head.push(cellTexts);
                         } else {
-                            doc.text(lines, margin.left, yPosition, { align: 'justify' });
-                            yPosition += rowHeight;
+                            // Es una fila de datos
+                            tableContent.body.push(cellTexts);
                         }
-                        rowIndex++;
+                    });
+
+                    if (tableContent.head.length === 0 && tableContent.body.length === 0) {
+                        console.warn('Tabla vacía encontrada en explanation-content, omitiendo.');
+                        return;
                     }
+
+                    // Renderizar la tabla con autoTable
+                    doc.autoTable({
+                        startY: yPosition,
+                        head: tableContent.head.length > 0 ? tableContent.head : [Array(tableContent.body[0]?.length || 1).fill('')], // Fallback si no hay encabezados
+                        body: tableContent.body,
+                        theme: 'grid',
+                        styles: {
+                            font: 'helvetica',
+                            fontSize: 9,
+                            textColor: [0, 0, 0],
+                            lineColor: [0, 0, 0],
+                            lineWidth: 0.5,
+                            cellPadding: 4
+                        },
+                        headStyles: {
+                            fillColor: [56, 142, 60], // Verde para el encabezado
+                            textColor: [255, 255, 255], // Texto blanco
+                            fontStyle: 'bold',
+                            fontSize: 10
+                        },
+                        margin: { left: margin.left, right: margin.right },
+                        didDrawPage: (data) => {
+                            yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
+                        }
+                    });
+
                     yPosition += 10; // Espacio extra después de la tabla
+                    console.log('Tabla de explanation-content añadida en yPosition:', yPosition);
                 }
 
                 // Verifica si es necesario añadir una nueva página
