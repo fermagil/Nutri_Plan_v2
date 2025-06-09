@@ -1341,18 +1341,18 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const vitaminaD = values['vitamina-d'] || 0;
     if (vitaminaD < 30) {
         results.push('<h2>Deficiencia de Vitamina D</h2>' + formatParentheticalValues(
-            '<strong>Deficiencia de Vitamina D Detectada</strong>: Niveles bajos (<30 ng/mL) por secuestro en tejido adiposo o baja exposición solar. Riesgos: osteoporosis, fracturas, debilidad muscular, resistencia a insulina. Recomendaciones: suplementar 50,000 UI semanales (8 semanas), luego 1,000–2,000 UI/día (objetivo: <strong>30–50 ng/mL</strong>), exposición solar 15–30 min/día, medir cada 3–6 meses, ejercicio con pesas.' +
+            '<strong>Deficiencia de Vitamina D Detectada</strong>: Niveles bajos (menor de 30 ng/mL) por secuestro en tejido adiposo o baja exposición solar. Riesgos: osteoporosis, fracturas, debilidad muscular, resistencia a insulina. Recomendaciones: suplementar 50,000 UI semanales (8 semanas), luego 1,000–2,000 UI/día (objetivo: <strong>30–50 ng/mL</strong>), exposición solar 15–30 min/día, medir cada 3–6 meses, ejercicio con pesas.' +
             '<br><br><strong>Hallazgos Bioquímicos</strong>:<br>' +
-            '↓ Vitamina D (<30 ng/mL): Deficiencia asociada a baja exposición solar o secuestro en tejido adiposo.<br>' +
+            '↓ Vitamina D menor de 30 ng/mL: Deficiencia asociada a baja exposición solar o secuestro en tejido adiposo.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
             'Secuestro en tejido adiposo: La vitamina D liposoluble se acumula en grasa, reduciendo su biodisponibilidad.<br>' +
-            'Baja síntesis: Insuficiente exposición a UVB o problemas de absorción intestinal (ej. malabsorción).<br>' +
+            'Baja síntesis: Insuficiente exposición a UVB o problemas de absorción intestinal ,ej. malabsorción.<br>' +
             '<strong>Consecuencias Clínicas</strong>:<br>' +
             'Mayor riesgo de osteoporosis, fracturas óseas, debilidad muscular, y resistencia a insulina.<br>' +
             '<strong>Manejo</strong>:<br>' +
             '- Dieta: Alimentos ricos en vitamina D (pescado graso, yema de huevo, alimentos fortificados).<br>' +
-            '- Suplementos: (50,000 UI/sem) por 8 semanas, luego (1,000–2,000 UI/dia).<br>' +
-            '- Estilo de vida: Exposición solar moderada (15–30 min/día) y  ejercicios de resistencia.<br>' +
+            '- Suplementos: 50,000 UI/sem por 8 semanas, luego 1,000–2,000 UI/dia.<br>' +
+            '- Estilo de vida: Exposición solar moderada 15–30 min/día y  ejercicios de resistencia.<br>' +
             '- Monitoreo: Medir niveles de vitamina D cada 3–6 meses.<br>' +
             '<strong>Explicación Integrada</strong>: Hormonas y su Impacto en el Peso y Metabolismo: La deficiencia de vitamina D contribuye a resistencia a insulina y aumento de grasa visceral, afectando el metabolismo general.'
         ));
@@ -1363,9 +1363,9 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const ggt = values['ggt'] || 0;
     if (fosfatasaAlcalina > 140) {
         results.push('<h2>Fosfatasa Alcalina Elevada</h2>' + formatParentheticalValues(
-            '<strong>Fosfatasa Alcalina Elevada Detectada</strong>: Niveles (>140 U/L) sugieren recambio óseo acelerado (por déficit de vitamina D) o daño hepático (NAFLD/colestasis). Riesgos: osteoporosis, fracturas, enfermedad hepática. Recomendaciones: medir vitamina D, PTH, calcio; realizar densitometría ósea (DEXA); evaluar hígado (ultrasonido, GGT: <strong>' + ggt.toFixed(2) + ' U/L</strong>); suplementar vitamina D y calcio (<strong>1,200 mg/día</strong>), considerar bifosfonatos si osteoporosis confirmada.' +
+            '<strong>Fosfatasa Alcalina Elevada Detectada</strong>: Niveles mayores de 140 U/L,  sugieren recambio óseo acelerado (por déficit de vitamina D) o daño hepático (NAFLD/colestasis). Riesgos: osteoporosis, fracturas, enfermedad hepática. Recomendaciones: medir vitamina D, PTH, calcio; realizar densitometría ósea (DEXA); evaluar hígado (ultrasonido, GGT: <strong>' + ggt.toFixed(2) + ' U/L</strong>); suplementar vitamina D y calcio (<strong>1,200 mg/día</strong>), considerar bifosfonatos si osteoporosis confirmada.' +
             '<br><br><strong>Hallazgos Bioquímicos</strong>:<br>' +
-            '↑ Fosfatasa Alcalina (>140 U/L): Indica recambio óseo o daño hepatobiliar.<br>' +
+            '↑ Fosfatasa Alcalina mayor de 140 U/L: Indica recambio óseo o daño hepatobiliar.<br>' +
             '↑ GGT (<strong>' + ggt.toFixed(2) + ' U/L</strong>): Sugiere estrés oxidativo o colestasis.<br>' +
             '<strong>Mecanismos Subyacentes</strong>:<br>' +
             'Recambio óseo: Déficit de vitamina D o hiperparatiroidismo secundario aumenta actividad osteoblástica.<br>' +
