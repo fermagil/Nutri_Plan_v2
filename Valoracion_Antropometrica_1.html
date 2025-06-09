@@ -2371,6 +2371,7 @@ body {
 			<div id="containerTipologiaPlaceholder"></div>
 			
 			<!-- Modal container (initially hidden) -->
+			<!-- Modal container (initially hidden) -->
 			<div id="modalContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
 			    <div id="modalContent" style="background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative;">
 			        <button id="closeModal" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; font-size: 14px; cursor: pointer;">Cerrar</button>
@@ -3108,7 +3109,8 @@ for (let i = 0; i < canvasElements.length; i++) {
     });
 });
 	//Abrir Container MapaTipologia Corporal
-	document.getElementById('abrirContainerTipologia').addEventListener('click', function() {
+	document.getElementById('abrirContainerTipologia').addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent event from bubbling to other listeners
     // Show the modal
     const modal = document.getElementById('modalContainer');
     const modalBody = document.getElementById('modalBody');
@@ -3132,7 +3134,8 @@ for (let i = 0; i < canvasElements.length; i++) {
 });
 
 // Close the modal when the close button is clicked
-document.getElementById('closeModal').addEventListener('click', function() {
+document.getElementById('closeModal').addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent event from bubbling
     document.getElementById('modalContainer').style.display = 'none';
     document.getElementById('modalBody').innerHTML = ''; // Clear content
 });
@@ -3140,6 +3143,7 @@ document.getElementById('closeModal').addEventListener('click', function() {
 // Close the modal when clicking outside the modal content
 document.getElementById('modalContainer').addEventListener('click', function(e) {
     if (e.target === this) {
+        e.stopPropagation(); // Prevent event from bubbling
         this.style.display = 'none';
         document.getElementById('modalBody').innerHTML = ''; // Clear content
     }
