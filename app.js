@@ -662,7 +662,8 @@ let currentTomaSerial = null; // Track the loaded toma's serial
         const altura = document.getElementById('altura').value;
         const email = document.getElementById('e-mail').value.trim();
         const tomaSerial = currentTomaSerial || null; // Use currentTomaSerial
-
+         const analisisbioquimico = document.getElementById('result-analisis').value.trim();
+        
         // Validaciones
         if (!nombre) {
             alert('Por favor, ingrese el nombre del cliente.');
@@ -679,6 +680,17 @@ let currentTomaSerial = null; // Track the loaded toma's serial
         if (!email) {
             alert('Por favor, ingrese el email del cliente.');
             return;
+        }
+        if (!analisisbioquimico || analisisbioquimico === 'Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.') {
+            const confirmarGuardar = confirm('El análisis de los parámetros bioquímicos no está realizado. ¿Desea guardar los datos sin el análisis bioquímico?');
+            
+            if (!confirmarGuardar) {
+                alert('Por favor, realice el análisis en el pop-up de parámetros bioquímicos antes de guardar.');
+                return false; // Detiene la ejecución si el usuario cancela
+            }
+            
+            // Continúa con el guardado si el usuario confirma
+            alert('Los datos se guardarán sin el análisis bioquímico.');
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const validatedEmail = email && emailRegex.test(email) ? email : null;
