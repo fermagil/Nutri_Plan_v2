@@ -681,23 +681,37 @@ let currentTomaSerial = null; // Track the loaded toma's serial
             alert('Por favor, ingrese el email del cliente.');
             return;
         }
-        if (!analisisbioquimico || 
-            analisisbioquimico === '---' || 
-            analisisbioquimico === null  || 
-            analisisbioquimico === 'Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.') {
+     // Verificamos si el análisis bioquímico NO es válido
+       // Depuración: Mostrar el valor actual de analisisbioquimico
+            console.log("Valor de analisisbioquimico:", analisisbioquimico);
             
-            const confirmarGuardar = confirm('El análisis bioquímico no se ha realizado.\n\n¿Desea guardar los datos sin el análisis bioquímico?\n\nSi necesita realizarlo, cancele este mensaje y complete el análisis en el pop-up correspondiente.');
-            
-            if (!confirmarGuardar) {
-                alert('Por favor, complete el análisis bioquímico antes de guardar.\nPuede hacerlo en el pop-up de parámetros bioquímicos.');
-                return false; // Detiene la ejecución
+            // Verificamos si el análisis bioquímico NO es válido
+            if (
+                !analisisbioquimico || 
+                analisisbioquimico === '---' || 
+                analisisbioquimico === null || 
+                analisisbioquimico === 'Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.'
+            ) {
+                // Si no es válido, preguntamos si desea guardar sin él
+                const confirmarGuardar = confirm(
+                    'El análisis bioquímico no se ha realizado.\n\n' +
+                    '¿Desea guardar los datos sin el análisis bioquímico?\n\n' +
+                    'Si necesita realizarlo, cancele este mensaje y complete el análisis en el pop-up correspondiente.'
+                );
+                
+                if (!confirmarGuardar) {
+                    alert('Por favor, complete el análisis bioquímico antes de guardar.\nPuede hacerlo en el pop-up de parámetros bioquímicos.');
+                    return false; // Detiene el proceso
+                }
+                
+                alert('Advertencia: Los datos se guardarán sin el análisis bioquímico.');
+                // Opcional: asignar un valor nulo o vacío si se desea
+                // analisisbioquimico = null;
             }
             
-            // Si el usuario confirma, continuamos con el guardado
-            alert('Advertencia: Los datos se guardarán sin el análisis bioquímico.');
-            // Aquí puedes opcionalmente asignar un valor vacío o null al análisis
-            // analisisbioquimico = null;
-        }
+            // Si el análisis bioquímico SÍ es válido, el código continúa sin preguntar
+            console.log("El análisis bioquímico es válido, continuando con el proceso...");
+        
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const validatedEmail = email && emailRegex.test(email) ? email : null;
         if (!validatedEmail) {
