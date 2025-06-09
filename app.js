@@ -1385,9 +1385,9 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const tsh = values['tsh'] || 0;
     if (tsh > 4.5) {
         results.push('<h2>Riesgo de Hipotiroidismo</h2>' + formatParentheticalValues(
-            '<p><strong>Riesgo de Hipotiroidismo Detectado</strong>: TSH elevada (>4.5 mUI/L) sugiere disfunción tiroidea, reduciendo metabolismo basal y favoreciendo ganancia de peso (<strong>5-10 kg</strong>). Riesgos: fatiga, aumento de LDL, resistencia a insulina. Recomendaciones: medir T4 libre (normal: <strong>0.8-1.8 ng/dL</strong>), iniciar levotiroxina si T4 (<0.8), monitorear TSH cada 6-8 semanas, descartar hipotiroidismo subclínico.</p>' +
+            '<p><strong>Riesgo de Hipotiroidismo Detectado</strong>: TSH elevada ( mas de 4.5 mUI/L) sugiere disfunción tiroidea, reduciendo metabolismo basal y favoreciendo ganancia de peso (<strong>5-10 kg</strong>). Riesgos: fatiga, aumento de LDL, resistencia a insulina. Recomendaciones: medir T4 libre (normal: <strong>0.8-1.8 ng/dL</strong>), iniciar levotiroxina si T4 (<0.8), monitorear TSH cada 6-8 semanas, descartar hipotiroidismo subclínico.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>TSH (>4.5 mUI/L): Indica disfunción tiroidea, posiblemente hipotiroidismo primario o subclínico.</p>' +
+            '<p>TSH (mayor de 4.5 mUI/L): Indica disfunción tiroidea, posiblemente hipotiroidismo primario o subclínico.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Disfunción tiroidea: Reducción de hormonas tiroideas (T3/T4) disminuye el metabolismo basal.</p>' +
             '<p>Impacto metabólico: Aumenta acumulación de grasa y resistencia a insulina.</p>' +
@@ -1395,7 +1395,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<p>Fatiga crónica, ganancia de peso, hiperlipidemia, y riesgo de diabetes tipo 2.</p>' +
             '<p><strong>Manejo</strong>:</p>' +
             '<p>- Diagnóstico: Medir T4 libre y anticuerpos anti-TPO para descartar tiroiditis autoinmune.</p>' +
-            '<p>- Fármacos: Levotiroxina si T4 libre (<0.8 ng/dL).</p>' +
+            '<p>- Fármacos: Levotiroxina si T4 libre ( menos de 0.8 ng/dL).</p>' +
             '<p>- Estilo de vida: Dieta equilibrada, ejercicio moderado.</p>' +
             '<p>- Monitoreo: TSH cada 6-8 semanas hasta estabilización.</p>' +
             '<p><strong>Explicación Integrada</strong>: Hormonas y su Impacto en el Peso y Metabolismo: La TSH elevada contribuye a ganancia de peso y resistencia a insulina, afectando el metabolismo energético.</p>'
@@ -1408,7 +1408,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
         results.push('<h2>Testosterona Baja</h2>' + formatParentheticalValues(
             '<p><strong>Testosterona Baja Detectada</strong>: Niveles bajos (<300 ng/dL) promueven grasa visceral y pérdida muscular, exacerbados por IL-6. Riesgos: síndrome metabólico, disfunción eréctil. Recomendaciones: ejercicio de fuerza, suplementos de zinc y vitamina D, terapia de reemplazo si (<200 ng/dL) con síntomas, evaluar resistencia a insulina.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Testosterona (<300 ng/mL): Niveles bajos asociados a inflamación o edad.</p>' +
+            '<p>Testosterona ( menos de 300 ng/mL): Niveles bajos asociados a inflamación o edad.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Inflamación: Citocinas (IL-6) inhiben la producción de testosterona en testículos.</p>' +
             '<p>Resistencia a insulina: Aumenta aromatización de testosterona a estrógenos en tejido adiposo.</p>' +
@@ -1427,9 +1427,9 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const cortisol = values['cortisol'] || 0;
     if (cortisol > 25) {
         results.push('<h2>Cortisol Elevado</h2>' + formatParentheticalValues(
-            '<p><strong>Cortisol Elevado Detectado</strong>: Niveles altos (>25 µg/dL) por estrés crónico promueven grasa abdominal, hiperglucemia y resistencia a glucosa. Riesgos: síndrome metabólico, hipertensión. Recomendaciones: reducir estrés (mindfulness, yoga, <strong>7-8 h sommeil</strong>), dieta con magnesio (espinacas, almendras) y omega-3, evita cafeína/azúcares, evalúa cortisol salival, descarta Cushing.</p>' +
+            '<p><strong>Cortisol Elevado Detectado</strong>: Niveles altos (mayor de 25 µg/dL) por estrés crónico promueven grasa abdominal, hiperglucemia y resistencia a glucosa. Riesgos: síndrome metabólico, hipertensión. Recomendaciones: reducir estrés (mindfulness, yoga, <strong>7-8 h sommeil</strong>), dieta con magnesio (espinacas, almendras) y omega-3, evita cafeína/azúcares, evalúa cortisol salival, descarta Cushing.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Cortisol (>25 µg/dL): Estrés crónico o posible síndrome de Cushing.</p>' +
+            '<p>Cortisol (mas de 25 µg/dL): Estrés crónico o posible síndrome de Cushing.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Estrés crónico: Activación del eje HPA aumenta cortisol, promoviendo lipogénesis abdominal.</p>' +
             '<p>Resistencia a leptina: Cortisol elevado interfiere con señalización de saciedad.</p>' +
@@ -1448,11 +1448,11 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const pcr = values['pcr-ultrasensible'] || 0;
     if (pcr > 3) {
         results.push('<h2>Inflamación Sistémica</h2>' + formatParentheticalValues(
-            '<p><strong>Inflamación Sistémica Detectada</strong>: PCR elevada (>3 mg/L) indica inflamación crónica por IL-6/TNF-α desde tejido adiposo visceral. Riesgos: aterosclerosis, resistencia a insulina, pérdida muscular. Recomendaciones: dieta antiinflamatoria omega3, frutos rojos, fibra, ejercicio, estatinas o metformina, evaluar perfil cardiovascular.</p>' +
+            '<p><strong>Inflamación Sistémica Detectada</strong>: PCR elevada (mayor de 3 mg/L) indica inflamación crónica por IL-6/TNF-alfa desde tejido adiposo visceral. Riesgos: aterosclerosis, resistencia a insulina, pérdida muscular. Recomendaciones: dieta antiinflamatoria omega3, frutos rojos, fibra, ejercicio, estatinas o metformina, evaluar perfil cardiovascular.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>PCR ultrasensible (>3 mg/L): Inflamación sistémica por tejido adiposo disfuncional.</p>' +
+            '<p>PCR ultrasensible (mas de 3 mg/L): Inflamación sistémica por tejido adiposo disfuncional.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
-            '<p>Inflamación crónica: Adipocitos liberan IL-6 y TNF-α, promoviendo inflamación sistémica.</p>' +
+            '<p>Inflamación crónica: Adipocitos liberan IL-6 y TNF-alfa, promoviendo inflamación sistémica.</p>' +
             '<p>Estrés oxidativo: Radicales libres dañan vasos, aumentando riesgo cardiovascular.</p>' +
             '<p><strong>Consecuencias Clínicas</strong>:</p>' +
             '<p>Aterosclerosis, resistencia a insulina, pérdida muscular, y riesgo cardiovascular elevado.</p>' +
@@ -1461,7 +1461,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<p>- Ejercicio: Combinar aeróbico y resistencia para reducir inflamación.</p>' +
             '<p>- Fármacos: Estatinas (si LDL elevado), metformina (si resistencia a insulina).</p>' +
             '<p>- Monitoreo: PCR y perfil lipídico cada 3-6 meses.</p>' +
-            '<p><strong>Explicación Detallada</strong>: ↑ PCR + ↑ IL-6/TNF-α = Inflamación Sistémica: La inflamación crónica impulsa resistencia a insulina y daño vascular.</p>'
+            '<p><strong>Explicación Detallada</strong>:  PCR alto + IL-6/TNF-alfa alto = Inflamación Sistémica: La inflamación crónica impulsa resistencia a insulina y daño vascular.</p>'
         ));
     }
     
@@ -1530,10 +1530,10 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const bun = values['bun'] || 0;
     if (creatinina > 1.2 || bun > 20) {
         results.push('<h2>Disfunción Renal</h2>' + formatParentheticalValues(
-            '<p><strong>Riesgo de Disfunción Renal Detectado</strong>: Creatinina (>1.2 mg/dL) o BUN (>20 mg/dL) elevados sugieren hiperfiltración glomerular o daño renal crónico (ERC) por obesidad, resistencia a insulina o inflamación. Riesgos: nefropatía, proteinuria. Recomendaciones: controlar presión arterial (<strong><130/80 mmHg</strong>, preferir IECA/ARA II), dieta baja en sodio y proteínas moderadas (<strong>0.8 g/kg</strong>), evitar nefrotóxicos (AINEs), evaluar microalbuminuria.</p>' +
+            '<p><strong>Riesgo de Disfunción Renal Detectado</strong>: Creatinina ( mayor de 1.2 mg/dL) o BUN ( mas de 20 mg/dL) elevados sugieren hiperfiltración glomerular o daño renal crónico (ERC) por obesidad, resistencia a insulina o inflamación. Riesgos: nefropatía, proteinuria. Recomendaciones: controlar presión arterial (<strong><130/80 mmHg</strong>, preferir IECA/ARA II), dieta baja en sodio y proteínas moderadas (<strong>0.8 g/kg</strong>), evitar nefrotóxicos (AINEs), evaluar microalbuminuria.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Creatinina alta (>1.2 mg/dL): Indica reducción de filtración glomerular.</p>' +
-            '<p>BUN alto (>20 mg/dL): Sugiere disfunción renal o deshidratación.</p>' +
+            '<p>Creatinina alta ( mas de 1.2 mg/dL): Indica reducción de filtración glomerular.</p>' +
+            '<p>BUN alto ( mas de 20 mg/dL): Sugiere disfunción renal o deshidratación.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Hiperfiltración: Obesidad y resistencia a insulina sobrecargan los riñones.</p>' +
             '<p>Inflamación: Citocinas IL-6 contribuyen a daño renal.</p>' +
@@ -1571,11 +1571,11 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
         ));
     } else if (leptina > (genero === 'masculino' ? 15 : 30)) {
         results.push('<h2>Resistencia Leptínica</h2>' + formatParentheticalValues(
-            '<p><strong>Resistencia Leptínica Detectada</strong>: Leptina elevada indica resistencia, con inflamación (IL-6/TNF-α) y hambre constante. Riesgo: obesidad metabólica. Recomendaciones: pérdida de peso, ejercicio de fuerza, mejorar sueño, considerar GLP-1.</p>' +
+            '<p><strong>Resistencia Leptínica Detectada</strong>: Leptina elevada indica resistencia, con inflamación (IL-6/TNF-alfa) y hambre constante. Riesgo: obesidad metabólica. Recomendaciones: pérdida de peso, ejercicio de fuerza, mejorar sueño, considerar GLP-1.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
             '<p>Leptina alta (>' + (genero === 'masculino' ? 15 : 30) + ' ng/mL): Resistencia a señalización de saciedad.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
-            '<p>Inflamación: Citocinas (IL-6/TNF-α) interfieren con receptores de leptina.</p>' +
+            '<p>Inflamación: Citocinas (IL-6/TNF-alfa) interfieren con receptores de leptina.</p>' +
             '<p>Obesidad: Aumenta producción de leptina sin efecto regulador.</p>' +
             '<p><strong>Consecuencias Clínicas</strong>:</p>' +
             '<p>Hambre constante, aumento de peso, y riesgo de síndrome metabólico.</p>' +
@@ -1588,9 +1588,9 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
         ));
     } else if (adiponectina < 5) {
         results.push('<h2>Adiponectina Baja</h2>' + formatParentheticalValues(
-            '<p><strong>Adiponectina Baja</strong>: Niveles bajos (<5 µg/mL) contribuyen a resistencia a insulina, inflamación y NAFLD. Recomendaciones: dieta rica en omega-3, ejercicio, pioglitazona o GLP-1, suplementos de magnesio.</p>' +
+            '<p><strong>Adiponectina Baja</strong>: Niveles bajos ( menos de 5 µg/mL) contribuyen a resistencia a insulina, inflamación y NAFLD. Recomendaciones: dieta rica en omega-3, ejercicio, pioglitazona o GLP-1, suplementos de magnesio.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Adiponectina baja (<5 µg/mL): Reducción de acción antiinflamatoria y metabólica.</p>' +
+            '<p>Adiponectina baja ( menor de 5 µg/mL): Reducción de acción antiinflamatoria y metabólica.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Disfunción adipocitaria: Obesidad reduce secreción de adiponectina.</p>' +
             '<p>Inflamación: Contribuye a resistencia a insulina y NAFLD.</p>' +
@@ -1608,10 +1608,10 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     // Check for Diabetes No Controlada
     if (glucosa >= 126 && hba1c >= 6.5) {
         results.push('<h2>Diabetes No Controlada</h2>' + formatParentheticalValues(
-            '<p><strong>Diabetes No Controlada Detectada</strong>: Glucosa en ayunas ≥126 mg/dL y HbA1c ≥6.5% indican hiperglucemia sostenida por resistencia o deficiencia de insulina. Riesgos: neuropatía, retinopatía, nefropatía, cetoacidosis. Recomendaciones: monitoreo glucémico frecuente, HbA1c cada 3 meses (objetivo: <strong><7%</strong>), metformina o insulina (según tipo), dieta baja en carbohidratos, consultar endocrinólogo.</p>' +
+            '<p><strong>Diabetes No Controlada Detectada</strong>: Glucosa en ayunas  mayor de 126 mg/dL y HbA1c  mayor de 6.5% indican hiperglucemia sostenida por resistencia o deficiencia de insulina. Riesgos: neuropatía, retinopatía, nefropatía, cetoacidosis. Recomendaciones: monitoreo glucémico frecuente, HbA1c cada 3 meses (objetivo: <strong><7%</strong>), metformina o insulina (según tipo), dieta baja en carbohidratos, consultar endocrinólogo.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Glucosa alta(≥126 mg/dL): Hiperglucemia sostenida.</p>' +
-            '<p>HbA1c alto (≥6.5%): Mal control glucémico a largo plazo.</p>' +
+            '<p>Glucosa alta( mayor de 126 mg/dL): Hiperglucemia sostenida.</p>' +
+            '<p>HbA1c alto (mas del 6.5%): Mal control glucémico a largo plazo.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Resistencia a insulina: Disminuye captación de glucosa en tejidos.</p>' +
             '<p>Deficiencia de insulina: En diabetes tipo 1 o avanzada tipo 2.</p>' +
@@ -1646,9 +1646,9 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
         ));
     } else if (hba1c >= 6.5) {
         results.push('<h2>Diabetes Mellitus</h2>' + formatParentheticalValues(
-            '<p><strong>Diabetes Mellitus Detectada</strong>: HbA1c ≥6.5% confirma diabetes. Riesgos: daño vascular, infecciones. Recomendaciones: metformina, inhibidores de SGLT2 o GLP-1, monitoreo glucémico, HbA1c cada 3 meses (objetivo: <strong><7%</strong>), dieta y ejercicio.</p>' +
+            '<p><strong>Diabetes Mellitus Detectada</strong>: HbA1c mayor de 6.5% confirma diabetes. Riesgos: daño vascular, infecciones. Recomendaciones: metformina, inhibidores de SGLT2 o GLP-1, monitoreo glucémico, HbA1c cada 3 meses (objetivo: <strong><7%</strong>), dieta y ejercicio.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>HbA1c alto (≥6.5%): Confirma diabetes mellitus.</p>' +
+            '<p>HbA1c alto (mayor de 6.5%): Confirma diabetes mellitus.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Resistencia o deficiencia de insulina: Impide control glucémico adecuado.</p>' +
             '<p>Estrés oxidativo: Contribuye a daño vascular.</p>' +
@@ -1659,19 +1659,19 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<p>- Fármacos: Metformina, inhibidores de SGLT2, o GLP-1.</p>' +
             '<p>- Monitoreo: HbA1c cada 3 meses, glucosa diaria.</p>' +
             '<p>- Consulta: Endocrinólogo.</p>' +
-            '<p><strong>Explicación Detallada</strong>: Relación entre Glucosa, HbA1c e Insulina: HbA1c ≥6.5% confirma diabetes con resistencia o deficiencia de insulina.</p>'
+            '<p><strong>Explicación Detallada</strong>: Relación entre Glucosa, HbA1c e Insulina: HbA1c mayor de 6.5% confirma diabetes con resistencia o deficiencia de insulina.</p>'
         ));
     }
 
     // Check for Insulin Resistance
     if (insulina > 25 && homaIR > 2.5) {
         results.push('<h2>Resistencia a la Insulina</h2>' + formatParentheticalValues(
-            '<p><strong>Resistencia a la Insulina Detectada</strong>: Insulina elevada (>25 µU/mL) y HOMA-IR <strong>' + homaIR.toFixed(2) + '</strong> (>2.5) indican resistencia a insulina, impulsada por obesidad visceral y citocinas (TNF-α, IL-6). Riesgos: síndrome metabólico, diabetes tipo 2, NAFLD. Recomendaciones: dieta baja en carbohidratos, ejercicio de fuerza, pérdida de peso, metformina o pioglitazona.</p>' +
+            '<p><strong>Resistencia a la Insulina Detectada</strong>: Insulina elevada (mayor de 25 µU/mL) y HOMA-IR <strong>' + homaIR.toFixed(2) + '</strong> (mayor de 2.5) indican resistencia a insulina, impulsada por obesidad visceral y citocinas (TNF-α, IL-6). Riesgos: síndrome metabólico, diabetes tipo 2, NAFLD. Recomendaciones: dieta baja en carbohidratos, ejercicio de fuerza, pérdida de peso, metformina o pioglitazona.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Insulina alta(>25 µU/mL): Indica hiperinsulinemia compensatoria.</p>' +
-            '<p>HOMA-IR alta (>2.5): Confirma resistencia a insulina.</p>' +
+            '<p>Insulina alta( mayor de 25 µU/mL): Indica hiperinsulinemia compensatoria.</p>' +
+            '<p>HOMA-IR alta (mayor de 2.5): Confirma resistencia a insulina.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
-            '<p>Inflamación: Citocinas (TNF-α, IL-6) bloquean señalización de insulina.</p>' +
+            '<p>Inflamación: Citocinas (TNF-alfa, IL-6) bloquean señalización de insulina.</p>' +
             '<p>Obesidad visceral: Aumenta ácidos grasos libres, empeorando resistencia.</p>' +
             '<p><strong>Consecuencias Clínicas</strong>:</p>' +
             '<p>Riesgo de diabetes tipo 2, síndrome metabólico, y NAFLD.</p>' +
@@ -1690,14 +1690,14 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const tgHdlRatio = hdl !== 0 ? tg / hdl : 0;
     if (tg > 150 && hdl < (genero === 'masculino' ? 40 : 50) && (glucosa >= 100 || hba1c >= 5.7)) {
         results.push('<h2>Obesidad Metabólica (Síndrome Metabólico)</h2>' + formatParentheticalValues(
-            '<p><strong>Obesidad Metabólica (Síndrome Metabólico) Detectada</strong>: Elevados triglicéridos (>150 mg/dL), bajo HDL (<' + (genero === 'masculino' ? 40 : 50) + ' mg/dL), y glucosa elevada (ayunas ≥100 mg/dL o HbA1c ≥5.7%) indican resistencia a insulina y dislipidemia aterogénica. Riesgos: diabetes tipo 2, infarto, ACV, NAFLD. TG/HDL ratio: <strong>' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + '</strong> (>2.5 sugiere resistencia a insulina). Recomendaciones: dieta mediterránea (fibra, omega-3), ejercicio (aeróbico + fuerza), pérdida de peso (<strong>5-10%</strong>), metformina, fibratos o GLP-1, monitoreo cada 3-6 meses.</p>' +
+            '<p><strong>Obesidad Metabólica (Síndrome Metabólico) Detectada</strong>: Elevados triglicéridos ( mayor de 150 mg/dL), bajo HDL (<' + (genero === 'masculino' ? 40 : 50) + ' mg/dL), y glucosa elevada (ayunas mayor de 100 mg/dL o HbA1c mayor de 5.7%) indican resistencia a insulina y dislipidemia aterogénica. Riesgos: diabetes tipo 2, infarto, ACV, NAFLD. TG/HDL ratio: <strong>' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + '</strong> ( mayor de 2.5 sugiere resistencia a insulina). Recomendaciones: dieta mediterránea (fibra, omega-3), ejercicio (aeróbico + fuerza), pérdida de peso (<strong>5-10%</strong>), metformina, fibratos o GLP-1, monitoreo cada 3-6 meses.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Triglicéridos altos (>150 mg/dL): Acumulación de lípidos por exceso de carbohidratos y grasas.</p>' +
+            '<p>Triglicéridos altos (mayor de 150 mg/dL): Acumulación de lípidos por exceso de carbohidratos y grasas.</p>' +
             '<p>HDL bajo (<' + (genero === 'masculino' ? 40 : 50) + ' mg/dL): Pérdida de efecto cardioprotector.</p>' +
-            '<p>HbA1c alta (>5.7%): Indica resistencia a insulina y mal control glucémico.</p>' +
-            '<p>PCR ultrasensible alto (>3 mg/L): Inflamación crónica por adipocitos disfuncionales.</p>' +
+            '<p>HbA1c alta (mayor de 5.7%): Indica resistencia a insulina y mal control glucémico.</p>' +
+            '<p>PCR ultrasensible alto (mayor de 3 mg/L): Inflamación crónica por adipocitos disfuncionales.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
-            '<p>Resistencia a insulina: Adipocitos inflamados liberan citocinas (TNF-α, IL-6) que bloquean señalización de insulina.</p>' +
+            '<p>Resistencia a insulina: Adipocitos inflamados liberan citocinas (TNF-alfa, IL-6) que bloquean señalización de insulina.</p>' +
             '<p>Dislipidemia aterogénica: Exceso de ácidos grasos libres lleva a producción de VLDL.</p>' +
             '<p>Estrés oxidativo: Radicales libres dañan vasos, aumentando inflamación.</p>' +
             '<p><strong>Consecuencias Clínicas</strong>:</p>' +
@@ -1707,14 +1707,14 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<p>- Ejercicio: Aeróbico (30 min/día) y resistencia.</p>' +
             '<p>- Fármacos: Metformina si prediabetes, estatinas si LDL elevado, fibratos si TG elevados.</p>' +
             '<p>- Monitoreo: Perfil lipídico y HbA1c cada 3–6 meses.</p>' +
-            '<p><strong>Explicación Detallada</strong>: ↑ TG + ↓ HDL + ↑ Glucosa = Obesidad Metabólica=Síndrome Metabólico: Estas alteraciones reflejan resistencia a insulina y dislipidemia aterogénica.</p>'
+            '<p><strong>Explicación Detallada</strong>: TG alto + HDL bajo + Glucosa alta = Obesidad Metabólica=Síndrome Metabólico: Estas alteraciones reflejan resistencia a insulina y dislipidemia aterogénica.</p>'
         ));
     } else if (tg > 150 || hdl < (genero === 'masculino' ? 40 : 50) || glucosa >= 100 || hba1c >= 5.7) {
         results.push('<h2>Riesgo de Obesidad Metabólica</h2>' + formatParentheticalValues(
-            '<p><strong>Riesgo de Obesidad Metabólica</strong>: Alteraciones en triglicéridos, HDL o glucosa (ayunas ≥100 mg/dL o HbA1c ≥5.7%) sugieren resistencia a insulina. TG/HDL ratio: <strong>' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + '</strong> (>2.5 indica riesgo). Recomendaciones: evaluar obesidad abdominal, dieta mediterránea, ejercicio, monitoreo cada 3-6 meses.</p>' +
+            '<p><strong>Riesgo de Obesidad Metabólica</strong>: Alteraciones en triglicéridos, HDL o glucosa (ayunas mayor de 100 mg/dL o HbA1c mayor de 5.7%) sugieren resistencia a insulina. TG/HDL ratio: <strong>' + (tgHdlRatio !== 0 ? tgHdlRatio.toFixed(2) : 'N/A') + '</strong> (mayor de 2.5 indica riesgo). Recomendaciones: evaluar obesidad abdominal, dieta mediterránea, ejercicio, monitoreo cada 3-6 meses.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Triglicéridos altos (>150 mg/dL) o ↓ HDL (<' + (genero === 'masculino' ? 40 : 50) + ' mg/dL): Indican dislipidemia.</p>' +
-            '<p>Glucosa alta (≥100 mg/dL) o HbA1c (≥5.7%): Sugieren resistencia a insulina.</p>' +
+            '<p>Triglicéridos altos (mayor de 150 mg/dL) o  HDL bajo (<' + (genero === 'masculino' ? 40 : 50) + ' mg/dL): Indican dislipidemia.</p>' +
+            '<p>Glucosa alta (mayor de 100 mg/dL) o HbA1c (mayor de 5.7%): Sugieren resistencia a insulina.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Resistencia a insulina: Reducción de captación de glucosa en tejidos.</p>' +
             '<p>Dislipidemia: Exceso de ácidos grasos libres aumenta VLDL.</p>' +
@@ -1724,7 +1724,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
             '<p>- Dieta: Mediterránea, rica en fibra y omega3.</p>' +
             '<p>- Ejercicio: Aeróbico y resistencia.</p>' +
             '<p>- Monitoreo: Perfil lipídico y glucosa cada 3–6 meses.</p>' +
-            '<p><strong>Explicación Detallada</strong>: ↑ TG + ↓ HDL + ↑ Glucosa = Obesidad Metabólica=Síndrome Metabólico: Estas alteraciones indican riesgo incipiente de síndrome metabólico.</p>'
+            '<p><strong>Explicación Detallada</strong>: TG alto + HDL bajo + Glucosa alta = Obesidad Metabólica=Síndrome Metabólico: Estas alteraciones indican riesgo incipiente de síndrome metabólico.</p>'
         ));
     }
 
@@ -1733,14 +1733,14 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
     const proteinaTotal = values['proteina-total'] || 0;
     if (albumina < 3.5 && prealbumina < 15 && pcr > 3) {
         results.push('<h2>Desnutrición Proteica</h2>' + formatParentheticalValues(
-            '<p><strong>Desnutrición Proteica Detectada</strong>: Baja albúmina (<3.5 g/dL), prealbúmina (<15 mg/dL) y elevada PCR (>3 mg/L, por IL-6/TNF-α) sugieren déficit proteico e inflamación sistémica. Riesgos: infecciones, edema, mortalidad. Recomendaciones: aumentar ingesta proteica, dieta antiinflamatoria (omega-3, antioxidantes), consultar nutricionista.</p>' +
+            '<p><strong>Desnutrición Proteica Detectada</strong>: Baja albúmina (menor de 3.5 g/dL), prealbúmina (menor de 15 mg/dL) y elevada PCR (mayor de 3 mg/L, por IL-6/TNF-alfa) sugieren déficit proteico e inflamación sistémica. Riesgos: infecciones, edema, mortalidad. Recomendaciones: aumentar ingesta proteica, dieta antiinflamatoria (omega-3, antioxidantes), consultar nutricionista.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Albúmina baja (<3.5 g/dL): Síntesis hepática reducida por falta de aminoácidos.</p>' +
-            '<p>Prealbúmina baja (<15 mg/dL): Indica déficit proteico reciente.</p>' +
-            '<p>PCR alto (>3 mg/L): Inflamación crónica cataboliza proteínas.</p>' +
+            '<p>Albúmina baja (menor de 3.5 g/dL): Síntesis hepática reducida por falta de aminoácidos.</p>' +
+            '<p>Prealbúmina baja (menor de 15 mg/dL): Indica déficit proteico reciente.</p>' +
+            '<p>PCR alto (mayor de 3 mg/L): Inflamación crónica cataboliza proteínas.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Déficit calórico-proteico: Degradación muscular para obtener energía.</p>' +
-            '<p>Inflamación: Citocinas (IL-6/TNF-α) inhiben síntesis de albúmina.</p>' +
+            '<p>Inflamación: Citocinas (IL-6/TNF-alfa) inhiben síntesis de albúmina.</p>' +
             '<p><strong>Consecuencias Clínicas</strong>:</p>' +
             '<p>Edema, pérdida muscular, inmunosupresión, y retraso en cicatrización.</p>' +
             '<p><strong>Manejo</strong>:</p>' +
@@ -1754,7 +1754,7 @@ function analyzeBioquimicoResults(entries, genero = 'masculino') {
         results.push('<h2>Riesgo de Desnutrición Proteica</h2>' + formatParentheticalValues(
             '<p><strong>Riesgo de Desnutrición Proteica</strong>: Baja albúmina, prealbúmina o proteína total, posiblemente con inflamación (PCR: <strong>' + pcr.toFixed(2) + ' mg/L</strong>). Evaluar estado nutricional y posible inflamación sistémica.</p>' +
             '<p><strong>Hallazgos Bioquímicos</strong>:</p>' +
-            '<p>Albúmina baja (<3.5 g/dL) o ↓ Prealbúmina (<15 mg/dL) o ↓ Proteína Total (<6.0 g/dL): Indican déficit proteico.</p>' +
+            '<p>Albúmina baja (menor de 3.5 g/dL) o  Prealbúmina baja (menor de 15 mg/dL) o ↓ Proteína Total ( menos de 6.0 g/dL): Indican déficit proteico.</p>' +
             '<p><strong>Mecanismos Subyacentes</strong>:</p>' +
             '<p>Déficit proteico: Insuficiente ingesta o absorción de aminoácidos.</p>' +
             '<p>Inflamación: Puede exacerbar pérdida proteica.</p>' +
