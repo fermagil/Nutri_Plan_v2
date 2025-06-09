@@ -2573,42 +2573,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 { metric: '% Grasa (Deurenberg)', value: `${document.getElementById('result-grasa-pct-Deurenberg')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-Deurenberg-source')?.textContent?.trim() || '(No estimado)' },
                 { metric: '% Grasa (CUN-BAE)', value: `${document.getElementById('result-grasa-pct-CUN-BAE')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-CUN-BAE-source')?.textContent?.trim() || '(No estimado)' },
                 { metric: 'Grasa Abdominal Total', value: `${document.getElementById('result-grasa-abdominal')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('grasa-abdominal-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Espesor Grasa Abdominal', value: `${document.getElementById('result-abdominal-fat-thickness')?.textContent?.trim() || '---'} cm`, note: document.getElementById('abdominal-fat-thickness-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Agua Corporal Total', value: document.getElementById('result-agua-corporal')?.textContent?.trim() || '---', note: document.getElementById('agua-corporal-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Espesor Grasa Abdominal', value: document.getElementById('absdominal-fat-thickness')?.textContent?.trim() || 'N/A', fuente: document.getElementById('absdominal-fat-thickness')?.textContent?.trim() || 'N/A'},
+                { metric: 'Agua Corporal Total', value: document.getElementById('result-agua-corporal')?.textContent?.trim() || '---', note: document.getElementById('agua-corporal-source')?.textContent?.trim() || '(No verificado)' },
                 // Métricas Metabólicas
                 { section: 'Métricas Metabólicas', metric: '', value: '', note: '' },
-                { metric: 'Edad Metabólica', value: `${document.getElementById('result-edadmetabolica')?.textContent?.trim() || '---'} años`, note: document.getElementById('edadmetabolica-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'TMB', value: `${document.getElementById('result-tmb')?.textContent?.trim() || '---'} Kcal`, note: document.getElementById('tmb-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Edad Metabólica', value: `${document.getElementById('result-edadmetabolica')?.textContent?.trim() || '---'} años`, fuente: document.getElementById('edadmetabolica-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'TMB', value: `${document.getElementById('result-tmb')?.textContent?.trim() || '---'} Kcal`, fuente: document.getElementById('tmb-source')?.textContent?.trim() || '(N/A)' },
                 // Masa Libre de Grasa
                 { section: 'Masa Libre de Grasa', metric: '', value: '', note: '' },
-                { metric: 'Masa Magra Actual (MLG)', value: `${document.getElementById('result-masa-magra-actual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-magra-actual-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Masa Magra Metabólico (MLG)', value: `${document.getElementById('result-masa-magra-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-magra-metabolic-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'IMLG Actual', value: `${document.getElementById('result-imlg-actual')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imlg-actual-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'IMLG Metabólico', value: `${document.getElementById('result-imlg-metabolic')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imlg-metabolic-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'IMG Actual', value: `${document.getElementById('result-img-actual')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('img-actual-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'IMG Metabólico', value: `${document.getElementById('result-img-metabolic')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('img-metabolic-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Masa Grasa Actual (MGA)', value: `${document.getElementById('result-masa-grasa-actual')?.textContent?.trim() || '---'} kg/mgrasa`, fuente: document.getElementById('imgrasa-actual-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Masa Grasa Metabólica (MGM)', value: `${document.getElementById('result-masa-grasa-metabolic')?.textContent?.trim() || '---'} kg/mgrasa`, fuente: document.getElementById('imgrasa-metabolic-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'IMGrasa Actual', value: `${document.getElementById('result-imgrasa-actual')?.textContent?.trim() || '---'} kg/mgrasa-m`, fuente: document.getElementById('imgrasa-actual-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'IMgrasa-metabolic', value: `${document.getElementById('result-imgrasa-metabolic')?.textContent?.trim() || '---'} kg/mgrasa-mg`, fuente: document.getElementById('imgrasa-metabolic-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Masa Magra Actual (MLG)', value: `${document.getElementById('result-masa-magra-actual')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('masa-magra-actual-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Masa Magra Metabólica (MLG)', value: `${document.getElementById('result-masa-magra-metabolic')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('masa-magra-metabolic-source')?.textContent?.trim() || '(N/A)' },
                 // Estructurales
                 { section: 'Estructurales', metric: '', value: '', note: '' },
-                { metric: 'Somatotipo', value: document.getElementById('result-somatotipo')?.textContent?.trim() || '---', note: document.getElementById('somatotipo-source')?.textContent?.trim() || '(Endo: Meso: Ecto)' },
-                { metric: 'Tipología Actual', value: document.getElementById('result-tipologia-actual')?.textContent?.trim() || '---', note: document.getElementById('tipologia-actual-source')?.textContent?.trim() || '(Relación IMLG/IMG)' },
-                { metric: 'Tipología Metabólico', value: document.getElementById('result-tipologia-metabolic')?.textContent?.trim() || '---', note: document.getElementById('tipologia-metabolic-source')?.textContent?.trim() || '(Relación IMLG/IMG)' },
-                { metric: 'Área Muscular Brazo (AMB)', value: `${document.getElementById('result-amb')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('amb-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Masa Muscular Total (MMT)', value: `${document.getElementById('result-mmt')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt-source')?.textContent?.trim() || '(Estimado según AMB)' },
-                { metric: '% Masa Muscular', value: `${document.getElementById('result-Pct-mmt')?.textContent?.trim() || '---'} %`, note: document.getElementById('Pct-mmt-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'AMB(c) Corregida', value: `${document.getElementById('result-ambc')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('ambc-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Masa Muscular Total (MMT2)', value: `${document.getElementById('result-mmt2')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt2-source')?.textContent?.trim() || '(Estimado según AMB(c) Heymsfield, 1982)' },
-                { metric: '% Masa Muscular (MMT2)', value: `${document.getElementById('result-Pct-mmt2')?.textContent?.trim() || '---'} %`, note: document.getElementById('Pct-mmt2-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Area Grasa Brazo', value: `${document.getElementById('result-agb')?.textContent?.trim() || '---'} %`, note: document.getElementById('agb-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Masa Ósea', value: `${document.getElementById('result-masa-osea')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-osea-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Masa Residual', value: `${document.getElementById('result-masa-residual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-residual-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Somatotipo', value: document.getElementById('result-somatotipo')?.textContent?.trim() || '---', note: document.getElementById('somatotipo-source')?.textContent?.trim() || '(Endo:)' },
+                { metric: 'Tipología Actual', value: document.getElementById('result-tipologia-actual')?.textContent?.trim() || '---', note: document.getElementById('tipologia-actual-source')?.textContent?.trim() || '(Relación IMLG)' },
+                { metric: 'Tipología Metabólica', value: document.getElementById('result-tipologia-metallic')?.textContent?.trim() || '---', note: document.getElementById('tipologia-metallic-source')?.textContent?.trim() || '(Relación IMLG)' },
+                { metric: 'Área Muscular Brazo (AMB)', value: `${document.getElementById('result-amb')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('amb-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Masa Muscular Total (MMT)', value: `${document.getElementById('result-mmt')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt-source')?.textContent?.trim() || '(Estimado segun AMB)' },
+                { metric: '% Masa Muscular', value: `${document.getElementById('result-Pct-mmt')?.textContent?.trim() || '---'} %`, fuente: document.getElementById('Pct-mmt-source')?.textContent?.trim() || '-' },
+                { metric: 'AMB(c) Corregida', value: `${document.getElementById('result-ambc')?.textContent?.trim() || '---'} cm²`, fuente: document.getElementById('ambc-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Masa Muscular Total (MMT2)', value: `${document.getElementById('result-mmt2')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt2-source')?.textContent?.trim() || '(Estimado según AMB(c) Heymsfield, 2022)' },
+                { metric: '% Masa Muscular (M%)', value: `${document.getElementById('result-Pct-mmt2')?.textContent?.trim() || '---'} %`, fuente: document.getElementById('Pct-mmt2-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Area Grasa Brazo (%)', value: `${document.getElementById('result-agb')?.textContent?.trim() || '---'} %`, note: document.getElementById('agb-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Masa Ósea', value: `${document.getElementById('result-masa-osea')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-osea-source')?.textContent?.trim() || '(N/A)' },
+                { metric: 'Masa Residual', value: `${document.getElementById('result-masa-residual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-residual-source')?.textContent?.trim() || '(N/A)' },
                 // Objetivos
                 { section: 'Objetivos', metric: '', value: '', note: '' },
-                { metric: 'Peso Ideal (% Grasa)', value: `${document.getElementById('result-peso-ideal')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-ideal-source')?.textContent?.trim() || '(Según % GC Actual Rango de Edad, Sexo y AF)' },
-                { metric: 'Peso Ideal (% Grasa Mtb)', value: `${document.getElementById('result-peso-ideal-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('pesometabolico-source')?.textContent?.trim() || '(Según % GC Metabolico Edad, Sexo y AF)' },
-                { metric: 'Peso a Perder/Ganar', value: `${document.getElementById('result-peso-objetivo')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-source')?.textContent?.trim() || 'Peso Actual - Masa Grasa' },
-                { metric: 'Peso a Perder/Ganar (Mtb)', value: `${document.getElementById('result-peso-objetivo-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-metabolicsource')?.textContent?.trim() || 'Peso Actual - Masa Grasa Metabolica' },
-                { metric: 'Masa Muscular a Ganar', value: `${document.getElementById('result-peso-muscular')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-source')?.textContent?.trim() || '' },
-                { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-matabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-metabolicsource')?.textContent?.trim() || '' }
+                { metric: 'Peso Ideal (% Grasa)', value: `${document.getElementById('result-peso-ideal')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('peso-ideal-source')?.textContent?.trim() || '(No/A Según % GC Actual Rango de Edad, Sexo y AF)' },
+                { metric: 'Peso Ideal (% Grasa Mtb)', value: `${document.getElementById('result-peso-ideal-metabolic')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('pesometabolico-source')?.textContent?.trim() || '(No/A Según % GC Metabolico Edad, Sexo y AF)' },
+                { metric: 'Peso a Perder/Ganar', value: `${document.getElementById('result-peso-objetivo')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('peso-objetivo-source')?.textContent?.trim() || '(Peso Actual Masa Grasa)' },
+                { metric: 'Peso a Perder/Ganar (Mtb)', value: `${document.getElementById('result-peso-objetivo-metabolic')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('peso-objetivo-metabolic-source')?.textContent?.trim() || '(Peso Actual - Masa Grasa Metabolica)' },
+                { metric: 'Masa Muscular a Ganar', value: `${document.getElementById('result-peso-muscular')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('peso-muscular-source')?.textContent?.trim() || '' },
+                { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-metabolic')?.textContent?.trim() || '---'} kg`, fuente: document.getElementById('peso-muscular-metabolic-source')?.textContent?.trim() || '' },
             ];
 
             // Crear tabla principal con autoTable, incluyendo el título como encabezado
@@ -2620,7 +2620,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ],
                 body: tableData.map(row => {
                     if (row.section) {
-                        return [{ content: row.section, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } }];
+                        return [{ content: row.section, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } } ];
                     }
                     return [row.metric, row.value, row.note];
                 }),
@@ -2641,11 +2641,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 margin: { left: margin.left, right: margin.right },
                 didDrawPage: (data) => {
-                    yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
+                    yPosition = data.cursor.y; // Actualizar yPosition después de la tabla
                 }
             });
 
-            console.log('Tabla principal de resultados con título añadida en yPosition:', yPosition);
+            console.log('Tabla principal de resultados con el título añadido en yPosition:', yPosition);
 
             // Añadir título para el contenido de explanation-content
             yPosition += 20; // Espacio después de la tabla
@@ -2660,7 +2660,7 @@ document.addEventListener('DOMContentLoaded', () => {
             doc.text('Detalles de la Explicación:', margin.left, yPosition);
             yPosition += 20;
 
-            // Definir secciones
+            // Definir secciones principales
             const sections = [
                 'Explicación de los Resultados del IMC, ICC y % Grasa Actual',
                 'Masa Grasa y Masa Magra(MLG), Tipología del Cuerpo según Índices de Masa (IMLG e IMG), Interpretación de las Tipologías',
@@ -2669,6 +2669,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Reserva Proteica AMB, Masa Ósea y Masa Residual',
                 'Estimacion del Somatotipo, Sugerencias para Mejorar tu Composición Corporal, Medición del Somatotipo, Categorías de Predominancia Física y Recomendaciones'
             ];
+
+            // Mapear encabezados del DOM a secciones principales
+            const headerMapping = {
+                'Explicación de los Resultados del IMC, ICC y % Grasa Actual': 0,
+                'Peso Ideal Estimado': 0,
+                'Masa Grasa y Masa Magra(MLG)': 1,
+                'Tipología del Cuerpo según Índices de Masa (IMLG e IMG)': 1,
+                'Edad Metabólica': 2,
+                'Sugerencias Personalizadas': [2, 3], // Puede pertenecer a dos secciones, priorizar por contexto
+                'Relación entre IMLG, TMB y GET': 3,
+                'Reserva Proteica AMB, Masa Ósea y Masa Residual': 4,
+                'Estimacion del Somatotipo': 5,
+                'Sugerencias para Mejorar tu Composición Corporal': 5,
+                'Medición del Somatotipo': 5
+            };
 
             // Normalizar texto para comparación flexible
             const normalizeText = (text) => text.toLowerCase().replace(/[\s.,!?]+/g, '');
@@ -2679,13 +2694,13 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < canvasElements.length; i++) {
                 const canvas = canvasElements[i];
                 try {
-                    // Asegurar que el canvas esté renderizado
-                    canvas.getContext('2d'); // Forzar renderizado
+                    // Configurar willReadFrequently para optimizar
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
                     const renderedCanvas = await html2canvas(canvas, {
-                        scale: 2, // Aumenta la resolución
-                        useCORS: true, // Habilita CORS
-                        allowTaint: false, // Evitar canvas tainted
-                        logging: true // Habilitar logs detallados
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: false,
+                        logging: true
                     });
                     const dataUrl = renderedCanvas.toDataURL('image/png');
                     chartDataUrls.push(dataUrl);
@@ -2700,6 +2715,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const sectionContents = sections.map(() => []);
             let currentSectionIndex = 0;
             let chartIndex = 0;
+            let lastSugerenciasSection = 2; // Para manejar "Sugerencias Personalizadas"
 
             const elements = explanationContent.childNodes;
             console.log('Encabezados encontrados en explanation-content:');
@@ -2712,17 +2728,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (['h1', 'h2', 'h3'].includes(tag)) {
                     const text = element.textContent.trim();
                     console.log(`- ${tag}: "${text}"`);
-                    const normalizedText = normalizeText(text);
-                    const sectionIdx = sections.findIndex(section => normalizeText(section).includes(normalizedText));
-                    if (sectionIdx !== -1) {
-                        currentSectionIndex = sectionIdx;
-                    } else {
-                        // Si no coincide exactamente, intentar avanzar a la siguiente sección
-                        if (currentSectionIndex < sections.length - 1) {
-                            const nextSection = sections[currentSectionIndex + 1];
-                            if (normalizeText(nextSection).includes(normalizedText)) {
-                                currentSectionIndex++;
-                            }
+                    if (text in headerMapping) {
+                        const mapping = headerMapping[text];
+                        if (Array.isArray(mapping)) {
+                            // Para "Sugerencias Personalizadas", elegir según el contexto
+                            currentSectionIndex = text === 'Sugerencias Personalizadas' && lastSugerenciasSection === 2 ? 2 : 3;
+                            lastSugerenciasSection = currentSectionIndex;
+                        } else {
+                            currentSectionIndex = mapping;
                         }
                     }
                 } else if (tag === 'p') {
@@ -2810,7 +2823,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.row.raw && data.row.raw.image) {
                             data.cell.text = ''; // Limpiar texto para la celda de la imagen
                             data.cell.contentWidth = contentWidth - 8; // Restar padding
-                            data.cell.contentHeight = 250; // Altura fija mayor para imágenes
+                            data.cell.contentHeight = 300; // Altura mayor para imágenes
+                            console.log(`Procesando imagen para sección "${section}"`);
                         }
                     },
                     didDrawCell: (data) => {
@@ -2820,7 +2834,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const pdfWidth = data.cell.contentWidth - 8; // Restar padding
                                 const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
                                 doc.addImage(data.row.raw.image, 'PNG', data.cell.x + 4, data.cell.y + 4, pdfWidth, imgHeight);
-                                console.log(`Imagen renderizada en sección "${section}"`);
+                                console.log(`Imagen renderizada en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight}`);
                             } catch (error) {
                                 console.error(`Error al renderizar imagen en sección "${section}":`, error.message);
                                 data.cell.text = 'Error al renderizar la imagen.';
