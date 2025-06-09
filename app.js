@@ -662,7 +662,7 @@ let currentTomaSerial = null; // Track the loaded toma's serial
         const altura = document.getElementById('altura').value;
         const email = document.getElementById('e-mail').value.trim();
         const tomaSerial = currentTomaSerial || null; // Use currentTomaSerial
-         const analisisbioquimico = document.getElementById('result-analisis').value();
+         const analisisbioquimico = document.getElementById('result-analisis').value;
         
         // Validaciones
         if (!nombre) {
