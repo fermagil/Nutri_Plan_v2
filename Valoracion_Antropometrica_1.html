@@ -2080,22 +2080,26 @@ body {
                                         </tr>
                                     </tbody>
                                     <tbody class="accordion-section">
-                                        <tr class="section-header" data-accordion="estructurales">
-                                            <th colspan="3">
-                                                <span class="accordion-toggle">Estructurales</span>
-                                                <span class="accordion-icon">▼</span>
-                                            </th>
-                                        </tr>
-                                        <tr class="accordion-content">
-                                            <th scope="row"><label>Somatotipo</label></th>
-                                            <td><span id="result-somatotipo">---</span></td>
-                                            <td><small id="somatotipo-source">(Endo: Meso: Ecto)</small></td>
-                                        </tr>
-                                        <tr class="accordion-content">
-                                            <th scope="row"><label>Tipología Actual</label></th>
-                                            <td><span id="result-tipologia-actual">---</span></td>
-                                            <td><small id="tipologia-actual-source">(Relación IMLG/IMG)</small></td>
-                                        </tr>
+				    <tr class="section-header" data-accordion="estructurales">
+				        <th colspan="3">
+				            <div style="display: flex; justify-content: space-between; align-items: center;">
+				                <span class="accordion-toggle">Estructurales</span>
+				                <span class="accordion-icon">▼</span>
+				                <button id="abrirContainerTipologia" style="padding: 5px 10px; font-size: 14px;">Abrir Container</button>
+				            </div>
+				        </th>
+				    </tr>
+				    <tr class="accordion-content">
+				        <th scope="row"><label>Somatotipo</label></th>
+				        <td><span id="result-somatotipo">---</span></td>
+				        <td><small id="somatotipo-source">(Endo: Meso: Ecto)</small></td>
+				    </tr>
+				    <tr class="accordion-content">
+				        <th scope="row"><label>Tipología Actual</label></th>
+				        <td><span id="result-tipologia-actual">---</span></td>
+				        <td><small id="tipologia-actual-source">(Relación IMLG/IMG)</small></td>
+				    </tr>
+
                                         <tr class="accordion-content">
                                             <th scope="row"><label>Tipología Metabólico</label></th>
                                             <td><span id="result-tipologia-metabolic">---</span></td>
