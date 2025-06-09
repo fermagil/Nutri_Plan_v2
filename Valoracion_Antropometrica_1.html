@@ -2560,6 +2560,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}`;
 
             // Definir datos de la tabla, organizados por secciones
+            // Definir datos de la tabla, organizados por secciones
             const tableData = [
                 // Composición Corporal
                 { section: 'Composición Corporal', metric: '', value: '', note: '' },
@@ -2599,7 +2600,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { metric: 'AMB(c) Corregida', value: `${document.getElementById('result-ambc')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('ambc-source')?.textContent?.trim() || '(No calculado)' },
                 { metric: 'Masa Muscular Total (MMT2)', value: `${document.getElementById('result-mmt2')?.textContent?.trim() || '---'} kg`, note: document.getElementById('mmt2-source')?.textContent?.trim() || '(Estimado según AMB(c) Heymsfield, 1982)' },
                 { metric: '% Masa Muscular (MMT2)', value: `${document.getElementById('result-Pct-mmt2')?.textContent?.trim() || '---'} %`, note: document.getElementById('Pct-mmt2-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Area7986  Grasa Brazo', value: `${document.getElementById('result-agb')?.textContent?.trim() || '---'} %`, note: document.getElementById('agb-source')?.textContent?.trim() || '(No calculado)' },
+                { metric: 'Area Grasa Brazo', value: `${document.getElementById('result-agb')?.textContent?.trim() || '---'} %`, note: document.getElementById('agb-source')?.textContent?.trim() || '(No calculado)' },
                 { metric: 'Masa Ósea', value: `${document.getElementById('result-masa-osea')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-osea-source')?.textContent?.trim() || '(No calculado)' },
                 { metric: 'Masa Residual', value: `${document.getElementById('result-masa-residual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-residual-source')?.textContent?.trim() || '(No calculado)' },
                 // Objetivos
@@ -2609,7 +2610,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { metric: 'Peso a Perder/Ganar', value: `${document.getElementById('result-peso-objetivo')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-source')?.textContent?.trim() || 'Peso Actual - Masa Grasa' },
                 { metric: 'Peso a Perder/Ganar (Mtb)', value: `${document.getElementById('result-peso-objetivo-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-metabolicsource')?.textContent?.trim() || 'Peso Actual - Masa Grasa Metabolica' },
                 { metric: 'Masa Muscular a Ganar', value: `${document.getElementById('result-peso-muscular')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-source')?.textContent?.trim() || '' },
-                { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-matabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-metabolicsource')?.?.textContent?.trim() || '' }
+                { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-matabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-metabolicsource')?.textContent?.trim() || '' }
             ];
 
             // Crear tabla con autoTable, incluyendo el título como encabezado
