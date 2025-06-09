@@ -1798,7 +1798,7 @@ body {
 .section-header .button-group button:hover {
     background-color: #4cae4c;
 }
-	    /* Existing styles for .input-form and .form-grid */
+/* Input form container */
 .container-wrapper .input-form {
     background-color: #ffffff;
     padding: 20px 25px;
@@ -1809,22 +1809,48 @@ body {
     box-sizing: border-box;
 }
 
+/* Form grid with two rows */
 .container-wrapper .input-form .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(3, minmax(150px, 1fr)) 1fr; /* 3 equal columns for inputs, 1 for buttons */
     gap: 15px 20px;
-    align-items: end; /* Align items to the bottom of each grid cell */
+    justify-content: center; /* Center the grid content */
 }
 
-/* New styles for button group */
+/* First row: Sexo, Edad, Nivel de Actividad */
+.container-wrapper .input-form .form-row-1 {
+    grid-column: 1 / 4; /* Span first 3 columns */
+    display: flex;
+    justify-content: center; /* Center fields horizontally */
+    gap: 20px;
+}
+
+/* Second row: IMLG, IMG, Buttons */
+.container-wrapper .input-form .form-row-2 {
+    grid-column: 1 / 5; /* Span all columns */
+    display: flex;
+    justify-content: center; /* Center fields and buttons */
+    gap: 20px;
+    align-items: end; /* Align items to the bottom */
+}
+
+/* Form group styling */
+.container-wrapper .input-form .form-group {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+
+/* Button group styling */
 .container-wrapper .input-form .button-group {
     display: flex;
     gap: 10px; /* Space between buttons */
-    justify-content: flex-end; /* Align buttons to the right */
-    grid-column: -1; /* Place buttons in the last grid column */
-    align-self: end; /* Align buttons vertically with the bottom of inputs */
+    justify-self: end; /* Align buttons to the right */
+    align-self: end; /* Align buttons vertically with inputs */
 }
 
+/* Button styling */
 .container-wrapper .input-form .button-group button {
     background-color: #5cb85c;
     color: white;
@@ -1842,22 +1868,48 @@ body {
     transform: translateY(-1px);
 }
 
-/* Adjust form-group to ensure consistent alignment */
-.container-wrapper .input-form .form-group {
-    margin-bottom: 5px;
-    display: flex;
-    flex-direction: column;
+/* Input and select styling */
+.container-wrapper .input-form input[type="number"],
+.container-wrapper .input-form select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 0.95em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container-wrapper .input-form input:focus,
+.container-wrapper .input-form select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Warning message styling */
+.container-wrapper .input-form .warning-message {
+    color: #dc3545;
+    font-size: 0.85em;
+    margin-top: -8px;
+    margin-bottom: 8px;
+    display: none;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .container-wrapper .input-form .form-grid {
         grid-template-columns: 1fr;
-        gap: 10px 15px;
+    }
+    .container-wrapper .input-form .form-row-1,
+    .container-wrapper .input-form .form-row-2 {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
     }
     .container-wrapper .input-form .button-group {
-        grid-column: auto; /* Reset to default column on small screens */
-        justify-content: center; /* Center buttons on small screens */
+        justify-self: center; /* Center buttons on small screens */
     }
 }
     </style>
@@ -2746,60 +2798,64 @@ body {
 			<!-- Modal container (initially hidden) -->
 			<!-- Modal container (initially hidden) -->
 			  <!-- Modal Container -->
-			<div id="modalContainer" class="modal-container">
-			    <div class="modal-content">
-			        <span id="closeModal" class="close-modal">×</span>
-			        <div class="container-wrapper">
-			            <div class="container-content">
-			                <h1>Relación IMLG vs IMG - Mapa de Composición Corporal</h1>
-			                <div class="input-form">
-			                    <div class="form-grid">
-			                        <div class="form-group">
-			                            <label for="sexoInput">Sexo:</label>
-			                            <select id="sexoInput">
-			                                <option value="mujer">Mujer</option>
-			                                <option value="hombre">Hombre</option>
-			                            </select>
-			                        </div>
-			                        <div class="form-group">
-			                            <label for="edadInput">Edad:</label>
-			                            <input type="number" id="edadInput" value="30" min="18" max="120" step="1">
-			                            <div id="edadWarning" class="warning-message"></div>
-			                        </div>
-			                        <div class="form-group">
-			                            <label for="actividadInput">Nivel de Actividad:</label>
-			                            <select id="actividadInput">
-			                                <option value="sedentario">Sedentario</option>
-			                                <option value="pocoActivo">Poco Activo</option>
-			                                <option value="activo">Activo</option>
-			                                <option value="deportista">Deportista</option>
-			                            </select>
-			                        </div>
-			                        <div class="form-group">
-			                            <label for="imlgInput">IMLG:</label>
-			                            <input type="number" id="imlgInput" value="17.0" step="0.1">
-			                            <div id="imlgWarning" class="warning-message"></div>
-			                        </div>
-			                        <div class="form-group">
-			                            <label for="imgInput">IMG:</label>
-			                            <input type="number" id="imgInput" value="11.1" step="0.1">
-			                            <div id="imgWarning" class="warning-message"></div>
-			                        </div>
-			                        <div class="button-group">
-			                            <button id="updateButton">Actualizar</button>
-			                            <button class="download-button" id="downloadButton">Descargar Gráfico</button>
-			                        </div>
-			                    </div>
-			                </div>
-			                <div class="legend-container" id="legendContainer"></div>
-			                <div class="chart-container">
-			                    <canvas id="somatotype-canvas"></canvas>
-			                    <div id="tooltip" class="tooltip"></div>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
-			</div>
+				<div id="modalContainer" class="modal-container">
+				    <div class="modal-content">
+				        <span id="closeModal" class="close-modal">×</span>
+				        <div class="container-wrapper">
+				            <div class="container-content">
+				                <h1>Relación IMLG vs IMG - Mapa de Composición Corporal</h1>
+				                <div class="input-form">
+				                    <div class="form-grid">
+				                        <div class="form-row-1">
+				                            <div class="form-group">
+				                                <label for="sexoInput">Sexo:</label>
+				                                <select id="sexoInput">
+				                                    <option value="mujer">Mujer</option>
+				                                    <option value="hombre">Hombre</option>
+				                                </select>
+				                            </div>
+				                            <div class="form-group">
+				                                <label for="edadInput">Edad:</label>
+				                                <input type="number" id="edadInput" value="30" min="18" max="120" step="1">
+				                                <div id="edadWarning" class="warning-message"></div>
+				                            </div>
+				                            <div class="form-group">
+				                                <label for="actividadInput">Nivel de Actividad:</label>
+				                                <select id="actividadInput">
+				                                    <option value="sedentario">Sedentario</option>
+				                                    <option value="pocoActivo">Poco Activo</option>
+				                                    <option value="activo">Activo</option>
+				                                    <option value="deportista">Deportista</option>
+				                                </select>
+				                            </div>
+				                        </div>
+				                        <div class="form-row-2">
+				                            <div class="form-group">
+				                                <label for="imlgInput">IMLG:</label>
+				                                <input type="number" id="imlgInput" value="17.0" step="0.1">
+				                                <div id="imlgWarning" class="warning-message"></div>
+				                            </div>
+				                            <div class="form-group">
+				                                <label for="imgInput">IMG:</label>
+				                                <input type="number" id="imgInput" value="11.1" step="0.1">
+				                                <div id="imgWarning" class="warning-message"></div>
+				                            </div>
+				                            <div class="button-group">
+				                                <button id="updateButton">Actualizar</button>
+				                                <button class="download-button" id="downloadButton">Descargar Gráfico</button>
+				                            </div>
+				                        </div>
+				                    </div>
+				                </div>
+				                <div class="legend-container" id="legendContainer"></div>
+				                <div class="chart-container">
+				                    <canvas id="somatotype-canvas"></canvas>
+				                    <div id="tooltip" class="tooltip"></div>
+				                </div>
+				            </div>
+				        </div>
+				    </div>
+				</div>
                 </div>
             </div>
         </form>
