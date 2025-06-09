@@ -3109,8 +3109,15 @@ for (let i = 0; i < canvasElements.length; i++) {
     });
 });
 	//Abrir Container MapaTipologia Corporal
-	document.getElementById('abrirContainerTipologia').addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event from bubbling to other listeners
+	// Remove any existing event listeners to avoid duplicates
+const button = document.getElementById('abrirContainerTipologia');
+button.replaceWith(button.cloneNode(true)); // Clone to remove all listeners
+const newButton = document.getElementById('abrirContainerTipologia');
+
+newButton.addEventListener('click', function(e) {
+    e.stopPropagation(); // Stop event bubbling
+    e.preventDefault(); // Prevent default behavior
+
     // Show the modal
     const modal = document.getElementById('modalContainer');
     const modalBody = document.getElementById('modalBody');
@@ -3135,7 +3142,8 @@ for (let i = 0; i < canvasElements.length; i++) {
 
 // Close the modal when the close button is clicked
 document.getElementById('closeModal').addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event from bubbling
+    e.stopPropagation();
+    e.preventDefault();
     document.getElementById('modalContainer').style.display = 'none';
     document.getElementById('modalBody').innerHTML = ''; // Clear content
 });
@@ -3143,7 +3151,8 @@ document.getElementById('closeModal').addEventListener('click', function(e) {
 // Close the modal when clicking outside the modal content
 document.getElementById('modalContainer').addEventListener('click', function(e) {
     if (e.target === this) {
-        e.stopPropagation(); // Prevent event from bubbling
+        e.stopPropagation();
+        e.preventDefault();
         this.style.display = 'none';
         document.getElementById('modalBody').innerHTML = ''; // Clear content
     }
