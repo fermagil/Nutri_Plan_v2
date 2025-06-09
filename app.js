@@ -662,7 +662,8 @@ let currentTomaSerial = null; // Track the loaded toma's serial
         const altura = document.getElementById('altura').value;
         const email = document.getElementById('e-mail').value.trim();
         const tomaSerial = currentTomaSerial || null; // Use currentTomaSerial
-         const analisisbioquimico = document.getElementById('result-analisis').value;
+         const elementoAnalisis = document.getElementById("result-analisis");
+        const textoAnalisis = elementoAnalisis ? elementoAnalisis.textContent.trim() : null;
         
         // Validaciones
         if (!nombre) {
@@ -683,34 +684,33 @@ let currentTomaSerial = null; // Track the loaded toma's serial
         }
      // Verificamos si el análisis bioquímico NO es válido
        // Depuración: Mostrar el valor actual de analisisbioquimico
-            console.log("Valor de analisisbioquimico:", analisisbioquimico);
+          // Depuración: Ver qué contiene realmente
+            console.log("Contenido de analisisbioquimico:", textoAnalisis);
             
-            // Verificamos si el análisis bioquímico NO es válido
+            // 2. Verificar si el análisis es válido (no vacío, no placeholder)
+            const placeholder = "Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.";
+            
             if (
-                !analisisbioquimico || 
-                analisisbioquimico === '---' || 
-                analisisbioquimico === null || 
-                analisisbioquimico === 'Aquí se proporcionará una explicación detallada de los resultados obtenidos en los parámetros bioquímicos.'
+                !textoAnalisis || 
+                textoAnalisis === '---' || 
+                textoAnalisis === placeholder
             ) {
-                // Si no es válido, preguntamos si desea guardar sin él
+                // Si no es válido, pedir confirmación
                 const confirmarGuardar = confirm(
                     'El análisis bioquímico no se ha realizado.\n\n' +
                     '¿Desea guardar los datos sin el análisis bioquímico?\n\n' +
-                    'Si necesita realizarlo, cancele este mensaje y complete el análisis en el pop-up correspondiente.'
+                    'Si necesita realizarlo, cancele este mensaje y complete el análisis.'
                 );
                 
                 if (!confirmarGuardar) {
-                    alert('Por favor, complete el análisis bioquímico antes de guardar.\nPuede hacerlo en el pop-up de parámetros bioquímicos.');
-                    return false; // Detiene el proceso
+                    alert('Por favor, complete el análisis bioquímico antes de guardar.');
+                    return false;
                 }
                 
                 alert('Advertencia: Los datos se guardarán sin el análisis bioquímico.');
-                // Opcional: asignar un valor nulo o vacío si se desea
-                // analisisbioquimico = null;
+            } else {
+                console.log("Análisis bioquímico válido:", textoAnalisis);
             }
-            
-            // Si el análisis bioquímico SÍ es válido, el código continúa sin preguntar
-            console.log("El análisis bioquímico es válido, continuando con el proceso...");
         
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const validatedEmail = email && emailRegex.test(email) ? email : null;
