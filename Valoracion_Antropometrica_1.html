@@ -2571,11 +2571,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 { metric: 'Masa Grasa Actual (MGa)', value: `${document.getElementById('result-masa-grasa-actual')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-grasa-actual-source')?.textContent?.trim() || '(No calculado)' },
                 { metric: 'Masa Grasa Metabólico (MG)', value: `${document.getElementById('result-masa-grasa-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('masa-grasa-metabolic-source')?.textContent?.trim() || '(No calculado)' },
                 { metric: '% Grasa (Deurenberg)', value: `${document.getElementById('result-grasa-pct-Deurenberg')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-Deurenberg-source')?.textContent?.trim() || '(No estimado)' },
-                { metric: '% Grasa (CUN-BAE)', value: `${document.getElementById('result-grasa-pct-CUN-BAE')?.textContent?.trim() || '---'} %`, note: document.getElementById('grasa-pct-CUN-BAE-source')?.textContent?.trim() || '(No estimado)' },
-                { metric: 'Grasa Abdominal Total', value: `${document.getElementById('result-grasa-abdominal')?.textContent?.trim() || '---'} cm²`, note: document.getElementById('grasa-abdominal-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Espesor Grasa Abdominal', value: `${document.getElementById('result-abdominal-fat-thickness')?.textContent?.trim() || '---'} cm`, note: document.getElementById('abdominal-fat-thickness-source')?.textContent?.trim() || '(No calculado)' },
-                { metric: 'Agua Corporal Total', value: document.getElementById('result-agua-corporal')?.textContent?.trim() || '---', note: document.getElementById('agua-corporal-source')?.textContent?.trim() || '(No calculado)' },
-                // Métricas Metabólicas
+                { metric: '% Grasa (CUN-BAE)', value: `${document.getElementById('result-grasa-pct-CUN-BAE')?.textContent?.trim() || ''} %`, note: document.getElementById('grasa-pct-CUN-BAE-source')?.textContent?.trim() || '' },
+                { metric: 'Grasa Abdominal Total', value: `${document.getElementById('result-grasa-abdominal')?.textContent?.trim() || '---'} cm²`, note: '' },
+                { metric: 'Espesor Grasa Abdominal', value: document.getElementById('result-abdominal-fat-thickness')?.textContent?.trim() || '---', note: document.getElementById('abdominal-fat-thickness-source')?.textContent?.trim() || '' },
+                { metric: 'Agua Corporal Total', value: document.getElementById('result-agua-corporal')?.textContent?.trim() || '---', note: document.getElementById('agua-corporal-source')?.textContent?.trim() || '' },
+                // Mátricas Metabólicas
                 { section: 'Métricas Metabólicas', metric: '', value: '', note: '' },
                 { metric: 'Edad Metabólica', value: `${document.getElementById('result-edadmetabolica')?.textContent?.trim() || '---'} años`, note: document.getElementById('edadmetabolica-source')?.textContent?.trim() || '(No calculado)' },
                 { metric: 'TMB', value: `${document.getElementById('result-tmb')?.textContent?.trim() || '---'} Kcal`, note: document.getElementById('tmb-source')?.textContent?.trim() || '(No calculado)' },
@@ -2673,43 +2673,49 @@ document.addEventListener('DOMContentLoaded', () => {
             // Recolectar todas las imágenes (charts)
             const canvasElements = explanationContent.querySelectorAll('canvas, div canvas');
             const chartDataUrls = [];
-            for (const canvas of canvasElements) {
+            for (let i = 0; i < canvasElements.length; i++) {
                 try {
+                    const canvas = canvasElements[i].tagName.toLowerCase() === 'canvas' ? canvasElements[i] : canvasElements[i].querySelector('canvas');
                     const renderedCanvas = await html2canvas(canvas, {
                         scale: 2, // Aumenta la resolución
-                        useCORS: true // Habilita CORS para imágenes externas
+                        useCORS: true, // Habilita CORS para imágenes externas
+                        logging: true // Habilitar logs detallados
                     });
                     const dataUrl = renderedCanvas.toDataURL('image/png');
                     chartDataUrls.push(dataUrl);
-                    console.log('Chart capturado exitosamente:', dataUrl.substring(0, 50) + '...');
+                    console.log(`Chart ${i + 1} capturado exitosamente: ${dataUrl.substring(0, 50)}...`);
                 } catch (error) {
-                    console.error('Error al capturar chart:', error.message);
+                    console.error(`Error al capturar chart ${i + 1}:`, error.message);
                     chartDataUrls.push(null);
                 }
             }
+            console.log(`Total de charts capturados: ${chartDataUrls.length}`);
 
             // Procesar el contenido de explanation-content por secciones
             const sectionContents = sections.map(() => []);
             let currentSectionIndex = 0;
             let chartIndex = 0;
 
-            const elements = explanationContent.childNodes;
-            for (const element of elements) {
-                if (element.nodeType !== Node.ELEMENT_NODE) continue;
+            const elements = Array.from(explanationContent.childNodes).filter(node => node.nodeType === Node.ELEMENT_NODE);
+            console.log(`Total de elementos en explanation-content: ${elements.length}`);
 
+            for (const element of elements) {
                 const tag = element.tagName.toLowerCase();
                 let content = '';
 
                 if (['h1', 'h2', 'h3'].includes(tag)) {
                     const text = element.textContent.trim();
-                    const sectionIdx = sections.indexOf(text);
-                    if (sectionIdx !== -1) {
+                    console.log(`Encabezado encontrado: "${text}"`);
+                    const sectionIdx = sections.findIndex(section => text.toLowerCase().includes(section.toLowerCase().split(',')[0].trim()));
+                    if (sectionIdx !== -1 && sectionIdx > currentSectionIndex) {
                         currentSectionIndex = sectionIdx;
+                        console.log(`Cambiando a sección ${currentSectionIndex}: "${sections[currentSectionIndex]}"`);
                     }
                 } else if (tag === 'p') {
                     content = element.textContent.trim();
                     if (content) {
                         sectionContents[currentSectionIndex].push({ type: 'text', content });
+                        console.log(`Añadido párrafo a sección ${currentSectionIndex}: "${content.substring(0, 50)}..."`);
                     }
                 } else if (tag === 'ul' || tag === 'ol') {
                     const items = element.querySelectorAll('li');
@@ -2720,6 +2726,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             const bullet = tag === 'ul' ? '•' : `${index++}.`;
                             content = `${bullet} ${text}`;
                             sectionContents[currentSectionIndex].push({ type: 'text', content });
+                            console.log(`Añadido elemento de lista a sección ${currentSectionIndex}: "${content.substring(0, 50)}..."`);
                         }
                     }
                 } else if (tag === 'table') {
@@ -2730,18 +2737,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (cellTexts.length === 0) continue;
                         content = cellTexts.join(' | ');
                         sectionContents[currentSectionIndex].push({ type: 'text', content });
+                        console.log(`Añadida fila de tabla a sección ${currentSectionIndex}: "${content.substring(0, 50)}..."`);
                     }
                 } else if (tag === 'canvas' || (tag === 'div' && element.querySelector('canvas'))) {
-                    if (chartIndex < chartDataUrls.length && chartDataUrls[chartIndex]) {
-                        sectionContents[currentSectionIndex].push({
-                            type: 'image',
-                            content: chartDataUrls[chartIndex]
-                        });
-                    } else {
-                        sectionContents[currentSectionIndex].push({
-                            type: 'text',
-                            content: 'Error: No se pudo cargar la imagen del chart.'
-                        });
+                    if (chartIndex < chartDataUrls.length) {
+                        const chartData = chartDataUrls[chartIndex];
+                        if (chartData) {
+                            sectionContents[currentSectionIndex].push({
+                                type: 'image',
+                                content: chartData
+                            });
+                            console.log(`Añadida imagen ${chartIndex + 1} a sección ${currentSectionIndex}`);
+                        } else {
+                            sectionContents[currentSectionIndex].push({
+                                type: 'text',
+                                content: `Error: No se pudo cargar la imagen del chart ${chartIndex + 1}.`
+                            });
+                            console.log(`Error en imagen ${chartIndex + 1} para sección ${currentSectionIndex}`);
+                        }
                     }
                     chartIndex++;
                 }
@@ -2763,6 +2776,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     yPosition = margin.top;
                     console.log('Nueva página añadida para tabla de sección, yPosition reiniciada:', yPosition);
                 }
+
+                console.log(`Renderizando tabla para sección "${section}" con ${content.length} filas`);
 
                 doc.autoTable({
                     startY: yPosition,
@@ -2796,8 +2811,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.row.raw && data.row.raw.image) {
                             data.cell.text = ''; // Limpiar texto para la celda de la imagen
                             data.cell.contentWidth = contentWidth - 8; // Restar padding
-                            data.cell.contentHeight = 200; // Altura fija para la imagen
+                            data.cell.contentHeight = 200; // Altura inicial para la imagen
                             data.cell.image = data.row.raw.image; // Asignar la imagen
+                            console.log(`Preparando celda de imagen para fila ${data.row.index} en sección "${section}"`);
                         }
                     },
                     didDrawCell: (data) => {
@@ -2806,9 +2822,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const imgProps = doc.getImageProperties(data.cell.image);
                                 const pdfWidth = data.cell.contentWidth - 8; // Restar padding
                                 const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                                data.cell.contentHeight = imgHeight + 8; // Ajustar altura de la celda
                                 doc.addImage(data.cell.image, 'PNG', data.cell.x + 4, data.cell.y + 4, pdfWidth, imgHeight);
+                                console.log(`Imagen renderizada en fila ${data.row.index} de sección "${section}" con tamaño ${pdfWidth}x${imgHeight}`);
                             } catch (error) {
-                                console.error('Error al renderizar la imagen en la tabla:', error.message);
+                                console.error(`Error al renderizar imagen en fila ${data.row.index} de sección "${section}":`, error.message);
+                                data.cell.text = ['Error al renderizar la imagen.'];
                             }
                         }
                     },
