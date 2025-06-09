@@ -2494,22 +2494,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Función para descargar archivo
-    const downloadFile = (blob, filename) => {
-        try {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
+    // Función para descargar archivo (mejorada)
+const downloadFile = (blob, filename) => {
+    try {
+        if (!blob || blob.size === 0) {
+            throw new Error(`Blob inválido para ${filename}: tamaño ${blob ? blob.size : 'nulo'}`);
+        }
+        console.log(`Preparando descarga de ${filename}, tamaño: ${blob.size} bytes`);
+        const url = window.URL.createObjectURL(blob);
+        console.log(`URL creado para ${filename}: ${url}`);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        // Usar setTimeout para evitar bloqueos del navegador
+        setTimeout(() => {
             a.click();
+            console.log(`Clic simulado para descargar ${filename}`);
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
             console.log(`Archivo ${filename} descargado.`);
-        } catch (error) {
-            console.error(`Error al descargar ${filename}:`, error.message);
-        }
-    };
+        }, 100);
+        // Añadir enlace de respaldo en la UI
+        const backupLink = document.createElement('a');
+        backupLink.href = url;
+        backupLink.download = filename;
+        backupLink.textContent = `Haz clic aquí para descargar ${filename} si no se descarga automáticamente`;
+        backupLink.style.display = 'block';
+        backupLink.style.color = 'red';
+        document.body.appendChild(backupLink);
+        setTimeout(() => {
+            if (backupLink.parentNode) {
+                document.body.removeChild(backupLink);
+            }
+        }, 10000); // Eliminar enlace después de 10 segundos
+    } catch (error) {
+        console.error(`Error al descargar ${filename}:`, error.message);
+        alert(`Error al descargar ${filename}: ${error.message}`);
+    }
+};
 
     exportarBtn.addEventListener('click', async () => {
         console.log('Exportar button clicked. Starting PDF export.');
@@ -2895,6 +2918,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		                height: imgProps.height,
 		                dataLength: imageItem.content.length
 		            });
+		            // Confirmar si es el último chart (chart 6)
+		            const isLastChart = chartIndex === canvasElements.length - 1;
+		            if (isLastChart) {
+		                console.log(`Renderizando chart 6 en sección "${section}", incluye imagen de fondo.`);
+		            }
 		
 		            const pdfWidth = contentWidth - 8;
 		            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
@@ -2908,7 +2936,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		            doc.text(`Chart ${chartIndex + 1} añadido:`, margin.left, yPosition);
 		            yPosition += 15;
 		            doc.addImage(imageItem.content, 'PNG', margin.left + 4, yPosition + 4, pdfWidth, imgHeight);
-		            console.log(`Imagen renderizada directamente en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight} en yPosition ${yPosition}`);
+		            console.log(`Imagen renderizada directamente en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight} en yPosition ${yPosition}${isLastChart ? ' (chart 6 con imagen de fondo)' : ''}`);
 		            yPosition += imgHeight + 20;
 		        } catch (error) {
 		            console.error(`Error al renderizar imagen directamente en sección "${section}":`, error.message);
@@ -2924,15 +2952,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Genera el blob y descárgalo
-            console.log('Generando blob PDF...');
-            const blob = doc.output('blob');
-            if (!blob || blob.size === 0) {
-                throw new Error('El blob del PDF es inválido o está vacío.');
-            }
-            console.log('Blob PDF generado:', { size: blob.size, type: blob.type });
-            downloadFile(blob, `Resultados_${nombre}_${fecha}.pdf`);
-            console.log('Documento PDF generado y descargado.');
-            alert('Documento PDF exportado exitosamente.');
+           	console.log('Generando blob PDF...');
+		const blob = doc.output('blob');
+		if (!blob || blob.size === 0) {
+		    throw new Error('El blob del PDF es inválido o está vacío.');
+		}
+		console.log('Blob PDF generado:', { size: blob.size, type: blob.type });
+		downloadFile(blob, `Resultados_${nombre}_${fecha}.pdf`);
+		console.log('Documento PDF generado y descargado.');
+		alert('Documento PDF exportado exitosamente.');
 
             // Para depuración: instrucción para descargar charts PNG manualmente
             console.log('Para descargar los charts PNG, ejecuta en la consola:');
