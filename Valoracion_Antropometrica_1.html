@@ -2616,8 +2616,99 @@ const downloadFile = (blob, filename) => {
             // Construir el título dinámico
             const title = `Explicación de los Resultados con Fecha de Valoración ${fecha} y Sugerencias para ${nombre} con ${edad} años, género ${genero}, Edad Metabólica ${edadMetabolica} años, Tipología ${tipologia}`;
 
-            // Definir datos de la tabla principal, organizados por secciones
-            const tableData = [
+            // Función auxiliar para parsear subsecciones de result-analisis
+		const parseBioquimicosSubsections = () => {
+		    const resultAnalisis = document.getElementById('result-analisis');
+		    if (!resultAnalisis) {
+		        console.warn('Elemento result-analisis no encontrado.');
+		        return [{ metric: '', value: '---', note: '' }];
+		    }
+		
+		    const subsections = [
+		        'Deficiencia de Vitamina D',
+		        'Fosfatasa Alcalina Elevada',
+		        'Riesgo de Hipotiroidismo',
+		        'Testosterona Baja',
+		        'Cortisol Elevado',
+		        'Inflamación Sistémica',
+		        'Hígado Graso (NAFLD)',
+		        'Riesgo de Hígado Graso (NAFLD)',
+		        'Riesgo de Fibrosis Hepática',
+		        'Disfunción Renal',
+		        'Riesgo Metabólico Elevado',
+		        'Resistencia Leptínica',
+		        'Adiponectina Baja',
+		        'Diabetes No Controlada',
+		        'Prediabetes',
+		        'Diabetes Mellitus',
+		        'Resistencia a la Insulina',
+		        'Obesidad Metabólica (Síndrome Metabólico)',
+		        'Riesgo de Obesidad Metabólica',
+		        'Desnutrición Proteica',
+		        'Riesgo de Desnutrición Proteica'
+		    ];
+		
+		    const result = [];
+		    const content = resultAnalisis.innerHTML; // Usar innerHTML para preservar estructura
+		    let currentSubsection = null;
+		    let currentText = '';
+		
+		    // Procesar nodos hijos para identificar subsecciones
+		    const nodes = resultAnalisis.childNodes;
+		    for (const node of nodes) {
+		        if (node.nodeType === Node.ELEMENT_NODE) {
+		            const text = node.textContent.trim();
+		            const tag = node.tagName.toLowerCase();
+		
+		            // Verificar si el nodo es un título de subsección
+		            if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b'].includes(tag)) {
+		                if (currentSubsection && currentText) {
+		                    result.push({
+		                        metric: currentSubsection,
+		                        value: currentText.trim() || '---',
+		                        note: ''
+		                    });
+		                    currentText = '';
+		                }
+		                if (subsections.includes(text)) {
+		                    currentSubsection = text;
+		                    console.log(`Subsección encontrada: ${text}`);
+		                } else {
+		                    currentSubsection = null;
+		                }
+		            } else if (['p', 'div', 'span', 'li', 'h6'].includes(tag)) {
+		                if (currentSubsection) {
+		                    currentText += (currentText ? '\n' : '') + text;
+		                }
+		            }
+		        } else if (node.nodeType === Node.TEXT_NODE && currentSubsection) {
+		            const text = node.textContent.trim();
+		            if (text) {
+		                currentText += (currentText ? '\n' : '') + text;
+		            }
+		        }
+		    }
+		
+		    // Añadir la última subsección si existe
+		    if (currentSubsection && currentText) {
+		        result.push({
+		            metric: currentSubsection,
+		            value: currentText.trim() || '---',
+		            note: ''
+		        });
+		    }
+		
+		    // Si no se encontraron subsecciones, añadir fila por defecto
+		    if (result.length === 0) {
+		        console.warn('No se encontraron subsecciones en result-analisis.');
+		        result.push({ metric: '', value: '---', note: '' });
+		    }
+		
+		    return result;
+		};
+		
+		// Definir datos de la tabla principal, organizados por secciones
+		const tableData = [
 		    // Composición Corporal
 		    { section: 'Composición Corporal', metric: '', value: '', note: '' },
 		    { metric: 'IMC', value: `${document.getElementById('result-imc')?.textContent?.trim() || '---'} kg/m²`, note: document.getElementById('imc-source')?.textContent?.trim() || '(No calculado)' },
@@ -2667,47 +2758,45 @@ const downloadFile = (blob, filename) => {
 		    { metric: 'Peso a Perder/Ganar (Mtb)', value: `${document.getElementById('result-peso-objetivo-metabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-objetivo-metabolicsource')?.textContent?.trim() || 'Peso Actual - Masa Grasa Metabolica' },
 		    { metric: 'Masa Muscular a Ganar', value: `${document.getElementById('result-peso-muscular')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-source')?.textContent?.trim() || '' },
 		    { metric: 'Masa Muscular a Ganar (Mtb)', value: `${document.getElementById('result-peso-muscular-matabolic')?.textContent?.trim() || '---'} kg`, note: document.getElementById('peso-muscular-metabolicsource')?.textContent?.trim() || '' },
-		    // Nueva sección: Interpretación de Resultados Parámetros Bioquímicos
+		    // Interpretación de Resultados Parámetros Bioquímicos
 		    { section: 'Interpretación de Resultados Parámetros Bioquímicos', metric: '', value: '', note: '' },
-		    { metric: '', value: `${document.getElementById('result-analisis')?.textContent?.trim() || '---'}`, note: '', fullWidth: true }
+		    ...parseBioquimicosSubsections()
 		];
 
             // Crear tabla principal con autoTable, incluyendo el título como encabezado
-            doc.autoTable({
-	    startY: yPosition,
-	    head: [
-	        [{ content: title, colSpan: 3, styles: { fontStyle: 'bold', fontSize: 14, fillColor: [255, 255, 255], textColor: [56, 142, 60], halign: 'center' } }],
-	        ['Métrica', 'Valor', 'Nota']
-	    ],
-	    body: tableData.map(row => {
-	        if (row.section) {
-	            return [{ content: row.section, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } }];
-	        }
-	        if (row.fullWidth) {
-	            return [{ content: row.value, colSpan: 3, styles: { fontStyle: 'normal', fillColor: [255, 255, 255] } }];
-	        }
-	        return [row.metric, row.value, row.note];
-	    }),
-	    theme: 'grid',
-	    styles: {
-	        font: 'helvetica',
-	        fontSize: 9,
-	        textColor: [0, 0, 0],
-	        lineColor: [0, 0, 0],
-	        lineWidth: 0.5,
-	        cellPadding: 4
-	    },
-	    headStyles: {
-	        fillColor: [56, 142, 60], // Verde para el encabezado de columnas
-	        textColor: [255, 255, 255], // Texto blanco
-	        fontStyle: 'bold',
-	        fontSize: 10
-	    },
-	    margin: { left: margin.left, right: margin.right },
-	    didDrawPage: (data) => {
-	        yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
-	    }
-	});
+            // Crear tabla principal con autoTable, incluyendo el título como encabezado
+		doc.autoTable({
+		    startY: yPosition,
+		    head: [
+		        [{ content: title, colSpan: 3, styles: { fontStyle: 'bold', fontSize: 14, fillColor: [255, 255, 255], textColor: [56, 142, 60], halign: 'center' } }],
+		        ['Métrica', 'Valor', 'Nota']
+		    ],
+		    body: tableData.map(row => {
+		        if (row.section) {
+		            return [{ content: row.section, colSpan: 3, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } }];
+		        }
+		        return [row.metric, row.value, row.note];
+		    }),
+		    theme: 'grid',
+		    styles: {
+		        font: 'helvetica',
+		        fontSize: 9,
+		        textColor: [0, 0, 0],
+		        lineColor: [0, 0, 0],
+		        lineWidth: 0.5,
+		        cellPadding: 4
+		    },
+		    headStyles: {
+		        fillColor: [56, 142, 60], // Verde para el encabezado de columnas
+		        textColor: [255, 255, 255], // Texto blanco
+		        fontStyle: 'bold',
+		        fontSize: 10
+		    },
+		    margin: { left: margin.left, right: margin.right },
+		    didDrawPage: (data) => {
+		        yPosition = data.cursor.y; // Actualiza yPosition después de la tabla
+		    }
+		});
 
             console.log('Tabla principal de resultados con título añadida en yPosition:', yPosition);
 
