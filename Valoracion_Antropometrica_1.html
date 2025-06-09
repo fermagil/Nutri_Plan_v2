@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>	
+ <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>	
 	
 	
     <title>Valoración Antropométrica con Resultados</title>
@@ -3133,49 +3133,66 @@ newButton.addEventListener('click', function(e) {
             modalBody.innerHTML = html;
             modal.style.display = 'flex';
 
-            // Initialize the Chart.js chart
+            // Debugging: Log the inserted HTML and canvas existence
+            console.log('Modal HTML:', modalBody.innerHTML);
             const canvas = modalBody.querySelector('#somatotipoChart');
-            if (canvas) {
-                // Destroy any existing chart instance to avoid conflicts
-                const existingChart = Chart.getChart(canvas);
-                if (existingChart) {
-                    existingChart.destroy();
-                }
+            console.log('Canvas element:', canvas);
 
-                // Initialize scatter chart for IMLG vs. IMG
-                new Chart(canvas, {
-                    type: 'scatter',
-                    data: {
-                        datasets: [{
-                            label: 'Composición Corporal',
-                            data: [{
-                                x: parseFloat(modalBody.querySelector('#img').value) || 0, // IMG
-                                y: parseFloat(modalBody.querySelector('#imlg').value) || 0 // IMLG
-                            }],
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            pointRadius: 5
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            x: {
-                                title: { display: true, text: 'IMG (Índice de Masa Grasa)' },
-                                beginAtZero: true
-                            },
-                            y: {
-                                title: { display: true, text: 'IMLG (Índice de Masa Libre de Grasa)' },
-                                beginAtZero: true
-                            }
-                        },
-                        plugins: {
-                            legend: { display: true },
-                            tooltip: { enabled: true }
-                        }
-                    }
-                });
+            // Ensure Chart.js is loaded before initializing
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js no está cargado');
+                modalBody.innerHTML += '<p>Error: Chart.js no está disponible.</p>';
+                return;
             }
+
+            // Initialize the Chart.js chart after a slight delay to ensure DOM rendering
+            setTimeout(() => {
+                if (canvas) {
+                    // Destroy any existing chart instance to avoid conflicts
+                    const existingChart = Chart.getChart(canvas);
+                    if (existingChart) {
+                        existingChart.destroy();
+                    }
+
+                    // Initialize scatter chart for IMLG vs. IMG
+                    new Chart(canvas, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [{
+                                label: 'Composición Corporal',
+                                data: [{
+                                    x: parseFloat(modalBody.querySelector('#img').value) || 0,
+                                    y: parseFloat(modalBody.querySelector('#imlg').value) || 0
+                                }],
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1,
+                                pointRadius: 5
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    title: { display: true, text: 'IMG (Índice de Masa Grasa)' },
+                                    beginAtZero: true
+                                },
+                                y: {
+                                    title: { display: true, text: 'IMLG (Índice de Masa Libre de Grasa)' },
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: { display: true },
+                                tooltip: { enabled: true }
+                            }
+                        }
+                    });
+                    console.log('Chart initialized');
+                } else {
+                    console.error('Canvas #somatotipoChart no encontrado');
+                    modalBody.innerHTML += '<p>Error: Canvas del gráfico no encontrado.</p>';
+                }
+            }, 100); // Small delay to ensure DOM is ready
 
             // Re-attach event listener for "Actualizar" button
             const actualizarBtn = modalBody.querySelector('#actualizarChart');
@@ -3191,6 +3208,7 @@ newButton.addEventListener('click', function(e) {
                             y: parseFloat(modalBody.querySelector('#imlg').value) || 0
                         }];
                         existingChart.update();
+                        console.log('Chart updated');
                     }
                 });
             }
@@ -3202,10 +3220,13 @@ newButton.addEventListener('click', function(e) {
                     e.stopPropagation();
                     e.preventDefault();
                     const canvas = modalBody.querySelector('#somatotipoChart');
-                    const link = document.createElement('a');
-                    link.href = canvas.toDataURL('image/png');
-                    link.download = 'somatotipoChart.png';
-                    link.click();
+                    if (canvas) {
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/png');
+                        link.download = 'somatotipoChart.png';
+                        link.click();
+                        console.log('Chart download triggered');
+                    }
                 });
             }
         })
