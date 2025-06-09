@@ -2841,41 +2841,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(`Tabla de texto para sección "${section}" añadida en yPosition:`, yPosition);
                 }
 
-                // Añadir imágenes directamente con doc.addImage
-                const images = sectionContents[i].filter(item => item.type === 'image');
-                for (const imageItem of images) {
-                    if (imageItem.content.startsWith('data:')) {
-                        try {
-                            const imgProps = doc.getImageProperties(imageItem.content);
-                            console.log(`Propiedades de imagen para sección "${section}":`, {
-                                width: imgProps.width,
-                                height: imgProps.height,
-                                dataLength: imageItem.content.length
-                            });
-
-                            const pdfWidth = contentWidth - 8;
-                            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-                            if (yPosition + imgHeight + 20 > pageHeight - margin.bottom) {
-                                doc.addPage();
-                                yPosition = margin.top;
-                                console.log('Nueva página añadida para imagen, yPosition reiniciada:', yPosition);
-                            }
-
-                            doc.addImage(imageItem.content, 'PNG', margin.left + 4, yPosition + 4, pdfWidth, imgHeight);
-                            console.log(`Imagen renderizada directamente en sección "${section}" con dimensiones ${pdfWidth}x${imgHeight} en yPosition ${yPosition}`);
-                            yPosition += imgHeight + 20;
-                        } catch (error) {
-                            console.error(`Error al renderizar imagen directamente en sección "${section}":`, error.message);
-                            doc.text(`Error: No se pudo renderizar el chart ${chartIndex + 1}.`, margin.left, yPosition + 20);
-                            yPosition += 30;
-                        }
-                    } else {
-                        doc.text(imageItem.content, margin.left, yPosition + 20);
-                        yPosition += 30;
-                    }
-                }
-            }
+                
 
             // Genera el blob y descárgalo
             const blob = doc.output('blob');
