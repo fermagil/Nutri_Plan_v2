@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa de Composición Corporal con Tipología</title>
+  <style>
+  /* Estilo General del Container */
+    .container-wrapper {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      background-color: #f8f9fa;
+      color: #212529;
+      line-height: 1.6;
+      font-size: 16px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+      border: 1px solid #e0e0e0;
+    }
+
+    .container-wrapper h1, 
+    .container-wrapper h2, 
+    .container-wrapper h3, 
+    .container-wrapper h4 {
+      color: #388E3C;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .container-wrapper h1 {
+      font-size: 2.2em;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .container-wrapper h2 {
+      font-size: 1.8em;
+      border-bottom: 2px solid #a5d6a7;
+      padding-bottom: 8px;
+    }
+
+    /* Resto de tus estilos (los mismos que tenías) */
+    .container-wrapper .input-form {
+      background-color: #ffffff;
+      padding: 20px 25px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+      border: 1px solid #e0e0e0;
+      box-sizing: border-box;
+    }
+    /* Estilo General */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #212529;
+      line-height: 1.6;
+      font-size: 16px;
+      padding-bottom: 80px;
+      box-sizing: border-box;
+    }
+
+    
+
+    .logo a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-size: 1.75em;
+      font-weight: 600;
+    }
+
+    
+
+    /* Main Content */
+    main {
+      padding: 30px 15px;
+      max-width: 900px;
+      margin: 20px auto;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      box-sizing: border-box;
+    }
+
+    h1, h2, h3, h4 {
+      color: #388E3C;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      border-bottom: 2px solid #a5d6a7;
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 1.5em;
+      margin-top: 25px;
+    }
+
+    h4 {
+      font-size: 1.3em;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #495057;
+      margin-bottom: 15px;
+    }
+
+    ul {
+      padding-left: 25px;
+      margin-bottom: 15px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    a {
+      color: #0275d8;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Formulario de Entrada */
+    .input-form {
+      background-color: #ffffff;
+      padding: 20px 25px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+      border: 1px solid #e0e0e0;
+      box-sizing: border-box;
+    }
+
+    .input-form .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px 20px;
+    }
+
+    .input-form .form-group {
+      margin-bottom: 5px;
+    }
+
+    .input-form label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #343a40;
+      font-size: 0.95em;
+    }
+
+    .input-form input[type="number"],
+    .input-form select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 0.95em;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .input-form input[type="number"]#edadInput {
+      width: 100%;
+    }
+
+    .input-form input:focus,
+    .input-form select:focus {
+      border-color: #80bdff;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .input-form button,
+    .download-button {
+      background-color: #5cb85c;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      border: none;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      border-radius: 5px;
+      padding: 10px 18px;
+      font-size: 0.95em;
+      margin-top: 10px;
+    }
+
+    .input-form button:hover,
+    .download-button:hover {
+      background-color: #4cae4c;
+      transform: translateY(-1px);
+    }
+
+    .warning-message {
+      color: #dc3545;
+      font-size: 0.85em;
+      margin-top: -8px;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    /* Leyenda */
+    .legend-container {
+      margin: 15px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px;
+      background-color: #f1f8f1;
+      border-radius: 8px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+      color: #343a40;
+    }
+
+    .legend-color {
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    /* Contenedor del Gráfico */
+    .chart-container {
+      max-width: 700px;
+      width: 100%;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+      box-sizing: border-box;
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+
+    .chart-container:hover {
+      transform: translateY(-3px);
+    }
+
+    .chart-container canvas#somatotype-canvas {
+      width: 100% !important;
+      height: 350px !important;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #212529;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 0.85em;
+      line-height: 1.4;
+      pointer-events: none;
+      display: none;
+      z-index: 10;
+      white-space: nowrap;
+      border: 1px solid #ced4da;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+   
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      header {
+        padding: 10px 15px;
+        flex-direction: column;
+        align-items: flex-start;
+        position: static;
+      }
+
+     
+      main {
+        padding-top: 20px;
+        max-width: 95%;
+      }
+
+      .input-form .form-grid {
+        grid-template-columns: 1fr;
+        gap: 10px 15px;
+      }
+
+      .input-form {
+        padding: 15px 20px;
+      }
+
+      .chart-container {
+        padding: 10px;
+      }
+
+         }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.5em;
+      }
+
+      h3 {
+        font-size: 1.3em;
+      }
+
+      h4 {
+        font-size: 1.1em;
+      }
+
+      .input-form input[type="number"],
+      .input-form select {
+        padding: 8px 10px;
+        font-size: 0.9em;
+      }
+
+      .input-form button,
+      .download-button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+      }
+
+   
+     
+      }
+    }
+	 /* Añade .container-wrapper delante de todos los selectores para evitar conflictos */
+    .container-wrapper .chart-container {
+      max-width: 700px;
+      width: 100%;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+      box-sizing: border-box;
+    }
+
+    /* Responsividad dentro del container */
+    @media (max-width: 768px) {
+      .container-wrapper main {
+        padding-top: 20px;
+        max-width: 95%;
+      }
+
+      .container-wrapper .input-form .form-grid {
+        grid-template-columns: 1fr;
+        gap: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+ 
+ 
+  <!-- Main Content -->
+  <!-- Contenido del container -->
+  <div class="container-content">
+    <h1>Relación IMLG vs IMG - Mapa de Composición Corporal</h1>
+    <div class="input-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="sexoInput">Sexo:</label>
+          <select id="sexoInput">
+            <option value="mujer">Mujer</option>
+            <option value="hombre">Hombre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edadInput">Edad:</label>
+          <input type="number" id="edadInput" value="30" min="18" max="120" step="1">
+          <div id="edadWarning" class="warning-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="actividadInput">Nivel de Actividad:</label>
+          <select id="actividadInput">
+            <option value="sedentario">Sedentario</option>
+            <option value="pocoActivo">Poco Activo</option>
+            <option value="activo">Activo</option>
+            <option value="deportista">Deportista</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="imlgInput">IMLG:</label>
+          <input type="number" id="imlgInput" value="17.0" step="0.1">
+          <div id="imlgWarning" class="warning-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="imgInput">IMG:</label>
+          <input type="number" id="imgInput" value="11.1" step="0.1">
+          <div id="imgWarning" class="warning-message"></div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button id="updateButton">Actualizar</button>
+        <button class="download-button" id="downloadButton">Descargar Gráfico</button>
+      </div>
+    </div>
+    <div class="legend-container" id="legendContainer"></div>
+    <div class="chart-container">
+      <canvas id="somatotype-canvas"></canvas>
+      <div id="tooltip" class="tooltip"></div>
+    </div>
+  </div>
+</div>
+    
+
+   
+
+  <!-- Scripts -->
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+  </script>
+  <script>
+    const cliente = [{ x: 18, y: 6 }];
+
+    const typologies = [
+      { name: 'Obeso Sedentario', color: 'rgba(255, 153, 153, 0.5)', emoji: '📺🥔' },
+      { name: 'Adiposo Sedentario', color: 'rgba(255, 0, 0, 0.5)', emoji: '🥐🍩' },
+      { name: 'Obeso Sólido', color: 'rgba(255, 165, 0, 0.5)', emoji: '🍔🦍' },
+      { name: 'Delgado Adiposo', color: 'rgba(255, 204, 153, 0.5)', emoji: '🚶🍩' },
+      { name: 'Promedio', color: 'rgba(212, 237, 145, 0.5)', emoji: '😊' },
+      { name: 'Atleta Promedio', color: 'rgba(0, 128, 0, 0.5)', emoji: '🏃' },
+      { name: 'Delgado', color: 'rgba(255, 255, 153, 0.5)', emoji: '🌱🧘' },
+      { name: 'Esbelto Magro Atleta', color: 'rgba(0, 128, 0, 0.5)', emoji: '💪🔥' },
+      { name: 'Musculoso Atleta', color: 'rgba(0, 128, 0, 0.5)', emoji: '🏋️💪' }
+    ];
+
+    function createLegend() {
+      const legendContainer = document.getElementById('legendContainer');
+      typologies.forEach(typology => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `
+          <span class="legend-color" style="background-color: ${typology.color};"></span>
+          <span>${typology.emoji} ${typology.name}</span>
+        `;
+        legendContainer.appendChild(legendItem);
+      });
+    }
+
+    const canvas = document.getElementById('somatotype-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 700;
+    canvas.height = 350;
+
+    const tooltip = document.getElementById('tooltip');
+
+    const xMin = 11.5;
+    const xMax = 26.7;
+    const yMin = 2;
+    const yMax = 14.3;
+
+    let currentPointX = 0;
+    let currentPointY = 0;
+    const pointRadius = 7;
+
+    function mapToCanvas(value, min, max, canvasSize) {
+      return ((value - min) / (max - min)) * canvasSize;
+    }
+
+    function drawGrid(sexo, actividad, edad) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let ranges = getRanges(sexo, actividad, edad);
+      let imlgRanges = ranges.imlgRanges;
+      let imgRanges = ranges.imgRanges;
+      let maxIMLG = ranges.maxIMLG;
+      let maxIMG = ranges.maxIMG;
+
+      const xBajo = mapToCanvas(imlgRanges.bajo, xMin, xMax, canvas.width);
+      const xMedio = mapToCanvas(imlgRanges.medio, xMin, xMax, canvas.width);
+      const xAlto = mapToCanvas(imlgRanges.alto, xMin, xMax, canvas.width);
+      const xMaxCanvas = mapToCanvas(maxIMLG, xMin, xMax, canvas.width);
+
+      const yBajo = canvas.height - mapToCanvas(imgRanges.bajo, yMin, yMax, canvas.height);
+      const yMedio = canvas.height - mapToCanvas(imgRanges.medio, yMin, yMax, canvas.height);
+      const yAlto = canvas.height - mapToCanvas(imgRanges.alto, yMin, yMax, canvas.height);
+      const yMaxCanvas = canvas.height - mapToCanvas(maxIMG, yMin, yMax, canvas.height);
+
+      const regions = [
+        { xStart: 0, xEnd: xMedio, yStart: 0, yEnd: yAlto, typology: 'Obeso Sedentario' },
+        { xStart: xMedio, xEnd: xAlto, yStart: 0, yEnd: yAlto, typology: 'Adiposo Sedentario' },
+        { xStart: xAlto, xEnd: canvas.width, yStart: 0, yEnd: yAlto, typology: 'Obeso Sólido' },
+        { xStart: 0, xEnd: xMedio, yStart: yAlto, yEnd: yMedio, typology: 'Delgado Adiposo' },
+        { xStart: xMedio, xEnd: xAlto, yStart: yAlto, yEnd: yMedio, typology: 'Promedio' },
+        { xStart: xAlto, xEnd: canvas.width, yStart: yAlto, yEnd: yMedio, typology: 'Atleta Promedio' },
+        { xStart: 0, xEnd: xMedio, yStart: yMedio, yEnd: canvas.height, typology: 'Delgado' },
+        { xStart: xMedio, xEnd: xAlto, yStart: yMedio, yEnd: canvas.height, typology: 'Esbelto Magro Atleta' },
+        { xStart: xAlto, xEnd: canvas.width, yStart: yMedio, yEnd: canvas.height, typology: 'Musculoso Atleta' }
+      ];
+
+      regions.forEach(region => {
+        const typologyObj = typologies.find(t => t.name === region.typology);
+        const color = typologyObj ? typologyObj.color : 'rgba(200, 200, 200, 0.5)';
+        ctx.fillStyle = color;
+        ctx.fillRect(region.xStart, region.yStart, region.xEnd - region.xStart, region.yEnd - region.yStart);
+
+        ctx.fillStyle = 'black';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const labelX = (region.xStart + region.xEnd) / 2;
+        const labelY = (region.yStart + region.yEnd) / 2;
+        ctx.fillText(region.typology, labelX, labelY);
+      });
+
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(xMedio, 0);
+      ctx.lineTo(xMedio, canvas.height);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(xAlto, 0);
+      ctx.lineTo(xAlto, canvas.height);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, yMedio);
+      ctx.lineTo(canvas.width, yMedio);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, yAlto);
+      ctx.lineTo(canvas.width, yAlto);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height);
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, canvas.height);
+      ctx.stroke();
+
+      ctx.font = '10px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      for (let imlg = 12; imlg <= 26; imlg += 2) {
+        const x = mapToCanvas(imlg, xMin, xMax, canvas.width);
+        ctx.fillText(imlg, x, canvas.height - 15);
+        ctx.beginPath();
+        ctx.moveTo(x, canvas.height);
+        ctx.lineTo(x, canvas.height - 5);
+        ctx.stroke();
+      }
+
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      for (let img = 2; img <= 14; img += 2) {
+        const y = canvas.height - mapToCanvas(img, yMin, yMax, canvas.height);
+        ctx.fillText(img, 15, y);
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(5, y);
+        ctx.stroke();
+      }
+
+      ctx.textAlign = 'center';
+      ctx.fillText('IMLG (kg/m²)', canvas.width / 2, canvas.height - 30);
+      ctx.save();
+      ctx.translate(30, canvas.height / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('IMG (kg/m²)', 0, 0);
+      ctx.restore();
+    }
+
+    function drawPoint(imlg, img, color) {
+      const x = mapToCanvas(imlg, xMin, xMax, canvas.width);
+      const y = canvas.height - mapToCanvas(img, yMin, yMax, canvas.height);
+      ctx.beginPath();
+      ctx.arc(x, y, pointRadius, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+
+      currentPointX = x;
+      currentPointY = y;
+    }
+
+    function isCursorOverPoint(mouseX, mouseY) {
+      const dx = mouseX - currentPointX;
+      const dy = mouseY - currentPointY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return distance <= pointRadius + 5;
+    }
+
+    canvas.addEventListener('mousemove', (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      if (isCursorOverPoint(mouseX, mouseY)) {
+        const sexo = document.getElementById('sexoInput').value;
+        const edad = parseInt(document.getElementById('edadInput').value);
+        const actividad = document.getElementById('actividadInput').value;
+        const result = detectarTipologia(cliente, sexo, actividad, edad);
+        const tipologia = result.tipologia;
+        const typologyObj = typologies.find(t => t.name === tipologia);
+        const emoji = typologyObj ? typologyObj.emoji : '';
+        tooltip.style.display = 'block';
+        tooltip.innerHTML = `Cliente: IMLG=${cliente[0].x}, IMG=${cliente[0].y}, Tipología=${emoji} ${tipologia}`;
+
+        let tooltipX = currentPointX - tooltip.offsetWidth / 2;
+        let tooltipY = currentPointY - tooltip.offsetHeight - pointRadius - 5;
+
+        if (tooltipX < 0) {
+          tooltipX = 0;
+        }
+        if (tooltipX + tooltip.offsetWidth > canvas.width) {
+          tooltipX = canvas.width - tooltip.offsetWidth;
+        }
+        if (tooltipY < 0) {
+          tooltipY = currentPointY + pointRadius + 5;
+        }
+        if (tooltipY + tooltip.offsetHeight > canvas.height) {
+          tooltipY = canvas.height - tooltip.offsetHeight;
+        }
+
+        tooltip.style.left = `${tooltipX}px`;
+        tooltip.style.top = `${tooltipY}px`;
+      } else {
+        tooltip.style.display = 'none';
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none';
+    });
+
+    function getRanges(sexo, actividad, edad) {
+      if (edad < 18) {
+        return null;
+      }
+
+      let ageGroup;
+      if (edad >= 18 && edad <= 29) {
+        ageGroup = '18-29';
+      } else if (edad >= 30 && edad <= 49) {
+        ageGroup = '30-49';
+      } else {
+        ageGroup = '50+';
+      }
+
+      let imlgRanges, imgRanges, maxIMLG, maxIMG;
+
+      if (sexo === 'mujer') {
+        if (ageGroup === '18-29') {
+          if (actividad === 'sedentario') {
+            imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
+            imgRanges = { bajo: 4, medio: 7, alto: 9 };
+            maxIMLG = 18.5;
+            maxIMG = 13;
+          } else if (actividad === 'pocoActivo') {
+            imlgRanges = { bajo: 13, medio: 15, alto: 17 };
+            imgRanges = { bajo: 3.5, medio: 6.5, alto: 8.5 };
+            maxIMLG = 19;
+            maxIMG = 12;
+          } else if (actividad === 'activo') {
+            imlgRanges = { bajo: 13.5, medio: 15.5, alto: 17.5 };
+            imgRanges = { bajo: 3, medio: 6, alto: 8 };
+            maxIMLG = 20;
+            maxIMG = 10;
+          } else {
+            imlgRanges = { bajo: 14, medio: 16, alto: 18.5 };
+            imgRanges = { bajo: 3, medio: 5, alto: 7 };
+            maxIMLG = 22;
+            maxIMG = 9;
+          }
+        } else if (ageGroup === '30-49') {
+          if (actividad === 'sedentario') {
+            imlgRanges = { bajo: 12, medio: 14, alto: 16 };
+            imgRanges = { bajo: 5, medio: 8, alto: 10 };
+            maxIMLG = 18;
+            maxIMG = 14.3;
+          } else if (actividad === 'pocoActivo') {
+            imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
+            imgRanges = { bajo: 4, medio: 7, alto: 9 };
+            maxIMLG = 18.5;
+            maxIMG = 13;
+          } else if (actividad === 'activo') {
+            imlgRanges = { bajo: 13, medio: 15, alto: 17 };
+            imgRanges = { bajo: 3.5, medio: 6.5, alto: 8.5 };
+            maxIMLG = 19;
+            maxIMG = 11;
+          } else {
+            imlgRanges = { bajo: 13.5, medio: 15.5, alto: 17.5 };
+            imgRanges = { bajo: 3, medio: 5.5, alto: 7.5 };
+            maxIMLG = 20;
+            maxIMG = 9.5;
+          }
+        } else {
+          if (actividad === 'sedentario') {
+            imlgRanges = { bajo: 11.5, medio: 13.5, alto: 15.5 };
+            imgRanges = { bajo: 6, medio: 9, alto: 11 };
+            maxIMLG = 17.5;
+            maxIMG = 14.3;
+          } else if (actividad === 'pocoActivo') {
+            imlgRanges = { bajo: 12, medio: 14, alto: 16 };
+            imgRanges = { bajo: 5, medio: 8, alto: 10 };
+            maxIMLG = 18;
+            maxIMG = 13;
+          } else if (actividad === 'activo') {
+            imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
+            imgRanges = { bajo: 4, medio: 7, alto: 9 };
+            maxIMLG = 18.5;
+            maxIMG = 11;
+          } else {
+            imlgRanges = { bajo: 13, medio: 15, alto: 17 };
+            imgRanges = { bajo: 3.5, medio: 6, alto: 8 };
+            maxIMLG = 19;
+            maxIMG = 10;
+          }
+        }
+      } else {
+        if (ageGroup === '18-29') {
+          if (actividad === 'sedentario') {
+            imlgRanges = { bajo: 15, medio: 17, alto: 19 };
+            imgRanges = { bajo: 3, medio: 6, alto: 8 };
+            maxIMLG = 21;
+            maxIMG = 11;
+          } else if (actividad === 'pocoActivo') {
+            imlgRanges = { bajo: 15.5, medio: 17.5, alto: 19.5 };
+            imgRanges = { bajo: 2.5, medio: 5.5, alto: 7.5 };
+            maxIMLG = 21.5;
+            maxIMG = 10;
+          } else if (actividad === 'activo') {
+            imlgRanges = { bajo: 16, medio: 18, alto: 20 };
+            imgRanges = { bajo: 2, medio: 5, alto: 7 };
+            maxIMLG = 23;
+            maxIMG = 9;
+          } else {
+            imlgRanges = { bajo: 17, medio: 19, alto: 21.5 };
+            imgRanges = { bajo: 2, medio: 4, alto: 6 };
+            maxIMLG = 25;
+            maxIMG = 8;
+          }
+        } else if (ageGroup === '30-49') {
+          if (actividad === 'sedentario') {
+            imlgRanges = { bajo: 14.5, medio: 16.5, alto: 18.5 };
+            imgRanges = { bajo: 4, medio: 7, alto: 9 };
+            maxIMLG = 20.5;
+            maxIMG = 12;
+          } else if (actividad === 'pocoActivo') {
+            imlgRanges = { bajo: 15, medio: 17, alto: 19 };
+            imgRanges = { bajo: 3, medio: 6, alto: 8 };
+            maxIMLG = 21;
+            maxIMG = 11;
+          } else if (actividad === 'activo') {
+            imlgRanges = { bajo: 15.5, medio: 17.5, alto: 19.5 };
+            imgRanges = { bajo: 2.5, medio: 5.5, alto: 7.5 };
+            maxIMLG = 22;
+            maxIMG = 9.5;
+          } else {
+            imlgRanges = { bajo: 16, medio: 18, alto: 20 };
+            imgRanges = { bajo: 2, medio: 4.5, alto: 6.5 };
+            maxIMLG = 23;
+            maxIMG = 8.5;
+          }
+        } else {
+          if (actividad === 'sedentario') {
+            imlgRanges = { bajo: 14, medio: 16, alto: 18 };
+            imgRanges = { bajo: 5, medio: 8, alto: 10 };
+            maxIMLG = 20;
+            maxIMG = 12;
+          } else if (actividad === 'pocoActivo') {
+            imlgRanges = { bajo: 14.5, medio: 16.5, alto: 18.5 };
+            imgRanges = { bajo: 4, medio: 7, alto: 9 };
+            maxIMLG = 20.5;
+            maxIMG = 11;
+          } else if (actividad === 'activo') {
+            imlgRanges = { bajo: 15, medio: 17, alto: 19 };
+            imgRanges = { bajo: 3, medio: 6, alto: 8 };
+            maxIMLG = 21;
+            maxIMG = 10;
+          } else {
+            imlgRanges = { bajo: 15.5, medio: 17.5, alto: 19.5 };
+            imgRanges = { bajo: 2.5, medio: 5, alto: 7 };
+            maxIMLG = 22;
+            maxIMG = 9;
+          }
+        }
+      }
+
+      return { imlgRanges, imgRanges, maxIMLG, maxIMG };
+    }
+
+    function validateInputs(sexo, actividad, edad, imlg, img) {
+      const imlgWarning = document.getElementById('imlgWarning');
+      const imgWarning = document.getElementById('imgWarning');
+      imlgWarning.style.display = 'none';
+      imgWarning.style.display = 'none';
+
+      const ranges = getRanges(sexo, actividad, edad);
+      if (!ranges) {
+        return false;
+      }
+      const { maxIMLG, maxIMG } = ranges;
+
+      let isValid = true;
+
+      if (imlg < xMin) {
+        imlgWarning.textContent = `IMLG debe ser al menos ${xMin} kg/m²`;
+        imlgWarning.style.display = 'block';
+        isValid = false;
+      } else if (imlg > maxIMLG) {
+        imlgWarning.textContent = `IMLG no puede exceder ${maxIMLG} kg/m² para ${sexo === 'mujer' ? 'mujeres' : 'hombres'} de ${edad >= 50 ? '50+' : (edad >= 30 ? '30-49' : '18-29')} años ${actividad}`;
+        imlgWarning.style.display = 'block';
+        isValid = false;
+      }
+
+      if (img < yMin) {
+        imgWarning.textContent = `IMG debe ser al menos ${yMin} kg/m²`;
+        imgWarning.style.display = 'block';
+        isValid = false;
+      } else if (img > maxIMG) {
+        imgWarning.textContent = `IMG no puede exceder ${maxIMG} kg/m² para ${sexo === 'mujer' ? 'mujeres' : 'hombres'} de ${edad >= 50 ? '50+' : (edad >= 30 ? '30-49' : '18-29')} años ${actividad}`;
+        imgWarning.style.display = 'block';
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    function detectarTipologia(cliente, sexo, actividad, edad) {
+      if (!cliente || !cliente[0] || typeof cliente[0].x !== 'number' || typeof cliente[0].y !== 'number') {
+        return { tipologia: 'Datos inválidos', closestTipologia: null };
+      }
+      if (edad < 18) {
+        return { tipologia: 'Edad no válida (debe ser mayor o igual a 18)', closestTipologia: null };
+      }
+      let x = cliente[0].x;
+      let y = cliente[0].y;
+      let tipologia = '';
+      let closestTipologia = null;
+
+      const ranges = getRanges(sexo, actividad, edad);
+      if (!ranges) {
+        return { tipologia: 'Edad no válida (debe ser mayor o igual a 18)', closestTipologia: null };
+      }
+      let imlgRanges = ranges.imlgRanges;
+      let imgRanges = ranges.imgRanges;
+      let maxIMLG = ranges.maxIMLG;
+      let maxIMG = ranges.maxIMG;
+
+      let isOutOfRange = true;
+      let adjustedX = x;
+      let adjustedY = y;
+
+      if (x < xMin || x > maxIMLG || y < yMin || y > maxIMG) {
+        isOutOfRange = true;
+        adjustedX = Math.max(xMin, Math.min(x, maxIMLG));
+        adjustedY = Math.max(yMin, Math.min(y, maxIMG));
+      }
+
+      let xToUse = isOutOfRange ? adjustedX : x;
+      let yToUse = isOutOfRange ? adjustedY : y;
+
+      let imlgCategory = '';
+      if (xToUse >= imlgRanges.bajo && xToUse < imlgRanges.medio) {
+        imlgCategory = 'bajo';
+      } else if (xToUse >= imlgRanges.medio && xToUse < imlgRanges.alto) {
+        imlgCategory = 'medio';
+      } else if (xToUse >= imlgRanges.alto && xToUse <= maxIMLG) {
+        imlgCategory = 'alto';
+      }
+
+      let imgCategory = '';
+      if (yToUse >= imgRanges.bajo && yToUse < imgRanges.medio) {
+        imgCategory = 'bajo';
+      } else if (yToUse >= imgRanges.medio && yToUse < imgRanges.alto) {
+        imgCategory = 'medio';
+      } else if (yToUse >= imgRanges.alto && yToUse <= maxIMG) {
+        imgCategory = 'alto';
+      }
+
+      if (imlgCategory === 'bajo') {
+        if (imgCategory === 'alto') tipologia = 'Obeso Sedentario';
+        else if (imgCategory === 'medio') tipologia = 'Delgado Adiposo';
+        else if (imgCategory === 'bajo') tipologia = 'Delgado';
+      } else if (imlgCategory === 'medio') {
+        if (imgCategory === 'alto') tipologia = 'Adiposo Sedentario';
+        else if (imgCategory === 'medio') tipologia = 'Promedio';
+        else if (imgCategory === 'bajo') tipologia = 'Esbelto Magro Atleta';
+      } else if (imlgCategory === 'alto') {
+        if (imgCategory === 'alto') tipologia = 'Obeso Sólido';
+        else if (imgCategory === 'medio') tipologia = 'Atleta Promedio';
+        else if (imgCategory === 'bajo') tipologia = 'Musculoso Atleta';
+      }
+
+      
+
+      return { tipologia: tipologia || 'Fuera de rango', closestTipologia };
+    }
+
+ 
+
+
+// Function to update the chart and results
+function updateChart() {
+  const sexo = document.getElementById('sexoInput').value;
+  const actividad = document.getElementById('actividadInput').value;
+  const edad = parseInt(document.getElementById('edadInput').value);
+  const imlg = parseFloat(document.getElementById('imlgInput').value);
+  const img = parseFloat(document.getElementById('imgInput').value);
+
+  cliente[0] = { x: imlg, y: img };
+
+  // Validate inputs
+  const isValid = validateInputs(sexo, actividad, edad, imlg, img);
+  if (!isValid) {
+    drawGrid(sexo, actividad, edad);
+    document.getElementById('resultadoTipologia').textContent = 'Datos fuera de rango';
+    document.getElementById('interpretacionResultado').innerHTML = '<p>Por favor, ajusta los valores de IMLG y/o IMG según las advertencias mostradas.</p>';
+    return;
+  }
+
+  // Draw the grid and point
+  drawGrid(sexo, actividad, edad);
+  drawPoint(imlg, img, 'red');
+
+  
+}
+
+// Function to download the canvas as an image
+function downloadChart() {
+  const link = document.createElement('a');
+  link.download = 'mapa_composicion_corporal.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+// Leer parámetros de la URL
+const urlParams = new URLSearchParams(window.location.search);
+const imlg = parseFloat(urlParams.get('imlg')) || 17.0;
+const img = parseFloat(urlParams.get('img')) || 11.1;
+const sexo = urlParams.get('sexo') === 'hombre' ? 'hombre' : 'mujer';
+const edad = parseInt(urlParams.get('edad')) || 30;
+const actividad = ['sedentario', 'pocoActivo', 'activo', 'deportista'].includes(urlParams.get('actividad'))
+  ? urlParams.get('actividad')
+  : 'sedentario';
+
+document.getElementById('imlgInput').value = isNaN(imlg) ? 17.0 : imlg;
+document.getElementById('imgInput').value = isNaN(img) ? 11.1 : img;
+document.getElementById('sexoInput').value = sexo;
+document.getElementById('edadInput').value = isNaN(edad) || edad < 18 ? 30 : edad;
+document.getElementById('actividadInput').value = actividad;
+
+// Initialize the chart and legend
+createLegend();
+updateChart();
+
+// Add event listeners for updates and downloads
+document.getElementById('updateButton').addEventListener('click', updateChart);
+document.getElementById('downloadButton').addEventListener('click', downloadChart);
+</script>
+</body>
+</html>
