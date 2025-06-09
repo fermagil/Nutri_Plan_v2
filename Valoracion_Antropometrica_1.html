@@ -2367,7 +2367,16 @@ body {
 		    <!-- Contenido dinámico para la explicación -->
 		    <div id="explanation-content"></div>
 		</section>
+			<!-- Placeholder for fetched content -->
 			<div id="containerTipologiaPlaceholder"></div>
+			
+			<!-- Modal container (initially hidden) -->
+			<div id="modalContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+			    <div id="modalContent" style="background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative;">
+			        <button id="closeModal" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; font-size: 14px; cursor: pointer;">Cerrar</button>
+			        <div id="modalBody"></div>
+			    </div>
+			</div>
                 </div>
             </div>
         </form>
@@ -3100,18 +3109,40 @@ for (let i = 0; i < canvasElements.length; i++) {
 });
 	//Abrir Container MapaTipologia Corporal
 	document.getElementById('abrirContainerTipologia').addEventListener('click', function() {
-    // Cargar el archivo HTML del container
-    fetch('Mapa_de_Composicion_Corporal.html')  // Asegúrate que este nombre coincida con tu archivo 
-        .then(response => response.text())
+    // Show the modal
+    const modal = document.getElementById('modalContainer');
+    const modalBody = document.getElementById('modalBody');
+    
+    // Fetch the HTML content
+    fetch('Mapa_de_Composicion_Corporal.html')
+        .then(response => {
+            if (!response.ok) throw new Error('Archivo no encontrado');
+            return response.text();
+        })
         .then(html => {
-            // Insertar el HTML en el placeholder
-            document.getElementById('containerTipologiaPlaceholder').innerHTML = html;
+            // Insert the fetched HTML into the modal body
+            modalBody.innerHTML = html;
+            modal.style.display = 'flex';
         })
         .catch(error => {
             console.error('Error al cargar el container:', error);
-            document.getElementById('containerTipologiaPlaceholder').innerHTML = 
-                '<p>Error al cargar el container. Verifica que el archivo exista.</p>';
+            modalBody.innerHTML = '<p>Error al cargar el container. Verifica que el archivo exista.</p>';
+            modal.style.display = 'flex';
         });
+});
+
+// Close the modal when the close button is clicked
+document.getElementById('closeModal').addEventListener('click', function() {
+    document.getElementById('modalContainer').style.display = 'none';
+    document.getElementById('modalBody').innerHTML = ''; // Clear content
+});
+
+// Close the modal when clicking outside the modal content
+document.getElementById('modalContainer').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+        document.getElementById('modalBody').innerHTML = ''; // Clear content
+    }
 });
 </script>
  <!-- Firebase -->
