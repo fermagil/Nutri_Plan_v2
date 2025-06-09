@@ -4099,15 +4099,15 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    e.preventDefault();
 	    downloadChart();
 	});
-	const button = document.getElementById('abrirContainerSomatotipo');
+	const buttonsoma = document.getElementById('abrirContainerSomatotipo');
 	button.addEventListener('click', function(e) {
 	    e.stopPropagation();
 	    e.preventDefault();
-	    const modal = document.getElementById('modalContainer');
-	    modal.style.display = 'flex';
-	    populateFormFields(); // Populate form fields when modal opens
-	    createLegend();
-	    updateChart();
+	    const modalsoma = document.getElementById('modalContainer');
+	    modalsoma.style.display = 'flex';
+	    //populateFormFields(); // Populate form fields when modal opens
+	    //createLegend();
+	    //updateChart();
 	});
 </script>
  <!-- Firebase -->
