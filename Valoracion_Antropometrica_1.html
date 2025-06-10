@@ -1850,6 +1850,28 @@ body {
     max-height: 400px; /* Ajustar altura del gráfico */
 }
 
+.modal-soma-container .chart-container:has(#somatotype-image) {
+    max-width: 800px;
+    max-height: 500px;
+    position: relative;
+    aspect-ratio: 1 / 1; /* Mantener proporciones cuadradas */
+}
+
+.modal-soma-container .chart-container img#somatotype-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.modal-soma-container .chart-container canvas#somatotype-point-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important; /* Ajustar altura al contenedor */
+    pointer-events: none;
+}
+
 .modal-soma-container .button-container {
     text-align: center;
     margin-top: 20px;
