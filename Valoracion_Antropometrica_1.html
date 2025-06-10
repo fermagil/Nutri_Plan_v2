@@ -2960,89 +2960,89 @@ body {
 
 		    		 <!-- Modal Somayotipo Container -->
 		    		<div id="modalSomaContainer" class="modal-soma-container">
-				    <div class="modal-soma-content">
-				        <span class="close-soma-modal">×</span>
-				        <h1 id="modalTitle">Somatocarta</h1>
-				        <form id="somatotipoForm" novalidate>
-				            <div class="form-grid">
-				                <div>
-				                    <label for="nombreInput">Género:</label>
-				                    <select id="nombreInput" name="genero" required>
-				                        <option value="" disabled selected>Selecciona género</option>
-				                        <option value="hombre">Hombre</option>
-				                        <option value="mujer">Mujer</option>
-				                    </select>
-				                </div>
-				                <div>
-				                    <label for="endoInput">Endomorfia:</label>
-				                    <input type="number" id="endoInput" name="endomorfia" step="0.1" min="0" required>
-				                </div>
-				                <div>
-				                    <label for="mesoInput">Mesomorfia:</label>
-				                    <input type="number" id="mesoInput" name="mesomorfia" step="0.1" min="0" required>
-				                </div>
-				                <div>
-				                    <label for="ectoInput">Ectomorfia:</label>
-				                    <input type="number" id="ectoInput" name="ectomorfia" step="0.1" min="0" required>
-				                </div>
-				                <div>
-				                    <label for="deporteInput">Grupo de Referencia:</label>
-				                    <select id="deporteInput" name="grupoReferencia" required>
-				                        <option value="" disabled selected>Selecciona grupo</option>
-				                        <option value="Sedentarios">Sedentarios</option>
-				                        <option value="PocoActivos">Poco Activos</option>
-				                        <option value="Activo">Activo</option>
-				                        <option value="Deportes">Deportes</option>
-				                    </select>
-				                </div>
-				                <div>
-				                    <label for="modalidadInput">Modalidad:</label>
-				                    <select id="modalidadInput" name="modalidad" disabled>
-				                        <option value="" disabled selected>Selecciona una modalidad</option>
-				                    </select>
-				                </div>
-				            </div>
-				            <div class="somatotipo-display">
-				                <h3>Somatotipo del Deporte</h3>
-				                <div class="somatotipo-values">
-				                    <div>
-				                        <label>Endomorfia:</label>
-				                        <input type="text" id="somatotipoEndo" readonly>
-				                    </div>
-				                    <div>
-				                        <label>Mesomorfia:</label>
-				                        <input type="text" id="somatotipoMeso" readonly>
-				                    </div>
-				                    <div>
-				                        <label>Ectomorfia:</label>
-				                        <input type="text" id="somatotipoEcto" readonly>
-				                    </div>
-				                    <div>
-				                        <label>Dominante:</label>
-				                        <input type="text" id="somatotipoDominante" readonly>
-				                    </div>
-				                    <div>
-				                        <label>X:</label>
-				                        <input type="text" id="somatotipoX" readonly>
-				                    </div>
-				                    <div>
-				                        <label>Y:</label>
-				                        <input type="text" id="somatotipoY" readonly>
-				                    </div>
-				                </div>
-				            </div>
-				            <div class="chart-container">
-				                <img id="somatotype-image" src="https://fermagil.github.io/Nutri_Plan_v2/somatotype-chart.png" alt="Carta de Somatotipo">
-				                <canvas id="somatotype-point-canvas"></canvas>
-				                <div id="tooltip" class="tooltip"></div>
-				            </div>
-				            <div class="button-container">
-				                <button type="submit">Calcular</button>
-				                <button type="button" class="download-button">Descargar</button>
-				            </div>
-				        </form>
-				    </div>
-				</div>
+			    <div class="modal-soma-content">
+			        <span class="close-soma-modal">&times;</span>
+			        <form id="somatotipoForm">
+			            <div class="form-grid">
+					     <h1 id="modalTitle">Somatocarta</h1>
+			                <div>
+			                    <label for="nombreInput">Género:</label>
+			                    <select id="nombreInput" required>
+			                        <option value="" disabled selected>Selecciona género</option>
+			                        <option value="hombre">Hombre</option>
+			                        <option value="mujer">Mujer</option>
+			                    </select>
+			                </div>
+			                <div>
+			                    <label for="endoInput">Endomorfia:</label>
+			                    <input type="number" id="endoInput" step="0.1" min="0" required>
+			                </div>
+			                <div>
+			                    <label for="mesoInput">Mesomorfia:</label>
+			                    <input type="number" id="mesoInput" step="0.1" min="0" required>
+			                </div>
+			                <div>
+			                    <label for="ectoInput">Ectomorfia:</label>
+			                    <input type="number" id="ectoInput" step="0.1" min="0" required>
+			                </div>
+			                <div>
+			                    <label for="deporteInput">Grupo de Referencia:</label>
+			                    <select id="deporteInput" required>
+			                        <option value="" disabled selected>Selecciona grupo</option>
+			                        <option value="Sedentarios">Sedentarios</option>
+			                        <option value="PocoActivos">Poco Activos</option>
+			                        <option value="Activo">Activo</option>
+			                        <option value="Deportes">Deportes</option>
+			                    </select>
+			                </div>
+			                <div>
+			                    <label for="modalidadInput">Modalidad:</label>
+			                    <select id="modalidadInput" disabled required>
+			                        <option value="" disabled selected>Selecciona una modalidad</option>
+			                    </select>
+			                </div>
+			            </div>
+			            <div class="somatotipo-display">
+			                <h3>Somatotipo del Deporte</h3>
+			                <div class="somatotipo-values">
+			                    <div>
+			                        <label>Endomorfia:</label>
+			                        <input type="text" id="somatotipoEndo" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Mesomorfia:</label>
+			                        <input type="text" id="somatotipoMeso" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Ectomorfia:</label>
+			                        <input type="text" id="somatotipoEcto" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Dominante:</label>
+			                        <input type="text" id="somatotipoDominante" readonly>
+			                    </div>
+			                    <div>
+			                        <label>X:</label>
+			                        <input type="text" id="somatotipoX" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Y:</label>
+			                        <input type="text" id="somatotipoY" readonly>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="chart-container">
+			                <img id="somatotype-image" src="https://fermagil.github.io/Nutri_Plan_v2/somatotype-chart.png" alt="Carta de Somatotipo">
+			                <canvas id="somatotype-point-canvas"></canvas>
+			                <div id="tooltip" class="tooltip"></div>
+			            </div>
+			            <div class="button-container">
+			                <button type="submit">Calcular</button>
+			                <button type="button" class="download-button">Descargar</button>
+			            </div>
+			        </form>
+			    </div>
+			</div>
                 </div>
             </div>
         </form>
@@ -4405,89 +4405,87 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    downloadChart();
 	});
 	//abrir modal-soma container
-// Declaración de variables
-const modalsoma = document.getElementById('modalSomaContainer');
 const buttonsoma = document.getElementById('abrirContainerSomatotipo');
-const closeButton = document.querySelector('.close-soma-modal'); // Cambiado a clase
+const modalsoma = document.getElementById('modalSomaContainer');
+const closeButton = document.getElementById('closesomaModal');
 
 // Función para abrir el modal
-document.addEventListener('DOMContentLoaded', () => {
-    const modalsoma = document.getElementById('modalSomaContainer');
-    const buttonsoma = document.getElementById('abrirContainerSomatotipo');
-    const closeButton = document.querySelector('.close-soma-modal');
+function openSomaModal(e) {
+    e.stopPropagation();
+    e.preventDefault();
 
-    function openSomaModal(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (!modalsoma) {
-            console.error('Modal container with ID "modalSomaContainer" not found.');
-            return;
-        }
-
-        modalsoma.style.display = 'flex';
-        setTimeout(() => {
-            modalsoma.style.opacity = '1';
-            modalsoma.style.transition = 'opacity 0.3s ease-in-out';
-        }, 10);
-
-        // Focus the first valid focusable element
-        const focusableElements = modalsoma.querySelectorAll('button, [href], input:not([readonly]), select, textarea, [tabindex]:not([tabindex="-1"])');
-        for (const element of focusableElements) {
-            if (element.checkValidity()) {
-                element.focus();
-                break;
-            }
-        }
-
-        if (typeof populateFormFields === 'function') {
-            populateFormFields();
-        }
-        if (typeof createLegend === 'function') {
-            createLegend();
-        }
-        if (typeof updateChart === 'function') {
-            updateChart();
-        }
+    if (!modalsoma) {
+        console.error('Modal container with ID "modalSomaContainer" not found.');
+        return;
     }
 
-    function closeSomaModal() {
-        if (!modalsoma) {
-            console.error('Modal container with ID "modalSomaContainer" not found.');
-            return;
-        }
+    // Mostrar el modal con display flex y transición suave
+    modalsoma.style.display = 'flex';
+    setTimeout(() => {
+        modalsoma.style.opacity = '1';
+        modalsoma.style.transition = 'opacity 0.3s ease-in-out';
+    }, 10);
 
-        modalsoma.style.opacity = '0';
-        setTimeout(() => {
-            modalsoma.style.display = 'none';
-        }, 300);
+    // Enfocar el primer elemento interactivo del modal para accesibilidad
+    const firstFocusableElement = modalsoma.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (firstFocusableElement) {
+        firstFocusableElement.focus();
     }
 
-    if (buttonsoma) {
-        buttonsoma.removeEventListener('click', openSomaModal);
-        buttonsoma.addEventListener('click', openSomaModal);
-    } else {
-        console.error('Button with ID "abrirContainerSomatotipo" not found.');
+    // Ejecutar funciones adicionales si están definidas
+    if (typeof populateFormFields === 'function') {
+        populateFormFields();
+    }
+    if (typeof createLegend === 'function') {
+        createLegend();
+    }
+    if (typeof updateChart === 'function') {
+        updateChart();
+    }
+}
+
+// Función para cerrar el modal
+function closeSomaModal() {
+    if (!modalsoma) {
+        console.error('Modal container with ID "modalSomaContainer" not found.');
+        return;
     }
 
-    if (closeButton) {
-        closeButton.removeEventListener('click', closeSomaModal);
-        closeButton.addEventListener('click', closeSomaModal);
-    } else {
-        console.error('Close button with class "close-soma-modal" not found.');
+    // Ocultar el modal con transición suave
+    modalsoma.style.opacity = '0';
+    setTimeout(() => {
+        modalsoma.style.display = 'none';
+    }, 300); // Esperar a que termine la transición (0.3s)
+}
+
+// Asegurarse de que el botón de apertura existe
+if (buttonsoma) {
+    buttonsoma.removeEventListener('click', openSomaModal);
+    buttonsoma.addEventListener('click', openSomaModal);
+} else {
+    console.error('Button with ID "abrirContainerSomatotipo" not found.');
+}
+
+// Asegurarse de que el botón de cierre existe
+if (closeButton) {
+    closeButton.removeEventListener('click', closeSomaModal);
+    closeButton.addEventListener('click', closeSomaModal);
+} else {
+    console.error('Close button with ID "closesomaModal" not found.');
+}
+
+// Cerrar el modal al hacer clic fuera del contenido
+modalsoma?.addEventListener('click', (e) => {
+    if (e.target === modalsoma) {
+        closeSomaModal();
     }
+});
 
-    modalsoma?.addEventListener('click', (e) => {
-        if (e.target === modalsoma) {
-            closeSomaModal();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modalsoma?.style.display === 'flex') {
-            closeSomaModal();
-        }
-    });
+// Cerrar el modal con la tecla Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalsoma?.style.display === 'flex') {
+        closeSomaModal();
+    }
 });
 	document.addEventListener('DOMContentLoaded', () => {
     const deporteInput = document.getElementById('deporteInput');
