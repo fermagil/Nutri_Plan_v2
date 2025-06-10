@@ -4478,15 +4478,70 @@ document.addEventListener('keydown', (e) => {
         closeSomaModal();
     }
 });
-	const deporteInput = document.getElementById('deporteInput');
-const modalidadInput = document.getElementById('modalidadInput');
-const nombreInput = document.getElementById('nombreInput');
-const somatotipoEndo = document.getElementById('somatotipoEndo Workout');
-const somatotipoMeso = document.getElementById('somatotipoMeso');
-const somatotipoEcto = document.getElementById('somatotipoEcto');
-const somatotipoDominante = document.getElementById('somatotipoDominante');
-const somatotipoX = document.getElementById('somatotipoX');
-const somatotipoY = document.getElementById('somatotipoY');
+	document.addEventListener('DOMContentLoaded', () => {
+    const deporteInput = document.getElementById('deporteInput');
+    const modalidadInput = document.getElementById('modalidadInput');
+    const nombreInput = document.getElementById('nombreInput');
+    const somatotipoEndo = document.getElementById('somatotipoEndo'); // Corregido
+    const somatotipoMeso = document.getElementById('somatotipoMeso');
+    const somatotipoEcto = document.getElementById('somatotipoEcto');
+    const somatotipoDominante = document.getElementById('somatotipoDominante');
+    const somatotipoX = document.getElementById('somatotipoX');
+    const somatotipoY = document.getElementById('somatotipoY');
+
+    // Verificar qué elementos no se encontraron
+    const missingElements = [];
+    if (!deporteInput) missingElements.push('deporteInput');
+    if (!modalidadInput) missingElements.push('modalidadInput');
+    if (!nombreInput) missingElements.push('nombreInput');
+    if (!somatotipoEndo) missingElements.push('somatotipoEndo');
+    if (!somatotipoMeso) missingElements.push('somatotipoMeso');
+    if (!somatotipoEcto) missingElements.push('somatotipoEcto');
+    if (!somatotipoDominante) missingElements.push('somatotipoDominante');
+    if (!somatotipoX) missingElements.push('somatotipoX');
+    if (!somatotipoY) missingElements.push('somatotipoY');
+
+    if (missingElements.length > 0) {
+        console.error(`Los siguientes elementos no se encontraron en el DOM: ${missingElements.join(', ')}`);
+        return;
+    }
+
+    // Lista de modalidades deportivas
+    const deportesModalidades = [
+        "Atletismo-lanzamientos", "Atletismo-resistencia", "Atletismo-velocidad", "Badminton", "Baloncesto",
+        "Balonmano", "Beisbol", "Bolos", "Boxeo", "Canotaje", "Ciclismo", "Equitación", "Esgrima",
+        "Esquí acuático", "Fútbol", "Gimnasia", "Golf", "Hockey", "Hockey sobre ruedas", "Judo",
+        "Karate", "Levantamiento de pesas", "Lucha", "Natación", "Patinaje sobre ruedas", "Pelota paleta",
+        "Polo acuático", "Racquetbol", "Regatas", "Rugby", "Softbol", "Squash", "Taekwondo", "Tenis",
+        "Tenis de mesa", "Tiro", "Tiro con arco", "Triatlón", "Vela", "Voleibol", "Grupal (promedio)",
+        "Halterofilia", "Lanzamiento de peso", "Rugby (delanteros)", "CrossFit", "Lucha grecorromana",
+        "Gimnasia artística (masculina)", "Atletismo: 100m lisos", "Boxeo (peso pesado)",
+        "Piragüismo (aguas tranquilas)", "Balonmano", "Fútbol (porteros)", "Ciclismo (pista - velocidad)",
+        "Tenis", "Voleibol (centrales)", "Judo (-90 kg)", "Hockey hierba", "Atletismo: 400m vallas",
+        "Baloncesto (aleros)", "Atletismo: salto de altura", "Esgrima", "Atletismo: 1500m",
+        "Ciclismo (ruta)", "Atletismo: maratón", "Triatlón (larga distancia)", "Senderismo (alta montaña)",
+        "Natación: 1500m libre", "Pádel", "Badminton", "Escalada deportiva", "Surf (competición)",
+        "Atletismo: marcha 20km", "Kárate (kumite)", "Waterpolo", "Remo (skiff)", "Fútbol (campo)",
+        "Gimnasia rítmica", "Taekwondo", "Hípica (salto)", "Esquí alpino", "Vela (Laser)",
+        "Béisbol (lanzadores)", "Atletismo: lanz. jabalina", "Squash", "Ciclismo (BMX)", "Parkour",
+        "Golf", "Pilates", "Yoga (Hatha)", "Natación sincronizada", "Bolos", "Petanca",
+        "Tiro con arco", "Billar", "Curling", "Aerobic", "Tai Chi", "Danza clásica",
+        "Pesca deportiva", "Bádminton (dobles)", "Frontenis",
+        "Atletismo Vel.-Vallas", "Atletismo Altura", "Atletismo Pértiga", "Atletismo Lanzamientos",
+        "Atletismo Marcha", "Atletismo Fondo", "Triatlón", "Pentatlón", "Ciclismo Carretera",
+        "Ciclismo Montaña", "Esgrima", "Golf", "Patinaje Artístico", "Patinaje Velocidad",
+        "Gimnasia Artística", "Gimnasia Rítmica", "Gimnasia Trampolín", "Balonmano", "Baloncesto",
+        "Fútbol <18", "Fútbol >18", "Voleibol", "Hockey Hierba", "Patinaje (Velocidad)",
+        "Halterofilia", "Piragüismo Aguas tranquilas", "Piragüismo Slalom", "Remo Ligeros",
+        "Remo Pesados", "Natación Carreras <16", "Natación Carreras >16", "Natación Sincronizada",
+        "Waterpolo Arco Jr", "Waterpolo Fuerza Jr", "Waterpolo Porteros Jr", "Waterpolo Arco Abs",
+        "Waterpolo Fuerza Abs", "Waterpolo Porteros Abs", "Tenis de Mesa", "Tenis <16",
+        "Tenis >16", "Esquí Alpino", "Taekwondo <58kg", "Taekwondo <68kg", "Taekwondo <80kg",
+        "Taekwondo >80kg", "Taekwondo <49kg", "Taekwondo <57kg", "Taekwondo <67kg",
+        "Taekwondo >67kg", "Lucha <58kg", "Lucha 58-72kg", "Lucha 72-80kg", "Lucha >80kg",
+        "Judo 58-72kg", "Judo 72-80kg", "Judo >80kg", "Judo <58kg", "Judo 58-72kg",
+        "Judo 72-80kg", "Boxeo <56kg", "Boxeo <64kg", "Boxeo <75kg", "Boxeo <91kg"
+    ];
 
 // Tabla de datos de somatotipos
 const somatotipoData = [
@@ -4616,94 +4671,56 @@ const somatotipoData = [
     { deporte: "boxeo_menos_91kg", sexo: "H", endo: 3.2, meso: 5.7, ecto: 1.4, dominante: "", x: 4.3, y: -1.8, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 }
 ];
 
-// Lista de modalidades deportivas
-const deportesModalidades = [
-    "Atletismo-lanzamientos", "Atletismo-resistencia", "Atletismo-velocidad", "Badminton", "Baloncesto",
-    "Balonmano", "Beisbol", "Bolos", "Boxeo", "Canotaje", "Ciclismo", "Equitación", "Esgrima",
-    "Esquí acuático", "Fútbol", "Gimnasia", "Golf", "Hockey", "Hockey sobre ruedas", "Judo",
-    "Karate", "Levantamiento de pesas", "Lucha", "Natación", "Patinaje sobre ruedas", "Pelota paleta",
-    "Polo acuático", "Racquetbol", "Regatas", "Rugby", "Softbol", "Squash", "Taekwondo", "Tenis",
-    "Tenis de mesa", "Tiro", "Tiro con arco", "Triatlón", "Vela", "Voleibol", "Grupal (promedio)",
-    "Halterofilia", "Lanzamiento de peso", "Rugby (delanteros)", "CrossFit", "Lucha grecorromana",
-    "Gimnasia artística (masculina)", "Atletismo: 100m lisos", "Boxeo (peso pesado)",
-    "Piragüismo (aguas tranquilas)", "Balonmano", "Fútbol (porteros)", "Ciclismo (pista - velocidad)",
-    "Tenis", "Voleibol (centrales)", "Judo (-90 kg)", "Hockey hierba", "Atletismo: 400m vallas",
-    "Baloncesto (aleros)", "Atletismo: salto de altura", "Esgrima", "Atletismo: 1500m",
-    "Ciclismo (ruta)", "Atletismo: maratón", "Triatlón (larga distancia)", "Senderismo (alta montaña)",
-    "Natación: 1500m libre", "Pádel", "Badminton", "Escalada deportiva", "Surf (competición)",
-    "Atletismo: marcha 20km", "Kárate (kumite)", "Waterpolo", "Remo (skiff)", "Fútbol (campo)",
-    "Gimnasia rítmica", "Taekwondo", "Hípica (salto)", "Esquí alpino", "Vela (Laser)",
-    "Béisbol (lanzadores)", "Atletismo: lanz. jabalina", "Squash", "Ciclismo (BMX)", "Parkour",
-    "Golf", "Pilates", "Yoga (Hatha)", "Natación sincronizada", "Bolos", "Petanca",
-    "Tiro con arco", "Billar", "Curling", "Aerobic", "Tai Chi", "Danza clásica",
-    "Pesca deportiva", "Bádminton (dobles)", "Frontenis",
-    "Atletismo Vel.-Vallas", "Atletismo Altura", "Atletismo Pértiga", "Atletismo Lanzamientos",
-    "Atletismo Marcha", "Atletismo Fondo", "Triatlón", "Pentatlón", "Ciclismo Carretera",
-    "Ciclismo Montaña", "Esgrima", "Golf", "Patinaje Artístico", "Patinaje Velocidad",
-    "Gimnasia Artística", "Gimnasia Rítmica", "Gimnasia Trampolín", "Balonmano", "Baloncesto",
-    "Fútbol <18", "Fútbol >18", "Voleibol", "Hockey Hierba", "Patinaje (Velocidad)",
-    "Halterofilia", "Piragüismo Aguas tranquilas", "Piragüismo Slalom", "Remo Ligeros",
-    "Remo Pesados", "Natación Carreras <16", "Natación Carreras >16", "Natación Sincronizada",
-    "Waterpolo Arco Jr", "Waterpolo Fuerza Jr", "Waterpolo Porteros Jr", "Waterpolo Arco Abs",
-    "Waterpolo Fuerza Abs", "Waterpolo Porteros Abs", "Tenis de Mesa", "Tenis <16",
-    "Tenis >16", "Esquí Alpino", "Taekwondo <58kg", "Taekwondo <68kg", "Taekwondo <80kg",
-    "Taekwondo >80kg", "Taekwondo <49kg", "Taekwondo <57kg", "Taekwondo <67kg",
-    "Taekwondo >67kg", "Lucha <58kg", "Lucha 58-72kg", "Lucha 72-80kg", "Lucha >80kg",
-    "Judo 58-72kg", "Judo 72-80kg", "Judo >80kg", "Judo <58kg", "Judo 58-72kg",
-    "Judo 72-80kg", "Boxeo <56kg", "Boxeo <64kg", "Boxeo <75kg", "Boxeo <91kg"
-];
 
-// Función para actualizar las opciones de modalidadInput
-function updateModalidadOptions() {
-    const selectedGrupo = deporteInput.value;
-    modalidadInput.innerHTML = '<option value="" disabled selected>Selecciona una modalidad</option>';
+ // Función para actualizar las opciones de modalidadInput
+    function updateModalidadOptions() {
+        const selectedGrupo = deporteInput.value;
+        modalidadInput.innerHTML = '<option value="" disabled selected>Selecciona una modalidad</option>';
 
-    if (selectedGrupo === 'Deportes') {
-        deportesModalidades.forEach(modalidad => {
+        if (selectedGrupo === 'Deportes') {
+            deportesModalidades.forEach(modalidad => {
+                const option = document.createElement('option');
+                option.value = modalidad.toLowerCase().replace(/ /g, '_').replace(/:/g, '').replace(/[\(\)]/g, '').replace(/-/g, '_').replace(/>/g, 'más_').replace(/</g, 'menos_');
+                option.textContent = modalidad;
+                modalidadInput.appendChild(option);
+            });
+            modalidadInput.disabled = false;
+        } else {
             const option = document.createElement('option');
-            option.value = modalidad.toLowerCase().replace(/ /g, '_').replace(/:/g, '').replace(/[\(\)]/g, '').replace(/-/g, '_').replace(/>/g, 'más_').replace(/</g, 'menos_');
-            option.textContent = modalidad;
+            option.value = selectedGrupo.toLowerCase();
+            option.textContent = selectedGrupo;
             modalidadInput.appendChild(option);
-        });
-        modalidadInput.disabled = false;
-    } else {
-        const option = document.createElement('option');
-        option.value = selectedGrupo.toLowerCase();
-        option.textContent = selectedGrupo;
-        modalidadInput.appendChild(option);
-        modalidadInput.disabled = true;
+            modalidadInput.disabled = true;
+        }
+        updateSomatotipoValues();
     }
-    updateSomatotipoValues();
-}
 
-// Función para actualizar los valores del somatotipo
-function updateSomatotipoValues() {
-    const selectedModalidad = modalidadInput.value;
-    const selectedSexo = nombreInput.value;
+    // Función para actualizar los valores del somatotipo
+    function updateSomatotipoValues() {
+        const selectedModalidad = modalidadInput.value;
+        const selectedSexo = nombreInput.value;
 
-    // Limpiar los campos
-    somatotipoEndo.value = '';
-    somatotipoMeso.value = '';
-    somatotipoEcto.value = '';
-    somatotipoDominante.value = '';
-    somatotipoX.value = '';
-    somatotipoY.value = '';
+        // Limpiar los campos
+        somatotipoEndo.value = '';
+        somatotipoMeso.value = '';
+        somatotipoEcto.value = '';
+        somatotipoDominante.value = '';
+        somatotipoX.value = '';
+        somatotipoY.value = '';
 
-    if (selectedModalidad && selectedSexo && selectedModalidad !== 'sedentarios' && selectedModalidad !== 'pocoactivos' && selectedModalidad !== 'activo') {
-        const data = somatotipoData.find(item => item.deporte === selectedModalidad && (item.sexo === selectedSexo[0].toUpperCase() || item.sexo === ''));
-        if (data) {
-            somatotipoEndo.value = selectedSexo === 'hombre' ? data.endo : data.endo_f;
-            somatotipoMeso.value = selectedSexo === 'hombre' ? data.meso : data.meso_f;
-            somatotipoEcto.value = selectedSexo === 'hombre' ? data.ecto : data.ecto_f;
-            somatotipoDominante.value = data.dominante || '';
-            somatotipoX.value = selectedSexo === 'hombre' ? data.x : data.x_f;
-            somatotipoY.value = selectedSexo === 'hombre' ? data.y : data.y_f;
+        if (selectedModalidad && selectedSexo && selectedModalidad !== 'sedentarios' && selectedModalidad !== 'pocoactivos' && selectedModalidad !== 'activo') {
+            const data = somatotipoData.find(item => item.deporte === selectedModalidad && (item.sexo === selectedSexo[0].toUpperCase() || item.sexo === ''));
+            if (data) {
+                somatotipoEndo.value = selectedSexo === 'hombre' ? data.endo : data.endo_f;
+                somatotipoMeso.value = selectedSexo === 'hombre' ? data.meso : data.meso_f;
+                somatotipoEcto.value = selectedSexo === 'hombre' ? data.ecto : data.ecto_f;
+                somatotipoDominante.value = data.dominante || '';
+                somatotipoX.value = selectedSexo === 'hombre' ? data.x : data.x_f;
+                somatotipoY.value = selectedSexo === 'hombre' ? data.y : data.y_f;
+            }
         }
     }
-}
 
-// Asegurarse de que los elementos existen
-if (deporteInput && modalidadInput && nombreInput && somatotipoEndo && somatotipoMeso && somatotipoEcto && somatotipoDominante && somatotipoX && somatotipoY) {
     // Remover eventos previos para evitar duplicados
     deporteInput.removeEventListener('change', updateModalidadOptions);
     modalidadInput.removeEventListener('change', updateSomatotipoValues);
@@ -4713,9 +4730,7 @@ if (deporteInput && modalidadInput && nombreInput && somatotipoEndo && somatotip
     deporteInput.addEventListener('change', updateModalidadOptions);
     modalidadInput.addEventListener('change', updateSomatotipoValues);
     nombreInput.addEventListener('change', updateSomatotipoValues);
-} else {
-    console.error('Uno o más elementos (deporteInput, modalidadInput, nombreInput, somatotipoEndo, somatotipoMeso, somatotipoEcto, somatotipoDominante, somatotipoX, somatotipoY) no encontrados.');
-}
+});
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
