@@ -1886,10 +1886,10 @@ body {
     background-color: #f9f9f9;
     font-size: 14px;
 }
-
+      
 .modal-soma-container .chart-container {
     width: 100%;
-    min-height: 500px;
+    min-height: 800px;
     max-height: 800px;
     position: relative;
     margin: 0 auto;
@@ -1898,14 +1898,15 @@ body {
 .modal-soma-container .chart-container:has(#somatotype-image) {
     max-width: 800px;
     max-height: 500px;
+    position: relative;
     aspect-ratio: 1 / 1;
 }
 
 .modal-soma-container .chart-container img#somatotype-image {
     display: block;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
+    /*object-fit: contain;*/
 }
 
 .modal-soma-container .chart-container canvas#somatotype-point-canvas {
