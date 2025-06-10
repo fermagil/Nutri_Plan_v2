@@ -3807,7 +3807,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    console.log(`Canvas Dimensions: width=${canvasSomatotype.width}, height=${canvasSomatotype.height}`);
 	    console.log(`Chart Area: offsetX=${chartOffsetX}, offsetY=${chartOffsetY}, width=${chartWidth}, height=${chartHeight}`);
 	    console.log(`centerY: ${centerY}, xAxisY: ${xAxisY}`);
-	
+
+		   
+
+	       // Calcular coordenadas transformadas X e Y 
 	    const x = results.ectomorfia - results.endomorfia;
 	    const y = 2 * results.mesomorfia - (results.endomorfia + results.ectomorfia);
 	    const xClamped = Math.min(Math.max(x, -8), 8);
@@ -3828,22 +3831,25 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.lineWidth = 6;
 	    ctxSomatotype.stroke();
 	
-	    // Point label (unchanged)
-	    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
-	    ctxSomatotype.fillStyle = '#000000';
-	    ctxSomatotype.strokeStyle = '#ffffff';
-	    ctxSomatotype.lineWidth = 5;
-	    ctxSomatotype.textAlign = 'center';
-	    ctxSomatotype.strokeText(
-	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
-	        pixelX,
-	        pixelY - 55
-	    );
-	    ctxSomatotype.fillText(
-	        `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`,
-	        pixelX,
-	        pixelY - 55
-	    );
+	    // Texto del somatotipo (valores originales)
+		    const somatotypeText = `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`;
+		    const coordinatesText = `X: ${formatResult(x, 2)}, Y: ${formatResult(y, 2)}`;
+		    
+		    // Configuración del texto
+		    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
+		    ctxSomatotype.fillStyle = '#000000';
+		    ctxSomatotype.strokeStyle = '#ffffff';
+		    ctxSomatotype.lineWidth = 5;
+		    ctxSomatotype.textAlign = 'center';
+		    
+		    // Dibujar texto del somatotipo
+		    ctxSomatotype.strokeText(somatotypeText, pixelX, pixelY - 55);
+		    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
+		    
+		    // Dibujar coordenadas X e Y debajo
+		    ctxSomatotype.font = 'bold 45px Inter, sans-serif';
+		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 30);
+		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 30);
 	
 	    // Draw X-axis
 	    ctxSomatotype.beginPath();
