@@ -4482,7 +4482,7 @@ document.addEventListener('keydown', (e) => {
     const deporteInput = document.getElementById('deporteInput');
     const modalidadInput = document.getElementById('modalidadInput');
     const nombreInput = document.getElementById('nombreInput');
-    const somatotipoEndo = document.getElementById('somatotipoEndo'); // Corregido
+    const somatotipoEndo = document.getElementById('somatotipoEndo');
     const somatotipoMeso = document.getElementById('somatotipoMeso');
     const somatotipoEcto = document.getElementById('somatotipoEcto');
     const somatotipoDominante = document.getElementById('somatotipoDominante');
@@ -4542,7 +4542,6 @@ document.addEventListener('keydown', (e) => {
         "Judo 58-72kg", "Judo 72-80kg", "Judo >80kg", "Judo <58kg", "Judo 58-72kg",
         "Judo 72-80kg", "Boxeo <56kg", "Boxeo <64kg", "Boxeo <75kg", "Boxeo <91kg"
     ];
-
 // Tabla de datos de somatotipos
 const somatotipoData = [
     { deporte: "halterofilia", sexo: "H", endo: 2.5, meso: 7.5, ecto: 1.5, dominante: "Meso", x: -1, y: 11, endo_f: 3, meso_f: 6.8, ecto_f: 1.2, x_f: -1.8, y_f: 9.4 },
@@ -4672,7 +4671,7 @@ const somatotipoData = [
 ];
 
 
- // Función para actualizar las opciones de modalidadInput
+ / Función para actualizar las opciones de modalidadInput
     function updateModalidadOptions() {
         const selectedGrupo = deporteInput.value;
         modalidadInput.innerHTML = '<option value="" disabled selected>Selecciona una modalidad</option>';
@@ -4708,16 +4707,32 @@ const somatotipoData = [
         somatotipoX.value = '';
         somatotipoY.value = '';
 
-        if (selectedModalidad && selectedSexo && selectedModalidad !== 'sedentarios' && selectedModalidad !== 'pocoactivos' && selectedModalidad !== 'activo') {
-            const data = somatotipoData.find(item => item.deporte === selectedModalidad && (item.sexo === selectedSexo[0].toUpperCase() || item.sexo === ''));
-            if (data) {
-                somatotipoEndo.value = selectedSexo === 'hombre' ? data.endo : data.endo_f;
-                somatotipoMeso.value = selectedSexo === 'hombre' ? data.meso : data.meso_f;
-                somatotipoEcto.value = selectedSexo === 'hombre' ? data.ecto : data.ecto_f;
-                somatotipoDominante.value = data.dominante || '';
-                somatotipoX.value = selectedSexo === 'hombre' ? data.x : data.x_f;
-                somatotipoY.value = selectedSexo === 'hombre' ? data.y : data.y_f;
-            }
+        // Verificar que haya una modalidad y un género seleccionados
+        if (!selectedModalidad || !selectedSexo) {
+            console.debug('Falta seleccionar modalidad o género.');
+            return;
+        }
+
+        // Evitar poblar campos para grupos genéricos
+        if (['sedentarios', 'pocoactivos', 'activo'].includes(selectedModalidad)) {
+            console.debug(`Modalidad "${selectedModalidad}" no tiene datos de somatotipo.`);
+            return;
+        }
+
+        // Buscar datos en somatotipoData
+        const sexoKey = selectedSexo === 'hombre' ? 'H' : 'M';
+        const data = somatotipoData.find(item => item.deporte === selectedModalidad && item.sexo === sexoKey);
+
+        if (data) {
+            somatotipoEndo.value = selectedSexo === 'hombre' ? data.endo : data.endo_f;
+            somatotipoMeso.value = selectedSexo === 'hombre' ? data.meso : data.meso_f;
+            somatotipoEcto.value = selectedSexo === 'hombre' ? data.ecto : data.ecto_f;
+            somatotipoDominante.value = data.dominante || '';
+            somatotipoX.value = selectedSexo === 'hombre' ? data.x : data.x_f;
+            somatotipoY.value = selectedSexo === 'hombre' ? data.y : data.y_f;
+            console.debug(`Somatotipo actualizado para ${selectedModalidad} (${selectedSexo}):`, data);
+        } else {
+            console.warn(`No se encontraron datos de somatotipo para ${selectedModalidad} (${sexoKey}).`);
         }
     }
 
