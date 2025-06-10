@@ -1807,28 +1807,75 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscurecido */
     z-index: 1000;
     transition: opacity 0.3s ease-in-out;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
 }
 
-.modal-soma-container[style*="display: flex"] {
-    opacity: 1;
-}
-
-.modal-soma-content {
+.modal-soma-container .modal-soma-content {
     background-color: white;
-    margin: 15% auto;
     padding: 20px;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 600px;
+    border-radius: 8px;
+    width: 90%; /* Ajustar al 90% del ancho de la pantalla */
+    max-width: 800px; /* Máximo 800px para pantallas grandes */
+    max-height: 80vh; /* Limitar altura al 80% de la ventana */
+    overflow-y: auto; /* Permitir scroll si el contenido es grande */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.close-soma-modal {
+.modal-soma-container .close-soma-modal {
     float: right;
-    font-size: 20px;
+    font-size: 24px;
+    font-weight: bold;
     cursor: pointer;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.modal-soma-container .close-soma-modal:hover {
+    color: #ff0000; /* Color rojo al pasar el ratón */
+}
+
+.modal-soma-container .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive */
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-soma-container .chart-container {
+    width: 100%;
+    max-height: 400px; /* Ajustar altura del gráfico */
+}
+
+.modal-soma-container .button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.modal-soma-container button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+}
+
+.modal-soma-container button:hover {
+    background-color: #0056b3;
+}
+
+.modal-soma-container .download-button {
+    background-color: #28a745;
+}
+
+.modal-soma-container .download-button:hover {
+    background-color: #218838;
 }
 
     </style>
@@ -4208,16 +4255,15 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    downloadChart();
 	});
 	//abrir modal-soma container
-	const buttonsoma = document.getElementById('abrirContainerSomatotipo');
+const buttonsoma = document.getElementById('abrirContainerSomatotipo');
+const modalsoma = document.getElementById('modalSomaContainer');
+const closeButton = document.getElementById('closesomaModal');
 
 // Función para abrir el modal
 function openSomaModal(e) {
     e.stopPropagation();
     e.preventDefault();
 
-    const modalsoma = document.getElementById('modalSomaContainer');
-    
-    // Verificar que el modal existe
     if (!modalsoma) {
         console.error('Modal container with ID "modalSomaContainer" not found.');
         return;
@@ -4228,7 +4274,7 @@ function openSomaModal(e) {
     setTimeout(() => {
         modalsoma.style.opacity = '1';
         modalsoma.style.transition = 'opacity 0.3s ease-in-out';
-    }, 10); // Pequeño retraso para permitir que el navegador procese el cambio de display
+    }, 10);
 
     // Enfocar el primer elemento interactivo del modal para accesibilidad
     const firstFocusableElement = modalsoma.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
@@ -4248,14 +4294,49 @@ function openSomaModal(e) {
     }
 }
 
-// Asegurarse de que el botón existe antes de agregar el evento
+// Función para cerrar el modal
+function closeSomaModal() {
+    if (!modalsoma) {
+        console.error('Modal container with ID "modalSomaContainer" not found.');
+        return;
+    }
+
+    // Ocultar el modal con transición suave
+    modalsoma.style.opacity = '0';
+    setTimeout(() => {
+        modalsoma.style.display = 'none';
+    }, 300); // Esperar a que termine la transición (0.3s)
+}
+
+// Asegurarse de que el botón de apertura existe
 if (buttonsoma) {
-    // Remover eventos previos para evitar duplicados
     buttonsoma.removeEventListener('click', openSomaModal);
     buttonsoma.addEventListener('click', openSomaModal);
 } else {
     console.error('Button with ID "abrirContainerSomatotipo" not found.');
 }
+
+// Asegurarse de que el botón de cierre existe
+if (closeButton) {
+    closeButton.removeEventListener('click', closeSomaModal);
+    closeButton.addEventListener('click', closeSomaModal);
+} else {
+    console.error('Close button with ID "closesomaModal" not found.');
+}
+
+// Cerrar el modal al hacer clic fuera del contenido
+modalsoma?.addEventListener('click', (e) => {
+    if (e.target === modalsoma) {
+        closeSomaModal();
+    }
+});
+
+// Cerrar el modal con la tecla Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalsoma?.style.display === 'flex') {
+        closeSomaModal();
+    }
+});
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
