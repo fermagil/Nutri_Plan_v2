@@ -3836,7 +3836,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		    const coordinatesText = `X: ${formatResult(x, 2)}, Y: ${formatResult(y, 2)}`;
 		    
 		    // Configuración del texto
-		    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
+		    ctxSomatotype.font = 'bold 75px Roboto, sans-serif';
 		    ctxSomatotype.fillStyle = '#000000';
 		    ctxSomatotype.strokeStyle = '#ffffff';
 		    ctxSomatotype.lineWidth = 5;
@@ -3847,9 +3847,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
 		    
 		    // Dibujar coordenadas X e Y debajo
-		    ctxSomatotype.font = 'bold 45px Inter, sans-serif';
-		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 30);
-		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 30);
+		    ctxSomatotype.font = 'bold 75px Roboto, sans-serif';
+		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 55);
+		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 55);
 	
 	    // Draw X-axis
 	    ctxSomatotype.beginPath();
@@ -3872,7 +3872,7 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	        ctxSomatotype.fillText(i.toString(), xPos, xAxisY + 60);
 	    }
 	    ctxSomatotype.font = '85px Roboto, sans-serif';
-	    ctxSomatotype.fillText('Endomorfia - Ectomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
+	    ctxSomatotype.fillText('Endomorfia - Ectomorfia', chartOffsetX + chartWidth / 2, xAxisY + 150);
 	
 	    // Draw Y-axis (at x=8)
 	    const yAxisX = chartOffsetX + chartWidth;
