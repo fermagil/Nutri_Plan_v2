@@ -3833,10 +3833,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	
 	    // Texto del somatotipo (valores originales)
 		    const somatotypeText = `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`;
-		    const coordinatesText = `X: ${formatResult(x, 2)}, Y: ${formatResult(y, 2)}`;
+		    const coordinatesText = `(${formatResult(x, 2)},: ${formatResult(y, 2)})`;
 		    
 		    // Configuración del texto
-		    ctxSomatotype.font = 'bold 75px Roboto, sans-serif';
+		    ctxSomatotype.font = 'bold 70px Roboto, sans-serif';
 		    ctxSomatotype.fillStyle = '#000000';
 		    ctxSomatotype.strokeStyle = '#ffffff';
 		    ctxSomatotype.lineWidth = 5;
@@ -3847,9 +3847,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
 		    
 		    // Dibujar coordenadas X e Y debajo
-		    ctxSomatotype.font = 'bold 75px Roboto, sans-serif';
-		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 55);
-		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 55);
+		    ctxSomatotype.font = 'bold 660px Roboto, sans-serif';
+		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 65);
+		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 65);
 	
 	    // Draw X-axis
 	    ctxSomatotype.beginPath();
