@@ -3797,16 +3797,11 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    const chartHeight = imgSomatotype.height * 0.8;
 	    const chartOffsetX = (imgSomatotype.width - chartWidth) / 2;
 	    const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
-
-		    // Nuevo rango del eje X (-8 a 8)
-	    const xMin = -8;
-	    const xMax = 8;
-	    const xRange = xMax - xMin;
-		    
+	
 	    // Define centerY and other variables
 	    const centerX = chartOffsetX + chartWidth / 2;
 	    const centerY = chartOffsetY + chartHeight / 2; // Ensure centerY is defined (~250px)
-	    const xAxisY = chartOffsetY * chartHeight; // X-axis at 80% height (~400px)
+	    const xAxisY = chartOffsetY + 1 * chartHeight; // X-axis at 80% height (~400px)
 	
 	    console.log(`Image Dimensions: width=${imgSomatotype.width}, height=${imgSomatotype.height}`);
 	    console.log(`Canvas Dimensions: width=${canvasSomatotype.width}, height=${canvasSomatotype.height}`);
@@ -3818,13 +3813,12 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	       // Calcular coordenadas transformadas X e Y 
 	    const x = results.ectomorfia - results.endomorfia;
 	    const y = 2 * results.mesomorfia - (results.endomorfia + results.ectomorfia);
-	    const xClamped = Math.min(Math.max(x, xMin), xMax);
-            const yClamped = Math.min(Math.max(y, -10), 12);
+	    const xClamped = Math.min(Math.max(x, -8), 8);
+	    const yClamped = Math.min(Math.max(y, -10), 12);
 	
 	    // Calculate pixel coordinates for the blue point
-	    const pixelX = chartOffsetX + ((xClamped - xMin) / xRange) * chartWidth;
-            const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
-
+	    const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
+	    const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
 	
 	    console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 	
@@ -3837,19 +3831,25 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.lineWidth = 6;
 	    ctxSomatotype.stroke();
 	
-	    // Dibujar texto del somatotipo (formato: (E-M-E)(X,Y))
-    	const somatotypeText = `(${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)})(${formatResult(x, 1)},${formatResult(y, 1)})`;
-	
-	    // Configuración del texto (mismo tamaño para todo)
-	    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
-	    ctxSomatotype.fillStyle = '#000000';
-	    ctxSomatotype.strokeStyle = '#ffffff';
-	    ctxSomatotype.lineWidth = 5;
-	    ctxSomatotype.textAlign = 'center';
-	    ctxSomatotype.strokeText(somatotypeText, pixelX, pixelY - 55);
-    	    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
-	
-	   
+	    // Texto del somatotipo (valores originales)
+		    const somatotypeText = `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`;
+		    const coordinatesText = `X: ${formatResult(x, 2)}, Y: ${formatResult(y, 2)}`;
+		    
+		    // Configuración del texto
+		    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
+		    ctxSomatotype.fillStyle = '#000000';
+		    ctxSomatotype.strokeStyle = '#ffffff';
+		    ctxSomatotype.lineWidth = 5;
+		    ctxSomatotype.textAlign = 'center';
+		    
+		    // Dibujar texto del somatotipo
+		    ctxSomatotype.strokeText(somatotypeText, pixelX, pixelY - 55);
+		    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
+		    
+		    // Dibujar coordenadas X e Y debajo
+		    ctxSomatotype.font = 'bold 45px Inter, sans-serif';
+		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 30);
+		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 30);
 	
 	    // Draw X-axis
 	    ctxSomatotype.beginPath();
@@ -3863,8 +3863,8 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.font = '60px Inter, sans-serif';
 	    ctxSomatotype.fillStyle = '#000000';
 	    ctxSomatotype.textAlign = 'center';
-	    for (let i = xMin; i <= xMax; i += 2) {
-	        const xPos = chartOffsetX + ((i - xMin) / xRange) * chartWidth;
+	    for (let i = -8; i <= 8; i += 2) {
+	        const xPos = chartOffsetX + ((i + 8) / 16) * chartWidth;
 	        ctxSomatotype.beginPath();
 	        ctxSomatotype.moveTo(xPos, xAxisY - 5);
 	        ctxSomatotype.lineTo(xPos, xAxisY + 5);
