@@ -1799,6 +1799,7 @@ body {
     background-color: #4cae4c;
 }
 
+	    /*Moda Somatotipo Container*/
 .modal-soma-container {
     display: none;
     opacity: 0;
@@ -1840,7 +1841,7 @@ body {
 
 .modal-soma-container h1#modalTitle {
     font-size: 48px;
-    color: #388E3C;
+    color: #388e3c;
     margin: 0 0 15px 0;
     text-align: center;
     padding-right: 30px;
@@ -1853,18 +1854,26 @@ body {
     margin-bottom: 20px;
 }
 
-.modal-soma-container .form-grid input[type="number"] {
+.modal-soma-container .form-grid input[type="number"],
+.modal-soma-container .form-grid select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: #fff; /* Fondo blanco para campos editables */
+    background-color: #fff;
     font-size: 14px;
     transition: border-color 0.2s;
 }
 
-.modal-soma-container .form-grid input[type="number"]:focus {
+.modal-soma-container .form-grid input[type="number"]:focus,
+.modal-soma-container .form-grid select:focus {
     border-color: #007bff;
     outline: none;
+}
+
+.modal-soma-container .form-grid input.invalid,
+.modal-soma-container .form-grid select.invalid {
+    border-color: #ff0000;
+    background-color: #fff5f5;
 }
 
 .modal-soma-container .somatotipo-display {
@@ -1874,7 +1883,7 @@ body {
 .modal-soma-container .somatotipo-display h3 {
     margin: 0 0 10px 0;
     font-size: 18px;
-    color: #388E3C;
+    color: #388e3c;
 }
 
 .modal-soma-container .somatotipo-values {
@@ -1918,7 +1927,7 @@ body {
 .modal-soma-container .chart-container img#somatotype-image {
     display: block;
     width: 100%;
-    height: 100%;
+    height: auto;
     object-fit: contain;
 }
 
@@ -2002,7 +2011,8 @@ body {
         max-height: 400px;
     }
 
-    .modal-soma-container .form-grid input[type="number"] {
+    .modal-soma-container .form-grid input[type="number"],
+    .modal-soma-container .form-grid select {
         font-size: 13px;
         padding: 6px;
     }
@@ -2953,11 +2963,11 @@ body {
 				    <div class="modal-soma-content">
 				        <span class="close-soma-modal">×</span>
 				        <h1 id="modalTitle">Somatocarta</h1>
-				        <form id="somatotipoForm">
+				        <form id="somatotipoForm" novalidate>
 				            <div class="form-grid">
 				                <div>
 				                    <label for="nombreInput">Género:</label>
-				                    <select id="nombreInput" required>
+				                    <select id="nombreInput" name="genero" required>
 				                        <option value="" disabled selected>Selecciona género</option>
 				                        <option value="hombre">Hombre</option>
 				                        <option value="mujer">Mujer</option>
@@ -2965,19 +2975,19 @@ body {
 				                </div>
 				                <div>
 				                    <label for="endoInput">Endomorfia:</label>
-				                    <input type="number" id="endoInput" step="0.1" min="0" required>
+				                    <input type="number" id="endoInput" name="endomorfia" step="0.1" min="0" required>
 				                </div>
 				                <div>
 				                    <label for="mesoInput">Mesomorfia:</label>
-				                    <input type="number" id="mesoInput" step="0.1" min="0" required>
+				                    <input type="number" id="mesoInput" name="mesomorfia" step="0.1" min="0" required>
 				                </div>
 				                <div>
 				                    <label for="ectoInput">Ectomorfia:</label>
-				                    <input type="number" id="ectoInput" step="0.1" min="0" required>
+				                    <input type="number" id="ectoInput" name="ectomorfia" step="0.1" min="0" required>
 				                </div>
 				                <div>
 				                    <label for="deporteInput">Grupo de Referencia:</label>
-				                    <select id="deporteInput" required>
+				                    <select id="deporteInput" name="grupoReferencia" required>
 				                        <option value="" disabled selected>Selecciona grupo</option>
 				                        <option value="Sedentarios">Sedentarios</option>
 				                        <option value="PocoActivos">Poco Activos</option>
@@ -2987,7 +2997,7 @@ body {
 				                </div>
 				                <div>
 				                    <label for="modalidadInput">Modalidad:</label>
-				                    <select id="modalidadInput" disabled required>
+				                    <select id="modalidadInput" name="modalidad" disabled>
 				                        <option value="" disabled selected>Selecciona una modalidad</option>
 				                    </select>
 				                </div>
