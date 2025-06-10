@@ -4415,7 +4415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalsoma = document.getElementById('modalSomaContainer');
     const closeSpan = document.querySelector('.close-soma-modal');
     const closeButton = document.querySelector('.closesomaModal');
-    const somatotipoForm = document.getElementById('somatotipoForm');
+    let somatotipoForm = document.getElementById('somatotipoForm');
 
     // Función para abrir el modal
     function openSomaModal(e) {
@@ -4455,6 +4455,83 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             modalsoma.style.display = 'none';
         }, 300);
+    }
+
+    // Función para rellenar los campos del formulario
+    function populateFormFields() {
+        if (!somatotipoForm) {
+            console.error('Formulario somatotipoForm no encontrado al intentar rellenar campos.');
+            return;
+        }
+
+        const generoSelect = document.getElementById('nombreInput');
+        const endoInput = document.getElementById('endoInput');
+        const mesoInput = document.getElementById('mesoInput');
+        const ectoInput = document.getElementById('ectoInput');
+
+        // Mapear valores de género
+        const generoMap = {
+            'masculino': 'hombre',
+            'femenino': 'mujer'
+        };
+
+        // Valores por defecto
+        const defaultValues = {
+            genero: 'hombre',
+            endomorfia: 1.0,
+            mesomorfia: 1.0,
+            ectomorfia: 1.0
+        };
+
+        // Obtener género desde #genero
+        let generoValue = '';
+        const sourceGenero = document.getElementById('genero');
+        if (sourceGenero && sourceGenero.value in generoMap) {
+            generoValue = generoMap[sourceGenero.value];
+        }
+
+        // Obtener valores de somatotipo desde #somatotipo-source
+        let somatotipoValues = { endomorfia: null, mesomorfia: null, ectomorfia: null };
+        const somatotipoSource = document.getElementById('somatotipo-source');
+        const resultSomatotipo = document.getElementById('result-somatotipo');
+        if (somatotipoSource && resultSomatotipo && resultSomatotipo.textContent !== '---') {
+            const text = somatotipoSource.textContent; // Ej: "(Endo: 4.8 Meso: 5.0 Ecto: 0.2)"
+            const match = text.match(/Endo:\s*([\d.]+)\s*Meso:\s*([\d.]+)\s*Ecto:\s*([\d.]+)/i);
+            if (match) {
+                somatotipoValues = {
+                    endomorfia: parseFloat(match[1]),
+                    mesomorfia: parseFloat(match[2]),
+                    ectomorfia: parseFloat(match[3])
+                };
+            }
+        }
+
+        // Rellenar campos si están vacíos
+        if (!generoSelect.value) {
+            generoSelect.value = generoValue || defaultValues.genero;
+        }
+        if (!endoInput.value) {
+            endoInput.value = somatotipoValues.endomorfia !== null && !isNaN(somatotipoValues.endomorfia)
+                ? somatotipoValues.endomorfia.toFixed(1)
+                : defaultValues.endomorfia.toFixed(1);
+        }
+        if (!mesoInput.value) {
+            mesoInput.value = somatotipoValues.mesomorfia !== null && !isNaN(somatotipoValues.mesomorfia)
+                ? somatotipoValues.mesomorfia.toFixed(1)
+                : defaultValues.mesomorfia.toFixed(1);
+        }
+        if (!ectoInput.value) {
+            ectoInput.value = somatotipoValues.ectomorfia !== null && !isNaN(somatotipoValues.ectomorfia)
+                ? somatotipoValues.ectomorfia.toFixed(1)
+                : defaultValues.ectomorfia.toFixed(1);
+        }
+
+        console.log('Campos rellenados:', {
+            genero: generoSelect.value,
+            endomorfia: endoInput.value,
+            mesomorfia: mesoInput.value,
+            ectomorfia: ectoInput.value
+        });
     }
 
     // Función para manejar el envío del formulario (Calcular)
@@ -4497,7 +4574,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('Datos procesados:', data);
 
-        // Ejemplo: Actualizar campos de visualización
+        // Actualizar campos de visualización
         document.getElementById('somatotipoEndo').value = data.endomorfia.toFixed(1);
         document.getElementById('somatotipoMeso').value = data.mesomorfia.toFixed(1);
         document.getElementById('somatotipoEcto').value = data.ectomorfia.toFixed(1);
@@ -4530,6 +4607,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return 2 * data.mesomorfia - (data.endomorfia + data.ectomorfia);
     }
 
+    // Intentar encontrar el formulario con reintentos
+    function initializeFormListener() {
+        somatotipoForm = document.getElementById('somatotipoForm');
+        if (somatotipoForm) {
+            console.log('Formulario somatotipoForm encontrado.');
+            somatotipoForm.removeEventListener('submit', handleCalcularSubmit);
+            somatotipoForm.addEventListener('submit', handleCalcularSubmit);
+        } else {
+            console.warn('Form with ID "somatotipoForm" not found. Retrying...');
+            setTimeout(initializeFormListener, 500);
+        }
+    }
+
     // Asegurarse de que el botón de apertura existe
     if (buttonsoma) {
         buttonsoma.removeEventListener('click', openSomaModal);
@@ -4560,13 +4650,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Close button with class "closesomaModal" not found.');
     }
 
-    // Asegurarse de que el formulario existe
-    if (somatotipoForm) {
-        somatotipoForm.removeEventListener('submit', handleCalcularSubmit);
-        somatotipoForm.addEventListener('submit', handleCalcularSubmit);
-    } else {
-        console.error('Form with ID "somatotipoForm" not found.');
-    }
+    // Inicializar el listener del formulario
+    initializeFormListener();
 
     // Cerrar el modal al hacer clic fuera del contenido
     modalsoma?.addEventListener('click', (e) => {
@@ -4581,6 +4666,10 @@ document.addEventListener('DOMContentLoaded', () => {
             closeSomaModal();
         }
     });
+
+    // Debugging: Log DOM state
+    console.log('DOM loaded. Modal container:', modalsoma);
+    console.log('Form element:', document.getElementById('somatotipoForm'));
 });
 	document.addEventListener('DOMContentLoaded', () => {
     const deporteInput = document.getElementById('deporteInput');
