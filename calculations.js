@@ -3846,11 +3846,10 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.strokeStyle = '#ffffff';
 	    ctxSomatotype.lineWidth = 5;
 	    ctxSomatotype.textAlign = 'center';
-	    
+	    ctxSomatotype.strokeText(somatotypeText, pixelX, pixelY - 55);
+    	    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
 	
-	    // Dibujar texto completo
-	    ctxSomatotype.strokeText(fullText, pixelX, pixelY - 55);
-	    ctxSomatotype.fillText(fullText, pixelX, pixelY - 55);
+	   
 	
 	    // Draw X-axis
 	    ctxSomatotype.beginPath();
