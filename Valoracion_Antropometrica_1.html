@@ -2899,94 +2899,89 @@ body {
 
 		    		
 		    		<!-- Modal para el Somatotipo -->
-				<div id="modalSomaContainer" class="modal-soma-container" role="dialog" aria-labelledby="modalTitle">
-				    <div class="modal-soma-content">
-				        <span id="closesomaModal" class="close-soma-modal">×</span>
-				        <div class="container-soma-wrapper">
-				            <div class="container-soma-content">
-				                <h1 id="modalTitle">Somatocarta</h1>
-				                <div class="input-form">
-				                    <div class="form-grid">
-				                        <div class="form-group">
-				                            <label for="nombreInput">Género:</label>
-				                            <select id="nombreInput">
-				                                <option value="" disabled selected>Selecciona un género</option>
-				                                <option value="hombre">Hombre</option>
-				                                <option value="mujer">Mujer</option>
-				                            </select>
-				                        </div>
-				                        <div class="form-group">
-				                            <label for="endoInput">Endo:</label>
-				                            <input type="number" id="endoInput" value="5.0" step="0.1" min="0" max="10">
-				                        </div>
-				                        <div class="form-group">
-				                            <label for="mesoInput">Meso:</label>
-				                            <input type="number" id="mesoInput" value="5.0" step="0.1" min="0" max="10">
-				                        </div>
-				                        <div class="form-group">
-				                            <label for="ectoInput">Ecto:</label>
-				                            <input type="number" id="ectoInput" value="1.0" step="0.1" min="0" max="10">
-				                        </div>
-				                        <div class="form-group">
-				                            <label for="deporteInput">Grupo de Referencia:</label>
-				                            <select id="deporteInput">
-				                                <option value="" disabled selected>Selecciona un grupo</option>
-				                                <option value="Deportes">Deportes</option>
-				                                <option value="Sedentarios">Sedentarios</option>
-				                                <option value="PocoActivos">Poco Activos</option>
-				                                <option value="Activo">Activo</option>
-				                            </select>
-				                        </div>
-				                        <div class="form-group">
-				                            <label for="modalidadInput">Modalidad:</label>
-				                            <select id="modalidadInput">
-				                                <option value="" disabled selected>Selecciona una modalidad</option>
-				                            </select>
-				                        </div>
-				                        <!-- Nuevo campo para mostrar el somatotipo del deporte -->
-				                        <div class="form-group somatotipo-display">
-				                            <h3>Somatotipo del Deporte</h3>
-				                            <div class="somatotipo-values">
-				                                <div>
-				                                    <label for="somatotipoEndo">Endo:</label>
-				                                    <input type="text" id="somatotipoEndo" readonly>
-				                                </div>
-				                                <div>
-				                                    <label for="somatotipoMeso">Meso:</label>
-				                                    <input type="text" id="somatotipoMeso" readonly>
-				                                </div>
-				                                <div>
-				                                    <label for="somatotipoEcto">Ecto:</label>
-				                                    <input type="text" id="somatotipoEcto" readonly>
-				                                </div>
-				                                <div>
-				                                    <label for="somatotipoDominante">Dominante:</label>
-				                                    <input type="text" id="somatotipoDominante" readonly>
-				                                </div>
-				                                <div>
-				                                    <label for="somatotipoX">X:</label>
-				                                    <input type="text" id="somatotipoX" readonly>
-				                                </div>
-				                                <div>
-				                                    <label for="somatotipoY">Y:</label>
-				                                    <input type="text" id="somatotipoY" readonly>
-				                                </div>
-				                            </div>
-				                        </div>
-				                    </div>
-				                    <div class="button-container">
-				                        <button id="updateButton">Actualizar</button>
-				                        <button class="download-button" id="downloadButton">Descargar Gráfico</button>
-				                    </div>
-				                </div>
-				                <div class="chart-container">
-				                    <canvas id="somatotipo-canvas"></canvas>
-				                    <div id="tooltip" class="tooltip"></div>
-				                </div>
-				            </div>
-				        </div>
-				    </div>
-				</div>
+				<div id="modalSomaContainer" class="modal-soma-container">
+			    <div class="modal-soma-content">
+			        <span class="close-soma-modal">&times;</span>
+			        <form id="somatotipoForm">
+			            <div class="form-grid">
+			                <div>
+			                    <label for="nombreInput">Género:</label>
+			                    <select id="nombreInput" required>
+			                        <option value="" disabled selected>Selecciona género</option>
+			                        <option value="hombre">Hombre</option>
+			                        <option value="mujer">Mujer</option>
+			                    </select>
+			                </div>
+			                <div>
+			                    <label for="endoInput">Endomorfia:</label>
+			                    <input type="number" id="endoInput" step="0.1" min="0" required>
+			                </div>
+			                <div>
+			                    <label for="mesoInput">Mesomorfia:</label>
+			                    <input type="number" id="mesoInput" step="0.1" min="0" required>
+			                </div>
+			                <div>
+			                    <label for="ectoInput">Ectomorfia:</label>
+			                    <input type="number" id="ectoInput" step="0.1" min="0" required>
+			                </div>
+			                <div>
+			                    <label for="deporteInput">Grupo de Referencia:</label>
+			                    <select id="deporteInput" required>
+			                        <option value="" disabled selected>Selecciona grupo</option>
+			                        <option value="Sedentarios">Sedentarios</option>
+			                        <option value="PocoActivos">Poco Activos</option>
+			                        <option value="Activo">Activo</option>
+			                        <option value="Deportes">Deportes</option>
+			                    </select>
+			                </div>
+			                <div>
+			                    <label for="modalidadInput">Modalidad:</label>
+			                    <select id="modalidadInput" disabled required>
+			                        <option value="" disabled selected>Selecciona una modalidad</option>
+			                    </select>
+			                </div>
+			            </div>
+			            <div class="somatotipo-display">
+			                <h3>Somatotipo del Deporte</h3>
+			                <div class="somatotipo-values">
+			                    <div>
+			                        <label>Endomorfia:</label>
+			                        <input type="text" id="somatotipoEndo" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Mesomorfia:</label>
+			                        <input type="text" id="somatotipoMeso" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Ectomorfia:</label>
+			                        <input type="text" id="somatotipoEcto" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Dominante:</label>
+			                        <input type="text" id="somatotipoDominante" readonly>
+			                    </div>
+			                    <div>
+			                        <label>X:</label>
+			                        <input type="text" id="somatotipoX" readonly>
+			                    </div>
+			                    <div>
+			                        <label>Y:</label>
+			                        <input type="text" id="somatotipoY" readonly>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="chart-container">
+			                <img id="somatotype-image" src="https://fermagil.github.io/Nutri_Plan_v2/somatotype-chart.png" alt="Carta de Somatotipo">
+			                <canvas id="somatotype-point-canvas"></canvas>
+			                <div id="tooltip" class="tooltip"></div>
+			            </div>
+			            <div class="button-container">
+			                <button type="submit">Calcular</button>
+			                <button type="button" class="download-button">Descargar</button>
+			            </div>
+			        </form>
+			    </div>
+			</div>
                 </div>
             </div>
         </form>
