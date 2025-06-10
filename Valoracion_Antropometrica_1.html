@@ -1899,7 +1899,110 @@ body {
 .modal-soma-container .download-button:hover {
     background-color: #218838;
 }
+.modal-soma-container {
+    display: none;
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscurecido */
+    z-index: 1000;
+    transition: opacity 0.3s ease-in-out;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+}
 
+.modal-soma-container .modal-soma-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%; /* Ajustar al 90% del ancho de la pantalla */
+    max-width: 800px; /* Máximo 800px para pantallas grandes */
+    max-height: 80vh; /* Limitar altura al 80% de la ventana */
+    overflow-y: auto; /* Permitir scroll si el contenido es grande */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-soma-container .close-soma-modal {
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.modal-soma-container .close-soma-modal:hover {
+    color: #ff0000; /* Color rojo al pasar el ratón */
+}
+
+.modal-soma-container .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive */
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-soma-container .somatotipo-display {
+    grid-column: 1 / -1; /* Ocupar toda la fila */
+}
+
+.modal-soma-container .somatotipo-display h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.modal-soma-container .somatotipo-values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.modal-soma-container .somatotipo-values div {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-soma-container .somatotipo-values label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.modal-soma-container .somatotipo-values input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+}
+
+.modal-soma-container .chart-container {
+    width: 100%;
+    max-height: 400px; /* Ajustar altura del gráfico */
+}
+
+.modal-soma-container .chart-container:has(#somatotype-image) {
+    max-width: 800px;
+    max-height: 500px;
+    position: relative;
+    aspect-ratio: 1 / 1; /* Mantener proporciones cuadradas */
+}
+
+.modal-soma-container .chart-container img#somatotype-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.modal-soma-container .chart-container canvas#somatotipo-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important; /* Ajustar altura
     </style>
 </head>
 <body>
@@ -2842,79 +2945,95 @@ body {
 			    </div>
 
 		    		
-		    		<!-- //Modal para el Somatotipo -->
-					<div id="modalSomaContainer" class="modal-soma-container" role="dialog" aria-labelledby="modalTitle">
-					    <div class="modal-soma-content">
-					        <span id="closesomaModal" class="close-soma-modal">×</span>
-					        <div class="container-soma-wrapper">
-					            <div class="container-soma-content">
-					                <h1 id="modalTitle">Somatocarta</h1>
-					                <div class="input-form">
-					                    <div class="form-grid">
-					                        <div class="form-group">
-					                            <label for="nombreInput">Nombre:</label>
-					                            <select id="nombreInput">
-					                                <option value="" disabled selected>Selecciona un género</option>
-					                                <option value="mujer">Mujer</option>
-					                                <option value="hombre">Hombre</option>
-					                            </select>
-					                        </div>
-					                        <div class="form-group">
-					                            <label for="actividadInput">Nivel de Actividad:</label>
-					                            <select id="actividadInput">
-					                                <option value="" disabled selected>Selecciona un nivel</option>
-					                                <option value="sedentario">Sedentario</option>
-					                                <option value="pocoActivo">Poco Activo</option>
-					                                <option value="activo">Activo</option>
-					                                <option value="deportista">Deportista</option>
-					                            </select>
-					                        </div>
-					                        <div class="form-group">
-					                            <label for="endoInput">Endo:</label>
-					                            <input type="number" id="endoInput" value="5.0" step="0.1" min="0" max="10">
-					                        </div>
-					                        <div class="form-group">
-					                            <label for="mesoInput">Meso:</label>
-					                            <input type="number" id="mesoInput" value="5.0" step="0.1" min="0" max="10">
-					                        </div>
-					                        <div class="form-group">
-					                            <label for="ectoInput">Ecto:</label>
-					                            <input type="number" id="ectoInput" value="1.0" step="0.1" min="0" max="10">
-					                        </div>
-					                        <div class="form-group">
-					                            <label for="deporteInput">Grupo de Referencia:</label>
-					                            <select id="deporteInput">
-					                                <option value="" disabled selected>Selecciona un deporte</option>
-					                                <option value="Atletismo">Atletismo</option>
-					                                <option value="Baloncesto">Baloncesto</option>
-					                                <option value="Futbol">Futbol</option>
-					                                <option value="Fitness">Fitness</option>
-					                            </select>
-					                        </div>
-					                        <div class="form-group">
-					                            <label for="modalidadInput">Deporte:</label>
-					                            <select id="modalidadInput">
-					                                <option value="" disabled selected>Selecciona una modalidad</option>
-					                                <option value="100metros">100 Metros</option>
-					                                <option value="400metros">400 Metros</option>
-					                                <option value="1500metros">1500 Metros</option>
-					                                <option value="maraton">Marathon</option>
-					                            </select>
-					                        </div>
-					                    </div>
-					                    <div class="button-container">
-					                        <button id="updateButton">Actualizar</button>
-					                        <button class="download-button" id="downloadButton">Descargar Gráfico</button>
-					                    </div>
-					                </div>
-					                <div class="chart-container">
-					                    <canvas id="somatotipo-canvas"></canvas>
-					                    <div id="tooltip" class="tooltip"></div>
-					                </div>
-					            </div>
-					        </div>
-					    </div>
-					</div>
+		    		<!-- Modal para el Somatotipo -->
+				<div id="modalSomaContainer" class="modal-soma-container" role="dialog" aria-labelledby="modalTitle">
+				    <div class="modal-soma-content">
+				        <span id="closesomaModal" class="close-soma-modal">×</span>
+				        <div class="container-soma-wrapper">
+				            <div class="container-soma-content">
+				                <h1 id="modalTitle">Somatocarta</h1>
+				                <div class="input-form">
+				                    <div class="form-grid">
+				                        <div class="form-group">
+				                            <label for="nombreInput">Género:</label>
+				                            <select id="nombreInput">
+				                                <option value="" disabled selected>Selecciona un género</option>
+				                                <option value="hombre">Hombre</option>
+				                                <option value="mujer">Mujer</option>
+				                            </select>
+				                        </div>
+				                        <div class="form-group">
+				                            <label for="endoInput">Endo:</label>
+				                            <input type="number" id="endoInput" value="5.0" step="0.1" min="0" max="10">
+				                        </div>
+				                        <div class="form-group">
+				                            <label for="mesoInput">Meso:</label>
+				                            <input type="number" id="mesoInput" value="5.0" step="0.1" min="0" max="10">
+				                        </div>
+				                        <div class="form-group">
+				                            <label for="ectoInput">Ecto:</label>
+				                            <input type="number" id="ectoInput" value="1.0" step="0.1" min="0" max="10">
+				                        </div>
+				                        <div class="form-group">
+				                            <label for="deporteInput">Grupo de Referencia:</label>
+				                            <select id="deporteInput">
+				                                <option value="" disabled selected>Selecciona un grupo</option>
+				                                <option value="Deportes">Deportes</option>
+				                                <option value="Sedentarios">Sedentarios</option>
+				                                <option value="PocoActivos">Poco Activos</option>
+				                                <option value="Activo">Activo</option>
+				                            </select>
+				                        </div>
+				                        <div class="form-group">
+				                            <label for="modalidadInput">Modalidad:</label>
+				                            <select id="modalidadInput">
+				                                <option value="" disabled selected>Selecciona una modalidad</option>
+				                            </select>
+				                        </div>
+				                        <!-- Nuevo campo para mostrar el somatotipo del deporte -->
+				                        <div class="form-group somatotipo-display">
+				                            <h3>Somatotipo del Deporte</h3>
+				                            <div class="somatotipo-values">
+				                                <div>
+				                                    <label for="somatotipoEndo">Endo:</label>
+				                                    <input type="text" id="somatotipoEndo" readonly>
+				                                </div>
+				                                <div>
+				                                    <label for="somatotipoMeso">Meso:</label>
+				                                    <input type="text" id="somatotipoMeso" readonly>
+				                                </div>
+				                                <div>
+				                                    <label for="somatotipoEcto">Ecto:</label>
+				                                    <input type="text" id="somatotipoEcto" readonly>
+				                                </div>
+				                                <div>
+				                                    <label for="somatotipoDominante">Dominante:</label>
+				                                    <input type="text" id="somatotipoDominante" readonly>
+				                                </div>
+				                                <div>
+				                                    <label for="somatotipoX">X:</label>
+				                                    <input type="text" id="somatotipoX" readonly>
+				                                </div>
+				                                <div>
+				                                    <label for="somatotipoY">Y:</label>
+				                                    <input type="text" id="somatotipoY" readonly>
+				                                </div>
+				                            </div>
+				                        </div>
+				                    </div>
+				                    <div class="button-container">
+				                        <button id="updateButton">Actualizar</button>
+				                        <button class="download-button" id="downloadButton">Descargar Gráfico</button>
+				                    </div>
+				                </div>
+				                <div class="chart-container">
+				                    <canvas id="somatotipo-canvas"></canvas>
+				                    <div id="tooltip" class="tooltip"></div>
+				                </div>
+				            </div>
+				        </div>
+				    </div>
+				</div>
                 </div>
             </div>
         </form>
@@ -4359,6 +4478,244 @@ document.addEventListener('keydown', (e) => {
         closeSomaModal();
     }
 });
+	const deporteInput = document.getElementById('deporteInput');
+const modalidadInput = document.getElementById('modalidadInput');
+const nombreInput = document.getElementById('nombreInput');
+const somatotipoEndo = document.getElementById('somatotipoEndo Workout');
+const somatotipoMeso = document.getElementById('somatotipoMeso');
+const somatotipoEcto = document.getElementById('somatotipoEcto');
+const somatotipoDominante = document.getElementById('somatotipoDominante');
+const somatotipoX = document.getElementById('somatotipoX');
+const somatotipoY = document.getElementById('somatotipoY');
+
+// Tabla de datos de somatotipos
+const somatotipoData = [
+    { deporte: "halterofilia", sexo: "H", endo: 2.5, meso: 7.5, ecto: 1.5, dominante: "Meso", x: -1, y: 11, endo_f: 3, meso_f: 6.8, ecto_f: 1.2, x_f: -1.8, y_f: 9.4 },
+    { deporte: "lanzamiento_de_peso", sexo: "H", endo: 3, meso: 7, ecto: 1.8, dominante: "Meso", x: -1.2, y: 9.2, endo_f: 3.5, meso_f: 6.3, ecto_f: 1.5, x_f: -2, y_f: 7.6 },
+    { deporte: "rugby_delanteros", sexo: "H", endo: 3.5, meso: 6.5, ecto: 2, dominante: "Meso", x: -1.5, y: 7.5, endo_f: 4, meso_f: 5.8, ecto_f: 1.8, x_f: -2.2, y_f: 5.8 },
+    { deporte: "crossfit", sexo: "H", endo: 2.8, meso: 6.3, ecto: 2.5, dominante: "Meso", x: -0.3, y: 7.3, endo_f: 3.2, meso_f: 5.6, ecto_f: 2.3, x_f: -0.9, y_f: 5.7 },
+    { deporte: "lucha_grecorromana", sexo: "H", endo: 3.2, meso: 6.2, ecto: 2.2, dominante: "Meso", x: -1, y: 7, endo_f: 3.7, meso_f: 5.5, ecto_f: 2, x_f: -1.7, y_f: 5.3 },
+    { deporte: "gimnasia_artística_masculina", sexo: "H", endo: 2, meso: 6, ecto: 3.5, dominante: "Meso", x: 1.5, y: 6.5, endo_f: 2.2, meso_f: 5, ecto_f: 4, x_f: 1.8, y_f: 3.8 },
+    { deporte: "atletismo_100m_lisos", sexo: "H", endo: 2.2, meso: 5.8, ecto: 3.8, dominante: "Meso", x: 1.6, y: 5.6, endo_f: 2.5, meso_f: 5, ecto_f: 4, x_f: 1.5, y_f: 3.5 },
+    { deporte: "boxeo_peso_pesado", sexo: "H", endo: 3.8, meso: 5.5, ecto: 2.5, dominante: "Meso", x: -1.3, y: 4.7, endo_f: 4.2, meso_f: 4.8, ecto_f: 2.2, x_f: -2, y_f: 3.2 },
+    { deporte: "piragüismo_aguas_tranquilas", sexo: "H", endo: 3, meso: 5.4, ecto: 3, dominante: "Meso", x: 0, y: 4.8, endo_f: 3.4, meso_f: 4.8, ecto_f: 2.8, x_f: -0.6, y_f: 3.4 },
+    { deporte: "balonmano", sexo: "H", endo: 3, meso: 5.3, ecto: 3.2, dominante: "Meso", x: 0.2, y: 4.4, endo_f: 3.5, meso_f: 4.7, ecto_f: 3, x_f: -0.5, y_f: 2.9 },
+    { deporte: "fútbol_porteros", sexo: "H", endo: 3.2, meso: 5, ecto: 3.3, dominante: "Meso", x: 0.1, y: 3.5, endo_f: 3.7, meso_f: 4.4, ecto_f: 3.1, x_f: -0.6, y_f: 2 },
+    { deporte: "ciclismo_pista_velocidad", sexo: "H", endo: 2.5, meso: 4.9, ecto: 4, dominante: "Meso", x: 1.5, y: 3.3, endo_f: 2.8, meso_f: 4.3, ecto_f: 4.2, x_f: 1.4, y_f: 1.6 },
+    { deporte: "tenis", sexo: "H", endo: 2.8, meso: 4.8, ecto: 3.8, dominante: "Meso", x: 1, y: 3, endo_f: 3, meso_f: 4.2, ecto_f: 4, x_f: 1, y_f: 1.4 },
+    { deporte: "voleibol_centrales", sexo: "H", endo: 2.5, meso: 4.7, ecto: 4.3, dominante: "Meso", x: 1.8, y: 2.6, endo_f: 2.8, meso_f: 4, ecto_f: 4.5, x_f: 1.7, y_f: 0.7 },
+    { deporte: "judo_menos_90_kg", sexo: "H", endo: 3, meso: 4.6, ecto: 3.4, dominante: "Meso", x: 0.4, y: 2.8, endo_f: 3.5, meso_f: 4, ecto_f: 3.2, x_f: -0.3, y_f: 1.3 },
+    { deporte: "hockey_hierba", sexo: "H", endo: 2.7, meso: 4.5, ecto: 3.9, dominante: "Meso", x: 1.2, y: 2.4, endo_f: 3, meso_f: 3.9, ecto_f: 4.1, x_f: 1.1, y_f: 0.7 },
+    { deporte: "atletismo_400m_vallas", sexo: "H", endo: 2.3, meso: 4.4, ecto: 4.5, dominante: "Ecto", x: 2.2, y: 2, endo_f: 2.6, meso_f: 3.8, ecto_f: 4.8, x_f: 2.2, y_f: 0.2 },
+    { deporte: "baloncesto_aleros", sexo: "H", endo: 2.5, meso: 4.3, ecto: 4.6, dominante: "Ecto", x: 2.1, y: 1.5, endo_f: 2.8, meso_f: 3.7, ecto_f: 4.9, x_f: 2.1, y_f: -0.3 },
+    { deporte: "atletismo_salto_de_altura", sexo: "H", endo: 2, meso: 4.2, ecto: 4.8, dominante: "Ecto", x: 2.8, y: 1.6, endo_f: 2.2, meso_f: 3.6, ecto_f: 5.2, x_f: 3, y_f: -0.2 },
+    { deporte: "esgrima", sexo: "H", endo: 2.5, meso: 3.8, ecto: 4.7, dominante: "Ecto", x: 2.2, y: 0.4, endo_f: 2.8, meso_f: 3.2, ecto_f: 5, x_f: 2.2, y_f: -1.4 },
+    { deporte: "atletismo_1500m", sexo: "H", endo: 1.9, meso: 3.5, ecto: 5.8, dominante: "Ecto", x: 3.9, y: -0.7, endo_f: 2.1, meso_f: 2.9, ecto_f: 6, x_f: 3.9, y_f: -2.3 },
+    { deporte: "ciclismo_ruta", sexo: "H", endo: 2.2, meso: 3.2, ecto: 5.6, dominante: "Ecto", x: 3.4, y: -1.4, endo_f: 2.4, meso_f: 2.6, ecto_f: 5.8, x_f: 3.4, y_f: -3 },
+    { deporte: "atletismo_maratón", sexo: "H", endo: 1.8, meso: 2.9, ecto: 6, dominante: "Ecto", x: 4.2, y: -2, endo_f: 2, meso_f: 2.3, ecto_f: 6.2, x_f: 4.2, y_f: -3.6 },
+    { deporte: "triatlón_larga_distancia", sexo: "H", endo: 2, meso: 3, ecto: 5.5, dominante: "Ecto", x: 3.5, y: -1.5, endo_f: 2.2, meso_f: 2.4, ecto_f: 5.7, x_f: 3.5, y_f: -3.1 },
+    { deporte: "senderismo_alta_montaña", sexo: "H", endo: 2.8, meso: 3.2, ecto: 4.5, dominante: "Ecto", x: 1.7, y: -0.9, endo_f: 3, meso_f: 2.6, ecto_f: 4.8, x_f: 1.8, y_f: -2.6 },
+    { deporte: "natación_1500m_libre", sexo: "H", endo: 2.5, meso: 3, ecto: 5.2, dominante: "Ecto", x: 2.7, y: -1.7, endo_f: 2.7, meso_f: 2.4, ecto_f: 5.4, x_f: 2.7, y_f: -3.3 },
+    { deporte: "pádel", sexo: "H", endo: 3, meso: 3.8, ecto: 4, dominante: "Ecto", x: 1, y: 0.6, endo_f: 3.3, meso_f: 3.2, ecto_f: 4.2, x_f: 0.9, y_f: -1.1 },
+    { deporte: "badminton", sexo: "H", endo: 2.5, meso: 3.5, ecto: 4.5, dominante: "Ecto", x: 2, y: 0, endo_f: 2.8, meso_f: 2.9, ecto_f: 4.8, x_f: 2, y_f: -1.8 },
+    { deporte: "escalada_deportiva", sexo: "H", endo: 2.3, meso: 4, ecto: 4.5, dominante: "Ecto", x: 2.2, y: 1.2, endo_f: 2.5, meso_f: 3.4, ecto_f: 4.8, x_f: 2.3, y_f: -0.5 },
+    { deporte: "surf_competición", sexo: "H", endo: 2.8, meso: 4, ecto: 4.2, dominante: "Ecto", x: 1.4, y: 1, endo_f: 3, meso_f: 3.4, ecto_f: 4.5, x_f: 1.5, y_f: -0.7 },
+    { deporte: "atletismo_marcha_20km", sexo: "H", endo: 2, meso: 3, ecto: 5.5, dominante: "Ecto", x: 3.5, y: -1.5, endo_f: 2.2, meso_f: 2.4, ecto_f: 5.8, x_f: 3.6, y_f: -3.2 },
+    { deporte: "kárate_kumite", sexo: "H", endo: 2.7, meso: 4.2, ecto: 4, dominante: "Meso", x: 1.3, y: 1.7, endo_f: 3, meso_f: 3.6, ecto_f: 4.2, x_f: 1.2, y_f: 0 },
+    { deporte: "waterpolo", sexo: "H", endo: 3, meso: 4.5, ecto: 3.5, dominante: "Meso", x: 0.5, y: 2.5, endo_f: 3.5, meso_f: 3.9, ecto_f: 3.2, x_f: -0.3, y_f: 1.1 },
+    { deporte: "remo_skiff", sexo: "H", endo: 2.8, meso: 5, ecto: 3.5, dominante: "Meso", x: 0.7, y: 3.7, endo_f: 3.2, meso_f: 4.3, ecto_f: 3, x_f: -0.2, y_f: 2.4 },
+    { deporte: "fútbol_campo", sexo: "H", endo: 2.7, meso: 4.5, ecto: 4, dominante: "Meso", x: 1.3, y: 2.3, endo_f: 3, meso_f: 3.9, ecto_f: 4.2, x_f: 1.2, y_f: 0.6 },
+    { deporte: "gimnasia_rítmica", sexo: "M", endo: 2.2, meso: 3.8, ecto: 5, dominante: "Ecto", x: 2.8, y: 0.4, endo_f: 2, meso_f: 3, ecto_f: 5.5, x_f: 3.5, y_f: -1.5 },
+    { deporte: "taekwondo", sexo: "H", endo: 2.8, meso: 4.3, ecto: 3.8, dominante: "Meso", x: 1, y: 2, endo_f: 3, meso_f: 3.7, ecto_f: 4, x_f: 1, y_f: 0.4 },
+    { deporte: "hípica_salto", sexo: "H", endo: 3, meso: 3.5, ecto: 4, dominante: "Ecto", x: 1, y: 0, endo_f: 3.3, meso_f: 2.9, ecto_f: 4.3, x_f: 1, y_f: -1.8 },
+    { deporte: "esquí_alpino", sexo: "H", endo: 3, meso: 4.5, ecto: 3.5, dominante: "Meso", x: 0.5, y: 2.5, endo_f: 3.4, meso_f: 3.9, ecto_f: 3.2, x_f: -0.2, y_f: 1.2 },
+    { deporte: "vela_laser", sexo: "H", endo: 3.2, meso: 3.8, ecto: 3.8, dominante: "Meso", x: 0.6, y: 0.6, endo_f: 3.5, meso_f: 3.2, ecto_f: 3.6, x_f: 0.1, y_f: -0.7 },
+    { deporte: "béisbol_lanzadores", sexo: "H", endo: 3, meso: 4.8, ecto: 3.5, dominante: "Meso", x: 0.5, y: 3.1, endo_f: 3.4, meso_f: 4.2, ecto_f: 3.2, x_f: -0.2, y_f: 1.8 },
+    { deporte: "atletismo_lanz_jabalina", sexo: "H", endo: 2.5, meso: 5, ecto: 3.8, dominante: "Meso", x: 1.3, y: 3.7, endo_f: 2.8, meso_f: 4.3, ecto_f: 3.5, x_f: 0.7, y_f: 2.3 },
+    { deporte: "squash", sexo: "H", endo: 2.7, meso: 4, ecto: 4.3, dominante: "Ecto", x: 1.6, y: 1, endo_f: 3, meso_f: 3.4, ecto_f: 4.6, x_f: 1.6, y_f: -0.8 },
+    { deporte: "ciclismo_bmx", sexo: "H", endo: 2.8, meso: 4.5, ecto: 3.8, dominante: "Meso", x: 1, y: 2.4, endo_f: 3, meso_f: 3.9, ecto_f: 3.6, x_f: 0.6, y_f: 1.2 },
+    { deporte: "parkour", sexo: "H", endo: 2.5, meso: 4.3, ecto: 4.2, dominante: "Meso", x: 1.7, y: 1.9, endo_f: 2.8, meso_f: 3.7, ecto_f: 4.4, x_f: 1.6, y_f: 0.2 },
+    { deporte: "golf", sexo: "H", endo: 4, meso: 3, ecto: 3.5, dominante: "Endo", x: -0.5, y: -1.5, endo_f: 4.5, meso_f: 2.5, ecto_f: 3, x_f: -1.5, y_f: -2.5 },
+    { deporte: "pilates", sexo: "H", endo: 3.2, meso: 3, ecto: 4, dominante: "Ecto", x: 0.8, y: -1.2, endo_f: 3.5, meso_f: 2.4, ecto_f: 4.2, x_f: 0.7, y_f: -2.9 },
+    { deporte: "yoga_hatha", sexo: "H", endo: 3.5, meso: 2.5, ecto: 4, dominante: "Endo", x: 0.5, y: -2.5, endo_f: 3.8, meso_f: 2, ecto_f: 4.2, x_f: 0.4, y_f: -4 },
+    { deporte: "natación_sincronizada", sexo: "M", endo: 3, meso: 3.5, ecto: 4.2, dominante: "Ecto", x: 1.2, y: -0.2, endo_f: 2.8, meso_f: 3, ecto_f: 4.5, x_f: 1.7, y_f: -1.3 },
+    { deporte: "bolos", sexo: "H", endo: 4.5, meso: 2.5, ecto: 3, dominante: "Endo", x: -1.5, y: -2.5, endo_f: 4.8, meso_f: 2, ecto_f: 2.8, x_f: -2, y_f: -3.6 },
+    { deporte: "petanca", sexo: "H", endo: 5, meso: 2, ecto: 2.5, dominante: "Endo", x: -2.5, y: -3.5, endo_f: 5.3, meso_f: 1.5, ecto_f: 2.2, x_f: -3.1, y_f: -4.5 },
+    { deporte: "tiro_con_arco", sexo: "H", endo: 3.5, meso: 3, ecto: 4, dominante: "Endo", x: 0.5, y: -1.5, endo_f: 3.8, meso_f: 2.4, ecto_f: 4.2, x_f: 0.4, y_f: -3.2 },
+    { deporte: "billar", sexo: "H", endo: 4.2, meso: 2.3, ecto: 3, dominante: "Endo", x: -1.2, y: -2.6, endo_f: 4.5, meso_f: 1.8, ecto_f: 2.7, x_f: -1.8, y_f: -3.6 },
+    { deporte: "curling", sexo: "H", endo: 4, meso: 3.5, ecto: 2.8, dominante: "Endo", x: -1.2, y: 0.2, endo_f: 4.3, meso_f: 2.9, ecto_f: 2.5, x_f: -1.8, y_f: -1 },
+    { deporte: "aerobic", sexo: "H", endo: 3, meso: 3.2, ecto: 4, dominante: "Ecto", x: 1, y: -0.6, endo_f: 3.2, meso_f: 2.6, ecto_f: 4.3, x_f: 1.1, y_f: -2.3 },
+    { deporte: "tai_chi", sexo: "H", endo: 3.8, meso: 2.5, ecto: 3.5, dominante: "Endo", x: -0.3, y: -2.3, endo_f: 4, meso_f: 2, ecto_f: 3.2, x_f: -0.8, y_f: -3.2 },
+    { deporte: "danza_clásica", sexo: "H", endo: 2.5, meso: 3, ecto: 5, dominante: "Ecto", x: 2.5, y: -1.5, endo_f: 2.2, meso_f: 2.5, ecto_f: 5.5, x_f: 3.3, y_f: -2.7 },
+    { deporte: "pesca_deportiva", sexo: "H", endo: 4.2, meso: 3, ecto: 2.8, dominante: "Endo", x: -1.4, y: -1, endo_f: 4.5, meso_f: 2.5, ecto_f: 2.5, x_f: -2, y_f: -2 },
+    { deporte: "bádminton_dobles", sexo: "H", endo: 3, meso: 3.5, ecto: 4.2, dominante: "Ecto", x: 1.2, y: -0.2, endo_f: 3.3, meso_f: 2.9, ecto_f: 4.5, x_f: 1.2, y_f: -2 },
+    { deporte: "frontenis", sexo: "H", endo: 3, meso: 4, ecto: 3.8, dominante: "Meso", x: 0.8, y: 1.2, endo_f: 3.3, meso_f: 3.4, ecto_f: 3.6, x_f: 0.3, y_f: -0.1 },
+    { deporte: "atletismo_vel_vallas", sexo: "H", endo: 1.7, meso: 4.8, ecto: 0.9, dominante: "", x: 3.9, y: 0.9, endo_f: 2.6, meso_f: 3.1, ecto_f: 3, x_f: 0.1, y_f: 1.1 },
+    { deporte: "atletismo_altura", sexo: "H", endo: 1.6, meso: 3.5, ecto: 0.9, dominante: "", x: 2.6, y: 0.8, endo_f: 2.5, meso_f: 2, ecto_f: 4.4, x_f: -2.4, y_f: -1.9 },
+    { deporte: "atletismo_pértiga", sexo: "H", endo: 1.6, meso: 4.7, ecto: 3, dominante: "", x: 1.7, y: -1.5, endo_f: 2.9, meso_f: 3.1, ecto_f: 3.2, x_f: -0.1, y_f: 0.5 },
+    { deporte: "atletismo_lanzamientos", sexo: "H", endo: 3.6, meso: 6.1, ecto: 1.1, dominante: "", x: 5, y: -3.6, endo_f: 4.3, meso_f: 4.1, ecto_f: 1.6, x_f: 2.5, y_f: 2.9 },
+    { deporte: "atletismo_marcha", sexo: "H", endo: 1.7, meso: 3.9, ecto: 3.5, dominante: "", x: 0.4, y: -1.5, endo_f: 3.2, meso_f: 2.6, ecto_f: 3.3, x_f: -0.7, y_f: 0.1 },
+    { deporte: "atletismo_fondo", sexo: "H", endo: 1.7, meso: 3.6, ecto: 3.6, dominante: "", x: 0, y: -3.8, endo_f: 2.4, meso_f: 2.4, ecto_f: 3.9, x_f: -1.5, y_f: -1.5 },
+    { deporte: "triatlón", sexo: "H", endo: 1.7, meso: 4.6, ecto: 3.1, dominante: "", x: 1.5, y: -2.8, endo_f: 2.4, meso_f: 3.2, ecto_f: 3.4, x_f: -0.2, y_f: 1 },
+    { deporte: "pentatlón", sexo: "H", endo: 2.1, meso: 4.4, ecto: 3.2, dominante: "", x: 1.2, y: -3.4, endo_f: 3.4, meso_f: 2.9, ecto_f: 3.1, x_f: -0.2, y_f: -0.7 },
+    { deporte: "ciclismo_carretera", sexo: "H", endo: 1.8, meso: 4.1, ecto: 3.2, dominante: "", x: 0.9, y: -2.7, endo_f: 3.3, meso_f: 3.1, ecto_f: 2.6, x_f: 0.5, y_f: 0.4 },
+    { deporte: "ciclismo_montaña", sexo: "H", endo: 2, meso: 4.7, ecto: 2.8, dominante: "", x: 1.9, y: -2.5, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "esgrima", sexo: "H", endo: 2.5, meso: 4.2, ecto: 3.2, dominante: "", x: 1, y: -2.4, endo_f: 3.4, meso_f: 2.5, ecto_f: 3.3, x_f: -0.8, y_f: -1.7 },
+    { deporte: "golf", sexo: "H", endo: 2.7, meso: 4.2, ecto: 3.1, dominante: "", x: 1.1, y: 0.5, endo_f: 4.4, meso_f: 2.7, ecto_f: 2.8, x_f: -0.1, y_f: -1.9 },
+    { deporte: "patinaje_artístico", sexo: "H", endo: 2.2, meso: 4.3, ecto: 3.1, dominante: "", x: 1.2, y: 0.9, endo_f: 3, meso_f: 2.9, ecto_f: 3, x_f: -0.1, y_f: -0.3 },
+    { deporte: "patinaje_velocidad", sexo: "H", endo: 1.9, meso: 4.1, ecto: 3.3, dominante: "", x: 0.8, y: 3, endo_f: 3.7, meso_f: 3.5, ecto_f: 2.3, x_f: 1.2, y_f: 1 },
+    { deporte: "gimnasia_artística", sexo: "H", endo: 1.6, meso: 5.4, ecto: 2.7, dominante: "", x: 2.7, y: -5.1, endo_f: 2.2, meso_f: 3.8, ecto_f: 3.1, x_f: 0.7, y_f: 2.4 },
+    { deporte: "gimnasia_rítmica", sexo: "M", endo: 1.9, meso: 2.2, ecto: 5.1, dominante: "", x: -2.9, y: -2.4, endo_f: 1.9, meso_f: 2.2, ecto_f: 5.1, x_f: -2.9, y_f: -2.4 },
+    { deporte: "gimnasia_trampolín", sexo: "H", endo: 1.8, meso: 4.6, ecto: 3.2, dominante: "", x: 1.4, y: 4.2, endo_f: 3.1, meso_f: 3.1, ecto_f: 3.1, x_f: 0, y_f: 0 },
+    { deporte: "balonmano", sexo: "H", endo: 2.8, meso: 4.9, ecto: 2.2, dominante: "", x: 2.7, y: -0.6, endo_f: 3.8, meso_f: 3.5, ecto_f: 2.4, x_f: 1.1, y_f: 0.9 },
+    { deporte: "baloncesto", sexo: "H", endo: 2.5, meso: 3.5, ecto: 3.6, dominante: "", x: -0.1, y: 1, endo_f: 4, meso_f: 2.7, ecto_f: 2.9, x_f: -0.2, y_f: -1.5 },
+    { deporte: "fútbol_menos_18", sexo: "H", endo: 2.3, meso: 4.4, ecto: 2.8, dominante: "", x: 1.6, y: 0.6, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "fútbol_más_18", sexo: "H", endo: 2.4, meso: 3.9, ecto: 3.2, dominante: "", x: 0.7, y: 0.9, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "voleibol", sexo: "H", endo: 2.2, meso: 3.9, ecto: 3.4, dominante: "", x: 0.5, y: 2.3, endo_f: 3.5, meso_f: 2.3, ecto_f: 3.4, x_f: -1.1, y_f: -2.2 },
+    { deporte: "hockey_hierba", sexo: "H", endo: 2.3, meso: 4.7, ecto: 2.6, dominante: "", x: 2.1, y: 0.3, endo_f: 3.6, meso_f: 3.1, ecto_f: 2.6, x_f: 0.5, y_f: -0.1 },
+    { deporte: "patinaje_velocidad", sexo: "H", endo: 2.1, meso: 5.3, ecto: 2, dominante: "", x: 3.3, y: -0.2, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "halterofilia", sexo: "H", endo: 3.2, meso: 6, ecto: 1.5, dominante: "", x: 4.5, y: -1.7, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "piragüismo_aguas_tranquilas", sexo: "H", endo: 1.9, meso: 4.3, ecto: 3, dominante: "", x: 1.3, y: 1.1, endo_f: 3.1, meso_f: 3.3, ecto_f: 2.4, x_f: 0.9, y_f: -0.7 },
+    { deporte: "piragüismo_slalom", sexo: "H", endo: 1.9, meso: 5, ecto: 2.8, dominante: "", x: 2.2, y: 0.9, endo_f: 3.3, meso_f: 3.3, ecto_f: 2.7, x_f: 0.6, y_f: 0.6 },
+    { deporte: "remo_ligeros", sexo: "H", endo: 1.8, meso: 4.2, ecto: 3, dominante: "", x: 1.2, y: 1.2, endo_f: 2.8, meso_f: 2, ecto_f: 2.6, x_f: -0.6, y_f: -0.2 },
+    { deporte: "remo_pesados", sexo: "H", endo: 2.3, meso: 4.8, ecto: 2.5, dominante: "", x: 2.3, y: 0.2, endo_f: 4.4, meso_f: 3.6, ecto_f: 2, x_f: 1.6, y_f: -2.4 },
+    { deporte: "natación_carreras_menos_16", sexo: "H", endo: 2.2, meso: 4.3, ecto: 3.2, dominante: "", x: 1.1, y: 1, endo_f: 3, meso_f: 2.9, ecto_f: 3.3, x_f: -0.4, y_f: 0.3 },
+    { deporte: "natación_carreras_más_16", sexo: "H", endo: 1.9, meso: 4.6, ecto: 3, dominante: "", x: 1.6, y: 1.1, endo_f: 3, meso_f: 3.1, ecto_f: 3, x_f: 0.1, y_f: -0.1 },
+    { deporte: "natación_sincronizada", sexo: "M", endo: 3.3, meso: 2.6, ecto: 3.2, dominante: "", x: -0.6, y: -0.1, endo_f: 3.3, meso_f: 2.6, ecto_f: 3.2, x_f: -0.6, y_f: -0.1 },
+    { deporte: "waterpolo_arco_jr", sexo: "H", endo: 2.3, meso: 4.4, ecto: 2.9, dominante: "", x: 1.5, y: 0.7, endo_f: 4.1, meso_f: 3.4, ecto_f: 2.4, x_f: 1, y_f: -1.7 },
+    { deporte: "waterpolo_fuerza_jr", sexo: "H", endo: 3.2, meso: 4.5, ecto: 2.7, dominante: "", x: 1.8, y: -0.6, endo_f: 4.6, meso_f: 3.3, ecto_f: 2.4, x_f: 0.9, y_f: -2.2 },
+    { deporte: "waterpolo_porteros_jr", sexo: "H", endo: 2.8, meso: 4, ecto: 3.5, dominante: "", x: 0.5, y: 0.7, endo_f: 4.7, meso_f: 2.6, ecto_f: 2.7, x_f: -0.1, y_f: -2 },
+    { deporte: "waterpolo_arco_abs", sexo: "H", endo: 2.7, meso: 4.8, ecto: 2.4, dominante: "", x: 2.4, y: -0.3, endo_f: 3.9, meso_f: 3.2, ecto_f: 2.6, x_f: 0.6, y_f: -1.3 },
+    { deporte: "waterpolo_fuerza_abs", sexo: "H", endo: 3.5, meso: 5.8, ecto: 1.9, dominante: "", x: 3.9, y: -1.6, endo_f: 4, meso_f: 3.2, ecto_f: 2.5, x_f: 0.7, y_f: -1.5 },
+    { deporte: "waterpolo_porteros_abs", sexo: "H", endo: 3, meso: 4.3, ecto: 2.8, dominante: "", x: 1.5, y: -0.2, endo_f: 4, meso_f: 2.7, ecto_f: 2.7, x_f: 0, y_f: -1.3 },
+    { deporte: "tenis_de_mesa", sexo: "H", endo: 2.9, meso: 3.9, ecto: 3.2, dominante: "", x: 0.7, y: 0.4, endo_f: 4.5, meso_f: 2.8, ecto_f: 2.8, x_f: 0, y_f: -1.7 },
+    { deporte: "tenis_menos_16", sexo: "H", endo: 2.4, meso: 3.9, ecto: 3.5, dominante: "", x: 0.4, y: 1.1, endo_f: 3.7, meso_f: 3, ecto_f: 2.7, x_f: 0.3, y_f: -0.9 },
+    { deporte: "tenis_más_16", sexo: "H", endo: 2.2, meso: 4.3, ecto: 3, dominante: "", x: 1.3, y: 0.8, endo_f: 3.7, meso_f: 3.1, ecto_f: 2.5, x_f: 0.6, y_f: -1.1 },
+    { deporte: "esquí_alpino", sexo: "H", endo: 2.2, meso: 4.7, ecto: 2.7, dominante: "", x: 2, y: 0.6, endo_f: 3.6, meso_f: 3.3, ecto_f: 2.4, x_f: 0.9, y_f: -1.2 },
+    { deporte: "taekwondo_menos_58kg", sexo: "H", endo: 1.7, meso: 3.9, ecto: 3.6, dominante: "", x: 0.3, y: 1.9, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "taekwondo_menos_68kg", sexo: "H", endo: 1.8, meso: 4.3, ecto: 3.3, dominante: "", x: 1, y: 1.5, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "taekwondo_menos_80kg", sexo: "H", endo: 2.2, meso: 4.5, ecto: 2.9, dominante: "", x: 1.6, y: 0.6, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "taekwondo_más_80kg", sexo: "H", endo: 3, meso: 5.5, ecto: 1.9, dominante: "", x: 3.6, y: -1.1, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "taekwondo_menos_49kg", sexo: "M", endo: 2.5, meso: 2.6, ecto: 3.5, dominante: "", x: -0.9, y: 1, endo_f: 2.5, meso_f: 2.6, ecto_f: 3.5, x_f: -0.9, y_f: 1 },
+    { deporte: "taekwondo_menos_57kg", sexo: "M", endo: 3, meso: 3, ecto: 3.2, dominante: "", x: -0.2, y: 0.2, endo_f: 3, meso_f: 3, ecto_f: 3.2, x_f: -0.2, y_f: 0.2 },
+    { deporte: "taekwondo_menos_67kg", sexo: "M", endo: 3.2, meso: 3.4, ecto: 2.7, dominante: "", x: 0.7, y: -0.5, endo_f: 3.2, meso_f: 3.4, ecto_f: 2.7, x_f: 0.7, y_f: -0.5 },
+    { deporte: "taekwondo_más_67kg", sexo: "M", endo: 3.6, meso: 3.8, ecto: 2.2, dominante: "", x: 1.6, y: -1.4, endo_f: 3.6, meso_f: 3.8, ecto_f: 2.2, x_f: 1.6, y_f: -1.4 },
+    { deporte: "lucha_menos_58kg", sexo: "H", endo: 1.8, meso: 4.4, ecto: 3.1, dominante: "", x: 1.3, y: 1.3, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "lucha_58_72kg", sexo: "H", endo: 2.1, meso: 5.2, ecto: 2.3, dominante: "", x: 2.9, y: 0.1, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "lucha_72_80kg", sexo: "H", endo: 2.5, meso: 5.5, ecto: 1.8, dominante: "", x: 3.7, y: -0.7, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "lucha_más_80kg", sexo: "H", endo: 3.2, meso: 6.6, ecto: 1, dominante: "", x: 5.6, y: -2.2, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "judo_58_72kg", sexo: "H", endo: 1.9, meso: 5.5, ecto: 2.2, dominante: "", x: 3.3, y: 0.3, endo_f: 2.9, meso_f: 3.5, ecto_f: 2.4, x_f: 1.1, y_f: -0.4 },
+    { deporte: "judo_72_80kg", sexo: "H", endo: 2.3, meso: 5.8, ecto: 2, dominante: "", x: 3.8, y: -0.3, endo_f: 3.6, meso_f: 4.3, ecto_f: 1.8, x_f: 2.5, y_f: -1.8 },
+    { deporte: "judo_más_80kg", sexo: "H", endo: 3.3, meso: 7.3, ecto: 0.8, dominante: "", x: 6.5, y: -2.4, endo_f: 3.8, meso_f: 4.6, ecto_f: 1.3, x_f: 3.3, y_f: -2.5 },
+    { deporte: "judo_menos_58kg", sexo: "M", endo: 2.9, meso: 3.5, ecto: 2.4, dominante: "", x: 1.1, y: -0.4, endo_f: 2.9, meso_f: 3.5, ecto_f: 2.4, x_f: 1.1, y_f: -0.4 },
+    { deporte: "judo_58_72kg", sexo: "M", endo: 3.6, meso: 4.3, ecto: 1.8, dominante: "", x: 2.5, y: -1.8, endo_f: 3.6, meso_f: 4.3, ecto_f: 1.8, x_f: 2.5, y_f: -1.8 },
+    { deporte: "judo_72_80kg", sexo: "M", endo: 3.8, meso: 4.6, ecto: 1.3, dominante: "", x: 3.3, y: -2.5, endo_f: 3.8, meso_f: 4.6, ecto_f: 1.3, x_f: 3.3, y_f: -2.5 },
+    { deporte: "boxeo_menos_56kg", sexo: "H", endo: 2.2, meso: 4.5, ecto: 2.7, dominante: "", x: 1.8, y: 0.5, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "boxeo_menos_64kg", sexo: "H", endo: 2.2, meso: 4.9, ecto: 2.7, dominante: "", x: 2.2, y: 0.5, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "boxeo_menos_75kg", sexo: "H", endo: 2.1, meso: 4.7, ecto: 2.8, dominante: "", x: 1.9, y: 0.6, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 },
+    { deporte: "boxeo_menos_91kg", sexo: "H", endo: 3.2, meso: 5.7, ecto: 1.4, dominante: "", x: 4.3, y: -1.8, endo_f: 0, meso_f: 0, ecto_f: 0, x_f: 0, y_f: 0 }
+];
+
+// Lista de modalidades deportivas
+const deportesModalidades = [
+    "Atletismo-lanzamientos", "Atletismo-resistencia", "Atletismo-velocidad", "Badminton", "Baloncesto",
+    "Balonmano", "Beisbol", "Bolos", "Boxeo", "Canotaje", "Ciclismo", "Equitación", "Esgrima",
+    "Esquí acuático", "Fútbol", "Gimnasia", "Golf", "Hockey", "Hockey sobre ruedas", "Judo",
+    "Karate", "Levantamiento de pesas", "Lucha", "Natación", "Patinaje sobre ruedas", "Pelota paleta",
+    "Polo acuático", "Racquetbol", "Regatas", "Rugby", "Softbol", "Squash", "Taekwondo", "Tenis",
+    "Tenis de mesa", "Tiro", "Tiro con arco", "Triatlón", "Vela", "Voleibol", "Grupal (promedio)",
+    "Halterofilia", "Lanzamiento de peso", "Rugby (delanteros)", "CrossFit", "Lucha grecorromana",
+    "Gimnasia artística (masculina)", "Atletismo: 100m lisos", "Boxeo (peso pesado)",
+    "Piragüismo (aguas tranquilas)", "Balonmano", "Fútbol (porteros)", "Ciclismo (pista - velocidad)",
+    "Tenis", "Voleibol (centrales)", "Judo (-90 kg)", "Hockey hierba", "Atletismo: 400m vallas",
+    "Baloncesto (aleros)", "Atletismo: salto de altura", "Esgrima", "Atletismo: 1500m",
+    "Ciclismo (ruta)", "Atletismo: maratón", "Triatlón (larga distancia)", "Senderismo (alta montaña)",
+    "Natación: 1500m libre", "Pádel", "Badminton", "Escalada deportiva", "Surf (competición)",
+    "Atletismo: marcha 20km", "Kárate (kumite)", "Waterpolo", "Remo (skiff)", "Fútbol (campo)",
+    "Gimnasia rítmica", "Taekwondo", "Hípica (salto)", "Esquí alpino", "Vela (Laser)",
+    "Béisbol (lanzadores)", "Atletismo: lanz. jabalina", "Squash", "Ciclismo (BMX)", "Parkour",
+    "Golf", "Pilates", "Yoga (Hatha)", "Natación sincronizada", "Bolos", "Petanca",
+    "Tiro con arco", "Billar", "Curling", "Aerobic", "Tai Chi", "Danza clásica",
+    "Pesca deportiva", "Bádminton (dobles)", "Frontenis",
+    "Atletismo Vel.-Vallas", "Atletismo Altura", "Atletismo Pértiga", "Atletismo Lanzamientos",
+    "Atletismo Marcha", "Atletismo Fondo", "Triatlón", "Pentatlón", "Ciclismo Carretera",
+    "Ciclismo Montaña", "Esgrima", "Golf", "Patinaje Artístico", "Patinaje Velocidad",
+    "Gimnasia Artística", "Gimnasia Rítmica", "Gimnasia Trampolín", "Balonmano", "Baloncesto",
+    "Fútbol <18", "Fútbol >18", "Voleibol", "Hockey Hierba", "Patinaje (Velocidad)",
+    "Halterofilia", "Piragüismo Aguas tranquilas", "Piragüismo Slalom", "Remo Ligeros",
+    "Remo Pesados", "Natación Carreras <16", "Natación Carreras >16", "Natación Sincronizada",
+    "Waterpolo Arco Jr", "Waterpolo Fuerza Jr", "Waterpolo Porteros Jr", "Waterpolo Arco Abs",
+    "Waterpolo Fuerza Abs", "Waterpolo Porteros Abs", "Tenis de Mesa", "Tenis <16",
+    "Tenis >16", "Esquí Alpino", "Taekwondo <58kg", "Taekwondo <68kg", "Taekwondo <80kg",
+    "Taekwondo >80kg", "Taekwondo <49kg", "Taekwondo <57kg", "Taekwondo <67kg",
+    "Taekwondo >67kg", "Lucha <58kg", "Lucha 58-72kg", "Lucha 72-80kg", "Lucha >80kg",
+    "Judo 58-72kg", "Judo 72-80kg", "Judo >80kg", "Judo <58kg", "Judo 58-72kg",
+    "Judo 72-80kg", "Boxeo <56kg", "Boxeo <64kg", "Boxeo <75kg", "Boxeo <91kg"
+];
+
+// Función para actualizar las opciones de modalidadInput
+function updateModalidadOptions() {
+    const selectedGrupo = deporteInput.value;
+    modalidadInput.innerHTML = '<option value="" disabled selected>Selecciona una modalidad</option>';
+
+    if (selectedGrupo === 'Deportes') {
+        deportesModalidades.forEach(modalidad => {
+            const option = document.createElement('option');
+            option.value = modalidad.toLowerCase().replace(/ /g, '_').replace(/:/g, '').replace(/[\(\)]/g, '').replace(/-/g, '_').replace(/>/g, 'más_').replace(/</g, 'menos_');
+            option.textContent = modalidad;
+            modalidadInput.appendChild(option);
+        });
+        modalidadInput.disabled = false;
+    } else {
+        const option = document.createElement('option');
+        option.value = selectedGrupo.toLowerCase();
+        option.textContent = selectedGrupo;
+        modalidadInput.appendChild(option);
+        modalidadInput.disabled = true;
+    }
+    updateSomatotipoValues();
+}
+
+// Función para actualizar los valores del somatotipo
+function updateSomatotipoValues() {
+    const selectedModalidad = modalidadInput.value;
+    const selectedSexo = nombreInput.value;
+
+    // Limpiar los campos
+    somatotipoEndo.value = '';
+    somatotipoMeso.value = '';
+    somatotipoEcto.value = '';
+    somatotipoDominante.value = '';
+    somatotipoX.value = '';
+    somatotipoY.value = '';
+
+    if (selectedModalidad && selectedSexo && selectedModalidad !== 'sedentarios' && selectedModalidad !== 'pocoactivos' && selectedModalidad !== 'activo') {
+        const data = somatotipoData.find(item => item.deporte === selectedModalidad && (item.sexo === selectedSexo[0].toUpperCase() || item.sexo === ''));
+        if (data) {
+            somatotipoEndo.value = selectedSexo === 'hombre' ? data.endo : data.endo_f;
+            somatotipoMeso.value = selectedSexo === 'hombre' ? data.meso : data.meso_f;
+            somatotipoEcto.value = selectedSexo === 'hombre' ? data.ecto : data.ecto_f;
+            somatotipoDominante.value = data.dominante || '';
+            somatotipoX.value = selectedSexo === 'hombre' ? data.x : data.x_f;
+            somatotipoY.value = selectedSexo === 'hombre' ? data.y : data.y_f;
+        }
+    }
+}
+
+// Asegurarse de que los elementos existen
+if (deporteInput && modalidadInput && nombreInput && somatotipoEndo && somatotipoMeso && somatotipoEcto && somatotipoDominante && somatotipoX && somatotipoY) {
+    // Remover eventos previos para evitar duplicados
+    deporteInput.removeEventListener('change', updateModalidadOptions);
+    modalidadInput.removeEventListener('change', updateSomatotipoValues);
+    nombreInput.removeEventListener('change', updateSomatotipoValues);
+
+    // Agregar eventos
+    deporteInput.addEventListener('change', updateModalidadOptions);
+    modalidadInput.addEventListener('change', updateSomatotipoValues);
+    nombreInput.addEventListener('change', updateSomatotipoValues);
+} else {
+    console.error('Uno o más elementos (deporteInput, modalidadInput, nombreInput, somatotipoEndo, somatotipoMeso, somatotipoEcto, somatotipoDominante, somatotipoX, somatotipoY) no encontrados.');
+}
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
