@@ -4416,6 +4416,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeSpan = document.querySelector('.close-soma-modal');
     const closeButton = document.querySelector('.closesomaModal');
     let somatotipoForm = document.getElementById('somatotipoForm');
+    let retryCountPopulate = 0;
+    const MAX_RETRIES = 5;
 
     // Función para abrir el modal
     function openSomaModal(e) {
@@ -4433,8 +4435,11 @@ document.addEventListener('DOMContentLoaded', () => {
             modalsoma.style.transition = 'opacity 0.3s ease-in-out';
         }, 10);
 
-        // Debug: Log DOM state before populating
-        console.log('Abriendo modal. Formulario:', document.getElementById('somatotipoForm'));
+        // Debug: Log DOM state
+        console.log('Abriendo modal:', new Date().toISOString(), {
+            modalSomaContainer: !!modalsoma,
+            somatotipoForm: !!document.getElementById('somatotipoForm')
+        });
 
         if (typeof populateFormFields === 'function') {
             populateFormFields();
@@ -4462,13 +4467,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para rellenar los campos del formulario
     function populateFormFields() {
-        // Re-query form to handle dynamic loading
-        somatotipoForm = document.getElementById('somatotipoForm');
-        if (!somatotipoForm) {
-            console.warn('Formulario somatotipoForm no encontrado al intentar rellenar campos. Reintentando...');
-            setTimeout(populateFormFields, 500); // Retry after 500ms
+        if (retryCountPopulate >= MAX_RETRIES) {
+            console.error('Max retries reached for populateFormFields. Form "somatotipoForm" not found.');
             return;
         }
+
+        somatotipoForm = document.getElementById('somatotipoForm');
+        if (!somatotipoForm) {
+            retryCountPopulate++;
+            console.warn(`Formulario somatotipoForm no encontrado al intentar rellenar campos. Intento ${retryCountPopulate}/${MAX_RETRIES}. Reintentando...`);
+            setTimeout(populateFormFields, 500);
+            return;
+        }
+
+        // Reset retry count on success
+        retryCountPopulate = 0;
 
         const generoSelect = document.getElementById('nombreInput');
         const endoInput = document.getElementById('endoInput');
@@ -4501,7 +4514,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const somatotipoSource = document.getElementById('somatotipo-source');
         const resultSomatotipo = document.getElementById('result-somatotipo');
         if (somatotipoSource && resultSomatotipo && resultSomatotipo.textContent !== '---') {
-            const text = somatotipoSource.textContent; // Ej: "(Endo: 4.8 Meso: 5.0 Ecto: 0.2)"
+            const text = somatotipoSource.textContent;
             const match = text.match(/Endo:\s*([\d.]+)\s*Meso:\s*([\d.]+)\s*Ecto:\s*([\d.]+)/i);
             if (match) {
                 somatotipoValues = {
@@ -4567,7 +4580,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Procesar datos del formulario (ejemplo)
+        // Procesar datos del formulario
         const formData = new FormData(form);
         const data = {
             genero: formData.get('genero'),
@@ -4603,12 +4616,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'Ectomorfia';
     }
 
-    // Función auxiliar para calcular coordenada X (ejemplo)
+    // Función auxiliar para calcular coordenada X
     function calculateX(data) {
         return data.ectomorfia - data.endomorfia;
     }
 
-    // Función auxiliar para calcular coordenada Y (ejemplo)
+    // Función auxiliar para calcular coordenada Y
     function calculateY(data) {
         return 2 * data.mesomorfia - (data.endomorfia + data.ectomorfia);
     }
@@ -4673,9 +4686,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // MutationObserver para detectar la adición del formulario
+    const observer = new MutationObserver((mutations) => {
+        if (document.getElementById('somatotipoForm')) {
+            console.log('Formulario somatotipoForm detectado via MutationObserver.');
+            somatotipoForm = document.getElementById('somatotipoForm');
+            populateFormFields();
+            initializeFormListener();
+            observer.disconnect();
+        }
+    });
+    observer.observe(modalsoma || document.body, { childList: true, subtree: true });
+
     // Debugging: Log DOM state
-    console.log('DOM loaded. Modal container:', modalsoma);
-    console.log('Form element:', document.getElementById('somatotipoForm'));
+    console.log('DOM loaded:', new Date().toISOString(), {
+        modalSomaContainer: !!modalsoma,
+        somatotipoForm: !!document.getElementById('somatotipoForm')
+    });
 });
 	document.addEventListener('DOMContentLoaded', () => {
     const deporteInput = document.getElementById('deporteInput');
