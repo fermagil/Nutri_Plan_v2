@@ -4404,7 +4404,13 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    e.preventDefault();
 	    downloadChart();
 	});
+	
 	//abrir modal-soma container
+const buttonsoma = document.getElementById('abrirContainerSomatotipo');
+const modalsoma = document.getElementById('modalSomaContainer');
+const closeButton = document.getElementById('closesomaModal');
+
+// Función para abrir el modal
 const buttonsoma = document.getElementById('abrirContainerSomatotipo');
 const modalsoma = document.getElementById('modalSomaContainer');
 const closeButton = document.getElementById('closesomaModal');
@@ -4426,11 +4432,7 @@ function openSomaModal(e) {
         modalsoma.style.transition = 'opacity 0.3s ease-in-out';
     }, 10);
 
-    // Enfocar el primer elemento interactivo del modal para accesibilidad
-    const firstFocusableElement = modalsoma.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    if (firstFocusableElement) {
-        firstFocusableElement.focus();
-    }
+    
 
     // Ejecutar funciones adicionales si están definidas
     if (typeof populateFormFields === 'function') {
@@ -4680,7 +4682,7 @@ const somatotipoData = [
 ];
 
 
- // Función para actualizar las opciones de modalidadInput
+ / Función para actualizar las opciones de modalidadInput
     function updateModalidadOptions() {
         const selectedGrupo = deporteInput.value;
         modalidadInput.innerHTML = '<option value="" disabled selected>Selecciona una modalidad</option>';
