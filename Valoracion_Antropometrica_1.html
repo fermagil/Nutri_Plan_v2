@@ -1816,112 +1816,12 @@ body {
 
 .modal-soma-container .modal-soma-content {
     background-color: white;
-    padding: 20px;
+    padding: 15px; /* Reducido para más espacio interno */
     border-radius: 8px;
-    width: 90%; /* Ajustar al 90% del ancho de la pantalla */
-    max-width: 800px; /* Máximo 800px para pantallas grandes */
-    max-height: 80vh; /* Limitar altura al 80% de la ventana */
-    overflow-y: auto; /* Permitir scroll si el contenido es grande */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.modal-soma-container .close-soma-modal {
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #333;
-    transition: color 0.2s;
-}
-
-.modal-soma-container .close-soma-modal:hover {
-    color: #ff0000; /* Color rojo al pasar el ratón */
-}
-
-.modal-soma-container .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive */
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.modal-soma-container .chart-container {
-    width: 100%;
-    max-height: 400px; /* Ajustar altura del gráfico */
-}
-
-.modal-soma-container .chart-container:has(#somatotype-image) {
-    max-width: 800px;
-    max-height: 500px;
-    position: relative;
-    aspect-ratio: 1 / 1; /* Mantener proporciones cuadradas */
-}
-
-.modal-soma-container .chart-container img#somatotype-image {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.modal-soma-container .chart-container canvas#somatotype-point-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important; /* Ajustar altura al contenedor */
-    pointer-events: none;
-}
-
-.modal-soma-container .button-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.modal-soma-container button {
-    padding: 10px 20px;
-    margin: 0 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-}
-
-.modal-soma-container button:hover {
-    background-color: #0056b3;
-}
-
-.modal-soma-container .download-button {
-    background-color: #28a745;
-}
-
-.modal-soma-container .download-button:hover {
-    background-color: #218838;
-}
-.modal-soma-container {
-    display: none;
-    opacity: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscurecido */
-    z-index: 1000;
-    transition: opacity 0.3s ease-in-out;
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
-}
-
-.modal-soma-container .modal-soma-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%; /* Ajustar al 90% del ancho de la pantalla */
-    max-width: 800px; /* Máximo 800px para pantallas grandes */
-    max-height: 80vh; /* Limitar altura al 80% de la ventana */
-    overflow-y: auto; /* Permitir scroll si el contenido es grande */
+    width: 95%; /* Más espacio en pantallas pequeñas */
+    max-width: 1000px; /* Aumentado para pantallas grandes */
+    max-height: 90vh; /* Aumentado para permitir más contenido */
+    overflow-y: auto; /* Permitir scroll si es necesario */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -1981,29 +1881,81 @@ body {
 
 .modal-soma-container .chart-container {
     width: 100%;
-    max-height: 400px; /* Ajustar altura del gráfico */
+    min-height: 500px; /* Altura mínima para asegurar visibilidad */
+    max-height: 600px; /* Aumentado para gráficos más grandes */
+    position: relative;
+    margin: 0 auto; /* Centrar horizontalmente */
 }
 
 .modal-soma-container .chart-container:has(#somatotype-image) {
-    max-width: 800px;
-    max-height: 500px;
-    position: relative;
-    aspect-ratio: 1 / 1; /* Mantener proporciones cuadradas */
+    max-width: 600px; /* Reducido para mantener proporciones */
+    max-height: 600px; /* Aumentado para más espacio */
+    aspect-ratio: 1 / 1; /* Mantener proporción cuadrada */
 }
 
 .modal-soma-container .chart-container img#somatotype-image {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%; /* Ocupar todo el contenedor */
+    object-fit: contain; /* Evitar distorsión */
 }
 
-.modal-soma-container .chart-container canvas#somatotipo-canvas {
+.modal-soma-container .chart-container canvas#somatotipo-canvas,
+.modal-soma-container .chart-container canvas#somatotype-point-canvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100% !important;
-    height: 100% !important; /* Ajustar altura
-    </style>
+    height: 100% !important;
+    pointer-events: none; /* Unificado para ambos canvas */
+}
+
+.modal-soma-container .button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.modal-soma-container button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+}
+
+.modal-soma-container button:hover {
+    background-color: #0056b3;
+}
+
+.modal-soma-container .download-button {
+    background-color: #28a745;
+}
+
+.modal-soma-container .download-button:hover {
+    background-color: #218838;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+    .modal-soma-container .modal-soma-content {
+        width: 98%;
+        max-height: 95vh;
+        padding: 10px;
+    }
+
+    .modal-soma-container .chart-container {
+        min-height: 300px;
+        max-height: 400px;
+    }
+
+    .modal-soma-container .chart-container:has(#somatotype-image) {
+        max-width: 100%;
+        max-height: 400px;
+    }
+}
 </head>
 <body>
 <header>
