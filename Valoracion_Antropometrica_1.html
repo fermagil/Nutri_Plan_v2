@@ -4410,83 +4410,92 @@ for (let i = 0; i < canvasElements.length; i++) {
 
 
 // Función para abrir el modal
-const buttonsoma = document.getElementById('abrirContainerSomatotipo');
-const modalsoma = document.getElementById('modalSomaContainer');
-const closeButton = document.getElementById('closesomaModal');
+document.addEventListener('DOMContentLoaded', () => {
+    const buttonsoma = document.getElementById('abrirContainerSomatotipo');
+    const modalsoma = document.getElementById('modalSomaContainer');
+    const closeSpan = document.querySelector('.close-soma-modal'); // For × button
+    const closeButton = document.querySelector('.closesomaModal'); // For Cerrar button
 
-// Función para abrir el modal
-function openSomaModal(e) {
-    e.stopPropagation();
-    e.preventDefault();
+    // Función para abrir el modal
+    function openSomaModal(e) {
+        e.stopPropagation();
+        e.preventDefault();
 
-    if (!modalsoma) {
-        console.error('Modal container with ID "modalSomaContainer" not found.');
-        return;
+        if (!modalsoma) {
+            console.error('Modal container with ID "modalSomaContainer" not found.');
+            return;
+        }
+
+        // Mostrar el modal con display flex y transición suave
+        modalsoma.style.display = 'flex';
+        setTimeout(() => {
+            modalsoma.style.opacity = '1';
+            modalsoma.style.transition = 'opacity 0.3s ease-in-out';
+        }, 10);
+
+        // Ejecutar funciones adicionales si están definidas
+        if (typeof populateFormFields === 'function') {
+            populateFormFields();
+        }
+        if (typeof createLegend === 'function') {
+            createLegend();
+        }
+        if (typeof updateChart === 'function') {
+            updateChart();
+        }
     }
 
-    // Mostrar el modal con display flex y transición suave
-    modalsoma.style.display = 'flex';
-    setTimeout(() => {
-        modalsoma.style.opacity = '1';
-        modalsoma.style.transition = 'opacity 0.3s ease-in-out';
-    }, 10);
+    // Función para cerrar el modal
+    function closeSomaModal() {
+        if (!modalsoma) {
+            console.error('Modal container with ID "modalSomaContainer" not found.');
+            return;
+        }
 
-    
-
-    // Ejecutar funciones adicionales si están definidas
-    if (typeof populateFormFields === 'function') {
-        populateFormFields();
-    }
-    if (typeof createLegend === 'function') {
-        createLegend();
-    }
-    if (typeof updateChart === 'function') {
-        updateChart();
-    }
-}
-
-// Función para cerrar el modal
-function closeSomaModal() {
-    if (!modalsoma) {
-        console.error('Modal container with ID "modalSomaContainer" not found.');
-        return;
+        // Ocultar el modal con transición suave
+        modalsoma.style.opacity = '0';
+        setTimeout(() => {
+            modalsoma.style.display = 'none';
+        }, 300); // Esperar a que termine la transición (0.3s)
     }
 
-    // Ocultar el modal con transición suave
-    modalsoma.style.opacity = '0';
-    setTimeout(() => {
-        modalsoma.style.display = 'none';
-    }, 300); // Esperar a que termine la transición (0.3s)
-}
-
-// Asegurarse de que el botón de apertura existe
-if (buttonsoma) {
-    buttonsoma.removeEventListener('click', openSomaModal);
-    buttonsoma.addEventListener('click', openSomaModal);
-} else {
-    console.error('Button with ID "abrirContainerSomatotipo" not found.');
-}
-
-// Asegurarse de que el botón de cierre existe
-if (closeButton) {
-    closeButton.removeEventListener('click', closeSomaModal);
-    closeButton.addEventListener('click', closeSomaModal);
-} else {
-    console.error('Close button with ID "closesomaModal" not found.');
-}
-
-// Cerrar el modal al hacer clic fuera del contenido
-modalsoma?.addEventListener('click', (e) => {
-    if (e.target === modalsoma) {
-        closeSomaModal();
+    // Asegurarse de que el botón de apertura existe
+    if (buttonsoma) {
+        buttonsoma.removeEventListener('click', openSomaModal);
+        buttonsoma.addEventListener('click', openSomaModal);
+    } else {
+        console.error('Button with ID "abrirContainerSomatotipo" not found.');
     }
-});
 
-// Cerrar el modal con la tecla Escape
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalsoma?.style.display === 'flex') {
-        closeSomaModal();
+    // Asegurarse de que el botón de cierre (×) existe
+    if (closeSpan) {
+        closeSpan.removeEventListener('click', closeSomaModal);
+        closeSpan.addEventListener('click', closeSomaModal);
+    } else {
+        console.error('Close span with class "close-soma-modal" not found.');
     }
+
+    // Asegurarse de que el botón de cierre (Cerrar) existe
+    if (closeButton) {
+        closeButton.removeEventListener('click', closeSomaModal);
+        closeButton.addEventListener('click', closeSomaModal);
+    } else {
+        console.error('Close button with class "closesomaModal" not found.');
+    }
+
+    // Cerrar el modal al hacer clic fuera del contenido
+    modalsoma?.addEventListener('click', (e) => {
+        if (e.target === modalsoma) {
+            closeSomaModal();
+        }
+    });
+
+    // Cerrar el modal con la tecla Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalsoma?.style.display === 'flex') {
+            closeSomaModal();
+        }
+    });
 });
 	document.addEventListener('DOMContentLoaded', () => {
     const deporteInput = document.getElementById('deporteInput');
