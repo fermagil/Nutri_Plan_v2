@@ -3831,25 +3831,21 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 	    ctxSomatotype.lineWidth = 6;
 	    ctxSomatotype.stroke();
 	
-	    // Texto del somatotipo (valores originales)
-		    const somatotypeText = `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`;
-		    const coordinatesText = `X: ${formatResult(x, 2)}, Y: ${formatResult(y, 2)}`;
-		    
-		    // Configuración del texto
-		    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
-		    ctxSomatotype.fillStyle = '#000000';
-		    ctxSomatotype.strokeStyle = '#ffffff';
-		    ctxSomatotype.lineWidth = 5;
-		    ctxSomatotype.textAlign = 'center';
-		    
-		    // Dibujar texto del somatotipo
-		    ctxSomatotype.strokeText(somatotypeText, pixelX, pixelY - 55);
-		    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
-		    
-		    // Dibujar coordenadas X e Y debajo
-		    ctxSomatotype.font = 'bold 45px Inter, sans-serif';
-		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 30);
-		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 30);
+	    // Calcular los textos a mostrar
+	    const somatotypePart = `${formatResult(results.endomorfia, 1)}-${formatResult(results.mesomorfia, 1)}-${formatResult(results.ectomorfia, 1)}`;
+	    const coordinatesPart = `(${formatResult(x, 1)},${formatResult(y, 1)})`;
+	    const fullText = `(${somatotypePart})${coordinatesPart}`;
+	
+	    // Configuración del texto (mismo tamaño para todo)
+	    ctxSomatotype.font = 'bold 75px Inter, sans-serif';
+	    ctxSomatotype.fillStyle = '#000000';
+	    ctxSomatotype.strokeStyle = '#ffffff';
+	    ctxSomatotype.lineWidth = 5;
+	    ctxSomatotype.textAlign = 'center';
+	
+	    // Dibujar texto completo
+	    ctxSomatotype.strokeText(fullText, pixelX, pixelY - 55);
+	    ctxSomatotype.fillText(fullText, pixelX, pixelY - 55);
 	
 	    // Draw X-axis
 	    ctxSomatotype.beginPath();
