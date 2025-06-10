@@ -2960,7 +2960,7 @@ body {
 			    </div>
 
 		    		 <!-- Modal Somayotipo Container -->
-		    		<div id="modalSomaContainer" class="modal-soma-container">
+	<div id="modalSomaContainer" class="modal-soma-container">
     <div class="modal-soma-content">
         <span class="close-soma-modal">×</span>
         <form id="somatotipoForm" novalidate>
@@ -4433,6 +4433,9 @@ document.addEventListener('DOMContentLoaded', () => {
             modalsoma.style.transition = 'opacity 0.3s ease-in-out';
         }, 10);
 
+        // Debug: Log DOM state before populating
+        console.log('Abriendo modal. Formulario:', document.getElementById('somatotipoForm'));
+
         if (typeof populateFormFields === 'function') {
             populateFormFields();
         }
@@ -4459,8 +4462,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para rellenar los campos del formulario
     function populateFormFields() {
+        // Re-query form to handle dynamic loading
+        somatotipoForm = document.getElementById('somatotipoForm');
         if (!somatotipoForm) {
-            console.error('Formulario somatotipoForm no encontrado al intentar rellenar campos.');
+            console.warn('Formulario somatotipoForm no encontrado al intentar rellenar campos. Reintentando...');
+            setTimeout(populateFormFields, 500); // Retry after 500ms
             return;
         }
 
