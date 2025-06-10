@@ -1843,7 +1843,7 @@ body {
     color: #388E3C;
     margin: 0 0 15px 0;
     text-align: center;
-    padding-right: 30px; /* Espacio para el botón de cierre */
+    padding-right: 30px;
 }
 
 .modal-soma-container .form-grid {
@@ -1851,6 +1851,20 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin-bottom: 20px;
+}
+
+.modal-soma-container .form-grid input[type="number"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff; /* Fondo blanco para campos editables */
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.modal-soma-container .form-grid input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
 .modal-soma-container .somatotipo-display {
@@ -1886,7 +1900,7 @@ body {
     background-color: #f9f9f9;
     font-size: 14px;
 }
-      
+
 .modal-soma-container .chart-container {
     width: 100%;
     min-height: 500px;
@@ -1898,15 +1912,14 @@ body {
 .modal-soma-container .chart-container:has(#somatotype-image) {
     max-width: 800px;
     max-height: 500px;
-    position: relative;
     aspect-ratio: 1 / 1;
 }
 
 .modal-soma-container .chart-container img#somatotype-image {
     display: block;
     width: 100%;
-    height: auto;
-    /*object-fit: contain;*/
+    height: 100%;
+    object-fit: contain;
 }
 
 .modal-soma-container .chart-container canvas#somatotype-point-canvas {
@@ -1987,6 +2000,11 @@ body {
     .modal-soma-container .chart-container:has(#somatotype-image) {
         max-width: 100%;
         max-height: 400px;
+    }
+
+    .modal-soma-container .form-grid input[type="number"] {
+        font-size: 13px;
+        padding: 6px;
     }
 }
 </style>
