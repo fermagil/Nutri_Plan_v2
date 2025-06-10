@@ -1816,12 +1816,12 @@ body {
 
 .modal-soma-container .modal-soma-content {
     background-color: white;
-    padding: 15px; /* Reducido para más espacio interno */
+    padding: 15px;
     border-radius: 8px;
-    width: 95%; /* Más espacio en pantallas pequeñas */
-    max-width: 1000px; /* Aumentado para pantallas grandes */
-    max-height: 90vh; /* Aumentado para permitir más contenido */
-    overflow-y: auto; /* Permitir scroll si es necesario */
+    width: 95%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -1835,18 +1835,18 @@ body {
 }
 
 .modal-soma-container .close-soma-modal:hover {
-    color: #ff0000; /* Color rojo al pasar el ratón */
+    color: #ff0000;
 }
 
 .modal-soma-container .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin-bottom: 20px;
 }
 
 .modal-soma-container .somatotipo-display {
-    grid-column: 1 / -1; /* Ocupar toda la fila */
+    grid-column: 1 / -1;
 }
 
 .modal-soma-container .somatotipo-display h3 {
@@ -1881,33 +1881,41 @@ body {
 
 .modal-soma-container .chart-container {
     width: 100%;
-    min-height: 500px; /* Altura mínima para asegurar visibilidad */
-    max-height: 600px; /* Aumentado para gráficos más grandes */
+    min-height: 500px;
+    max-height: 600px;
     position: relative;
-    margin: 0 auto; /* Centrar horizontalmente */
+    margin: 0 auto;
 }
 
 .modal-soma-container .chart-container:has(#somatotype-image) {
-    max-width: 600px; /* Reducido para mantener proporciones */
-    max-height: 600px; /* Aumentado para más espacio */
-    aspect-ratio: 1 / 1; /* Mantener proporción cuadrada */
+    max-width: 600px;
+    max-height: 600px;
+    aspect-ratio: 1 / 1;
 }
 
 .modal-soma-container .chart-container img#somatotype-image {
     display: block;
     width: 100%;
-    height: 100%; /* Ocupar todo el contenedor */
-    object-fit: contain; /* Evitar distorsión */
+    height: 100%;
+    object-fit: contain;
 }
 
-.modal-soma-container .chart-container canvas#somatotipo-canvas,
 .modal-soma-container .chart-container canvas#somatotype-point-canvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100% !important;
     height: 100% !important;
-    pointer-events: none; /* Unificado para ambos canvas */
+    pointer-events: none;
+}
+
+.modal-soma-container .chart-container canvas#somatotipo-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none;
 }
 
 .modal-soma-container .button-container {
@@ -1936,6 +1944,17 @@ body {
 
 .modal-soma-container .download-button:hover {
     background-color: #218838;
+}
+
+.modal-soma-container .tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    display: none;
 }
 
 /* Media queries para responsividad */
