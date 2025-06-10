@@ -3847,9 +3847,9 @@ if (!isNaN(results.pesoIdeal) && !isNaN(data.peso)) {
 		    ctxSomatotype.fillText(somatotypeText, pixelX, pixelY - 55);
 		    
 		    // Dibujar coordenadas X e Y debajo
-		    ctxSomatotype.font = 'bold 660px Roboto, sans-serif';
-		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 65);
-		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 65);
+		    ctxSomatotype.font = 'bold 55px Roboto, sans-serif';
+		    ctxSomatotype.strokeText(coordinatesText, pixelX, pixelY + 70);
+		    ctxSomatotype.fillText(coordinatesText, pixelX, pixelY + 70);
 	
 	    // Draw X-axis
 	    ctxSomatotype.beginPath();
