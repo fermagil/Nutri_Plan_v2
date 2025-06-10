@@ -4409,15 +4409,19 @@ for (let i = 0; i < canvasElements.length; i++) {
 	
 
 
-// Función para abrir el modal
-document.addEventListener('DOMContentLoaded', () => {
+
+
+
+    // Función para abrir el modal
+   document.addEventListener('DOMContentLoaded', () => {
     const buttonsoma = document.getElementById('abrirContainerSomatotipo');
     const modalsoma = document.getElementById('modalSomaContainer');
     const closeSpan = document.querySelector('.close-soma-modal');
     const closeButton = document.querySelector('.closesomaModal');
     let somatotipoForm = document.getElementById('somatotipoForm');
     let retryCountPopulate = 0;
-    const MAX_RETRIES = 5;
+    const MAX_RETRIES = 10;
+    const RETRY_INTERVAL = 1000;
 
     // Función para abrir el modal
     function openSomaModal(e) {
@@ -4438,11 +4442,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Debug: Log DOM state
         console.log('Abriendo modal:', new Date().toISOString(), {
             modalSomaContainer: !!modalsoma,
-            somatotipoForm: !!document.getElementById('somatotipoForm')
+            somatotipoForm: !!document.getElementById('somatotipoForm'),
+            modalContent: modalsoma.innerHTML.substring(0, 100) + '...'
         });
 
+        // Reset retry count
+        retryCountPopulate = 0;
+
         if (typeof populateFormFields === 'function') {
-            populateFormFields();
+            // Trigger population after content load, inspired by #modalContainer
+            setTimeout(() => {
+                if (document.getElementById('somatotipoForm')) {
+                    populateFormFields();
+                } else {
+                    console.warn('Form not found initially. Relying on MutationObserver or retries.');
+                }
+            }, 200); // Increased delay for dynamic content
         }
         if (typeof createLegend === 'function') {
             createLegend();
@@ -4467,26 +4482,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para rellenar los campos del formulario
     function populateFormFields() {
-        if (retryCountPopulate >= MAX_RETRIES) {
-            console.error('Max retries reached for populateFormFields. Form "somatotipoForm" not found.');
-            return;
-        }
-
         somatotipoForm = document.getElementById('somatotipoForm');
         if (!somatotipoForm) {
+            if (retryCountPopulate >= MAX_RETRIES) {
+                console.error(`Max retries (${MAX_RETRIES}) reached for populateFormFields. Form "somatotipoForm" not found. Using defaults.`);
+                // Fallback: Log defaults without form
+                console.log('Campos rellenados (sin formulario):', {
+                    genero: 'hombre',
+                    endomorfia: 1.0,
+                    mesomorfia: 1.0,
+                    ectomorfia: 1.0
+                });
+                return;
+            }
             retryCountPopulate++;
             console.warn(`Formulario somatotipoForm no encontrado al intentar rellenar campos. Intento ${retryCountPopulate}/${MAX_RETRIES}. Reintentando...`);
-            setTimeout(populateFormFields, 500);
+            setTimeout(populateFormFields, RETRY_INTERVAL);
             return;
         }
 
-        // Reset retry count on success
+        // Reset retry count
         retryCountPopulate = 0;
 
         const generoSelect = document.getElementById('nombreInput');
         const endoInput = document.getElementById('endoInput');
         const mesoInput = document.getElementById('mesoInput');
         const ectoInput = document.getElementById('ectoInput');
+
+        if (!generoSelect || !endoInput || !mesoInput || !ectoInput) {
+            console.error('Form fields (nombreInput, endoInput, mesoInput, ectoInput) not found.');
+            return;
+        }
 
         // Mapear valores de género
         const generoMap = {
@@ -4635,7 +4661,7 @@ document.addEventListener('DOMContentLoaded', () => {
             somatotipoForm.addEventListener('submit', handleCalcularSubmit);
         } else {
             console.warn('Form with ID "somatotipoForm" not found. Retrying...');
-            setTimeout(initializeFormListener, 500);
+            setTimeout(initializeFormListener, RETRY_INTERVAL);
         }
     }
 
@@ -4689,20 +4715,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // MutationObserver para detectar la adición del formulario
     const observer = new MutationObserver((mutations) => {
         if (document.getElementById('somatotipoForm')) {
-            console.log('Formulario somatotipoForm detectado via MutationObserver.');
+            console.log('Formulario somatotipoForm detectado via MutationObserver:', new Date().toISOString());
             somatotipoForm = document.getElementById('somatotipoForm');
             populateFormFields();
             initializeFormListener();
             observer.disconnect();
+        } else {
+            console.debug('MutationObserver activado, pero somatotipoForm no encontrado:', mutations.length, 'mutations');
         }
     });
+
+    console.log('Starting MutationObserver on:', modalsoma ? '#modalSomaContainer' : 'document.body');
     observer.observe(modalsoma || document.body, { childList: true, subtree: true });
 
     // Debugging: Log DOM state
     console.log('DOM loaded:', new Date().toISOString(), {
-        modalSomaContainer: !!modalsoma,
+        modalsoma: !!modalsoma,
         somatotipoForm: !!document.getElementById('somatotipoForm')
     });
+
+    // Manual trigger for dynamic content (optional)
+    window.populateSomaForm = function () {
+        console.log('Manual trigger for populateFormFields:', new Date().toISOString());
+        retryCountPopulate = 0;
+        populateFormFields();
+    };
 });
 	document.addEventListener('DOMContentLoaded', () => {
     const deporteInput = document.getElementById('deporteInput');
