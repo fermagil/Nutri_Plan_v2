@@ -4201,16 +4201,55 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    e.preventDefault();
 	    downloadChart();
 	});
+	//abrir modal-soma container
 	const buttonsoma = document.getElementById('abrirContainerSomatotipo');
-	buttonsoma.addEventListener('click', function(e) {
-	    e.stopPropagation();
-	    e.preventDefault();
-	    const modalsoma = document.getElementById('modalSomaContainer');
-	    modalsoma.style.display = 'flex';
-	    //populateFormFields(); // Populate form fields when modal opens
-	    //createLegend();
-	    //updateChart();
-	});
+
+// Función para abrir el modal
+function openSomaModal(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const modalsoma = document.getElementById('modalSomaContainer');
+    
+    // Verificar que el modal existe
+    if (!modalsoma) {
+        console.error('Modal container with ID "modalSomaContainer" not found.');
+        return;
+    }
+
+    // Mostrar el modal con display flex y transición suave
+    modalsoma.style.display = 'flex';
+    setTimeout(() => {
+        modalsoma.style.opacity = '1';
+        modalsoma.style.transition = 'opacity 0.3s ease-in-out';
+    }, 10); // Pequeño retraso para permitir que el navegador procese el cambio de display
+
+    // Enfocar el primer elemento interactivo del modal para accesibilidad
+    const firstFocusableElement = modalsoma.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (firstFocusableElement) {
+        firstFocusableElement.focus();
+    }
+
+    // Ejecutar funciones adicionales si están definidas
+    if (typeof populateFormFields === 'function') {
+        populateFormFields();
+    }
+    if (typeof createLegend === 'function') {
+        createLegend();
+    }
+    if (typeof updateChart === 'function') {
+        updateChart();
+    }
+}
+
+// Asegurarse de que el botón existe antes de agregar el evento
+if (buttonsoma) {
+    // Remover eventos previos para evitar duplicados
+    buttonsoma.removeEventListener('click', openSomaModal);
+    buttonsoma.addEventListener('click', openSomaModal);
+} else {
+    console.error('Button with ID "abrirContainerSomatotipo" not found.');
+}
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
