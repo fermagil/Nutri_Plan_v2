@@ -2018,6 +2018,88 @@ body {
         padding: 8px;
     }
 }
+	    /* Wrapper for modal content, providing padding and alignment */
+.container-soma-wrapper {
+    width: 100%;
+    max-width: 1200px; /* Limits width for large screens */
+    padding: 1.5rem; /* Adds internal spacing, similar to #modalContainer */
+    margin: 0 auto; /* Centers content horizontally */
+    box-sizing: border-box; /* Includes padding in width */
+    background: rgba(255, 255, 255, 0.95); /* Subtle background for hierarchy */
+    border-radius: 6px; /* Matches modal-soma-content's rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+/* Ensure wrapper doesn't interfere with close button */
+.close-soma-modal {
+    z-index: 10; /* Above wrapper */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container-soma-wrapper {
+        padding: 1rem; /* Reduced padding for smaller screens */
+        max-width: 100%; /* Full width on mobile */
+    }
+}
+
+/* Enhance form grid within wrapper */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Style for container-soma-content to work with wrapper */
+.container-soma-content {
+    width: 100%;
+}
+
+/* Ensure chart container fits within wrapper */
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 1rem auto;
+}
+
+/* Button container alignment */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Input and select styles for consistency */
+.input-form input,
+.input-form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.input-form input[readonly] {
+    background: #f9f9f9;
+    cursor: not-allowed;
+}
+
+/* Somatotipo display section */
+.somatotipo-display {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 6px;
+}
+
+.somatotipo-values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+}
 </style>
 </head>
 <body>
