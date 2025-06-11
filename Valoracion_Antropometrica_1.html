@@ -4648,17 +4648,17 @@ for (let i = 0; i < canvasElements.length; i++) {
         if (!generoSelect.value) {
             generoSelect.value = generoValue || defaultValues.genero;
         }
-       if (!endoInput.value || endoInput.value == 1) {
+       if (!endoInput.value || endoInput.value == 1 || endoInput.value == "1") {
 	    endoInput.value = somatotipoValues.endomorfia !== null && !isNaN(somatotipoValues.endomorfia)
 	        ? somatotipoValues.endomorfia.toFixed(1)
 	        : defaultValues.endomorfia.toFixed(1);
 	}
-	if (!mesoInput.value || mesoInput.value == 1) {
+	if (!mesoInput.value || mesoInput.value == 1 || mesoInput.value == "1") {
 	    mesoInput.value = somatotipoValues.mesomorfia !== null && !isNaN(somatotipoValues.mesomorfia)
 	        ? somatotipoValues.mesomorfia.toFixed(1)
 	        : defaultValues.mesomorfia.toFixed(1);
 	}
-	if (!ectoInput.value || ectoInput.value == 1) {
+	if (!ectoInput.value || ectoInput.value == 1 || ectoInput.value == "1") {
 	    ectoInput.value = somatotipoValues.ectomorfia !== null && !isNaN(somatotipoValues.ectomorfia)
 	        ? somatotipoValues.ectomorfia.toFixed(1)
 	        : defaultValues.ectomorfia.toFixed(1);
