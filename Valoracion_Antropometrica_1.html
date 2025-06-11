@@ -5004,13 +5004,13 @@ function populateFields() {
         // Calculate chart area (80% of displayed size)
         const chartWidth2 = displayedWidth * 0.8;
         const chartHeight2 = displayedHeight * 0.8;
-        const chartOffsetX2 = (displayedWidth - chartWidth) / 2;
-        const chartOffsetY2 = (displayedHeight - chartHeight) / 2;
+        const chartOffsetX2 = (displayedWidth - chartWidth2) / 2;
+        const chartOffsetY2 = (displayedHeight - chartHeight2) / 2;
 
         // Define centerY and other variables
-        const centerX2 = chartOffsetX2 + chartWidth / 2;
-        const centerY2 = chartOffsetY2 + chartHeight / 2;
-        const xAxisY2 = chartOffsetY2 + chartHeight;
+        const centerX2 = chartOffsetX2 + chartWidth2 / 2;
+        const centerY2 = chartOffsetY2 + chartHeight2 / 2;
+        const xAxisY2 = chartOffsetY2 + chartHeight2;
 
 
 	    // Draw red point (new data from form)
@@ -5027,11 +5027,11 @@ function populateFields() {
                 const pixelX2 = chartOffsetX2 + ((xClamped2 + 8) / 16) * chartWidth2;
                 const pixelY2 = centerY2 - (yClamped2 / 22) * ((centerY2 - chartOffsetY2) + (xAxisY2 - centerY2));
 
-                console.log(`Red Point Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+                console.log(`Red Point Coordinates: pixelX=${pixelX2}, pixelY=${pixelY2}`);
 
                 // Draw red point
                 ctxSoma2.beginPath();
-                ctxSoma2.arc(pixelX, pixelY, 10, 0, 2 * Math.PI);
+                ctxSoma2.arc(pixelX2, pixelY2, 10, 0, 2 * Math.PI);
                 ctxSoma2.fillStyle = '#FF0000';
                 ctxSoma2.fill();
                 ctxSoma2.strokeStyle = '#8B0000';
