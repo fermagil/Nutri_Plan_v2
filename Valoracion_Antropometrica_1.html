@@ -4550,8 +4550,12 @@ for (let i = 0; i < canvasElements.length; i++) {
                 }
             }, 100);
 
-           
-          
+            if (typeof createLegend === 'function') {
+                createLegend();
+            }
+            if (typeof updateChart === 'function') {
+                updateChart();
+            }
         });
     } else {
         console.error('Button with ID "abrirContainerSomatotipo" not found.');
@@ -4573,12 +4577,12 @@ for (let i = 0; i < canvasElements.length; i++) {
     // Function to populate fields
     function populateFields() {
         const modalContainer = document.getElementById('modalSomaContainer');
-        const generoSelect = document.getElementById('nombreInput');
-        const endoInput = document.getElementById('endoInput');
-        const mesoInput = document.getElementById('mesoInput');
-        const ectoInput = document.getElementById('ectoInput');
-        const deporteSelect = document.getElementById('deporteInput');
-        const modalidadSelect = document.getElementById('modalidadInput');
+        const generoSelect = modalContainer.querySelector('#nombreInput');
+        const endoInput = modalContainer.querySelector('#endoInput');
+        const mesoInput = modalContainer.querySelector('#mesoInput');
+        const ectoInput = modalContainer.querySelector('#ectoInput');
+        const deporteSelect = modalContainer.querySelector('#deporteInput');
+        const modalidadSelect = modalContainer.querySelector('#modalidadInput');
 
         if (!generoSelect || !endoInput || !mesoInput || !ectoInput || !deporteSelect || !modalidadSelect) {
             if (retryCountPopulate >= MAX_RETRIES) {
@@ -4625,25 +4629,23 @@ for (let i = 0; i < canvasElements.length; i++) {
             generoValue = generoMap[sourceGenero.value];
         }
 
-        // Get somatotype values from #somatotipo-source
+        // Get somatotype values from #result-somatotipo
         let somatotipoValues = { endomorfia: null, mesomorfia: null, ectomorfia: null };
-        const somatotipoSource = document.getElementById('somatotipo-source');
-        const resultSomatotipo = document.getElementById('result-somatotipo'); // Verify ID
-        if (somatotipoSource && resultSomatotipo && resultSomatotipo.textContent !== '---') {
-            const text = somatotipoSource.textContent;
-            const match = text.match(/Endo:\s*([\d.]+)\s*Meso:\s*([\d.]+)\s*Ecto:\s*([\d.]+)/i);
+        const resultSomatotipo = document.getElementById('result-somatotipo');
+        if (resultSomatotipo && resultSomatotipo.textContent !== '---') {
+            const text = resultSomatotipo.textContent;
+            const match = text.match(/\s*([\d.]+)\s*:\s*([\d.]+)\s*:\s*([\d.]+)/);
             if (match) {
                 somatotipoValues = {
-			
                     endomorfia: parseFloat(match[1]),
                     mesomorfia: parseFloat(match[2]),
                     ectomorfia: parseFloat(match[3])
                 };
-		    onsole.log('somatotipoValues:', {
-		    endomorfia: parseFloat(match[1]),
-		    mesomorfia: parseFloat(match[2]),
-		    ectomorfia: parseFloat(match[3])
-		});
+                console.log('somatotipoValues:', {
+                    endomorfia: parseFloat(match[1]),
+                    mesomorfia: parseFloat(match[2]),
+                    ectomorfia: parseFloat(match[3])
+                });
             }
         }
 
@@ -4788,7 +4790,7 @@ for (let i = 0; i < canvasElements.length; i++) {
     }
 
     // Set up "Calcular" button listener
-    const calcularButton = document.getElementById('calcularButton');
+    const calcularButton = document.querySelector('#calcularButton');
     if (calcularButton) {
         calcularButton.removeEventListener('click', handleCalcularSubmit);
         calcularButton.addEventListener('click', handleCalcularSubmit);
