@@ -4723,7 +4723,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctxSoma.lineWidth = 2;
         ctxSoma.stroke();
 
-        ctxSoma.font = '16px Inter, sans-serif';
+        ctxSoma.font = '14px Inter, sans-serif';
         ctxSoma.fillStyle = '#000000';
         ctxSoma.textAlign = 'center';
         for (let i = -8; i <= 8; i += 2) {
@@ -4734,7 +4734,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctxSoma.stroke();
             ctxSoma.fillText(i.toString(), xPos, xAxisY + 20);
         }
-        ctxSoma.font = '20px Roboto, sans-serif';
+        ctxSoma.font = '12px Arial, sans-serif';
         ctxSoma.fillText('Endomorfia - Ectomorfia', chartOffsetX + chartWidth / 2, xAxisY + 30);
 
         // Draw Y-axis
@@ -4746,7 +4746,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctxSoma.lineWidth = 2;
         ctxSoma.stroke();
 
-        ctxSoma.font = '16px Inter, sans-serif';
+        ctxSoma.font = '14px Inter, sans-serif';
         ctxSoma.fillStyle = '#000000';
         ctxSoma.textAlign = 'center';
         for (let i = -10; i <= 12; i += 2) {
@@ -4761,7 +4761,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctxSoma.save();
         ctxSoma.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
         ctxSoma.rotate(-Math.PI / 2);
-        ctxSoma.font = '20px Roboto, sans-serif';
+        ctxSoma.font = '14px Arial, sans-serif';
         ctxSoma.textAlign = 'center';
         ctxSoma.fillText('Mesomorfia', 0, 0);
         ctxSoma.restore();
@@ -4779,14 +4779,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Blue Point Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 
             ctxSoma.beginPath();
-            ctxSoma.arc(pixelX, pixelY, 10, 0, 2 * Math.PI);
+            ctxSoma.arc(pixelX, pixelY, 8, 0, 2 * Math.PI);
             ctxSoma.fillStyle = '#0056b3';
             ctxSoma.fill();
             ctxSoma.strokeStyle = '#003087';
             ctxSoma.lineWidth = 2;
             ctxSoma.stroke();
 
-            ctxSoma.font = 'bold 20px Inter, sans-serif';
+            ctxSoma.font = 'bold 14px Inter, sans-serif';
             ctxSoma.fillStyle = '#000000';
             ctxSoma.strokeStyle = '#ffffff';
             ctxSoma.lineWidth = 2;
@@ -4816,14 +4816,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Red Point Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 
             ctxSoma.beginPath();
-            ctxSoma.arc(pixelX, pixelY, 10, 0, 2 * Math.PI);
+            ctxSoma.arc(pixelX, pixelY, 8, 0, 2 * Math.PI);
             ctxSoma.fillStyle = '#FF0000';
             ctxSoma.fill();
             ctxSoma.strokeStyle = '#8B0000';
             ctxSoma.lineWidth = 2;
             ctxSoma.stroke();
 
-            ctxSoma.font = 'bold 20px Inter, sans-serif';
+            ctxSoma.font = 'bold 14px Inter, sans-serif';
             ctxSoma.fillStyle = '#000000';
             ctxSoma.strokeStyle = '#ffffff';
             ctxSoma.lineWidth = 2;
