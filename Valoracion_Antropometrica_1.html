@@ -4521,7 +4521,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 
 
 
-
+//Abrir Container y grafico Somatocarta
 
 document.addEventListener('DOMContentLoaded', () => {
     const buttonsoma = document.getElementById('abrirContainerSomatotipo');
@@ -4928,9 +4928,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const modalContainer = document.getElementById('modalSomaContainer');
         const generoSelect = modalContainer.querySelector('#nombreInput');
-        const endoInput = modalContainer.querySelector('#endoInput');
-        const mesoInput = modalContainer.querySelector('#mesoInput');
-        const ectoInput = modalContainer.querySelector('#ectoInput');
+        const endoInput = modalContainer.querySelector('#somatotipoEndo');
+        const mesoInput = modalContainer.querySelector('#somatotipoMeso');
+        const ectoInput = modalContainer.querySelector('#somatotipoEcto');
         const deporteSelect = modalContainer.querySelector('#deporteInput');
         const modalidadSelect = modalContainer.querySelector('#modalidadInput');
 
@@ -4951,7 +4951,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             endoInput.classList.remove('invalid');
         }
-        if (! mesoInput.value || isNaN(mesoInput.value) || mesoInput.value < 0) {
+        if (!mesoInput.value || isNaN(mesoInput.value) || mesoInput.value < 0) {
             isValid = false;
             errors.push('El campo mesomorfia es inválido.');
             mesoInput.classList.add('invalid');
@@ -5034,6 +5034,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function calculateY(data) {
         return 2 * data.mesomorfia - (data.endomorfia + data.ectomorfia);
     }
+
 
 
     // Set up close button (×)
