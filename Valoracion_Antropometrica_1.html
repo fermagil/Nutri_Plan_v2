@@ -1943,7 +1943,30 @@ body {
     background-color: #f9f9f9;
     font-size: 14px;
 }
+/* Somatotipo display values */
+.container-soma-wrapper .somatotipo-values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Reduced min-width from 150px */
+    gap: 0.3rem; /* Reduced from 0.5rem */
+}
 
+.container-soma-wrapper .somatotipo-values div {
+    display: flex;
+    flex-direction: column;
+}
+
+.container-soma-wrapper .somatotipo-values label {
+    font-size: 12px; /* Reduced from 14px */
+    margin-bottom: 3px; /* Reduced from 5px */
+}
+
+.container-soma-wrapper .somatotipo-values input {
+    padding: 4px; /* Reduced from 4px */
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background-color: #f9f9f9;
+    font-size: 12px; /* Reduced from 14px */
+}
 /* Chart container */
 .container-soma-wrapper .chart-container {
     position: relative;
