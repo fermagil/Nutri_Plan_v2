@@ -4544,7 +4544,7 @@ for (let i = 0; i < canvasElements.length; i++) {
             // Populate fields when modal opens
             setTimeout(() => {
                 if (modalsoma.querySelector('#nombreInput')) {
-                    populateFormFields();
+                    populateFields();
                 } else {
                     console.warn('Fields not found initially. Relying on MutationObserver or retries.');
                 }
@@ -4575,7 +4575,7 @@ for (let i = 0; i < canvasElements.length; i++) {
     }
 
     // Function to populate fields
-    function populateFormFields() {
+    function populateFields() {
         const modalContainer = document.getElementById('modalSomaContainer');
         const generoSelect = modalContainer.querySelector('#nombreInput');
         const endoInput = modalContainer.querySelector('#endoInput');
@@ -4586,7 +4586,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 
         if (!generoSelect || !endoInput || !mesoInput || !ectoInput || !deporteSelect || !modalidadSelect) {
             if (retryCountPopulate >= MAX_RETRIES) {
-                console.error(`Max retries (${MAX_RETRIES}) reached for populateFormFields. Fields not found in modalSomaContainer. Using defaults.`);
+                console.error(`Max retries (${MAX_RETRIES}) reached for populateFields. Fields not found in modalSomaContainer. Using defaults.`);
                 console.log('Campos rellenados (sin campos):', {
                     genero: 'hombre',
                     endomorfia: 1.0,
@@ -4599,7 +4599,7 @@ for (let i = 0; i < canvasElements.length; i++) {
             }
             retryCountPopulate++;
             console.warn(`Campos no encontrados en modalSomaContainer. Intento ${retryCountPopulate}/${MAX_RETRIES}. Reintentando...`);
-            setTimeout(populateFormFields, RETRY_INTERVAL);
+            setTimeout(populateFields, RETRY_INTERVAL);
             return;
         }
 
@@ -4683,8 +4683,8 @@ for (let i = 0; i < canvasElements.length; i++) {
 
     // Function to handle "Calcular" button click
     function handleCalcularSubmit(e) {
-        //e.stopPropagation();
-        //e.preventDefault();
+        e.stopPropagation();
+        e.preventDefault();
 
         const modalContainer = document.getElementById('modalSomaContainer');
         const generoSelect = modalContainer.querySelector('#nombreInput');
@@ -4786,15 +4786,13 @@ for (let i = 0; i < canvasElements.length; i++) {
     }
 
     // Set up "Calcular" button listener
-   	const calcularButton = document.getElementById('calcularButton');
-	if (calcularButton) {
-	    calcularButton.addEventListener('click', function(event) {
-	        event.preventDefault(); // Previene el comportamiento por defecto (útil si el botón está en un formulario)
-	        handleCalcularSubmit(); // Llama a tu función de manejo
-	    });
-	} else {
-	    console.error('Botón "Actualizar" (ID: calcularButton) no encontrado.');
-	}
+    const calcularButton = document.querySelector('#calcularButton');
+    if (calcularButton) {
+        calcularButton.removeEventListener('click', handleCalcularSubmit);
+        calcularButton.addEventListener('click', handleCalcularSubmit);
+    } else {
+        console.error('Calcular button with ID "calcularButton" not found.');
+    }
 
     // Set up close button (×)
     if (closeSpan) {
@@ -4836,7 +4834,7 @@ for (let i = 0; i < canvasElements.length; i++) {
     const observer = new MutationObserver((mutations) => {
         if (modalsoma.querySelector('#nombreInput')) {
             console.log('Campos detectados via MutationObserver:', new Date().toISOString());
-            populateFormFields();
+            populateFields();
             observer.disconnect();
         } else {
             console.debug('MutationObserver activado, pero campos no encontrados:', mutations.length, 'mutations');
@@ -4854,9 +4852,9 @@ for (let i = 0; i < canvasElements.length; i++) {
 
     // Manual trigger for dynamic content
     window.populateSomaForm = function () {
-        console.log('Manual trigger for populateFormFields:', new Date().toISOString());
+        console.log('Manual trigger for populateFields:', new Date().toISOString());
         retryCountPopulate = 0;
-        populateFormFields();
+        populateFields();
     };
 });
 	document.addEventListener('DOMContentLoaded', () => {
