@@ -4577,12 +4577,12 @@ for (let i = 0; i < canvasElements.length; i++) {
     // Function to populate fields
     function populateFields() {
         const modalContainer = document.getElementById('modalSomaContainer');
-        const generoSelect = modalContainer.getElementById('nombreInput');
-        const endoInput = modalContainer.getElementById('endoInput');
-        const mesoInput = modalContainer.getElementById('mesoInput');
-        const ectoInput = modalContainer.getElementById('ectoInput');
-        const deporteSelect = modalContainer.getElementById('deporteInput');
-        const modalidadSelect = modalContainer.getElementById('modalidadInput');
+        const generoSelect = document.getElementById('nombreInput');
+        const endoInput = document.getElementById('endoInput');
+        const mesoInput = document.getElementById('mesoInput');
+        const ectoInput = document.getElementById('ectoInput');
+        const deporteSelect = document.getElementById('deporteInput');
+        const modalidadSelect = mdocument.getElementById('modalidadInput');
 
         if (!generoSelect || !endoInput || !mesoInput || !ectoInput || !deporteSelect || !modalidadSelect) {
             if (retryCountPopulate >= MAX_RETRIES) {
