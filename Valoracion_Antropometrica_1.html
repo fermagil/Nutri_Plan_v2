@@ -4924,7 +4924,12 @@ function populateFields() {
         const ectoInput = modalContainer.querySelector('#ectoInput');
         const deporteSelect = modalContainer.querySelector('#deporteInput');
         const modalidadSelect = modalContainer.querySelector('#modalidadInput');
-
+	 const somatotipoEndo = document.getElementById('somatotipoEndo');
+	    const somatotipoMeso = document.getElementById('somatotipoMeso');
+	    const somatotipoEcto = document.getElementById('somatotipoEcto');
+	    
+	    const somatotipoX = document.getElementById('somatotipoX');
+	    const somatotipoY = document.getElementById('somatotipoY');
         let isValid = true;
         const errors = [];
 
@@ -4974,19 +4979,20 @@ function populateFields() {
         // Process data
         const data = {
             genero: generoSelect.value,
-            endomorfia: parseFloat(endoInput.value),
-            mesomorfia: parseFloat(mesoInput.value),
-            ectomorfia: parseFloat(ectoInput.value),
+            endomorfia: parseFloat(somatotipoEndo.value),
+            mesomorfia: parseFloat(somatotipoMeso.value),
+            ectomorfia: parseFloat(somatotipoEcto.value),
             grupoReferencia: deporteSelect.value,
             modalidad: modalidadSelect.value || 'N/A'
+		
         };
 
         console.log('Datos procesados:', data);
 
 	    // Draw red point (new data from form)
            
-                const x = calculateX(data);
-                const y = calculateY(data);
+                const x = somatotipoX
+                const y = somatotipoY
 	        console.log('Valores calculados para el cliente:', {
 		    x: x,
 		    y: y
