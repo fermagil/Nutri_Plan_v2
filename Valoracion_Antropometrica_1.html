@@ -4120,12 +4120,12 @@ for (let i = 0; i < canvasElements.length; i++) {
             tooltip.style.display = 'none';
         });
 
-        function getRanges(sexo, actividad, edad) {
+        function RangesGet(sexo, actividad, edad) {
             if (edad < 18) {
                 return null;
             }
 
-            let ageGroup;
+            let Groupage;
             if (edad >= 18 && edad <= 29) {
                 ageGroup = '18-29';
             } else if (edad >= 30 && edad <= 49) {
@@ -4137,7 +4137,7 @@ for (let i = 0; i < canvasElements.length; i++) {
             let imlgRanges, imgRanges, maxIMLG, maxIMG;
 
             if (sexo === 'mujer') {
-                if (ageGroup === '18-29') {
+                if (Groupage === '18-29') {
                     if (actividad === 'sedentario') {
                         imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
                         imgRanges = { bajo: 4, medio: 7, alto: 9 };
@@ -4159,7 +4159,7 @@ for (let i = 0; i < canvasElements.length; i++) {
                         maxIMLG = 22;
                         maxIMG = 9;
                     }
-                } else if (ageGroup === '30-49') {
+                } else if (Groupage === '30-49') {
                     if (actividad === 'sedentario') {
                         imlgRanges = { bajo: 12, medio: 14, alto: 16 };
                         imgRanges = { bajo: 5, medio: 8, alto: 10 };
@@ -4205,7 +4205,7 @@ for (let i = 0; i < canvasElements.length; i++) {
                     }
                 }
             } else {
-                if (ageGroup === '18-29') {
+                if (Groupage === '18-29') {
                     if (actividad === 'sedentario') {
                         imlgRanges = { bajo: 15, medio: 17, alto: 19 };
                         imgRanges = { bajo: 3, medio: 6, alto: 8 };
@@ -4227,7 +4227,7 @@ for (let i = 0; i < canvasElements.length; i++) {
                         maxIMLG = 25;
                         maxIMG = 8;
                     }
-                } else if (ageGroup === '30-49') {
+                } else if (Groupage === '30-49') {
                     if (actividad === 'sedentario') {
                         imlgRanges = { bajo: 14.5, medio: 16.5, alto: 18.5 };
                         imgRanges = { bajo: 4, medio: 7, alto: 9 };
@@ -4283,7 +4283,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    imlgWarning.style.display = 'none';
 	    imgWarning.style.display = 'none';
 	
-	    const ranges = getRanges(sexo, actividad, edad);
+	    const ranges = RangesGet(sexo, actividad, edad);
 	    if (!ranges) {
 	        // Display a warning for invalid age, but allow processing
 	        document.getElementById('edadWarning').textContent = 'Edad debe ser mayor o igual a 18';
