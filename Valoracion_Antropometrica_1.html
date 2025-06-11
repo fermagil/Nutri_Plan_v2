@@ -4590,7 +4590,6 @@ for (let i = 0; i < canvasElements.length; i++) {
 
     // Function to populate fields
    // Function to populate fields
-// Function to populate fields
 function populateFields() {
     const modalContainer = document.getElementById('modalSomaContainer');
     const generoSelect = modalContainer.querySelector('#nombreInput');
@@ -4832,16 +4831,25 @@ function populateFields() {
         ctxSoma.restore();
     }
 
-    // Delay drawing to ensure modal is fully rendered
-    function attemptDrawChart() {
+    // Attempt to draw chart with retries
+    function attemptDrawChart(attempts = 0, maxAttempts = 20) {
         const container = document.querySelector('.chart-container');
         if (!container) {
             console.error('Chart container (.chart-container) not found');
             return;
         }
 
-        // Check if container has valid dimensions
-        if (container.clientWidth > 0 && container.clientHeight > 0) {
+        // Log container state for debugging
+        console.log('Attempt', attempts, 'Container state:', {
+            display: window.getComputedStyle(container).display,
+            visibility: window.getComputedStyle(container).visibility,
+            width: container.clientWidth,
+            height: container.clientHeight,
+            modalDisplay: window.getComputedStyle(modalContainer).display
+        });
+
+        // Check if container has valid dimensions and modal is visible
+        if (container.clientWidth > 0 && container.clientHeight > 0 && window.getComputedStyle(modalContainer).display !== 'none') {
             if (imgSomatotype.complete && imgSomatotype.naturalWidth > 0) {
                 drawSomaChart();
             } else {
@@ -4850,16 +4858,38 @@ function populateFields() {
                     console.error('Error al cargar la imagen #somatotype-image');
                 };
             }
+        } else if (attempts < maxAttempts) {
+            // Retry after 100ms
+            setTimeout(() => attemptDrawChart(attempts + 1, maxAttempts), 100);
         } else {
-            // Retry after a short delay
-            setTimeout(attemptDrawChart, 100);
+            console.error('Max attempts reached, unable to draw chart due to zero container dimensions');
+            // Use fallback dimensions as a last resort
+            drawSomaChart();
         }
     }
 
-    // Start drawing process after modal transition
-    setTimeout(attemptDrawChart, 400); // Wait for modal transition (300ms) + buffer
+    // Use MutationObserver to detect modal visibility
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'style') {
+                const display = window.getComputedStyle(modalContainer).display;
+                if (display === 'flex') {
+                    console.log('Modal is now visible, attempting to draw chart');
+                    attemptDrawChart();
+                    observer.disconnect(); // Stop observing once modal is visible
+                }
+            }
+        });
+    });
+
+    // Start observing modal for style changes
+    observer.observe(modalContainer, { attributes: true });
+
+    // Fallback: Try drawing immediately in case modal is already visible
+    if (window.getComputedStyle(modalContainer).display === 'flex') {
+        attemptDrawChart();
+    }
 }
-   
 
 
 
