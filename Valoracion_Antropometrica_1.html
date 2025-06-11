@@ -4648,21 +4648,35 @@ for (let i = 0; i < canvasElements.length; i++) {
         if (!generoSelect.value) {
             generoSelect.value = generoValue || defaultValues.genero;
         }
-       if (!endoInput.value || endoInput.value == 1 || endoInput.value == "1") {
-	    endoInput.value = somatotipoValues.endomorfia !== null && !isNaN(somatotipoValues.endomorfia)
-	        ? somatotipoValues.endomorfia.toFixed(1)
-	        : defaultValues.endomorfia.toFixed(1);
-	}
-	if (!mesoInput.value || mesoInput.value == 1 || mesoInput.value == "1") {
-	    mesoInput.value = somatotipoValues.mesomorfia !== null && !isNaN(somatotipoValues.mesomorfia)
-	        ? somatotipoValues.mesomorfia.toFixed(1)
-	        : defaultValues.mesomorfia.toFixed(1);
-	}
-	if (!ectoInput.value || ectoInput.value == 1 || ectoInput.value == "1") {
-	    ectoInput.value = somatotipoValues.ectomorfia !== null && !isNaN(somatotipoValues.ectomorfia)
-	        ? somatotipoValues.ectomorfia.toFixed(1)
-	        : defaultValues.ectomorfia.toFixed(1);
-	}
+      // Para endomorfia
+		if (!endoInput.value || 
+		    endoInput.value == 1 || 
+		    endoInput.value == "1" || 
+		    isNaN(parseFloat(endoInput.value))) {  // Si no es un número válido
+		    endoInput.value = somatotipoValues.endomorfia !== null && !isNaN(somatotipoValues.endomorfia)
+		        ? somatotipoValues.endomorfia.toFixed(1)
+		        : defaultValues.endomorfia.toFixed(1);
+		}
+		
+		// Para mesomorfia
+		if (!mesoInput.value || 
+		    mesoInput.value == 1 || 
+		    mesoInput.value == "1" || 
+		    isNaN(parseFloat(mesoInput.value))) {  // Si no es un número válido
+		    mesoInput.value = somatotipoValues.mesomorfia !== null && !isNaN(somatotipoValues.mesomorfia)
+		        ? somatotipoValues.mesomorfia.toFixed(1)
+		        : defaultValues.mesomorfia.toFixed(1);
+		}
+		
+		// Para ectomorfia
+		if (!ectoInput.value || 
+		    ectoInput.value == 1 || 
+		    ectoInput.value == "1" || 
+		    isNaN(parseFloat(ectoInput.value))) {  // Si no es un número válido
+		    ectoInput.value = somatotipoValues.ectomorfia !== null && !isNaN(somatotipoValues.ectomorfia)
+		        ? somatotipoValues.ectomorfia.toFixed(1)
+		        : defaultValues.ectomorfia.toFixed(1);
+		}
         if (!deporteSelect.value) {
             deporteSelect.value = defaultValues.grupoReferencia;
         }
