@@ -1814,6 +1814,7 @@ body {
     transition: opacity 0.3s ease-in-out;
     justify-content: center;
     align-items: center;
+    overflow: auto; /* Permite scrolling si el contenido es muy largo */
 }
 
 .modal-soma-container .modal-soma-content {
@@ -1825,7 +1826,10 @@ body {
     overflow-y: auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative; /* For close button positioning */
+    margin: 20px auto; /* Centrado horizontal y margen vertical */
     padding: 0; /* Delegate padding to wrapper */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Wrapper for modal content */
@@ -1975,6 +1979,10 @@ body {
     min-height: 500px;
     max-height: 500px;
     margin: 1rem auto;
+    margin: 20px auto; /* Centrado con margen */
+    background-color: white; /* Fondo sólido */
+    border: 1px solid #e0e0e0; /* Borde sutil */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   overflow: hidden; /* Prevent overflow issues */
 }
 
@@ -1997,6 +2005,7 @@ body {
     width: 100% !important;
     height: 100% !important;
     pointer-events: auto;
+	 background-color: white; /* Fondo sólido */
 }
 /* Ensure modal container is visible and sized */
 #modalSomaContainer {
@@ -2016,6 +2025,10 @@ body {
 .container-soma-wrapper {
     width: 100%;
     min-height: 500px;
+	box-sizing: border-box;
+	padding: 2rem;
+	background: white; /* Fondo sólido en lugar de semitransparente */
+	border-radius: 6px;
 }
 /* Button container */
 .container-soma-wrapper .button-container {
@@ -2091,8 +2104,8 @@ body {
     }
 
     .container-soma-wrapper .chart-container {
-        min-height: 250px;
-        max-height: 250px;
+        min-height: 300px;
+        max-height: 300px;
     }
 
     .container-soma-wrapper .chart-container:has(#somatotype-image) {
