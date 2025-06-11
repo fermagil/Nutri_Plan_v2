@@ -4464,10 +4464,17 @@ for (let i = 0; i < canvasElements.length; i++) {
 	    e.preventDefault();
 	    const modal = document.getElementById('modalContainer');
 	    modal.style.display = 'flex';
+		 setTimeout(() => {
+	            modal.style.opacity = '1';
+	            modal.style.transition = 'opacity 0.3s ease-in-out';
+	        }, 10);
 	    populateFormFields(); // Populate form fields when modal opens
 	    createLegend();
 	    updateChart();
 	});
+	
+	
+	       
 
         document.getElementById('closeModal').addEventListener('click', function(e) {
             e.stopPropagation();
