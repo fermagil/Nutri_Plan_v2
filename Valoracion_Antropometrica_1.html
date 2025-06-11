@@ -4821,8 +4821,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 
     
 
-    console.log('Starting MutationObserver on:', modalsoma ? '#modalSomaContainer' : 'document.body');
-    observer.observe(modalsoma || document.body, { childList: true, subtree: true });
+   
 
     // Debugging: Log DOM state
     console.log('DOM loaded:', new Date().toISOString(), {
