@@ -4510,56 +4510,58 @@ for (let i = 0; i < canvasElements.length; i++) {
     const modalsoma = document.getElementById('modalSomaContainer');
     const closeSpan = document.querySelector('.close-soma-modal');
     const closeButton = document.querySelector('.closesomaModal');
-    let somatotipoForm = document.getElementById('somatotipoForm');
     let retryCountPopulate = 0;
     const MAX_RETRIES = 10;
     const RETRY_INTERVAL = 1000;
 
-    // Función para abrir el modal
-    function openSomaModal(e) {
-        e.stopPropagation();
-        e.preventDefault();
+    // Modal event listener for opening
+    if (buttonsoma) {
+        buttonsoma.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
 
-        if (!modalsoma) {
-            console.error('Modal container with ID "modalSomaContainer" not found.');
-            return;
-        }
+            if (!modalsoma) {
+                console.error('Modal container with ID "modalSomaContainer" not found.');
+                return;
+            }
 
-        modalsoma.style.display = 'flex';
-        setTimeout(() => {
-            modalsoma.style.opacity = '1';
-            modalsoma.style.transition = 'opacity 0.3s ease-in-out';
-        }, 10);
+            modalsoma.style.display = 'flex';
+            setTimeout(() => {
+                modalsoma.style.opacity = '1';
+                modalsoma.style.transition = 'opacity 0.3s ease-in-out';
+            }, 10);
 
-        // Debug: Log DOM state
-        console.log('Abriendo modal:', new Date().toISOString(), {
-            modalSomaContainer: !!modalsoma,
-            somatotipoForm: !!document.getElementById('somatotipoForm'),
-            modalContent: modalsoma.innerHTML.substring(0, 100) + '...'
-        });
+            // Debug: Log DOM state
+            console.log('Abriendo:', new Date().toISOString(), {
+                modalSomaContainer: !!modalsoma,
+                somatotipoForm: !!document.getElementById('somatotipoForm'),
+                modalContent: modalsoma.innerHTML.substring(0, 100) + '...'
+            });
 
-        // Reset retry count
-        retryCountPopulate = 0;
+            // Reset retry count
+            retryCountPopulate = 0;
 
-        if (typeof populateFormFields === 'function') {
-            // Trigger population after content load, inspired by #modalContainer
+            // Populate form fields when modal opens
             setTimeout(() => {
                 if (document.getElementById('somatotipoForm')) {
                     populateFormFields();
                 } else {
                     console.warn('Form not found initially. Relying on MutationObserver or retries.');
                 }
-            }, 200); // Increased delay for dynamic content
-        }
-        if (typeof createLegend === 'function') {
-            createLegend();
-        }
-        if (typeof updateChart === 'function') {
-            updateChart();
-        }
+            }, 100); // Reduced delay for faster response
+
+            if (typeof createLegend === 'function') {
+                createLegend();
+            }
+            if (typeof updateChart === 'function') {
+                updateChart();
+            }
+        });
+    } else {
+        console.error('Button with ID "abrirContainerSomatotipo" not found.');
     }
 
-    // Función para cerrar el modal
+    // Function to close the modal
     function closeSomaModal() {
         if (!modalsoma) {
             console.error('Modal container with ID "modalSomaContainer" not found.');
@@ -4572,13 +4574,13 @@ for (let i = 0; i < canvasElements.length; i++) {
         }, 300);
     }
 
-    // Función para rellenar los campos del formulario
+    // Function to populate form fields
     function populateFormFields() {
-        somatotipoForm = document.getElementById('somatotipoForm');
+        const modalContainer = document.getElementById('modalSomaContainer');
+        const somatotipoForm = modalContainer.querySelector('#somatotipoForm');
         if (!somatotipoForm) {
             if (retryCountPopulate >= MAX_RETRIES) {
                 console.error(`Max retries (${MAX_RETRIES}) reached for populateFormFields. Form "somatotipoForm" not found. Using defaults.`);
-                // Fallback: Log defaults without form
                 console.log('Campos rellenados (sin formulario):', {
                     genero: 'hombre',
                     endomorfia: 1.0,
@@ -4588,7 +4590,7 @@ for (let i = 0; i < canvasElements.length; i++) {
                 return;
             }
             retryCountPopulate++;
-            console.warn(`Formulario somatotipoForm no encontrado al intentar rellenar campos. Intento ${retryCountPopulate}/${MAX_RETRIES}. Reintentando...`);
+            console.warn(`Formulario somatotipoForm no encontrado en modalSomaContainer. Intento ${retryCountPopulate}/${MAX_RETRIES}. Reintentando...`);
             setTimeout(populateFormFields, RETRY_INTERVAL);
             return;
         }
@@ -4596,23 +4598,23 @@ for (let i = 0; i < canvasElements.length; i++) {
         // Reset retry count
         retryCountPopulate = 0;
 
-        const generoSelect = document.getElementById('nombreInput');
-        const endoInput = document.getElementById('endoInput');
-        const mesoInput = document.getElementById('mesoInput');
-        const ectoInput = document.getElementById('ectoInput');
+        const generoSelect = modalContainer.querySelector('#nombreInput');
+        const endoInput = modalContainer.querySelector('#endoInput');
+        const mesoInput = modalContainer.querySelector('#mesoInput');
+        const ectoInput = modalContainer.querySelector('#ectoInput');
 
         if (!generoSelect || !endoInput || !mesoInput || !ectoInput) {
-            console.error('Form fields (nombreInput, endoInput, mesoInput, ectoInput) not found.');
+            console.error('Form fields (nombreInput, endoInput, mesoInput, ectoInput) not found within modalSomaContainer.');
             return;
         }
 
-        // Mapear valores de género
+        // Map gender values
         const generoMap = {
             'masculino': 'hombre',
             'femenino': 'mujer'
         };
 
-        // Valores por defecto
+        // Default values
         const defaultValues = {
             genero: 'hombre',
             endomorfia: 1.0,
@@ -4620,17 +4622,17 @@ for (let i = 0; i < canvasElements.length; i++) {
             ectomorfia: 1.0
         };
 
-        // Obtener género desde #genero
+        // Get gender from #genero
         let generoValue = '';
         const sourceGenero = document.getElementById('genero');
         if (sourceGenero && sourceGenero.value in generoMap) {
             generoValue = generoMap[sourceGenero.value];
         }
 
-        // Obtener valores de somatotipo desde #somatotipo-source
+        // Get somatotype values from #somatotipo-source
         let somatotipoValues = { endomorfia: null, mesomorfia: null, ectomorfia: null };
         const somatotipoSource = document.getElementById('somatotipo-source');
-        const resultSomatotipo = document.getElementById('result-somatotipo');
+        const resultSomatotipo = document.getElementById('soma');
         if (somatotipoSource && resultSomatotipo && resultSomatotipo.textContent !== '---') {
             const text = somatotipoSource.textContent;
             const match = text.match(/Endo:\s*([\d.]+)\s*Meso:\s*([\d.]+)\s*Ecto:\s*([\d.]+)/i);
@@ -4643,7 +4645,7 @@ for (let i = 0; i < canvasElements.length; i++) {
             }
         }
 
-        // Rellenar campos si están vacíos
+        // Populate fields if empty
         if (!generoSelect.value) {
             generoSelect.value = generoValue || defaultValues.genero;
         }
@@ -4671,7 +4673,7 @@ for (let i = 0; i < canvasElements.length; i++) {
         });
     }
 
-    // Función para manejar el envío del formulario (Calcular)
+    // Function to handle form submission (Calcular)
     function handleCalcularSubmit(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -4680,7 +4682,7 @@ for (let i = 0; i < canvasElements.length; i++) {
         let isValid = true;
         const errors = [];
 
-        // Validar campos requeridos
+        // Validate required fields
         const requiredFields = form.querySelectorAll('[required]:not([disabled])');
         requiredFields.forEach(field => {
             if (!field.checkValidity()) {
@@ -4698,7 +4700,7 @@ for (let i = 0; i < canvasElements.length; i++) {
             return;
         }
 
-        // Procesar datos del formulario
+        // Process form data
         const formData = new FormData(form);
         const data = {
             genero: formData.get('genero'),
@@ -4711,7 +4713,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 
         console.log('Datos procesados:', data);
 
-        // Actualizar campos de visualización
+        // Update display fields
         document.getElementById('somatotipoEndo').value = data.endomorfia.toFixed(1);
         document.getElementById('somatotipoMeso').value = data.mesomorfia.toFixed(1);
         document.getElementById('somatotipoEcto').value = data.ectomorfia.toFixed(1);
@@ -4719,13 +4721,13 @@ for (let i = 0; i < canvasElements.length; i++) {
         document.getElementById('somatotipoX').value = calculateX(data).toFixed(2);
         document.getElementById('somatotipoY').value = calculateY(data).toFixed(2);
 
-        // Actualizar gráfico (si existe)
+        // Update chart if exists
         if (typeof updateChart === 'function') {
             updateChart(data);
         }
     }
 
-    // Función auxiliar para determinar el componente dominante
+    // Helper function to determine dominant component
     function getDominante(data) {
         const { endomorfia, mesomorfia, ectomorfia } = data;
         const max = Math.max(endomorfia, mesomorfia, ectomorfia);
@@ -4734,38 +4736,31 @@ for (let i = 0; i < canvasElements.length; i++) {
         return 'Ectomorfia';
     }
 
-    // Función auxiliar para calcular coordenada X
+    // Helper function to calculate X coordinate
     function calculateX(data) {
         return data.ectomorfia - data.endomorfia;
     }
 
-    // Función auxiliar para calcular coordenada Y
+    // Helper function to calculate Y coordinate
     function calculateY(data) {
         return 2 * data.mesomorfia - (data.endomorfia + data.ectomorfia);
     }
 
-    // Intentar encontrar el formulario con reintentos
+    // Initialize form listener
     function initializeFormListener() {
-        somatotipoForm = document.getElementById('somatotipoForm');
+        const modalContainer = document.getElementById('modalSomaContainer');
+        const somatotipoForm = modalContainer.querySelector('#somatotipoForm');
         if (somatotipoForm) {
             console.log('Formulario somatotipoForm encontrado.');
             somatotipoForm.removeEventListener('submit', handleCalcularSubmit);
             somatotipoForm.addEventListener('submit', handleCalcularSubmit);
         } else {
-            console.warn('Form with ID "somatotipoForm" not found. Retrying...');
+            console.warn('Form with ID "somatotipoForm" not found in modalSomaContainer. Retrying...');
             setTimeout(initializeFormListener, RETRY_INTERVAL);
         }
     }
 
-    // Asegurarse de que el botón de apertura existe
-    if (buttonsoma) {
-        buttonsoma.removeEventListener('click', openSomaModal);
-        buttonsoma.addEventListener('click', openSomaModal);
-    } else {
-        console.error('Button with ID "abrirContainerSomatotipo" not found.');
-    }
-
-    // Asegurarse de que el botón de cierre (×) existe
+    // Set up close button (×)
     if (closeSpan) {
         closeSpan.removeEventListener('click', closeSomaModal);
         closeSpan.addEventListener('click', (e) => {
@@ -4776,7 +4771,7 @@ for (let i = 0; i < canvasElements.length; i++) {
         console.error('Close span with class "close-soma-modal" not found.');
     }
 
-    // Asegurarse de que el botón de cierre (Cerrar) existe
+    // Set up close button (Cerrar)
     if (closeButton) {
         closeButton.removeEventListener('click', closeSomaModal);
         closeButton.addEventListener('click', (e) => {
@@ -4787,28 +4782,24 @@ for (let i = 0; i < canvasElements.length; i++) {
         console.error('Close button with class "closesomaModal" not found.');
     }
 
-    // Inicializar el listener del formulario
-    initializeFormListener();
-
-    // Cerrar el modal al hacer clic fuera del contenido
+    // Close modal on click outside content
     modalsoma?.addEventListener('click', (e) => {
         if (e.target === modalsoma) {
             closeSomaModal();
         }
     });
 
-    // Cerrar el modal con la tecla Escape
+    // Close modal with Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modalsoma?.style.display === 'flex') {
             closeSomaModal();
         }
     });
 
-    // MutationObserver para detectar la adición del formulario
+    // MutationObserver to detect form addition
     const observer = new MutationObserver((mutations) => {
         if (document.getElementById('somatotipoForm')) {
             console.log('Formulario somatotipoForm detectado via MutationObserver:', new Date().toISOString());
-            somatotipoForm = document.getElementById('somatotipoForm');
             populateFormFields();
             initializeFormListener();
             observer.disconnect();
@@ -4826,12 +4817,15 @@ for (let i = 0; i < canvasElements.length; i++) {
         somatotipoForm: !!document.getElementById('somatotipoForm')
     });
 
-    // Manual trigger for dynamic content (optional)
+    // Manual trigger for dynamic content
     window.populateSomaForm = function () {
         console.log('Manual trigger for populateFormFields:', new Date().toISOString());
         retryCountPopulate = 0;
         populateFormFields();
     };
+
+    // Initialize form listener
+    initializeFormListener();
 });
 	document.addEventListener('DOMContentLoaded', () => {
     const deporteInput = document.getElementById('deporteInput');
