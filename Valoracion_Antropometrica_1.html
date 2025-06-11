@@ -3050,33 +3050,33 @@ body {
                         <div class="form-grid">
                             <div>
                                 <label for="nombreInput">Género:</label>
-                                <select id="nombreInput" name="genero" required>
-                                    <option value="" disabled selected>Selecciona género</option>
-                                    <option value="hombre">Hombre</option>
-                                    <option value="mujer">Mujer</option>
-                                </select>
+				<select id="nombreInput" name="genero">
+				    <option value="" disabled>Selecciona género</option>
+				    <option value="hombre" selected>Hombre</option> <!-- Añadido selected -->
+				    <option value="mujer">Mujer</option>
+				</select>
                             </div>
                             <div>
                                 <label for="endoInput">Endomorfia:</label>
-                                <input type="number" id="endoInput" name="endomorfia" step="0.1" min="0" required>
+                                <input type="number" id="endoInput" name="endomorfia" step="0.1" min="0" value="1">
                             </div>
                             <div>
                                 <label for="mesoInput">Mesomorfia:</label>
-                                <input type="number" id="mesoInput" name="mesomorfia" step="0.1" min="0" required>
+                                <input type="number" id="mesoInput" name="mesomorfia" step="0.1" min="0" value="1">
                             </div>
                             <div>
                                 <label for="ectoInput">Ectomorfia:</label>
-                                <input type="number" id="ectoInput" name="ectomorfia" step="0.1" min="0" required>
+                                <input type="number" id="ectoInput" name="ectomorfia" step="0.1" min="0" value="1">
                             </div>
                             <div>
                                 <label for="deporteInput">Grupo de Referencia:</label>
-                                <select id="deporteInput" name="grupoReferencia" required>
-                                    <option value="" disabled selected>Selecciona grupo</option>
-                                    <option value="Sedentarios">Sedentarios</option>
-                                    <option value="PocoActivos">Poco Activos</option>
-                                    <option value="Activo">Activo</option>
-                                    <option value="Deportes">Deportes</option>
-                                </select>
+                               <select id="deporteInput" name="grupoReferencia">
+				    <option value="" disabled>Selecciona grupo</option>
+				    <option value="Sedentarios">Sedentarios</option>
+				    <option value="PocoActivos">Poco Activos</option>
+				    <option value="Activo">Activo</option>
+				    <option value="Deportes" selected>Deportes</option> <!-- Añadido selected -->
+				</select>
                             </div>
                             <div>
                                 <label for="modalidadInput">Modalidad:</label>
@@ -4683,8 +4683,8 @@ for (let i = 0; i < canvasElements.length; i++) {
 
     // Function to handle "Calcular" button click
     function handleCalcularSubmit(e) {
-        e.stopPropagation();
-        e.preventDefault();
+        //e.stopPropagation();
+        //e.preventDefault();
 
         const modalContainer = document.getElementById('modalSomaContainer');
         const generoSelect = modalContainer.querySelector('#nombreInput');
