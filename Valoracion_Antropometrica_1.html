@@ -4893,7 +4893,24 @@ function populateFields() {
 
 
 
+// Helper function to determine dominant component
+    function getDominante(data) {
+        const { endomorfia, mesomorfia, ectomorfia } = data;
+        const max = Math.max(endomorfia, mesomorfia, ectomorfia);
+        if (max === endomorfia) return 'Endomorfia';
+        if (max === mesomorfia) return 'Mesomorfia';
+        return 'Ectomorfia';
+    }
 
+    // Helper function to calculate X coordinate
+    function calculateX(data) {
+        return data.ectomorfia - data.endomorfia;
+    }
+
+    // Helper function to calculate Y coordinate
+    function calculateY(data) {
+        return 2 * data.mesomorfia - (data.endomorfia + data.ectomorfia);
+    }
 	   
     // Function to handle "Calcular" button click
     function handleCalcularSubmit(e) {
@@ -4966,39 +4983,50 @@ function populateFields() {
 
         console.log('Datos procesados:', data);
 
-        // Update display fields
-        document.getElementById('somatotipoEndo').value = data.endomorfia.toFixed(1);
-        document.getElementById('somatotipoMeso').value = data.mesomorfia.toFixed(1);
-        document.getElementById('somatotipoEcto').value = data.ectomorfia.toFixed(1);
-        document.getElementById('somatotipoDominante').value = getDominante(data);
-        document.getElementById('somatotipoX').value = calculateX(data).toFixed(2);
-        document.getElementById('somatotipoY').value = calculateY(data).toFixed(2);
+	    // Draw red point (new data from form)
+           
+                const x = calculateX(data);
+                const y = calculateY(data);
+	        console.log('Valores calculados para el cliente:', {
+		    x: x,
+		    y: y
+		});
+                const xClamped = Math.min(Math.max(x, -8), 8);
+                const yClamped = Math.min(Math.max(y, -10), 12);
 
-        // Update chart if exists
-        if (typeof updateChart === 'function') {
-            updateChart(data);
-        }
-    }
+                const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
+                const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
 
-    // Helper function to determine dominant component
-    function getDominante(data) {
-        const { endomorfia, mesomorfia, ectomorfia } = data;
-        const max = Math.max(endomorfia, mesomorfia, ectomorfia);
-        if (max === endomorfia) return 'Endomorfia';
-        if (max === mesomorfia) return 'Mesomorfia';
-        return 'Ectomorfia';
-    }
+                console.log(`Red Point Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 
-    // Helper function to calculate X coordinate
-    function calculateX(data) {
-        return data.ectomorfia - data.endomorfia;
-    }
+                // Draw red point
+                ctxSoma.beginPath();
+                ctxSoma.arc(pixelX, pixelY, 10, 0, 2 * Math.PI);
+                ctxSoma.fillStyle = '#FF0000';
+                ctxSoma.fill();
+                ctxSoma.strokeStyle = '#8B0000';
+                ctxSoma.lineWidth = 2;
+                ctxSoma.stroke();
 
-    // Helper function to calculate Y coordinate
-    function calculateY(data) {
-        return 2 * data.mesomorfia - (data.endomorfia + data.ectomorfia);
-    }
+                // Red point label (below point to avoid overlap)
+                ctxSoma.font = 'bold 20px Inter, sans-serif';
+                ctxSoma.fillStyle = '#000000';
+                ctxSoma.strokeStyle = '#ffffff';
+                ctxSoma.lineWidth = 2;
+                ctxSoma.textAlign = 'center';
+                ctxSoma.strokeText(
+                    `${data.endomorfia.toFixed(1)}-${data.mesomorfia.toFixed(1)}-${data.ectomorfia.toFixed(1)}`,
+                    pixelX,
+                    pixelY + 25
+                );
+                ctxSoma.fillText(
+                    `${data.endomorfia.toFixed(1)}-${data.mesomorfia.toFixed(1)}-${data.ectomorfia.toFixed(1)}`,
+                    pixelX,
+                    pixelY + 25
+                );
+           
 
+	    
     // Set up "Calcular" button listener
     const calcularButton = document.querySelector('#calcularButton');
     if (calcularButton) {
