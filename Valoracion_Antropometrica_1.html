@@ -4504,7 +4504,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 
 
 
-    // Función para abrir el modal
+    // Función para abrir el modal Carta Somatotipo 
    document.addEventListener('DOMContentLoaded', () => {
     const buttonsoma = document.getElementById('abrirContainerSomatotipo');
     const modalsoma = document.getElementById('modalSomaContainer');
@@ -4577,12 +4577,12 @@ for (let i = 0; i < canvasElements.length; i++) {
     // Function to populate fields
     function populateFields() {
         const modalContainer = document.getElementById('modalSomaContainer');
-        const generoSelect = modalContainer.querySelector('#nombreInput');
-        const endoInput = modalContainer.querySelector('#endoInput');
-        const mesoInput = modalContainer.querySelector('#mesoInput');
-        const ectoInput = modalContainer.querySelector('#ectoInput');
-        const deporteSelect = modalContainer.querySelector('#deporteInput');
-        const modalidadSelect = modalContainer.querySelector('#modalidadInput');
+        const generoSelect = modalContainer.getElementById('nombreInput');
+        const endoInput = modalContainer.getElementById('endoInput');
+        const mesoInput = modalContainer.getElementById('mesoInput');
+        const ectoInput = modalContainer.getElementById('ectoInput');
+        const deporteSelect = modalContainer.getElementById('deporteInput');
+        const modalidadSelect = modalContainer.getElementById('modalidadInput');
 
         if (!generoSelect || !endoInput || !mesoInput || !ectoInput || !deporteSelect || !modalidadSelect) {
             if (retryCountPopulate >= MAX_RETRIES) {
@@ -4638,10 +4638,16 @@ for (let i = 0; i < canvasElements.length; i++) {
             const match = text.match(/Endo:\s*([\d.]+)\s*Meso:\s*([\d.]+)\s*Ecto:\s*([\d.]+)/i);
             if (match) {
                 somatotipoValues = {
+			
                     endomorfia: parseFloat(match[1]),
                     mesomorfia: parseFloat(match[2]),
                     ectomorfia: parseFloat(match[3])
                 };
+		    onsole.log('somatotipoValues:', {
+		    endomorfia: parseFloat(match[1]),
+		    mesomorfia: parseFloat(match[2]),
+		    ectomorfia: parseFloat(match[3])
+		});
             }
         }
 
@@ -4786,7 +4792,7 @@ for (let i = 0; i < canvasElements.length; i++) {
     }
 
     // Set up "Calcular" button listener
-    const calcularButton = document.querySelector('#calcularButton');
+    const calcularButton = document.getElementById('calcularButton');
     if (calcularButton) {
         calcularButton.removeEventListener('click', handleCalcularSubmit);
         calcularButton.addEventListener('click', handleCalcularSubmit);
