@@ -4648,35 +4648,30 @@ for (let i = 0; i < canvasElements.length; i++) {
         if (!generoSelect.value) {
             generoSelect.value = generoValue || defaultValues.genero;
         }
-      // Para endomorfia
-		if (!endoInput.value || 
-		    endoInput.value == 1 || 
-		    endoInput.value == "1" || 
-		    isNaN(parseFloat(endoInput.value))) {  // Si no es un número válido
-		    endoInput.value = somatotipoValues.endomorfia !== null && !isNaN(somatotipoValues.endomorfia)
-		        ? somatotipoValues.endomorfia.toFixed(1)
-		        : defaultValues.endomorfia.toFixed(1);
-		}
-		
-		// Para mesomorfia
-		if (!mesoInput.value || 
-		    mesoInput.value == 1 || 
-		    mesoInput.value == "1" || 
-		    isNaN(parseFloat(mesoInput.value))) {  // Si no es un número válido
-		    mesoInput.value = somatotipoValues.mesomorfia !== null && !isNaN(somatotipoValues.mesomorfia)
-		        ? somatotipoValues.mesomorfia.toFixed(1)
-		        : defaultValues.mesomorfia.toFixed(1);
-		}
-		
-		// Para ectomorfia
-		if (!ectoInput.value || 
-		    ectoInput.value == 1 || 
-		    ectoInput.value == "1" || 
-		    isNaN(parseFloat(ectoInput.value))) {  // Si no es un número válido
-		    ectoInput.value = somatotipoValues.ectomorfia !== null && !isNaN(somatotipoValues.ectomorfia)
-		        ? somatotipoValues.ectomorfia.toFixed(1)
-		        : defaultValues.ectomorfia.toFixed(1);
-		}
+      // Funcion validar inputs para somatotipo endomorfia, meso y ecto
+	    function setSomatotipoValue(input, somatotipoValue, defaultValue) {
+	    const numericValue = parseFloat(input.value);
+	    const shouldUseDefault = (
+	        !input.value || 
+	        input.value == 1 || 
+	        input.value == "1" || 
+	        isNaN(numericValue) ||
+	        (somatotipoValue !== null && 
+	         !isNaN(somatotipoValue) && 
+	         numericValue !== somatotipoValue) // Nueva condición: si el valor actual ≠ somatotipoValue
+	    );
+	    
+	    if (shouldUseDefault) {
+	        input.value = (somatotipoValue !== null && !isNaN(somatotipoValue))
+	            ? somatotipoValue.toFixed(1)
+	            : defaultValue.toFixed(1);
+	    }
+	}
+
+// Uso:
+setSomatotipoValue(endoInput, somatotipoValues.endomorfia, defaultValues.endomorfia);
+setSomatotipoValue(mesoInput, somatotipoValues.mesomorfia, defaultValues.mesomorfia);
+setSomatotipoValue(ectoInput, somatotipoValues.ectomorfia, defaultValues.ectomorfia);
         if (!deporteSelect.value) {
             deporteSelect.value = defaultValues.grupoReferencia;
         }
