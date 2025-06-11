@@ -3120,7 +3120,7 @@ body {
                             <div id="tooltip" class="tooltip"></div>
                         </div>
                         <div class="button-container">
-                            <button type="submit">Calcular</button>
+                            <button id="calcularButton">Actualizar</button>
                             <button type="button" class="download-button">Descargar</button>
                             <button type="button" class="closesomaModal">Cerrar</button>
                         </div>
@@ -4786,13 +4786,15 @@ for (let i = 0; i < canvasElements.length; i++) {
     }
 
     // Set up "Calcular" button listener
-    const calcularButton = document.querySelector('#calcularButton');
-    if (calcularButton) {
-        calcularButton.removeEventListener('click', handleCalcularSubmit);
-        calcularButton.addEventListener('click', handleCalcularSubmit);
-    } else {
-        console.error('Calcular button with ID "calcularButton" not found.');
-    }
+   	const calcularButton = document.getElementById('calcularButton');
+	if (calcularButton) {
+	    calcularButton.addEventListener('click', function(event) {
+	        event.preventDefault(); // Previene el comportamiento por defecto (útil si el botón está en un formulario)
+	        handleCalcularSubmit(); // Llama a tu función de manejo
+	    });
+	} else {
+	    console.error('Botón "Actualizar" (ID: calcularButton) no encontrado.');
+	}
 
     // Set up close button (×)
     if (closeSpan) {
