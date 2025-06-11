@@ -1998,7 +1998,25 @@ body {
     height: 100% !important;
     pointer-events: auto;
 }
+/* Ensure modal container is visible and sized */
+#modalSomaContainer {
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
 
+#modalSomaContainer[style*="display: flex"] {
+    opacity: 1;
+    width: 100%;
+    max-width: 900px; /* Ensure modal has enough space */
+    margin: auto;
+}
+
+/* Prevent container collapse */
+.container-soma-wrapper {
+    width: 100%;
+    min-height: 500px;
+}
 /* Button container */
 .container-soma-wrapper .button-container {
     display: flex;
@@ -4572,6 +4590,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 
     // Function to populate fields
    // Function to populate fields
+// Function to populate fields
 function populateFields() {
     const modalContainer = document.getElementById('modalSomaContainer');
     const generoSelect = modalContainer.querySelector('#nombreInput');
@@ -4680,18 +4699,28 @@ function populateFields() {
     }
 
     function drawSomaChart() {
-        const ctxSoma = Somatotypecanvas.getContext('2d');
-
-        // Use displayed dimensions (clientWidth/clientHeight) instead of natural dimensions
         const container = document.querySelector('.chart-container');
-        const displayedWidth = container.clientWidth;
-        const displayedHeight = container.clientHeight;
+        if (!container) {
+            console.error('Chart container (.chart-container) not found');
+            return;
+        }
 
-        // Set canvas dimensions to match displayed size
+        // Get displayed dimensions
+        let displayedWidth = container.clientWidth;
+        let displayedHeight = container.clientHeight;
+
+        // Fallback to default dimensions if container size is zero
+        if (displayedWidth === 0 || displayedHeight === 0) {
+            console.warn('Container has zero dimensions, using fallback size (500x500px)');
+            displayedWidth = 500;
+            displayedHeight = 500;
+        }
+
+        // Set canvas dimensions
         Somatotypecanvas.width = displayedWidth;
         Somatotypecanvas.height = displayedHeight;
 
-        // Clear canvas
+        const ctxSoma = Somatotypecanvas.getContext('2d');
         ctxSoma.clearRect(0, 0, Somatotypecanvas.width, Somatotypecanvas.height);
 
         // Calculate chart area (80% of displayed size)
@@ -4724,7 +4753,7 @@ function populateFields() {
 
         // Draw the blue point
         ctxSoma.beginPath();
-        ctxSoma.arc(pixelX, pixelY, 10, 0, 2 * Math.PI); // Reduced radius for visibility
+        ctxSoma.arc(pixelX, pixelY, 10, 0, 2 * Math.PI);
         ctxSoma.fillStyle = '#0056b3';
         ctxSoma.fill();
         ctxSoma.strokeStyle = '#003087';
@@ -4732,7 +4761,7 @@ function populateFields() {
         ctxSoma.stroke();
 
         // Point label
-        ctxSoma.font = 'bold 20px Inter, sans-serif'; // Reduced font size
+        ctxSoma.font = 'bold 20px Inter, sans-serif';
         ctxSoma.fillStyle = '#000000';
         ctxSoma.strokeStyle = '#ffffff';
         ctxSoma.lineWidth = 2;
@@ -4803,17 +4832,32 @@ function populateFields() {
         ctxSoma.restore();
     }
 
-    // Handle image loading
-    imgSomatotype.onerror = () => {
-        console.error('Error al cargar la imagen #somatotype-image');
-    };
+    // Delay drawing to ensure modal is fully rendered
+    function attemptDrawChart() {
+        const container = document.querySelector('.chart-container');
+        if (!container) {
+            console.error('Chart container (.chart-container) not found');
+            return;
+        }
 
-    // Draw chart if image is loaded, otherwise wait for onload
-    if (imgSomatotype.complete && imgSomatotype.naturalWidth > 0) {
-        drawSomaChart();
-    } else {
-        imgSomatotype.onload = drawSomaChart;
+        // Check if container has valid dimensions
+        if (container.clientWidth > 0 && container.clientHeight > 0) {
+            if (imgSomatotype.complete && imgSomatotype.naturalWidth > 0) {
+                drawSomaChart();
+            } else {
+                imgSomatotype.onload = drawSomaChart;
+                imgSomatotype.onerror = () => {
+                    console.error('Error al cargar la imagen #somatotype-image');
+                };
+            }
+        } else {
+            // Retry after a short delay
+            setTimeout(attemptDrawChart, 100);
+        }
     }
+
+    // Start drawing process after modal transition
+    setTimeout(attemptDrawChart, 400); // Wait for modal transition (300ms) + buffer
 }
    
 
