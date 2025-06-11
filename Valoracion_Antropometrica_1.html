@@ -3116,7 +3116,7 @@ body {
                         </div>
                         <div class="chart-container">
                             <img id="somatotype-image" src="https://fermagil.github.io/Nutri_Plan_v2/somatotype-chart.png" alt="Carta de Somatotipo">
-                            <canvas id="somatotype-point-canvas"></canvas>
+                            <canvas id="somatotype-point-canvas2"></canvas>
                             <div id="tooltip" class="tooltip"></div>
                         </div>
                         <div class="button-container">
@@ -4668,8 +4668,148 @@ for (let i = 0; i < canvasElements.length; i++) {
             grupoReferencia: deporteSelect.value,
             modalidad: modalidadSelect.value
         });
+
+	    // Draw somatotipo chart
+	    const Somatotypecanvas = document.getElementById('somatotype-point-canvas2');
+	    const imgSomatotype = document.getElementById('somatotype-image');
+	
+	    if (!Somatotypecanvas || !imgSomatotype) {
+	        console.error('Canvas #somatotype-point-canvas2 o imagen #somatotype-image no encontrado');
+	        return;
+	    }
+	
+	    function drawSomaChart() {
+	        const ctxSoma = Somatotypecanvas.getContext('2d');
+	        Somatotypecanvas.width = imgSomatotype.width;
+	        Somatotypecanvas.height = imgSomatotype.height;
+	        ctxSoma.clearRect(0, 0, Somatotypecanvas.width, Somatotypecanvas.height);
+	
+	        const chartWidth = imgSomatotype.width * 0.8;
+	        const chartHeight = imgSomatotype.height * 0.8;
+	        const chartOffsetX = (imgSomatotype.width - chartWidth) / 2;
+	        const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
+	
+	        // Define centerY and other variables
+	        const centerX = chartOffsetX + chartWidth / 2;
+	        const centerY = chartOffsetY + chartHeight / 2;
+	        const xAxisY = chartOffsetY + 1 * chartHeight;
+	
+	        console.log(`Image Dimensions: width=${imgSomatotype.width}, height=${imgSomatotype.height}`);
+	        console.log(`Canvas Dimensions: width=${Somatotypecanvas.width}, height=${Somatotypecanvas.height}`);
+	        console.log(`Chart Area: offsetX=${chartOffsetX}, offsetY=${chartOffsetY}, width=${chartWidth}, height=${chartHeight}`);
+	        console.log(`centerY: ${centerY}, xAxisY: ${xAxisY}`);
+	
+	        // Use somatotipoValues instead of results
+	        const x = somatotipoValues.ectomorfia - somatotipoValues.endomorfia;
+	        const y = 2 * somatotipoValues.mesomorfia - (somatotipoValues.endomorfia + somatotipoValues.ectomorfia);
+	        const xClamped = Math.min(Math.max(x, -8), 8);
+	        const yClamped = Math.min(Math.max(y, -10), 12);
+	
+	        // Calculate pixel coordinates for the blue point
+	        const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
+	        const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
+	
+	        console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+	
+	        // Draw the blue point
+	        ctxSoma.beginPath();
+	        ctxSoma.arc(pixelX, pixelY, 40, 0, 2 * Math.PI);
+	        ctxSoma.fillStyle = '#0056b3';
+	        ctxSoma.fill();
+	        ctxSoma.strokeStyle = '#003087';
+	        ctxSoma.lineWidth = 6;
+	        ctxSoma.stroke();
+	
+	        // Point label
+	        ctxSoma.font = 'bold 75px Inter, sans-serif';
+	        ctxSoma.fillStyle = '#000000';
+	        ctxSoma.strokeStyle = '#ffffff';
+	        ctxSoma.lineWidth = 5;
+	        ctxSoma.textAlign = 'center';
+	        ctxSoma.strokeText(
+	            `${somatotipoValues.endomorfia.toFixed(1)}-${somatotipoValues.mesomorfia.toFixed(1)}-${somatotipoValues.ectomorfia.toFixed(1)}`,
+	            pixelX,
+	            pixelY - 55
+	        );
+	        ctxSoma.fillText(
+	            `${somatotipoValues.endomorfia.toFixed(1)}-${somatotipoValues.mesomorfia.toFixed(1)}-${somatotipoValues.ectomorfia.toFixed(1)}`,
+	            pixelX,
+	            pixelY - 55
+	        );
+	
+	        // Draw X-axis
+	        ctxSoma.beginPath();
+	        ctxSoma.moveTo(chartOffsetX, xAxisY);
+	        ctxSoma.lineTo(chartOffsetX + chartWidth, xAxisY);
+	        ctxSoma.strokeStyle = '#000000';
+	        ctxSoma.lineWidth = 6;
+	        ctxSoma.stroke();
+	
+	        // X-axis graduations
+	        ctxSoma.font = '60px Inter, sans-serif';
+	        ctxSoma.fillStyle = '#000000';
+	        ctxSoma.textAlign = 'center';
+	        for (let i = -8; i <= 8; i += 2) {
+	            const xPos = chartOffsetX + ((i + 8) / 16) * chartWidth;
+	            ctxSoma.beginPath();
+	            ctxSoma.moveTo(xPos, xAxisY - 5);
+	            ctxSoma.lineTo(xPos, xAxisY + 5);
+	            ctxSoma.stroke();
+	            ctxSoma.fillText(i.toString(), xPos, xAxisY + 60);
+	        }
+	        ctxSoma.font = '85px Roboto, sans-serif';
+	        ctxSoma.fillText('Endomorfia - Ectomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
+	
+	        // Draw Y-axis (at x=8)
+	        const yAxisX = chartOffsetX + chartWidth;
+	        ctxSoma.beginPath();
+	        ctxSoma.moveTo(yAxisX, xAxisY);
+	        ctxSoma.lineTo(yAxisX, chartOffsetY);
+	        ctxSoma.strokeStyle = '#000000';
+	        ctxSoma.lineWidth = 6;
+	        ctxSoma.stroke();
+	
+	        // Y-axis graduations
+	        ctxSoma.font = '60px Inter, sans-serif';
+	        ctxSoma.fillStyle = '#000000';
+	        ctxSoma.textAlign = 'center';
+	        for (let i = -10; i <= 12; i += 2) {
+	            const yPos = centerY - (i / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
+	            ctxSoma.beginPath();
+	            ctxSoma.moveTo(yAxisX - 5, yPos);
+	            ctxSoma.lineTo(yAxisX + 5, yPos);
+	            ctxSoma.stroke();
+	            ctxSoma.fillText(i.toString(), yAxisX + 50, yPos + 10);
+	        }
+	
+	        // Y-axis label
+	        ctxSoma.save();
+	        ctxSoma.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
+	        ctxSoma.rotate(-Math.PI / 2);
+	        ctxSoma.font = '75px Roboto, sans-serif';
+	        ctxSoma.textAlign = 'center';
+	        ctxSoma.fillText('Mesomorfia', 0, 0);
+	        ctxSoma.restore();
+	    }
+	
+	    // Handle image loading
+	    imgSomatotype.onerror = () => {
+	        console.error('Error al cargar la imagen #somatotype-image');
+	    };
+	
+	    // Draw chart if image is already loaded, otherwise wait for onload
+	    if (imgSomatotype.complete) {
+	        drawSomaChart();
+	    } else {
+	        imgSomatotype.onload = drawSomaChart;
+	    }
+}
     }
 
+
+
+
+	   
     // Function to handle "Calcular" button click
     function handleCalcularSubmit(e) {
         e.stopPropagation();
