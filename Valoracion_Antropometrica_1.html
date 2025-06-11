@@ -1975,6 +1975,7 @@ body {
     min-height: 500px;
     max-height: 500px;
     margin: 1rem auto;
+  overflow: hidden; /* Prevent overflow issues */
 }
 
 .container-soma-wrapper .chart-container:has(#somatotype-image) {
@@ -1985,11 +1986,11 @@ body {
 .container-soma-wrapper .chart-container img#somatotype-image {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: contain;
 }
 
-.container-soma-wrapper .chart-container canvas#somatotype-point-canvas {
+.container-soma-wrapper .chart-container canvas#somatotype-point-canvas2 {
     position: absolute;
     top: 0;
     left: 0;
@@ -4570,239 +4571,249 @@ for (let i = 0; i < canvasElements.length; i++) {
     }
 
     // Function to populate fields
-    function populateFields() {
-        const modalContainer = document.getElementById('modalSomaContainer');
-        const generoSelect = modalContainer.querySelector('#nombreInput');
-        const endoInput = modalContainer.querySelector('#endoInput');
-        const mesoInput = modalContainer.querySelector('#mesoInput');
-        const ectoInput = modalContainer.querySelector('#ectoInput');
-        const deporteSelect = modalContainer.querySelector('#deporteInput');
-        const modalidadSelect = modalContainer.querySelector('#modalidadInput');
+   // Function to populate fields
+function populateFields() {
+    const modalContainer = document.getElementById('modalSomaContainer');
+    const generoSelect = modalContainer.querySelector('#nombreInput');
+    const endoInput = modalContainer.querySelector('#endoInput');
+    const mesoInput = modalContainer.querySelector('#mesoInput');
+    const ectoInput = modalContainer.querySelector('#ectoInput');
+    const deporteSelect = modalContainer.querySelector('#deporteInput');
+    const modalidadSelect = modalContainer.querySelector('#modalidadInput');
 
-       
+    // Map gender values
+    const generoMap = {
+        'masculino': 'hombre',
+        'femenino': 'mujer'
+    };
 
-        // Map gender values
-        const generoMap = {
-            'masculino': 'hombre',
-            'femenino': 'mujer'
-        };
+    // Default values
+    const defaultValues = {
+        genero: 'hombre',
+        endomorfia: 1.0,
+        mesomorfia: 1.0,
+        ectomorfia: 1.0,
+        grupoReferencia: 'Sedentarios',
+        modalidad: 'N/A'
+    };
 
-        // Default values
-        const defaultValues = {
-            genero: 'hombre',
-            endomorfia: 1.0,
-            mesomorfia: 1.0,
-            ectomorfia: 1.0,
-            grupoReferencia: 'Sedentarios',
-            modalidad: 'N/A'
-        };
+    // Get gender from #genero
+    let generoValue = '';
+    const sourceGenero = document.getElementById('genero');
+    if (sourceGenero && sourceGenero.value in generoMap) {
+        generoValue = generoMap[sourceGenero.value];
+    }
 
-        // Get gender from #genero
-        let generoValue = '';
-        const sourceGenero = document.getElementById('genero');
-        if (sourceGenero && sourceGenero.value in generoMap) {
-            generoValue = generoMap[sourceGenero.value];
+    // Get somatotype values from #result-somatotipo
+    let somatotipoValues = { endomorfia: null, mesomorfia: null, ectomorfia: null };
+    const resultSomatotipo = document.getElementById('result-somatotipo');
+    if (resultSomatotipo && resultSomatotipo.textContent !== '---') {
+        const text = resultSomatotipo.textContent;
+        const match = text.match(/\s*([\d.]+)\s*:\s*([\d.]+)\s*:\s*([\d.]+)/);
+        if (match) {
+            somatotipoValues = {
+                endomorfia: parseFloat(match[1]),
+                mesomorfia: parseFloat(match[2]),
+                ectomorfia: parseFloat(match[3])
+            };
+            console.log('somatotipoValues:', {
+                endomorfia: parseFloat(match[1]),
+                mesomorfia: parseFloat(match[2]),
+                ectomorfia: parseFloat(match[3])
+            });
+        }
+    }
+
+    // Populate fields if empty
+    if (!generoSelect.value) {
+        generoSelect.value = generoValue || defaultValues.genero;
+    }
+
+    // Function to validate and set somatotipo values
+    function setSomatotipoValue(input, somatotipoValue, defaultValue) {
+        const numericValue = parseFloat(input.value);
+        const shouldUseDefault = (
+            !input.value ||
+            input.value == 1 ||
+            input.value == "1" ||
+            isNaN(numericValue) ||
+            (somatotipoValue !== null &&
+             !isNaN(somatotipoValue) &&
+             numericValue !== somatotipoValue)
+        );
+
+        if (shouldUseDefault) {
+            input.value = (somatotipoValue !== null && !isNaN(somatotipoValue))
+                ? somatotipoValue.toFixed(1)
+                : defaultValue.toFixed(1);
+        }
+    }
+
+    // Set somatotipo values
+    setSomatotipoValue(endoInput, somatotipoValues.endomorfia, defaultValues.endomorfia);
+    setSomatotipoValue(mesoInput, somatotipoValues.mesomorfia, defaultValues.mesomorfia);
+    setSomatotipoValue(ectoInput, somatotipoValues.ectomorfia, defaultValues.ectomorfia);
+
+    if (!deporteSelect.value) {
+        deporteSelect.value = defaultValues.grupoReferencia;
+    }
+    if (!modalidadSelect.value) {
+        modalidadSelect.value = defaultValues.modalidad;
+    }
+
+    console.log('Campos rellenados:', {
+        genero: generoSelect.value,
+        endomorfia: endoInput.value,
+        mesomorfia: mesoInput.value,
+        ectomorfia: ectoInput.value,
+        grupoReferencia: deporteSelect.value,
+        modalidad: modalidadSelect.value
+    });
+
+    // Draw somatotipo chart
+    const Somatotypecanvas = document.getElementById('somatotype-point-canvas2');
+    const imgSomatotype = document.getElementById('somatotype-image');
+
+    if (!Somatotypecanvas || !imgSomatotype) {
+        console.error('Canvas #somatotype-point-canvas2 o imagen #somatotype-image no encontrado');
+        return;
+    }
+
+    function drawSomaChart() {
+        const ctxSoma = Somatotypecanvas.getContext('2d');
+
+        // Use displayed dimensions (clientWidth/clientHeight) instead of natural dimensions
+        const container = document.querySelector('.chart-container');
+        const displayedWidth = container.clientWidth;
+        const displayedHeight = container.clientHeight;
+
+        // Set canvas dimensions to match displayed size
+        Somatotypecanvas.width = displayedWidth;
+        Somatotypecanvas.height = displayedHeight;
+
+        // Clear canvas
+        ctxSoma.clearRect(0, 0, Somatotypecanvas.width, Somatotypecanvas.height);
+
+        // Calculate chart area (80% of displayed size)
+        const chartWidth = displayedWidth * 0.8;
+        const chartHeight = displayedHeight * 0.8;
+        const chartOffsetX = (displayedWidth - chartWidth) / 2;
+        const chartOffsetY = (displayedHeight - chartHeight) / 2;
+
+        // Define centerY and other variables
+        const centerX = chartOffsetX + chartWidth / 2;
+        const centerY = chartOffsetY + chartHeight / 2;
+        const xAxisY = chartOffsetY + chartHeight;
+
+        console.log(`Container Dimensions: width=${displayedWidth}, height=${displayedHeight}`);
+        console.log(`Canvas Dimensions: width=${Somatotypecanvas.width}, height=${Somatotypecanvas.height}`);
+        console.log(`Chart Area: offsetX=${chartOffsetX}, offsetY=${chartOffsetY}, width=${chartWidth}, height=${chartHeight}`);
+        console.log(`centerY: ${centerY}, xAxisY: ${xAxisY}`);
+
+        // Use somatotipoValues for coordinates
+        const x = somatotipoValues.ectomorfia - somatotipoValues.endomorfia;
+        const y = 2 * somatotipoValues.mesomorfia - (somatotipoValues.endomorfia + somatotipoValues.ectomorfia);
+        const xClamped = Math.min(Math.max(x, -8), 8);
+        const yClamped = Math.min(Math.max(y, -10), 12);
+
+        // Calculate pixel coordinates for the blue point
+        const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
+        const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
+
+        console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
+
+        // Draw the blue point
+        ctxSoma.beginPath();
+        ctxSoma.arc(pixelX, pixelY, 10, 0, 2 * Math.PI); // Reduced radius for visibility
+        ctxSoma.fillStyle = '#0056b3';
+        ctxSoma.fill();
+        ctxSoma.strokeStyle = '#003087';
+        ctxSoma.lineWidth = 2;
+        ctxSoma.stroke();
+
+        // Point label
+        ctxSoma.font = 'bold 20px Inter, sans-serif'; // Reduced font size
+        ctxSoma.fillStyle = '#000000';
+        ctxSoma.strokeStyle = '#ffffff';
+        ctxSoma.lineWidth = 2;
+        ctxSoma.textAlign = 'center';
+        ctxSoma.strokeText(
+            `${somatotipoValues.endomorfia.toFixed(1)}-${somatotipoValues.mesomorfia.toFixed(1)}-${somatotipoValues.ectomorfia.toFixed(1)}`,
+            pixelX,
+            pixelY - 15
+        );
+        ctxSoma.fillText(
+            `${somatotipoValues.endomorfia.toFixed(1)}-${somatotipoValues.mesomorfia.toFixed(1)}-${somatotipoValues.ectomorfia.toFixed(1)}`,
+            pixelX,
+            pixelY - 15
+        );
+
+        // Draw X-axis
+        ctxSoma.beginPath();
+        ctxSoma.moveTo(chartOffsetX, xAxisY);
+        ctxSoma.lineTo(chartOffsetX + chartWidth, xAxisY);
+        ctxSoma.strokeStyle = '#000000';
+        ctxSoma.lineWidth = 2;
+        ctxSoma.stroke();
+
+        // X-axis graduations
+        ctxSoma.font = '16px Inter, sans-serif';
+        ctxSoma.fillStyle = '#000000';
+        ctxSoma.textAlign = 'center';
+        for (let i = -8; i <= 8; i += 2) {
+            const xPos = chartOffsetX + ((i + 8) / 16) * chartWidth;
+            ctxSoma.beginPath();
+            ctxSoma.moveTo(xPos, xAxisY - 5);
+            ctxSoma.lineTo(xPos, xAxisY + 5);
+            ctxSoma.stroke();
+            ctxSoma.fillText(i.toString(), xPos, xAxisY + 20);
+        }
+        ctxSoma.font = '20px Roboto, sans-serif';
+        ctxSoma.fillText('Endomorfia - Ectomorfia', chartOffsetX + chartWidth / 2, xAxisY + 30);
+
+        // Draw Y-axis (at x=8)
+        const yAxisX = chartOffsetX + chartWidth;
+        ctxSoma.beginPath();
+        ctxSoma.moveTo(yAxisX, xAxisY);
+        ctxSoma.lineTo(yAxisX, chartOffsetY);
+        ctxSoma.strokeStyle = '#000000';
+        ctxSoma.lineWidth = 2;
+        ctxSoma.stroke();
+
+        // Y-axis graduations
+        ctxSoma.font = '16px Inter, sans-serif';
+        ctxSoma.fillStyle = '#000000';
+        ctxSoma.textAlign = 'center';
+        for (let i = -10; i <= 12; i += 2) {
+            const yPos = centerY - (i / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
+            ctxSoma.beginPath();
+            ctxSoma.moveTo(yAxisX - 5, yPos);
+            ctxSoma.lineTo(yAxisX + 5, yPos);
+            ctxSoma.stroke();
+            ctxSoma.fillText(i.toString(), yAxisX + 20, yPos + 5);
         }
 
-        // Get somatotype values from #result-somatotipo
-        let somatotipoValues = { endomorfia: null, mesomorfia: null, ectomorfia: null };
-        const resultSomatotipo = document.getElementById('result-somatotipo');
-        if (resultSomatotipo && resultSomatotipo.textContent !== '---') {
-            const text = resultSomatotipo.textContent;
-            const match = text.match(/\s*([\d.]+)\s*:\s*([\d.]+)\s*:\s*([\d.]+)/);
-            if (match) {
-                somatotipoValues = {
-                    endomorfia: parseFloat(match[1]),
-                    mesomorfia: parseFloat(match[2]),
-                    ectomorfia: parseFloat(match[3])
-                };
-                console.log('somatotipoValues:', {
-                    endomorfia: parseFloat(match[1]),
-                    mesomorfia: parseFloat(match[2]),
-                    ectomorfia: parseFloat(match[3])
-                });
-            }
-        }
+        // Y-axis label
+        ctxSoma.save();
+        ctxSoma.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
+        ctxSoma.rotate(-Math.PI / 2);
+        ctxSoma.font = '20px Roboto, sans-serif';
+        ctxSoma.textAlign = 'center';
+        ctxSoma.fillText('Mesomorfia', 0, 0);
+        ctxSoma.restore();
+    }
 
-        // Populate fields if empty
-        if (!generoSelect.value) {
-            generoSelect.value = generoValue || defaultValues.genero;
-        }
-      // Funcion validar inputs para somatotipo endomorfia, meso y ecto
-	    function setSomatotipoValue(input, somatotipoValue, defaultValue) {
-	    const numericValue = parseFloat(input.value);
-	    const shouldUseDefault = (
-	        !input.value || 
-	        input.value == 1 || 
-	        input.value == "1" || 
-	        isNaN(numericValue) ||
-	        (somatotipoValue !== null && 
-	         !isNaN(somatotipoValue) && 
-	         numericValue !== somatotipoValue) // Nueva condición: si el valor actual ≠ somatotipoValue
-	    );
-	    
-	    if (shouldUseDefault) {
-	        input.value = (somatotipoValue !== null && !isNaN(somatotipoValue))
-	            ? somatotipoValue.toFixed(1)
-	            : defaultValue.toFixed(1);
-	    }
-	}
+    // Handle image loading
+    imgSomatotype.onerror = () => {
+        console.error('Error al cargar la imagen #somatotype-image');
+    };
 
-	// Uso:
-	setSomatotipoValue(endoInput, somatotipoValues.endomorfia, defaultValues.endomorfia);
-	setSomatotipoValue(mesoInput, somatotipoValues.mesomorfia, defaultValues.mesomorfia);
-	setSomatotipoValue(ectoInput, somatotipoValues.ectomorfia, defaultValues.ectomorfia);
-	    
-        if (!deporteSelect.value) {
-            deporteSelect.value = defaultValues.grupoReferencia;
-        }
-        if (!modalidadSelect.value) {
-            modalidadSelect.value = defaultValues.modalidad;
-        }
-
-        console.log('Campos rellenados:', {
-            genero: generoSelect.value,
-            endomorfia: endoInput.value,
-            mesomorfia: mesoInput.value,
-            ectomorfia: ectoInput.value,
-            grupoReferencia: deporteSelect.value,
-            modalidad: modalidadSelect.value
-        });
-
-	    // Draw somatotipo chart
-	    const Somatotypecanvas = document.getElementById('somatotype-point-canvas2');
-	    const imgSomatotype = document.getElementById('somatotype-image');
-	
-	    if (!Somatotypecanvas || !imgSomatotype) {
-	        console.error('Canvas #somatotype-point-canvas2 o imagen #somatotype-image no encontrado');
-	        return;
-	    }
-	
-	    function drawSomaChart() {
-	        const ctxSoma = Somatotypecanvas.getContext('2d');
-	        Somatotypecanvas.width = imgSomatotype.width;
-	        Somatotypecanvas.height = imgSomatotype.height;
-	        ctxSoma.clearRect(0, 0, Somatotypecanvas.width, Somatotypecanvas.height);
-	
-	        const chartWidth = imgSomatotype.width * 0.8;
-	        const chartHeight = imgSomatotype.height * 0.8;
-	        const chartOffsetX = (imgSomatotype.width - chartWidth) / 2;
-	        const chartOffsetY = (imgSomatotype.height - chartHeight) / 2;
-	
-	        // Define centerY and other variables
-	        const centerX = chartOffsetX + chartWidth / 2;
-	        const centerY = chartOffsetY + chartHeight / 2;
-	        const xAxisY = chartOffsetY + 1 * chartHeight;
-	
-	        console.log(`Image Dimensions: width=${imgSomatotype.width}, height=${imgSomatotype.height}`);
-	        console.log(`Canvas Dimensions: width=${Somatotypecanvas.width}, height=${Somatotypecanvas.height}`);
-	        console.log(`Chart Area: offsetX=${chartOffsetX}, offsetY=${chartOffsetY}, width=${chartWidth}, height=${chartHeight}`);
-	        console.log(`centerY: ${centerY}, xAxisY: ${xAxisY}`);
-	
-	        // Use somatotipoValues instead of results
-	        const x = somatotipoValues.ectomorfia - somatotipoValues.endomorfia;
-	        const y = 2 * somatotipoValues.mesomorfia - (somatotipoValues.endomorfia + somatotipoValues.ectomorfia);
-	        const xClamped = Math.min(Math.max(x, -8), 8);
-	        const yClamped = Math.min(Math.max(y, -10), 12);
-	
-	        // Calculate pixel coordinates for the blue point
-	        const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
-	        const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
-	
-	        console.log(`Pixel Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
-	
-	        // Draw the blue point
-	        ctxSoma.beginPath();
-	        ctxSoma.arc(pixelX, pixelY, 40, 0, 2 * Math.PI);
-	        ctxSoma.fillStyle = '#0056b3';
-	        ctxSoma.fill();
-	        ctxSoma.strokeStyle = '#003087';
-	        ctxSoma.lineWidth = 6;
-	        ctxSoma.stroke();
-	
-	        // Point label
-	        ctxSoma.font = 'bold 75px Inter, sans-serif';
-	        ctxSoma.fillStyle = '#000000';
-	        ctxSoma.strokeStyle = '#ffffff';
-	        ctxSoma.lineWidth = 5;
-	        ctxSoma.textAlign = 'center';
-	        ctxSoma.strokeText(
-	            `${somatotipoValues.endomorfia.toFixed(1)}-${somatotipoValues.mesomorfia.toFixed(1)}-${somatotipoValues.ectomorfia.toFixed(1)}`,
-	            pixelX,
-	            pixelY - 55
-	        );
-	        ctxSoma.fillText(
-	            `${somatotipoValues.endomorfia.toFixed(1)}-${somatotipoValues.mesomorfia.toFixed(1)}-${somatotipoValues.ectomorfia.toFixed(1)}`,
-	            pixelX,
-	            pixelY - 55
-	        );
-	
-	        // Draw X-axis
-	        ctxSoma.beginPath();
-	        ctxSoma.moveTo(chartOffsetX, xAxisY);
-	        ctxSoma.lineTo(chartOffsetX + chartWidth, xAxisY);
-	        ctxSoma.strokeStyle = '#000000';
-	        ctxSoma.lineWidth = 6;
-	        ctxSoma.stroke();
-	
-	        // X-axis graduations
-	        ctxSoma.font = '60px Inter, sans-serif';
-	        ctxSoma.fillStyle = '#000000';
-	        ctxSoma.textAlign = 'center';
-	        for (let i = -8; i <= 8; i += 2) {
-	            const xPos = chartOffsetX + ((i + 8) / 16) * chartWidth;
-	            ctxSoma.beginPath();
-	            ctxSoma.moveTo(xPos, xAxisY - 5);
-	            ctxSoma.lineTo(xPos, xAxisY + 5);
-	            ctxSoma.stroke();
-	            ctxSoma.fillText(i.toString(), xPos, xAxisY + 60);
-	        }
-	        ctxSoma.font = '85px Roboto, sans-serif';
-	        ctxSoma.fillText('Endomorfia - Ectomorfia', chartOffsetX + chartWidth / 2, xAxisY + 100);
-	
-	        // Draw Y-axis (at x=8)
-	        const yAxisX = chartOffsetX + chartWidth;
-	        ctxSoma.beginPath();
-	        ctxSoma.moveTo(yAxisX, xAxisY);
-	        ctxSoma.lineTo(yAxisX, chartOffsetY);
-	        ctxSoma.strokeStyle = '#000000';
-	        ctxSoma.lineWidth = 6;
-	        ctxSoma.stroke();
-	
-	        // Y-axis graduations
-	        ctxSoma.font = '60px Inter, sans-serif';
-	        ctxSoma.fillStyle = '#000000';
-	        ctxSoma.textAlign = 'center';
-	        for (let i = -10; i <= 12; i += 2) {
-	            const yPos = centerY - (i / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
-	            ctxSoma.beginPath();
-	            ctxSoma.moveTo(yAxisX - 5, yPos);
-	            ctxSoma.lineTo(yAxisX + 5, yPos);
-	            ctxSoma.stroke();
-	            ctxSoma.fillText(i.toString(), yAxisX + 50, yPos + 10);
-	        }
-	
-	        // Y-axis label
-	        ctxSoma.save();
-	        ctxSoma.translate(chartOffsetX + ((7 + 8) / 16) * chartWidth, chartOffsetY + chartHeight / 2);
-	        ctxSoma.rotate(-Math.PI / 2);
-	        ctxSoma.font = '75px Roboto, sans-serif';
-	        ctxSoma.textAlign = 'center';
-	        ctxSoma.fillText('Mesomorfia', 0, 0);
-	        ctxSoma.restore();
-	    }
-	
-	    // Handle image loading
-	    imgSomatotype.onerror = () => {
-	        console.error('Error al cargar la imagen #somatotype-image');
-	    };
-	
-	    // Draw chart if image is already loaded, otherwise wait for onload
-	    if (imgSomatotype.complete) {
-	        drawSomaChart();
-	    } else {
-	        imgSomatotype.onload = drawSomaChart;
-	    }
+    // Draw chart if image is loaded, otherwise wait for onload
+    if (imgSomatotype.complete && imgSomatotype.naturalWidth > 0) {
+        drawSomaChart();
+    } else {
+        imgSomatotype.onload = drawSomaChart;
+    }
 }
    
 
