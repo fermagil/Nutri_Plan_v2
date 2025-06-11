@@ -3967,7 +3967,7 @@ for (let i = 0; i < canvasElements.length; i++) {
         function drawGrid(sexo, actividad, edad) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            let ranges = getRanges(sexo, actividad, edad);
+            let ranges = RangesGet(sexo, actividad, edad);
             let imlgRanges = ranges.imlgRanges;
             let imgRanges = ranges.imgRanges;
             let maxIMLG = ranges.maxIMLG;
