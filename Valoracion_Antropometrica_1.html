@@ -4989,6 +4989,25 @@ function populateFields() {
 
         console.log('Datos procesados:', data);
 
+	    // Set canvas dimensions
+        Somatotypecanvas.width = displayedWidth;
+        Somatotypecanvas.height = displayedHeight;
+
+        const ctxSoma2 = Somatotypecanvas.getContext('2d');
+        ctxSoma2.clearRect(0, 0, Somatotypecanvas.width, Somatotypecanvas.height);
+
+        // Calculate chart area (80% of displayed size)
+        const chartWidth2 = displayedWidth * 0.8;
+        const chartHeight2 = displayedHeight * 0.8;
+        const chartOffsetX2 = (displayedWidth - chartWidth) / 2;
+        const chartOffsetY2 = (displayedHeight - chartHeight) / 2;
+
+        // Define centerY and other variables
+        const centerX2 = chartOffsetX2 + chartWidth / 2;
+        const centerY2 = chartOffsetY2 + chartHeight / 2;
+        const xAxisY2 = chartOffsetY2 + chartHeight;
+
+
 	    // Draw red point (new data from form)
            
                 const x = somatotipoX
@@ -4997,30 +5016,30 @@ function populateFields() {
 		    x: x,
 		    y: y
 		});
-                const xClamped = Math.min(Math.max(x, -8), 8);
-                const yClamped = Math.min(Math.max(y, -10), 12);
+                const xClamped2 = Math.min(Math.max(x, -8), 8);
+                const yClamped2 = Math.min(Math.max(y, -10), 12);
 
-                const pixelX = chartOffsetX + ((xClamped + 8) / 16) * chartWidth;
-                const pixelY = centerY - (yClamped / 22) * ((centerY - chartOffsetY) + (xAxisY - centerY));
+                const pixelX2 = chartOffsetX2 + ((xClamped2 + 8) / 16) * chartWidth2;
+                const pixelY2 = centerY2 - (yClamped2 / 22) * ((centerY2 - chartOffsetY2) + (xAxisY2 - centerY2));
 
                 console.log(`Red Point Coordinates: pixelX=${pixelX}, pixelY=${pixelY}`);
 
                 // Draw red point
-                ctxSoma.beginPath();
-                ctxSoma.arc(pixelX, pixelY, 10, 0, 2 * Math.PI);
-                ctxSoma.fillStyle = '#FF0000';
-                ctxSoma.fill();
-                ctxSoma.strokeStyle = '#8B0000';
-                ctxSoma.lineWidth = 2;
-                ctxSoma.stroke();
+                ctxSoma2.beginPath();
+                ctxSoma2.arc(pixelX, pixelY, 10, 0, 2 * Math.PI);
+                ctxSoma2.fillStyle = '#FF0000';
+                ctxSoma2.fill();
+                ctxSoma2.strokeStyle = '#8B0000';
+                ctxSoma2.lineWidth = 2;
+                ctxSoma2.stroke();
 
                 // Red point label (below point to avoid overlap)
-                ctxSoma.font = 'bold 20px Inter, sans-serif';
-                ctxSoma.fillStyle = '#000000';
-                ctxSoma.strokeStyle = '#ffffff';
-                ctxSoma.lineWidth = 2;
-                ctxSoma.textAlign = 'center';
-                ctxSoma.strokeText(
+                ctxSoma2.font = 'bold 20px Inter, sans-serif';
+                ctxSoma2.fillStyle = '#000000';
+                ctxSoma2.strokeStyle = '#ffffff';
+                ctxSoma2.lineWidth = 2;
+                ctxSoma2.textAlign = 'center';
+                ctxSoma2.strokeText(
                     `${data.endomorfia.toFixed(1)}-${data.mesomorfia.toFixed(1)}-${data.ectomorfia.toFixed(1)}`,
                     pixelX,
                     pixelY + 25
