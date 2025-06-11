@@ -1800,6 +1800,7 @@ body {
 }
 
 	    /*Moda Somatotipo Container*/
+/* Modal Somatotipo Container */
 .modal-soma-container {
     display: none;
     opacity: 0;
@@ -1817,168 +1818,204 @@ body {
 
 .modal-soma-container .modal-soma-content {
     background-color: white;
-    padding: 15px;
     border-radius: 8px;
     width: 95%;
     max-width: 1000px;
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative; /* For close button positioning */
+    padding: 0; /* Delegate padding to wrapper */
 }
 
+/* Wrapper for modal content */
+.container-soma-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    padding: 1.5rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Content within wrapper */
+.container-soma-content {
+    width: 100%;
+}
+
+/* Close button */
 .modal-soma-container .close-soma-modal {
-    float: right;
+    position: absolute;
+    top: 10px;
+    right: 15px;
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
     color: #333;
     transition: color 0.2s;
+    z-index: 10;
 }
 
 .modal-soma-container .close-soma-modal:hover {
     color: #ff0000;
 }
-.modal-soma-container .closesomaModal {
-    background-color: #dc3545;
-}
-.modal-soma-container .closesomaModal:hover {
-    background-color: #c82333;
-}
+
+/* Modal title */
 .modal-soma-container h1#modalTitle {
-    font-size: 36px; /* Reduced from 48px for better balance */
+    font-size: 36px;
     color: #388e3c;
-    margin: 10px 0 20px 0; /* Adjusted for spacing above form-grid */
+    margin: 10px 0 20px 0;
     text-align: center;
-    width: 100%; /* Ensure full width */
+    width: 100%;
 }
 
-.modal-soma-container .form-grid {
+/* Form grid */
+.container-soma-wrapper .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.modal-soma-container .form-grid input[type="number"],
-.modal-soma-container .form-grid select {
-    padding: 8px;
+.container-soma-wrapper .input-form input[type="number"],
+.container-soma-wrapper .input-form select {
+    width: 100%;
+    padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: #fff;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
-.modal-soma-container .form-grid input[type="number"]:focus,
-.modal-soma-container .form-grid select:focus {
+.container-soma-wrapper .input-form input[type="number"]:focus,
+.container-soma-wrapper .input-form select:focus {
     border-color: #007bff;
     outline: none;
 }
 
-.modal-soma-container .form-grid input.invalid,
-.modal-soma-container .form-grid select.invalid {
+.container-soma-wrapper .input-form input.invalid,
+.container-soma-wrapper .input-form select.invalid {
     border-color: #ff0000;
     background-color: #fff5f5;
 }
 
-.modal-soma-container .somatotipo-display {
+.container-soma-wrapper .input-form input[readonly] {
+    background: #f9f9f9;
+    cursor: not-allowed;
+}
+
+/* Somatotipo display */
+.container-soma-wrapper .somatotipo-display {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 6px;
     grid-column: 1 / -1;
 }
 
-.modal-soma-container .somatotipo-display h3 {
+.container-soma-wrapper .somatotipo-display h3 {
     margin: 0 0 10px 0;
     font-size: 18px;
     color: #388e3c;
 }
 
-.modal-soma-container .somatotipo-values {
+.container-soma-wrapper .somatotipo-values {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+    gap: 0.5rem;
 }
 
-.modal-soma-container .somatotipo-values div {
+.container-soma-wrapper .somatotipo-values div {
     display: flex;
     flex-direction: column;
 }
 
-.modal-soma-container .somatotipo-values label {
+.container-soma-wrapper .somatotipo-values label {
     font-size: 14px;
     margin-bottom: 5px;
 }
 
-.modal-soma-container .somatotipo-values input {
-    padding: 8px;
+.container-soma-wrapper NAVIGATION .somatotipo-values input {
+    padding: 4px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 2px;
     background-color: #f9f9f9;
     font-size: 14px;
 }
 
-.modal-soma-container .chart-container {
-    width: 100%;
-    min-height: 500px;
-    max-height: 500px;
+/* Chart container */
+.container-soma-wrapper .chart-container {
     position: relative;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
+    min-height: 300px;
+    max-height: 300px;
+    margin: 1rem auto;
 }
 
-.modal-soma-container .chart-container:has(#somatotype-image) {
-    max-width: 800px;
-    max-height: 500px;
+.container-soma-wrapper .chart-container:has(#somatotype-image) {
+    max-width: 600px;
     aspect-ratio: 1 / 1;
 }
 
-.modal-soma-container .chart-container img#somatotype-image {
+.container-soma-wrapper .chart-container img#somatotype-image {
     display: block;
     width: 100%;
     height: auto;
     object-fit: contain;
 }
 
-.modal-soma-container .chart-container canvas#somatotype-point-canvas {
-    position: Hs;
-    width: 100% !important;
-    height: 100% !important;
-    pointer-events: none;
-}
-
-.modal-soma-container .chart-container canvas#somatotipo-canvas {
+.container-soma-wrapper .chart-container canvas#somatotype-point-canvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100% !important;
     height: 100% !important;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
-.modal-soma-container .button-container {
-    text-align: center;
-    margin-top: 20px;
+/* Button container */
+.container-soma-wrapper .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1rem;
 }
 
-.modal-soma-container button {
+.container-soma-wrapper button {
     padding: 10px 20px;
-    margin: 0 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     background-color: #007bff;
     color: white;
+    font-size: 14px;
 }
 
-.modal-soma-container button:hover {
+.container-soma-wrapper button:hover {
     background-color: #0056b3;
 }
 
-.modal-soma-container .download-button {
+.container-soma-wrapper .download-button {
     background-color: #28a745;
 }
 
-.modal-soma-container .download-button:hover {
+.container-soma-wrapper .download-button:hover {
     background-color: #218838;
 }
 
-.modal-soma-container .tooltip {
+.container-soma-wrapper .closesomaModal {
+    background-color: #dc3545;
+    color: white;
+}
+
+.container-soma-wrapper .closesomaModal:hover {
+    background-color: #c82333;
+}
+
+/* Tooltip */
+.container-soma-wrapper .tooltip {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
@@ -1989,116 +2026,53 @@ body {
     display: none;
 }
 
-/* Media queries para responsividad */
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .modal-soma-container .modal-soma-content {
         width: 98%;
         max-height: 95vh;
-        padding: 8px;
+    }
+
+    .container-soma-wrapper {
+        padding: 1rem;
+        max-width: 100%;
     }
 
     .modal-soma-container h1#modalTitle {
-        font-size: 24px; /* Further reduced for mobile */
+        font-size: 24px;
         margin-bottom: 10px;
     }
 
-    .modal-soma-container .chart-container {
-        min-height: 300px;
-        max-height: 400px;
+    .container-soma-wrapper .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
 
-    .modal-soma-container .chart-container:has(#somatotype-image) {
+    .container-soma-wrapper .chart-container {
+        min-height: 250px;
+        max-height: 250px;
+    }
+
+    .container-soma-wrapper .chart-container:has(#somatotype-image) {
         max-width: 100%;
-        max-height: 300px;
+        max-height: 250px;
     }
 
-    .modal-soma-container .form-grid input[type="number"],
-    .modal-soma-container .form-grid select {
-        font-size: 12px;
+    .container-soma-wrapper .input-form input[type="number"],
+    .container-soma-wrapper .input-form select {
+        font-size: 14px;
+        padding: 0.4rem;
+    }
+
+    .container-soma-wrapper .button-container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .container-soma-wrapper button {
+        width: 100%;
         padding: 8px;
     }
-}
-	    /* Wrapper for modal content, providing padding and alignment */
-.container-soma-wrapper {
-    width: 100%;
-    max-width: 1200px; /* Limits width for large screens */
-    padding: 1.5rem; /* Adds internal spacing, similar to #modalContainer */
-    margin: 0 auto; /* Centers content horizontally */
-    box-sizing: border-box; /* Includes padding in width */
-    background: rgba(255, 255, 255, 0.95); /* Subtle background for hierarchy */
-    border-radius: 6px; /* Matches modal-soma-content's rounded corners */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-}
-
-/* Ensure wrapper doesn't interfere with close button */
-.close-soma-modal {
-    z-index: 10; /* Above wrapper */
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .container-soma-wrapper {
-        padding: 1rem; /* Reduced padding for smaller screens */
-        max-width: 100%; /* Full width on mobile */
-    }
-}
-
-/* Enhance form grid within wrapper */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-/* Style for container-soma-content to work with wrapper */
-.container-soma-content {
-    width: 100%;
-}
-
-/* Ensure chart container fits within wrapper */
-.chart-container {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    margin: 1rem auto;
-}
-
-/* Button container alignment */
-.button-container {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-/* Input and select styles for consistency */
-.input-form input,
-.input-form select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.input-form input[readonly] {
-    background: #f9f9f9;
-    cursor: not-allowed;
-}
-
-/* Somatotipo display section */
-.somatotipo-display {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: #f5f5f5;
-    border-radius: 6px;
-}
-
-.somatotipo-values {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.5rem;
 }
 </style>
 </head>
