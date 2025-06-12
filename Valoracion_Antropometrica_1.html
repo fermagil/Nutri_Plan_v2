@@ -5875,20 +5875,24 @@ const somatotipoData = [
 
 	// Función para abrir el modal Ficha Médica (Anamnesis)
 function openModal(event) {
-  if (event) event.stopPropagation();
-
-  const modal = document.getElementById("commitModal");
-  if (modal) {
-    modal.classList.add("active");
-
-    const hasData = localStorage.getItem("fichaMedica");
-    if (hasData) {
-      console.log("Hay datos guardados. Se cargarán automáticamente.");
+      if (event) event.stopPropagation();
+      console.log("openModal() ejecutada");
+      alert("¡El modal debería abrir!");
     }
 
-    cargarDatos(); // Carga los datos guardados desde localStorage
-  }
-}
+    document.addEventListener("DOMContentLoaded", function () {
+      const btnAbrirData = document.getElementById("btn-abrir-data");
+
+      if (!btnAbrirData) {
+        console.error("Botón con id='btn-abrir-data' no encontrado");
+        return;
+      }
+
+      btnAbrirData.addEventListener("click", function (event) {
+        event.stopPropagation();
+        openModal(event);
+      });
+    });
 
 // Función para cerrar el modal
 function closeModal(event) {
