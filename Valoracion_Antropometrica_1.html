@@ -2250,6 +2250,7 @@ body {
   flex-direction: column;
   gap: 4px;
 }
+
 .modal-close {
   background: none;
   border: none;
@@ -3729,12 +3730,12 @@ select.input-field:focus {
   </td>
 </tr>
 
-          <!-- HÁBITOS ALIMENTICIOS -->
+         <!-- HÁBITOS DE ALIMENTACIÓN -->
 <tr>
   <th colspan="4">HÁBITOS DE ALIMENTACIÓN</th>
 </tr>
 
-<!-- Fila 1: ¿Cuántas comidas al día haces? + ¿Qué comidas sueles saltarte? -->
+<!-- Fila 1: Cuántas comidas + Comidas saltadas -->
 <tr class="form-row">
   <td class="form-field">
     <label>¿Cuántas comidas al día haces?</label>
@@ -3753,13 +3754,12 @@ select.input-field:focus {
     <label><input type="checkbox" name="comidasSaltadas[]" value="Desayuno"> Desayuno</label>&nbsp;&nbsp;
     <label><input type="checkbox" name="comidasSaltadas[]" value="Media Mañana"> Media Mañana</label>&nbsp;&nbsp;
     <label><input type="checkbox" name="comidasSaltadas[]" value="Almuerzo"> Almuerzo</label>&nbsp;&nbsp;
-    <label><input type="checkbox" name="comidasSaltadas[]" value="Comida Principal"> Comida Principal</label>&nbsp;&nbsp;
     <label><input type="checkbox" name="comidasSaltadas[]" value="Merienda"> Merienda</label>&nbsp;&nbsp;
     <label><input type="checkbox" name="comidasSaltadas[]" value="Cena"> Cena</label>
   </td>
 </tr>
 
-<!-- Fila 2: Piezas de fruta + Ingesta líquidos + Dieta balanceada -->
+<!-- Fila 2: Fruta + Líquidos + Dieta balanceada -->
 <tr class="form-row">
   <td class="form-field">
     <label>Número de piezas de fruta al día:</label>
@@ -3792,7 +3792,7 @@ select.input-field:focus {
       <label><input type="radio" name="dietaBalanceada" value="No"> No</label>
     </div>
   </td>
-  <td class="form-field"></td> <!-- Vacío para completar 4 columnas -->
+  <td class="form-field"></td> <!-- Celda vacía para completar 4 columnas -->
 </tr>
 
           <!-- COMENTARIOS / OBSERVACIONES -->
