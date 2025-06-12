@@ -5878,7 +5878,7 @@ const somatotipoData = [
 function openModal(event) {
   if (event) event.stopPropagation();
 
-  const modal = document.getElementById("commitModal");
+  const modal = document.getElementById("commit-modal");
   if (modal) {
     modal.classList.add("active");
 
@@ -5893,7 +5893,7 @@ function openModal(event) {
 
 // Función: Cerrar el modal
 function closeModal(event) {
-  const modal = document.getElementById("commitModal");
+  const modal = document.getElementById("commit-modal");
 
   if (modal && modal.classList.contains("active")) {
     const hasData = localStorage.getItem("fichaMedica");
@@ -5998,7 +5998,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Cerrar al hacer clic fuera del contenido
-  const modal = document.getElementById("commitModal");
+  const modal = document.getElementById("commit-modal");
   if (modal) {
     modal.addEventListener("click", function (e) {
       if (e.target === this) {
