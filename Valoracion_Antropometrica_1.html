@@ -3106,8 +3106,8 @@ body {
                                 <label for="nombreInput">Género:</label>
 				<select id="nombreInput" name="genero">
 				    <option value="" disabled>Selecciona género</option>
-				    <option value="hombre" selected>Hombre</option> <!-- Añadido selected -->
-				    <option value="mujer">Mujer</option>
+				    <option value="masculino" selected>Masculino</option> <!-- Añadido selected -->
+				    <option value="femenino">Femenino</option>
 				</select>
                             </div>
                             <div>
@@ -3126,9 +3126,9 @@ body {
                                 <label for="deporteInput">Referentes:</label>
                                <select id="deporteInput" name="grupoReferencia">
 				    <option value="" disabled>Selecciona grupo</option>
-				    <option value="Sedentarios">Sedentarios</option>
-				    <option value="PocoActivos">Poco Activos</option>
-				    <option value="Activo">Activo</option>
+				    <option value="sedentarios">Sedentarios</option>
+				    <option value="poblacionTipo">General</option>
+				    <option value="tomasCliente">Registros</option>
 				    <option value="Deportes" selected>Deportes</option> <!-- Añadido selected -->
 				</select>
                             </div>
@@ -4190,7 +4190,7 @@ for (let i = 0; i < canvasElements.length; i++) {
 
             let imlgRanges, imgRanges, maxIMLG, maxIMG;
 
-            if (sexo === 'mujer') {
+            if (sexo === 'femenino') {
                 if (Groupage === '18-29') {
                     if (actividad === 'sedentario') {
                         imlgRanges = { bajo: 12.5, medio: 14.5, alto: 16.5 };
@@ -4473,8 +4473,8 @@ for (let i = 0; i < canvasElements.length; i++) {
 
     // Map genero to sexoInput values
     const genero = generoElement && generoElement.value ? 
-        (generoElement.value === 'masculino' ? 'hombre' : generoElement.value === 'femenino' ? 'mujer' : 'mujer') : 
-        (urlParams.get('sexo') === 'hombre' ? 'hombre' : 'mujer');
+        (generoElement.value === 'masculino' ? 'masculino' : generoElement.value === 'femenino' ? 'femenino' : 'mujer') : 
+        (urlParams.get('sexo') === 'masculino' ? 'masculino' : 'femenino');
 
     // Map edad, ensuring it's at least 18
     const edadFromHtml = edadElement && edadElement.value ? parseFloat(edadElement.value) : NaN;
@@ -4627,16 +4627,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const modalidadSelect = modalContainer.querySelector('#modalidadInput');
 
         const generoMap = {
-            'masculino': 'hombre',
-            'femenino': 'mujer'
+            'masculino': 'masculino',
+            'femenino': 'femenino'
         };
 
         const defaultValues = {
-            genero: 'hombre',
+            genero: 'masculino',
             endomorfia: 1.0,
             mesomorfia: 1.0,
             ectomorfia: 1.0,
-            grupoReferencia: 'Sedentarios',
+            grupoReferencia: 'N/A',
             modalidad: 'N/A'
         };
 
@@ -5365,22 +5365,22 @@ const somatotipoData = [
         }
 
         // Evitar poblar campos para grupos genéricos
-        if (['sedentarios', 'pocoactivos', 'activo'].includes(selectedModalidad)) {
+        if (['sedentarios', 'poblacionTipo', 'tomasCliente'].includes(selectedModalidad)) {
             console.debug(`Modalidad "${selectedModalidad}" no tiene datos de somatotipo.`);
             return;
         }
 
         // Buscar datos en somatotipoData
-        const sexoKey = selectedSexo === 'hombre' ? 'H' : 'M';
+        const sexoKey = selectedSexo === 'masculino' ? 'H' : 'M';
         const data = somatotipoData.find(item => item.deporte === selectedModalidad && item.sexo === sexoKey);
 
         if (data) {
-            somatotipoEndo.value = selectedSexo === 'hombre' ? data.endo : data.endo_f;
-            somatotipoMeso.value = selectedSexo === 'hombre' ? data.meso : data.meso_f;
-            somatotipoEcto.value = selectedSexo === 'hombre' ? data.ecto : data.ecto_f;
+            somatotipoEndo.value = selectedSexo === 'masculino' ? data.endo : data.endo_f;
+            somatotipoMeso.value = selectedSexo === 'masculino' ? data.meso : data.meso_f;
+            somatotipoEcto.value = selectedSexo === 'masculino' ? data.ecto : data.ecto_f;
             somatotipoDominante.value = data.dominante || '';
-            somatotipoX.value = selectedSexo === 'hombre' ? data.x : data.x_f;
-            somatotipoY.value = selectedSexo === 'hombre' ? data.y : data.y_f;
+            somatotipoX.value = selectedSexo === 'masculino' ? data.x : data.x_f;
+            somatotipoY.value = selectedSexo === 'masculino' ? data.y : data.y_f;
             console.debug(`Somatotipo actualizado para ${selectedModalidad} (${selectedSexo}):`, data);
         } else {
             console.warn(`No se encontraron datos de somatotipo para ${selectedModalidad} (${sexoKey}).`);
