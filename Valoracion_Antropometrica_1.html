@@ -2176,13 +2176,14 @@ body {
         padding: 8px;
     }
 }
+/* Estilos generales del modal container de Anamnesis */
 .commit-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2194,6 +2195,160 @@ body {
 .commit-modal.active {
   opacity: 1;
   z-index: 9999;
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: #fff;
+  color: #333;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
+  width: 90%;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* Animación suave al aparecer */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Encabezado del modal */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #2e7d32; /* Verde oscuro */
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #777;
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #2e7d32;
+}
+
+/* Cuerpo del modal */
+.modal-body {
+  margin-bottom: 1.5rem;
+}
+
+/* Tabla de datos */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.data-table th {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #c8e6c9;
+}
+
+.data-table td {
+  padding: 8px 0;
+}
+
+/* Campos de entrada */
+.input-field,
+select.input-field {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fafafa;
+  color: #333;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.input-field:focus,
+select.input-field:focus {
+  border-color: #4caf50;
+  outline: none;
+  background-color: #f0fff0;
+}
+
+.textarea-field {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fafafa;
+  color: #333;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.3s ease;
+}
+
+/* Opciones (radios y checkboxes) */
+.options label {
+  display: inline-block;
+  margin-right: 1rem;
+  font-size: 14px;
+}
+
+/* Pie de página */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #388e3c;
+  transform: scale(1.03);
+}
+
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: #cccccc;
+  transform: scale(1.03);
 }
 </style>
 </head>
@@ -3231,32 +3386,177 @@ body {
 </div>
 		     <!-- Modal Commit Container -->
 		    	<div class="commit-modal">
-			  <div class="modal-content">
-			    <!-- Contenido del modal -->
-			    <div class="modal-header">
-			      <h2 class="modal-title">Commit changes</h2>
-			      <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
-			    </div>
-			
-			    <div class="modal-body">
-			      <label for="commit-message">Commit message</label>
-			      <input type="text" id="commit-message" class="input-field" placeholder="Enter commit message..." />
-			
-			      <label for="extended-description">Extended description</label>
-			      <textarea id="extended-description" class="textarea-field" placeholder="Add an optional extended description..."></textarea>
-			
-			      <div class="options">
-			        <label><input type="radio" name="option" value="option1" /> Option 1</label>
-			        <label><input type="radio" name="option" value="option2" /> Option 2</label>
-			      </div>
-			    </div>
-			
-			    <div class="modal-footer">
-			      <button class="btn btn-secondary">Cancel</button>
-			      <button class="btn btn-primary">Commit changes</button>
-			    </div>
-			  </div>
-			</div>
+  <div class="modal-content">
+    <!-- Encabezado -->
+    <div class="modal-header">
+      <h2 class="modal-title">Ficha Médica Deportiva</h2>
+      <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
+    </div>
+
+    <!-- Contenido del formulario -->
+    <form id="form-datos-paciente" onsubmit="guardarDatos(event)">
+      <div class="modal-body">
+
+        <table class="data-table">
+          <!-- Datos Personales -->
+          <tr>
+            <th colspan="4">Datos Personales</th>
+          </tr>
+          <tr>
+            <td>ID TEST:</td>
+            <td><input type="text" name="idTest" class="input-field"></td>
+            <td>Técnico:</td>
+            <td><input type="text" name="tecnico" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>FECHA:</td>
+            <td><input type="date" name="fecha" class="input-field"></td>
+            <td>NOMBRE:</td>
+            <td><input type="text" name="nombre" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>APELLIDOS:</td>
+            <td><input type="text" name="apellidos" class="input-field"></td>
+            <td>DEPORTE:</td>
+            <td><input type="text" name="deporte" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>ESPECIALIDAD/PUESTO:</td>
+            <td><input type="text" name="especialidadPuesto" class="input-field"></td>
+            <td>MODALIDAD / ESPECIALIDAD:</td>
+            <td><input type="text" name="modalidadEspecialidad" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>SEXO: 
+              <label><input type="radio" name="sexo" value="V"> V</label> / 
+              <label><input type="radio" name="sexo" value="M"> M</label></td>
+            <td><input type="date" name="fechaNacimiento" class="input-field"></td>
+            <td>PAÍS DE NACIMIENTO:</td>
+            <td><input type="text" name="paisNacimiento" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>RAZA:</td>
+            <td><input type="text" name="raza" class="input-field"></td>
+          </tr>
+
+          <!-- DATOS DE ENTRENAMIENTO -->
+          <tr>
+            <th colspan="4">DATOS DE ENTRENAMIENTO</th>
+          </tr>
+          <tr>
+            <td>AÑOS:</td>
+            <td><input type="number" name="entrenamientoAnios" class="input-field"></td>
+            <td>DÍAS/SEMANA:</td>
+            <td><input type="number" name="diasSemana" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>HORAS/DÍA:</td>
+            <td><input type="number" name="horasDia" class="input-field"></td>
+            <td>INTENSIDAD:</td>
+            <td><input type="text" name="intensidad" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>MUJER: Menarquía <input type="checkbox" name="menarquia"></td>
+            <td>Menstruación <input type="checkbox" name="menstruacion"></td>
+          </tr>
+          <tr>
+            <td>NIÑO/A - ADOLESCENTE: Estado madurativo:
+              <select name="estadoMadurativo" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="prepuberal">Prepuberal</option>
+                <option value="puberal">Puberal</option>
+                <option value="pospuberal">Pospuberal</option>
+              </select>
+            </td>
+          </tr>
+
+          <!-- ANAMNESIS DEPORTIVA -->
+          <tr>
+            <th colspan="4">ANAMNESIS DEPORTIVA</th>
+          </tr>
+          <tr>
+            <td>Deporte que practica:</td>
+            <td><input type="text" name="deportePractica" class="input-field"></td>
+            <td>Especialidad:</td>
+            <td><input type="text" name="anamnesisEspecialidad" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>Categoría:</td>
+            <td><input type="text" name="categoria" class="input-field"></td>
+            <td>Logros deportivos (si procede):</td>
+            <td><input type="text" name="logros" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>Período de la temporada:</td>
+            <td><input type="text" name="periodoTemporada" class="input-field"></td>
+            <td>Edad de inicio del entrenamiento:</td>
+            <td><input type="number" name="edadInicioEntrenamiento" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>Años de práctica deportiva:</td>
+            <td><input type="number" name="aniosPractica" class="input-field"></td>
+            <td>Número de días que entrena a la semana:</td>
+            <td><input type="number" name="diasEntrenamientoSemana" class="input-field"></td>
+          </tr>
+
+          <!-- HÁBITOS ALIMENTICIOS -->
+          <tr>
+            <th colspan="4">HÁBITOS DE ALIMENTACIÓN</th>
+          </tr>
+          <tr>
+            <td>- Desayuno:</td>
+            <td><input type="text" name="desayuno" class="input-field"></td>
+            <td>- Media mañana:</td>
+            <td><input type="text" name="mediaManana" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>- Comida:</td>
+            <td><input type="text" name="comida" class="input-field"></td>
+            <td>- Merienda:</td>
+            <td><input type="text" name="merienda" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>- Cena:</td>
+            <td><input type="text" name="cena" class="input-field"></td>
+            <td>- Número de piezas de fruta al día:</td>
+            <td><input type="number" name="frutaDia" class="input-field"></td>
+          </tr>
+          <tr>
+            <td>- Consumo de leche y productos lácteos al día:</td>
+            <td><input type="text" name="lacteosDia" class="input-field"></td>
+            <td>- Ingesta de líquidos al día (ml):</td>
+            <td><input type="number" name="liquidosDia" class="input-field"></td>
+          </tr>
+
+          <!-- COMENTARIOS -->
+          <tr>
+            <th colspan="4">COMENTARIOS / OBSERVACIONES</th>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <textarea name="comentarios" class="textarea-field" placeholder="Escribe aquí tus observaciones..." rows="5"></textarea>
+            </td>
+          </tr>
+
+          <!-- BOTONES DE NUTRICIÓN -->
+          <tr>
+            <td colspan="4" style="text-align:center;">
+              <label><input type="radio" name="nutricion" value="Balanceada"> Balanceada</label>
+              &nbsp;&nbsp;
+              <label><input type="radio" name="nutricion" value="No Balanceada"> No Balanceada</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Pie de página -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" type="submit">Guardar Ficha</button>
+      </div>
+    </form>
+  </div>
+</div>
                 </div>
             </div>
         </form>
@@ -5550,27 +5850,65 @@ const somatotipoData = [
     nombreInput.addEventListener('change', updateSomatotipoValues);
 });
 
-	//Funcio abrir commit modal container
+	// Función para abrir el modal Ficha Medica( ananmnesis
 	function openModal() {
-	  const modal = document.querySelector('.commit-modal');
+	  const modal = document.getElementById("commitModal");
 	  if (modal) {
-	    modal.classList.add('active');
+	    modal.classList.add("active");
+	    cargarDatos(); // Carga los datos guardados desde localStorage
 	  }
 	}
 	
+	// Función para cerrar el modal
 	function closeModal() {
-	  const modal = document.querySelector('.commit-modal');
+	  const modal = document.getElementById("commitModal");
 	  if (modal) {
-	    modal.classList.remove('active');
+	    modal.classList.remove("active");
 	  }
 	}
 	
-	// Cerrar al hacer clic fuera del contenido
-	document.querySelector('.commit-modal').addEventListener('click', function(e) {
+	// Opcional: Cerrar al hacer clic fuera del contenido
+	document.getElementById("commitModal")?.addEventListener("click", function (e) {
 	  if (e.target === this) {
 	    closeModal();
 	  }
 	});
+	// Cerrar modal con la tecla ESC
+	document.addEventListener("keydown", function (e) {
+	  if (e.key === "Escape") {
+	    closeModal();
+	  }
+	});
+	function guardarDatos(event) {
+	  event.preventDefault();
+	
+	  const form = document.getElementById("form-datos-paciente");
+	  const formData = new FormData(form);
+	  const data = Object.fromEntries(formData);
+	
+	  // Guardar en localStorage como JSON
+	  localStorage.setItem("fichaMedica", JSON.stringify(data));
+	
+	  alert("Datos guardados localmente");
+	  closeModal();
+	}
+	
+	function cargarDatos() {
+	  const savedData = localStorage.getItem("fichaMedica");
+	  if (savedData) {
+	    const data = JSON.parse(savedData);
+	    const form = document.getElementById("form-datos-paciente");
+	
+	    for (const [name, value] of Object.entries(data)) {
+	      const field = form.querySelector(`[name="${name}"]`);
+	      if (field && field.type === "radio") {
+	        field.checked = (field.value === value);
+	      } else if (field) {
+	        field.value = value;
+	      }
+	    }
+	  }
+	}
 	
 </script>
  <!-- Firebase -->
