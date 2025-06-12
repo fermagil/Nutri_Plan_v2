@@ -2176,6 +2176,25 @@ body {
         padding: 8px;
     }
 }
+.commit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.commit-modal.active {
+  opacity: 1;
+  z-index: 9999;
+}
 </style>
 </head>
 <body>
@@ -2460,6 +2479,7 @@ body {
 			            <button type="button" id="nuevo_cliente" class="button">Nuevo Cliente</button>
 			            <button type="button" id="ver-progreso-btn" style="display: none;" class="button">Ver Progreso</button>
 			            <button type="button" id="mail-btn" style="display: none;" class="button">E-mail</button>
+				    <button onclick="openModal()">Open Commit Modal</button>
 			        </div>
 			    </div>
 			    
@@ -3209,6 +3229,34 @@ body {
         </div>
     </div>
 </div>
+		     <!-- Modal Commit Container -->
+		    	<div class="commit-modal">
+			  <div class="modal-content">
+			    <!-- Contenido del modal -->
+			    <div class="modal-header">
+			      <h2 class="modal-title">Commit changes</h2>
+			      <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
+			    </div>
+			
+			    <div class="modal-body">
+			      <label for="commit-message">Commit message</label>
+			      <input type="text" id="commit-message" class="input-field" placeholder="Enter commit message..." />
+			
+			      <label for="extended-description">Extended description</label>
+			      <textarea id="extended-description" class="textarea-field" placeholder="Add an optional extended description..."></textarea>
+			
+			      <div class="options">
+			        <label><input type="radio" name="option" value="option1" /> Option 1</label>
+			        <label><input type="radio" name="option" value="option2" /> Option 2</label>
+			      </div>
+			    </div>
+			
+			    <div class="modal-footer">
+			      <button class="btn btn-secondary">Cancel</button>
+			      <button class="btn btn-primary">Commit changes</button>
+			    </div>
+			  </div>
+			</div>
                 </div>
             </div>
         </form>
@@ -5501,6 +5549,29 @@ const somatotipoData = [
     modalidadInput.addEventListener('change', updateSomatotipoValues);
     nombreInput.addEventListener('change', updateSomatotipoValues);
 });
+
+	//Funcio abrir commit modal container
+	function openModal() {
+	  const modal = document.querySelector('.commit-modal');
+	  if (modal) {
+	    modal.classList.add('active');
+	  }
+	}
+	
+	function closeModal() {
+	  const modal = document.querySelector('.commit-modal');
+	  if (modal) {
+	    modal.classList.remove('active');
+	  }
+	}
+	
+	// Cerrar al hacer clic fuera del contenido
+	document.querySelector('.commit-modal').addEventListener('click', function(e) {
+	  if (e.target === this) {
+	    closeModal();
+	  }
+	});
+	
 </script>
  <!-- Firebase -->
     <script type="module" src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js"></script>
