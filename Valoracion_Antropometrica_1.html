@@ -2350,6 +2350,25 @@ select.input-field:focus {
   background-color: #cccccc;
   transform: scale(1.03);
 }
+	    .notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.notification.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
 </style>
 </head>
 <body>
@@ -3551,15 +3570,19 @@ select.input-field:focus {
 
       <!-- Pie de página -->
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" type="submit">Guardar Ficha</button>
-      </div>
+		  <button type="button" onclick="borrarDatos()" class="btn btn-danger">Borrar Datos Guardados</button>
+		  <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancelar</button>
+		  <button class="btn btn-primary" type="submit">Guardar Ficha</button>
+		</div>
     </form>
   </div>
 </div>
                 </div>
             </div>
         </form>
+	    <div id="save-notification" class="notification hidden">
+	    ✅ Datos guardados correctamente
+	  </div>
     </main>
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
@@ -5851,22 +5874,68 @@ const somatotipoData = [
 });
 
 	// Función para abrir el modal Ficha Medica( ananmnesis
-	function openModal() {
+	function openModal(event) {
+	  if (event) event.stopPropagation();
+	
 	  const modal = document.getElementById("commitModal");
 	  if (modal) {
 	    modal.classList.add("active");
+	
+	    const hasData = localStorage.getItem("fichaMedica");
+	    if (hasData) {
+	      console.log("Hay datos guardados. Se cargarán automáticamente.");
+	    }
+	
 	    cargarDatos(); // Carga los datos guardados desde localStorage
 	  }
 	}
 	
 	// Función para cerrar el modal
-	function closeModal() {
+	function closeModal(event) {
 	  const modal = document.getElementById("commitModal");
-	  if (modal) {
+	
+	  if (modal && modal.classList.contains("active")) {
+	    const hasData = localStorage.getItem("fichaMedica");
+	
+	    if (hasData) {
+	      const confirmDelete = confirm("¿Deseas borrar los datos guardados antes de cerrar?");
+	      if (confirmDelete) {
+	        localStorage.removeItem("fichaMedica"); // Borrar datos
+	        alert("Datos eliminados.");
+	      }
+	    }
+	
 	    modal.classList.remove("active");
 	  }
 	}
+	//Borar Datos
+	function borrarDatos() {
+	  const hasData = localStorage.getItem("fichaMedica");
 	
+	  if (!hasData) {
+	    alert("No hay datos guardados.");
+	    return;
+	  }
+	
+	  const confirmDelete = confirm("¿Estás seguro de que deseas borrar los datos guardados?");
+	  if (confirmDelete) {
+	    localStorage.removeItem("fichaMedica");
+	    alert("Datos borrados correctamente.");
+	
+	    // Limpiar formulario visualmente
+	    const form = document.getElementById("form-datos-paciente");
+	    if (form) {
+	      form.reset();
+	
+	      // Desmarcar radios y checkboxes
+	      const radioInputs = form.querySelectorAll('input[type="radio"]');
+	      radioInputs.forEach(radio => { radio.checked = false; });
+	
+	      const checkboxInputs = form.querySelectorAll('input[type="checkbox"]');
+	      checkboxInputs.forEach(checkbox => { checkbox.checked = false; });
+	    }
+	  }
+	}
 	// Opcional: Cerrar al hacer clic fuera del contenido
 	document.getElementById("commitModal")?.addEventListener("click", function (e) {
 	  if (e.target === this) {
@@ -5879,6 +5948,8 @@ const somatotipoData = [
 	    closeModal();
 	  }
 	});
+
+	//Guardar Datos
 	function guardarDatos(event) {
 	  event.preventDefault();
 	
@@ -5886,11 +5957,26 @@ const somatotipoData = [
 	  const formData = new FormData(form);
 	  const data = Object.fromEntries(formData);
 	
-	  // Guardar en localStorage como JSON
 	  localStorage.setItem("fichaMedica", JSON.stringify(data));
 	
-	  alert("Datos guardados localmente");
-	  closeModal();
+	  // Mostrar notificación
+	  mostrarNotificacion("✅ Datos guardados correctamente");
+	
+	  closeModal(); // Opcional: cierra el modal después de guardar
+	}
+	
+	// Función para mostrar la notificación temporal
+	function mostrarNotificacion(mensaje) {
+	  const notification = document.getElementById("save-notification");
+	  if (!notification) return;
+	
+	  notification.textContent = mensaje;
+	  notification.classList.remove("hidden");
+	
+	  // Ocultar automáticamente después de 3 segundos
+	  setTimeout(() => {
+	    notification.classList.add("hidden");
+	  }, 3000);
 	}
 	
 	function cargarDatos() {
