@@ -982,46 +982,61 @@
 	        };
 	
 	        // Function to calculate % Body Fat using Durnin-Womersley (4 skinfolds, adults, general population)
-	        const calculateDurninWomersleyBodyFat = (data) => {
-	            console.log('Calculating Durnin-Womersley Body Fat');
-	            if (data.pliegue_bicipital && data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_suprailiaco && data.edad && data.genero) {
-	                const sumPliegues = data.pliegue_bicipital + data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
-	                console.log(`Sum of skinfolds: ${sumPliegues}, Age: ${data.edad}`);
-	                const constants = {
-	                    masculino: {
-	                        '17-19': { c: 1.1620, m: 0.0630 },
-	                        '20-29': { c: 1.1631, m: 0.0632 },
-	                        '30-39': { c: 1.1422, m: 0.0544 },
-	                        '40-49': { c: 1.1620, m: 0.0700 },
-	                        '50+': { c: 1.1715, m: 0.0779 }
-	                    },
-	                    femenino: {
-	                        '17-19': { c: 1.1549, m: 0.0678 },
-	                        '20-29': { c: 1.1599, m: 0.0717 },
-	                        '30-39': { c: 1.1423, m: 0.0632 },
-	                        '40-49': { c: 1.1333, m: 0.0612 },
-	                        '50+': { c: 1.1339, m: 0.0645 }
-	                    }
-	                };
-	                let ageRange;
-	                if (data.edad <= 19) ageRange = '17-19';
-	                else if (data.edad <= 29) ageRange = '20-29';
-	                else if (data.edad <= 39) ageRange = '30-39';
-	                else if (data.edad <= 49) ageRange = '40-49';
-	                else ageRange = '50+';
-	                
-	                const { c, m } = constants[data.genero][ageRange] || {};
-	                if (c && m) {
-	                    const dc = c - (m * Math.log10(sumPliegues));
-	                    console.log(`Body density: ${dc}`);
-	                    const bodyFat = (495 / dc) - 450;
-	                    console.log(`Calculated % Body Fat: ${bodyFat}`);
-	                    return bodyFat;
-	                }
-	            }
-	            console.warn('Durnin-Womersley: Missing skinfolds, age, or gender');
-	            return NaN;
-	        };
+	       	 const calculateDurninWomersleyBodyFat = (data) => {
+		    console.log('Calculating Durnin-Womersley Body Fat');
+		    if (data.pliegue_bicipital && data.pliegue_tricipital && data.pliegue_subescapular && data.pliegue_suprailiaco && data.edad && data.genero) {
+		        const sumPliegues = data.pliegue_bicipital + data.pliegue_tricipital + data.pliegue_subescapular + data.pliegue_suprailiaco;
+		        console.log(`Sum of skinfolds: ${sumPliegues}, Age: ${data.edad}`);
+		        
+		        const constants = {
+		            masculino: {
+		                '17-19': { c: 1.1620, m: 0.0630 },
+		                '20-29': { c: 1.1631, m: 0.0632 },
+		                '30-39': { c: 1.1422, m: 0.0544 },
+		                '40-49': { c: 1.1620, m: 0.0700 },
+		                '50+': { c: 1.1715, m: 0.0779 }
+		            },
+		            femenino: {
+		                '17-19': { c: 1.1549, m: 0.0678 },
+		                '20-29': { c: 1.1599, m: 0.0717 },
+		                '30-39': { c: 1.1423, m: 0.0632 },
+		                '40-49': { c: 1.1333, m: 0.0612 },
+		                '50+': { c: 1.1339, m: 0.0645 }
+		            }
+		        };
+		
+		        // Normalizar el género (por si viene como "hombre" en lugar de "masculino")
+		        const genero = data.genero.toLowerCase() === 'hombre' ? 'masculino' : data.genero.toLowerCase();
+		        
+		        // Verificar que el género sea válido
+		        if (!constants[genero]) {
+		            console.error(`Género no válido: ${data.genero}. Debe ser "masculino" o "femenino"`);
+		            return NaN;
+		        }
+		
+		        let ageRange;
+		        if (data.edad <= 19) ageRange = '17-19';
+		        else if (data.edad <= 29) ageRange = '20-29';
+		        else if (data.edad <= 39) ageRange = '30-39';
+		        else if (data.edad <= 49) ageRange = '40-49';
+		        else ageRange = '50+';
+		        
+		        // Verificar que exista el rango de edad
+		        if (!constants[genero][ageRange]) {
+		            console.error(`Rango de edad no encontrado: ${ageRange} para género ${genero}`);
+		            return NaN;
+		        }
+		
+		        const { c, m } = constants[genero][ageRange];
+		        const dc = c - (m * Math.log10(sumPliegues));
+		        console.log(`Body density: ${dc}`);
+		        const bodyFat = (495 / dc) - 450;
+		        console.log(`Calculated % Body Fat: ${bodyFat}`);
+		        return bodyFat;
+		    }
+		    console.warn('Durnin-Womersley: Missing skinfolds, age, or gender');
+		    return NaN;
+		};
 			
 				//Funcion para Explicacion Tipología del Cuerpo según Índices de Masa (IMLG e IMG)
 				const generateBodyCompositionAnalysis = (data, cliente) => {
