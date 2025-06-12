@@ -5874,27 +5874,24 @@ const somatotipoData = [
 });
 
 	// Función para abrir el modal Ficha Médica (Anamnesis)
+// Función: Abrir el modal
 function openModal(event) {
-      if (event) event.stopPropagation();
-      console.log("openModal() ejecutada");
-      alert("¡El modal debería abrir!");
+  if (event) event.stopPropagation();
+
+  const modal = document.getElementById("commitModal");
+  if (modal) {
+    modal.classList.add("active");
+
+    const hasData = localStorage.getItem("fichaMedica");
+    if (hasData) {
+      console.log("Hay datos guardados. Se cargarán automáticamente.");
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const btnAbrirData = document.getElementById("btn-abrir-data");
+    cargarDatos(); // Carga los datos guardados desde localStorage
+  }
+}
 
-      if (!btnAbrirData) {
-        console.error("Botón con id='btn-abrir-data' no encontrado");
-        return;
-      }
-
-      btnAbrirData.addEventListener("click", function (event) {
-        event.stopPropagation();
-        openModal(event);
-      });
-    });
-
-// Función para cerrar el modal
+// Función: Cerrar el modal
 function closeModal(event) {
   const modal = document.getElementById("commitModal");
 
@@ -5942,7 +5939,7 @@ function borrarDatos() {
   }
 }
 
-// Guardar datos del formulario
+// Función: Guardar datos del formulario
 function guardarDatos(event) {
   event.preventDefault();
 
@@ -5958,7 +5955,7 @@ function guardarDatos(event) {
   closeModal(); // Opcional: cierra el modal después de guardar
 }
 
-// Mostrar notificación temporal
+// Función: Mostrar notificación temporal
 function mostrarNotificacion(mensaje) {
   const notification = document.getElementById("save-notification");
   if (!notification) return;
@@ -5966,13 +5963,12 @@ function mostrarNotificacion(mensaje) {
   notification.textContent = mensaje;
   notification.classList.remove("hidden");
 
-  // Ocultar automáticamente después de 3 segundos
   setTimeout(() => {
     notification.classList.add("hidden");
   }, 3000);
 }
 
-// Cargar datos al abrir el modal
+// Función: Cargar datos al abrir el modal
 function cargarDatos() {
   const savedData = localStorage.getItem("fichaMedica");
   if (savedData) {
@@ -5990,11 +5986,19 @@ function cargarDatos() {
   }
 }
 
-// Event Listeners: Cerrar con teclado o fuera del modal
+// Event Listeners iniciales
 document.addEventListener("DOMContentLoaded", function () {
-  const modal = document.getElementById("commitModal");
+  // Botón para abrir el modal
+  const btnAbrirData = document.getElementById("btn-abrir-data");
+  if (btnAbrirData) {
+    btnAbrirData.addEventListener("click", function (event) {
+      event.stopPropagation();
+      openModal(event);
+    });
+  }
 
   // Cerrar al hacer clic fuera del contenido
+  const modal = document.getElementById("commitModal");
   if (modal) {
     modal.addEventListener("click", function (e) {
       if (e.target === this) {
@@ -6009,15 +6013,6 @@ document.addEventListener("DOMContentLoaded", function () {
       closeModal();
     }
   });
-
-  // Asignar evento al botón "Añadir data"
-  const btnAbrirData = document.getElementById("btn-abrir-data");
-  if (btnAbrirData) {
-    btnAbrirData.addEventListener("click", function (event) {
-      event.stopPropagation();
-      openModal();
-    });
-  }
 });
 	
 </script>
