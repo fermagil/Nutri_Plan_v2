@@ -2177,6 +2177,7 @@ body {
     }
 }
 /* Estilos generales del modal container de Anamnesis */
+/* Estilos generales del modal container de Anamnesis */
 .commit-modal {
   position: fixed;
   top: 0;
@@ -2275,11 +2276,23 @@ body {
   padding: 8px 0;
 }
 
-/* Campos de entrada */
+/* Labels más pequeños */
+.data-table label {
+  font-size: 13px; /* Tamaño de letra más pequeño para labels */
+  display: block;
+  margin-bottom: 4px;
+}
+.data-table th[colspan="3"] {
+  background-color: #e0f2f1;
+  color: #00796b;
+  font-size: 15px;
+}
+/* Campos de entrada (inputs, selects, etc.) */
 .input-field,
-select.input-field {
+select.input-field,
+.textarea-field {
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 10px; /* Padding reducido */
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: #fafafa;
@@ -2295,24 +2308,24 @@ select.input-field:focus {
   background-color: #f0fff0;
 }
 
-.textarea-field {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fafafa;
-  color: #333;
-  font-size: 14px;
-  resize: vertical;
-  min-height: 80px;
-  transition: border-color 0.3s ease;
+/* Agrupar en 3 columnas */
+.form-row > td {
+  width: 33.33%;
+  vertical-align: top;
+  padding: 8px;
+}
+
+/* Clase para contenedores de campo + label */
+.form-field {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Opciones (radios y checkboxes) */
 .options label {
   display: inline-block;
   margin-right: 1rem;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* Pie de página */
@@ -2350,7 +2363,9 @@ select.input-field:focus {
   background-color: #cccccc;
   transform: scale(1.03);
 }
-	    .notification {
+
+/* Notificación */
+.notification {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -3419,26 +3434,26 @@ select.input-field:focus {
         <table class="data-table">
           <!-- Datos Personales -->
           <tr>
-            <th colspan="4">Datos Personales</th>
+            <th colspan="4">DATOS PERSONALES</th>
           </tr>
           <tr>
-            <td>ID TEST:</td>
+            <td>Id Test:</td>
             <td><input type="text" name="idTest" class="input-field"></td>
             <td>Técnico:</td>
             <td><input type="text" name="tecnico" class="input-field"></td>
           </tr>
           <tr>
-            <td>FECHA:</td>
+            <td>Fecha:</td>
             <td><input type="date" name="fecha" class="input-field"></td>
-            <td>NOMBRE:</td>
+            <td>Nombre:</td>
             <td><input type="text" name="nombre" class="input-field"></td>
           </tr>
           <tr>
-            <td>APELLIDOS:</td>
+            <td>Apellidos:</td>
             <td><input type="text" name="apellidos" class="input-field"></td>
           </tr>
           <tr>
-            <td>PAÍS DE NACIMIENTO:</td>
+            <td>Pais Nacimiento:</td>
             <td>
               <select name="paisNacimiento" class="input-field">
                 <!-- Países europeos -->
@@ -3495,7 +3510,7 @@ select.input-field:focus {
                 </optgroup>
               </select>
             </td>
-            <td>RAZA:</td>
+            <td>Raza:</td>
             <td>
               <select name="raza" class="input-field">
                 <option value="">Selecciona</option>
@@ -3513,7 +3528,7 @@ select.input-field:focus {
             <th colspan="4">DATOS DE ENTRENAMIENTO</th>
           </tr>
           <tr>
-            <td>AÑOS:</td>
+            <td>Años:</td>
             <td>
               <select name="entrenamientoAnios" class="input-field">
                 <option value="">Selecciona</option>
@@ -3525,7 +3540,7 @@ select.input-field:focus {
                 <option value="15+">15+ años</option>
               </select>
             </td>
-            <td>DÍAS/SEMANA:</td>
+            <td>Dias/sem:</td>
             <td>
               <select name="diasSemana" class="input-field">
                 <option value="">Selecciona</option>
@@ -3540,7 +3555,7 @@ select.input-field:focus {
             </td>
           </tr>
           <tr>
-            <td>HORAS/DÍA:</td>
+            <td>Horas/día:</td>
             <td>
               <select name="horasDia" class="input-field">
                 <option value="">Selecciona</option>
@@ -3550,7 +3565,7 @@ select.input-field:focus {
                 <option value="5+">5+ horas</option>
               </select>
             </td>
-            <td>INTENSIDAD:</td>
+            <td>Intensidad:</td>
             <td>
               <select name="intensidad" class="input-field">
                 <option value="">Selecciona</option>
