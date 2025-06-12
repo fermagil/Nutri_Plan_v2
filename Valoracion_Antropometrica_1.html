@@ -2653,7 +2653,7 @@ select.input-field:focus {
 			            <button type="button" id="nuevo_cliente" class="button">Nuevo Cliente</button>
 			            <button type="button" id="ver-progreso-btn" style="display: none;" class="button">Ver Progreso</button>
 			            <button type="button" id="mail-btn" style="display: none;" class="button">E-mail</button>
-				    <button onclick="openModal()">Añadir Data</button>
+				    <button type="button" id="btn-abrir-data" class="btn btn-primary">Añadir data</button>
 			        </div>
 			    </div>
 			    
@@ -5873,128 +5873,148 @@ const somatotipoData = [
     nombreInput.addEventListener('change', updateSomatotipoValues);
 });
 
-	// Función para abrir el modal Ficha Medica( ananmnesis
-	function openModal(event) {
-	  if (event) event.stopPropagation();
-	
-	  const modal = document.getElementById("commitModal");
-	  if (modal) {
-	    modal.classList.add("active");
-	
-	    const hasData = localStorage.getItem("fichaMedica");
-	    if (hasData) {
-	      console.log("Hay datos guardados. Se cargarán automáticamente.");
-	    }
-	
-	    cargarDatos(); // Carga los datos guardados desde localStorage
-	  }
-	}
-	
-	// Función para cerrar el modal
-	function closeModal(event) {
-	  const modal = document.getElementById("commitModal");
-	
-	  if (modal && modal.classList.contains("active")) {
-	    const hasData = localStorage.getItem("fichaMedica");
-	
-	    if (hasData) {
-	      const confirmDelete = confirm("¿Deseas borrar los datos guardados antes de cerrar?");
-	      if (confirmDelete) {
-	        localStorage.removeItem("fichaMedica"); // Borrar datos
-	        alert("Datos eliminados.");
-	      }
-	    }
-	
-	    modal.classList.remove("active");
-	  }
-	}
-	//Borar Datos
-	function borrarDatos() {
-	  const hasData = localStorage.getItem("fichaMedica");
-	
-	  if (!hasData) {
-	    alert("No hay datos guardados.");
-	    return;
-	  }
-	
-	  const confirmDelete = confirm("¿Estás seguro de que deseas borrar los datos guardados?");
-	  if (confirmDelete) {
-	    localStorage.removeItem("fichaMedica");
-	    alert("Datos borrados correctamente.");
-	
-	    // Limpiar formulario visualmente
-	    const form = document.getElementById("form-datos-paciente");
-	    if (form) {
-	      form.reset();
-	
-	      // Desmarcar radios y checkboxes
-	      const radioInputs = form.querySelectorAll('input[type="radio"]');
-	      radioInputs.forEach(radio => { radio.checked = false; });
-	
-	      const checkboxInputs = form.querySelectorAll('input[type="checkbox"]');
-	      checkboxInputs.forEach(checkbox => { checkbox.checked = false; });
-	    }
-	  }
-	}
-	// Opcional: Cerrar al hacer clic fuera del contenido
-	document.getElementById("commitModal")?.addEventListener("click", function (e) {
-	  if (e.target === this) {
-	    closeModal();
-	  }
-	});
-	// Cerrar modal con la tecla ESC
-	document.addEventListener("keydown", function (e) {
-	  if (e.key === "Escape") {
-	    closeModal();
-	  }
-	});
+	// Función para abrir el modal Ficha Médica (Anamnesis)
+function openModal(event) {
+  if (event) event.stopPropagation();
 
-	//Guardar Datos
-	function guardarDatos(event) {
-	  event.preventDefault();
-	
-	  const form = document.getElementById("form-datos-paciente");
-	  const formData = new FormData(form);
-	  const data = Object.fromEntries(formData);
-	
-	  localStorage.setItem("fichaMedica", JSON.stringify(data));
-	
-	  // Mostrar notificación
-	  mostrarNotificacion("✅ Datos guardados correctamente");
-	
-	  closeModal(); // Opcional: cierra el modal después de guardar
-	}
-	
-	// Función para mostrar la notificación temporal
-	function mostrarNotificacion(mensaje) {
-	  const notification = document.getElementById("save-notification");
-	  if (!notification) return;
-	
-	  notification.textContent = mensaje;
-	  notification.classList.remove("hidden");
-	
-	  // Ocultar automáticamente después de 3 segundos
-	  setTimeout(() => {
-	    notification.classList.add("hidden");
-	  }, 3000);
-	}
-	
-	function cargarDatos() {
-	  const savedData = localStorage.getItem("fichaMedica");
-	  if (savedData) {
-	    const data = JSON.parse(savedData);
-	    const form = document.getElementById("form-datos-paciente");
-	
-	    for (const [name, value] of Object.entries(data)) {
-	      const field = form.querySelector(`[name="${name}"]`);
-	      if (field && field.type === "radio") {
-	        field.checked = (field.value === value);
-	      } else if (field) {
-	        field.value = value;
-	      }
-	    }
-	  }
-	}
+  const modal = document.getElementById("commitModal");
+  if (modal) {
+    modal.classList.add("active");
+
+    const hasData = localStorage.getItem("fichaMedica");
+    if (hasData) {
+      console.log("Hay datos guardados. Se cargarán automáticamente.");
+    }
+
+    cargarDatos(); // Carga los datos guardados desde localStorage
+  }
+}
+
+// Función para cerrar el modal
+function closeModal(event) {
+  const modal = document.getElementById("commitModal");
+
+  if (modal && modal.classList.contains("active")) {
+    const hasData = localStorage.getItem("fichaMedica");
+
+    if (hasData) {
+      const confirmDelete = confirm("¿Deseas borrar los datos guardados antes de cerrar?");
+      if (confirmDelete) {
+        localStorage.removeItem("fichaMedica"); // Borrar datos
+        alert("Datos eliminados.");
+      }
+    }
+
+    modal.classList.remove("active");
+  }
+}
+
+// Función: Borrar datos manualmente
+function borrarDatos() {
+  const hasData = localStorage.getItem("fichaMedica");
+
+  if (!hasData) {
+    alert("No hay datos guardados.");
+    return;
+  }
+
+  const confirmDelete = confirm("¿Estás seguro de que deseas borrar los datos guardados?");
+  if (confirmDelete) {
+    localStorage.removeItem("fichaMedica");
+    alert("Datos borrados correctamente.");
+
+    // Limpiar formulario visualmente
+    const form = document.getElementById("form-datos-paciente");
+    if (form) {
+      form.reset();
+
+      // Desmarcar radios y checkboxes
+      const radioInputs = form.querySelectorAll('input[type="radio"]');
+      radioInputs.forEach(radio => { radio.checked = false; });
+
+      const checkboxInputs = form.querySelectorAll('input[type="checkbox"]');
+      checkboxInputs.forEach(checkbox => { checkbox.checked = false; });
+    }
+  }
+}
+
+// Guardar datos del formulario
+function guardarDatos(event) {
+  event.preventDefault();
+
+  const form = document.getElementById("form-datos-paciente");
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData);
+
+  localStorage.setItem("fichaMedica", JSON.stringify(data));
+
+  // Mostrar notificación
+  mostrarNotificacion("✅ Datos guardados correctamente");
+
+  closeModal(); // Opcional: cierra el modal después de guardar
+}
+
+// Mostrar notificación temporal
+function mostrarNotificacion(mensaje) {
+  const notification = document.getElementById("save-notification");
+  if (!notification) return;
+
+  notification.textContent = mensaje;
+  notification.classList.remove("hidden");
+
+  // Ocultar automáticamente después de 3 segundos
+  setTimeout(() => {
+    notification.classList.add("hidden");
+  }, 3000);
+}
+
+// Cargar datos al abrir el modal
+function cargarDatos() {
+  const savedData = localStorage.getItem("fichaMedica");
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    const form = document.getElementById("form-datos-paciente");
+
+    for (const [name, value] of Object.entries(data)) {
+      const field = form.querySelector(`[name="${name}"]`);
+      if (field && field.type === "radio") {
+        field.checked = field.value === value;
+      } else if (field) {
+        field.value = value;
+      }
+    }
+  }
+}
+
+// Event Listeners: Cerrar con teclado o fuera del modal
+document.addEventListener("DOMContentLoaded", function () {
+  const modal = document.getElementById("commitModal");
+
+  // Cerrar al hacer clic fuera del contenido
+  if (modal) {
+    modal.addEventListener("click", function (e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  }
+
+  // Cerrar con tecla ESC
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+
+  // Asignar evento al botón "Añadir data"
+  const btnAbrirData = document.getElementById("btn-abrir-data");
+  if (btnAbrirData) {
+    btnAbrirData.addEventListener("click", function (event) {
+      event.stopPropagation();
+      openModal();
+    });
+  }
+});
 	
 </script>
  <!-- Firebase -->
