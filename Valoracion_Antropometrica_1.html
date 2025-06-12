@@ -5450,37 +5450,20 @@ const somatotipoData = [
         // Buscar datos en somatotipoData
         const sexoKey = selectedSexo === 'masculino' ? 'H' : 'M';
         const data = somatotipoData.find(item => item.deporte === selectedModalidad && item.sexo === "H"); // Siempre busca H
+
 	if (data) {
-	  if (sexoKey === "H") {
-	    // Usar propiedades masculinas
-	    return {
-	      endo: data.endo,
-	      meso: data.meso,
-	      ecto: data.ecto,
-	      // ... otras propiedades
-	    };
-	  } else if (sexoKey === "M") {
-	    // Usar propiedades femeninas (_f)
-	    return {
-	      endo: data.endo_f,
-	      meso: data.meso_f,
-	      ecto: data.ecto_f,
-	      // ... otras propiedades _f
-	    };
-	  }
+	    // Asignar valores según el sexo seleccionado
+	    somatotipoEndo.value = sexoKey === 'H' ? data.endo : data.endo_f;
+	    somatotipoMeso.value = sexoKey === 'H' ? data.meso : data.meso_f;
+	    somatotipoEcto.value = sexoKey === 'H' ? data.ecto : data.ecto_f;
+	    somatotipoDominante.value = data.dominante || '';
+	    somatotipoX.value = sexoKey === 'H' ? data.x : data.x_f;
+	    somatotipoY.value = sexoKey === 'H' ? data.y : data.y_f;
+	    
+	    console.debug(`Somatotipo actualizado para ${selectedModalidad} (${selectedSexo}):`, data);
+	} else {
+	    console.warn(`No se encontraron datos de somatotipo para ${selectedModalidad} (${sexoKey}).`);
 	}
-        if (data) {
-            somatotipoEndo.value = selectedSexo === 'masculino' ? data.endo : data.endo_f;
-            somatotipoMeso.value = selectedSexo === 'masculino' ? data.meso : data.meso_f;
-            somatotipoEcto.value = selectedSexo === 'masculino' ? data.ecto : data.ecto_f;
-            somatotipoDominante.value = data.dominante || '';
-            somatotipoX.value = selectedSexo === 'masculino' ? data.x : data.x_f;
-            somatotipoY.value = selectedSexo === 'masculino' ? data.y : data.y_f;
-            console.debug(`Somatotipo actualizado para ${selectedModalidad} (${selectedSexo}):`, data);
-        } else {
-            console.warn(`No se encontraron datos de somatotipo para ${selectedModalidad} (${sexoKey}).`);
-        }
-    }
 
     // Remover eventos previos para evitar duplicados
     deporteInput.removeEventListener('change', updateModalidadOptions);
