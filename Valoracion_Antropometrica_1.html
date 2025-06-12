@@ -1510,34 +1510,12 @@ body {
             justify-content: center;
             align-items: center;
             overflow: auto;
-	      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	      
 		transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
         }
 	
 
-.modal-container {
-  visibility: hidden;
-  opacity: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: auto;
 
-  /* Transición */
-  transition: opacity 0.4s ease, visibility 0.4s ease;
-}
-
-.modal-container {
-  visibility: visible;
-  opacity: 1;
-}
 
 /* Estilos extra para cerrar al hacer clic fuera del contenido */
 .modal-overlay {
