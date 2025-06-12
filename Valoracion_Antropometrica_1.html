@@ -3695,15 +3695,15 @@ select.input-field:focus {
           </tr>
 
 
-      <!-- HÁBITOS ALIMENTICIOS -->
+ <!-- HÁBITOS ALIMENTICIOS -->
 <tr>
   <th colspan="4">HÁBITOS DE ALIMENTACIÓN</th>
 </tr>
 
 <!-- Cuántas comidas al día -->
 <tr>
-  <td><strong>¿Cuántas comidas al día haces?</strong></td>
-  <td>
+  <td colspan="4">
+    <strong>¿Cuántas comidas al día haces?</strong><br>
     <select name="numeroComidas" class="input-field">
       <option value="">Selecciona</option>
       <option value="3">3 Comidas</option>
@@ -3716,23 +3716,24 @@ select.input-field:focus {
   </td>
 </tr>
 
-<!-- Comidas que suele saltarse -->
 <tr>
   <td><strong>¿Qué comidas sueles saltarte?</strong></td>
   <td colspan="3">
-    <label><input type="checkbox" name="comidasSaltadas[]" value="Desayuno"> Desayuno</label><br>
-    <label><input type="checkbox" name="comidasSaltadas[]" value="Media Mañana"> Media Mañana</label><br>
-    <label><input type="checkbox" name="comidasSaltadas[]" value="Almuerzo"> Almuerzo</label><br>
-    <label><input type="checkbox" name="comidasSaltadas[]" value="Comida Principal"> Comida Principal</label><br>
-    <label><input type="checkbox" name="comidasSaltadas[]" value="Merienda"> Merienda</label><br>
-    <label><input type="checkbox" name="comidasSaltadas[]" value="Cena"> Cena</label>
+    <select name="comidasSaltadas[]" class="input-field" multiple size="6">
+      <option value="Desayuno">Desayuno</option>
+      <option value="Media Mañana">Media Mañana</option>
+      <option value="Almuerzo">Almuerzo</option>
+      <option value="Comida Principal">Comida Principal</option>
+      <option value="Merienda">Merienda</option>
+      <option value="Cena">Cena</option>
+    </select>
   </td>
 </tr>
 
 <!-- Piezas de fruta al día -->
 <tr>
-  <td><strong>Número de piezas de fruta al día:</strong></td>
-  <td>
+  <td colspan="4">
+    <strong>Número de piezas de fruta al día:</strong><br>
     <select name="frutaDia" class="input-field">
       <option value="">Selecciona</option>
       <option value="0">0</option>
@@ -3744,11 +3745,10 @@ select.input-field:focus {
     </select>
   </td>
 </tr>
-
 <!-- Ingesta de líquidos al día -->
 <tr>
-  <td><strong>Ingesta de líquidos al día (ml):</strong></td>
-  <td>
+  <td colspan="4">
+    <strong>Ingesta de líquidos al día (ml):</strong><br>
     <select name="liquidosDia" class="input-field">
       <option value="">Selecciona</option>
       <option value="<1000">< 1000 ml (~4 vasos)</option>
@@ -3761,11 +3761,11 @@ select.input-field:focus {
   </td>
 </tr>
 
-<!-- Dieta balanceada -->
+<!-- Dieta balanceada - En un box destacado -->
 <tr>
-  <td><strong>¿Tienes una dieta balanceada?</strong></td>
-  <td>
-    <label><input type="radio" name="dietaBalanceada" value="Si"> Sí</label><br>
+  <td colspan="4" style="background-color: #f0f8ff; border: 1px solid #d0eaff; padding: 15px; border-radius: 8px;">
+    <strong>¿Tienes una dieta balanceada?</strong><br><br>
+    <label><input type="radio" name="dietaBalanceada" value="Si"> Sí</label>&nbsp;&nbsp;
     <label><input type="radio" name="dietaBalanceada" value="No"> No</label>
   </td>
 </tr>
