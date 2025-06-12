@@ -3404,7 +3404,7 @@ select.input-field:focus {
     </div>
 </div>
 		     <!-- Modal Commit Container -->
-		    	<div class="commit-modal" id="commitModal">
+		  <div class="commit-modal" id="commitModal">
   <div class="modal-content">
     <!-- Encabezado -->
     <div class="modal-header">
@@ -3412,7 +3412,7 @@ select.input-field:focus {
       <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
     </div>
 
-    <!-- Contenido del formulario -->
+    <!-- Formulario -->
     <form id="form-datos-paciente" onsubmit="guardarDatos(event)">
       <div class="modal-body">
 
@@ -3436,26 +3436,76 @@ select.input-field:focus {
           <tr>
             <td>APELLIDOS:</td>
             <td><input type="text" name="apellidos" class="input-field"></td>
-            <td>DEPORTE:</td>
-            <td><input type="text" name="deporte" class="input-field"></td>
           </tr>
           <tr>
-            <td>ESPECIALIDAD/PUESTO:</td>
-            <td><input type="text" name="especialidadPuesto" class="input-field"></td>
-            <td>MODALIDAD / ESPECIALIDAD:</td>
-            <td><input type="text" name="modalidadEspecialidad" class="input-field"></td>
-          </tr>
-          <tr>
-            <td>SEXO: 
-              <label><input type="radio" name="sexo" value="V"> V</label> / 
-              <label><input type="radio" name="sexo" value="M"> M</label></td>
-            <td><input type="date" name="fechaNacimiento" class="input-field"></td>
             <td>PAÍS DE NACIMIENTO:</td>
-            <td><input type="text" name="paisNacimiento" class="input-field"></td>
-          </tr>
-          <tr>
+            <td>
+              <select name="paisNacimiento" class="input-field">
+                <!-- Países europeos -->
+                <optgroup label="Europa">
+                  <option value="España">España</option>
+                  <option value="Francia">Francia</option>
+                  <option value="Alemania">Alemania</option>
+                  <option value="Italia">Italia</option>
+                  <option value="Portugal">Portugal</option>
+                  <option value="Reino Unido">Reino Unido</option>
+                  <option value="Polonia">Polonia</option>
+                  <option value="Rusia">Rusia</option>
+                  <option value="Ucrania">Ucrania</option>
+                  <option value="Suecia">Suecia</option>
+                </optgroup>
+                <!-- Países africanos -->
+                <optgroup label="África">
+                  <option value="Egipto">Egipto</option>
+                  <option value="Nigeria">Nigeria</option>
+                  <option value="Sudáfrica">Sudáfrica</option>
+                  <option value="Argelia">Argelia</option>
+                  <option value="Marruecos">Marruecos</option>
+                  <option value="Kenia">Kenia</option>
+                  <option value="Túnez">Túnez</option>
+                  <option value="Ghana">Ghana</option>
+                  <option value="Camerún">Camerún</option>
+                  <option value="Senegal">Senegal</option>
+                </optgroup>
+                <!-- Países asiáticos -->
+                <optgroup label="Asia">
+                  <option value="China">China</option>
+                  <option value="India">India</option>
+                  <option value="Japón">Japón</option>
+                  <option value="Corea del Sur">Corea del Sur</option>
+                  <option value="Indonesia">Indonesia</option>
+                  <option value="Pakistán">Pakistán</option>
+                  <option value="Filipinas">Filipinas</option>
+                  <option value="Tailandia">Tailandia</option>
+                  <option value="Vietnam">Vietnam</option>
+                  <option value="Malasia">Malasia</option>
+                </optgroup>
+                <!-- Países americanos -->
+                <optgroup label="América">
+                  <option value="Estados Unidos">Estados Unidos</option>
+                  <option value="Brasil">Brasil</option>
+                  <option value="Argentina">Argentina</option>
+                  <option value="México">México</option>
+                  <option value="Canadá">Canadá</option>
+                  <option value="Colombia">Colombia</option>
+                  <option value="Chile">Chile</option>
+                  <option value="Perú">Perú</option>
+                  <option value="Costa Rica">Costa Rica</option>
+                  <option value="Uruguay">Uruguay</option>
+                </optgroup>
+              </select>
+            </td>
             <td>RAZA:</td>
-            <td><input type="text" name="raza" class="input-field"></td>
+            <td>
+              <select name="raza" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="Blanca">Blanca</option>
+                <option value="Negra">Negra</option>
+                <option value="Amarilla">Amarilla</option>
+                <option value="Mestiza">Mestiza</option>
+                <option value="Otra">Otra</option>
+              </select>
+            </td>
           </tr>
 
           <!-- DATOS DE ENTRENAMIENTO -->
@@ -3464,27 +3514,50 @@ select.input-field:focus {
           </tr>
           <tr>
             <td>AÑOS:</td>
-            <td><input type="number" name="entrenamientoAnios" class="input-field"></td>
+            <td>
+              <select name="entrenamientoAnios" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="0-3">0 - 3 años</option>
+                <option value="3-6">3 - 6 años</option>
+                <option value="6-10">6 - 10 años</option>
+                <option value="10-13">10 - 13 años</option>
+                <option value="13-15">13 - 15 años</option>
+                <option value="15+">15+ años</option>
+              </select>
+            </td>
             <td>DÍAS/SEMANA:</td>
-            <td><input type="number" name="diasSemana" class="input-field"></td>
+            <td>
+              <select name="diasSemana" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="1">1 día</option>
+                <option value="2">2 días</option>
+                <option value="3">3 días</option>
+                <option value="4">4 días</option>
+                <option value="5">5 días</option>
+                <option value="6">6 días</option>
+                <option value="7">7 días</option>
+              </select>
+            </td>
           </tr>
           <tr>
             <td>HORAS/DÍA:</td>
-            <td><input type="number" name="horasDia" class="input-field"></td>
-            <td>INTENSIDAD:</td>
-            <td><input type="text" name="intensidad" class="input-field"></td>
-          </tr>
-          <tr>
-            <td>MUJER: Menarquía <input type="checkbox" name="menarquia"></td>
-            <td>Menstruación <input type="checkbox" name="menstruacion"></td>
-          </tr>
-          <tr>
-            <td>NIÑO/A - ADOLESCENTE: Estado madurativo:
-              <select name="estadoMadurativo" class="input-field">
+            <td>
+              <select name="horasDia" class="input-field">
                 <option value="">Selecciona</option>
-                <option value="prepuberal">Prepuberal</option>
-                <option value="puberal">Puberal</option>
-                <option value="pospuberal">Pospuberal</option>
+                <option value="0-2">0 - 2 horas</option>
+                <option value="2-3">2 - 3 horas</option>
+                <option value="3-4">3 - 4 horas</option>
+                <option value="5+">5+ horas</option>
+              </select>
+            </td>
+            <td>INTENSIDAD:</td>
+            <td>
+              <select name="intensidad" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+                <option value="Extrema">Extrema</option>
               </select>
             </td>
           </tr>
@@ -3495,78 +3568,226 @@ select.input-field:focus {
           </tr>
           <tr>
             <td>Deporte que practica:</td>
-            <td><input type="text" name="deportePractica" class="input-field"></td>
-            <td>Especialidad:</td>
-            <td><input type="text" name="anamnesisEspecialidad" class="input-field"></td>
+            <td>
+              <select name="deportePractica" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="Aerobic">Aerobic</option>
+                <option value="Atletismo: 100m lisos">Atletismo: 100m lisos</option>
+                <option value="Atletismo: 1500m">Atletismo: 1500m</option>
+                <option value="Atletismo: 400m vallas">Atletismo: 400m vallas</option>
+                <option value="Atletismo: Altura">Atletismo: Altura</option>
+                <option value="Atletismo: Fondo">Atletismo: Fondo</option>
+                <option value="Atletismo: Lanz. Jabalina">Atletismo: Lanz. Jabalina</option>
+                <option value="Atletismo: Lanzamientos">Atletismo: Lanzamientos</option>
+                <option value="Atletismo: Marcha">Atletismo: Marcha</option>
+                <option value="Atletismo: Marcha 20km">Atletismo: Marcha 20km</option>
+                <option value="Atletismo: Maratón">Atletismo: Maratón</option>
+                <option value="Atletismo: Pértiga">Atletismo: Pértiga</option>
+                <option value="Atletismo: Salto de altura">Atletismo: Salto de altura</option>
+                <option value="Badminton">Badminton</option>
+                <option value="Baloncesto">Baloncesto</option>
+                <option value="Balonmano">Balonmano</option>
+                <option value="Béisbol">Béisbol</option>
+                <option value="Boxeo: Peso pesado">Boxeo: Peso pesado</option>
+                <option value="Boxeo: <56kg">< 56 kg</option>
+                <option value="Boxeo: <64kg">< 64 kg</option>
+                <option value="Boxeo: <75kg">< 75 kg</option>
+                <option value="Boxeo: <91kg">< 91 kg</option>
+                <option value="Ciclismo: Carretera">Ciclismo: Carretera</option>
+                <option value="Ciclismo: Montaña">Ciclismo: Montaña</option>
+                <option value="Ciclismo: Pista - Velocidad">Ciclismo: Pista - Velocidad</option>
+                <option value="CrossFit">CrossFit</option>
+                <option value="Danza Clásica">Danza Clásica</option>
+                <option value="Escalada Deportiva">Escalada Deportiva</option>
+                <option value="Esgrima">Esgrima</option>
+                <option value="Esquí Alpino">Esquí Alpino</option>
+                <option value="Frontenis">Frontenis</option>
+                <option value="Fútbol">Fútbol</option>
+                <option value="Gimnasia Artística">Gimnasia Artística</option>
+                <option value="Gimnasia Artística: Masculina">Gimnasia Artística: Masculina</option>
+                <option value="Gimnasia Rítmica">Gimnasia Rítmica</option>
+                <option value="Golf">Golf</option>
+                <option value="Halterofilia">Halterofilia</option>
+                <option value="Hockey Hierba">Hockey Hierba</option>
+                <option value="Judo: -90 kg">Judo: -90 kg</option>
+                <option value="Judo: <58kg">< 58 kg</option>
+                <option value="Judo: >80kg">> 80 kg</option>
+                <option value="Judo: 58-72kg">58-72 kg</option>
+                <option value="Judo: 72-80kg">72-80 kg</option>
+                <option value="Karate">Karate</option>
+                <option value="Lanzamiento de Peso">Lanzamiento de Peso</option>
+                <option value="Lucha: Grecorromana">Lucha: Grecorromana</option>
+                <option value="Lucha: <58kg">< 58 kg</option>
+                <option value="Lucha: >80kg">> 80 kg</option>
+                <option value="Lucha: 58-72kg">58-72 kg</option>
+                <option value="Lucha: 72-80kg">72-80 kg</option>
+                <option value="Natación: 1500m Libre">Natación: 1500m Libre</option>
+                <option value="Natación: Sincronizada">Natación: Sincronizada</option>
+                <option value="Pádel">Pádel</option>
+                <option value="Patinaje Artístico">Patinaje Artístico</option>
+                <option value="Patinaje: Velocidad">Patinaje: Velocidad</option>
+                <option value="Pilates">Pilates</option>
+                <option value="Piragüismo: Aguas Tranquilas">Piragüismo: Aguas Tranquilas</option>
+                <option value="Piragüismo: Slalom">Piragüismo: Slalom</option>
+                <option value="Waterpolo">Waterpolo</option>
+                <option value="Remo: Ligeros">Remo: Ligeros</option>
+                <option value="Remo: Pesados">Remo: Pesados</option>
+                <option value="Rugby">Rugby</option>
+                <option value="Montañismo">Montañismo</option>
+                <option value="Squash">Squash</option>
+                <option value="Surf">Surf</option>
+                <option value="Taekwondo">Taekwondo</option>
+                <option value="Taekwondo: <49kg">< 49 kg</option>
+                <option value="Taekwondo: <57kg">< 57 kg</option>
+                <option value="Taekwondo: <58kg">< 58 kg</option>
+                <option value="Taekwondo: <67kg">< 67 kg</option>
+                <option value="Taekwondo: <68kg">< 68 kg</option>
+                <option value="Taekwondo: <80kg">< 80 kg</option>
+                <option value="Taekwondo: >67kg">> 67 kg</option>
+                <option value="Taekwondo: >80kg">> 80 kg</option>
+                <option value="Tai Chi">Tai Chi</option>
+                <option value="Tenis">Tenis</option>
+                <option value="Tenis de Mesa">Tenis de Mesa</option>
+                <option value="Tiro con Arco">Tiro con Arco</option>
+                <option value="Triatlón">Triatlón</option>
+                <option value="Vela: Laser">Vela: Laser</option>
+                <option value="Voleibol">Voleibol</option>
+                <option value="Yoga">Yoga</option>
+              </select>
+            </td>
           </tr>
           <tr>
             <td>Categoría:</td>
-            <td><input type="text" name="categoria" class="input-field"></td>
-            <td>Logros deportivos (si procede):</td>
-            <td><input type="text" name="logros" class="input-field"></td>
-          </tr>
-          <tr>
+            <td>
+              <select name="categoria" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="Profesional">Profesional</option>
+                <option value="Amateur">Amateur</option>
+                <option value="Absoluta">Absoluta</option>
+                <option value="Iniciación">Iniciación</option>
+              </select>
+            </td>
             <td>Período de la temporada:</td>
-            <td><input type="text" name="periodoTemporada" class="input-field"></td>
+            <td>
+              <select name="periodoTemporada" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="Pretemporada">Pretemporada</option>
+                <option value="Temporada">Temporada</option>
+                <option value="Competicion">Competición</option>
+                <option value="Recuperacion">Recuperación</option>
+                <option value="Descanso">Descanso</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
             <td>Edad de inicio del entrenamiento:</td>
-            <td><input type="number" name="edadInicioEntrenamiento" class="input-field"></td>
-          </tr>
-          <tr>
-            <td>Años de práctica deportiva:</td>
-            <td><input type="number" name="aniosPractica" class="input-field"></td>
-            <td>Número de días que entrena a la semana:</td>
-            <td><input type="number" name="diasEntrenamientoSemana" class="input-field"></td>
-          </tr>
-
-          <!-- HÁBITOS ALIMENTICIOS -->
-          <tr>
-            <th colspan="4">HÁBITOS DE ALIMENTACIÓN</th>
-          </tr>
-          <tr>
-            <td>- Desayuno:</td>
-            <td><input type="text" name="desayuno" class="input-field"></td>
-            <td>- Media mañana:</td>
-            <td><input type="text" name="mediaManana" class="input-field"></td>
-          </tr>
-          <tr>
-            <td>- Comida:</td>
-            <td><input type="text" name="comida" class="input-field"></td>
-            <td>- Merienda:</td>
-            <td><input type="text" name="merienda" class="input-field"></td>
-          </tr>
-          <tr>
-            <td>- Cena:</td>
-            <td><input type="text" name="cena" class="input-field"></td>
-            <td>- Número de piezas de fruta al día:</td>
-            <td><input type="number" name="frutaDia" class="input-field"></td>
-          </tr>
-          <tr>
-            <td>- Consumo de leche y productos lácteos al día:</td>
-            <td><input type="text" name="lacteosDia" class="input-field"></td>
-            <td>- Ingesta de líquidos al día (ml):</td>
-            <td><input type="number" name="liquidosDia" class="input-field"></td>
-          </tr>
-
-          <!-- COMENTARIOS -->
-          <tr>
-            <th colspan="4">COMENTARIOS / OBSERVACIONES</th>
-          </tr>
-          <tr>
-            <td colspan="4">
-              <textarea name="comentarios" class="textarea-field" placeholder="Escribe aquí tus observaciones..." rows="5"></textarea>
+            <td>
+              <select name="edadInicioEntrenamiento" class="input-field">
+                <option value="">Selecciona</option>
+                <option value="8-10">8-10 años</option>
+                <option value="10-13">10-13 años</option>
+                <option value="13-15">13-15 años</option>
+                <option value="15-18">15-18 años</option>
+                <option value="18-25">18-25 años</option>
+                <option value="25-30">25-30 años</option>
+                <option value="30-40">30-40 años</option>
+                <option value=">40">> 40 años</option>
+              </select>
             </td>
           </tr>
 
-          <!-- BOTONES DE NUTRICIÓN -->
-          <tr>
-            <td colspan="4" style="text-align:center;">
-              <label><input type="radio" name="nutricion" value="Balanceada"> Balanceada</label>
-              &nbsp;&nbsp;
-              <label><input type="radio" name="nutricion" value="No Balanceada"> No Balanceada</label>
-            </td>
-          </tr>
+          <!-- Más secciones... -->
+          <!-- Aquí puedes añadir las demás secciones como Hábitos Alimenticios, Comentarios, etc. -->
+
         </table>
       </div>
+
+      <!-- HÁBITOS ALIMENTICIOS -->
+<tr>
+  <th colspan="4">HÁBITOS DE ALIMENTACIÓN</th>
+</tr>
+
+<!-- Cuántas comidas al día -->
+<tr>
+  <td><strong>¿Cuántas comidas al día haces?</strong></td>
+  <td>
+    <select name="numeroComidas" class="input-field">
+      <option value="">Selecciona</option>
+      <option value="3">3 Comidas</option>
+      <option value="4">4 Comidas</option>
+      <option value="5">5 Comidas</option>
+      <option value="6">6 Comidas</option>
+      <option value="7">7 Comidas</option>
+      <option value="8+">Más de 7</option>
+    </select>
+  </td>
+</tr>
+
+<!-- Comidas que suele saltarse -->
+<tr>
+  <td><strong>¿Qué comidas sueles saltarte?</strong></td>
+  <td colspan="3">
+    <label><input type="checkbox" name="comidasSaltadas[]" value="Desayuno"> Desayuno</label><br>
+    <label><input type="checkbox" name="comidasSaltadas[]" value="Media Mañana"> Media Mañana</label><br>
+    <label><input type="checkbox" name="comidasSaltadas[]" value="Almuerzo"> Almuerzo</label><br>
+    <label><input type="checkbox" name="comidasSaltadas[]" value="Comida Principal"> Comida Principal</label><br>
+    <label><input type="checkbox" name="comidasSaltadas[]" value="Merienda"> Merienda</label><br>
+    <label><input type="checkbox" name="comidasSaltadas[]" value="Cena"> Cena</label>
+  </td>
+</tr>
+
+<!-- Piezas de fruta al día -->
+<tr>
+  <td><strong>Número de piezas de fruta al día:</strong></td>
+  <td>
+    <select name="frutaDia" class="input-field">
+      <option value="">Selecciona</option>
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2-3">2 - 3</option>
+      <option value="3-4">3 - 4</option>
+      <option value="4-5">4 - 5</option>
+      <option value="5+">5+</option>
+    </select>
+  </td>
+</tr>
+
+<!-- Ingesta de líquidos al día -->
+<tr>
+  <td><strong>Ingesta de líquidos al día (ml):</strong></td>
+  <td>
+    <select name="liquidosDia" class="input-field">
+      <option value="">Selecciona</option>
+      <option value="<1000">< 1000 ml (~4 vasos)</option>
+      <option value="1000-1500">1000 - 1500 ml (~5-6 vasos)</option>
+      <option value="1500-2000">1500 - 2000 ml (~6-8 vasos)</option>
+      <option value="2000-3000">2000 - 3000 ml (~8-12 vasos)</option>
+      <option value="3000-3500">3000 - 3500 ml (~12-14 vasos)</option>
+      <option value="3500+">> 3500 ml (>14 vasos)</option>
+    </select>
+  </td>
+</tr>
+
+<!-- Dieta balanceada -->
+<tr>
+  <td><strong>¿Tienes una dieta balanceada?</strong></td>
+  <td>
+    <label><input type="radio" name="dietaBalanceada" value="Si"> Sí</label><br>
+    <label><input type="radio" name="dietaBalanceada" value="No"> No</label>
+  </td>
+</tr>
+
+<!-- COMENTARIOS / OBSERVACIONES -->
+<tr>
+  <th colspan="4">COMENTARIOS / OBSERVACIONES</th>
+</tr>
+<tr>
+  <td colspan="4">
+    <textarea name="comentarios" class="textarea-field" placeholder="Escribe aquí tus observaciones..." rows="5"></textarea>
+  </td>
+</tr>
+
+          
 
       <!-- Pie de página -->
       <div class="modal-footer">
