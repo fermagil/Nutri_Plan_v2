@@ -2180,14 +2180,14 @@ body {
     }
 }
 /* Estilos generales del modal container de Anamnesis */
-/* Modal customization */
-.modal-content {
+/* Modal customization for commitModal */
+#commitModal .modal-content {
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Modal header */
-.modal-header {
+/* Modal header for commitModal */
+#commitModal .modal-header {
   background-color: #fff;
   color: #4caf50; /* Green color */
   padding: 25px 15px; /* Consistent horizontal padding with modal-body */
@@ -2198,12 +2198,12 @@ body {
   z-index: 1000;
   margin: 0; /* Ensure no extra margins */
   width: 100%; /* Explicitly match parent width */
-  font-size: 1.9rem; /* Larger font size for modal title */
+  font-size: 1.75rem; /* Larger font size for modal title */
 }
 
-/* Modal body padding to avoid content overlap */
-.modal-body {
-  padding: 40px 15px 15px 15px; /* Consistent horizontal padding with modal-header */
+/* Modal body for commitModal */
+#commitModal .modal-body {
+  padding: 60px 15px 15px 15px; /* Consistent horizontal padding with modal-header */
   margin: 0; /* Ensure no extra margins */
 }
 
@@ -2247,6 +2247,21 @@ body {
   box-shadow: none; /* Remove Bootstrap's default focus shadow */
 }
 
+/* Main header */
+.main-header {
+  background-color: #fff;
+  color: #4caf50; /* Green color */
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 2rem; /* Larger font size for main header */
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  cursor: pointer; /* Indicate clickability */
+}
 
 /* Section headers */
 .section-title {
