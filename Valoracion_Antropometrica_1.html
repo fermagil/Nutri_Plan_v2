@@ -2181,10 +2181,11 @@ body {
 }
 /* Estilos generales del modal container de Anamnesis */
 /* Modal customization for commitModal */
-/* Modal customization for commitModal */
 #commitModal .modal-content {
-  border-radius: 0 0 10px 10px; /* No top radius since header is outside */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 0; /* Remove rounded corners */
+  box-shadow: none; /* Remove shadow to blend with modal-body */
+  background-color: transparent; /* No background to match modal-body */
+  border: none; /* Remove borders */
 }
 
 /* Common header styles for modal header */
@@ -2195,23 +2196,28 @@ body {
   top: 0;
   z-index: 1000;
   padding: 25px 15px;
-  border-radius: 10px 10px 0 0;
-  color: #4caf50; /* Green color for close button */
+  border-radius: 10px 10px 0 0; /* Top corners rounded */
+  color: #4caf50; /* Green for close button */
   width: 100%;
-  max-width: 1140px; /* Match modal-xl max-width */
+  max-width: 1140px; /* Match modal-xl */
   margin: 0 auto; /* Center within modal-dialog */
-  font-size: 1.75rem; /* Larger font size for modal title */
+  font-size: 1.75rem;
 }
 
 /* Modal title for commitModal */
 #commitModal .modal-title {
-  color: #388E3C; /* Specific green for Ficha Médica Deportiva */
+  color: #388E3C; /* Specific green for title */
 }
 
 /* Modal body for commitModal */
 #commitModal .modal-body {
-  padding: 30px 15px 15px 15px; /* Reduced top padding to bring content closer to header */
-  margin: 0; /* Ensure no extra margins */
+  background-color: #fff; /* White background to match header */
+  border-radius: 0 0 10px 10px; /* Bottom corners rounded */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  width: 100%;
+  max-width: 1140px; /* Match modal-xl */
+  margin: 0 auto; /* Center within modal-dialog */
+  padding: 30px 15px; /* Consistent padding, no reduced top */
 }
 
 /* Table header customization */
@@ -2238,32 +2244,32 @@ body {
 /* Form inputs and selects */
 .form-control,
 .form-select {
-  padding: 6px 12px; /* Padding for taller height */
+  padding: 6px 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fafafa;
-  font-size: 14px; /* Readable font size */
+  font-size: 14px;
   transition: border-color 0.3s ease;
-  height: auto; /* Ensure height adjusts to content */
+  height: auto;
 }
 
 .form-control:focus,
 .form-select:focus {
   border-color: #4caf50;
   background-color: #f0fff0;
-  box-shadow: none; /* Remove Bootstrap's default focus shadow */
+  box-shadow: none;
 }
 
 /* Section headers */
 .section-title {
-  background-color: #e8f5e9; /* Very light green background */
-  color: #4caf50; /* Green text */
+  background-color: #e8f5e9;
+  color: #4caf50;
   padding: 10px 15px;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-size: 1.25rem;
   margin-bottom: 15px;
-  border-bottom: 2px solid #4caf50; /* Green separator line */
+  border-bottom: 2px solid #4caf50;
 }
 
 /* Buttons */
@@ -3357,8 +3363,8 @@ body {
         <h5 class="modal-title" id="commitModalLabel">Ficha Médica Deportiva</h5>
         <button type="button" class="btn-close" onclick="closeModal()" aria-label="Close"></button>
       </div>
-      <div class="modal-content">
-        <div class="modal-body">
+      <div class="modal-body">
+        <div class="modal-content">
           <form id="form-datos-paciente">
               <!-- Datos Personales -->
               <h3 class="section-title">Datos Personales</h3>
