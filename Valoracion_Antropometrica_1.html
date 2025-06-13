@@ -2186,19 +2186,34 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Modal header for commitModal */
-#commitModal .modal-header {
+/* Common header styles for main and modal headers */
+.common-header {
   background-color: #fff;
-  color: #4caf50; /* Green color for close button */
-  padding: 25px 15px;
-  border-radius: 10px 10px 0 0; /* Top radius to match modal-content */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+/* Main header specific styles */
+.main-header {
+  color: #388E3C; /* Specific green for Ficha Médica Deportiva */
+  font-size: 2rem; /* Larger font size for main header */
+  margin-bottom: 20px;
+  width: 100%;
+  cursor: pointer; /* Indicate clickability */
+}
+
+/* Modal header specific styles for commitModal */
+#commitModal .modal-header {
+  color: #4caf50; /* Green color for close button */
+  padding: 25px 15px;
+  border-radius: 10px 10px 0 0; /* Top radius to match modal-content */
   margin: 0 auto; /* Center within modal-dialog */
-  width: auto; /* Let header shrink to content or parent constraints */
-  max-width: 85%; /* Prevent exceeding modal-dialog's content area */
+  width: 100%; /* Full width of parent */
+  max-width: 1140px; /* Match modal-xl max-width */
   font-size: 1.75rem; /* Larger font size for modal title */
 }
 
@@ -2253,22 +2268,6 @@ body {
   box-shadow: none; /* Remove Bootstrap's default focus shadow */
 }
 
-/* Main header */
-.main-header {
-  background-color: #fff;
-  color: #388E3C; /* Specific green for Ficha Médica Deportiva */
-  padding: 15px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-size: 2rem; /* Larger font size for main header */
-  margin-bottom: 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  width: 100%;
-  cursor: pointer; /* Indicate clickability */
-}
-
 /* Section headers */
 .section-title {
   background-color: #e8f5e9; /* Very light green background */
@@ -2307,6 +2306,11 @@ body {
   opacity: 1;
   transform: translateY(0);
   transition: all 0.4s ease;
+}
+
+.alert.notification.hidden {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 .alert.notification.hidden {
