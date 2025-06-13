@@ -7,7 +7,9 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>	
 <!-- CSS de Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"  rel="stylesheet">	
+<!-- CSS de Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"  rel="stylesheet">
+	<link href="Bootstrap_Adapted_Styles_20250613.css" rel="stylesheet">
 	
     <title>Valoración Antropométrica con Resultados</title>
     <style>
@@ -2179,179 +2181,109 @@ body {
 }
 /* Estilos generales del modal container de Anamnesis */
 /* Estilos generales del modal container de Anamnesis */
-.modal.fade .modal-dialog {
-  align-items: center;
-  margin: auto;
-  max-width: 900px;
-}
-
+/* Modal customization */
 .modal-content {
-  background-color: #fff;
-  color: #333;
-  padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Animación suave al aparecer */
-@keyframes fadeInUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Encabezado del modal */
+/* Modal header */
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 1rem;
+  background-color: #fff;
+  color: #4caf50;
+  padding: 15px;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.modal-title {
-  font-size: 1.5rem;
-  margin: 0;
-  color: #2e7d32; /* Verde oscuro */
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  color: #777;
-  transition: color 0.2s ease;
-}
-
-.modal-close:hover {
-  color: #2e7d32;
-}
-
-/* Cuerpo del modal */
+/* Modal body padding to avoid content overlap */
 .modal-body {
-  margin-bottom: 1.5rem;
+  padding-top: 60px; /* Adjust based on modal-header height */
 }
 
-/* Tabla de datos */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
-
-.data-table th {
+/* Table header customization */
+.table th[colspan="4"] {
   background-color: #e8f5e9;
   color: #2e7d32;
-  padding: 12px 16px;
-  text-align: left;
   font-weight: bold;
-  border-bottom: 2px solid #c8e6c9;
+  font-size: 1rem;
 }
 
-.data-table td {
-  padding: 8px 0;
-}
-
-/* Agrupar en 4 columnas */
-.form-row > td {
-  width: 25%;
-  vertical-align: top;
-  padding: 8px;
-}
-
-/* Para que label + input queden bien alineados */
+/* Form field layout */
 .form-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-/* Labels más pequeños */
-.data-table label {
+/* Form labels */
+.form-label {
   font-size: 13px;
-  display: block;
   margin-bottom: 4px;
 }
 
-.data-table th[colspan="3"] {
-  background-color: #e0f2f1;
-  color: #00796b;
-  font-size: 15px;
-}
-
-/* Campos de entrada (inputs, selects, etc.) */
-.input-field,
-select.input-field,
-.textarea-field {
-  width: 100%;
+/* Form inputs and selects */
+.form-control,
+.form-select {
   padding: 6px 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fafafa;
-  color: #333;
   font-size: 14px;
   transition: border-color 0.3s ease;
 }
 
-.input-field:focus,
-select.input-field:focus {
+.form-control:focus,
+.form-select:focus {
   border-color: #4caf50;
-  outline: none;
   background-color: #f0fff0;
+  box-shadow: none; /* Remove Bootstrap's default focus shadow */
 }
 
-/* Opciones (radios y checkboxes) */
-.options label {
-  display: inline-block;
-  margin-right: 1rem;
-  font-size: 13px;
-}
-
-/* Pie de página */
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.btn {
-  padding: 10px 18px;
-  border: none;
+/* Main header */
+.main-header {
+  background-color: #fff;
+  color: #4caf50;
+  padding: 15px;
   border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
 }
 
-.btn-primary {
+/* Section headers */
+.section-title {
   background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+}
+
+/* Buttons */
+.btn-success {
+  background-color: #4caf50;
+  border-color: #4caf50;
   color: white;
 }
 
-.btn-primary:hover {
-  background-color: #388e3c;
-  transform: scale(1.03);
+.btn-danger {
+  background-color: #ef5350;
+  border-color: #ef5350;
+  color: white;
 }
 
-.btn-secondary {
-  background-color: #e0e0e0;
-  color: #333;
-}
-
-.btn-secondary:hover {
-  background-color: #cccccc;
-  transform: scale(1.03);
-}
-
-/* Notificación */
-.notification {
+/* Notification (using Bootstrap alert) */
+.alert.notification {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -2359,14 +2291,13 @@ select.input-field:focus {
   color: white;
   padding: 12px 20px;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 1050;
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: all 0.4s ease;
 }
 
-.notification.hidden {
+.alert.notification.hidden {
   opacity: 0;
   transform: translateY(20px);
 }
@@ -3410,378 +3341,262 @@ select.input-field:focus {
 		     <!-- Modal Commit Container -->
 	<!-- Modal Commit Container -->
 <!-- Modal Commit Container -->
-<div class="modal fade" id="commitModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <!-- Encabezado del modal -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ficha Médica Deportiva</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <!-- Cuerpo del modal -->
-      <div class="modal-body">
-        <form id="form-datos-paciente" onsubmit="guardarDatos(event)">
-          <table class="table table-borderless">
-
-            <!-- Datos Personales -->
-            <tr>
-              <th colspan="4" class="text-start fs-5 text-success">Datos Personales</th>
-            </tr>
-
-            <!-- Fila 1 -->
-            <tr class="form-row">
-              <td class="form-field">
-                <label for="idTest" class="form-label">ID TEST:</label>
-                <input type="text" name="idTest" class="form-control input-field">
-              </td>
-              <td class="form-field">
-                <label for="tecnico" class="form-label">Técnico:</label>
-                <input type="text" name="tecnico" class="form-control input-field">
-              </td>
-              <td class="form-field">
-                <label for="fecha" class="form-label">FECHA:</label>
-                <input type="date" name="fecha" class="form-control input-field">
-              </td>
-              <td class="form-field">
-                <label for="nombre" class="form-label">NOMBRE:</label>
-                <input type="text" name="nombre" class="form-control input-field">
-              </td>
-            </tr>
-
-            <!-- Fila 2 -->
-            <tr class="form-row">
-              <td class="form-field">
-                <label for="apellidos" class="form-label">APELLIDOS:</label>
-                <input type="text" name="apellidos" class="form-control input-field">
-              </td>
-              <td class="form-field">
-                <label for="paisNacimiento" class="form-label">PAÍS DE NACIMIENTO:</label>
-                <select name="paisNacimiento" class="form-select input-field">
-                  <optgroup label="Europa">
+<div class="modal fade" id="commitModal" tabindex="-1" aria-labelledby="commitModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="commitModalLabel">Ficha Médica Deportiva</h5>
+            <button type="button" class="btn-close" onclick="closeModal()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-datos-paciente">
+              <!-- Datos Personales -->
+              <h3 class="section-title">Datos Personales</h3>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="idTest" class="form-label">ID TEST:</label>
+                  <input type="text" class="form-control" id="idTest" name="idTest">
+                </div>
+                <div class="col-md-3">
+                  <label for="tecnico" class="form-label">Técnico:</label>
+                  <input type="text" class="form-control" id="tecnico" name="tecnico">
+                </div>
+                <div class="col-md-3">
+                  <label for="fecha" class="form-label">FECHA:</label>
+                  <input type="date" class="form-control" id="fecha" name="fecha">
+                </div>
+                <div class="col-md-3">
+                  <label for="nombre" class="form-label">NOMBRE:</label>
+                  <input type="text" class="form-control" id="nombre" name="nombre">
+                </div>
+                <div class="col-md-3">
+                  <label for="apellidos" class="form-label">APELLIDOS:</label>
+                  <input type="text" class="form-control" id="apellidos" name="apellidos">
+                </div>
+                <div class="col-md-3">
+                  <label for="paisNacimiento" class="form-label">PAÍS DE NACIMIENTO:</label>
+                  <select class="form-select" id="paisNacimiento" name="paisNacimiento">
+                    <option value="">Selecciona</option>
                     <option value="España">España</option>
                     <option value="Francia">Francia</option>
                     <option value="Alemania">Alemania</option>
                     <option value="Italia">Italia</option>
                     <option value="Portugal">Portugal</option>
                     <option value="Reino Unido">Reino Unido</option>
-                  </optgroup>
-                  <optgroup label="África">
                     <option value="Egipto">Egipto</option>
                     <option value="Nigeria">Nigeria</option>
-                  </optgroup>
-                  <optgroup label="Asia">
+                    <option value="Sudáfrica">Sudáfrica</option>
                     <option value="China">China</option>
                     <option value="India">India</option>
-                  </optgroup>
-                  <optgroup label="América">
+                    <option value="Japón">Japón</option>
                     <option value="Estados Unidos">Estados Unidos</option>
                     <option value="Brasil">Brasil</option>
-                  </optgroup>
-                </select>
-              </td>
-              <td class="form-field">
-                <label for="raza" class="form-label">RAZA:</label>
-                <select name="raza" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="Blanca">Blanca</option>
-                  <option value="Negra">Negra</option>
-                  <option value="Amarilla">Amarilla</option>
-                  <option value="Mestiza">Mestiza</option>
-                  <option value="Otra">Otra</option>
-                </select>
-              </td>
-              <td class="form-field"></td>
-            </tr>
-
-            <!-- DATOS DE ENTRENAMIENTO -->
-            <tr>
-              <th colspan="4" class="text-start fs-5 text-success">DATOS DE ENTRENAMIENTO</th>
-            </tr>
-
-            <!-- Fila 1 -->
-            <tr class="form-row">
-              <td class="form-field">
-                <label for="entrenamientoAnios" class="form-label">AÑOS:</label>
-                <select name="entrenamientoAnios" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="0-3">0 - 3 años</option>
-                  <option value="3-6">3 - 6 años</option>
-                  <option value="6-10">6 - 10 años</option>
-                  <option value="10-13">10 - 13 años</option>
-                  <option value="13-15">13 - 15 años</option>
-                  <option value="15+">15+ años</option>
-                </select>
-              </td>
-              <td class="form-field">
-                <label for="diasSemana" class="form-label">DÍAS/SEMANA:</label>
-                <select name="diasSemana" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="1">1 día</option>
-                  <option value="2">2 días</option>
-                  <option value="3">3 días</option>
-                  <option value="4">4 días</option>
-                  <option value="5">5 días</option>
-                  <option value="6">6 días</option>
-                  <option value="7">7 días</option>
-                </select>
-              </td>
-              <td class="form-field">
-                <label for="horasDia" class="form-label">HORAS/DÍA:</label>
-                <select name="horasDia" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="0-2">0 - 2 horas</option>
-                  <option value="2-3">2 - 3 horas</option>
-                  <option value="3-4">3 - 4 horas</option>
-                  <option value="5+">5+ horas</option>
-                </select>
-              </td>
-              <td class="form-field">
-                <label for="intensidad" class="form-label">INTENSIDAD:</label>
-                <select name="intensidad" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="Baja">Baja</option>
-                  <option value="Media">Media</option>
-                  <option value="Alta">Alta</option>
-                  <option value="Extrema">Extrema</option>
-                </select>
-              </td>
-            </tr>
-
-            <!-- ANAMNESIS DEPORTIVA -->
-            <tr>
-              <th colspan="4" class="text-start fs-5 text-success">ANAMNESIS DEPORTIVA</th>
-            </tr>
-
-            <!-- Fila 1 -->
-            <tr class="form-row">
-              <td class="form-field">
-                <label for="deportePractica" class="form-label">Deporte que practica:</label>
-                <select name="deportePractica" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                 <option value="Aerobic">Aerobic</option>
-	      <option value="Atletismo: 100m lisos">Atletismo: 100m lisos</option>
-	      <option value="Atletismo: 1500m">Atletismo: 1500m</option>
-	      <option value="Atletismo: 400m vallas">Atletismo: 400m vallas</option>
-	      <option value="Atletismo: Altura">Atletismo: Altura</option>
-	      <option value="Atletismo: Fondo">Atletismo: Fondo</option>
-	      <option value="Atletismo: Lanz. Jabalina">Atletismo: Lanz. Jabalina</option>
-	      <option value="Atletismo: Lanzamientos">Atletismo: Lanzamientos</option>
-	      <option value="Atletismo: Marcha">Atletismo: Marcha</option>
-	      <option value="Atletismo: Marcha 20km">Atletismo: Marcha 20km</option>
-	      <option value="Atletismo: Maratón">Atletismo: Maratón</option>
-	      <option value="Atletismo: Pértiga">Atletismo: Pértiga</option>
-	      <option value="Atletismo: Salto de altura">Atletismo: Salto de altura</option>
-	      <option value="Badminton">Badminton</option>
-	      <option value="Baloncesto">Baloncesto</option>
-	      <option value="Balonmano">Balonmano</option>
-	      <option value="Béisbol">Béisbol</option>
-	      <option value="Boxeo: Peso pesado">Boxeo: Peso pesado</option>
-	      <option value="Boxeo: <56kg">< 56 kg</option>
-	      <option value="Boxeo: <64kg">< 64 kg</option>
-	      <option value="Boxeo: <75kg">< 75 kg</option>
-	      <option value="Boxeo: <91kg">< 91 kg</option>
-		<option value="Ciclismo: Carretera">Ciclismo: Carretera</option>
-	      <option value="Ciclismo: Montaña">Ciclismo: Montaña</option>
-	      <option value="Ciclismo: Pista - Velocidad">Ciclismo: Pista - Velocidad</option>
-	      <option value="CrossFit">CrossFit</option>
-	      <option value="Danza Clásica">Danza Clásica</option>
-	      <option value="Escalada Deportiva">Escalada Deportiva</option>
-	      <option value="Esgrima">Esgrima</option>
-	      <option value="Esquí Alpino">Esquí Alpino</option>
-	      <option value="Frontenis">Frontenis</option>
-	      <option value="Fútbol">Fútbol</option>
-	      <option value="Gimnasia Artística">Gimnasia Artística</option>
-	      <option value="Gimnasia Artística: Masculina">Gimnasia Artística: Masculina</option>
-	      <option value="Gimnasia Rítmica">Gimnasia Rítmica</option>
-	      <option value="Golf">Golf</option>
-	      <option value="Halterofilia">Halterofilia</option>
-	      <option value="Hockey Hierba">Hockey Hierba</option>
-	      <option value="Judo: -90 kg">Judo: -90 kg</option>
-	      <option value="Judo: <58kg">< 58 kg</option>
-	      <option value="Judo: >80kg">> 80 kg</option>
-	      <option value="Judo: 58-72kg">58-72 kg</option>
-	      <option value="Judo: 72-80kg">72-80 kg</option>
-	      <option value="Karate">Karate</option>
-	      <option value="Lanzamiento de Peso">Lanzamiento de Peso</option>  
-		<option value="Lucha: Grecorromana">Lucha: Grecorromana</option>
-	      <option value="Lucha: <58kg">< 58 kg</option>
-	      <option value="Lucha: >80kg">> 80 kg</option>
-	      <option value="Lucha: 58-72kg">58-72 kg</option>
-	      <option value="Lucha: 72-80kg">72-80 kg</option>
-	      <option value="Natación: 1500m Libre">Natación: 1500m Libre</option>
-	      <option value="Natación: Sincronizada">Natación: Sincronizada</option>
-	      <option value="Pádel">Pádel</option>
-	      <option value="Patinaje Artístico">Patinaje Artístico</option>
-	      <option value="Patinaje: Velocidad">Patinaje: Velocidad</option>
-	      <option value="Pilates">Pilates</option>
-	      <option value="Piragüismo: Aguas Tranquilas">Piragüismo: Aguas Tranquilas</option>
-	      <option value="Piragüismo: Slalom">Piragüismo: Slalom</option>
-	      <option value="Waterpolo">Waterpolo</option>
-	      <option value="Remo: Ligeros">Remo: Ligeros</option>
-	      <option value="Remo: Pesados">Remo: Pesados</option>
-	      <option value="Rugby">Rugby</option>
-	      <option value="Montañismo">Montañismo</option>
-	      <option value="Squash">Squash</option>
-	      <option value="Surf">Surf</option>
-	      <option value="Taekwondo">Taekwondo</option>
-	      <option value="Taekwondo: <49kg">< 49 kg</option>
-	      <option value="Taekwondo: <57kg">< 57 kg</option>
-	      <option value="Taekwondo: <58kg">< 58 kg</option>
-	      <option value="Taekwondo: <67kg">< 67 kg</option> 
-		<option value="Taekwondo: <68kg">< 68 kg</option>
-	      <option value="Taekwondo: <80kg">< 80 kg</option>
-	      <option value="Taekwondo: >67kg">> 67 kg</option>
-	      <option value="Taekwondo: >80kg">> 80 kg</option>
-	      <option value="Tai Chi">Tai Chi</option>
-	      <option value="Tenis">Tenis</option>
-	      <option value="Tenis de Mesa">Tenis de Mesa</option>
-	      <option value="Tiro con Arco">Tiro con Arco</option>
-	      <option value="Triatlón">Triatlón</option>
-	      <option value="Vela: Laser">Vela: Laser</option>
-	      <option value="Voleibol">Voleibol</option>
-	      <option value="Yoga">Yoga</option>
-              </select>
-            </td>
-            <td class="form-field">
-                <label for="categoria" class="form-label">Categoría:</label>
-                <select name="categoria" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="Profesional">Profesional</option>
-                  <option value="Amateur">Amateur</option>
-                  <option value="Absoluta">Absoluta</option>
-                  <option value="Iniciación">Iniciación</option>
-                </select>
-              </td>
-              <td class="form-field">
-                <label for="periodoTemporada" class="form-label">Período de la temporada:</label>
-                <select name="periodoTemporada" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="Pretemporada">Pretemporada</option>
-                  <option value="Temporada">Temporada</option>
-                  <option value="Competicion">Competición</option>
-                  <option value="Recuperacion">Recuperación</option>
-                  <option value="Descanso">Descanso</option>
-                </select>
-              </td>
-              <td class="form-field">
-                <label for="edadInicioEntrenamiento" class="form-label">Edad inicio entrenamiento:</label>
-                <select name="edadInicioEntrenamiento" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="8-10">8-10 años</option>
-                  <option value="10-13">10-13 años</option>
-                  <option value="13-15">13-15 años</option>
-                  <option value="15-18">15-18 años</option>
-                </select>
-              </td>
-            </tr>
-
-            <!-- HÁBITOS ALIMENTICIOS -->
-            <tr>
-              <th colspan="4" class="text-start fs-5 text-success">HÁBITOS DE ALIMENTACIÓN</th>
-            </tr>
-
-            <!-- Fila 1 -->
-            <tr class="form-row">
-              <td class="form-field">
-                <label class="form-label">¿Cuántas comidas al día haces?</label>
-                <select name="numeroComidas" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="3">3 Comidas</option>
-                  <option value="4">4 Comidas</option>
-                  <option value="5">5 Comidas</option>
-                  <option value="6">6 Comidas</option>
-                  <option value="7">7 Comidas</option>
-                  <option value="8+">Más de 7</option>
-                </select>
-              </td>
-              <td class="form-field" colspan="2">
-                <label class="form-label">¿Qué comidas sueles saltarte?</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="comidasSaltadas[]" value="Desayuno">
-                  <label class="form-check-label">Desayuno</label>
+                    <option value="Argentina">Argentina</option>
+                  </select>
                 </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="comidasSaltadas[]" value="Media Mañana">
-                  <label class="form-check-label">Media Mañana</label>
+                <div class="col-md-3">
+                  <label for="raza" class="form-label">RAZA:</label>
+                  <select class="form-select" id="raza" name="raza">
+                    <option value="">Selecciona</option>
+                    <option value="Blanca">Blanca</option>
+                    <option value="Negra">Negra</option>
+                    <option value="Amarilla">Amarilla</option>
+                    <option value="Mestiza">Mestiza</option>
+                    <option value="Otra">Otra</option>
+                  </select>
                 </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="comidasSaltadas[]" value="Almuerzo">
-                  <label class="form-check-label">Almuerzo</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="comidasSaltadas[]" value="Merienda">
-                  <label class="form-check-label">Merienda</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="comidasSaltadas[]" value="Cena">
-                  <label class="form-check-label">Cena</label>
-                </div>
-              </td>
-              <td class="form-field">
-                <label class="form-label">¿Tienes una dieta balanceada?</label>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="dietaBalanceada" value="Si">
-                  <label class="form-check-label">Sí</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="dietaBalanceada" value="No">
-                  <label class="form-check-label">No</label>
-                </div>
-              </td>
-            </tr>
+              </div>
 
-            <!-- Fila 2 -->
-            <tr class="form-row">
-              <td class="form-field">
-                <label class="form-label">Número de piezas de fruta al día:</label>
-                <select name="frutaDia" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2-3">2 - 3</option>
-                  <option value="3-4">3 - 4</option>
-                  <option value="4-5">4 - 5</option>
-                  <option value="5+">5+</option>
-                </select>
-              </td>
-              <td class="form-field">
-                <label class="form-label">Ingesta de líquidos al día (ml):</label>
-                <select name="liquidosDia" class="form-select input-field">
-                  <option value="">Selecciona</option>
-                  <option value="<1000">< 1000 ml (~4 vasos)</option>
-                  <option value="1000-1500">1000 - 1500 ml (~5-6 vasos)</option>
-                  <option value="1500-2000">1500 - 2000 ml (~6-8 vasos)</option>
-                  <option value="2000-3000">2000 - 3000 ml (~8-12 vasos)</option>
-                </select>
-              </td>
-              <td class="form-field"></td>
-              <td class="form-field"></td>
-            </tr>
+              <!-- Datos de Entrenamiento -->
+              <h3 class="section-title">Datos de Entrenamiento</h3>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="anosEntrenamiento" class="form-label">AÑOS:</label>
+                  <select class="form-select" id="anosEntrenamiento" name="anosEntrenamiento">
+                    <option value="">Selecciona</option>
+                    <option value="0 - 3 años">0 - 3 años</option>
+                    <option value="3 - 6 años">3 - 6 años</option>
+                    <option value="6 - 10 años">6 - 10 años</option>
+                    <option value="10 - 13 años">10 - 13 años</option>
+                    <option value="13 - 15 años">13 - 15 años</option>
+                    <option value="15+ años">15+ años</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="diasSemana" class="form-label">DÍAS/SEMANA:</label>
+                  <select class="form-select" id="diasSemana" name="diasSemana">
+                    <option value="">Selecciona</option>
+                    <option value="1 día">1 día</option>
+                    <option value="2 días">2 días</option>
+                    <option value="3 días">3 días</option>
+                    <option value="4 días">4 días</option>
+                    <option value="5 días">5 días</option>
+                    <option value="6 días">6 días</option>
+                    <option value="7 días">7 días</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="horasDia" class="form-label">HORAS/DÍA:</label>
+                  <select class="form-select" id="horasDia" name="horasDia">
+                    <option value="">Selecciona</option>
+                    <option value="0 - 2 horas">0 - 2 horas</option>
+                    <option value="2 - 3 horas">2 - 3 horas</option>
+                    <option value="3 - 4 horas">3 - 4 horas</option>
+                    <option value="5+ horas">5+ horas</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="intensidad" class="form-label">INTENSIDAD:</label>
+                  <select class="form-select" id="intensidad" name="intensidad">
+                    <option value="">Selecciona</option>
+                    <option value="Baja">Baja</option>
+                    <option value="Media">Media</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Extrema">Extrema</option>
+                  </select>
+                </div>
+              </div>
 
-            <!-- COMENTARIOS / OBSERVACIONES -->
-            <tr>
-              <th colspan="4" class="text-start fs-5 text-success">COMENTARIOS / OBSERVACIONES</th>
-            </tr>
-            <tr>
-              <td colspan="4">
-                <textarea name="comentarios" class="form-control textarea-field" placeholder="Escribe aquí tus observaciones..." rows="5"></textarea>
-              </td>
-            </tr>
+              <!-- Anamnesis Deportiva -->
+              <h3 class="section-title">Anamnesis Deportiva</h3>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="deporte" class="form-label">Deporte que practica:</label>
+                  <select class="form-select" id="deporte" name="deporte">
+                    <option value="">Selecciona</option>
+                    <option value="Fútbol">Fútbol</option>
+                    <option value="Baloncesto">Baloncesto</option>
+                    <option value="Atletismo">Atletismo</option>
+                    <option value="Ciclismo: Carretera">Ciclismo: Carretera</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="categoria" class="form-label">Categoría:</label>
+                  <select class="form-select" id="categoria" name="categoria">
+                    <option value="">Selecciona</option>
+                    <option value="Profesional">Profesional</option>
+                    <option value="Amateur">Amateur</option>
+                    <option value="Absoluta">Absoluta</option>
+                    <option value="Iniciación">Iniciación</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="periodoTemporada" class="form-label">Período temporada:</label>
+                  <select class="form-select" id="periodoTemporada" name="periodoTemporada">
+                    <option value="">Selecciona</option>
+                    <option value="Pretemporada">Pretemporada</option>
+                    <option value="Temporada">Temporada</option>
+                    <option value="Competición">Competición</option>
+                    <option value="Recuperación">Recuperación</option>
+                    <option value="Descanso">Descanso</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="edadInicio" class="form-label">Edad inicio entrenamiento:</label>
+                  <select class="form-select" id="edadInicio" name="edadInicio">
+                    <option value="">Selecciona</option>
+                    <option value="8-10 años">8-10 años</option>
+                    <option value="10-13 años">10-13 años</option>
+                    <option value="13-15 años">13-15 años</option>
+                    <option value="15-18 años">15-18 años</option>
+                  </select>
+                </div>
+              </div>
 
-          </table>
+              <!-- Hábitos de Alimentación -->
+              <h3 class="section-title">Hábitos de Alimentación</h3>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="comidasDia" class="form-label">¿Cuántas comidas al día haces?</label>
+                  <select class="form-select" id="comidasDia" name="comidasDia">
+                    <option value="">Selecciona</option>
+                    <option value="3 Comidas">3 Comidas</option>
+                    <option value="4 Comidas">4 Comidas</option>
+                    <option value="5 Comidas">5 Comidas</option>
+                    <option value="6 Comidas">6 Comidas</option>
+                    <option value="7 Comidas">7 Comidas</option>
+                    <option value="Más de 7">Más de 7</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">¿Qué comidas sueles saltarte?</label>
+                  <div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="desayuno" name="desayuno">
+                      <label class="form-check-label" for="desayuno">Desayuno</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="mediaManana" name="mediaManana">
+                      <label class="form-check-label" for="mediaManana">Media Mañana</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="almuerzo" name="almuerzo">
+                      <label class="form-check-label" for="almuerzo">Almuerzo</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="merienda" name="merienda">
+                      <label class="form-check-label" for="merienda">Merienda</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="cena" name="cena">
+                      <label class="form-check-label" for="cena">Cena</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">¿Dieta balanceada?</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaSi" value="Sí">
+                    <label class="form-check-label" for="dietaSi">Sí</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaNo" value="No">
+                    <label class="form-check-label" for="dietaNo">No</label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="frutaDia" class="form-label">Piezas fruta/día:</label>
+                  <select class="form-select" id="frutaDia" name="frutaDia">
+                    <option value="">Selecciona</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2 - 3">2 - 3</option>
+                    <option value="3 - 4">3 - 4</option>
+                    <option value="4 - 5">4 - 5</option>
+                    <option value="5+">5+</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="liquidos" class="form-label">Ingesta líquidos (ml):</label>
+                  <select class="form-select" id="liquidos" name="liquidos">
+                    <option value="">Selecciona</option>
+                    <option value="< 1000 ml (~4 vasos)"> < 1000 ml (~4 vasos)</option>
+                    <option value="1000 - 1500 ml (~5-6 vasos)">1000 - 1500 ml (~5-6 vasos)</option>
+                    <option value="1500 - 2000 ml (~6-8 vasos)">1500 - 2000 ml (~6-8 vasos)</option>
+                    <option value="2000 - 3000 ml (~8-12 vasos)">2000 - 3000 ml (~8-12 vasos)</option>
+                  </select>
+                </div>
+              </div>
 
-          <!-- Pie de página -->
-          <div class="modal-footer">
-            <button type="button" onclick="borrarDatos()" class="btn btn-danger">Borrar Datos Guardados</button>
-            <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancelar</button>
-            <button class="btn btn-success" type="submit">Guardar Ficha</button>
+              <!-- Comentarios / Observaciones -->
+              <h3 class="section-title">Comentarios / Observaciones</h3>
+              <div class="row g-3">
+                <div class="col-12">
+                  <textarea class="form-control" id="comentarios" name="comentarios" rows="4"></textarea>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="btn-container text-center mt-3">
+                <button type="button" class="btn btn-danger me-2" onclick="closeModal()">Borrar Datos Guardados</button>
+                <button type="button" class="btn btn-secondary me-2" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-success" onclick="guardarDatos(event)">Guardar Ficha</button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-</div>
                 </div>
             </div>
         </form>
