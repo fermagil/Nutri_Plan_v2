@@ -2180,8 +2180,6 @@ body {
     }
 }
 /* Estilos generales del modal container de Anamnesis */
-/* Estilos generales del modal container de Anamnesis */
-/* Modal customization */
 /* Modal customization */
 .modal-content {
   border-radius: 10px;
@@ -2192,17 +2190,20 @@ body {
 .modal-header {
   background-color: #fff;
   color: #4caf50;
-  padding: 15px;
+  padding: 25px 15px; /* Consistent horizontal padding with modal-body */
   border-radius: 6px 6px 0 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  margin: 0; /* Ensure no extra margins */
+  width: 100%; /* Explicitly match parent width */
 }
 
 /* Modal body padding to avoid content overlap */
 .modal-body {
-  padding-top: 60px; /* Adjust based on modal-header height */
+  padding: 60px 15px 15px 15px; /* Consistent horizontal padding with modal-header */
+  margin: 0; /* Ensure no extra margins */
 }
 
 /* Table header customization */
