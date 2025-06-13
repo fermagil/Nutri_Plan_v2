@@ -2181,6 +2181,7 @@ body {
 }
 /* Estilos generales del modal container de Anamnesis */
 /* Modal customization */
+/* Modal customization */
 .modal-content {
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -2202,7 +2203,7 @@ body {
 
 /* Modal body padding to avoid content overlap */
 .modal-body {
-  padding: 40px 15px 15px 15px; /* Consistent horizontal padding with modal-header */
+  padding: 60px 15px 15px 15px; /* Consistent horizontal padding with modal-header */
   margin: 0; /* Ensure no extra margins */
 }
 
@@ -2230,12 +2231,13 @@ body {
 /* Form inputs and selects */
 .form-control,
 .form-select {
-  padding: 6px 10px;
+  padding: 4px 8px; /* Reduced padding for shorter height */
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fafafa;
-  font-size: 14px;
+  font-size: 13px; /* Slightly smaller font for compactness */
   transition: border-color 0.3s ease;
+  height: auto; /* Ensure height adjusts to content */
 }
 
 .form-control:focus,
@@ -2245,7 +2247,21 @@ body {
   box-shadow: none; /* Remove Bootstrap's default focus shadow */
 }
 
-
+/* Main header */
+.main-header {
+  background-color: #fff;
+  color: #4caf50;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  cursor: pointer; /* Indicate clickability */
+}
 
 /* Section headers */
 .section-title {
