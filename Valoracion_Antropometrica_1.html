@@ -2186,34 +2186,19 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Common header styles for main and modal headers */
+/* Common header styles for modal header */
 .common-header {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
-  padding: 15px;
-  border-radius: 6px;
-}
-
-/* Main header specific styles */
-.main-header {
-  color: #388E3C; /* Specific green for Ficha Médica Deportiva */
-  font-size: 2rem; /* Larger font size for main header */
-  margin-bottom: 20px;
-  width: 100%;
-  cursor: pointer; /* Indicate clickability */
-}
-
-/* Modal header specific styles for commitModal */
-#commitModal .modal-header {
-  color: #4caf50; /* Green color for close button */
   padding: 25px 15px;
-  border-radius: 10px 10px 0 0; /* Top radius to match modal-content */
-  margin: 0 auto; /* Center within modal-dialog */
-  width: 100%; /* Full width of parent */
+  border-radius: 10px 10px 0 0;
+  color: #4caf50; /* Green color for close button */
+  width: 100%;
   max-width: 1140px; /* Match modal-xl max-width */
+  margin: 0 auto; /* Center within modal-dialog */
   font-size: 1.75rem; /* Larger font size for modal title */
 }
 
@@ -2306,11 +2291,6 @@ body {
   opacity: 1;
   transform: translateY(0);
   transition: all 0.4s ease;
-}
-
-.alert.notification.hidden {
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 .alert.notification.hidden {
@@ -3371,13 +3351,13 @@ body {
 	<!-- Modal Commit Container -->
 <!-- Modal Commit Container -->
 <div class="modal fade" id="commitModal" tabindex="-1" aria-labelledby="commitModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-xl">
-        <div class="modal-header">
-          <h5 class="modal-title" id="commitModalLabel">Ficha Médica Deportiva</h5>
-          <button type="button" class="btn-close" onclick="closeModal()" aria-label="Close"></button>
-        </div>
-        <div class="modal-content">
-          <div class="modal-body">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-header common-header">
+        <h5 class="modal-title" id="commitModalLabel">Ficha Médica Deportiva</h5>
+        <button type="button" class="btn-close" onclick="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-content">
+        <div class="modal-body">
             <form id="form-datos-paciente">
               <!-- Datos Personales -->
               <h3 class="section-title">Datos Personales</h3>
