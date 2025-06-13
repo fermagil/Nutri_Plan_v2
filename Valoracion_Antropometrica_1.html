@@ -2181,6 +2181,7 @@ body {
 }
 /* Estilos generales del modal container de Anamnesis */
 /* Modal customization for commitModal */
+/* Modal customization for commitModal */
 #commitModal .modal-content {
   border-radius: 0 0 10px 10px; /* No top radius since header is outside */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -3352,12 +3353,11 @@ body {
 <!-- Modal Commit Container -->
 <div class="modal fade" id="commitModal" tabindex="-1" aria-labelledby="commitModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-      
-      <div class="modal-content">
-	      <div class="modal-header common-header">
+      <div class="modal-header common-header">
         <h5 class="modal-title" id="commitModalLabel">Ficha Médica Deportiva</h5>
         <button type="button" class="btn-close" onclick="closeModal()" aria-label="Close"></button>
       </div>
+      <div class="modal-content">
         <div class="modal-body">
           <form id="form-datos-paciente">
               <!-- Datos Personales -->
@@ -3595,61 +3595,61 @@ body {
               </div>
 
               <!-- Datos de Entrenamiento -->
-              <h3 class="section-title">Datos de Entrenamiento</h3>
-              <div class="row g-3">
-                <div class="col-md-3">
-                  <label for="anosEntrenamiento" class="form-label">Años:</label>
-                  <select class="form-select" id="anosEntrenamiento" name="anosEntrenamiento">
-                    <option value="">Selecciona</option>
-                    <option value="0 - 3 años">0 - 3 años</option>
-                    <option value="3 - 6 años">3 - 6 años</option>
-                    <option value="6 - 10 años">6 - 10 años</option>
-                    <option value="10 - 13 años">10 - 13 años</option>
-                    <option value="13 - 15 años">13 - 15 años</option>
-                    <option value="15+ años">15+ años</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label for="diasSemana" class="form-label">Días/sem:</label>
-                  <select class="form-select" id="diasSemana" name="diasSemana">
-                    <option value="">Selecciona</option>
-                    <option value="1 día">1 día</option>
-                    <option value="2 días">2 días</option>
-                    <option value="3 días">3 días</option>
-                    <option value="4 días">4 días</option>
-                    <option value="5 días">5 días</option>
-                    <option value="6 días">6 días</option>
-                    <option value="7 días">7 días</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label for="horasDia" class="form-label">Horas/día:</label>
-                  <select class="form-select" id="horasDia" name="horasDia">
-                    <option value="">Selecciona</option>
-                    <option value="0 - 2 horas">0 - 2 horas</option>
-                    <option value="2 - 3 horas">2 - 3 horas</option>
-                    <option value="3 - 4 horas">3 - 4 horas</option>
-                    <option value="5+ horas">5+ horas</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label for="intensidad" class="form-label">Intensidad:</label>
-                  <select class="form-select" id="intensidad" name="intensidad">
-                    <option value="">Selecciona</option>
-                    <option value="Baja">Baja</option>
-                    <option value="Media">Media</option>
-                    <option value="Alta">Alta</option>
-                    <option value="Extrema">Extrema</option>
-                  </select>
-                </div>
+            <h3 class="section-title">Datos de Entrenamiento</h3>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label for="anosEntrenamiento" class="form-label">AÑOS:</label>
+                <select class="form-select" id="anosEntrenamiento" name="anosEntrenamiento">
+                  <option value="">Selecciona</option>
+                  <option value="0 - 3 años">0 - 3 años</option>
+                  <option value="3 - 6 años">3 - 6 años</option>
+                  <option value="6 - 10 años">6 - 10 años</option>
+                  <option value="10 - 13 años">10 - 13 años</option>
+                  <option value="13 - 15 años">13 - 15 años</option>
+                  <option value="15+ años">15+ años</option>
+                </select>
               </div>
+              <div class="col-md-3">
+                <label for="diasSemana" class="form-label">DÍAS/SEMANA:</label>
+                <select class="form-select" id="diasSemana" name="diasSemana">
+                  <option value="">Selecciona</option>
+                  <option value="1 día">1 día</option>
+                  <option value="2 días">2 días</option>
+                  <option value="3 días">3 días</option>
+                  <option value="4 días">4 días</option>
+                  <option value="5 días">5 días</option>
+                  <option value="6 días">6 días</option>
+                  <option value="7 días">7 días</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="horasDia" class="form-label">HORAS/DÍA:</label>
+                <select class="form-select" id="horasDia" name="horasDia">
+                  <option value="">Selecciona</option>
+                  <option value="0 - 2 horas">0 - 2 horas</option>
+                  <option value="2 - 3 horas">2 - 3 horas</option>
+                  <option value="3 - 4 horas">3 - 4 horas</option>
+                  <option value="5+ horas">5+ horas</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="intensidad" class="form-label">INTENSIDAD:</label>
+                <select class="form-select" id="intensidad" name="intensidad">
+                  <option value="">Selecciona</option>
+                  <option value="Baja">Baja</option>
+                  <option value="Media">Media</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Extrema">Extrema</option>
+                </select>
+              </div>
+            </div>
 
-              <!-- Anamnesis Deportiva -->
-              <h3 class="section-title">Anamnesis Deportiva</h3>
-              <div class="row g-3">
-                <div class="col-md-3">
-                  <label for="deporte" class="form-label">Deporte que practica:</label>
-                  <select class="form-select" id="deporte" name="deporte">
+            <!-- Anamnesis Deportiva -->
+            <h3 class="section-title">Anamnesis Deportiva</h3>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label for="deporte" class="form-label">Deporte que practica:</label>
+                <select class="form-select" id="deporte" name="deporte">
                     <option value="">Selecciona</option>
                     option value="Aerobic">Aerobic</option>
 		      <option value="Atletismo: 100m lisos">Atletismo: 100m lisos</option>
@@ -3736,129 +3736,128 @@ body {
                   </select>
                 </div>
                 <div class="col-md-3">
-                  <label for="categoria" class="form-label">Categoría:</label>
-                  <select class="form-select" id="categoria" name="categoria">
-                    <option value="">Selecciona</option>
-                    <option value="Profesional">Profesional</option>
-                    <option value="Amateur">Amateur</option>
-                    <option value="Absoluta">Absoluta</option>
-                    <option value="Iniciación">Iniciación</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label for="periodoTemporada" class="form-label">Período temporada:</label>
-                  <select class="form-select" id="periodoTemporada" name="periodoTemporada">
-                    <option value="">Selecciona</option>
-                    <option value="Pretemporada">Pretemporada</option>
-                    <option value="Temporada">Temporada</option>
-                    <option value="Competición">Competición</option>
-                    <option value="Recuperación">Recuperación</option>
-                    <option value="Descanso">Descanso</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label for="edadInicio" class="form-label">Edad inicio entrenamiento:</label>
-                  <select class="form-select" id="edadInicio" name="edadInicio">
-                    <option value="">Selecciona</option>
-                    <option value="8-10 años">8-10 años</option>
-                    <option value="10-13 años">10-13 años</option>
-                    <option value="13-15 años">13-15 años</option>
-                    <option value="15-18 años">15-18 años</option>
-                  </select>
-                </div>
+                <label for="categoria" class="form-label">Categoría:</label>
+                <select class="form-select" id="categoria" name="categoria">
+                  <option value="">Selecciona</option>
+                  <option value="Profesional">Profesional</option>
+                  <option value="Amateur">Amateur</option>
+                  <option value="Absoluta">Absoluta</option>
+                  <option value="Iniciación">Iniciación</option>
+                </select>
               </div>
+              <div class="col-md-3">
+                <label for="periodoTemporada" class="form-label">Período temporada:</label>
+                <select class="form-select" id="periodoTemporada" name="periodoTemporada">
+                  <option value="">Selecciona</option>
+                  <option value="Pretemporada">Pretemporada</option>
+                  <option value="Temporada">Temporada</option>
+                  <option value="Competición">Competición</option>
+                  <option value="Recuperación">Recuperación</option>
+                  <option value="Descanso">Descanso</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="edadInicio" class="form-label">Edad inicio entrenamiento:</label>
+                <select class="form-select" id="edadInicio" name="edadInicio">
+                  <option value="">Selecciona</option>
+                  <option value="8-10 años">8-10 años</option>
+                  <option value="10-13 años">10-13 años</option>
+                  <option value="13-15 años">13-15 años</option>
+                  <option value="15-18 años">15-18 años</option>
+                </select>
+              </div>
+            </div>
 
-              <!-- Hábitos de Alimentación -->
-              <h3 class="section-title">Hábitos de Alimentación</h3>
-              <div class="row g-3">
-                <div class="col-md-3">
-                  <label for="comidasDia" class="form-label">¿Cuántas comidas al día haces?</label>
-                  <select class="form-select" id="comidasDia" name="comidasDia">
-                    <option value="">Selecciona</option>
-                    <option value="3 Comidas">3 Comidas</option>
-                    <option value="4 Comidas">4 Comidas</option>
-                    <option value="5 Comidas">5 Comidas</option>
-                    <option value="6 Comidas">6 Comidas</option>
-                    <option value="7 Comidas">7 Comidas</option>
-                    <option value="Más de 7">Más de 7</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">¿Qué comidas sueles saltarte?</label>
-                  <div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="desayuno" name="desayuno">
-                      <label class="form-check-label" for="desayuno">Desayuno</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="mediaManana" name="mediaManana">
-                      <label class="form-check-label" for="mediaManana">Media Mañana</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="almuerzo" name="almuerzo">
-                      <label class="form-check-label" for="almuerzo">Almuerzo</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="merienda" name="merienda">
-                      <label class="form-check-label" for="merienda">Merienda</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="cena" name="cena">
-                      <label class="form-check-label" for="cena">Cena</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">¿Dieta balanceada?</label>
+            <!-- Hábitos de Alimentación -->
+            <h3 class="section-title">Hábitos de Alimentación</h3>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label for="comidasDia" class="form-label">¿Cuántas comidas al día haces?</label>
+                <select class="form-select" id="comidasDia" name="comidasDia">
+                  <option value="">Selecciona</option>
+                  <option value="3 Comidas">3 Comidas</option>
+                  <option value="4 Comidas">4 Comidas</option>
+                  <option value="5 Comidas">5 Comidas</option>
+                  <option value="6 Comidas">6 Comidas</option>
+                  <option value="7 Comidas">7 Comidas</option>
+                  <option value="Más de 7">Más de 7</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">¿Qué comidas sueles saltarte?</label>
+                <div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaSi" value="Sí">
-                    <label class="form-check-label" for="dietaSi">Sí</label>
+                    <input class="form-check-input" type="checkbox" id="desayuno" name="desayuno">
+                    <label class="form-check-label" for="desayuno">Desayuno</label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaNo" value="No">
-                    <label class="form-check-label" for="dietaNo">No</label>
+                    <input class="form-check-input" type="checkbox" id="mediaManana" name="mediaManana">
+                    <label class="form-check-label" for="mediaManana">Media Mañana</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="almuerzo" name="almuerzo">
+                    <label class="form-check-label" for="almuerzo">Almuerzo</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="merienda" name="merienda">
+                    <label class="form-check-label" for="merienda">Merienda</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cena" name="cena">
+                    <label class="form-check-label" for="cena">Cena</label>
                   </div>
                 </div>
-                <div class="col-md-3">
-                  <label for="frutaDia" class="form-label">Piezas fruta/día:</label>
-                  <select class="form-select" id="frutaDia" name="frutaDia">
-                    <option value="">Selecciona</option>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2 - 3">2 - 3</option>
-                    <option value="3 - 4">3 - 4</option>
-                    <option value="4 - 5">4 - 5</option>
-                    <option value="5+">5+</option>
-                  </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">¿Dieta balanceada?</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaSi" value="Sí">
+                  <label class="form-check-label" for="dietaSi">Sí</label>
                 </div>
-                <div class="col-md-3">
-                  <label for="liquidos" class="form-label">Ingesta líquidos (ml):</label>
-                  <select class="form-select" id="liquidos" name="liquidos">
-                    <option value="">Selecciona</option>
-                    <option value="< 1000 ml (~4 vasos)"> < 1000 ml (~4 vasos)</option>
-                    <option value="1000 - 1500 ml (~5-6 vasos)">1000 - 1500 ml (~5-6 vasos)</option>
-                    <option value="1500 - 2000 ml (~6-8 vasos)">1500 - 2000 ml (~6-8 vasos)</option>
-                    <option value="2000 - 3000 ml (~8-12 vasos)">2000 - 3000 ml (~8-12 vasos)</option>
-                  </select>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaNo" value="No">
+                  <label class="form-check-label" for="dietaNo">No</label>
                 </div>
               </div>
+              <div class="col-md-3">
+                <label for="frutaDia" class="form-label">Piezas fruta/día:</label>
+                <select class="form-select" id="frutaDia" name="frutaDia">
+                  <option value="">Selecciona</option>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2 - 3">2 - 3</option>
+                  <option value="3 - 4">3 - 4</option>
+                  <option value="4 - 5">4 - 5</option>
+                  <option value="5+">5+</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="liquidos" class="form-label">Ingesta líquidos (ml):</label>
+                <select class="form-select" id="liquidos" name="liquidos">
+                  <option value="">Selecciona</option>
+                  <option value="< 1000 ml (~4 vasos)"> < 1000 ml (~4 vasos)</option>
+                  <option value="1000 - 1500 ml (~5-6 vasos)">1000 - 1500 ml (~5-6 vasos)</option>
+                  <option value="1500 - 2000 ml (~6-8 vasos)">1500 - 2000 ml (~6-8 vasos)</option>
+                  <option value="2000 - 3000 ml (~8-12 vasos)">2000 - 3000 ml (~8-12 vasos)</option>
+                </select>
+              </div>
+            </div>
 
-              <!-- Comentarios / Observaciones -->
-              <h3 class="section-title">Comentarios / Observaciones</h3>
-              <div class="row g-3">
-                <div class="col-12">
-                  <textarea class="form-control" id="comentarios" name="comentarios" rows="4"></textarea>
-                </div>
+            <!-- Comentarios / Observaciones -->
+            <h3 class="section-title">Comentarios / Observaciones</h3>
+            <div class="row g-3">
+              <div class="col-12">
+                <textarea class="form-control" id="comentarios" name="comentarios" rows="4"></textarea>
               </div>
+            </div>
 
-              <!-- Buttons -->
-              <div class="btn-container text-center mt-3">
-                <button type="button" class="btn btn-danger me-2" onclick="closeModal()">Borrar Datos Guardados</button>
-                <button type="button" class="btn btn-secondary me-2" onclick="closeModal()">Cancelar</button>
-                <button type="submit" class="btn btn-success" onclick="guardarDatos(event)">Guardar Ficha</button>
-              </div>
-            </form>
-          </div>
+            <!-- Buttons -->
+            <div class="btn-container text-center mt-3">
+              <button type="button" class="btn btn-danger me-2" onclick="closeModal()">Borrar Datos Guardados</button>
+              <button type="button" class="btn btn-secondary me-2" onclick="closeModal()">Cancelar</button>
+              <button type="submit" class="btn btn-success" onclick="guardarDatos(event)">Guardar Ficha</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -6161,7 +6160,6 @@ const somatotipoData = [
 });
 
 	// Función para abrir el modal Ficha Médica (Anamnesis)
-/// Función: Abrir el modal usando Bootstrap
 // Abrir modal con Bootstrap
     function openModal(event) {
       if (event) event.stopPropagation();
@@ -6221,7 +6219,7 @@ const somatotipoData = [
       }
     }
 
-    // Prevenir propagación en clics en section-title
+    // Prevenir propagación en clics en "Datos Personales"
     function handleSectionTitleClick(event) {
       event.stopPropagation(); // Evita que el evento se propague a los padres
       // No se define acción específica; añadir aquí si se necesita (e.g., toggle)
@@ -6234,14 +6232,16 @@ const somatotipoData = [
       }
     });
 
-    // Abrir modal automáticamente al cargar la página
-    document.addEventListener("DOMContentLoaded", function () {
-      openModal();
-      // Añadir listeners a todos los section-title
-      document.querySelectorAll(".section-title").forEach(title => {
-        title.addEventListener("click", handleSectionTitleClick);
-      });
+    
+      // Añadir listener solo al título "Datos Personales"
+      const datosPersonalesTitle = document.getElementById("datos-personales-title");
+      if (datosPersonalesTitle) {
+        datosPersonalesTitle.addEventListener("click", handleSectionTitleClick);
+      }
     });
+  </script>
+</body>
+</html>
 	
 </script>
  <!-- Firebase -->
