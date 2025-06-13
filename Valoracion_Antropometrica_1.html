@@ -2183,7 +2183,7 @@ body {
 /* Override modal-xl width */
 /* Override modal-xl width */
 .modal-xl {
-  max-width: 900px;
+  max-width: 800px;
 }
 
 /* Modal customization for commitModal */
@@ -2205,7 +2205,7 @@ body {
   border-radius: 10px 10px 0 0;
   color: #4caf50;
   width: 100%;
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
   font-size: 1.75rem;
 }
@@ -2221,27 +2221,29 @@ body {
   border-radius: 0 0 10px 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 30px 5px 30px 15px; /* Reduced right padding */
+  padding: 30px 2px 30px 15px; /* Further reduced right padding */
   overflow-y: auto;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #4caf50 #fff; /* Firefox */
 }
 
 /* Offset row gutters to maximize form width */
 #commitModal .row.g-3 {
   margin-left: -10px;
-  margin-right: -5px;
+  margin-right: -2px; /* Match reduced right padding */
 }
 
 /* Adjust columns to account for negative row margins */
 #commitModal .row.g-3 > [class*="col-"] {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 8px; /* Slightly reduced for 800px */
+  padding-right: 8px;
 }
 
-/* Optional: Slimmer scrollbar for WebKit browsers */
+/* Slimmer scrollbar for WebKit browsers */
 #commitModal .modal-body::-webkit-scrollbar {
-  width: 8px;
+  width: 6px; /* Even slimmer */
 }
 
 #commitModal .modal-body::-webkit-scrollbar-track {
@@ -2250,8 +2252,8 @@ body {
 
 #commitModal .modal-body::-webkit-scrollbar-thumb {
   background-color: #4caf50;
-  border-radius: 4px;
-  border: 2px solid #fff;
+  border-radius: 3px;
+  border: 1px solid #fff; /* Smaller border for slimmer scrollbar */
 }
 
 /* Table header customization */
@@ -2278,11 +2280,11 @@ body {
 /* Form inputs and selects */
 .form-control,
 .form-select {
-  padding: 6px 12px;
+  padding: 6px 10px; /* Slightly reduced for 800px */
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fafafa;
-  font-size: 14px;
+  font-size: 13px; /* Slightly smaller for 800px */
   transition: border-color 0.3s ease;
   height: auto;
 }
