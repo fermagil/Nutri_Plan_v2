@@ -2180,10 +2180,9 @@ body {
     }
 }
 /* Estilos generales del modal container de Anamnesis */
-/* Modal customization for commitModal */
 /* Override modal-xl width */
 .modal-xl {
-  max-width: 800px; /* Smaller than default 1140px */
+  max-width: 850px;
 }
 
 /* Modal customization for commitModal */
@@ -2205,7 +2204,7 @@ body {
   border-radius: 10px 10px 0 0;
   color: #4caf50;
   width: 100%;
-  max-width: 800px; /* Match new modal-xl width */
+  max-width: 850px;
   margin: 0 auto;
   font-size: 1.75rem;
 }
@@ -2221,9 +2220,37 @@ body {
   border-radius: 0 0 10px 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 800px; /* Match new modal-xl width */
+  max-width: 850px;
   margin: 0 auto;
-  padding: 30px 15px;
+  padding: 30px 5px 30px 15px; /* Reduced right padding */
+  overflow-y: auto; /* Ensure scrollbar appears on modal-body */
+}
+
+/* Offset row gutters to maximize form width */
+#commitModal .row.g-3 {
+  margin-left: -10px;
+  margin-right: -5px; /* Align with reduced right padding */
+}
+
+/* Adjust columns to account for negative row margins */
+#commitModal .row.g-3 > [class*="col-"] {
+  padding-left: 10px;
+  padding-right: 10px; /* Consistent padding */
+}
+
+/* Optional: Slimmer scrollbar for WebKit browsers */
+#commitModal .modal-body::-webkit-scrollbar {
+  width: 8px; /* Slimmer scrollbar */
+}
+
+#commitModal .modal-body::-webkit-scrollbar-track {
+  background: transparent; /* Match modal-body background */
+}
+
+#commitModal .modal-body::-webkit-scrollbar-thumb {
+  background-color: #4caf50; /* Green to match theme */
+  border-radius: 4px;
+  border: 2px solid #fff; /* Match modal-body background */
 }
 
 /* Table header customization */
@@ -2310,10 +2337,6 @@ body {
   opacity: 0;
   transform: translateY(20px);
 }
-</style>
-</head>
-<body>
-<header>
     <div class="logo"><a href="#" id="logo">NutriPlan_v2</a></div>
     <div class="dropdown" id="dropdown">
         <a href="#" onclick="logout()">Cerrar Sesión</a>
