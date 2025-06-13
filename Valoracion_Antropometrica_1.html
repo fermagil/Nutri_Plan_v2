@@ -2181,11 +2181,17 @@ body {
 }
 /* Estilos generales del modal container de Anamnesis */
 /* Modal customization for commitModal */
+/* Override modal-xl width */
+.modal-xl {
+  max-width: 900px; /* Smaller than default 1140px */
+}
+
+/* Modal customization for commitModal */
 #commitModal .modal-content {
-  border-radius: 0; /* Remove rounded corners */
-  box-shadow: none; /* Remove shadow to blend with modal-body */
-  background-color: transparent; /* No background to match modal-body */
-  border: none; /* Remove borders */
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  border: none;
 }
 
 /* Common header styles for modal header */
@@ -2196,28 +2202,28 @@ body {
   top: 0;
   z-index: 1000;
   padding: 25px 15px;
-  border-radius: 10px 10px 0 0; /* Top corners rounded */
-  color: #4caf50; /* Green for close button */
+  border-radius: 10px 10px 0 0;
+  color: #4caf50;
   width: 100%;
-  max-width: 1140px; /* Match modal-xl */
-  margin: 0 auto; /* Center within modal-dialog */
+  max-width: 900px; /* Match new modal-xl width */
+  margin: 0 auto;
   font-size: 1.75rem;
 }
 
 /* Modal title for commitModal */
 #commitModal .modal-title {
-  color: #388E3C; /* Specific green for title */
+  color: #388E3C;
 }
 
 /* Modal body for commitModal */
 #commitModal .modal-body {
-  background-color: #fff; /* White background to match header */
-  border-radius: 0 0 10px 10px; /* Bottom corners rounded */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  background-color: #fff;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 1140px; /* Match modal-xl */
-  margin: 0 auto; /* Center within modal-dialog */
-  padding: 30px 15px; /* Consistent padding, no reduced top */
+  max-width: 900px; /* Match new modal-xl width */
+  margin: 0 auto;
+  padding: 30px 15px;
 }
 
 /* Table header customization */
@@ -2285,7 +2291,7 @@ body {
   color: white;
 }
 
-/* Notification (using Bootstrap alert) */
+/* Notification */
 .alert.notification {
   position: fixed;
   bottom: 20px;
@@ -3366,7 +3372,7 @@ body {
       <div class="modal-body">
         <div class="modal-content">
           <form id="form-datos-paciente">
-              <!-- Datos Personales -->
+            <!-- Datos Personales -->
               <h3 class="section-title">Datos Personales</h3>
               <div class="row g-3">
                 <div class="col-md-3">
