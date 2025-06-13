@@ -2182,22 +2182,22 @@ body {
 /* Estilos generales del modal container de Anamnesis */
 /* Modal customization for commitModal */
 #commitModal .modal-content {
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px; /* No top radius since header is outside */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Modal header for commitModal */
 #commitModal .modal-header {
   background-color: #fff;
-  color: #4caf50; /* Green color for header elements (e.g., close button) */
-  padding: 25px 15px; /* Consistent horizontal padding with modal-body */
-  border-radius: 6px 6px 0 0;
+  color: #4caf50; /* Green color for close button */
+  padding: 25px 15px;
+  border-radius: 10px 10px 0 0; /* Top radius to match modal-content */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
-  margin: 0; /* Ensure no extra margins */
-  width: 100%; /* Explicitly match parent width */
+  margin: 0 auto; /* Center within modal-dialog */
+  width: calc(100% - 30px); /* Match modal-content width, accounting for dialog padding */
   font-size: 1.75rem; /* Larger font size for modal title */
 }
 
