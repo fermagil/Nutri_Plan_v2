@@ -2197,7 +2197,8 @@ body {
   top: 0;
   z-index: 1000;
   margin: 0 auto; /* Center within modal-dialog */
-  width: calc(100% - 30px); /* Match modal-content width, accounting for dialog padding */
+  width: auto; /* Let header shrink to content or parent constraints */
+  max-width: 100%; /* Prevent exceeding modal-dialog's content area */
   font-size: 1.75rem; /* Larger font size for modal title */
 }
 
