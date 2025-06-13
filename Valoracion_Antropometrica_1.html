@@ -2182,6 +2182,7 @@ body {
 /* Estilos generales del modal container de Anamnesis */
 /* Estilos generales del modal container de Anamnesis */
 /* Modal customization */
+/* Modal customization */
 .modal-content {
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -2256,6 +2257,7 @@ body {
   top: 0;
   z-index: 1000;
   width: 100%;
+  cursor: pointer; /* Indicate clickability */
 }
 
 /* Section headers */
@@ -2571,7 +2573,7 @@ body {
                 <input type="radio" id="tab3" name="tab-control">
                 <input type="radio" id="tab4" name="tab-control">
                 <ul>
-                    <li><label for="tab1">Datos Personales</label></li>
+                    <li><label onclick="openModal()" for="tab1">Datos Personales</label>
                     <li><label for="tab2">Medidas</label></li>
                     <li><label for="tab3">Resultados</label></li>
                     <li><label for="tab4">Explicación</label></li>
