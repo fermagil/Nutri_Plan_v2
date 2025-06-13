@@ -6161,84 +6161,69 @@ const somatotipoData = [
 
 	// Función para abrir el modal Ficha Médica (Anamnesis)
 // Abrir modal con Bootstrap
-    function openModal(event) {
-      if (event) event.stopPropagation();
-      const modal = new bootstrap.Modal(document.getElementById("commitModal"));
-      modal.show();
-      cargarDatos(); // Carga datos guardados si existen
+function openModal(event) {
+  if (event) event.stopPropagation();
+  const modal = new bootstrap.Modal(document.getElementById("commitModal"));
+  modal.show();
+  cargarDatos(); // Carga datos guardados si existen
+}
+
+// Cerrar modal con confirmación
+function closeModal(event) {
+  const hasData = localStorage.getItem("fichaMedica");
+  if (hasData && confirm("¿Borrar datos antes de cerrar?")) {
+    localStorage.removeItem("fichaMedica");
+    alert("Datos eliminados.");
+  }
+  const bsModal = bootstrap.Modal.getInstance(document.getElementById("commitModal"));
+  if (bsModal) bsModal.hide();
+}
+
+// Guardar datos
+function guardarDatos(event) {
+  event.preventDefault();
+  const form = document.getElementById("form-datos-paciente");
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData);
+  localStorage.setItem("fichaMedica", JSON.stringify(data));
+  mostrarNotificacion("✅ Datos guardados correctamente");
+  closeModal();
+}
+
+// Mostrar notificación
+function mostrarNotificacion(mensaje) {
+  const notification = document.getElementById("save-notification");
+  if (!notification) return;
+  notification.textContent = mensaje;
+  notification.classList.remove("hidden");
+  setTimeout(() => {
+    notification.classList.add("hidden");
+  }, 3000);
+}
+
+// Cargar datos al abrir el modal
+function cargarDatos() {
+  const savedData = localStorage.getItem("fichaMedica");
+  if (!savedData) return;
+  const data = JSON.parse(savedData);
+  const form = document.getElementById("form-datos-paciente");
+  for (const [name, value] of Object.entries(data)) {
+    const field = form.querySelector(`[name="${name}"]`);
+    if (field && field.type === "radio") {
+      field.checked = (field.value === value);
+    } else if (field && field.type === "checkbox") {
+      field.checked = (value === "on");
+    } else if (field) {
+      field.value = value || "";
     }
+  }
+}
 
-    // Cerrar modal con confirmación
-    function closeModal(event) {
-      const hasData = localStorage.getItem("fichaMedica");
-      if (hasData && confirm("¿Borrar datos antes de cerrar?")) {
-        localStorage.removeItem("fichaMedica");
-        alert("Datos eliminados.");
-      }
-      const bsModal = bootstrap.Modal.getInstance(document.getElementById("commitModal"));
-      if (bsModal) bsModal.hide();
-    }
-
-    // Guardar datos
-    function guardarDatos(event) {
-      event.preventDefault();
-      const form = document.getElementById("form-datos-paciente");
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData);
-      localStorage.setItem("fichaMedica", JSON.stringify(data));
-      mostrarNotificacion("✅ Datos guardados correctamente");
-      closeModal();
-    }
-
-    // Mostrar notificación
-    function mostrarNotificacion(mensaje) {
-      const notification = document.getElementById("save-notification");
-      if (!notification) return;
-      notification.textContent = mensaje;
-      notification.classList.remove("hidden");
-      setTimeout(() => {
-        notification.classList.add("hidden");
-      }, 3000);
-    }
-
-    // Cargar datos al abrir el modal
-    function cargarDatos() {
-      const savedData = localStorage.getItem("fichaMedica");
-      if (!savedData) return;
-      const data = JSON.parse(savedData);
-      const form = document.getElementById("form-datos-paciente");
-      for (const [name, value] of Object.entries(data)) {
-        const field = form.querySelector(`[name="${name}"]`);
-        if (field && field.type === "radio") {
-          field.checked = (field.value === value);
-        } else if (field && field.type === "checkbox") {
-          field.checked = (value === "on");
-        } else if (field) {
-          field.value = value || "";
-        }
-      }
-    }
-
-    // Prevenir propagación en clics en "Datos Personales"
-    function handleSectionTitleClick(event) {
-      event.stopPropagation(); // Evita que el evento se propague a los padres
-      // No se define acción específica; añadir aquí si se necesita (e.g., toggle)
-    }
-
-    // Escuchar evento ESC para cerrar el modal
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") {
-        closeModal();
-      }
-    });
-
-    
-      // Añadir listener solo al título "Datos Personales"
-      const datosPersonalesTitle = document.getElementById("datos-personales-title");
-      if (datosPersonalesTitle) {
-        datosPersonalesTitle.addEventListener("click", handleSectionTitleClick);
-      }
-    });
+// Prevenir propagación en clics en "Datos Personales"
+function handleSectionTitleClick(event) {
+  event.stopPropagation(); // Evita que el evento se propague a los padres
+  // No se define acción específica; añadir aquí si se necesita (e.g., toggle)
+}
   </script>
 </body>
 </html>
