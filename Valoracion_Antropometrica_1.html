@@ -2583,7 +2583,18 @@ body {
                     <section class="data-section" id="personal-data-section">
 			    <div class="personal-data-header">
 			        <h2>
-				  <button onclick="openModal()" style="background: none; border: none; cursor: pointer; font-size: inherit;">
+				  <button 
+				    onclick="openModal()" 
+				    style="
+				      background: none;
+				      border: none;
+				      cursor: pointer;
+				      font-size: inherit;
+				      font-weight: bold; /* Estilo típico de h2 */
+				      color: inherit;    /* Hereda el color del padre (h2) */
+				      padding: 0;        /* Elimina espacio interno */
+				    "
+				  >
 				    Datos Personales
 				  </button>
 				</h2>
@@ -2591,8 +2602,8 @@ body {
 			            <button type="button" id="nuevo_cliente" class="button">Nuevo Cliente</button>
 			            <button type="button" id="ver-progreso-btn" style="display: none;" class="button">Ver Progreso</button>
 			            <button type="button" id="mail-btn" style="display: none;" class="button">E-mail</button>
-				    <!-- Botón para abrir el modal -->
-				<button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#commitModal">
+				    <!-- Botón para abrir el modal 
+				<button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#commitModal"> -->
 				  Añadir Data
 				</button>
 			        </div>
