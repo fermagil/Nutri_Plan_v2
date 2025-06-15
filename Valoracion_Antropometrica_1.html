@@ -2268,35 +2268,35 @@ body {
   padding: 10px; /* Larger hit area */
   background-size: 16px; /* Keep X size */
   opacity: 0.7;
-  border-radius: 50%; /* Ensure circular hit area */
+  border-radius: 50%;
 }
 
 #commitModal .btn-close:hover, #commitModal .btn-close.btn-close-hover {
   opacity: 1;
-  background-color: rgba(76, 175, 80, 0.2); /* Subtle green circle */
+  background-color: rgba(76, 175, 80, 0.3); /* Subtle green circle */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3E%3Cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707A1 1 0 01.293.293z'/%3E%3C/svg%3E"); /* White X */
   border-radius: 50%;
   transform: scale(1.1); /* Subtle zoom */
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); /* Glow effect */
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.6); /* Enhanced glow */
 }
 
-/* Pseudo-element for pulse animation */
+/* Pulsing ring effect */
 #commitModal .btn-close:hover::after, #commitModal .btn-close.btn-close-hover::after {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 32px;
-  height: 32px;
-  background: rgba(76, 175, 80, 0.3);
+  width: 36px;
+  height: 36px;
+  background: rgba(76, 175, 80, 0.2);
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
-  animation: pulse 1.5s infinite;
+  animation: pulse 1.2s infinite;
 }
 
 @keyframes pulse {
   0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
 }
 
 /* Table header customization */
@@ -6268,7 +6268,17 @@ function closeModal(event) {
   const bsModal = bootstrap.Modal.getInstance(document.getElementById("commitModal"));
   if (bsModal) bsModal.hide();
 }
-
+document.addEventListener("DOMContentLoaded", function () {
+  const closeBtn = document.querySelector('#commitModal .btn-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('mouseover', function() {
+      this.classList.add('btn-close-hover');
+    });
+    closeBtn.addEventListener('mouseout', function() {
+      this.classList.remove('btn-close-hover');
+    });
+  }
+});
 // Guardar datos
 function guardarDatos(event) {
   event.preventDefault();
