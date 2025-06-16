@@ -3991,70 +3991,335 @@ body {
             </div>
 
             <!-- Cuestionario de Frecuencia de Consumo (CFC) -->
-            <h4 class="section-title mt-4">Cuestionario de Frecuencia de Consumo (CFC)</h4>
-            <p><em>Por favor, indica la frecuencia con la que consumes habitualmente los siguientes alimentos:</em></p>
-            <div class="row g-3">
-              <div class="col-md-4">
-                <label for="frecuenciaLeche" class="form-label">Leche (entera/semides/desnatada):</label>
-                <select class="form-select" id="frecuenciaLeche" name="frecuenciaLeche">
-                  <option value="">Selecciona</option>
-                  <option value="DIARIO">Diario</option>
-                  <option value="3-4 veces/semana">3-4 veces/semana</option>
-                  <option value="1-2 veces/semana">1-2 veces/semana</option>
-                  <option value="1-3 veces/mes">1-3 veces/mes</option>
-                  <option value="Ocasionalmente">Ocasionalmente</option>
-                  <option value="Nunca">Nunca</option>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label for="frecuenciaYogur" class="form-label">Yogur (natural/azucarado/desnatado):</label>
-                <select class="form-select" id="frecuenciaYogur" name="frecuenciaYogur">
-                  <option value="">Selecciona</option>
-                  <option value="DIARIO">Diario</option>
-                  <option value="3-4 veces/semana">3-4 veces/semana</option>
-                  <option value="1-2 veces/semana">1-2 veces/semana>
-                  <option value="1-3 veces/mes">1-3 veces/mes</option>
-                  <option value="Ocasionalmente">Ocasionalmente</option>
-                  <option value="Nunca">Nunca</option>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label for="frecuenciaFrutas" class="form-label">Frutas frescas:</label>
-                <select class="form-select" id="frecuenciaFrutas" name="frecuenciaFrutas">
-                  <option value="">Selecciona</option>
-                  <option value="DIARIO">Diario</option>
-                  <option value="3-4 veces/semana-4 veces/semana</option>
-                  <option value="1-2 veces/semana">1-2 veces/semana</option>
-                  <option value="1-3 veces/mes">1-3 veces/mes</option>
-                  <option value="Ocasionalmente">Ocasionalmente</option>
-                  <option value="Nunca">Nunca</option>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label for="frecuenciaVerduras" class="form-label">Verduras y hortalizas:</label>
-                <select class="form-select" id="frecuenciaVerduras" name="frecuenciaVerduras">
-                  <option value="">Selecciona</option>
-                  <option value="DIARIO">DIARIO</option>
-                  <option value="3-4 veces/semana">3-4 veces/semana</option>
-                  <option value="1-2 veces/semana">1-2 veces/semana</option>
-                  <option value="1-3 veces/mes">1-3 veces/mes</option>
-                  <option value="Ocasionalmente">Ocasionalmente</option>
-                  <option value="Nunca">Nunca</option>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label for="frecuenciaLegumbres" class="form-label">Legumbres:</label>
-                <select class="form-select" id="frecuenciaLegumbres" name="frecuenciaLegumbres">
-                  <option value="">Selecciona</option>
-                  <option value="DIARIO">Diario</option>
-                  <option value="3-4 veces/semana">3-4 veces/semana</option>
-                  <option value="1-2 veces/semana">1-2 veces/semana</option>
-                  <option value="1-3 veces/mes">1-3 veces/mes</option>
-                  <option value="Ocasionalmente">Ocasionalmente</option>
-                  <option value="Nunca">Nunca</option>
-                </select>
-              </div>
-            </div>
+            <!-- Cuestionario de Frecuencia de Consumo (CFC) -->
+<h4 class="section-title mt-4">Cuestionario de Frecuencia de Consumo (CFC)</h4>
+<p><em>Por favor, indica la frecuencia con la que consumes habitualmente los siguientes alimentos:</em></p>
+
+<div class="row g-3">
+
+  <!-- Leche -->
+  <div class="col-md-3">
+    <label for="frecuenciaLeche" class="form-label">Leche (entera/semides/desnatada):</label>
+    <select class="form-select" name="frecuenciaLeche">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Yogur -->
+  <div class="col-md-3">
+    <label for="frecuenciaYogur" class="form-label">Yogur (natural/azucarado/desnatado):</label>
+    <select class="form-select" name="frecuenciaYogur">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Frutas -->
+  <div class="col-md-3">
+    <label for="frecuenciaFrutas" class="form-label">Frutas frescas:</label>
+    <select class="form-select" name="frecuenciaFrutas">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Verduras -->
+  <div class="col-md-3">
+    <label for="frecuenciaVerduras" class="form-label">Verduras y hortalizas:</label>
+    <select class="form-select" name="frecuenciaVerduras">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Legumbres -->
+  <div class="col-md-3">
+    <label for="frecuenciaLegumbres" class="form-label">Legumbres:</label>
+    <select class="form-select" name="frecuenciaLegumbres">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Carnes blancas -->
+  <div class="col-md-3">
+    <label for="frecuenciaCarneBlanca" class="form-label">Carnes Blancas (pollo, pavo, conejo):</label>
+    <select class="form-select" name="frecuenciaCarneBlanca">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Pescado blanco -->
+  <div class="col-md-3">
+    <label for="frecuenciaPescadoBlanco" class="form-label">Pescado Blanco (merluza, bacalao, lubina...):</label>
+    <select class="form-select" name="frecuenciaPescadoBlanco">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Pescado azul -->
+  <div class="col-md-3">
+    <label for="frecuenciaPescadoAzul" class="form-label">Pescado Azul (salmón, sardina, caballa...):</label>
+    <select class="form-select" name="frecuenciaPescadoAzul">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Huevos -->
+  <div class="col-md-3">
+    <label for="frecuenciaHuevos" class="form-label">Huevos:</label>
+    <select class="form-select" name="frecuenciaHuevos">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Frutos secos -->
+  <div class="col-md-3">
+    <label for="frecuenciaFrutosSecos" class="form-label">Frutos Secos (almendras, nueces, avellanas, etc.):</label>
+    <select class="form-select" name="frecuenciaFrutosSecos">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Carnes rojas -->
+  <div class="col-md-3">
+    <label for="frecuenciaCarneRoja" class="form-label">Carnes Rojas (ternera, cerdo, vacuno...):</label>
+    <select class="form-select" name="frecuenciaCarneRoja">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Embutidos -->
+  <div class="col-md-3">
+    <label for="frecuenciaEmbutidos" class="form-label">Embutidos (jamón, chorizo, salchichón...):</label>
+    <select class="form-select" name="frecuenciaEmbutidos">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Pan -->
+  <div class="col-md-3">
+    <label for="frecuenciaPan" class="form-label">Pan (blanco/integral):</label>
+    <select class="form-select" name="frecuenciaPan">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Pasta y arroz -->
+  <div class="col-md-3">
+    <label for="frecuenciaPastaArroz" class="form-label">Pasta / Arroz (blancos o integrales):</label>
+    <select class="form-select" name="frecuenciaPastaArroz">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Cereales -->
+  <div class="col-md-3">
+    <label for="frecuenciaCereales" class="form-label">Cereales (avena, trigo, centeno, cebada...):</label>
+    <select class="form-select" name="frecuenciaCereales">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Patata -->
+  <div class="col-md-3">
+    <label for="frecuenciaPatata" class="form-label">Patata:</label>
+    <select class="form-select" name="frecuenciaPatata">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Bollería industrial -->
+  <div class="col-md-3">
+    <label for="frecuenciaBolleria" class="form-label">Bollería Industrial:</label>
+    <select class="form-select" name="frecuenciaBolleria">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Dulces y chocolates -->
+  <div class="col-md-3">
+    <label for="frecuenciaDulces" class="form-label">Dulces / Chocolates:</label>
+    <select class="form-select" name="frecuenciaDulces">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Snacks salados -->
+  <div class="col-md-3">
+    <label for="frecuenciaSnacks" class="form-label">Snacks Salados (patatas fritas, palomitas, frutos secos salados):</label>
+    <select class="form-select" name="frecuenciaSnacks">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Comida rápida -->
+  <div class="col-md-3">
+    <label for="frecuenciaComidaRapida" class="form-label">Comida Rápida (hamburguesas, pizzas, etc.):</label>
+    <select class="form-select" name="frecuenciaComidaRapida">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Bebidas Azucaradas -->
+  <div class="col-md-3">
+    <label for="frecuenciaBebidasAzucaradas" class="form-label">Bebidas Azucaradas:</label>
+    <select class="form-select" name="frecuenciaBebidasAzucaradas">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Alcohol (cerveza/vino) -->
+  <div class="col-md-3">
+    <label for="frecuenciaAlcohol" class="form-label">Alcohol (cerveza/vino):</label>
+    <select class="form-select" name="frecuenciaAlcohol">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+  <!-- Alcohol (licores) -->
+  <div class="col-md-3">
+    <label for="frecuenciaLicores" class="form-label">Alcohol (licores):</label>
+    <select class="form-select" name="frecuenciaLicores">
+      <option value="">Selecciona</option>
+      <option value="DIARIO">Diario</option>
+      <option value="3-4 veces/semana">3-4 veces/semana</option>
+      <option value="1-2 veces/semana">1-2 veces/semana</option>
+      <option value="1-3 veces/mes">1-3 veces/mes</option>
+      <option value="Ocasionalmente">Ocasionalmente</option>
+      <option value="Nunca">Nunca</option>
+    </select>
+  </div>
+
+</div>
 
             <!-- Historial Dietético y Relación con la Comida -->
             <h3 class="section-title">Historial Dietético y Relación con la Comida</h3>
