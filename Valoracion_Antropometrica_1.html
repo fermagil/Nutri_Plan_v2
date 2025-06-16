@@ -4465,148 +4465,101 @@ body {
 
             <!-- Suplementos Nutricionales -->
            <!-- Suplementos Nutricionales -->
-<h3 class="section-title">Suplementos Nutricionales</h3>
-<p><em>Por favor, seleccione todos los suplementos que tome actualmente. Use Ctrl+clic para seleccionar múltiples opciones. Si toma un suplemento no listado, seleccione "Otros" y especifique.</em></p>
-<div class="row g-3">
-  <div class="col-md-4">
-    <label for="tomaSuplementos" class="form-label">¿Toma suplementos nutricionales?</label>
-    <select class="form-select" id="tomaSuplementos" name="tomaSuplementos">
-      <option value="">Selecciona</option>
-      <option value="Sí">Sí</option>
-      <option value="No">No</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="vitaminasMinerales" class="form-label">Vitaminas y Minerales</label>
-    <select class="form-select" id="vitaminasMinerales" name="vitaminasMinerales[]" multiple size="5">
-      <option value="Multivitamínico/Multimineral">Multivitamínico / Multimineral</option>
-      <option value="Vitamina D">Vitamina D</option>
-      <option value="Vitamina C">Vitamina C</option>
-      <option value="Vitamina B12">Vitamina B12</option>
-      <option value="Magnesio">Magnesio</option>
-      <option value="Calcio">Calcio</option>
-      <option value="Hierro">Hierro</option>
-      <option value="Zinc">Zinc</option>
-      <option value="Otros vitaminas/minerales">Otros</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosVitMinDetalles" class="form-label">Especificar otros vitaminas/minerales</label>
-    <input type="text" class="form-control" id="otrosVitMinDetalles" name="otrosVitMinDetalles" placeholder="ej. Vitamina K, selenio..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="acidosGrasosAntioxidantes" class="form-label">Ácidos Grasos y Antioxidantes</label>
-    <select class="form-select" id="acidosGrasosAntioxidantes" name="acidosGrasosAntioxidantes[]" multiple size="4">
-      <option value="Omega-3">Omega-3 (Aceite de pescado, Krill, Algas)</option>
-      <option value="Coenzima Q10">Coenzima Q10 (CoQ10)</option>
-      <option value="Antioxidantes">Antioxidantes (Resveratrol, Astaxantina, etc.)</option>
-      <option value="Otros ácidos grasos">Otros</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosAGDetalles" class="form-label">Especificar otros ácidos grasos</label>
-    <input type="text" class="form-control" id="otrosAGDetalles" name="otrosAGDetalles" placeholder="ej. CLA, aceite de onagra..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="saludDigestiva" class="form-label">Salud Digestiva e Intestinal</label>
-    <select class="form-select" id="saludDigestiva" name="saludDigestiva[]" multiple size="5">
-      <option value="Probióticos/Prebióticos">Probióticos / Prebióticos</option>
-      <option value="Fibra">Fibra (Psyllium, Glucomanano)</option>
-      <option value="Enzimas digestivas">Enzimas digestivas</option>
-      <option value="Aloe Vera">Aloe Vera</option>
-      <option value="Otros digestivos">Otros</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosDigestivosDetalles" class="form-label">Especificar otros digestivos</label>
-    <input type="text" class="form-control" id="otrosDigestivosDetalles" name="otrosDigestivosDetalles" placeholder="ej. Jengibre, alcachofa..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="saludArticularOsea" class="form-label">Salud Articular y Ósea</label>
-    <select class="form-select" id="saludArticularOsea" name="saludArticularOsea[]" multiple size="4">
-      <option value="Colágeno">Colágeno</option>
-      <option value="Glucosamina/Condroitina">Glucosamina y/o Condroitina</option>
-      <option value="Ácido Hialurónico">Ácido Hialurónico</option>
-      <option value="Otros articulares">Otros</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosArticularesDetalles" class="form-label">Especificar otros articulares</label>
-    <input type="text" class="form-control" id="otrosArticularesDetalles" name="otrosArticularesDetalles" placeholder="ej. MSM, colágeno tipo II..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="energiaBienestar" class="form-label">Energía y Bienestar General</label>
-    <select class="form-select" id="energiaBienestar" name="energiaBienestar[]" multiple size="6">
-      <option value="Jalea Real">Jalea Real</option>
-      <option value="Ginseng">Ginseng</option>
-      <option value="Maca">Maca</option>
-      <option value="Guaraná/Cafeína">Guaraná / Cafeína</option>
-      <option value="Spirulina/Chlorella">Spirulina / Chlorella</option>
-      <option value="Rhodiola/Ashwagandha">Rhodiola / Ashwagandha</option>
-      <option value="Otros energizantes">Otros</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosEnergiaDetalles" class="form-label">Especificar otros energizantes</label>
-    <input type="text" class="form-control" id="otrosEnergiaDetalles" name="otrosEnergiaDetalles" placeholder="ej. Maca dorada..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="deportista" class="form-label">Para Deportistas</label>
-    <select class="form-select" id="deportista" name="deportista[]" multiple size="8">
-      <option value="Proteína en polvo">Proteína en polvo (Whey, Caseína, Vegetal)</option>
-      <option value="Creatina">Creatina</option>
-      <option value="BCAAs">BCAAs (Aminoácidos Ramificados)</option>
-      <option value="Glutamina">Glutamina</option>
-      <option value="Beta-Alanina">Beta-Alanina</option>
-      <option value="L-Carnitina">L-Carnitina</option>
-      <option value="Bebidas isotónicas">Bebidas isotónicas/energéticas</option>
-      <option value="Barritas proteicas">Barritas proteicas/energéticas</option>
-      <option value="Pre-entrenamiento">Pre-entrenamiento</option>
-      <option value="Ganadores de peso">Ganadores de peso</option>
-      <option value="Electrolitos">Electrolitos</option>
-      <option value="Otros deportistas">Otros</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosDepDetalles" class="form-label">Especificar otros deportistas</label>
-    <input type="text" class="form-control" id="otrosDepDetalles" name="otrosDepDetalles" placeholder="ej. Carnosina, betaína..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="controlPeso" class="form-label">Control de Peso</label>
-    <select class="form-select" id="controlPeso" name="controlPeso[]" multiple size="6">
-      <option value="Quemagrasas">Quemagrasas (Termogénicos)</option>
-      <option value="Bloqueadores">Bloqueadores de carbohidratos/grasas</option>
-      <option value="Sustitutivos">Sustitutivos de comidas</option>
-      <option value="Saciantes">Saciantes / Reductores de apetito</option>
-      <option value="Drenantes">Drenantes / Diuréticos</option>
-      <option value="Otros control peso">Otros</option>
-    </select>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosPesoDetalles" class="form-label">Especificar otros control peso</label>
-    <input type="text" class="form-control" id="otrosPesoDetalles" name="otrosPesoDetalles" placeholder="ej. Café verde..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="otrosSuplementos" class="form-label">Otros Suplementos</label>
-    <input type="text" class="form-control" id="otrosSuplementos" name="otrosSuplementos" placeholder="ej. Melatonina, colina...">
-  </div>
-  <div class="col-md-4">
-    <label for="dosisSuplemento" class="form-label">Dosis aproximada</label>
-    <input type="text" class="form-control" id="dosisSuplemento" name="dosisSuplemento" placeholder="ej. 300mg/día" disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="frecuenciaSuplemento" class="form-label">Frecuencia de consumo</label>
-    <input type="text" class="form-control" id="frecuenciaSuplemento" name="frecuenciaSuplemento" placeholder="ej. Diaria, pre-entrenamiento..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="motivoSuplemento" class="form-label">Motivo de consumo</label>
-    <input type="text" class="form-control" id="motivoSuplemento" name="motivoSuplemento" placeholder="ej. Mejorar energía, por médico..." disabled>
-  </div>
-  <div class="col-md-4">
-    <label for="recomendacionSuplemento" class="form-label">Quién lo recomendó</label>
-    <input type="text" class="form-control" id="recomendacionSuplemento" name="recomendacionSuplemento" placeholder="ej. Médico, internet..." disabled>
-  </div>
-</div>
+		<!-- Suplementos Nutricionales -->
+		<h3 class="section-title">Suplementos Nutricionales</h3>
+		<p><em>Por favor, seleccione todos los suplementos que tome actualmente. Use Ctrl+clic para seleccionar múltiples opciones. Si toma un suplemento no listado, seleccione "Otros" y especifique en el campo correspondiente.</em></p>
+		<div class="row g-3">
+		  <div class="col-md-4">
+		    <label for="tomaSuplementos" class="form-label">¿Toma suplementos nutricionales?</label>
+		    <select class="form-select" id="tomaSuplementos" name="tomaSuplementos">
+		      <option value="">Selecciona</option>
+		      <option value="Sí">Sí</option>
+		      <option value="No">No</option>
+		    </select>
+		  </div>
+		  <div class="col-md-4">
+		    <label for="suplementos" class="form-label">Suplementos Consumidos</label>
+		    <select class="form-select" id="suplementos" name="suplementos[]" multiple size="10">
+		      <optgroup label="Vitaminas y Minerales">
+		        <option value="Multivitamínico/Multimineral">Multivitamínico / Multimineral</option>
+		        <option value="Vitamina D">Vitamina D</option>
+		        <option value="Vitamina C">Vitamina C</option>
+		        <option value="Vitamina B12">Vitamina B12</option>
+		        <option value="Magnesio">Magnesio</option>
+		        <option value="Calcio">Calcio</option>
+		        <option value="Hierro">Hierro</option>
+		        <option value="Zinc">Zinc</option>
+		      </optgroup>
+		      <optgroup label="Ácidos Grasos y Antioxidantes">
+		        <option value="Omega-3">Omega-3 (Aceite de pescado, Krill, Algas)</option>
+		        <option value="Coenzima Q10">Coenzima Q10 (CoQ10)</option>
+		        <option value="Antioxidantes">Antioxidantes (Resveratrol, Astaxantina, etc.)</option>
+		      </optgroup>
+		      <optgroup label="Salud Digestiva e Intestinal">
+		        <option value="Probióticos/Prebióticos">Probióticos / Prebióticos</option>
+		        <option value="Fibra">Fibra (Psyllium, Glucomanano)</option>
+		        <option value="Enzimas digestivas">Enzimas digestivas</option>
+		        <option value="Aloe Vera">Aloe Vera</option>
+		      </optgroup>
+		      <optgroup label="Salud Articular y Ósea">
+		        <option value="Colágeno">Colágeno</option>
+		        <option value="Glucosamina/Condroitina">Glucosamina y/o Condroitina</option>
+		        <option value="Ácido Hialurónico">Ácido Hialurónico</option>
+		      </optgroup>
+		      <optgroup label="Energía y Bienestar General">
+		        <option value="Jalea Real">Jalea Real</option>
+		        <option value="Ginseng">Ginseng</option>
+		        <option value="Maca">Maca</option>
+		        <option value="Guaraná/Cafeína">Guaraná / Cafeína</option>
+		        <option value="Spirulina/Chlorella">Spirulina / Chlorella</option>
+		        <option value="Rhodiola/Ashwagandha">Rhodiola / Ashwagandha</option>
+		      </optgroup>
+		      <optgroup label="Para Deportistas">
+		        <option value="Proteína en polvo">Proteína en polvo (Whey, Caseína, Vegetal)</option>
+		        <option value="Creatina">Creatina</option>
+		        <option value="BCAAs">BCAAs (Aminoácidos Ramificados)</option>
+		        <option value="Glutamina">Glutamina</option>
+		        <option value="Beta-Alanina">Beta-Alanina</option>
+		        <option value="L-Carnitina">L-Carnitina</option>
+		        <option value="Bebidas isotónicas">Bebidas isotónicas/energéticas</option>
+		        <option value="Barritas proteicas">Barritas proteicas/energéticas</option>
+		        <option value="Pre-entrenamiento">Pre-entrenamiento</option>
+		        <option value="Ganadores de peso">Ganadores de peso</option>
+		        <option value="Electrolitos">Electrolitos</option>
+		      </optgroup>
+		      <optgroup label="Control de Peso">
+		        <option value="Quemagrasas">Quemagrasas (Termogénicos)</option>
+		        <option value="Bloqueadores">Bloqueadores de carbohidratos/grasas</option>
+		        <option value="Sustitutivos">Sustitutivos de comidas</option>
+		        <option value="Saciantes">Saciantes / Reductores de apetito</option>
+		        <option value="Drenantes">Drenantes / Diuréticos</option>
+		      </optgroup>
+		      <optgroup label="Otros Suplementos">
+		        <option value="Otros">Otros</option>
+		      </optgroup>
+		    </select>
+		  </div>
+		  <div class="col-md-4">
+		    <label for="otrosSuplementosDetalles" class="form-label">Especificar otros suplementos</label>
+		    <input type="text" class="form-control" id="otrosSuplementosDetalles" name="otrosSuplementosDetalles" placeholder="ej. Melatonina, colina..." disabled>
+		  </div>
+		  <div class="col-md-4">
+		    <label for="dosisSuplemento" class="form-label">Dosis aproximada</label>
+		    <input type="text" class="form-control" id="dosisSuplemento" name="dosisSuplemento" placeholder="ej. 300mg/día" disabled>
+		  </div>
+		  <div class="col-md-4">
+		    <label for="frecuenciaSuplemento" class="form-label">Frecuencia de consumo</label>
+		    <input type="text" class="form-control" id="frecuenciaSuplemento" name="frecuenciaSuplemento" placeholder="ej. Diaria, pre-entrenamiento..." disabled>
+		  </div>
+		  <div class="col-md-4">
+		    <label for="motivoSuplemento" class="form-label">Motivo de consumo</label>
+		    <input type="text" class="form-control" id="motivoSuplemento" name="motivoSuplemento" placeholder="ej. Mejorar energía, por médico..." disabled>
+		  </div>
+		  <div class="col-md-4">
+		    <label for="recomendacionSuplemento" class="form-label">Quién lo recomendó</label>
+		    <input type="text" class="form-control" id="recomendacionSuplemento" name="recomendacionSuplemento" placeholder="ej. Médico, internet..." disabled>
+		  </div>
+		</div>
 
             <!-- Comentarios / Observaciones -->
             <h3 class="section-title">Comentarios / Observaciones</h3>
