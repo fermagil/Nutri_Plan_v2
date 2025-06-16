@@ -3897,6 +3897,39 @@ body {
                 <input type="text" class="form-control" id="detallePicoteo" name="detallePicoteo" placeholder="ej. Frutos secos, chocolate...">
               </div>
               <div class="col-md-4">
+                <label for="dietaBalanceada" class="form-label">¿Tu dieta es balanceada?</label>
+                <select class="form-select" id="dietaBalanceada" name="dietaBalanceada">
+                  <option value="">Selecciona</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label">¿Qué comidas sueles saltarte?</label>
+                <div style="font-size: 12px;">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="saltarDesayuno" name="comidasSaltadas[]" value="Desayuno">
+                    <label class="form-check-label" for="saltarDesayuno">Desayuno</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="saltarMediaManana" name="comidasSaltadas[]" value="Media Mañana">
+                    <label class="form-check-label" for="saltarMediaManana">Media Mañana</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="saltarAlmuerzo" name="comidasSaltadas[]" value="Almuerzo">
+                    <label class="form-check-label" for="saltarAlmuerzo">Almuerzo</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="saltarMerienda" name="comidasSaltadas[]" value="Merienda">
+                    <label class="form-check-label" for="saltarMerienda">Merienda</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="saltarCena" name="comidasSaltadas[]" value="Cena">
+                    <label class="form-check-label" for="saltarCena">Cena</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
                 <label for="levantarseNoche" class="form-label">¿Sueles levantarte por las noches a comer?</label>
                 <select class="form-select" id="levantarseNoche" name="levantarseNoche">
                   <option value="">Selecciona</option>
@@ -3957,6 +3990,72 @@ body {
               </div>
             </div>
 
+            <!-- Cuestionario de Frecuencia de Consumo (CFC) -->
+            <h4 class="section-title mt-4">Cuestionario de Frecuencia de Consumo (CFC)</h4>
+            <p><em>Por favor, indica la frecuencia con la que consumes habitualmente los siguientes alimentos:</em></p>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="frecuenciaLeche" class="form-label">Leche (entera/semides/desnatada):</label>
+                <select class="form-select" id="frecuenciaLeche" name="frecuenciaLeche">
+                  <option value="">Selecciona</option>
+                  <option value="DIARIO">Diario</option>
+                  <option value="3-4 veces/semana">3-4 veces/semana</option>
+                  <option value="1-2 veces/semana">1-2 veces/semana</option>
+                  <option value="1-3 veces/mes">1-3 veces/mes</option>
+                  <option value="Ocasionalmente">Ocasionalmente</option>
+                  <option value="Nunca">Nunca</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="frecuenciaYogur" class="form-label">Yogur (natural/azucarado/desnatado):</label>
+                <select class="form-select" id="frecuenciaYogur" name="frecuenciaYogur">
+                  <option value="">Selecciona</option>
+                  <option value="DIARIO">Diario</option>
+                  <option value="3-4 veces/semana">3-4 veces/semana</option>
+                  <option value="1-2 veces/semana">1-2 veces/semana>
+                  <option value="1-3 veces/mes">1-3 veces/mes</option>
+                  <option value="Ocasionalmente">Ocasionalmente</option>
+                  <option value="Nunca">Nunca</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="frecuenciaFrutas" class="form-label">Frutas frescas:</label>
+                <select class="form-select" id="frecuenciaFrutas" name="frecuenciaFrutas">
+                  <option value="">Selecciona</option>
+                  <option value="DIARIO">Diario</option>
+                  <option value="3-4 veces/semana-4 veces/semana</option>
+                  <option value="1-2 veces/semana">1-2 veces/semana</option>
+                  <option value="1-3 veces/mes">1-3 veces/mes</option>
+                  <option value="Ocasionalmente">Ocasionalmente</option>
+                  <option value="Nunca">Nunca</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="frecuenciaVerduras" class="form-label">Verduras y hortalizas:</label>
+                <select class="form-select" id="frecuenciaVerduras" name="frecuenciaVerduras">
+                  <option value="">Selecciona</option>
+                  <option value="DIARIO">DIARIO</option>
+                  <option value="3-4 veces/semana">3-4 veces/semana</option>
+                  <option value="1-2 veces/semana">1-2 veces/semana</option>
+                  <option value="1-3 veces/mes">1-3 veces/mes</option>
+                  <option value="Ocasionalmente">Ocasionalmente</option>
+                  <option value="Nunca">Nunca</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="frecuenciaLegumbres" class="form-label">Legumbres:</label>
+                <select class="form-select" id="frecuenciaLegumbres" name="frecuenciaLegumbres">
+                  <option value="">Selecciona</option>
+                  <option value="DIARIO">Diario</option>
+                  <option value="3-4 veces/semana">3-4 veces/semana</option>
+                  <option value="1-2 veces/semana">1-2 veces/semana</option>
+                  <option value="1-3 veces/mes">1-3 veces/mes</option>
+                  <option value="Ocasionalmente">Ocasionalmente</option>
+                  <option value="Nunca">Nunca</option>
+                </select>
+              </div>
+            </div>
+
             <!-- Historial Dietético y Relación con la Comida -->
             <h3 class="section-title">Historial Dietético y Relación con la Comida</h3>
             <div class="row g-3">
@@ -3966,7 +4065,7 @@ body {
                   <option value="">Selecciona</option>
                   <option value="Sí, varias veces">Sí, varias veces</option>
                   <option value="Sí, una o dos veces">Sí, una o dos veces</option>
-                  <option value="No, nunca">No, nunca</option>
+                  <option value="No">No, nunca</option>
                   <option value="Solo cambios ligeros">Solo pequeños cambios por mi cuenta</option>
                 </select>
               </div>
@@ -3975,9 +4074,9 @@ body {
                 <select class="form-select" id="asesoramientoDieta" name="asesoramientoDieta">
                   <option value="">Selecciona</option>
                   <option value="Sí, siempre">Sí, siempre</option>
-                  <option value="A veces sí, a veces no">A veces sí, a veces no</option>
+                  <option value="a veces sí, a veces sí, a veces no">A veces sí, a veces no</option>
                   <option value="No, siempre por iniciativa propia">No, siempre por iniciativa propia</option>
-                  <option value="Nunca he hecho dieta">Nunca he hecho dieta</option>
+                  <option value="Nunca he hecho dieta">Nunca he tenido dieta</option>
                 </select>
               </div>
               <div class="col-md-4">
@@ -4084,6 +4183,17 @@ body {
                   <option value="Sí, ocasionalmente">Sí, ocasionalmente</option>
                   <option value="No, dejé hace...">No, dejé de fumar</option>
                   <option value="No, nunca he fumado">No, nunca he fumado</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="consumoCafe" class="form-label">¿Con qué frecuencia consumes café u otras bebidas con cafeína?</label>
+                <select class="form-select" id="consumoCafe" name="consumoCafe">
+                  <option value="">Selecciona</option>
+                  <option value="Varias veces al día">Varias veces al día</option>
+                  <option value="1-2 veces al día">1-2 veces al día</option>
+                  <option value="Varias veces a la semana">Varias veces a la semana</option>
+                  <option value="Ocasionalmente">Ocasionalmente</option>
+                  <option value="Nunca">Nunca</option>
                 </select>
               </div>
             </div>
