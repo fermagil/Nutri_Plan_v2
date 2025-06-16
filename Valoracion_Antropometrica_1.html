@@ -4464,25 +4464,397 @@ body {
             </div>
 
             <!-- Suplementos Nutricionales -->
-            <h3 class="section-title">Suplementos Nutricionales</h3>
-            <div class="row g-3">
-              <div class="col-md-4">
-                <label for="tomaSuplementos" class="form-label">¿Toma suplementos nutricionales?</label>
-                <select class="form-select" id="tomaSuplementos" name="tomaSuplementos">
-                  <option value="">Selecciona</option>
-                  <option value="Sí">Sí</option>
-                  <option value="No">No</option>
-                </select>
-              </div>
-              <div class="col-md-8">
-                <label for="suplementosDetalles" class="form-label">Si toma suplementos, especifique cuál y dosis</label>
-                <input type="text" class="form-control" id="suplementosDetalles" name="suplementosDetalles" placeholder="ej. Magnesio 300mg/día">
-              </div>
-              <div class="col-md-8">
-                <label for="motivoSuplementos" class="form-label">¿Por qué toma suplementos y quién lo recomendó?</label>
-                <textarea class="form-control" id="motivoSuplementos" name="motivoSuplementos" rows="3" placeholder="ej. Para mejorar energía, por recomendación médica"></textarea>
-              </div>
-            </div>
+           <!-- Suplementos Nutricionales -->
+		<h4 class="section-title mt-4">SUPLEMENTOS NUTRICIONALES</h4>
+		<p><em>Por favor, marque todos los suplementos que tome actualmente. Si lo sabe, anote la dosis aproximada y por qué lo toma. Si hay alguno que no está en la lista, márquelo en "Otros" y especifique.</em></p>
+		
+		<!-- ¿Toma algún suplemento? -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <label class="form-label"><strong>¿Toma actualmente algún tipo de suplemento dietético, complemento alimenticio o preparado a base de plantas?</strong></label>
+		  </div>
+		  <div class="col-md-4">
+		    <div class="form-check">
+		      <input class="form-check-input" type="radio" name="tomaSuplementos" value="No tomo ningún suplemento" id="suplementosNo">
+		      <label class="form-check-label" for="suplementosNo">a) No tomo ningún suplemento</label>
+		    </div>
+		  </div>
+		  <div class="col-md-8">
+		    <div class="form-check">
+		      <input class="form-check-input" type="radio" name="tomaSuplementos" value="Sí, tomo los siguientes" id="suplementosSi">
+		      <label class="form-check-label" for="suplementosSi">b) Sí, tomo los siguientes (marque con una "X"):</label>
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Vitaminas y Minerales -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Vitaminas y Minerales:</strong>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Multivitamínico/Multimineral" id="multiVit">
+		      <label class="form-check-label" for="multiVit">Multivitamínico / Multimineral</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Vitamina D" id="vitD">
+		      <label class="form-check-label" for="vitD">Vitamina D</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Vitamina C" id="vitC">
+		      <label class="form-check-label" for="vitC">Vitamina C</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Vitamina B12" id="vitB12">
+		      <label class="form-check-label" for="vitB12">Vitamina B12</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Magnesio" id="magnesio">
+		      <label class="form-check-label" for="magnesio">Magnesio</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Calcio" id="calcio">
+		      <label class="form-check-label" for="calcio">Calcio</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Hierro" id="hierro">
+		      <label class="form-check-label" for="hierro">Hierro</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Zinc" id="zinc">
+		      <label class="form-check-label" for="zinc">Zinc</label>
+		    </div>
+		  </div>
+		  <div class="col-md-6">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="vitaminasMinerales[]" value="Otros vitaminas/minerales" id="otrosVitMin">
+		      <label class="form-check-label" for="otrosVitMin">Otros (especificar):</label>
+		      <input type="text" name="otrosVitMinDetalles" class="form-control mt-1" placeholder="ej. Vitamina K, selenio...">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Ácidos Grasos y Antioxidantes -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Ácidos Grasos y Antioxidantes:</strong>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="acidosGrasosAntioxidantes[]" value="Omega-3 (Aceite de pescado, Krill, Algas)" id="omega3">
+		      <label class="form-check-label" for="omega3">Omega-3 (Aceite de pescado, Krill, Algas)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="acidosGrasosAntioxidantes[]" value="Coenzima Q10 (CoQ10)" id="coq10">
+		      <label class="form-check-label" for="coq10">Coenzima Q10 (CoQ10)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="acidosGrasosAntioxidantes[]" value="Antioxidantes (mezcla, Resveratrol...)" id="antiox">
+		      <label class="form-check-label" for="antiox">Antioxidantes (Resveratrol, Astaxantina, etc.)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="acidosGrasosAntioxidantes[]" value="Otros ácidos grasos" id="otrosAG">
+		      <label class="form-check-label" for="otrosAG">Otros (especificar):</label>
+		      <input type="text" name="otrosAGDetalles" class="form-control mt-1" placeholder="ej. CLA, aceite de onagra...">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Salud Digestiva e Intestinal -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Salud Digestiva e Intestinal:</strong>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludDigestiva[]" value="Probióticos / Prebióticos" id="probioticos">
+		      <label class="form-check-label" for="probioticos">Probióticos / Prebióticos</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludDigestiva[]" value="Fibra (Psyllium, Glucomanano)" id="fibra">
+		      <label class="form-check-label" for="fibra">Fibra (Psyllium, Glucomanano)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludDigestiva[]" value="Enzimas digestivas" id="enzimas">
+		      <label class="form-check-label" for="enzimas">Enzimas digestivas</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludDigestiva[]" value="Aloe Vera" id="aloe">
+		      <label class="form-check-label" for="aloe">Aloe Vera</label>
+		    </div>
+		  </div>
+		  <div class="col-md-6">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludDigestiva[]" value="Otros digestivos" id="otrosDig">
+		      <label class="form-check-label" for="otrosDig">Otros (especificar):</label>
+		      <input type="text" name="otrosDigestivosDetalles" class="form-control mt-1" placeholder="ej. Jengibre, extracto de alcachofa...">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Salud Articular y Ósea -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Salud Articular y Ósea:</strong>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludArticularOsea[]" value="Colágeno" id="colageno">
+		      <label class="form-check-label" for="colageno">Colágeno (con o sin magnesio/ácido hialurónico)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludArticularOsea[]" value="Glucosamina y/o Condroitina" id="glucosamina">
+		      <label class="form-check-label" for="glucosamina">Glucosamina y/o Condroitina</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludArticularOsea[]" value="Ácido Hialurónico" id="acidoHialuronico">
+		      <label class="form-check-label" for="acidoHialuronico">Ácido Hialurónico</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="saludArticularOsea[]" value="Otros articulares" id="otrosArticulares">
+		      <label class="form-check-label" for="otrosArticulares">Otros (especificar):</label>
+		      <input type="text" name="otrosArticularesDetalles" class="form-control mt-1" placeholder="ej. Colágeno tipo II, MSM...">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Energía y Bienestar General -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Energía y Bienestar General:</strong>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="energiaBienestar[]" value="Jalea Real" id="jalea">
+		      <label class="form-check-label" for="jalea">Jalea Real</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="energiaBienestar[]" value="Ginseng" id="ginseng">
+		      <label class="form-check-label" for="ginseng">Ginseng</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="energiaBienestar[]" value="Maca" id="maca">
+		      <label class="form-check-label" for="maca">Maca</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="energiaBienestar[]" value="Guaraná / Cafeína" id="guarancafe">
+		      <label class="form-check-label" for="guarancafe">Guaraná / Cafeína (en cápsulas/pastillas)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="energiaBienestar[]" value="Spirulina / Chlorella" id="spirulina">
+		      <label class="form-check-label" for="spirulina">Spirulina / Chlorella</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="energiaBienestar[]" value="Rhodiola / Ashwagandha" id="adaptogenos">
+		      <label class="form-check-label" for="adaptogenos">Rhodiola / Ashwagandha (adaptógenos)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-6">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="energiaBienestar[]" value="Otros energizantes" id="otrosEnergia">
+		      <label class="form-check-label" for="otrosEnergia">Otros (especificar):</label>
+		      <input type="text" name="otrosEnergiaDetalles" class="form-control mt-1" placeholder="ej. Maca dorada, ashwagandha...">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Para Deportistas -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Para Actividad Física Intensa (Deportistas):</strong>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Proteína en polvo (Whey, Caseína, Vegetal)" id="proteinaPolvo">
+		      <label class="form-check-label" for="proteinaPolvo">Proteína en polvo (Whey, Caseína, Vegetal)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Creatina" id="creatina">
+		      <label class="form-check-label" for="creatina">Creatina</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="BCAAs (Aminoácidos Ramificados)" id="bcaas">
+		      <label class="form-check-label" for="bcaas">BCAAs (Aminoácidos Ramificados)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Glutamina" id="glutamina">
+		      <label class="form-check-label" for="glutamina">Glutamina</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Beta-Alanina" id="betaAlanina">
+		      <label class="form-check-label" for="betaAlanina">Beta-Alanina</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="L-Carnitina" id="lCarnitina">
+		      <label class="form-check-label" for="lCarnitina">L-Carnitina</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Bebidas isotónicas/energéticas" id="bebidasIsoton">
+		      <label class="form-check-label" for="bebidasIsoton">Bebidas isotónicas/energéticas</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Barritas proteicas/energéticas" id="barritas">
+		      <label class="form-check-label" for="barritas">Barritas proteicas/energéticas</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Pre-entrenamiento (pre-workouts)" id="preEntreno">
+		      <label class="form-check-label" for="preEntreno">Pre-entrenamiento (pre-workouts)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Ganadores de peso (mass gainers)" id="gainPeso">
+		      <label class="form-check-label" for="gainPeso">Ganadores de peso (mass gainers)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Electrolitos" id="electrolitos">
+		      <label class="form-check-label" for="electrolitos">Electrolitos (en cápsulas/polvo)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-6">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="deportista[]" value="Otros deportistas" id="otrosDep">
+		      <label class="form-check-label" for="otrosDep">Otros (especificar):</label>
+		      <input type="text" name="otrosDepDetalles" class="form-control mt-1" placeholder="ej. Carnosina, Betaína...">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Control de Peso -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Control de Peso / Adelgazamiento:</strong>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="controlPeso[]" value="Quemagrasas (Termogénicos)" id="termogenico">
+		      <label class="form-check-label" for="termogenico">Quemagrasas (Termogénicos)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="controlPeso[]" value="Bloqueadores de carbohidratos/grasas" id="bloqueadores">
+		      <label class="form-check-label" for="bloqueadores">Bloqueadores de carbohidratos/grasas</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="controlPeso[]" value="Sustitutivos de comidas" id="sustitutivos">
+		      <label class="form-check-label" for="sustitutivos">Sustitutivos de comidas (batidos/barritas)</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="controlPeso[]" value="Saciantes / Reductores de apetito" id="saciantes">
+		      <label class="form-check-label" for="saciantes">Saciantes / Reductores de apetito</label>
+		    </div>
+		  </div>
+		  <div class="col-md-3">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="controlPeso[]" value="Drenantes / Diuréticos" id="drenantes">
+		      <label class="form-check-label" for="drenantes">Drenantes / Diuréticos</label>
+		    </div>
+		  </div>
+		  <div class="col-md-6">
+		    <div class="form-check">
+		      <input class="form-check-input" type="checkbox" name="controlPeso[]" value="Otros control peso" id="otrosPeso">
+		      <label class="form-check-label" for="otrosPeso">Otros (especificar):</label>
+		      <input type="text" name="otrosPesoDetalles" class="form-control mt-1" placeholder="ej. Extracto de café verde...">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Otros Suplementos -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-12">
+		    <strong>Otros Suplementos que toma (por favor, especifique):</strong>
+		    <input type="text" name="otrosSuplementos" class="form-control mt-1" placeholder="ej. Melatonina, colina...">
+		  </div>
+		</div>
+		
+		<!-- Detalles adicionales sobre suplementos -->
+		<div class="row g-3 mb-3">
+		  <div class="col-md-6">
+		    <label class="form-label">Dosis aproximada:</label>
+		    <input type="text" name="dosisSuplemento" class="form-control input-field" placeholder="ej. 300mg/día">
+		  </div>
+		  <div class="col-md-6">
+		    <label class="form-label">Frecuencia de consumo:</label>
+		    <input type="text" name="frecuenciaSuplemento" class="form-control input-field" placeholder="ej. Diaria, antes del entrenamiento...">
+		  </div>
+		</div>
+		
+		<div class="row g-3 mb-3">
+		  <div class="col-md-6">
+		    <label class="form-label">¿Por qué lo toma (motivo)?</label>
+		    <input type="text" name="motivoSuplemento" class="form-control input-field" placeholder="ej. Para mejorar energía, por médico...">
+		  </div>
+		  <div class="col-md-6">
+		    <label class="form-label">¿Quién se lo recomendó o dónde lo conoció?</label>
+		    <input type="text" name="recomendacionSuplemento" class="form-control input-field" placeholder="ej. Médico, farmacéutico, internet...">
+		  </div>
+		</div>
 
             <!-- Comentarios / Observaciones -->
             <h3 class="section-title">Comentarios / Observaciones</h3>
