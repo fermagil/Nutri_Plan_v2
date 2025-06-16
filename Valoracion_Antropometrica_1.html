@@ -3858,77 +3858,254 @@ body {
             </div>
 
             <!-- Hábitos de Alimentación -->
+            <!-- Hábitos de Alimentación -->
             <h3 class="section-title">Hábitos de Alimentación</h3>
             <div class="row g-3">
-              <div class="col-md-3">
-                <label for="comidasDia" class="form-label">¿Cuántas comidas al día haces?</label>
-                <select class="form-select" id="comidasDia" name="comidasDia">
+              <div class="col-md-4">
+                <label for="numeroComidas" class="form-label">¿Cuántas comidas realizas al día?</label>
+                <select class="form-select" id="numeroComidas" name="numeroComidas">
                   <option value="">Selecciona</option>
-                  <option value="3 Comidas">3 Comidas</option>
-                  <option value="4 Comidas">4 Comidas</option>
-                  <option value="5 Comidas">5 Comidas</option>
-                  <option value="6 Comidas">6 Comidas</option>
-                  <option value="7 Comidas">7 Comidas</option>
-                  <option value="Más de 7">Más de 7</option>
+                  <option value="1-2">1-2</option>
+                  <option value="3">3</option>
+                  <option value="4-5">4-5</option>
+                  <option value="masDe5">Más de 5</option>
                 </select>
               </div>
-              <div class="col-md-3">
-                <label class="form-label">¿Qué comidas sueles saltarte?</label>
-                <div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="desayuno" name="desayuno">
-                    <label class="form-check-label" for="desayuno">Desayuno</label>
+              <div class="col-md-4">
+                <label for="dondeCome" class="form-label">¿Dónde sueles comer la mayoría de tus comidas principales?</label>
+                <select class="form-select" id="dondeCome" name="dondeCome">
+                  <option value="">Selecciona</option>
+                  <option value="En casa (preparado por mí)">En casa (preparado por mí)</option>
+                  <option value="En casa (preparado por otra persona)">En casa (preparado por otra persona)</option>
+                  <option value="En el trabajo/estudios">En el trabajo/estudios</option>
+                  <option value="Restaurantes/Comida para llevar">Restaurantes/Comida para llevar</option>
+                  <option value="Varía mucho">Varía mucho</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="picaEntreComidas" class="form-label">¿Picas entre comidas?</label>
+                <select class="form-select" id="picaEntreComidas" name="picaEntreComidas">
+                  <option value="">Selecciona</option>
+                  <option value="Sí, a menudo">Sí, a menudo (varias veces al día)</option>
+                  <option value="Sí, ocasionalmente">Sí, ocasionalmente (1-2 veces al día)</option>
+                  <option value="Raramente">Raramente</option>
+                  <option value="Nunca">Nunca</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label for="detallePicoteo" class="form-label">Si picas, ¿qué sueles picar? (Especificar)</label>
+                <input type="text" class="form-control" id="detallePicoteo" name="detallePicoteo" placeholder="ej. Frutos secos, chocolate...">
+              </div>
+              <div class="col-md-4">
+                <label for="levantarseNoche" class="form-label">¿Sueles levantarte por las noches a comer?</label>
+                <select class="form-select" id="levantarseNoche" name="levantarseNoche">
+                  <option value="">Selecciona</option>
+                  <option value="Sí, casi todas">Sí, casi todas las noches</option>
+                  <option value="Sí, 2-3 veces">Sí, 2-3 veces por semana</option>
+                  <option value="Sí, ocasionalmente">Sí, ocasionalmente (menos de 1 vez/semana)</option>
+                  <option value="No">No, nunca</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label for="detalleNoche" class="form-label">Si comes por la noche, ¿qué sueles comer? (Especificar)</label>
+                <input type="text" class="form-control" id="detalleNoche" name="detalleNoche" placeholder="ej. Tostada con queso, chocolate...">
+              </div>
+              <div class="col-md-4">
+                <label for="quienPrepara" class="form-label">¿Quién prepara la mayoría de tus comidas en casa?</label>
+                <select class="form-select" id="quienPrepara" name="quienPrepara">
+                  <option value="">Selecciona</option>
+                  <option value="Yo mismo/a">Yo mismo/a</option>
+                  <option value="Mi pareja/familiar">Mi pareja/familiar</option>
+                  <option value="Servicio a domicilio">Contrato servicios de comida a domicilio</option>
+                  <option value="Fuera de casa">Suelo comer fuera de casa</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label">¿Qué métodos de cocción utilizas con más frecuencia?</label>
+                <div style="font-size: 12px;">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="cocPlancha" name="metodoCoccion[]" value="Plancha/Horno/Vapor">
+                    <label class="form-check-label" for="cocPlancha">Plancha / Horno / Vapor</label>
                   </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="mediaManana" name="mediaManana">
-                    <label class="form-check-label" for="mediaManana">Media Mañana</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="cocHervido" name="metodoCoccion[]" value="Hervido/Cocido">
+                    <label class="form-check-label" for="cocHervido">Hervido / Cocido</label>
                   </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="almuerzo" name="almuerzo">
-                    <label class="form-check-label" for="almuerzo">Almuerzo</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="cocFrito" name="metodoCoccion[]" value="Frito/Rebozado">
+                    <label class="form-check-label" for="cocFrito">Frito / Rebozado</label>
                   </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="merienda" name="merienda">
-                    <label class="form-check-label" for="merienda">Merienda</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="cocGuisos" name="metodoCoccion[]" value="Guisos/Estofados">
+                    <label class="form-check-label" for="cocGuisos">Guisos / Estofados</label>
                   </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="cena" name="cena">
-                    <label class="form-check-label" for="cena">Cena</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="cocMicroondas" name="metodoCoccion[]" value="Microondas/Preparados precocinados">
+                    <label class="form-check-label" for="cocMicroondas">Microondas / Preparados precocinados</label>
                   </div>
                 </div>
               </div>
-              <div class="col-md-3">
-                <label class="form-label">¿Dieta balanceada?</label>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaSi" value="Sí">
-                  <label class="form-check-label" for="dietaSi">Sí</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="dietaBalanceada" id="dietaNo" value="No">
-                  <label class="form-check-label" for="dietaNo">No</label>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <label for="frutaDia" class="form-label">Piezas fruta/día:</label>
-                <select class="form-select" id="frutaDia" name="frutaDia">
+              <div class="col-md-4">
+                <label for="tiempoComer" class="form-label">¿Cuánto tiempo dedicas a tus comidas principales?</label>
+                <select class="form-select" id="tiempoComer" name="tiempoComer">
                   <option value="">Selecciona</option>
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2 - 3">2 - 3</option>
-                  <option value="3 - 4">3 - 4</option>
-                  <option value="4 - 5">4 - 5</option>
-                  <option value="5+">5+</option>
+                  <option value="Menos de 15 minutos">Menos de 15 minutos</option>
+                  <option value="15-30 minutos">15-30 minutos</option>
+                  <option value="Más de 30 minutos">Más de 30 minutos</option>
+                  <option value="Varía mucho">Varía mucho</option>
                 </select>
               </div>
-              <div class="col-md-3">
-                <label for="liquidos" class="form-label">Ingesta líquidos (ml):</label>
-                <select class="form-select" id="liquidos" name="liquidos">
+            </div>
+
+            <!-- Historial Dietético y Relación con la Comida -->
+            <h3 class="section-title">Historial Dietético y Relación con la Comida</h3>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="dietaAnterior" class="form-label">¿Has realizado alguna dieta para bajar o controlar tu peso?</label>
+                <select class="form-select" id="dietaAnterior" name="dietaAnterior">
                   <option value="">Selecciona</option>
-                  <option value="< 1000 ml (~4 vasos)"> < 1000 ml (~4 vasos)</option>
-                  <option value="1000 - 1500 ml (~5-6 vasos)">1000 - 1500 ml (~5-6 vasos)</option>
-                  <option value="1500 - 2000 ml (~6-8 vasos)">1500 - 2000 ml (~6-8 vasos)</option>
-                  <option value="2000 - 3000 ml (~8-12 vasos)">2000 - 3000 ml (~8-12 vasos)</option>
+                  <option value="Sí, varias veces">Sí, varias veces</option>
+                  <option value="Sí, una o dos veces">Sí, una o dos veces</option>
+                  <option value="No, nunca">No, nunca</option>
+                  <option value="Solo cambios ligeros">Solo pequeños cambios por mi cuenta</option>
                 </select>
+              </div>
+              <div class="col-md-4">
+                <label for="asesoramientoDieta" class="form-label">Si has hecho dieta, ¿fue con asesoramiento profesional?</label>
+                <select class="form-select" id="asesoramientoDieta" name="asesoramientoDieta">
+                  <option value="">Selecciona</option>
+                  <option value="Sí, siempre">Sí, siempre</option>
+                  <option value="A veces sí, a veces no">A veces sí, a veces no</option>
+                  <option value="No, siempre por iniciativa propia">No, siempre por iniciativa propia</option>
+                  <option value="Nunca he hecho dieta">Nunca he hecho dieta</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="relacionEmocional" class="form-label">¿Cómo afectan las emociones a tu consumo de alimentos?</label>
+                <select class="form-select" id="relacionEmocional" name="relacionEmocional">
+                  <option value="">Selecciona</option>
+                  <option value="Como más">Suelo comer más</option>
+                  <option value="Como menos">Suelo comer menos</option>
+                  <option value="No me afecta">No me afecta</option>
+                  <option value="Varía">Varía</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="usoSal" class="form-label">¿Añades sal a la comida ya preparada?</label>
+                <select class="form-select" id="usoSal" name="usoSal">
+                  <option value="">Selecciona</option>
+                  <option value="Siempre">Siempre</option>
+                  <option value="A veces">A veces</option>
+                  <option value="Raramente">Raramente</option>
+                  <option value="Nunca">Nunca</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="grasaUsada" class="form-label">¿Qué tipo de grasa usas para cocinar/aliñar?</label>
+                <select class="form-select" id="grasaUsada" name="grasaUsada">
+                  <option value="">Selecciona</option>
+                  <option value="Aceite de Oliva (virgen extra/suave)">Aceite de Oliva (virgen extra/suave)</option>
+                  <option value="Aceite de Girasol u otros aceites de semillas">Aceite de Girasol u otros aceites de semillas</option>
+                  <option value="Mantequilla">Mantequilla</option>
+                  <option value="Margarina">Margarina</option>
+                  <option value="Manteca">Manteca</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label for="grasaOtros" class="form-label">Si usas otra grasa, especifica</label>
+                <input type="text" class="form-control" id="grasaOtros" name="grasaOtros" placeholder="ej. Aceite de coco...">
+              </div>
+            </div>
+
+            <!-- Historial de Salud y Hábitos Generales -->
+            <h3 class="section-title">Historial de Salud y Hábitos Generales</h3>
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label">¿Padece alguna de estas enfermedades diagnosticadas?</label>
+                <div style="font-size: 12px;">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfObesidad" name="enfermedades[]" value="Obesidad">
+                    <label class="form-check-label" for="enfObesidad">Obesidad</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfDiabetes" name="enfermedades[]" value="Diabetes (Tipo 1 / Tipo 2 / Gestacional)">
+                    <label class="form-check-label" for="enfDiabetes">Diabetes (Tipo 1 / Tipo 2 / Gestacional)</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfHipertension" name="enfermedades[]" value="Hipertensión Arterial (HTA)">
+                    <label class="form-check-label" for="enfHipertension">Hipertensión Arterial (HTA)</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfColesterol" name="enfermedades[]" value="Colesterol alto">
+                    <label class="form-check-label" for="enfColesterol">Colesterol alto (Hipercolesterolemia)</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfTrigliceridos" name="enfermedades[]" value="Triglicéridos altos">
+                    <label class="form-check-label" for="enfTrigliceridos">Triglicéridos altos (Hipertrigliceridemia)</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfCancer" name="enfermedades[]" value="Cáncer">
+                    <label class="form-check-label" for="enfCancer">Cáncer</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfDigestiva" name="enfermedades[]" value="Enfermedad digestiva">
+                    <label class="form-check-label" for="enfDigestiva">Enfermedad digestiva (ej. Crohn, Colitis, SII)</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfTiroidea" name="enfermedades[]" value="Enfermedad tiroidea">
+                    <label class="form-check-label" for="enfTiroidea">Enfermedad tiroidea (Hipo/Hipertiroidismo)</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfAlergia" name="enfermedades[]" value="Alergia o intolerancia alimentaria">
+                    <label class="form-check-label" for="enfAlergia">Alergia o intolerancia alimentaria</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-control mt-1" type="text" id="alergiaIntolerancia" name="alergiaIntolerancia" placeholder="ej. Lactosa, Gluten...">
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfOtra" name="enfermedades[]" value="Otra enfermedad importante">
+                    <label class="form-check-label" for="enfOtra">Otra enfermedad importante</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-control mt-1" type="text" id="otraEnfermedad" name="otraEnfermedad" placeholder="ej. Fibromialgia, migraña...">
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enfNinguna" name="enfermedades[]" value="Ninguna">
+                    <label class="form-check-label" for="enfNinguna">Ninguna de las anteriores</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="fuma" class="form-label">¿Fuma?</label>
+                <select class="form-select" id="fuma" name="fuma">
+                  <option value="">Selecciona</option>
+                  <option value="Sí, a diario">Sí, a diario</option>
+                  <option value="Sí, ocasionalmente">Sí, ocasionalmente</option>
+                  <option value="No, dejé hace...">No, dejé de fumar</option>
+                  <option value="No, nunca he fumado">No, nunca he fumado</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Suplementos Nutricionales -->
+            <h3 class="section-title">Suplementos Nutricionales</h3>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="tomaSuplementos" class="form-label">¿Toma suplementos nutricionales?</label>
+                <select class="form-select" id="tomaSuplementos" name="tomaSuplementos">
+                  <option value="">Selecciona</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label for="suplementosDetalles" class="form-label">Si toma suplementos, especifique cuál y dosis</label>
+                <input type="text" class="form-control" id="suplementosDetalles" name="suplementosDetalles" placeholder="ej. Magnesio 300mg/día">
+              </div>
+              <div class="col-md-8">
+                <label for="motivoSuplementos" class="form-label">¿Por qué toma suplementos y quién lo recomendó?</label>
+                <textarea class="form-control" id="motivoSuplementos" name="motivoSuplementos" rows="3" placeholder="ej. Para mejorar energía, por recomendación médica"></textarea>
               </div>
             </div>
 
