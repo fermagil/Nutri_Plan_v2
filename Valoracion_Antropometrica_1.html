@@ -3687,7 +3687,7 @@ body {
             <h3 class="section-title">Datos de Entrenamiento</h3>
             <div class="row g-3">
               <div class="col-md-3">
-                <label for="anosEntrenamiento" class="form-label">AÑOS:</label>
+                <label for="anosEntrenamiento" class="form-label">Años:</label>
                 <select class="form-select" id="anosEntrenamiento" name="anosEntrenamiento">
                   <option value="">Selecciona</option>
                   <option value="0 - 3 años">0 - 3 años</option>
@@ -3699,7 +3699,7 @@ body {
                 </select>
               </div>
               <div class="col-md-3">
-                <label for="diasSemana" class="form-label">DÍAS/SEMANA:</label>
+                <label for="diasSemana" class="form-label">Días/sem:</label>
                 <select class="form-select" id="diasSemana" name="diasSemana">
                   <option value="">Selecciona</option>
                   <option value="1 día">1 día</option>
@@ -3712,7 +3712,7 @@ body {
                 </select>
               </div>
               <div class="col-md-3">
-                <label for="horasDia" class="form-label">HORAS/DÍA:</label>
+                <label for="horasDia" class="form-label">Horas/día:</label>
                 <select class="form-select" id="horasDia" name="horasDia">
                   <option value="">Selecciona</option>
                   <option value="0 - 2 horas">0 - 2 horas</option>
@@ -3722,7 +3722,7 @@ body {
                 </select>
               </div>
               <div class="col-md-3">
-                <label for="intensidad" class="form-label">INTENSIDAD:</label>
+                <label for="intensidad" class="form-label">Intensidad:</label>
                 <select class="form-select" id="intensidad" name="intensidad">
                   <option value="">Selecciona</option>
                   <option value="Baja">Baja</option>
@@ -3893,7 +3893,7 @@ body {
                 </select>
               </div>
               <div class="col-md-8">
-                <label for="detallePicoteo" class="form-label">Si picas, ¿qué sueles picar? (Especificar)</label>
+                <label for="detallePicoteo" class="form-label">Si picas, ¿qué sueles picar?</label>
                 <input type="text" class="form-control" id="detallePicoteo" name="detallePicoteo" placeholder="ej. Frutos secos, chocolate...">
               </div>
               <div class="col-md-4">
@@ -3999,7 +3999,7 @@ body {
 
   <!-- Leche -->
   <div class="col-md-3">
-    <label for="frecuenciaLeche" class="form-label">Leche(entera/semides/desnatada):</label>
+    <label for="frecuenciaLeche" class="form-label">Leche(entera/semi):</label>
     <select class="form-select" name="frecuenciaLeche">
       <option value="">Selecciona</option>
       <option value="DIARIO">Diario</option>
@@ -4013,7 +4013,7 @@ body {
 
   <!-- Yogur -->
   <div class="col-md-3">
-    <label for="frecuenciaYogur" class="form-label">Yogur(natural/azucarado/desnatado):</label>
+    <label for="frecuenciaYogur" class="form-label">Yogur(nat/az/des):</label>
     <select class="form-select" name="frecuenciaYogur">
       <option value="">Selecciona</option>
       <option value="DIARIO">Diario</option>
@@ -4167,7 +4167,7 @@ body {
 
   <!-- Pan -->
   <div class="col-md-3">
-    <label for="frecuenciaPan" class="form-label">Pan(blanco/integral):</label>
+    <label for="frecuenciaPan" class="form-label">Pan(int):</label>
     <select class="form-select" name="frecuenciaPan">
       <option value="">Selecciona</option>
       <option value="DIARIO">Diario</option>
@@ -4181,7 +4181,7 @@ body {
 
   <!-- Pasta y arroz -->
   <div class="col-md-3">
-    <label for="frecuenciaPastaArroz" class="form-label">Pasta/Arroz(blancos o integrales):</label>
+    <label for="frecuenciaPastaArroz" class="form-label">Pasta/Arroz(int):</label>
     <select class="form-select" name="frecuenciaPastaArroz">
       <option value="">Selecciona</option>
       <option value="DIARIO">Diario</option>
@@ -4325,7 +4325,7 @@ body {
             <h3 class="section-title">Historial Dietético y Relación con la Comida</h3>
             <div class="row g-3">
               <div class="col-md-4">
-                <label for="dietaAnterior" class="form-label">¿Has realizado alguna dieta para bajar o controlar tu peso?</label>
+                <label for="dietaAnterior" class="form-label">¿Has realizado alguna dieta para controlar tu peso?</label>
                 <select class="form-select" id="dietaAnterior" name="dietaAnterior">
                   <option value="">Selecciona</option>
                   <option value="Sí, varias veces">Sí, varias veces</option>
@@ -4582,9 +4582,10 @@ body {
                 </div>
             </div>
         </form>
-	    <div id="save-notification" class="notification hidden" >
-	    ✅ Datos guardados correctamente
-	  </div>
+	   <!-- Notificación bonita -->
+  <div id="save-notification" class="notification hidden rounded shadow-sm p-2 bg-success text-white">
+    ✅ Datos guardados correctamente
+  </div>
     </main>
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
@@ -6919,17 +6920,18 @@ function guardarDatos(event) {
   closeModal();
 }
 
-// Mostrar notificación
 function mostrarNotificacion(mensaje) {
-  const notification = document.getElementById("save-notification");
-  if (!notification) return;
-  notification.textContent = mensaje;
-  notification.classList.remove("hidden");
-  setTimeout(() => {
-    notification.classList.add("hidden");
-  }, 3000);
-}
+      const notif = document.getElementById("save-notification");
+      if (!notif) return;
 
+      notif.textContent = mensaje;
+      notif.classList.remove("hidden");
+
+      setTimeout(() => {
+        notif.classList.add("hidden");
+      }, 3000);
+    }
+	
 // Cargar datos al abrir el modal
 function cargarDatos() {
   const savedData = localStorage.getItem("fichaMedica");
