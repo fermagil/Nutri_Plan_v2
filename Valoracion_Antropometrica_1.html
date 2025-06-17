@@ -4545,21 +4545,73 @@ body {
 		    <input type="text" class="form-control" id="otrosSuplementosDetalles" name="otrosSuplementosDetalles" placeholder="ej. Melatonina, colina..." disabled>
 		  </div>
 		  <div class="col-md-4">
-		    <label for="dosisSuplemento" class="form-label">Dosis aproximada</label>
-		    <input type="text" class="form-control" id="dosisSuplemento" name="dosisSuplemento" placeholder="ej. 300mg/día" disabled>
-		  </div>
-		  <div class="col-md-4">
-		    <label for="frecuenciaSuplemento" class="form-label">Frecuencia de consumo</label>
-		    <input type="text" class="form-control" id="frecuenciaSuplemento" name="frecuenciaSuplemento" placeholder="ej. Diaria, pre-entrenamiento..." disabled>
-		  </div>
-		  <div class="col-md-4">
-		    <label for="motivoSuplemento" class="form-label">Motivo de consumo</label>
-		    <input type="text" class="form-control" id="motivoSuplemento" name="motivoSuplemento" placeholder="ej. Mejorar energía, por médico..." disabled>
-		  </div>
-		  <div class="col-md-4">
-		    <label for="recomendacionSuplemento" class="form-label">Quién lo recomendó</label>
-		    <input type="text" class="form-control" id="recomendacionSuplemento" name="recomendacionSuplemento" placeholder="ej. Médico, internet..." disabled>
-		  </div>
+		  <label for="dosisSuplemento" class="form-label">Dosis aproximada</label>
+		  <select class="form-select" id="dosisSuplemento" name="dosisSuplemento" disabled>
+		    <option selected disabled value="">Seleccione una dosis...</option>
+		    <option value="100mg/día">50-100mg/día</option>
+		    <option value="100mg/día">100mg/día</option>
+		    <option value="200mg/día">200mg/día</option>
+		    <option value="300mg/día">300mg/día</option>
+		    <option value="400mg/día">400mg/día</option>
+		    <option value="500mg/día">500mg/día</option>
+		    <option value="600mg/día">600mg/día</option>
+		    <option value="700mg/día">700mg/día</option>
+		    <option value="800mg/día">800mg/día</option>
+		    <option value="900mg/día">900mg/día</option>
+		    <option value="1000mg/día">1000mg/día</option>
+		    <option value="2-5g/día">2-5g/día</option>
+			  <option value="6-10g/día">6-10g/día</option>
+			  <option value="11-15g/día">11-15g/día</option>
+			  <option value="16-20g/día">16-20g/día</option>
+			  <option value="21-25g/día">21-25g/día</option>
+			  <option value="26-30g/día">26-30g/día</option>
+			  <option value="31-35g/día">31-35g/día</option>
+			  <option value="36-40g/día">36-40g/día</option>
+			  <option value=">40g/día">>40g/día</option>
+		    
+		    <option value="otra">Otra dosis</option>
+		  </select>
+		</div>
+		
+		<div class="col-md-4">
+		  <label for="frecuenciaSuplemento" class="form-label">Frecuencia de consumo</label>
+		  <select class="form-select" id="frecuenciaSuplemento" name="frecuenciaSuplemento" disabled>
+		    <option selected disabled value="">Seleccione frecuencia...</option>
+		    <option value="Diaria">Diaria</option>
+		    <option value="Semanal">Semanal</option>
+		    <option value="Pre-entrenamiento">Pre-entrenamiento</option>
+		    <option value="Post-entrenamiento">Post-entrenamiento</option>
+		    <option value="Ocasional">Ocasional</option>
+		    <option value="Según necesidad">Según necesidad</option>
+		  </select>
+		</div>
+		
+		<div class="col-md-4">
+		  <label for="motivoSuplemento" class="form-label">Motivo de consumo</label>
+		  <select class="form-select" id="motivoSuplemento" name="motivoSuplemento" disabled>
+		    <option selected disabled value="">Seleccione un motivo...</option>
+		    <option value="Mejorar energía">Mejorar energía</option>
+		    <option value="Recomendación médica">Recomendación médica</option>
+		    <option value="Mejorar rendimiento">Mejorar rendimiento</option>
+		    <option value="Suplir deficiencia">Suplir deficiencia</option>
+		    <option value="Mejorar recuperación">Mejorar recuperación</option>
+		    <option value="Otro motivo">Otro motivo</option>
+		  </select>
+		</div>
+		
+		<div class="col-md-4">
+		  <label for="recomendacionSuplemento" class="form-label">Quién lo recomendó</label>
+		  <select class="form-select" id="recomendacionSuplemento" name="recomendacionSuplemento" disabled>
+		    <option selected disabled value="">Seleccione una opción...</option>
+		    <option value="Médico/Nutricionista">Médico/Nutricionista</option>
+		    <option value="Entrenador">Entrenador</option>
+		    <option value="Amigo/Familiar">Amigo/Familiar</option>
+		    <option value="Internet">Internet</option>
+		    <option value="Redes sociales">Redes sociales</option>
+		    <option value="Autodecisión">Autodecisión</option>
+		    <option value="Otro">Otro</option>
+		  </select>
+		</div>
 		</div>
 
             <!-- Comentarios / Observaciones -->
