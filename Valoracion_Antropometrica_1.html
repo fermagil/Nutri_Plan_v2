@@ -3453,14 +3453,19 @@ body {
             <!-- Datos Personales -->
               <h3 class="section-title">Datos Personales</h3>
               <div class="row g-3">
-                <div class="col-md-3">
-                  <label for="idTest" class="form-label">Id Cliente:</label>
-                  <input type="text" class="form-control" id="idTest" name="idTest">
-                </div>
-                <div class="col-md-3">
-                  <label for="tecnico" class="form-label">Técnico:</label>
-                  <input type="text" class="form-control" id="tecnico" name="tecnico">
-                </div>
+               <div class="col-md-3">
+		  <label for="idTest" class="form-label">Id Cliente:</label>
+		  <select class="form-select" id="idTest" name="idTest">
+		    <option selected disabled value="">Seleccione un ID...</option>
+		    <option value="CL001">CL001</option>
+		    <option value="CL002">CL002</option>
+		    <option value="CL003">CL003</option>
+		    <option value="CL004">CL004</option>
+		    <option value="CL005">CL005</option>
+		    <option value="otro">Otro ID</option>
+		  </select>
+		</div>
+                
                 <div class="col-md-3">
                   <label for="fecha" class="form-label">Fecha:</label>
                   <input type="date" class="form-control" id="fecha" name="fecha">
