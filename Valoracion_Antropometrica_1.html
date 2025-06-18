@@ -2349,7 +2349,11 @@ body {
   font-size: 11px;
   transition: border-color 0.3s ease;
   height: 40%;      
-	    
+/* Estilo para altura específica */
+.altura-fija {
+  height: 40px !important; /* Ajusta el valor según necesites (ej: 40px, 50px, etc.) */
+  padding: 4px 10px;      /* Mantén el mismo padding si es necesario */
+}	    
 .form-control:focus,
 .form-select:focus {
   border-color: #4caf50;
@@ -4566,9 +4570,9 @@ body {
 		    </select>
 		  </div>
 		  <div class="col-md-4">
-		    <label for="otrosSuplementosDetalles" class="form-label">Especificar otros suplementos</label>
-		    <input type="text" class="form-control" id="otrosSuplementosDetalles" name="otrosSuplementosDetalles" placeholder="ej. Melatonina, colina...">
-		  </div>
+		  	<label for="otrosSuplementosDetalles" class="form-label">Especificar otros suplementos</label>
+		  	<input type="text" class="form-control altura-fija" id="otrosSuplementosDetalles" name="otrosSuplementosDetalles" placeholder="ej. Melatonina, colina...">
+		</div>
 		  <div class="col-md-4">
 		  <label for="dosisSuplemento" class="form-label">Dosis aproximada</label>
 		  <select class="form-select" id="dosisSuplemento" name="dosisSuplemento">
