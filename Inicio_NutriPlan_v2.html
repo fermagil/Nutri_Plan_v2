@@ -296,12 +296,12 @@
         <!-- Pestañas -->
         <div class="tab-buttons">
             
-            <button class="tab-button active" onclick="openTab(event, 'tab1')"><strong>Planificación Avanzada</strong></button>
+            <button class="tab-button" onclick="openTab(event, 'tab1')"><strong>Planificación Avanzada</strong></button>
 			<button class="tab-button" onclick="openTab(event, 'tab2')"><strong>Valoracion Antropometrica</strong></button>
         </div>
 
         <!-- Contenido de la primera pestaña -->
-        <div id="tab1" class="tab-content" style="display: block;">
+        <div id="tab1" class="tab-content" style="display: none;">
             <p>La seccion de Planificacion Dietética Avanzada está organizada en siete pasos que guían al usuario a través del proceso de <span class="keyword">planificación dietética</span> de manera progresiva y estructurada. A continuación, se detalla cada paso:</p>
             <h3>Paso 1: Calcula tus Necesidades y Balance Energético</h3>
             <p>
@@ -576,7 +576,7 @@
     <div class="accordion-tabs">
         <!-- Pestañas -->
         <div class="tab-buttons">
-            <button class="tab-button active" onclick="openTab(event, 'tab-justificacion-nutricion')"><strong>Planificación Avanzada</strong></button>
+            <button class="tab-button" onclick="openTab(event, 'tab-justificacion-nutricion')"><strong>Planificación Avanzada</strong></button>
             <button class="tab-button" onclick="openTab(event, 'tab-justificacion-antropometria')"><strong>Valoración Antropométrica</strong></button>
         </div>
 
@@ -670,7 +670,7 @@
         </div>
 
        <!-- Contenido de la pestaña: Valoración Antropométrica -->
-		<div id="tab-justificacion-antropometria" class="tab-content" style="display: block;">
+		<div id="tab-justificacion-antropometria" class="tab-content" style="display: none;">
 		    <h3>3. Justificación Científica</h3>
 		    <p>
 		        La herramienta de valoración antropométrica se basa en principios científicos bien establecidos en la literatura. Los cálculos de <span class="keyword">composición corporal</span>, como el <span class="keyword">porcentaje de grasa</span>, utilizan fórmulas validadas como las de <span class="keyword">Deurenberg</span> y <span class="keyword">CUN-BAE</span>, que consideran variables como <span class="keyword">edad</span>, <span class="keyword">género</span> y <span class="keyword">medidas antropométricas</span>. El <span class="keyword">Índice de Masa Corporal (IMC)</span> y el <span class="keyword">Índice Cintura-Cadera (ICC)</span> son métricas estándar para evaluar el riesgo de enfermedades metabólicas. La estimación del <span class="keyword">somatotipo</span> sigue el método de <span class="keyword">Heath-Carter</span>, ampliamente utilizado para clasificar la morfología corporal en <span class="keyword">endomorfia</span>, <span class="keyword">mesomorfia</span> y <span class="keyword">ectomorfia</span>.
@@ -860,12 +860,12 @@
     <div class="accordion-tabs">
         <!-- Pestañas -->
         <div class="tab-buttons">
-            <button class="tab-button active" onclick="openTab(event, 'tab-mejoras-planificacion')"><strong>Planificación Avanzada</strong></button>
+            <button class="tab-button" onclick="openTab(event, 'tab-mejoras-planificacion')"><strong>Planificación Avanzada</strong></button>
             <button class="tab-button" onclick="openTab(event, 'tab-mejoras-antropometria')"><strong>Valoración Antropométrica</strong></button>
         </div>
 
         <!-- Contenido de la pestaña: Planificación Avanzada -->
-        <div id="tab-mejoras-planificacion" class="tab-content" style="display: block;">
+        <div id="tab-mejoras-planificacion" class="tab-content" style="display: none;">
             <p>Para mejorar NutriPlan v2, especificamente en la Planificación Avanzada se podrían considerar las siguientes implementaciones:</p>
             <ul>
                 <li><strong>Integración de Bases de Datos de Alimentos</strong>: Incluir una <span class="keyword">base de datos de alimentos</span> para generar <span class="keyword">menús específicos</span> basados en los <span class="keyword">macronutrientes</span> calculados, considerando <span class="keyword">preferencias dietéticas</span> (vegetariano, vegano, sin gluten).</li>
@@ -907,12 +907,12 @@
     <div class="accordion-tabs">
         <!-- Pestañas -->
         <div class="tab-buttons">
-            <button class="tab-button active" onclick="openTab(event, 'tab-claves-planificacion')"><strong>Planificación Avanzada</strong></button>
+            <button class="tab-button" onclick="openTab(event, 'tab-claves-planificacion')"><strong>Planificación Avanzada</strong></button>
             <button class="tab-button" onclick="openTab(event, 'tab-claves-antropometria')"><strong>Valoración Antropométrica</strong></button>
         </div>
 
         <!-- Contenido de la pestaña: Planificación Avanzada -->
-        <div id="tab-claves-planificacion" class="tab-content" style="display: block;">
+        <div id="tab-claves-planificacion" class="tab-content" style="display: none;">
             <p>
                 Para maximizar los resultados de NutriPlan v2, especialmente en los <span class="keyword">ciclos hiperproteicos</span>, es crucial seguir estrategias basadas en evidencia científica que optimicen la <span class="keyword">pérdida de grasa</span> o la <span class="keyword">ganancia muscular</span> mientras se preserva la salud metabólica. A continuación, se presentan claves específicas para cada objetivo:
             </p>
@@ -1205,15 +1205,13 @@
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', initializeUI);
     }
-		function openTab(event, tabId) {
-    // 1. Obtener el botón clickeado y su tab asociado
+		// Función para manejar clicks en tabs (igual que antes)
+function openTab(event, tabId) {
     const clickedButton = event.currentTarget;
     const tabToToggle = document.getElementById(tabId);
-    
-    // 2. Verificar si el botón ya está activo (tab visible)
     const isAlreadyActive = clickedButton.classList.contains("active");
     
-    // 3. Ocultar TODOS los tabs y desactivar TODOS los botones (reset)
+    // Ocultar todos los tabs y desactivar botones
     const tabContents = document.getElementsByClassName("tab-content");
     const tabButtons = document.getElementsByClassName("tab-button");
     
@@ -1224,17 +1222,30 @@
         tabButtons[i].classList.remove("active");
     }
     
-    // 4. Si el tab NO estaba activo, mostrarlo y activar su botón
+    // Mostrar solo si no estaba activo
     if (!isAlreadyActive) {
         tabToToggle.style.display = "block";
         clickedButton.classList.add("active");
     }
-    // Si ya estaba activo, no hacer nada (se cierra)
 }
+
+// Inicialización: asegurar que todo esté oculto al cargar
+document.addEventListener("DOMContentLoaded", function() {
+    const tabContents = document.getElementsByClassName("tab-content");
+    const tabButtons = document.getElementsByClassName("tab-button");
+    
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = "none"; // Ocultar todos
+    }
+    for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active"); // Desactivar botones
+    }
+});
 </script>
 </body>
 	
 </html>
+
 
 
 
