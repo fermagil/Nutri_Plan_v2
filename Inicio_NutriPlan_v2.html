@@ -562,45 +562,52 @@
 </section>
 
         <section>
-            <h2>3. Justificación Científica</h2>
+    <h2>3. Justificación Científica</h2>
+
+    <!-- Acordion Tabs -->
+    <div class="accordion-tabs">
+        <!-- Pestañas -->
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="openTab(event, 'tab-justificacion-nutricion')">Planificación Avanzada</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-justificacion-antropometria')">Valoración Antropométrica</button>
+        </div>
+
+        <!-- Contenido de la pestaña: Planificación Avanzada -->
+        <div id="tab-justificacion-nutricion" class="tab-content" style="display: block;">
             <p>
                 Cada paso de NutriPlan v2 se basa en principios científicos respaldados por literatura reciente (2020-2025) de revistas revisadas por pares y guías reconocidas. Esta sección amplía la justificación científica, incorporando evidencia adicional sobre el rol de la <span class="keyword">ingesta proteica</span> en la <span class="keyword">salud</span> y <span class="keyword">composición corporal</span>, especialmente relevante para los <span class="keyword">ciclos hiperproteicos</span> (Paso 7), la <span class="keyword">distribución de macronutrientes</span> (Paso 3) y los <span class="keyword">objetivos de composición corporal</span> (Paso 2).
             </p>
-
             <h3>Paso 1: Cálculo de TMB y GET</h3>
             <p>
                 La <span class="keyword">ecuación revisada de Harris-Benedict</span> calcula la <span class="keyword">TMB</span> con precisión para poblaciones adultas, ajustada por <span class="keyword">peso</span>, <span class="keyword">altura</span>, <span class="keyword">edad</span> y <span class="keyword">género</span>. Los <span class="keyword">factores de actividad</span> (1.2-2.3) reflejan el <span class="keyword">gasto energético</span> por actividad física, y el <span class="keyword">buffer del 10%</span> contabiliza el <span class="keyword">efecto térmico de los alimentos</span> y variaciones individuales.
             </p>
             <ul>
                 <li>Roza, A. M., & Shizgal, H. M. (1984). <a href="https://zakboekdietetiek.nl/wp-content/uploads/2015/06/roza-1984.pdf">The Harris-Benedict equation reevaluated: Resting energy expenditure and body composition. <em>American Journal of Clinical Nutrition</em>, 40(2), 168-182. DOI: 10.1093/ajcn/40.2.168</a>. <i>Confirma que la ecuación revisada de Harris-Benedict es precisa para estimar la TMB en adultos, ajustada por composición corporal.</i></li>
-                <li>Westerterp, K. R. (2021).<a href= "https://cris.maastrichtuniversity.nl/ws/files/65412569/plasqui_2004_physical_activity_and_human_energy.pdf" > Physical activity and energy expenditure: Assessment and implications. <em>European Journal of Applied Physiology</em>, 121(5), 1237-1249. DOI: <a href="https://doi.org/10.1007/s00421-021-04625-4">10.1007/s00421-021-04625-4</a>. <i>Valida los factores de actividad (1.2-2.3) para estimar el GET, destacando su aplicación en diferentes niveles de actividad física.</i></li>
+                <li>Westerterp, K. R. (2021). <a href="https://cris.maastrichtuniversity.nl/ws/files/65412569/plasqui_2004_physical_activity_and_human_energy.pdf">Physical activity and energy expenditure: Assessment and implications. <em>European Journal of Applied Physiology</em>, 121(5), 1237-1249. DOI: <a href="https://doi.org/10.1007/s00421-021-04625-4">10.1007/s00421-021-04625-4</a>. <i>Valida los factores de actividad (1.2-2.3) para estimar el GET, destacando su aplicación en diferentes niveles de actividad física.</i></li>
                 <li>Frankenfield, D. C., et al. (2022). Validation of predictive equations for resting metabolic rate in healthy adults. <em>Journal of the American Dietetic Association</em>, 122(3), 456-465. DOI: <a href="https://doi.org/10.1016/j.jand.2021.08.103">10.1016/j.jand.2021.08.103</a>. <i>Demuestra que las ecuaciones predictivas, como Harris-Benedict, son fiables para calcular la TMB en poblaciones sanas.</i></li>
             </ul>
-
             <h3>Paso 2: Objetivos de Composición Corporal</h3>
             <p>
                 Los cálculos de <span class="keyword">masa grasa</span> y <span class="keyword">masa magra</span> se basan en <span class="keyword">porcentajes corporales</span>, con <span class="keyword">tasas de cambio</span> semanales seguras (0.4-1% para <span class="keyword">pérdida</span>, 0.3-0.5% para <span class="keyword">ganancia</span>) para minimizar la pérdida de masa magra y garantizar <span class="keyword">sostenibilidad</span>. La evaluación de masa magra usa <span class="keyword">rangos generales</span> validados para <span class="keyword">atletas</span> y no atletas. La <span class="keyword">ingesta proteica</span> es clave para prevenir la <span class="keyword">sarcopenia</span>, especialmente en adultos mayores, asegurando la preservación de la <span class="keyword">masa muscular</span>.
             </p>
             <ul>
-                <li>Helms, E. R., et al. (2014). <a href="https://jissn.biomedcentral.com/articles/10.1186/1550-2783-11-20" target="_blank">  Evidence-based recommendations for natural bodybuilding contest preparation: Nutrition and supplementation. <em>Journal of the International Society of Sports Nutrition</em>, 20(1), 215-232. DOI: <a href="https://doi.org/10.1080/15502783.2023.2164966">10.1080/15502783.2023.2164966</a>. <i>Propone tasas seguras de pérdida de grasa (0.5-1% del peso corporal/semana) para preservar la masa magra en atletas.</i></li>
-                <li>Aragon, A. A., et al. (2017). <a href="https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0174-y" target="_blank"></a> International society of sports nutrition position stand: Diets and body composition. <em>Journal of the International Society of Sports Nutrition</em>, 17(1), 34. DOI: <a href="https://doi.org/10.1186/s12970-020-00362-2">10.1186/s12970-020-00362-2</a>. <i>Recomienda estrategias dietéticas para optimizar la composición corporal, priorizando la preservación de masa magra.</i></li>
-                <li>Willoughby, D., et al. (2018). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6315740/ target="_blank"" Body composition changes in weight loss: Strategies and supplementation for maintaining lean body mass. <em>Nutrients</em>, 13(8), 2623. DOI: <a href="https://doi.org/10.3390/nu13082623">10.3390/nu13082623</a>. <i>Destaca que la ingesta proteica alta y el entrenamiento de fuerza son clave para minimizar la pérdida de masa magra durante la pérdida de peso.</i></li>
-                <li>Rachel R Deer 1, Elena Volpi  (2015). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4394186/ target="_blank"   Protein intake and muscle function in older adults. <em>The American Journal of Clinical Nutrition</em>, 87(5), 1555S-1559S. DOI: <a href="https://doi.org/10.1093/ajcn/87.5.1555S">10.1093/ajcn/87.5.1555S</a>. <i>Demuestra que una ingesta proteica inadecuada (<0.5 g/kg/día) afecta la transcripción genética en músculo esquelético, destacando la importancia de un mínimo proteico.</i></li>
-                <li>Phillips, S. M., et al. (2016). <a href= https://cdnsciencepub.com/doi/pdf/10.1139/apnm-2015-0550 target="_blank"  Protein “requirements” beyond the RDA: Implications for optimizing health. <em>Applied Physiology, Nutrition, and Metabolism</em>, 41(5), 565-572. DOI: <a href="https://doi.org/10.1139/apnm-2015-0550">10.1139/apnm-2015-0550</a>. <i>Recomienda ≥1.2 g/kg/día en adultos mayores para prevenir la pérdida muscular, integrado en los objetivos personalizados de NutriPlan.</i></li>
+                <li>Helms, E. R., et al. (2014). <a href="https://jissn.biomedcentral.com/articles/10.1186/1550-2783-11-20" target="_blank">Evidence-based recommendations for natural bodybuilding contest preparation: Nutrition and supplementation. <em>Journal of the International Society of Sports Nutrition</em>, 20(1), 215-232. DOI: <a href="https://doi.org/10.1080/15502783.2023.2164966">10.1080/15502783.2023.2164966</a>. <i>Propone tasas seguras de pérdida de grasa (0.5-1% del peso corporal/semana) para preservar la masa magra en atletas.</i></li>
+                <li>Aragon, A. A., et al. (2017). <a href="https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0174-y" target="_blank">International society of sports nutrition position stand: Diets and body composition. <em>Journal of the International Society of Sports Nutrition</em>, 17(1), 34. DOI: <a href="https://doi.org/10.1186/s12970-020-00362-2">10.1186/s12970-020-00362-2</a>. <i>Recomienda estrategias dietéticas para optimizar la composición corporal, priorizando la preservación de masa magra.</i></li>
+                <li>Willoughby, D., et al. (2018). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6315740/" target="_blank">Body composition changes in weight loss: Strategies and supplementation for maintaining lean body mass. <em>Nutrients</em>, 13(8), 2623. DOI: <a href="https://doi.org/10.3390/nu13082623">10.3390/nu13082623</a>. <i>Destaca que la ingesta proteica alta y el entrenamiento de fuerza son clave para minimizar la pérdida de masa magra durante la pérdida de peso.</i></li>
+                <li>Rachel R Deer 1, Elena Volpi (2015). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4394186/" target="_blank">Protein intake and muscle function in older adults. <em>The American Journal of Clinical Nutrition</em>, 87(5), 1555S-1559S. DOI: <a href="https://doi.org/10.1093/ajcn/87.5.1555S">10.1093/ajcn/87.5.1555S</a>. <i>Demuestra que una ingesta proteica inadecuada (<0.5 g/kg/día) afecta la transcripción genética en músculo esquelético, destacando la importancia de un mínimo proteico.</i></li>
+                <li>Phillips, S. M., et al. (2016). <a href="https://cdnsciencepub.com/doi/pdf/10.1139/apnm-2015-0550" target="_blank">Protein “requirements” beyond the RDA: Implications for optimizing health. <em>Applied Physiology, Nutrition, and Metabolism</em>, 41(5), 565-572. DOI: <a href="https://doi.org/10.1139/apnm-2015-0550">10.1139/apnm-2015-0550</a>. <i>Recomienda ≥1.2 g/kg/día en adultos mayores para prevenir la pérdida muscular, integrado en los objetivos personalizados de NutriPlan.</i></li>
             </ul>
-
             <h3>Paso 3: Distribución de Macronutrientes</h3>
             <p>
                 Los <span class="keyword">rangos de distribución</span> (<span class="keyword">proteínas</span>: 10-50%, <span class="keyword">carbohidratos</span>: 10-80%, <span class="keyword">grasas</span>: 10-50%) cumplen con las recomendaciones de la <span class="keyword">FAO/OMS</span>. La <span class="keyword">ingesta proteica</span> de 1.6-2.5 g/kg en <span class="keyword">pérdida de peso</span> preserva la <span class="keyword">masa magra</span>, mientras que los carbohidratos y grasas se ajustan para <span class="keyword">energía</span> y <span class="keyword">salud hormonal</span>. Diversos metaanálisis y revisiones sistemáticas han confirmado que una mayor ingesta de proteínas (1.6–2.2 g/kg/día o 25–35% de la energía) puede facilitar la <span class="keyword">pérdida de peso</span>, preservar la <span class="keyword">masa magra</span> y mejorar el <span class="keyword">perfil lipídico</span>.
             </p>
             <ul>
-                <li>Phillips, S. M., et al. (2016). <a href="https://cdnsciencepub.com/doi/10.1139/apnm-2015-0550" target="_blank">  Protein requirements for optimal health: An update. <em>Applied Physiology, Nutrition, and Metabolism</em>, 47(6), 541-553. DOI: <a href="https://doi.org/10.1139/apnm-2021-0678">10.1139/apnm-2021-0678</a>. <i>Establece que 1.6-2.2 g/kg de proteína son óptimos para preservar la masa magra durante la pérdida de peso.</i></li>
-                <li>Carbone, J. W., & Pasiakos, S. M. (2019). <a href=" https://pmc.ncbi.nlm.nih.gov/articles/PMC6566799/" target="_blank"> Dietary protein and muscle mass: Translating science to application. <em>Nutrients</em>, 12(5), 1466. DOI: <a href="https://doi.org/10.3390/nu12051466">10.3390/nu12051466</a>. <i>Confirma que una ingesta proteica elevada mejora la composición corporal en dietas hipocalóricas.</i></li>
-                <li>Kerksick, C. M., et al. (2018). <a href="https://jissn.biomedcentral.com/articles/10.1186/s12970-018-0242-y"> ISSN exercise & sports nutrition review update: Research & recommendations. <em>Journal of the International Society of Sports Nutrition</em>, 18(1), 38. DOI: <a href="https://doi.org/10.1186/s12970-021-00433-y">10.1186/s12970-021-00433-y</a>. <i>Recomienda ajustar carbohidratos y grasas según el nivel de actividad para optimizar el rendimiento y la salud hormonal.</i></li>
+                <li>Phillips, S. M., et al. (2016). <a href="https://cdnsciencepub.com/doi/10.1139/apnm-2015-0550" target="_blank">Protein requirements for optimal health: An update. <em>Applied Physiology, Nutrition, and Metabolism</em>, 47(6), 541-553. DOI: <a href="https://doi.org/10.1139/apnm-2021-0678">10.1139/apnm-2021-0678</a>. <i>Establece que 1.6-2.2 g/kg de proteína son óptimos para preservar la masa magra durante la pérdida de peso.</i></li>
+                <li>Carbone, J. W., & Pasiakos, S. M. (2019). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6566799/" target="_blank">Dietary protein and muscle mass: Translating science to application. <em>Nutrients</em>, 12(5), 1466. DOI: <a href="https://doi.org/10.3390/nu12051466">10.3390/nu12051466</a>. <i>Confirma que una ingesta proteica elevada mejora la composición corporal en dietas hipocalóricas.</i></li>
+                <li>Kerksick, C. M., et al. (2018). <a href="https://jissn.biomedcentral.com/articles/10.1186/s12970-018-0242-y">ISSN exercise & sports nutrition review update: Research & recommendations. <em>Journal of the International Society of Sports Nutrition</em>, 18(1), 38. DOI: <a href="https://doi.org/10.1186/s12970-021-00433-y">10.1186/s12970-021-00433-y</a>. <i>Recomienda ajustar carbohidratos y grasas según el nivel de actividad para optimizar el rendimiento y la salud hormonal.</i></li>
                 <li>Hansen, T. T., et al. (2021). The effects of high-protein diets on weight loss and cardiometabolic health. <em>Nutrients</em>, 13(9), 3114. DOI: <a href="https://doi.org/10.3390/nu13093114">10.3390/nu13093114</a>. <i>Halló una pérdida media de peso de 1.6 kg en dietas altas en proteína (18–59% de la energía), más pronunciada en personas con prediabetes y sin alelos de riesgo de obesidad.</i></li>
                 <li>Vogtschmidt, Y. D., et al. (2021). Higher protein intake improves fat mass loss during energy restriction. <em>Current Developments in Nutrition</em>, 5(Supplement_2), 123-130. DOI: <a href="https://doi.org/10.1093/cdn/nzab037">10.1093/cdn/nzab037</a>. <i>Encontró una mayor pérdida de masa grasa con 28% de proteína frente a 18%, apoyando los porcentajes altos en NutriPlan v2.</i></li>
             </ul>
-
             <h3>Paso 4: Plan de Comidas</h3>
             <p>
                 La distribución de <span class="keyword">comidas</span> en 5 tomas diarias mejora la <span class="keyword">adherencia</span> y el <span class="keyword">control glucémico</span>, según estudios sobre <span class="keyword">frecuencia de comidas</span>. Los <span class="keyword">porcentajes personalizables</span> permiten adaptar el plan a <span class="keyword">horarios</span> y <span class="keyword">preferencias</span>, manteniendo el <span class="keyword">equilibrio de macronutrientes</span>.
@@ -610,7 +617,6 @@
                 <li>St-Onge, M. P., et al. (2020). Meal timing and frequency: Implications for cardiovascular disease prevention. <em>Circulation</em>, 141(9), 729-739. DOI: <a href="https://doi.org/10.1161/CIRCULATIONAHA.119.041254">10.1161/CIRCULATIONAHA.119.041254</a>. <i>Indica que una mayor frecuencia de comidas reduce el riesgo cardiometabólico y mejora la adherencia dietética.</i></li>
                 <li>Hutchison, A. T., & Heilbronn, L. K. (2021). Metabolic impacts of altering meal frequency and timing. <em>Nutrients</em>, 13(8), 2716. DOI: <a href="https://doi.org/10.3390/nu13082716">10.3390/nu13082716</a>. <i>Concluye que distribuir calorías en múltiples comidas optimiza el metabolismo y la saciedad.</i></li>
             </ul>
-
             <h3>Paso 5: Ciclos y Breaks (Automática)</h3>
             <p>
                 Los <span class="keyword">ciclos</span> de <span class="keyword">déficit/superávit</span> con <span class="keyword">breaks</span> a <span class="keyword">mantenimiento</span> minimizan <span class="keyword">adaptaciones metabólicas</span> (reducción del gasto energético) y mejoran la <span class="keyword">adherencia</span>. La <span class="keyword">periodización nutricional</span> es una estrategia validada para optimizar la <span class="keyword">pérdida de grasa</span> y la <span class="keyword">ganancia muscular</span>.
@@ -620,7 +626,6 @@
                 <li>Byrne, N. M., et al. (2021). Intermittent energy restriction for weight loss: A review of effectiveness and mechanisms. <em>Obesity Reviews</em>, 22(4), e13210. DOI: <a href="https://doi.org/10.1111/obr.13210">10.1111/obr.13210</a>. <i>Demuestra que la periodización calórica mejora la eficiencia de la pérdida de grasa a largo plazo.</i></li>
                 <li>Peos, J. J., et al. (2022). Intermittent dieting: Theoretical considerations for the athlete. <em>Sports</em>, 10(2), 22. DOI: <a href="https://doi.org/10.3390/sports10020022">10.3390/sports10020022</a>. <i>Sugiere que los ciclos de déficit con breaks optimizan la composición corporal en atletas.</i></li>
             </ul>
-
             <h3>Paso 6: Estimación de Tiempo (Manual)</h3>
             <p>
                 La <span class="keyword">equivalencia de 7700 kcal</span> por kg de grasa es un estándar para estimar <span class="keyword">cambios de peso</span>. Las <span class="keyword">tasas recomendadas</span> (0.5 kg/sem para <span class="keyword">pérdida</span>, 0.3 kg/sem para <span class="keyword">ganancia</span>) son seguras y sostenibles, según <span class="keyword">modelos de balance energético</span>.
@@ -630,7 +635,6 @@
                 <li>Thomas, D. M., et al. (2020). Time to correctly predict the amount of weight loss with dieting. <em>Journal of the Academy of Nutrition and Dietetics</em>, 120(6), 1007-1014. DOI: <a href="https://doi.org/10.1016/j.jand.2019.11.012">10.1016/j.jand.2019.11.012</a>. <i>Propone que las tasas de pérdida de peso de 0.5-1 kg/semana son sostenibles y precisas para planificaciones dietéticas.</i></li>
                 <li>Chow, C. C., & Hall, K. D. (2021). The dynamics of human body weight change. <em>PLoS Computational Biology</em>, 17(3), e1008746. DOI: <a href="https://doi.org/10.1371/journal.pcbi.1008746">10.1371/journal.pcbi.1008746</a>. <i>Desarrolla un modelo dinámico que predice el tiempo necesario para cambios de peso con ajustes calóricos.</i></li>
             </ul>
-
             <h3>Paso 7: Ciclos Hiperproteicos (Manual)</h3>
             <p>
                 La <span class="keyword">ingesta proteica elevada</span> (1.6-2.5 g/kg, 30-40% de calorías) preserva la <span class="keyword">masa magra</span> durante la <span class="keyword">pérdida de peso</span>, mientras que los <span class="keyword">breaks metabólicos</span> (15-25%) reducen el <span class="keyword">estrés metabólico</span>. Rotar entre <span class="keyword">proteína alta y moderada</span> mejora la <span class="keyword">adherencia</span> y evita el <span class="keyword">estancamiento</span>, con <span class="keyword">límites seguros</span> (>25% de calorías) para minimizar riesgos renales. El <span class="keyword">ciclado de macronutrientes</span> optimiza los resultados en atletas. La implementación de ciclos con ingesta proteica del 30–40% está respaldada por estudios que muestran beneficios en la <span class="keyword">composición corporal</span> sin efectos adversos en individuos sanos.
@@ -643,7 +647,6 @@
                 <li>Moon, J., & Koh, G. (2020). Clinical evidence and mechanisms of high-protein diet-induced weight loss. <em>Journal of Obesity & Metabolic Syndrome</em>, 29(3), 166-173. DOI: <a href="https://doi.org/10.7570/jomes20028">10.7570/jomes20028</a>. <i>Concluye que dietas de 1.07–1.60 g/kg/día (27–35% de la energía) mejoran el peso y composición corporal sin afectar negativamente la función renal o la densidad ósea.</i></li>
                 <li>Antonio, J., et al. (2018). A high protein diet has no harmful effects: A one-year crossover study in resistance-trained males. <em>Journal of the International Society of Sports Nutrition</em>, 15(1), 48. DOI: <a href="https://doi.org/10.1186/s12970-018-0250-1">10.1186/s12970-018-0250-1</a>. <i>Metaanálisis que refuta la noción de que las dietas altas en proteínas dañan los riñones en adultos sanos, apoyando el límite superior de 2.5 g/kg en NutriPlan.</i></li>
             </ul>
-
             <h3>Riesgos y Precauciones</h3>
             <p>
                 A pesar de los beneficios de una <span class="keyword">ingesta proteica elevada</span>, se deben considerar los posibles efectos adversos, especialmente en poblaciones con <span class="keyword">patologías renales</span> preexistentes, para garantizar un uso seguro de NutriPlan v2.
@@ -652,12 +655,32 @@
                 <li>Ko, G. J., et al. (2020). High-protein diets and renal health in individuals with kidney disease risk. <em>Journal of the American Society of Nephrology</em>, 31(10), 2395-2404. DOI: <a href="https://doi.org/10.1681/ASN.2020040489">10.1681/ASN.2020040489</a>. <i>Identificó un mayor riesgo de daño renal con alta proteína animal en pacientes con riesgo renal, sugiriendo precaución en personas con antecedentes renales.</i></li>
                 <li>Zhang, J., et al. (2024). High dietary protein intake activates macrophages via leucine signaling and increases cardiovascular risk. <em>Nature Metabolism</em>, 6(2), 231-243. DOI: <a href="https://doi.org/10.1038/s42255-023-00973-5">10.1038/s42255-023-00973-5</a>. <i>Vinculó ingestas >22% de proteínas con riesgo cardiovascular vía activación de macrófagos por leucina, recomendando 60–90 g/día como límite prudente.</i></li>
             </ul>
-
             <h3>Conclusión</h3>
             <p>
                 La evidencia científica más reciente respalda el uso de porcentajes elevados de <span class="keyword">proteína</span> para preservar la <span class="keyword">masa magra</span>, facilitar la <span class="keyword">pérdida de grasa</span> y mejorar la <span class="keyword">composición corporal</span>, siempre que se personalicen según el estado fisiológico y la <span class="keyword">salud renal</span> del usuario. NutriPlan v2 integra estas recomendaciones para ofrecer un enfoque basado en la ciencia, con ajustes seguros y personalizados.
             </p>
-        </section>
+        </div>
+
+        <!-- Contenido de la pestaña: Valoración Antropométrica -->
+        <div id="tab-justificacion-antropometria" class="tab-content" style="display: none;">
+            <p>
+                Próximamente se incluirá la <strong>justificación científica</strong> detrás de los cálculos y métricas utilizadas en la <strong>Valoración Antropométrica</strong>, incluyendo:
+            </p>
+            <ul>
+                <li><strong>Ecuaciones de estimación de % grasa:</strong> Jackson-Pollock, Durnin-Womersley, Deurenberg, etc.</li>
+                <li><strong>Modelos de compartimentos:</strong> 3 compartimentos (grasa, masa muscular, masa residual).</li>
+                <li><strong>Validación de pliegues y circunferencias:</strong> Fiabilidad y error estándar de medida (SEM).</li>
+                <li><strong>Somatotipos (Heath-Carter):</strong> Fundamentos científicos y aplicación clínica.</li>
+                <li><strong>Parámetros bioquímicos:</strong> Interpretación clínica de albúmina, PCR, HbA1c, vitamina D, etc.</li>
+                <li><strong>Índices avanzados:</strong> IMLG, IMG, IAV, GAT, ACT, etc.</li>
+            </ul>
+            <p>
+                Esta sección se actualizará con referencias científicas recientes (2020-2025) que respalden los métodos utilizados, asegurando un enfoque <strong>basado en evidencia</strong> y <strong>validado clínicamente</strong>.
+            </p>
+            <!-- Aquí se añadirá contenido detallado cuando esté disponible -->
+        </div>
+    </div>
+</section>
 
         <section>
             <h2>4. Posibles Mejoras</h2>
@@ -912,6 +935,7 @@
 </body>
 	
 </html>
+
 
 
 
