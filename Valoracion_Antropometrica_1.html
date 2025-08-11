@@ -2399,38 +2399,17 @@ body {
     }
 	   
 
-   /* ESTILO BASE - Prioridad máxima */
-    label.boton-label-guia {
+  /* Estilo INICIAL (sin hover) */
+    .boton-label-guia {
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        padding: 12px 25px;
-        background-color: #28a745;
-        color: white !important;
-        font-weight: 600;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        text-decoration: none;
-        position: relative;
-        border: none;
-        font-family: inherit;
-        font-size: 16px;
-    }
-    
-    /* HOVER - Selector específico */
-    label.boton-label-guia:hover {
-        background-color: #ff6b6b !important; /* Forzado con !important */
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-        text-underline-offset: 4px;
-        transform: translateY(-2px);
-    }
-    
-    /* Icono */
-    label.boton-label-guia i {
-        font-size: 1em;
+        padding: 10px 20px;
+        color: #333; /* Color de texto normal */
+        font-weight: 500;
+        background-color: transparent; /* Sin fondo */
+        border-radius: 0; /* Sin bordes redondeados */
+        transition: all 0.3s ease; /* Transición suave */
     }
  </style>
 </head>
@@ -4702,7 +4681,7 @@ body {
 	   <!-- Notificación bonita -->
   
 	
-   <label class="boton-label-guia" id="miBotonGuia">
+  <label class="boton-label-guia" id="botonGuiaUsuario">
     <i class="fas fa-book"></i> Guía Usuario
 </label>
 
@@ -7080,24 +7059,28 @@ function handleSectionTitleClick(event) {
   // No se define acción específica; añadir aquí si se necesita (e.g., toggle)
 }
 
-	 document.getElementById('miBotonGuia').addEventListener('click', function() {
-        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html';
+	 const boton = document.getElementById('botonGuiaUsuario');
+    
+    // Función para manejar el hover
+    boton.addEventListener('mouseenter', () => {
+        boton.style.backgroundColor = '#2e7d32'; // Verde solicitado
+        boton.style.color = 'white';
+        boton.style.borderRadius = '25px'; // Borde muy redondeado
+        boton.style.cursor = 'pointer'; // Cursor de mano
     });
     
-    // Control hover con JavaScript
-   const boton = document.querySelector('.boton-label-guia');
-boton.addEventListener('mouseenter', function() {
-    this.style.backgroundColor = '#2e7d32';
-    this.style.borderRadius = '25px';
-    this.style.color = 'white';
-    this.style.cursor = 'pointer';
-});
-boton.addEventListener('mouseleave', function() {
-    this.style.backgroundColor = 'transparent';
-    this.style.borderRadius = '0';
-    this.style.color = '#333';
-    this.style.cursor = 'default';
-});
+    // Función para resetear al salir del hover
+    boton.addEventListener('mouseleave', () => {
+        boton.style.backgroundColor = 'transparent';
+        boton.style.color = '#333';
+        boton.style.borderRadius = '0';
+        boton.style.cursor = 'default'; // Cursor normal
+    });
+    
+    // Función para el click (redirección)
+    boton.addEventListener('click', () => {
+        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html';
+    });
   </script>
 </body>
 </html>
@@ -7125,6 +7108,7 @@ boton.addEventListener('mouseleave', function() {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
