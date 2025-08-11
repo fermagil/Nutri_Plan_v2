@@ -1206,26 +1206,36 @@
         document.addEventListener('DOMContentLoaded', initializeUI);
     }
 		function openTab(event, tabId) {
-    // 1. Ocultar todos los contenidos de tabs
-    var tabContents = document.getElementsByClassName("tab-content");
-    for (var i = 0; i < tabContents.length; i++) {
+    // 1. Obtener el botón clickeado y su tab asociado
+    const clickedButton = event.currentTarget;
+    const tabToToggle = document.getElementById(tabId);
+    
+    // 2. Verificar si el botón ya está activo (tab visible)
+    const isAlreadyActive = clickedButton.classList.contains("active");
+    
+    // 3. Ocultar TODOS los tabs y desactivar TODOS los botones (reset)
+    const tabContents = document.getElementsByClassName("tab-content");
+    const tabButtons = document.getElementsByClassName("tab-button");
+    
+    for (let i = 0; i < tabContents.length; i++) {
         tabContents[i].style.display = "none";
     }
-
-    // 2. Quitar la clase 'active' de todos los botones
-    var tabButtons = document.getElementsByClassName("tab-button");
-    for (var i = 0; i < tabButtons.length; i++) {
+    for (let i = 0; i < tabButtons.length; i++) {
         tabButtons[i].classList.remove("active");
     }
-
-    // 3. Mostrar el tab seleccionado y activar su botón
-    document.getElementById(tabId).style.display = "block";
-    event.currentTarget.classList.add("active");
+    
+    // 4. Si el tab NO estaba activo, mostrarlo y activar su botón
+    if (!isAlreadyActive) {
+        tabToToggle.style.display = "block";
+        clickedButton.classList.add("active");
+    }
+    // Si ya estaba activo, no hacer nada (se cierra)
 }
 </script>
 </body>
 	
 </html>
+
 
 
 
