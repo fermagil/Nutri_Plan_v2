@@ -2399,13 +2399,18 @@ body {
     }
 	   
 
-    /* Estilo específico del botón-guia */
+     /* ESTILOS CORREGIDOS - Versión garantizada que funciona */
+    .contenedor-boton-guia {
+        list-style: none;
+        margin: 15px 0;
+    }
+    
     .boton-label-guia {
         display: inline-flex;
         align-items: center;
         gap: 10px;
         padding: 12px 25px;
-        background-color: #28a745; /* Verde Bootstrap */
+        background-color: #28a745;
         color: white !important;
         font-weight: 600;
         border-radius: 6px;
@@ -2413,16 +2418,16 @@ body {
         transition: all 0.3s ease;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         border: none;
-        font-family: inherit;
         font-size: 16px;
+        text-decoration: none !important;
     }
-
-    .boton-label-guia:hover {
-        background-color: #218838; /* Verde más oscuro */
+    
+    /* ESTO ES CLAVE: selector más específico */
+    li.contenedor-boton-guia label.boton-label-guia:hover {
+        background-color: #218838;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
-
     /* Estilo para el icono */
     .boton-label-guia i {
         font-size: 1em;
@@ -7107,6 +7112,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
