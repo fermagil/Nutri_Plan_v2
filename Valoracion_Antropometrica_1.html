@@ -2416,32 +2416,52 @@ body {
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         transform: translateY(-2px);
     }
-	/* Estilo específico para el botón con icono */
+	/* Contenedor del botón (opcional, para mayor control) */
+    .contenedor-boton {
+        margin: 15px 0; /* Espacio alrededor del botón */
+        display: inline-block; /* Para que no ocupe todo el ancho */
+    }
+
+    /* Estilo base del enlace (heredará algunos estilos de tu menú) */
+    nav ul li a {
+        text-decoration: none;
+        color: #495057;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+
+    /* Estilo específico para nuestro botón */
     .boton-icono {
         display: inline-flex;
         align-items: center;
-        padding: 10px 20px;
-        background-color: #ff6b6b; /* Color llamativo para destacar el botón */
-        color: white !important; /* !important para sobrescribir el color del menú */
-        font-weight: 500;
-        text-decoration: none;
-        border-radius: 50px;
-        font-size: 16px;
-        gap: 8px;
+        gap: 10px;
+        padding: 12px 24px;
+        background-color: #28a745; /* Verde vibrante */
+        color: white !important; /* Letras blancas */
+        font-weight: 600;
+        border-radius: 6px;
         transition: all 0.3s ease;
-        margin-left: 10px; /* Espacio del botón respecto a otros elementos */
-    }
-    
-    .boton-icono:hover {
-        background-color: #ff5252;
-        color: white !important;
-        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    /* Opcional: para que el botón destaque más */
+    .boton-icono:hover {
+        background-color: #218838; /* Verde más oscuro al hover */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Quitar estilos de lista si es necesario */
     .boton-guia {
-        list-style-type: none;
-        margin-top: 10px; /* Espacio superior */
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Estilo para el icono */
+    .boton-icono i {
+        font-size: 1.1em;
     }
  </style>
 </head>
@@ -4714,14 +4734,13 @@ body {
   <div id="save-notification" class="notification hidden rounded shadow-sm p-2 bg-success text-white">
     ✅ Datos guardados correctamente
   </div>
-	<li class="boton-guia">
-    	<a href="https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html" class="boton-moderno">Guía Usuario</a>
+	<div class="contenedor-boton">
+    <li class="boton-guia">
+        <a href="https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html" class="boton-icono">
+            <i class="fas fa-book"></i> Guía Usuario
+        </a>
     </li>
-	<li class="boton-guia">
-    <a href="https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html" class="boton-icono">
-        <i class="fas fa-book"></i> Guía Usuario
-    </a>
-</li>
+</div>
     </main>
     <footer>
         <p>© 2025 NutriApp - Valoración Antropométrica. Consulta siempre a un profesional.</p>
@@ -7118,6 +7137,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
