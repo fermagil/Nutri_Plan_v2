@@ -4705,7 +4705,9 @@ body {
    <label class="boton-label-guia" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html'">
     <i class="fas fa-book"></i> Guía Usuario
 </label>
-
+<label class="boton-label-guia" id="miBotonGuia">
+    <i class="fas fa-book"></i> Guía Usuario
+</label>
 
 	<div id="save-notification" class="notification hidden rounded shadow-sm p-2 bg-success text-white">
     ✅ Datos guardados correctamente
@@ -7079,6 +7081,23 @@ function handleSectionTitleClick(event) {
   event.stopPropagation(); // Evita que el evento se propague a los padres
   // No se define acción específica; añadir aquí si se necesita (e.g., toggle)
 }
+
+	 document.getElementById('miBotonGuia').addEventListener('click', function() {
+        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html';
+    });
+    
+    // Control hover con JavaScript
+    const boton = document.getElementById('miBotonGuia');
+    boton.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = '#ff6b6b';
+        this.style.textDecoration = 'underline';
+        this.style.transform = 'translateY(-2px)';
+    });
+    boton.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = '#28a745';
+        this.style.textDecoration = 'none';
+        this.style.transform = 'none';
+    });
   </script>
 </body>
 </html>
@@ -7106,6 +7125,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
