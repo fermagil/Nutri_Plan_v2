@@ -991,36 +991,27 @@
         document.addEventListener('DOMContentLoaded', initializeUI);
     }
 		function openTab(event, tabId) {
-    // Ocultar todos los contenidos
+    // 1. Ocultar todos los contenidos de tabs
     var tabContents = document.getElementsByClassName("tab-content");
     for (var i = 0; i < tabContents.length; i++) {
         tabContents[i].style.display = "none";
     }
 
-    // Remover clase 'active' de todos los botones
+    // 2. Quitar la clase 'active' de todos los botones
     var tabButtons = document.getElementsByClassName("tab-button");
-    for (i = 0; i < tabButtons.length; i++) {
+    for (var i = 0; i < tabButtons.length; i++) {
         tabButtons[i].classList.remove("active");
     }
 
-    // Mostrar el tab seleccionado y activar el botón
+    // 3. Mostrar el tab seleccionado y activar su botón
     document.getElementById(tabId).style.display = "block";
     event.currentTarget.classList.add("active");
 }
-	document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('tab1').style.display = 'none';
-  });
-		document.addEventListener('DOMContentLoaded', function() {
-    // Mostrar solo tab1 al cargar
-    document.getElementById('tab1').style.display = 'block';
-    document.getElementById('tab2').style.display = 'none';
-    
-    // Activar solo el primer botón
-    document.querySelector('.tab-button').classList.add('active');
 </script>
 </body>
 	
 </html>
+
 
 
 
