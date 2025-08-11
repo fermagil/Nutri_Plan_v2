@@ -858,7 +858,7 @@
 
         <!-- Contenido de la pestaña: Planificación Avanzada -->
         <div id="tab-mejoras-planificacion" class="tab-content" style="display: block;">
-            <p>Para mejorar NutriPlan v2, se podrían considerar las siguientes implementaciones:</p>
+            <p>Para mejorar NutriPlan v2, especificamente en la Planificación Avanzada se podrían considerar las siguientes implementaciones:</p>
             <ul>
                 <li><strong>Integración de Bases de Datos de Alimentos</strong>: Incluir una <span class="keyword">base de datos de alimentos</span> para generar <span class="keyword">menús específicos</span> basados en los <span class="keyword">macronutrientes</span> calculados, considerando <span class="keyword">preferencias dietéticas</span> (vegetariano, vegano, sin gluten).</li>
                 <li><strong>Seguimiento de Progreso</strong>: Añadir una sección para registrar <span class="keyword">peso</span>, <span class="keyword">medidas corporales</span> y <span class="keyword">adherencia</span> al plan, con <span class="keyword">gráficos interactivos</span> para visualizar tendencias.</li>
@@ -892,12 +892,22 @@
     </div>
 </section>
 
-        <section>
-            <h2>5. Claves para el Éxito</h2>
+       <section>
+    <h2>5. Claves para el Éxito</h2>
+
+    <!-- Acordion Tabs -->
+    <div class="accordion-tabs">
+        <!-- Pestañas -->
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="openTab(event, 'tab-claves-planificacion')">Planificación Avanzada</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-claves-antropometria')">Valoración Antropométrica</button>
+        </div>
+
+        <!-- Contenido de la pestaña: Planificación Avanzada -->
+        <div id="tab-claves-planificacion" class="tab-content" style="display: block;">
             <p>
                 Para maximizar los resultados de NutriPlan v2, especialmente en los <span class="keyword">ciclos hiperproteicos</span>, es crucial seguir estrategias basadas en evidencia científica que optimicen la <span class="keyword">pérdida de grasa</span> o la <span class="keyword">ganancia muscular</span> mientras se preserva la salud metabólica. A continuación, se presentan claves específicas para cada objetivo:
             </p>
-
             <h3>5.1 Ciclos Hiperproteicos para Adelgazamiento</h3>
             <p>
                 Los <span class="keyword">ciclos hiperproteicos</span> en dietas de adelgazamiento buscan una <span class="keyword">pérdida de peso sostenible</span>, preservando la <span class="keyword">masa muscular</span> y minimizando <span class="keyword">riesgos metabólicos</span>. Las siguientes claves son esenciales:
@@ -989,14 +999,14 @@
                 <li>Witard, O. C., et al. (2022). Protein quality and muscle anabolism. <em>Journal of the International Society of Sports Nutrition</em>, 19(1), 123-139. DOI: <a href="https://doi.org/10.1080/15502783.2022.2051186">10.1080/15502783.2022.2051186</a>. <i>Destaca que fuentes proteicas de alta calidad (ej. whey) mejoran la síntesis muscular.</i></li>
             </ul>
             <h4>Superávit Calórico Moderado</h4>
-			<p>
-				Mantén un <span class="keyword">superávit calórico</span> del 5-10% sobre el <span class="keyword">GET</span> (ej. 200-500 kcal/día) para apoyar la <span class="keyword">ganancia muscular</span> sin exceso de <span class="keyword">grasa</span>. Ajusta las <span class="keyword">calorías</span> cada 2-4 semanas según el progreso.
-			</p>
-			<ul>
-				<li>Slater, G. J., et al. (2021). Nutrition guidelines for strength sports: Sprinting, weightlifting, and bodybuilding. <em>International Journal of Sport Nutrition and Exercise Metabolism</em>, 31(2), 132-147. DOI: <a href="https://doi.org/10.1123/ijsnem.2020-0273">10.1123/ijsnem.2020-0273</a>. <i>Recomienda un superávit de 200-500 kcal/día para maximizar la ganancia muscular con mínima grasa.</i></li>
-				<li>Iraki, J., et al. (2020). Nutrition for muscle gain in resistance-trained athletes. <em>Strength and Conditioning Journal</em>, 42(5), 108-119. DOI: <a href="https://doi.org/10.1519/SSC.0000000000000573">10.1519/SSC.0000000000000573</a>. <i>Confirma que un superávit moderado optimiza la hipertrofia sin acumulación excesiva de grasa.</i></li>
-				<li>Helms, E. R., et al. (2023). Nutritional strategies for muscle hypertrophy. <em>Journal of the International Society of Sports Nutrition</em>, 20(1), 89-104. DOI: <a href="https://doi.org/10.1080/15502783.2023.2178423">10.1080/15502783.2023.2178423</a>. <i>Destaca la importancia de un superávit controlado para apoyar la hipertrofia muscular en atletas entrenados.</i></li>
-			</ul>
+            <p>
+                Mantén un <span class="keyword">superávit calórico</span> del 5-10% sobre el <span class="keyword">GET</span> (ej. 200-500 kcal/día) para apoyar la <span class="keyword">ganancia muscular</span> sin exceso de <span class="keyword">grasa</span>. Ajusta las <span class="keyword">calorías</span> cada 2-4 semanas según el progreso.
+            </p>
+            <ul>
+                <li>Slater, G. J., et al. (2021). Nutrition guidelines for strength sports: Sprinting, weightlifting, and bodybuilding. <em>International Journal of Sport Nutrition and Exercise Metabolism</em>, 31(2), 132-147. DOI: <a href="https://doi.org/10.1123/ijsnem.2020-0273">10.1123/ijsnem.2020-0273</a>. <i>Recomienda un superávit de 200-500 kcal/día para maximizar la ganancia muscular con mínima grasa.</i></li>
+                <li>Iraki, J., et al. (2020). Nutrition for muscle gain in resistance-trained athletes. <em>Strength and Conditioning Journal</em>, 42(5), 108-119. DOI: <a href="https://doi.org/10.1519/SSC.0000000000000573">10.1519/SSC.0000000000000573</a>. <i>Confirma que un superávit moderado optimiza la hipertrofia sin acumulación excesiva de grasa.</i></li>
+                <li>Helms, E. R., et al. (2023). Nutritional strategies for muscle hypertrophy. <em>Journal of the International Society of Sports Nutrition</em>, 20(1), 89-104. DOI: <a href="https://doi.org/10.1080/15502783.2023.2178423">10.1080/15502783.2023.2178423</a>. <i>Destaca la importancia de un superávit controlado para apoyar la hipertrofia muscular en atletas entrenados.</i></li>
+            </ul>
             <h4>Timing de Nutrientes</h4>
             <p>
                 Consume <span class="keyword">carbohidratos</span> (0.5-1 g/kg) y <span class="keyword">proteínas</span> (0.3-0.5 g/kg) dentro de las 2 horas post-entrenamiento para optimizar la <span class="keyword">recuperación</span> y reponer el <span class="keyword">glucógeno muscular</span>. Ejemplo: 80 kg = 40-80 g carbohidratos, 24-40 g proteína.
@@ -1008,7 +1018,7 @@
             </ul>
             <h4>Suplementación Específica</h4>
             <p>
-                Usa <span class="keyword">creatina</span> (5 g/día) para mejorar la <span class="keyword">fuerza</span> y <span class="keyword">hipertrofia</span>, <span class="keyword">beta-alanina</span> (2-5 g/día) for aumentar la <span class="keyword">capacidad de ejercicio</span>, y, opcionalmente, <span class="keyword">HMB</span> (1-3 g/día) para reducir el <span class="keyword">daño muscular</span> en fases intensas.
+                Usa <span class="keyword">creatina</span> (5 g/día) para mejorar la <span class="keyword">fuerza</span> y <span class="keyword">hipertrofia</span>, <span class="keyword">beta-alanina</span> (2-5 g/día) para aumentar la <span class="keyword">capacidad de ejercicio</span>, y, opcionalmente, <span class="keyword">HMB</span> (1-3 g/día) para reducir el <span class="keyword">daño muscular</span> en fases intensas.
             </p>
             <ul>
                 <li>Kreider, R. B., et al. (2021). International Society of Sports Nutrition position stand: Safety and efficacy of creatine supplementation. <em>Journal of the International Society of Sports Nutrition</em>, 18(1), 13. DOI: <a href="https://doi.org/10.1186/s12970-021-00412-3">10.1186/s12970-021-00412-3</a>. <i>Valida que 5 g/día de creatina mejoran la fuerza y la hipertrofia muscular.</i></li>
@@ -1020,9 +1030,89 @@
                 Asegura <span class="keyword">48-72 horas de descanso</span> entre sesiones del mismo grupo muscular y <span class="keyword">7-9 horas de sueño</span> por noche para maximizar la <span class="keyword">recuperación</span> y la <span class="keyword">síntesis proteica</span>. El <span class="keyword">sueño</span> regula hormonas anabólicas como la <span class="keyword">testosterona</span> y la <span class="keyword">hormona de crecimiento</span>.
             </p>
             <ul>
-                <li>Fuente: Dattilo, M., et al. (2020). Sleep and muscle recovery: Endocrinological and molecular basis for a new and promising hypothesis. <em>Medical Hypotheses</em>, 141, 109740. DOI: <a href="https://doi.org/10.1016/j.mehy.2020.109740">10.1016/j.mehy.2020.109740</a>.</li>
+                <li>Dattilo, M., et al. (2020). Sleep and muscle recovery: Endocrinological and molecular basis for a new and promising hypothesis. <em>Medical Hypotheses</em>, 141, 109740. DOI: <a href="https://doi.org/10.1016/j.mehy.2020.109740">10.1016/j.mehy.2020.109740</a>. <i>Relaciona el sueño profundo con la regulación de testosterona y GH, claves para la hipertrofia.</i></li>
             </ul>
-        </section>
+        </div>
+
+        <!-- Contenido de la pestaña: Valoración Antropométrica -->
+        <div id="tab-claves-antropometria" class="tab-content" style="display: none;">
+            <p>
+                Para aprovechar al máximo la herramienta de <strong>Valoración Antropométrica</strong>, es fundamental seguir buenas prácticas metodológicas, clínicas y de interpretación. A continuación, se presentan las <strong>claves para el éxito</strong> basadas en evidencia, precisión y aplicación profesional:
+            </p>
+
+            <h3>5.1 Precisión en la Medición</h3>
+            <p>
+                La fiabilidad de los resultados depende directamente de la <span class="keyword">precisión en la toma de medidas</span>. Utiliza instrumentos calibrados (calibrador Harpenden, cinta antropométrica inextensible) y sigue protocolos estandarizados (ISAK).
+            </p>
+            <ul>
+                <li><strong>Pliegues cutáneos:</strong> Toma cada pliegue al menos <span class="keyword">dos veces</span> y promedia. Si hay más de 1 mm de diferencia, realiza una tercera medición. Mide siempre en el <span class="keyword">lado derecho</span> del cuerpo.</li>
+                <li><strong>Circunferencias:</strong> Asegúrate de que la cinta esté <span class="keyword">paralela al suelo</span> y sin hundir la piel. Toma la medida al final de la espiración normal.</li>
+                <li><strong>Diámetros óseos:</strong> Coloca el calibrador con <span class="keyword">presión mínima</span> para evitar compresión del tejido.</li>
+            </ul>
+            <p><i>Fuente: Marfell-Jones, M., et al. (2022). <em>International Standards for Anthropometric Assessment</em>. ISAK.</i></p>
+
+            <h3>5.2 Formación y Estándares Profesionales</h3>
+            <p>
+                Solo personal <span class="keyword">capacitado</span> (nutricionistas, entrenadores certificados, médicos) debe realizar la evaluación. El <span class="keyword">entrenamiento estandarizado</span> reduce el error técnico y mejora la reproducibilidad.
+            </p>
+            <ul>
+                <li>Asiste a cursos de <span class="keyword">nivel 1 ISAK</span> para adquirir certificación en antropometría.</li>
+                <li>Realiza <span class="keyword">mediciones de control</span> periódicas con compañeros para evaluar tu consistencia.</li>
+                <li>Documenta cualquier <span class="keyword">variabilidad</span> (ej. retención de líquidos, hora del día) que pueda afectar los resultados.</li>
+            </ul>
+            <p><i>Fuente: Frisancho, A. R. (2019). <em>Anthropometric Standards for the Assessment of Growth and Nutritional Status</em>. University of Michigan Press.</i></p>
+
+            <h3>5.3 Interpreta los Resultados en Contexto</h3>
+            <p>
+                Nunca interpretes un dato aislado. Combina la <span class="keyword">composición corporal</span>, <span class="keyword">bioquímica</span> y <span class="keyword">somatotipo</span> para una evaluación integral. Por ejemplo:
+            </p>
+            <ul>
+                <li>Un <span class="keyword">bajo IMC</span> con <span class="keyword">alto % grasa</span> puede indicar <span class="keyword">obesidad oculta</span> (normal weight obesity).</li>
+                <li>Un <span class="keyword">alto IAV (ABSI)</span> con IMC normal sugiere <span class="keyword">riesgo metabólico elevado</span> por grasa visceral.</li>
+                <li>Un <span class="keyword">bajo IMLG</span> en adultos mayores puede ser señal de <span class="keyword">sarcopenia</span>, incluso con peso normal.</li>
+            </ul>
+            <p><i>Fuente: Wells, J. C. K. (2020). Defining healthy body composition in adults. <em>Obesity Reviews</em>, 21(S2), e13047. DOI: <a href="https://doi.org/10.1111/obr.13047">10.1111/obr.13047</a>.</i></p>
+
+            <h3>5.4 Seguimiento Longitudinal</h3>
+            <p>
+                El verdadero valor de la herramienta está en el <span class="keyword">seguimiento en el tiempo</span>. Evalúa al cliente cada <span class="keyword">4-8 semanas</span> y compara los resultados con evaluaciones previas.
+            </p>
+            <ul>
+                <li>Utiliza los <span class="keyword">gráficos de evolución</span> para visualizar cambios en masa magra, grasa y parámetros bioquímicos.</li>
+                <li>Registra <span class="keyword">factores externos</span>: estrés, sueño, adherencia, enfermedades, medicación.</li>
+                <li>Adapta las intervenciones según las <span class="keyword">tendencias observadas</span>, no solo al último dato.</li>
+            </ul>
+            <p><i>Fuente: Thomas, D. M., et al. (2021). Individualized weight loss targets based on body composition. <em>Obesity</em>, 29(8), 1277-1284. DOI: <a href="https://doi.org/10.1002/oby.23192">10.1002/oby.23192</a>.</i></p>
+
+            <h3>5.5 Comunicación Efectiva con el Cliente</h3>
+            <p>
+                Traduce datos técnicos en <span class="keyword">recomendaciones claras y motivadoras</span>. Usa gráficos y modales visuales (somatotipo, tipología) para facilitar la comprensión.
+            </p>
+            <ul>
+                <li>Evita etiquetas negativas como “obeso” o “bajo peso”; enfócate en <span class="keyword">salud y función</span>.</li>
+                <li>Destaca <span class="keyword">progresos positivos</span>: aumento de masa muscular, mejora del perfil lipídico, reducción de grasa visceral.</li>
+                <li>Personaliza las <span class="keyword">sugerencias</span> según objetivos (pérdida de grasa, ganancia muscular, salud metabólica).</li>
+            </ul>
+            <p><i>Fuente: Teixeira, P. J., et al. (2021). Exercise, eating, and weight management: Motivational and behavioral strategies. <em>Obesity Reviews</em>, 22(S2), e13184. DOI: <a href="https://doi.org/10.1111/obr.13184">10.1111/obr.13184</a>.</i></p>
+
+            <h3>5.6 Integración con la Planificación Nutricional</h3>
+            <p>
+                La valoración antropométrica no debe quedar en un informe aislado. <span class="keyword">Integra los datos</span> en la planificación nutricional:
+            </p>
+            <ul>
+                <li>Usa el <span class="keyword">% grasa</span> y <span class="keyword">masa magra</span> para ajustar objetivos de peso y composición.</li>
+                <li>Considera los <span class="keyword">parámetros bioquímicos</span> para personalizar la ingesta de grasas (colesterol), carbohidratos (glucosa) o proteínas (función renal).</li>
+                <li>Aprovecha el <span class="keyword">somatotipo</span> para adaptar el entrenamiento y las expectativas realistas de progreso.</li>
+            </ul>
+            <p><i>Fuente: Helms, E. R., et al. (2014). Evidence-based recommendations for natural bodybuilding contest preparation. <em>JISSN</em>, 11(20). DOI: <a href="https://doi.org/10.1186/1550-2783-11-20">10.1186/1550-2783-11-20</a>.</i></p>
+
+            <h3>Conclusión</h3>
+            <p>
+                La <strong>Valoración Antropométrica</strong> es una herramienta poderosa cuando se usa con rigor, contexto y enfoque integral. Siguiendo estas claves, podrás transformar datos en <span class="keyword">acciones concretas</span>, mejorar la <span class="keyword">toma de decisiones clínicas</span> y ofrecer a tus clientes una <span class="keyword">evaluación profesional de alto valor</span>.
+            </p>
+        </div>
+    </div>
+</section>
     </main>
 
     <footer>
@@ -1128,6 +1218,7 @@
 </body>
 	
 </html>
+
 
 
 
