@@ -2416,20 +2416,32 @@ body {
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         transform: translateY(-2px);
     }
-	 .boton-icono {
+	/* Estilo específico para el botón con icono */
+    .boton-icono {
         display: inline-flex;
         align-items: center;
         padding: 10px 20px;
-        background-color: #ff6b6b;
-        color: white;
+        background-color: #ff6b6b; /* Color llamativo para destacar el botón */
+        color: white !important; /* !important para sobrescribir el color del menú */
+        font-weight: 500;
         text-decoration: none;
         border-radius: 50px;
         font-size: 16px;
         gap: 8px;
+        transition: all 0.3s ease;
+        margin-left: 10px; /* Espacio del botón respecto a otros elementos */
     }
     
     .boton-icono:hover {
         background-color: #ff5252;
+        color: white !important;
+        transform: translateY(-2px);
+    }
+
+    /* Opcional: para que el botón destaque más */
+    .boton-guia {
+        list-style-type: none;
+        margin-top: 10px; /* Espacio superior */
     }
  </style>
 </head>
@@ -7106,6 +7118,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
