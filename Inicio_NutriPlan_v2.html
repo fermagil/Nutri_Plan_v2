@@ -846,7 +846,18 @@
 </section>
 
         <section>
-            <h2>4. Posibles Mejoras</h2>
+    <h2>4. Posibles Mejoras</h2>
+
+    <!-- Acordion Tabs -->
+    <div class="accordion-tabs">
+        <!-- Pestañas -->
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="openTab(event, 'tab-mejoras-planificacion')">Planificación Avanzada</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-mejoras-antropometria')">Valoración Antropométrica</button>
+        </div>
+
+        <!-- Contenido de la pestaña: Planificación Avanzada -->
+        <div id="tab-mejoras-planificacion" class="tab-content" style="display: block;">
             <p>Para mejorar NutriPlan v2, se podrían considerar las siguientes implementaciones:</p>
             <ul>
                 <li><strong>Integración de Bases de Datos de Alimentos</strong>: Incluir una <span class="keyword">base de datos de alimentos</span> para generar <span class="keyword">menús específicos</span> basados en los <span class="keyword">macronutrientes</span> calculados, considerando <span class="keyword">preferencias dietéticas</span> (vegetariano, vegano, sin gluten).</li>
@@ -860,7 +871,26 @@
             <p>
                 Estas mejoras podrían hacer que NutriPlan v2 sea más <span class="keyword">interactiva</span>, <span class="keyword">personalizada</span> y <span class="keyword">accesible</span>, manteniendo su enfoque <span class="keyword">científico</span> y <span class="keyword">educativo</span>.
             </p>
-        </section>
+        </div>
+
+        <!-- Contenido de la pestaña: Valoración Antropométrica -->
+        <div id="tab-mejoras-antropometria" class="tab-content" style="display: none;">
+            <p>A continuación, se proponen mejoras específicas para la herramienta de <strong>Valoración Antropométrica</strong>, enfocadas en mejorar la precisión, usabilidad y profundidad del análisis clínico:</p>
+            <ul>
+                <li><strong>Automatización de Cálculos en Tiempo Real:</strong> Implementar actualizaciones automáticas de los resultados a medida que se ingresan datos, reduciendo la necesidad de pulsar “Calcular Resultados” y mejorando la fluidez del flujo de trabajo.</li>
+                <li><strong>Integración con Bases de Datos:</strong> Añadir una <span class="keyword">base de datos backend</span> para almacenar y gestionar datos de clientes de forma segura, permitiendo un <span class="keyword">seguimiento longitudinal</span> más robusto y el acceso a evaluaciones previas.</li>
+                <li><strong>Soporte Multilingüe:</strong> Incluir traducciones (inglés, portugués, francés, etc.) para ampliar el acceso a usuarios de diferentes regiones y facilitar su uso en entornos internacionales.</li>
+                <li><strong>Validaciones Avanzadas:</strong> Incorporar <span class="keyword">alertas inteligentes</span> para valores atípicos en medidas antropométricas o parámetros bioquímicos, basadas en rangos normativos por edad, género y nivel de actividad física.</li>
+                <li><strong>Exportación Mejorada:</strong> Mejorar las opciones de exportación para incluir <span class="keyword">gráficos</span>, <span class="keyword">comentarios personalizados</span> y múltiples formatos (<span class="keyword">PDF</span>, <span class="keyword">Word</span>, <span class="keyword">Excel</span>), ideal para informes clínicos y seguimiento profesional.</li>
+                <li><strong>Compatibilidad Móvil:</strong> Optimizar la interfaz para dispositivos móviles, asegurando una experiencia fluida en pantallas pequeñas, con diseño responsive y entrada táctil intuitiva.</li>
+                <li><strong>Análisis Predictivo:</strong> Integrar <span class="keyword">algoritmos de aprendizaje automático</span> para predecir tendencias en composición corporal basadas en datos históricos del cliente, ayudando a anticipar cambios y ajustar intervenciones.</li>
+            </ul>
+            <p>
+                Estas mejoras fortalecerían el papel de la herramienta como un sistema <span class="keyword">clínico integral</span>, útil tanto para <span class="keyword">nutricionistas</span> como para <span class="keyword">entrenadores</span> y <span class="keyword">médicos deportivos</span>, elevando su valor en entornos profesionales de salud y rendimiento.
+            </p>
+        </div>
+    </div>
+</section>
 
         <section>
             <h2>5. Claves para el Éxito</h2>
@@ -1098,6 +1128,7 @@
 </body>
 	
 </html>
+
 
 
 
