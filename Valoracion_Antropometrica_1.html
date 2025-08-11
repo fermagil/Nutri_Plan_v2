@@ -2399,48 +2399,38 @@ body {
     }
 	   
 
-   /* Contenedor principal */
-    .contenedor-boton-guia {
-        list-style: none;
-        margin: 15px 0;
-        padding: 0;
-    }
-
-    /* Estilo INICIAL del botón */
-    .boton-label-guia {
+   /* ESTILO BASE - Prioridad máxima */
+    label.boton-label-guia {
         display: inline-flex;
         align-items: center;
         gap: 10px;
         padding: 12px 25px;
-        background-color: #28a745; /* Verde inicial */
+        background-color: #28a745;
         color: white !important;
         font-weight: 600;
         border-radius: 6px;
         cursor: pointer;
-        transition: all 0.3s ease; /* Transición suave */
+        transition: all 0.3s ease;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        text-decoration: none; /* Quitar subrayado inicial */
-        position: relative; /* Para el efecto de subrayado */
+        text-decoration: none;
+        position: relative;
+        border: none;
+        font-family: inherit;
+        font-size: 16px;
     }
-
-    /* Efecto HOVER (mouse over) */
-    .boton-label-guia:hover {
-        background-color: #ff6b6b; /* Cambia a rojo coral (puedes ajustar el color) */
-        text-decoration: underline; /* Subrayado */
-        text-decoration-thickness: 2px; /* Grosor del subrayado */
-        text-underline-offset: 4px; /* Espacio entre texto y subrayado */
-        transform: translateY(-2px); /* Efecto de levantar */
+    
+    /* HOVER - Selector específico */
+    label.boton-label-guia:hover {
+        background-color: #ff6b6b !important; /* Forzado con !important */
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 4px;
+        transform: translateY(-2px);
     }
-
-    /* Estilo del icono */
-    .boton-label-guia i {
+    
+    /* Icono */
+    label.boton-label-guia i {
         font-size: 1em;
-        transition: transform 0.3s ease; /* Efecto opcional para el icono */
-    }
-
-    /* Efecto hover en el icono (opcional) */
-    .boton-label-guia:hover i {
-        transform: scale(1.1); /* Icono crece ligeramente */
     }
  </style>
 </head>
@@ -4712,9 +4702,10 @@ body {
 	   <!-- Notificación bonita -->
   
 	
-    <label class="boton-label-guia" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html'">
-        <i class="fas fa-book"></i> Guía Usuario
-    </label>
+   <label class="boton-label-guia" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html'">
+    <i class="fas fa-book"></i> Guía Usuario
+</label>
+
 
 	<div id="save-notification" class="notification hidden rounded shadow-sm p-2 bg-success text-white">
     ✅ Datos guardados correctamente
@@ -7115,6 +7106,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
