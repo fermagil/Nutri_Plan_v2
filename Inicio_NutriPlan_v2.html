@@ -190,6 +190,47 @@
             h2 { font-size: 1.5em; }
             h3 { font-size: 1.3em; }
         }
+		.accordion-tabs {
+    width: 100%;
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 15px;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1em;
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+    color: #388e3c;
+}
+
+.tab-button.active {
+    color: #388e3c;
+    border-bottom: 3px solid #388e3c;
+    font-weight: 600;
+}
+
+.tab-content {
+    padding: 0;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
     </style>
 </head>
 <body>
@@ -240,44 +281,56 @@
 		</section>
 
         <section>
-            <h2>2. Descripción de las Secciones</h2>
+    <h2>2. Descripción de las Secciones</h2>
+
+    <!-- Acordion Tabs -->
+    <div class="accordion-tabs">
+        <!-- Pestañas -->
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">Descripción de las Secciones</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">Nueva Sección (Próximamente)</button>
+        </div>
+
+        <!-- Contenido de la primera pestaña -->
+        <div id="tab1" class="tab-content" style="display: block;">
             <p>NutriPlan v2 está organizado en siete pasos que guían al usuario a través del proceso de <span class="keyword">planificación dietética</span> de manera progresiva y estructurada. A continuación, se detalla cada paso:</p>
-            
             <h3>Paso 1: Calcula tus Necesidades y Balance Energético</h3>
             <p>
                 Este paso permite estimar tu <span class="keyword">Tasa Metabólica Basal (TMB)</span> y <span class="keyword">Gasto Energético Total (GET)</span> introduciendo datos personales como <span class="keyword">edad</span> (1-120 años), <span class="keyword">género biológico</span> (masculino/femenino), <span class="keyword">peso actual</span> (kg), <span class="keyword">altura</span> (m) y <span class="keyword">nivel de actividad física</span> semanal (sedentario a muy activo). Opcionalmente, puedes ingresar tu <span class="keyword">ingesta calórica actual</span> (kcal/día) para calcular el <span class="keyword">balance energético</span> (<span class="keyword">déficit</span>, <span class="keyword">superávit</span> o <span class="keyword">mantenimiento</span>). La herramienta usa la <span class="keyword">ecuación de Harris-Benedict revisada</span> para la TMB y aplica <span class="keyword">factores de actividad</span> (1.2-2.3) con un buffer del 10% para el GET. Los resultados muestran la TMB, el GET y, si se proporciona la ingesta, una interpretación del balance energético con recomendaciones iniciales.
             </p>
-
             <h3>Paso 2: Establece tu Objetivo de Peso y Composición Corporal</h3>
             <p>
                 Aquí defines tu <span class="keyword">objetivo de composición corporal</span> ingresando el <span class="keyword">porcentaje de grasa corporal actual</span> (3-60%) y el <span class="keyword">objetivo</span> (3-60%), junto con la <span class="keyword">ganancia de masa magra</span> deseada (kg, opcional) y si eres <span class="keyword">atleta</span>. La herramienta calcula el <span class="keyword">peso objetivo</span> dividiendo la <span class="keyword">masa magra objetivo</span> por (1 - % grasa objetivo/100), estimando la cantidad de <span class="keyword">grasa</span> a perder o ganar y el <span class="keyword">cambio neto de peso</span>. También determina el tipo de objetivo (<span class="keyword">pérdida</span>, <span class="keyword">ganancia</span> o <span class="keyword">mantenimiento</span>) y estima el <span class="keyword">tiempo necesario</span> usando tasas seguras: 0.2-1.2 kg/semana para pérdida (0.4% del peso corporal) y 0.1-0.6 kg/semana para ganancia (0.3% del peso corporal). Se incluye una evaluación de la <span class="keyword">masa magra</span> comparada con rangos generales y un <span class="keyword">gráfico de evolución</span> del peso proyectado.
             </p>
-
             <h3>Paso 3: Calcula tus Macronutrientes</h3>
             <p>
                 En este paso, introduces tus <span class="keyword">calorías objetivo</span> diarias (mínimo 500 kcal) y defines la distribución de <span class="keyword">macronutrientes</span>: <span class="keyword">proteínas</span> (10-50%), <span class="keyword">carbohidratos</span> (10-80%) y <span class="keyword">grasas</span> (10-50%). La herramienta calcula los <span class="keyword">gramos diarios</span> de cada macronutriente (4 kcal/g para proteínas y carbohidratos, 9 kcal/g para grasas) y asegura que los <span class="keyword">porcentajes</span> sumen 100% mediante ajustes automáticos. Los resultados incluyen los gramos por macronutriente y un <span class="keyword">gráfico circular</span> que visualiza la distribución. Para <span class="keyword">pérdida de peso</span>, se sugiere un <span class="keyword">déficit</span> del 10-20% del GET; para <span class="keyword">ganancia</span>, un <span class="keyword">superávit</span> del 5-15%.
             </p>
-
             <h3>Paso 4: Genera tu Plan de Comidas Orientativo</h3>
             <p>
                 Este paso distribuye las <span class="keyword">calorías diarias</span> en cinco <span class="keyword">comidas</span> (<span class="keyword">desayuno</span>, <span class="keyword">media mañana</span>, <span class="keyword">almuerzo</span>, <span class="keyword">merienda</span>, <span class="keyword">cena</span>) según <span class="keyword">porcentajes personalizables</span> (0-100%, sumando 100%). La herramienta calcula las calorías y los <span class="keyword">gramos de macronutrientes</span> por comida basándose en los cálculos del Paso 3. Por ejemplo, si el desayuno es el 25% de 2000 kcal, se asignan 500 kcal, con los correspondientes gramos de <span class="keyword">proteínas</span>, <span class="keyword">carbohidratos</span> y <span class="keyword">grasas</span>. Los resultados se presentan en un formato detallado, facilitando la <span class="keyword">planificación diaria</span> de comidas.
             </p>
-
             <h3>Paso 5: Tabla de Ciclos y Breaks (Automática)</h3>
             <p>
                 Genera una <span class="keyword">tabla automática</span> que organiza <span class="keyword">ciclos</span> de <span class="keyword">déficit</span> (pérdida) o <span class="keyword">superávit</span> (ganancia) calórico, alternando con períodos de <span class="keyword">mantenimiento</span> ("<span class="keyword">breaks</span>"). Cada ciclo incluye 4 semanas de <span class="keyword">fase activa</span> (90% del GET para pérdida, 110% para ganancia) y 1 semana de break (95-100% del GET). La tabla detalla el <span class="keyword">peso inicial y final</span> por ciclo, <span class="keyword">calorías diarias</span> ajustadas por <span class="keyword">nivel de actividad</span> (sedentario a muy activo), y gramos de <span class="keyword">macronutrientes</span>. Los cálculos se actualizan según el <span class="keyword">peso proyectado</span>, asegurando ajustes progresivos. Es ideal para planificar estrategias de <span class="keyword">periodización nutricional</span>.
             </p>
-
             <h3>Paso 6: Estimación de Tiempo (Manual y Opcional)</h3>
             <p>
                 Este paso permite estimar manualmente el <span class="keyword">tiempo</span> para alcanzar un <span class="keyword">cambio de peso</span> específico (positiva o negativa) ingresando el cambio deseado (kg) y una <span class="keyword">diferencia calórica semanal</span> (kcal, ej. -3500 para 0.5 kg/sem de pérdida). La herramienta usa la <span class="keyword">equivalencia de 7700 kcal</span> por kg de grasa para calcular las <span class="keyword">semanas necesarias</span>, asumiendo un ajuste calórico constante. Los resultados incluyen el tiempo estimado (semanas y meses), la <span class="keyword">tasa semanal de cambio</span>, y un <span class="keyword">gráfico de proyección</span> lineal del peso. Este paso es útil para planificaciones personalizadas.
             </p>
-
             <h3>Paso 7: Tabla de Ciclos Hiperproteicos (Manual)</h3>
             <p>
-                Basado en el Paso 6, este paso genera una <span class="keyword">tabla manual</span> de <span class="keyword">ciclos hiperproteicos</span> (4 semanas, 30-40% de calorías de <span class="keyword">proteínas</span>, máx. 2.5 g/kg) and <span class="keyword">breaks</span> (1 semana, 15-25% de proteínas). Cada ciclo muestra el número de <span class="keyword">semanas</span>, <span class="keyword">peso inicial y final</span>, <span class="keyword">calorías diarias</span> por nivel de actividad, <span class="keyword">ingesta proteica</span> (g y g/kg), y notas sobre el <span class="keyword">ajuste calórico</span> (<span class="keyword">déficit</span> o <span class="keyword">superávit</span>). La fase hiperproteica maximiza la <span class="keyword">preservación de masa magra</span>, mientras que los breaks reducen el déficit a la mitad para minimizar <span class="keyword">adaptaciones metabólicas</span>. La tabla es ideal para dietas de <span class="keyword">pérdida de peso</span> con enfoque proteico.
+                Basado en el Paso 6, este paso genera una <span class="keyword">tabla manual</span> de <span class="keyword">ciclos hiperproteicos</span> (4 semanas, 30-40% de calorías de <span class="keyword">proteínas</span>, máx. 2.5 g/kg) y <span class="keyword">breaks</span> (1 semana, 15-25% de proteínas). Cada ciclo muestra el número de <span class="keyword">semanas</span>, <span class="keyword">peso inicial y final</span>, <span class="keyword">calorías diarias</span> por nivel de actividad, <span class="keyword">ingesta proteica</span> (g y g/kg), y notas sobre el <span class="keyword">ajuste calórico</span> (<span class="keyword">déficit</span> o <span class="keyword">superávit</span>). La fase hiperproteica maximiza la <span class="keyword">preservación de masa magra</span>, mientras que los breaks reducen el déficit a la mitad para minimizar <span class="keyword">adaptaciones metabólicas</span>. La tabla es ideal para dietas de <span class="keyword">pérdida de peso</span> con enfoque proteico.
             </p>
-        </section>
+        </div>
+
+        <!-- Contenido de la segunda pestaña (vacío, listo para usar) -->
+        <div id="tab2" class="tab-content" style="display: none;">
+            <p>Este espacio está reservado para nuevo contenido. Próximamente se añadirá información adicional.</p>
+            <!-- Aquí puedes insertar nuevo contenido en el futuro -->
+        </div>
+    </div>
+</section>
 
         <section>
             <h2>3. Justificación Científica</h2>
@@ -609,8 +662,26 @@
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', initializeUI);
     }
+		function openTab(event, tabId) {
+    // Ocultar todos los contenidos
+    var tabContents = document.getElementsByClassName("tab-content");
+    for (var i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = "none";
+    }
+
+    // Remover clase 'active' de todos los botones
+    var tabButtons = document.getElementsByClassName("tab-button");
+    for (i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+    }
+
+    // Mostrar el tab seleccionado y activar el botón
+    document.getElementById(tabId).style.display = "block";
+    event.currentTarget.classList.add("active");
+}
 </script>
 </body>
 	
 </html>
+
 
