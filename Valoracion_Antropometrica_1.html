@@ -2399,45 +2399,48 @@ body {
     }
 	   
 
-     /* ESTILOS CORREGIDOS - Versión garantizada que funciona */
+   /* Contenedor principal */
     .contenedor-boton-guia {
         list-style: none;
         margin: 15px 0;
+        padding: 0;
     }
-    
+
+    /* Estilo INICIAL del botón */
     .boton-label-guia {
         display: inline-flex;
         align-items: center;
         gap: 10px;
         padding: 12px 25px;
-        background-color: #28a745;
+        background-color: #28a745; /* Verde inicial */
         color: white !important;
         font-weight: 600;
         border-radius: 6px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s ease; /* Transición suave */
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        border: none;
-        font-size: 16px;
-        text-decoration: none !important;
-    }
-    
-    /* ESTO ES CLAVE: selector más específico */
-    li.contenedor-boton-guia label.boton-label-guia:hover {
-        background-color: #218838;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    /* Estilo para el icono */
-    .boton-label-guia i {
-        font-size: 1em;
+        text-decoration: none; /* Quitar subrayado inicial */
+        position: relative; /* Para el efecto de subrayado */
     }
 
-    /* Versión de ancho completo (opcional) */
-    .boton-label-guia.ancho-completo {
-        display: flex;
-        justify-content: center;
-        width: 100%;
+    /* Efecto HOVER (mouse over) */
+    .boton-label-guia:hover {
+        background-color: #ff6b6b; /* Cambia a rojo coral (puedes ajustar el color) */
+        text-decoration: underline; /* Subrayado */
+        text-decoration-thickness: 2px; /* Grosor del subrayado */
+        text-underline-offset: 4px; /* Espacio entre texto y subrayado */
+        transform: translateY(-2px); /* Efecto de levantar */
+    }
+
+    /* Estilo del icono */
+    .boton-label-guia i {
+        font-size: 1em;
+        transition: transform 0.3s ease; /* Efecto opcional para el icono */
+    }
+
+    /* Efecto hover en el icono (opcional) */
+    .boton-label-guia:hover i {
+        transform: scale(1.1); /* Icono crece ligeramente */
     }
  </style>
 </head>
@@ -4709,10 +4712,10 @@ body {
 	   <!-- Notificación bonita -->
   
 	<li class="contenedor-boton-guia">
-	    <label class="boton-label-guia" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html'">
-	        <i class="fas fa-book"></i> Guía Usuario
-	    </label>
-	</li>
+    <label class="boton-label-guia" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html'">
+        <i class="fas fa-book"></i> Guía Usuario
+    </label>
+</li>
 	<div id="save-notification" class="notification hidden rounded shadow-sm p-2 bg-success text-white">
     ✅ Datos guardados correctamente
   </div>
@@ -7112,6 +7115,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
