@@ -2400,16 +2400,20 @@ body {
 	   
 
   /* Estilo INICIAL (sin hover) */
+   /* Estilo INICIAL - Texto centrado y sin hover */
     .boton-label-guia {
         display: inline-flex;
         align-items: center;
+        justify-content: center; /* Centrado horizontal */
         gap: 10px;
         padding: 10px 20px;
-        color: #333; /* Color de texto normal */
+        color: #333;
         font-weight: 500;
-        background-color: transparent; /* Sin fondo */
-        border-radius: 0; /* Sin bordes redondeados */
-        transition: all 0.3s ease; /* Transición suave */
+        background-color: transparent;
+        border-radius: 0;
+        transition: all 0.3s ease;
+        width: 200px; /* Ancho fijo (opcional) */
+        text-align: center; /* Doble garantía de centrado */
     }
  </style>
 </head>
@@ -7059,25 +7063,28 @@ function handleSectionTitleClick(event) {
   // No se define acción específica; añadir aquí si se necesita (e.g., toggle)
 }
 
-	 const boton = document.getElementById('botonGuiaUsuario');
+	  
+	// Efecto hoover Boton Guia Usuario
+		const boton = document.getElementById('botonGuiaUsuario');
     
-    // Función para manejar el hover
+    // Hover ENTER
     boton.addEventListener('mouseenter', () => {
-        boton.style.backgroundColor = '#2e7d32'; // Verde solicitado
+        boton.style.backgroundColor = '#2e7d32';
         boton.style.color = 'white';
-        boton.style.borderRadius = '25px'; // Borde muy redondeado
-        boton.style.cursor = 'pointer'; // Cursor de mano
+        boton.style.borderRadius = '25px';
+        boton.style.cursor = 'pointer';
+        boton.style.justifyContent = 'center'; /* Centrado durante hover */
     });
     
-    // Función para resetear al salir del hover
+    // Hover LEAVE
     boton.addEventListener('mouseleave', () => {
         boton.style.backgroundColor = 'transparent';
         boton.style.color = '#333';
         boton.style.borderRadius = '0';
-        boton.style.cursor = 'default'; // Cursor normal
+        boton.style.cursor = 'default';
     });
     
-    // Función para el click (redirección)
+    // Click
     boton.addEventListener('click', () => {
         window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/Explicacion_Cientifica.html';
     });
@@ -7108,6 +7115,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
