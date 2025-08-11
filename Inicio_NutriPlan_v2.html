@@ -293,7 +293,7 @@
         </div>
 
         <!-- Contenido de la primera pestaña -->
-        <div id="tab1" class="tab-content" style="display: none;">
+        <div id="tab1" class="tab-content" style="display: block;">
             <p>La seccion de Planificacion Dietética Avanzada está organizada en siete pasos que guían al usuario a través del proceso de <span class="keyword">planificación dietética</span> de manera progresiva y estructurada. A continuación, se detalla cada paso:</p>
             <h3>Paso 1: Calcula tus Necesidades y Balance Energético</h3>
             <p>
@@ -326,7 +326,7 @@
         </div>
 
         <!-- Contenido de la segunda pestaña () -->
-        <div id="tab2" class="tab-content" style="display: block;">
+        <div id="tab2" class="tab-content" style="display: none;">
             <p>
                 La herramienta de valoración antropométrica está organizada en <strong>cuatro secciones principales</strong>, accesibles mediante pestañas interactivas. Cada sección está diseñada para facilitar una evaluación integral de la composición corporal, métricas metabólicas y parámetros bioquímicos, con enfoque en el seguimiento profesional de deportistas o personas interesadas en su salud física.
             </p>
@@ -1010,10 +1010,18 @@
 	document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('tab1').style.display = 'none';
   });
+		document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar solo tab1 al cargar
+    document.getElementById('tab1').style.display = 'block';
+    document.getElementById('tab2').style.display = 'none';
+    
+    // Activar solo el primer botón
+    document.querySelector('.tab-button').classList.add('active');
 </script>
 </body>
 	
 </html>
+
 
 
 
