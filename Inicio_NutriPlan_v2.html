@@ -287,13 +287,14 @@
     <div class="accordion-tabs">
         <!-- Pestañas -->
         <div class="tab-buttons">
-            <button class="tab-button active" onclick="openTab(event, 'tab1')">Descripción de las Secciones</button>
-            <button class="tab-button" onclick="openTab(event, 'tab2')">Nueva Sección (Próximamente)</button>
+            
+            <button class="tab-button" onclick="openTab(event, 'tab1')">Valoracion Antropometrica</button>
+			<button class="tab-button active" onclick="openTab(event, 'tab2')">Planificación Avanzada</button>
         </div>
 
         <!-- Contenido de la primera pestaña -->
-        <div id="tab1" class="tab-content" style="display: block;">
-            <p>NutriPlan v2 está organizado en siete pasos que guían al usuario a través del proceso de <span class="keyword">planificación dietética</span> de manera progresiva y estructurada. A continuación, se detalla cada paso:</p>
+        <div id="tab2" class="tab-content" style="display: block;">
+            <p>La seccion de Valoracion Antropometrica está organizada en siete pasos que guían al usuario a través del proceso de <span class="keyword">planificación dietética</span> de manera progresiva y estructurada. A continuación, se detalla cada paso:</p>
             <h3>Paso 1: Calcula tus Necesidades y Balance Energético</h3>
             <p>
                 Este paso permite estimar tu <span class="keyword">Tasa Metabólica Basal (TMB)</span> y <span class="keyword">Gasto Energético Total (GET)</span> introduciendo datos personales como <span class="keyword">edad</span> (1-120 años), <span class="keyword">género biológico</span> (masculino/femenino), <span class="keyword">peso actual</span> (kg), <span class="keyword">altura</span> (m) y <span class="keyword">nivel de actividad física</span> semanal (sedentario a muy activo). Opcionalmente, puedes ingresar tu <span class="keyword">ingesta calórica actual</span> (kcal/día) para calcular el <span class="keyword">balance energético</span> (<span class="keyword">déficit</span>, <span class="keyword">superávit</span> o <span class="keyword">mantenimiento</span>). La herramienta usa la <span class="keyword">ecuación de Harris-Benedict revisada</span> para la TMB y aplica <span class="keyword">factores de actividad</span> (1.2-2.3) con un buffer del 10% para el GET. Los resultados muestran la TMB, el GET y, si se proporciona la ingesta, una interpretación del balance energético con recomendaciones iniciales.
@@ -325,7 +326,7 @@
         </div>
 
         <!-- Contenido de la segunda pestaña (vacío, listo para usar) -->
-        <div id="tab2" class="tab-content" style="display: none;">
+        <div id="tab1" class="tab-content" style="display: none;">
             <p>Este espacio está reservado para nuevo contenido. Próximamente se añadirá información adicional.</p>
             <!-- Aquí puedes insertar nuevo contenido en el futuro -->
         </div>
@@ -683,5 +684,6 @@
 </body>
 	
 </html>
+
 
 
