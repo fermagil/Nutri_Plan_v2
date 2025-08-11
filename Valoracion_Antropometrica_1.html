@@ -7087,17 +7087,19 @@ function handleSectionTitleClick(event) {
     });
     
     // Control hover con JavaScript
-    const boton = document.getElementById('miBotonGuia');
-    boton.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = '#ff6b6b';
-        this.style.textDecoration = 'underline';
-        this.style.transform = 'translateY(-2px)';
-    });
-    boton.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = '#28a745';
-        this.style.textDecoration = 'none';
-        this.style.transform = 'none';
-    });
+   const boton = document.querySelector('.boton-label-guia');
+boton.addEventListener('mouseenter', function() {
+    this.style.backgroundColor = '#2e7d32';
+    this.style.borderRadius = '25px';
+    this.style.color = 'white';
+    this.style.cursor = 'pointer';
+});
+boton.addEventListener('mouseleave', function() {
+    this.style.backgroundColor = 'transparent';
+    this.style.borderRadius = '0';
+    this.style.color = '#333';
+    this.style.cursor = 'default';
+});
   </script>
 </body>
 </html>
@@ -7125,6 +7127,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
