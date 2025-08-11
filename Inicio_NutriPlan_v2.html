@@ -350,30 +350,196 @@
             </p>
 
             <h3>2.3. Resultados</h3>
-            <p>
-                Esta sección presenta todos los cálculos derivados de los datos ingresados, organizados en categorías:
-            </p>
-            <ul>
-                <li><strong>Composición corporal:</strong> IMC, ICC, % grasa, peso libre de grasa.</li>
-                <li><strong>Métricas metabólicas:</strong> TMB, edad metabólica, ACT (actividad celular total).</li>
-                <li><strong>Masa libre de grasa:</strong> masa muscular, masa ósea, masa residual.</li>
-                <li><strong>Estructurales:</strong> somatotipo (endomorfo, mesomorfo, ectomorfo), tipología corporal.</li>
-                <li><strong>Bioquímicos:</strong> albúmina, colesterol, glucosa, triglicéridos, etc.</li>
-            </ul>
-            <p>
-                Los resultados se muestran en una <strong>tabla interactiva</strong> con secciones desplegables (acordeones) para facilitar la navegación. Botones como <span class="keyword">“Calcular Resultados”</span> y <span class="keyword">“Guardar Datos”</span> permiten procesar y almacenar la información. Además, se incluyen cálculos avanzados como:
-            </p>
-            <ul>
-                <li><span class="keyword">IMLG</span> (Índice de Masa Libre de Grasa)</li>
-                <li><span class="keyword">IMG</span> (Índice de Masa Grasa)</li>
-                <li><span class="keyword">AMB</span> (Área Muscular del Brazo)</li>
-                <li><span class="keyword">IAV</span> (Índice de Adiposidad Visceral)</li>
-                <li><span class="keyword">GAT</span> (Grasa Abdominal Total)</li>
-                <li><span class="keyword">Espesor de grasa abdominal</span> y <span class="keyword">masa de grasa abdominal</span></li>
-            </ul>
-            <p>
-                Se incluyen <strong>visualizaciones gráficas</strong> para métricas clave como IMC, ICC, % grasa, peso ideal y somatotipo, facilitando la interpretación clínica.
-            </p>
+<p>
+    Esta sección presenta todos los cálculos derivados de los datos ingresados, organizados en categorías:
+</p>
+<ul>
+    <li><strong>Composición corporal:</strong> IMC, ICC, % grasa, peso libre de grasa.</li>
+    <li><strong>Métricas metabólicas:</strong> TMB, edad metabólica, ACT (actividad celular total).</li>
+    <li><strong>Masa libre de grasa:</strong> masa muscular, masa ósea, masa residual.</li>
+    <li><strong>Estructurales:</strong> somatotipo (endomorfo, mesomorfo, ectomorfo), tipología corporal.</li>
+    <li><strong>Bioquímicos:</strong> albúmina, colesterol, glucosa, triglicéridos, etc.</li>
+</ul>
+<p>
+    Los resultados se muestran en una <strong>tabla interactiva</strong> con secciones desplegables (acordeones) para facilitar la navegación. Botones como <span class="keyword">“Calcular Resultados”</span> y <span class="keyword">“Guardar Datos”</span> permiten procesar y almacenar la información. Además, se incluyen cálculos avanzados como:
+</p>
+<ul>
+    <li><span class="keyword">IMLG</span> (Índice de Masa Libre de Grasa)</li>
+    <li><span class="keyword">IMG</span> (Índice de Masa Grasa)</li>
+    <li><span class="keyword">AMB</span> (Área Muscular del Brazo)</li>
+    <li><span class="keyword">IAV</span> (Índice de Adiposidad Visceral)</li>
+    <li><span class="keyword">GAT</span> (Grasa Abdominal Total)</li>
+    <li><span class="keyword">Espesor de grasa abdominal</span> y <span class="keyword">masa de grasa abdominal</span></li>
+</ul>
+<p>
+    Se incluyen <strong>visualizaciones gráficas</strong> para métricas clave como IMC, ICC, % grasa, peso ideal y somatotipo, facilitando la interpretación clínica.
+</p>
+
+<h4>Entrada de Parámetros Bioquímicos</h4>
+<p>
+    La herramienta permite registrar un conjunto completo de <strong>parámetros bioquímicos</strong> para una evaluación integral del estado nutricional, metabólico e inflamatorio del cliente. A continuación se muestra la estructura del formulario modal que facilita la entrada de estos datos:
+</p>
+
+<!-- Contenedor del formulario de parámetros bioquímicos -->
+<div id="bioquimicos-container" class="popup-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center;">
+    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 70%; overflow-y: auto; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #388E3C; margin-bottom: 20px; text-align: center; font-size: 1.5em;">Parámetros Bioquímicos</h2>
+        <form id="bioquimicos-form">
+            <!-- Nutrición -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Nutrición</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="albumina">Albúmina (g/dL):</label>
+                        <input type="number" id="albumina" name="albumina" step="0.1" min="0" placeholder="Ej: 4.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="prealbumina">Prealbúmina (mg/dL):</label>
+                        <input type="number" id="prealbumina" name="prealbumina" step="0.1" min="0" placeholder="Ej: 20.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="proteina-total">Proteína Total (g/dL):</label>
+                        <input type="number" id="proteina-total" name="proteina-total" step="0.1" min="0" placeholder="Ej: 6.5" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Lípidos -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Lípidos</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="colesterol-total">Colesterol Total (mg/dL):</label>
+                        <input type="number" id="colesterol-total" name="colesterol-total" step="0.1" min="0" placeholder="Ej: 200.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="hdl">HDL (mg/dL):</label>
+                        <input type="number" id="hdl" name="hdl" step="0.1" min="0" placeholder="Ej: 50.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="trigliceridos">Triglicéridos (mg/dL):</label>
+                        <input type="number" id="trigliceridos" name="trigliceridos" step="0.1" min="0" placeholder="Ej: 150.0" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Glucosa -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Glucosa</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="glucosa-ayunas">Glucosa en ayunas (mg/dL):</label>
+                        <input type="number" id="glucosa-ayunas" name="glucosa-ayunas" step="0.1" min="0" placeholder="Ej: 90.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="hba1c">HbA1c (%):</label>
+                        <input type="number" id="hba1c" name="hba1c" step="0.1" min="0" placeholder="Ej: 5.7" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="insulina">Insulina (µU/mL):</label>
+                        <input type="number" id="insulina" name="insulina" step="0.1" min="0" placeholder="Ej: 10.0" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Inflamación -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Inflamación</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="pcr-ultrasensible">PCR ultrasensible (mg/L):</label>
+                        <input type="number" id="pcr-ultrasensible" name="pcr-ultrasensible" step="0.1" min="0" placeholder="Ej: 1.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="leptina">Leptina (ng/mL):</label>
+                        <input type="number" id="leptina" name="leptina" step="0.1" min="0" placeholder="Ej: 5.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="adiponectina">Adiponectina (µg/mL):</label>
+                        <input type="number" id="adiponectina" name="adiponectina" step="0.1" min="0" placeholder="Ej: 10.0" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Hígado -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Hígado</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="alt">ALT (U/L):</label>
+                        <input type="number" id="alt" name="alt" step="0.1" min="0" placeholder="Ej: 30.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="ast">AST (U/L):</label>
+                        <input type="number" id="ast" name="ast" step="0.1" min="0" placeholder="Ej: 25.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="ggt">GGT (U/L):</label>
+                        <input type="number" id="ggt" name="ggt" step="0.1" min="0" placeholder="Ej: 25.0" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Hormonas -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Hormonas</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="tsh">TSH (µIU/mL):</label>
+                        <input type="number" id="tsh" name="tsh" step="0.1" min="0" placeholder="Ej: 2.5" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="testosterona">Testosterona (H) (ng/dL):</label>
+                        <input type="number" id="testosterona" name="testosterona" step="0.1" min="0" placeholder="Ej: 300.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="cortisol">Cortisol (µg/dL):</label>
+                        <input type="number" id="cortisol" name="cortisol" step="0.1" min="0" placeholder="Ej: 15.0" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Óseo -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Óseo</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="vitamina-d">Vitamina D (25-OH-D3) (ng/mL):</label>
+                        <input type="number" id="vitamina-d" name="vitamina-d" step="0.1" min="0" placeholder="Ej: 30.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="fosfatasa-alcalina">Fosfatasa Alcalina (U/L):</label>
+                        <input type="number" id="fosfatasa-alcalina" name="fosfatasa-alcalina" step="0.1" min="0" placeholder="Ej: 100.0" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Riñón -->
+            <fieldset style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <legend style="font-weight: bold; color: #388E3C;">Riñón</legend>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label for="creatinina">Creatinina (mg/dL):</label>
+                        <input type="number" id="creatinina" name="creatinina" step="0.1" min="0" placeholder="Ej: 1.0" style="width: 100%; padding: 5px;">
+                    </div>
+                    <div>
+                        <label for="bun">BUN (mg/dL):</label>
+                        <input type="number" id="bun" name="bun" step="0.1" min="0" placeholder="Ej: 15.0" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<p>
+    Este formulario modal permite ingresar más de 20 parámetros bioquímicos agrupados por categorías clínicas (nutrición, lípidos, glucosa, inflamación, hígado, hormonas, óseo y riñón), lo que facilita una <strong>evaluación funcional integral</strong>. Los datos se utilizan para:
+</p>
+<ul>
+    <li>Evaluar el <span class="keyword">estado nutricional proteico</span> (albúmina, prealbúmina).</li>
+    <li>Analizar el <span class="keyword">perfil lipídico</span> y el riesgo cardiovascular.</li>
+    <li>Detectar <span class="keyword">alteraciones glucídicas</span> (prediabetes, resistencia a la insulina).</li>
+    <li>Valorar la <span class="keyword">inflamación sistémica</span> (PCR, leptina).</li>
+    <li>Monitorear la <span class="keyword">función hepática y renal</span>.</li>
+    <li>Detectar <span class="keyword">alteraciones hormonales</span> (tiroides, testosterona, cortisol).</li>
+    <li>Evaluar el <span class="keyword">estado de vitamina D</span> y salud ósea.</li>
+</ul>
+<p>
+    Tras el ingreso, estos valores se integran en los <strong>cálculos avanzados</strong> y son visualizados en tablas y gráficos, permitiendo una <strong>interpretación clínica contextualizada</strong> junto con los datos antropométricos.
+</p>
 
             <h3>2.4. Explicación</h3>
             <p>
@@ -746,6 +912,7 @@
 </body>
 	
 </html>
+
 
 
 
