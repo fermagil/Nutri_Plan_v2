@@ -2947,10 +2947,868 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', initializeUI);
     }
+		//Ultima seccion Calculos segun Objetivo
+		let chartInstance = null;
+    let weeklyMacros = [];
+
+    function toggleOpcionesObjetivo() {
+        const objetivo = document.getElementById('objetivo').value;
+        const opciones = {
+            perdida: 'opcionesPerdida',
+            ganancia: 'opcionesGanancia',
+            mantenimiento: 'opcionesMantenimiento',
+            mixto: 'opcionesMixto'
+        };
+        Object.values(opciones).forEach(id => document.getElementById(id).style.display = 'none');
+        if (opciones[objetivo]) document.getElementById(opciones[objetivo]).style.display = 'block';
+
+        // Resetear checkboxes
+        document.querySelectorAll('.strategy-checkboxes input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = checkbox.value === 'ninguna';
+        });
+    }
+
+    function validarEntradas(peso, altura, edad, calorias, proteinasPct, carbohidratosPct, grasasPct) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+
+        if (isNaN(peso) || peso <= 0 || isNaN(altura) || altura <= 0 || isNaN(edad) || edad <= 0) {
+            errorDiv.textContent = 'Por favor, ingrese valores válidos para peso, altura y edad.';
+            errorDiv.style.display = 'block';
+            return false;
+        }
+        if (peso > 300 || altura > 250 || edad > 120) {
+            errorDiv.textContent = 'Los valores ingresados son demasiado altos. Verifique sus datos.';
+            errorDiv.style.display = 'block';
+            return false;
+        }
+        if (calorias > 0 && calorias < (document.getElementById('sexo').value === 'mujer' ? 1200 : 1500)) {
+            errorDiv.textContent = `Las calorías no pueden ser inferiores a ${document.getElementById('sexo').value === 'mujer' ? 1200 : 1500} kcal sin supervisión médica.`;
+            errorDiv.style.display = 'block';
+            return false;
+        }
+        if (proteinasPct + carbohidratosPct + grasasPct > 0 && proteinasPct + carbohidratosPct + grasasPct !== 100) {
+            errorDiv.textContent = 'Los porcentajes de macronutrientes deben sumar 100%.';
+            errorDiv.style.display = 'block';
+            return false;
+        }
+        return true;
+    }
+
+    function calcularTMB(peso, altura, edad, sexo) {
+        return sexo === 'hombre' ? 10 * peso + 6.25 * altura - 5 * edad + 5 : 10 * peso + 6.25 * altura - 5 * edad - 161;
+    }
+
+    function getSelectedStrategies(prefix) {
+        return Array.from(document.querySelectorAll(`#${prefix} input[type="checkbox"]:checked`)).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
+    }
+
+    function calcularMacronutrientes(peso, gastoEnergetico, objetivo) {
+        let calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones;
+        const estrategiaMap = {
+            ninguna: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: 'Cetosis estricta <50g HC/día' },
+            tkd: { grasas: [65, 70], proteinas: [20, 25], carbohidratos: [8, 12], deficit: [0.8, 0.85], nota: '25-50g HC pre/post entreno' },
+            ckd: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.85, 0.9], nota: '2 días carb-loading (150-200g HC)' },
+            if_16_8: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 15], deficit: [0.75, 0.85], nota: 'Ventana de alimentación 8 horas' },
+            refeed: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.9, 0.95], nota: '1-2 días/semana HC alto' },
+            hiperproteica: { grasas: [60, 65], proteinas: [28, 32], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: '2.5-3.0 g/kg peso proteína' },
+            carb_cycling: { grasas: [60, 70], proteinas: [22, 28], carbohidratos: [8, 20], deficit: [0.8, 0.9], nota: 'Días altos (100-130g)/bajos HC (<50g)' },
+            protein_cycling: { grasas: [60, 70], proteinas: [18, 30], carbohidratos: [5, 15], deficit: [0.8, 0.9], nota: '4 semanas altas + 1 baja proteína' },
+            timing: { grasas: [50, 60], proteinas: [28, 35], carbohidratos: [10, 20], deficit: [0.85, 0.9], nota: 'HC post-entreno' },
+            flexible_dieting: { grasas: [30, 40], proteinas: [25, 35], carbohidratos: [30, 45], deficit: [0.9, 1.0], nota: '80/20 regla: 80% saludable, 20% flexible' }
+        };
+
+        function getCombinedRanges(strategies) {
+            if (!strategies.length) return estrategiaMap.ninguna;
+            const ranges = {
+                grasas: [Math.max(...strategies.map(s => estrategiaMap[s].grasas[0])), Math.min(...strategies.map(s => estrategiaMap[s].grasas[1]))],
+                proteinas: [Math.max(...strategies.map(s => estrategiaMap[s].proteinas[0])), Math.min(...strategies.map(s => estrategiaMap[s].proteinas[1]))],
+                carbohidratos: [Math.max(...strategies.map(s => estrategiaMap[s].carbohidratos[0])), Math.min(...strategies.map(s => estrategiaMap[s].carbohidratos[1]))],
+                deficit: [Math.min(...strategies.map(s => estrategiaMap[s].deficit[0])), Math.max(...strategies.map(s => estrategiaMap[s].deficit[1]))],
+                notas: strategies.map(s => estrategiaMap[s].nota).join('; ')
+            };
+            if (ranges.grasas[0] > ranges.grasas[1] || ranges.proteinas[0] > ranges.proteinas[1] || ranges.carbohidratos[0] > ranges.carbohidratos[1]) {
+                document.getElementById('errorMessage').textContent = 'Las estrategias seleccionadas tienen rangos de macronutrientes incompatibles.';
+                document.getElementById('errorMessage').style.display = 'block';
+                return null;
+            }
+            return ranges;
+        }
+
+        switch (objetivo) {
+            case 'perdida':
+                calorias = Math.round(gastoEnergetico * 0.8);
+                const fasePerdida = document.getElementById('fasePerdida')?.value || 'induccion_cetogenica';
+                const estrategiasPerdida = getSelectedStrategies('opcionesPerdida');
+                const ranges = getCombinedRanges(estrategiasPerdida);
+
+                if (!ranges) return null;
+
+                switch (fasePerdida) {
+                    case 'induccion_cetogenica':
+                        proteinasPct = Math.round((ranges.proteinas[0] + ranges.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((ranges.carbohidratos[0] + ranges.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        calorias = Math.round(gastoEnergetico * (ranges.deficit[0] + ranges.deficit[1]) / 2);
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Inducción Cetogénica: ${ranges.notas}. Prioriza grasas saludables, proteína moderada. Supervisión médica recomendada.`;
+                        break;
+                    case 'ciclado_metabolico':
+                        proteinasPct = Math.round((ranges.proteinas[0] + ranges.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((ranges.carbohidratos[0] + ranges.carbohidratos[1]) / 2) + 5;
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        calorias = Math.round(gastoEnergetico * (ranges.deficit[0] + ranges.deficit[1]) / 2);
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Ciclado Metabólico: ${ranges.notas}. HC estratégicos en días de entreno, cetosis en descanso.`;
+                        break;
+                    case 'transicion_mantenimiento':
+                        proteinasPct = 22;
+                        carbohidratosPct = 33;
+                        grasasPct = 45;
+                        calorias = Math.round(gastoEnergetico * 0.9);
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Transición a Mantenimiento: Aumenta HC (100-150g), incluye cereales integrales, frutas, legumbres. ${ranges.notas}.`;
+                        break;
+                    case 'ketoadaptation':
+                        proteinasPct = Math.round((ranges.proteinas[0] + ranges.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((ranges.carbohidratos[0] + ranges.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        calorias = Math.round(gastoEnergetico * (ranges.deficit[0] + ranges.deficit[1]) / 2);
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Ketoadaptation: ${ranges.notas}. Enfocado en adaptación cetogénica a largo plazo (4-12 semanas).`;
+                        break;
+                }
+                break;
+
+            case 'ganancia':
+                calorias = Math.round(gastoEnergetico * 1.1);
+                const faseGanancia = document.getElementById('faseGanancia')?.value || 'volumen';
+                const estrategiasGanancia = getSelectedStrategies('opcionesGanancia');
+                const rangesGanancia = getCombinedRanges(estrategiasGanancia);
+
+                if (!rangesGanancia) return null;
+
+                switch (faseGanancia) {
+                    case 'volumen':
+                        proteinasPct = Math.round((rangesGanancia.proteinas[0] + rangesGanancia.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((rangesGanancia.carbohidratos[0] + rangesGanancia.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        calorias = Math.round(gastoEnergetico * (rangesGanancia.deficit[0] + rangesGanancia.deficit[1]) / 2);
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Volumen: Prioriza HC complejos, proteína post-entreno. ${rangesGanancia.notas}`;
+                        break;
+                    case 'masa':
+                        proteinasPct = Math.round((rangesGanancia.proteinas[0] + rangesGanancia.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((rangesGanancia.carbohidratos[0] + rangesGanancia.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        calorias = Math.round(gastoEnergetico * (rangesGanancia.deficit[0] + rangesGanancia.deficit[1]) / 2);
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Enfocado en Masa: Balance HC/proteína, timing post-entreno. ${rangesGanancia.notas}`;
+                        break;
+                }
+                break;
+
+            case 'mantenimiento':
+                calorias = gastoEnergetico;
+                const enfoqueMantenimiento = document.getElementById('enfoqueMantenimiento')?.value || 'equilibrio';
+                const estrategiasMantenimiento = getSelectedStrategies('opcionesMantenimiento');
+                const rangesMantenimiento = getCombinedRanges(estrategiasMantenimiento);
+
+                if (!rangesMantenimiento) return null;
+
+                switch (enfoqueMantenimiento) {
+                    case 'equilibrio':
+                        proteinasPct = Math.round((rangesMantenimiento.proteinas[0] + rangesMantenimiento.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((rangesMantenimiento.carbohidratos[0] + rangesMantenimiento.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Equilibrio Flexible: ${rangesMantenimiento.notas}`;
+                        break;
+                    case 'social':
+                        proteinasPct = Math.round((rangesMantenimiento.proteinas[0] + rangesMantenimiento.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((rangesMantenimiento.carbohidratos[0] + rangesMantenimiento.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Adherencia Social: Flexibilidad en HC, consistencia en proteína. ${rangesMantenimiento.notas}`;
+                        break;
+                }
+                break;
+
+            case 'mixto':
+                const faseMixto = document.getElementById('faseMixto')?.value || 'volumen';
+                const estrategiasMixto = getSelectedStrategies('opcionesMixto');
+                const rangesMixto = getCombinedRanges(estrategiasMixto);
+
+                if (!rangesMixto) return null;
+
+                switch (faseMixto) {
+                    case 'volumen':
+                        calorias = Math.round(gastoEnergetico * 1.08);
+                        proteinasPct = Math.round((rangesMixto.proteinas[0] + rangesMixto.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((rangesMixto.carbohidratos[0] + rangesMixto.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Volumen Mixto: Proteína alta, timing HC post-entreno. ${rangesMixto.notas}`;
+                        break;
+                    case 'definicion':
+                        calorias = Math.round(gastoEnergetico * 0.85);
+                        proteinasPct = Math.round((rangesMixto.proteinas[0] + rangesMixto.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((rangesMixto.carbohidratos[0] + rangesMixto.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Definición Mixto: Ciclado metabólico, cetosis en descanso. ${rangesMixto.notas}`;
+                        break;
+                    case 'mantenimiento':
+                        calorias = gastoEnergetico;
+                        proteinasPct = Math.round((rangesMixto.proteinas[0] + rangesMixto.proteinas[1]) / 2);
+                        carbohidratosPct = Math.round((rangesMixto.carbohidratos[0] + rangesMixto.carbohidratos[1]) / 2);
+                        grasasPct = 100 - proteinasPct - carbohidratosPct;
+                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+                        grasas = Math.round((calorias * grasasPct / 100) / 9);
+                        recomendaciones = `Mantenimiento Mixto: Moderada en HC, equilibrio nutricional. ${rangesMixto.notas}`;
+                        break;
+                }
+                break;
+        }
+
+        if (grasas < 0 || isNaN(grasas) || proteinas < 0 || isNaN(proteinas) || carbohidratos < 0 || isNaN(carbohidratos)) {
+            document.getElementById('errorMessage').textContent = 'Error en el cálculo de macronutrientes. Verifique los valores ingresados.';
+            document.getElementById('errorMessage').style.display = 'block';
+            return null;
+        }
+
+        return { calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones };
+    }
+
+    function crearGrafico(datos) {
+        const ctx = document.getElementById('chartMacros').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Grasas', 'Proteínas', 'Carbohidratos'],
+                datasets: [{
+                    data: datos,
+                    backgroundColor: ['#4CAF50', '#2196F3', '#FF9800'],
+                    borderColor: ['#388E3C', '#1976D2', '#F57C00'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#333', font: { size: 12 } } },
+                    tooltip: { callbacks: { label: function(context) { return `${context.label}: ${context.raw}%`; } } }
+                }
+            }
+        });
+    }
+
+    function actualizarUI(resultados, gastoEnergetico) {
+        if (!resultados) return;
+        document.getElementById('gastoEnergetico').textContent = gastoEnergetico.toLocaleString('es-ES');
+        document.getElementById('calorias').textContent = resultados.calorias.toLocaleString('es-ES');
+        document.getElementById('proteinas').textContent = resultados.proteinas;
+        document.getElementById('proteinasPct').textContent = resultados.proteinasPct;
+        document.getElementById('carbohidratos').textContent = resultados.carbohidratos;
+        document.getElementById('carbohidratosPct').textContent = resultados.carbohidratosPct;
+        document.getElementById('grasas').textContent = resultados.grasas;
+        document.getElementById('grasasPct').textContent = resultados.grasasPct;
+        document.getElementById('recomendaciones').innerHTML = resultados.recomendaciones;
+        document.getElementById('resultados').style.display = 'block';
+        if (typeof Chart !== 'undefined') {
+            crearGrafico([resultados.grasasPct, resultados.proteinasPct, resultados.carbohidratosPct]);
+        } else {
+            console.error('Chart.js no está disponible.');
+            document.getElementById('errorMessage').textContent = 'No se pudo cargar el gráfico. Verifique su conexión a internet.';
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+        document.getElementById('planificacionTemporal').style.display = 'block';
+        actualizarPlanificacion();
+    }
+
+    function crearSemana(semanaNum, fase, dieta, estrategias, calorias, proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas) {
+        if (!validarEntradas(parseFloat(document.getElementById('peso').value), parseFloat(document.getElementById('altura').value), parseFloat(document.getElementById('edad').value), calorias, proteinasPct, carbohidratosPct, grasasPct)) {
+            return null;
+        }
+        const proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+        const carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+        const grasas = Math.round((calorias * grasasPct / 100) / 9);
+        if (grasas < 0 || isNaN(grasas) || proteinas < 0 || isNaN(proteinas) || carbohidratos < 0 || isNaN(carbohidratos)) {
+            document.getElementById('errorMessage').textContent = `Error en Semana ${semanaNum}: Error en el cálculo de macronutrientes. Verifique los valores.`;
+            document.getElementById('errorMessage').style.display = 'block';
+            return null;
+        }
+        return { semana: `Sem ${semanaNum}`, fase, dieta, estrategias, calorias, proteinasPct, carbohidratosPct, grasasPct, proteinas, carbohidratos, grasas, entrenoDias, notas };
+    }
+
+    function generarPlanPerdida(periodo, peso, gastoEnergetico) {
+        const plan = [];
+        const fasePerdida = document.getElementById('fasePerdida')?.value || 'induccion_cetogenica';
+        const estrategiasPerdida = getSelectedStrategies('opcionesPerdida');
+        const semanas = periodo === 'mensual' ? 12 : 4;
+
+        const dietas = {
+            cetogenica: { nombre: 'Cetogénica', proteinasPct: 22, carbohidratosPct: 8, grasasPct: 70 },
+            hiperproteica: { nombre: 'Hiperproteica', proteinasPct: 30, carbohidratosPct: 15, grasasPct: 55 },
+            carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 25, grasasPct: 50 },
+            if_16_8: { nombre: 'Intermittent Fasting (16:8)', proteinasPct: 25, carbohidratosPct: 25, grasasPct: 50 },
+            refeed: { nombre: 'Refeed', proteinasPct: 24, carbohidratosPct: 40, grasasPct: 36 },
+            ketoadaptation: { nombre: 'Ketoadaptation', proteinasPct: 22, carbohidratosPct: 10, grasasPct: 68 },
+            flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 30, carbohidratosPct: 35, grasasPct: 35 }
+        };
+
+        const estrategiaMap = {
+            ninguna: { dieta: 'cetogenica', calMult: 0.825, notas: 'Cetosis estricta <50g HC/día', entrenoDias: '7 días descanso' },
+            tkd: { dieta: 'cetogenica', calMult: 0.825, notas: '25-50g HC pre/post entreno', entrenoDias: '4 días entreno, 3 días descanso' },
+            ckd: { dieta: 'cetogenica', calMult: 0.875, notas: '2 días carb-loading (150-200g HC)', entrenoDias: '5 días cetosis, 2 días carb-loading' },
+            if_16_8: { dieta: 'if_16_8', calMult: 0.8, notas: 'Ventana de alimentación 8 horas', entrenoDias: '4 días entreno, 3 días descanso' },
+            refeed: { dieta: 'refeed', calMult: 0.925, notas: '1-2 días/semana HC alto', entrenoDias: '5 días bajos, 2 días refeed' },
+            hiperproteica: { dieta: 'hiperproteica', calMult: 0.825, notas: '2.5-3.0 g/kg peso proteína', entrenoDias: '4 días entreno, 3 días descanso' },
+            carb_cycling: { dieta: 'carb_cycling', calMult: 0.85, notas: 'Días altos (100-130g)/bajos HC (<50g)', entrenoDias: '4 días entreno, 3 días descanso' },
+            protein_cycling: { dieta: 'hiperproteica', calMult: 0.85, notas: '4 semanas altas + 1 baja proteína', entrenoDias: '4 días entreno, 3 días descanso' },
+            timing: { dieta: 'hiperproteica', calMult: 0.85, notas: 'HC post-entreno', entrenoDias: '4 días entreno, 3 días descanso' },
+            flexible_dieting: { dieta: 'flexible_dieting', calMult: 0.9, notas: '80/20 regla: 80% saludable, 20% flexible', entrenoDias: '4 días entreno, 3 días descanso' }
+        };
+
+        const periodization = {
+            induccion_cetogenica: Array.from({ length: 6 }, (_, i) => ({
+                semana: i + 1,
+                dieta: estrategiasPerdida.length ? (estrategiasPerdida.includes('hiperproteica') || estrategiasPerdida.includes('protein_cycling') ? 'hiperproteica' : estrategiasPerdida.includes('carb_cycling') ? 'carb_cycling' : 'cetogenica') : 'cetogenica',
+                estrategias: estrategiasPerdida.length ? estrategiasPerdida : ['ninguna'],
+                calMult: estrategiasPerdida.length ? Math.min(...estrategiasPerdida.map(s => estrategiaMap[s].calMult)) : estrategiaMap.ninguna.calMult,
+                entrenoDias: estrategiasPerdida.length ? estrategiasPerdida.map(s => estrategiaMap[s].entrenoDias).join('; ') : estrategiaMap.ninguna.entrenoDias,
+                notas: estrategiasPerdida.length ? estrategiasPerdida.map(s => estrategiaMap[s].notas).join('; ') : estrategiaMap.ninguna.notas
+            })),
+            ciclado_metabolico: Array.from({ length: 10 }, (_, i) => ({
+                semana: i + 1,
+                dieta: estrategiasPerdida.includes('carb_cycling') ? 'carb_cycling' : 'cetogenica',
+                estrategias: estrategiasPerdida,
+                calMult: Math.min(...estrategiasPerdida.map(s => estrategiaMap[s].calMult)),
+                entrenoDias: estrategiasPerdida.map(s => estrategiaMap[s].entrenoDias).join('; '),
+                notas: estrategiasPerdida.map(s => estrategiaMap[s].notas).join('; ')
+            })),
+            transicion_mantenimiento: Array.from({ length: 4 }, (_, i) => ({
+                semana: i + 1,
+                dieta: 'flexible_dieting',
+                estrategias: estrategiasPerdida,
+                calMult: 0.9,
+                entrenoDias: '4 días entreno, 3 días descanso',
+                notas: 'Equilibrio nutricional, 80/20 regla'
+            })),
+            ketoadaptation: Array.from({ length: 12 }, (_, i) => ({
+                semana: i + 1,
+                dieta: estrategiasPerdida.includes('hiperproteica') || estrategiasPerdida.includes('protein_cycling') ? 'hiperproteica' : 'ketoadaptation',
+                estrategias: estrategiasPerdida,
+                calMult: Math.min(...estrategiasPerdida.map(s => estrategiaMap[s].calMult)),
+                entrenoDias: estrategiasPerdida.map(s => estrategiaMap[s].entrenoDias).join('; '),
+                notas: estrategiasPerdida.map(s => estrategiaMap[s].notas).join('; ')
+            }))
+        };
+
+        let planSemanas = [];
+        if (periodo === 'mensual') {
+            if (fasePerdida === 'induccion_cetogenica') {
+                planSemanas = periodization.induccion_cetogenica.slice(0, 6).concat(
+                    periodization.ciclado_metabolico.slice(0, 4),
+                    periodization.transicion_mantenimiento.slice(0, 2)
+                );
+            } else if (fasePerdida === 'ketoadaptation') {
+                planSemanas = periodization.ketoadaptation.slice(0, 12);
+            } else {
+                planSemanas = periodization[fasePerdida].slice(0, 12);
+            }
+        } else {
+            planSemanas = periodization[fasePerdida].slice(0, 4);
+        }
+
+        for (let semana = 1; semana <= semanas; semana++) {
+            let semanaConfig = planSemanas[semana - 1] || planSemanas[planSemanas.length - 1];
+            let dieta = dietas[semanaConfig.dieta].nombre;
+            let estrategias = semanaConfig.estrategias;
+            let proteinasPct = dietas[semanaConfig.dieta].proteinasPct;
+            let carbohidratosPct = dietas[semanaConfig.dieta].carbohidratosPct;
+            let grasasPct = dietas[semanaConfig.dieta].grasasPct;
+            let calMult = semanaConfig.calMult;
+            let entrenoDias = semanaConfig.entrenoDias;
+            let notas = semanaConfig.notas;
+
+            // Asegurar que las calorías sean válidas
+            let calorias = Math.round(gastoEnergetico * calMult);
+            if (isNaN(calorias) || calorias <= 0) {
+                document.getElementById('errorMessage').textContent = `Error en Semana ${semana}: No se pudieron calcular las calorías. Verifique los datos personales.`;
+                document.getElementById('errorMessage').style.display = 'block';
+                return plan;
+            }
+
+            if (estrategias.includes('ckd') && (semana === 4 || semana === 8 || semana === 12)) {
+                dieta = dietas.refeed.nombre;
+                proteinasPct = dietas.refeed.proteinasPct;
+                carbohidratosPct = dietas.refeed.carbohidratosPct;
+                grasasPct = dietas.refeed.grasasPct;
+                calMult = 0.925;
+                calorias = Math.round(gastoEnergetico * calMult);
+                notas = '2 días carb-loading (150-200g HC)' + (notas ? '; ' + notas : '');
+                entrenoDias = '2 días carb-loading';
+            } else if (estrategias.includes('refeed') && (semana === 4 || semana === 8 || semana === 12)) {
+                dieta = dietas.refeed.nombre;
+                proteinasPct = dietas.refeed.proteinasPct;
+                carbohidratosPct = dietas.refeed.carbohidratosPct;
+                grasasPct = dietas.refeed.grasasPct;
+                calMult = 0.925;
+                calorias = Math.round(gastoEnergetico * calMult);
+                notas = '1-2 días/semana HC alto' + (notas ? '; ' + notas : '');
+                entrenoDias = '2 días refeed';
+            } else if (estrategias.includes('protein_cycling') && semana % 5 === 0) {
+                dieta = dietas.hiperproteica.nombre;
+                proteinasPct = 20;
+                carbohidratosPct = 20;
+                grasasPct = 60;
+                calMult = 0.85;
+                calorias = Math.round(gastoEnergetico * calMult);
+                notas = 'Semana baja proteína' + (notas ? '; ' + notas : '');
+                entrenoDias = '4 días entreno, 3 días descanso';
+            } else if (estrategias.includes('carb_cycling') && semana % 2 === 0) {
+                dieta = dietas.carb_cycling.nombre;
+                proteinasPct = dietas.carb_cycling.proteinasPct;
+                carbohidratosPct = 35;
+                grasasPct = 40;
+                calMult = 0.9;
+                calorias = Math.round(gastoEnergetico * calMult);
+                notas = 'Días altos HC (100-130g)' + (notas ? '; ' + notas : '');
+                entrenoDias = '4 días entreno';
+            }
+
+            const semanaObj = crearSemana(semana, fasePerdida, dieta, estrategias.join(', '), calorias, proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas);
+            if (semanaObj) plan.push(semanaObj);
+        }
+
+        return plan;
+    }
+
+    function generarPlanGanancia(periodo, peso, gastoEnergetico) {
+        const plan = [];
+        const estrategiasGanancia = getSelectedStrategies('opcionesGanancia');
+        const semanas = periodo === 'mensual' ? 12 : 4;
+
+        const dietas = {
+            moderada: { nombre: 'Moderada en HC', proteinasPct: 25, carbohidratosPct: 45, grasasPct: 30 },
+            carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 35, grasasPct: 40 },
+            refeed: { nombre: 'Refeed', proteinasPct: 24, carbohidratosPct: 40, grasasPct: 36 },
+            timing: { nombre: 'Timing Nutricional', proteinasPct: 28, carbohidratosPct: 35, grasasPct: 37 },
+            flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 30, carbohidratosPct: 35, grasasPct: 35 }
+        };
+
+        const estrategiaMap = {
+            ninguna: { dieta: 'moderada', calMult: 1.1, notas: 'Balance HC/proteína', entrenoDias: '4 días entreno, 3 días descanso' },
+            carb_cycling: { dieta: 'carb_cycling', calMult: 1.1, notas: 'Días altos (400-450g)/moderados HC (200g)', entrenoDias: '4 días entreno, 3 días descanso' },
+            refeed: { dieta: 'refeed', calMult: 1.15, notas: 'Días altos HC (450g) semanales', entrenoDias: '2 días refeed' },
+            timing: { dieta: 'timing', calMult: 1.1, notas: 'HC post-entreno', entrenoDias: '4 días entreno, 3 días descanso' },
+            flexible_dieting: { dieta: 'flexible_dieting', calMult: 1.1, notas: '80/20 regla: 80% saludable, 20% flexible', entrenoDias: '4 días entreno, 3 días descanso' }
+        };
+
+        for (let semana = 1; semana <= semanas; semana++) {
+            let dieta = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].nombre;
+            let estrategias = estrategiasGanancia;
+            let proteinasPct = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].proteinasPct;
+            let carbohidratosPct = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].carbohidratosPct;
+            let grasasPct = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].grasasPct;
+            let calMult = Math.max(...estrategiasGanancia.map(s => estrategiaMap[s].calMult));
+            let entrenoDias = estrategiasGanancia.map(s => estrategiaMap[s].entrenoDias).join('; ');
+            let notas = estrategiasGanancia.map(s => estrategiaMap[s].notas).join('; ');
+
+            if (estrategias.includes('refeed') && (semana === 4 || semana === 8 || semana === 12)) {
+                dieta = dietas.refeed.nombre;
+                proteinasPct = dietas.refeed.proteinasPct;
+                carbohidratosPct = dietas.refeed.carbohidratosPct;
+                grasasPct = dietas.refeed.grasasPct;
+                calMult = 1.15;
+                notas = 'Días altos HC (450g)' + (notas ? '; ' + notas : '');
+                entrenoDias = '2 días refeed';
+            } else if (estrategias.includes('carb_cycling') && semana % 2 === 0) {
+                dieta = dietas.carb_cycling.nombre;
+                proteinasPct = dietas.carb_cycling.proteinasPct;
+                carbohidratosPct = 45;
+                grasasPct = 30;
+                calMult = 1.15;
+                notas = 'Días altos HC (400-450g)' + (notas ? '; ' + notas : '');
+                entrenoDias = '4 días entreno';
+            }
+
+            const semanaObj = crearSemana(semana, 'Volumen', dieta, estrategias.join(', '), Math.round(gastoEnergetico * calMult), proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas);
+            if (semanaObj) plan.push(semanaObj);
+        }
+
+        return plan;
+    }
+
+    function generarPlanMantenimiento(periodo, peso, gastoEnergetico) {
+        const plan = [];
+        const estrategiasMantenimiento = getSelectedStrategies('opcionesMantenimiento');
+        const semanas = periodo === 'mensual' ? 12 : 4;
+
+        const dietas = {
+            flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 30, carbohidratosPct: 35, grasasPct: 35 },
+            if_16_8: { nombre: 'Intermittent Fasting (16:8)', proteinasPct: 25, carbohidratosPct: 30, grasasPct: 45 },
+            refeed: { nombre: 'Refeed', proteinasPct: 24, carbohidratosPct: 40, grasasPct: 36 },
+            carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 35, grasasPct: 40 }
+        };
+
+        const estrategiaMap = {
+            ninguna: { dieta: 'flexible_dieting', calMult: 1.0, notas: 'Equilibrio nutricional', entrenoDias: '4 días entreno, 3 días descanso' },
+            flexible_dieting: { dieta: 'flexible_dieting', calMult: 1.0, notas: '80/20 regla: 80% saludable, 20% flexible', entrenoDias: '4 días entreno, 3 días descanso' },
+            if_16_8: { dieta: 'if_16_8', calMult: 1.0, notas: 'Ventana de alimentación 8 horas', entrenoDias: '4 días entreno, 3 días descanso' },
+            refeed: { dieta: 'refeed', calMult: 1.05, notas: 'Días altos HC (150-200g)', entrenoDias: '2 días refeed' },
+            carb_cycling: { dieta: 'carb_cycling', calMult: 1.0, notas: 'Días altos/bajos HC', entrenoDias: '4 días entreno, 3 días descanso' }
+        };
+
+        for (let semana = 1; semana <= semanas; semana++) {
+            let dieta = dietas[estrategiasMantenimiento.length ? estrategiaMap[estrategiasMantenimiento[0]].dieta : 'flexible_dieting'].nombre;
+            let estrategias = estrategiasMantenimiento;
+            let proteinasPct = dietas[estrategiasMantenimiento.length ? estrategiaMap[estrategiasMantenimiento[0]].dieta : 'flexible_dieting'].proteinasPct;
+            let carbohidratosPct = dietas[estrategiasMantenimiento.length ? estrategiaMap[estrategiasMantenimiento[0]].dieta : 'flexible_dieting'].carbohidratosPct;
+            let grasasPct = dietas[estrategiasMantenimiento.length ? estrategiaMap[estrategiasMantenimiento[0]].dieta : 'flexible_dieting'].grasasPct;
+            let calMult = Math.max(...estrategiasMantenimiento.map(s => estrategiaMap[s].calMult));
+            let entrenoDias = estrategiasMantenimiento.map(s => estrategiaMap[s].entrenoDias).join('; ');
+            let notas = estrategiasMantenimiento.map(s => estrategiaMap[s].notas).join('; ');
+
+            if (estrategias.includes('refeed') && (semana === 4 || semana === 8 || semana === 12)) {
+                dieta = dietas.refeed.nombre;
+                proteinasPct = dietas.refeed.proteinasPct;
+                carbohidratosPct = dietas.refeed.carbohidratosPct;
+                grasasPct = dietas.refeed.grasasPct;
+                calMult = 1.05;
+                notas = 'Días altos HC (150-200g)' + (notas ? '; ' + notas : '');
+                entrenoDias = '2 días refeed';
+            } else if (estrategias.includes('carb_cycling') && semana % 2 === 0) {
+                dieta = dietas.carb_cycling.nombre;
+                proteinasPct = dietas.carb_cycling.proteinasPct;
+                carbohidratosPct = 45;
+                grasasPct = 30;
+                calMult = 1.05;
+                notas = 'Días altos HC' + (notas ? '; ' + notas : '');
+                entrenoDias = '4 días entreno';
+            }
+
+            const semanaObj = crearSemana(semana, 'Mantenimiento', dieta, estrategias.join(', '), Math.round(gastoEnergetico * calMult), proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas);
+            if (semanaObj) plan.push(semanaObj);
+        }
+
+        return plan;
+    }
+
+    function generarPlanMixto(periodo, peso, gastoEnergetico) {
+        const plan = [];
+        const estrategiasMixto = getSelectedStrategies('opcionesMixto');
+        const semanas = periodo === 'mensual' ? 12 : 4;
+
+        const dietas = {
+            moderada: { nombre: 'Moderada en HC', proteinasPct: 25, carbohidratosPct: 45, grasasPct: 30 },
+            carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 35, grasasPct: 40 },
+            refeed: { nombre: 'Refeed', proteinasPct: 24, carbohidratosPct: 40, grasasPct: 36 },
+            timing: { nombre: 'Timing Nutricional', proteinasPct: 28, carbohidratosPct: 35, grasasPct: 37 },
+            flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 30, carbohidratosPct: 35, grasasPct: 35 }
+        };
+
+        const estrategiaMap = {
+            ninguna: { dieta: 'moderada', calMult: 1.0, notas: 'Balance nutricional', entrenoDias: '4 días entreno, 3 días descanso' },
+            carb_cycling: { dieta: 'carb_cycling', calMult: 1.0, notas: 'Días altos/bajos HC', entrenoDias: '4 días entreno, 3 días descanso' },
+            refeed: { dieta: 'refeed', calMult: 1.05, notas: 'Días altos HC (150-200g)', entrenoDias: '2 días refeed' },
+            timing: { dieta: 'timing', calMult: 1.0, notas: 'HC post-entreno', entrenoDias: '4 días entreno, 3 días descanso' },
+            flexible_dieting: { dieta: 'flexible_dieting', calMult: 1.0, notas: '80/20 regla: 80% saludable, 20% flexible', entrenoDias: '4 días entreno, 3 días descanso' }
+        };
+
+        const periodization = [
+            { semana: 1, fase: 'Volumen', dieta: 'moderada', estrategias: estrategiasMixto, calMult: 1.1, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 2, fase: 'Volumen', dieta: 'moderada', estrategias: estrategiasMixto, calMult: 1.1, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 3, fase: 'Volumen', dieta: 'moderada', estrategias: estrategiasMixto, calMult: 1.1, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 4, fase: 'Definición', dieta: estrategiasMixto.includes('carb_cycling') ? 'carb_cycling' : 'moderada', estrategias: estrategiasMixto, calMult: 0.85, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 5, fase: 'Definición', dieta: estrategiasMixto.includes('carb_cycling') ? 'carb_cycling' : 'moderada', estrategias: estrategiasMixto, calMult: 0.85, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 6, fase: 'Definición', dieta: estrategiasMixto.includes('carb_cycling') ? 'carb_cycling' : 'moderada', estrategias: estrategiasMixto, calMult: 0.85, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 7, fase: 'Mantenimiento', dieta: 'flexible_dieting', estrategias: estrategiasMixto, calMult: 1.0, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 8, fase: 'Mantenimiento', dieta: 'flexible_dieting', estrategias: estrategiasMixto, calMult: 1.0, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 9, fase: 'Mantenimiento', dieta: 'flexible_dieting', estrategias: estrategiasMixto, calMult: 1.0, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 10, fase: 'Volumen', dieta: 'moderada', estrategias: estrategiasMixto, calMult: 1.1, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 11, fase: 'Volumen', dieta: 'moderada', estrategias: estrategiasMixto, calMult: 1.1, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') },
+            { semana: 12, fase: 'Volumen', dieta: 'moderada', estrategias: estrategiasMixto, calMult: 1.1, entrenoDias: estrategiasMixto.map(s => estrategiaMap[s].entrenoDias).join('; '), notas: estrategiasMixto.map(s => estrategiaMap[s].notas).join('; ') }
+        ];
+
+        for (let semana = 1; semana <= semanas; semana++) {
+            let semanaConfig = periodization[semana - 1] || periodization[periodization.length - 1];
+            let dieta = dietas[semanaConfig.dieta].nombre;
+            let estrategias = semanaConfig.estrategias;
+            let proteinasPct = dietas[semanaConfig.dieta].proteinasPct;
+            let carbohidratosPct = dietas[semanaConfig.dieta].carbohidratosPct;
+            let grasasPct = dietas[semanaConfig.dieta].grasasPct;
+            let calMult = semanaConfig.calMult;
+            let entrenoDias = semanaConfig.entrenoDias;
+            let notas = semanaConfig.notas;
+
+            if (estrategias.includes('refeed') && (semana === 4 || semana === 8 || semana === 12)) {
+                dieta = dietas.refeed.nombre;
+                proteinasPct = dietas.refeed.proteinasPct;
+                carbohidratosPct = dietas.refeed.carbohidratosPct;
+                grasasPct = dietas.refeed.grasasPct;
+                calMult = 1.05;
+                notas = 'Días altos HC (150-200g)' + (notas ? '; ' + notas : '');
+                entrenoDias = '2 días refeed';
+            } else if (estrategias.includes('carb_cycling') && semana % 2 === 0) {
+                dieta = dietas.carb_cycling.nombre;
+                proteinasPct = dietas.carb_cycling.proteinasPct;
+                carbohidratosPct = 45;
+                grasasPct = 30;
+                calMult = 1.05;
+                notas = 'Días altos HC' + (notas ? '; ' + notas : '');
+                entrenoDias = '4 días entreno';
+            }
+
+            const semanaObj = crearSemana(semana, semanaConfig.fase, dieta, estrategias.join(', '), Math.round(gastoEnergetico * calMult), proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas);
+            if (semanaObj) plan.push(semanaObj);
+        }
+
+        return plan;
+    }
+
+  
+   function ajustarEntrenoDias(semanaNum, valor) {
+        const planificacion = JSON.parse(JSON.stringify(weeklyMacros));
+        const semana = planificacion.find(item => item.semana === `Sem ${semanaNum}`);
+        if (!semana) return;
+
+        // Actualizar los días de entrenamiento
+        semana.entrenoDias = valor;
+
+        weeklyMacros = planificacion;
+        actualizarPlanificacion();
+    }
+
+    function actualizarPlanificacion() {
+        const tbody = document.getElementById('tablaPlanificacionBody');
+        tbody.innerHTML = '';
+        weeklyMacros.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.semana}</td>
+                <td><span class="badge bg-${getBadgeClass(item.fase)}">${item.fase}</span><br><span class="badge bg-${getBadgeClass(item.dieta)}">${item.dieta}</span></td>
+                <td><span class="badge bg-${getBadgeClass(item.estrategias)}">${item.estrategias || 'Ninguna'}</span></td>
+                <td>${item.calorias.toLocaleString('es-ES')}</td>
+                <td><input type="number" class="macro-input form-control" value="${item.proteinasPct}" min="0" max="100" oninput="ajustarMacros(${item.semana.replace('Sem ', '')}, 'proteinas', this.value)"></td>
+                <td><input type="number" class="macro-input form-control" value="${item.carbohidratosPct}" min="0" max="100" oninput="ajustarMacros(${item.semana.replace('Sem ', '')}, 'carbohidratos', this.value)"></td>
+                <td><input type="number" class="macro-input form-control" value="${item.grasasPct}" min="0" max="100" oninput="ajustarMacros(${item.semana.replace('Sem ', '')}, 'grasas', this.value)"></td>
+                <td>${isNaN(item.proteinas) ? '-' : item.proteinas}</td>
+                <td>${isNaN(item.carbohidratos) ? '-' : item.carbohidratos}</td>
+                <td>${isNaN(item.grasas) ? '-' : item.grasas}</td>
+                <td>
+                    <select class="form-control" onchange="ajustarEntrenoDias(${item.semana.replace('Sem ', '')}, this.value)">
+                        <option value="0 días entreno" ${item.entrenoDias === '0 días entreno' ? 'selected' : ''}>0 días</option>
+                        <option value="1 día entreno, 6 días descanso" ${item.entrenoDias === '1 día entreno, 6 días descanso' ? 'selected' : ''}>1 día</option>
+                        <option value="2 días entreno, 5 días descanso" ${item.entrenoDias === '2 días entreno, 5 días descanso' ? 'selected' : ''}>2 días</option>
+                        <option value="3 días entreno, 4 días descanso" ${item.entrenoDias === '3 días entreno, 4 días descanso' ? 'selected' : ''}>3 días</option>
+                        <option value="4 días entreno, 3 días descanso" ${item.entrenoDias === '4 días entreno, 3 días descanso' ? 'selected' : ''}>4 días</option>
+                        <option value="5 días entreno, 2 días descanso" ${item.entrenoDias === '5 días entreno, 2 días descanso' ? 'selected' : ''}>5 días</option>
+                        <option value="6 días entreno, 1 día descanso" ${item.entrenoDias === '6 días entreno, 1 día descanso' ? 'selected' : ''}>6 días</option>
+                        <option value="7 días entreno" ${item.entrenoDias === '7 días entreno' ? 'selected' : ''}>7 días</option>
+                    </select>
+                </td>
+                <td class="strategy-note">${item.notas}</td>
+            `;
+            tbody.appendChild(row);
+            // Agregar div de error para cada fila
+            const errorDiv = document.createElement('div');
+            errorDiv.id = `errorMessageSem${item.semana.replace('Sem ', '')}`;
+            errorDiv.className = 'alert alert-danger mt-2';
+            errorDiv.style.display = 'none';
+            row.appendChild(errorDiv);
+        });
+    }
+
+
+
+    function ajustarMacros(semanaNum, macro, valor) {
+        const planificacion = JSON.parse(JSON.stringify(weeklyMacros));
+        const semana = planificacion.find(item => item.semana === `Sem ${semanaNum}`);
+        if (!semana) return;
+
+        // Actualizar el porcentaje según el macro ajustado
+        if (macro === 'proteinas') semana.proteinasPct = parseInt(valor) || 0;
+        if (macro === 'carbohidratos') semana.carbohidratosPct = parseInt(valor) || 0;
+        if (macro === 'grasas') semana.grasasPct = parseInt(valor) || 0;
+
+        // Calcular gramos de macronutrientes basados en los porcentajes actuales
+        semana.proteinas = Math.round((semana.calorias * semana.proteinasPct / 100) / 4);
+        semana.carbohidratos = Math.round((semana.calorias * semana.carbohidratosPct / 100) / 4);
+        semana.grasas = Math.round((semana.calorias * semana.grasasPct / 100) / 9);
+
+        const errorDiv = document.getElementById(`errorMessageSem${semanaNum}`);
+        if (!errorDiv) {
+            const newErrorDiv = document.createElement('div');
+            newErrorDiv.id = `errorMessageSem${semanaNum}`;
+            newErrorDiv.className = 'alert alert-danger mt-2';
+            newErrorDiv.style.display = 'none';
+            document.getElementById('tablaPlanificacionBody').querySelector(`tr:nth-child(${semanaNum})`).appendChild(newErrorDiv);
+        }
+
+        // Validar que los porcentajes sumen 100%
+        const totalPct = semana.proteinasPct + semana.carbohidratosPct + semana.grasasPct;
+        if (totalPct !== 100) {
+            document.getElementById(`errorMessageSem${semanaNum}`).textContent = `Los porcentajes deben sumar 100% (actual: ${totalPct}%).`;
+            document.getElementById(`errorMessageSem${semanaNum}`).style.display = 'block';
+            return;
+        } else {
+            document.getElementById(`errorMessageSem${semanaNum}`).style.display = 'none';
+        }
+
+        const dietaRanges = {
+            'Cetogénica': { carbohidratos: [5, 20], proteinas: [20, 35], grasas: [60, 75] },
+            'Hiperproteica': { carbohidratos: [10, 25], proteinas: [25, 40], grasas: [45, 65] },
+            'Carb Cycling': { carbohidratos: [20, 50], proteinas: [20, 35], grasas: [30, 60] },
+            'Intermittent Fasting (16:8)': { carbohidratos: [5, 40], proteinas: [20, 35], grasas: [35, 75] },
+            'Refeed': { carbohidratos: [20, 50], proteinas: [20, 32], grasas: [30, 60] },
+            'Ketoadaptation': { carbohidratos: [5, 25], proteinas: [18, 30], grasas: [55, 75] },
+            'Flexible Dieting': { carbohidratos: [25, 45], proteinas: [25, 40], grasas: [30, 50] },
+            'Moderada en HC': { carbohidratos: [25, 45], proteinas: [20, 30], grasas: [30, 40] },
+            'Timing Nutricional': { carbohidratos: [10, 20], proteinas: [28, 35], grasas: [50, 60] }
+        };
+
+        // Validar límite de proteínas (2.5 g/kg) para días altos de proteína
+        const peso = parseFloat(document.getElementById('peso').value);
+        const isHighProtein = semana.dieta === 'Hiperproteica' || semana.estrategias.includes('hiperproteica');
+        if (isHighProtein && !isNaN(peso) && semana.proteinas > 2.5 * peso) {
+            document.getElementById(`errorMessageSem${semanaNum}`).textContent = `Error en Semana ${semanaNum}: Las proteínas no deben exceder 2.5 g/kg de peso corporal (${(2.5 * peso).toFixed(1)} g).`;
+            document.getElementById(`errorMessageSem${semanaNum}`).style.display = 'block';
+            return;
+        }
+
+        // Validar rangos de macronutrientes
+        const combinedRanges = dietaRanges[semana.dieta];
+        if (
+            semana.carbohidratosPct < combinedRanges.carbohidratos[0] || semana.carbohidratosPct > combinedRanges.carbohidratos[1] ||
+            semana.proteinasPct < combinedRanges.proteinas[0] || semana.proteinasPct > combinedRanges.proteinas[1] ||
+            semana.grasasPct < combinedRanges.grasas[0] || semana.grasasPct > combinedRanges.grasas[1]
+        ) {
+            document.getElementById(`errorMessageSem${semanaNum}`).textContent = `Error en Semana ${semanaNum}: Los porcentajes deben estar dentro de los rangos de ${semana.dieta} (Carbohidratos: ${combinedRanges.carbohidratos.join('-')}%, Proteínas: ${combinedRanges.proteinas.join('-')}%, Grasas: ${combinedRanges.grasas.join('-')}%).`;
+            document.getElementById(`errorMessageSem${semanaNum}`).style.display = 'block';
+            return;
+        }
+
+        if (semana.calorias < (document.getElementById('sexo').value === 'mujer' ? 1200 : 1500)) {
+            document.getElementById(`errorMessageSem${semanaNum}`).textContent = `Error en Semana ${semanaNum}: Las calorías no pueden ser inferiores a ${document.getElementById('sexo').value === 'mujer' ? 1200 : 1500} kcal sin supervisión médica.`;
+            document.getElementById(`errorMessageSem${semanaNum}`).style.display = 'block';
+            return;
+        }
+
+        weeklyMacros = planificacion;
+        actualizarPlanificacion();
+    }
+
+
+
+    function getBadgeClass(faseOrDieta) {
+        const badgeClasses = {
+            'Inducción Cetogénica': 'danger',
+            'Ciclado Metabólico': 'warning',
+            'Transición a Mantenimiento': 'success',
+            'Ketoadaptation': 'info',
+            'Volumen': 'primary',
+            'Definición': 'info',
+            'Mantenimiento': 'secondary',
+            'Cetogénica': 'danger',
+            'Hiperproteica': 'primary',
+            'Carb Cycling': 'warning',
+            'Intermittent Fasting (16:8)': 'info',
+            'Refeed': 'success',
+            'Flexible Dieting': 'secondary',
+            'Moderada en HC': 'success',
+            'Timing Nutricional': 'primary',
+            'ninguna': 'secondary',
+            'tkd': 'danger',
+            'ckd': 'warning',
+            'if_16_8': 'info',
+            'refeed': 'success',
+            'hiperproteica': 'primary',
+            'carb_cycling': 'warning',
+            'protein_cycling': 'primary',
+            'timing': 'info',
+            'flexible_dieting': 'secondary',
+            'ketoadaptation_tkd': 'danger',
+            'ketoadaptation_if': 'info',
+            'ketoadaptation_refeed': 'success',
+            'ketoadaptation_protein_cycling': 'primary'
+        };
+        return badgeClasses[faseOrDieta] || 'secondary';
+    }
+
+    function calcularMacros() {
+        const peso = parseFloat(document.getElementById('peso').value);
+        const altura = parseFloat(document.getElementById('altura').value);
+        const edad = parseFloat(document.getElementById('edad').value);
+        const sexo = document.getElementById('sexo').value;
+        const actividad = parseFloat(document.getElementById('actividad').value);
+        const objetivo = document.getElementById('objetivo').value;
+
+        if (!validarEntradas(peso, altura, edad, 0, 0, 0, 0)) return;
+
+        const gastoEnergetico = Math.round(calcularTMB(peso, altura, edad, sexo) * actividad);
+        const resultados = calcularMacronutrientes(peso, gastoEnergetico, objetivo);
+
+        if (!resultados) return;
+
+        weeklyMacros = [];
+        switch (objetivo) {
+            case 'perdida':
+                weeklyMacros = generarPlanPerdida(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                break;
+            case 'ganancia':
+                weeklyMacros = generarPlanGanancia(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                break;
+            case 'mantenimiento':
+                weeklyMacros = generarPlanMantenimiento(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                break;
+            case 'mixto':
+                weeklyMacros = generarPlanMixto(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                break;
+        }
+
+        actualizarUI(resultados, gastoEnergetico);
+    }
+
+    document.getElementById('objetivo').addEventListener('change', toggleOpcionesObjetivo);
+    document.addEventListener('DOMContentLoaded', () => {
+        toggleOpcionesObjetivo();
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js no está disponible.');
+            document.getElementById('errorMessage').textContent = 'No se pudo cargar Chart.js. Algunas funcionalidades estarán limitadas.';
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    });
 </script>
 
 </body>
 </html>
+
 
 
 
