@@ -643,7 +643,56 @@
 
             </div> 
 			<div><button id="download-pdf-btn" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
+
+			<section id="objetivoNutricional" class="container my-5">
+				  <h2>Objetivo Nutricional</h2>
 				
+				  <div class="mb-3">
+				    <label for="objetivo" class="form-label">Selecciona tu objetivo:</label>
+				    <select id="objetivo" class="form-select" onchange="toggleOpcionesObjetivo()">
+				      <option value="">-- Selecciona --</option>
+				      <option value="perdida">Pérdida de Peso</option>
+				      <option value="ganancia">Ganancia de Peso</option>
+				      <option value="mantenimiento">Mantenimiento</option>
+				      <option value="mixto">Mixto</option>
+				    </select>
+				  </div>
+				
+				  <!-- Subopciones dinámicas (se llenan por JS) -->
+				  <div id="subopcionesObjetivo" class="mb-3"></div>
+				
+				  <!-- Planificación temporal -->
+				  <div class="mb-3">
+				    <label for="planSemanas" class="form-label">Planificación Temporal</label>
+				    <select id="planSemanas" class="form-select">
+				      <option value="4">4 semanas</option>
+				      <option value="12">12 semanas</option>
+				    </select>
+				  </div>
+				
+				  <button class="btn btn-primary" onclick="calcularMacros()">Generar Plan</button>
+				
+				  <!-- Resultados -->
+				  <div id="resultadoMacros" class="mt-4"></div>
+				  <canvas id="graficoMacros" width="400" height="400"></canvas>
+				
+				  <!-- Tabla de planificación -->
+				  <table class="table mt-4">
+				    <thead>
+				      <tr>
+				        <th>Semana</th>
+				        <th>Fase</th>
+				        <th>Estrategias</th>
+				        <th>Calorías</th>
+				        <th>Proteínas</th>
+				        <th>Carbohidratos</th>
+				        <th>Grasas</th>
+				        <th>Notas</th>
+				      </tr>
+				    </thead>
+				    <tbody id="tablaPlanificacionBody"></tbody>
+				  </table>
+				</section>
 				
 
     </main>
@@ -2480,5 +2529,6 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
 
 </body>
 </html>
+
 
 
