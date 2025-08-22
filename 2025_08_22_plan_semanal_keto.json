@@ -1,0 +1,407 @@
+{
+  "Lunes": {
+    "Desayuno": [],
+    "Almuerzo": [],
+    "Cena": [],
+    "Snack": []
+  },
+  "Martes": {
+    "Desayuno": [],
+    "Almuerzo": [],
+    "Cena": [],
+    "Snack": []
+  },
+  "Miércoles": {
+    "Desayuno": [],
+    "Almuerzo": [],
+    "Cena": [],
+    "Snack": []
+  },
+  "Jueves": {
+    "Desayuno": [
+      {
+        "name": "Huevos revueltos con chistorra",
+        "displayName": "<strong>Huevos revueltos con chistorra (448Kcal : 78%G:17%PT:1%HC: Ratio:2.0)</strong> (Huevos camperos 100.0gr, Aceite de oliva 15.0gr, Chistorra 40.0gr)",
+        "recipe": [
+          {
+            "name": "Huevos camperos",
+            "grams": 100,
+            "fat": 9.7,
+            "protein": 13,
+            "carbs": 0.68,
+            "kcal": 155
+          },
+          {
+            "name": "Aceite de oliva",
+            "grams": 15,
+            "fat": 15,
+            "protein": 0,
+            "carbs": 0,
+            "kcal": 132.6
+          },
+          {
+            "name": "Chistorra",
+            "grams": 40,
+            "fat": 14,
+            "protein": 5.6,
+            "carbs": 0.4,
+            "kcal": 160
+          }
+        ],
+        "totals": {
+          "fat": 38.7,
+          "protein": 18.6,
+          "carbs": 1.08,
+          "kcal": 447.6
+        }
+      }
+    ],
+    "Almuerzo": [
+      {
+        "name": "Chistorra con quinoa y quesos",
+        "displayName": "<strong>Chistorra con quinoa y quesos (687Kcal : 72%G:18%PT:6%HC: Ratio:1.3)</strong> (Chistorra 70.0gr, Queso Edam semicurado 40.0gr, Queso de cabra 40.0gr, Tomates cherry 40.0gr, Quinoa 40.0gr, Guacamole 50.0gr)",
+        "recipe": [
+          {
+            "name": "Chistorra",
+            "grams": 70,
+            "fat": 24.5,
+            "protein": 9.8,
+            "carbs": 0.7,
+            "kcal": 280
+          },
+          {
+            "name": "Queso Edam semicurado",
+            "grams": 40,
+            "fat": 10.8,
+            "protein": 11.6,
+            "carbs": 0,
+            "kcal": 142.8
+          },
+          {
+            "name": "Queso de cabra",
+            "grams": 40,
+            "fat": 11.68,
+            "protein": 6.8,
+            "carbs": 0.44,
+            "kcal": 134
+          },
+          {
+            "name": "Tomates cherry",
+            "grams": 40,
+            "fat": 0.08,
+            "protein": 0.36,
+            "carbs": 1.08,
+            "kcal": 7.2
+          },
+          {
+            "name": "Quinoa",
+            "grams": 40,
+            "fat": 0.76,
+            "protein": 1.76,
+            "carbs": 7.4,
+            "kcal": 48
+          },
+          {
+            "name": "Guacamole",
+            "grams": 50,
+            "fat": 6.85,
+            "protein": 0.95,
+            "carbs": 1,
+            "kcal": 74.5
+          }
+        ],
+        "totals": {
+          "fat": 54.669999999999995,
+          "protein": 31.27,
+          "carbs": 10.620000000000001,
+          "kcal": 686.5
+        }
+      }
+    ],
+    "Cena": [
+      {
+        "name": "Ensalada de Chucrut con Pechuga de Pollo",
+        "displayName": "<strong>Ensalada de Chucrut con Pechuga de Pollo (740Kcal : 62%G:31%PT:2%HC: Ratio:0.8)</strong> (Chucrut 150.0gr, Aguacate 70.0gr, Aceite de oliva 10.0gr, Pechuga de Pollo 175.0gr, Mantequilla 30.0gr, Rúcula 30.0gr)",
+        "recipe": [
+          {
+            "name": "Chucrut",
+            "grams": 150,
+            "fat": 0.15,
+            "protein": 1.35,
+            "carbs": 2.7,
+            "kcal": 28.5
+          },
+          {
+            "name": "Aguacate",
+            "grams": 70,
+            "fat": 10.29,
+            "protein": 1.4,
+            "carbs": 1.26,
+            "kcal": 112
+          },
+          {
+            "name": "Aceite de oliva",
+            "grams": 10,
+            "fat": 10,
+            "protein": 0,
+            "carbs": 0,
+            "kcal": 88.4
+          },
+          {
+            "name": "Pechuga de Pollo",
+            "grams": 175,
+            "fat": 6.3,
+            "protein": 54.25,
+            "carbs": 0,
+            "kcal": 288.75
+          },
+          {
+            "name": "Mantequilla",
+            "grams": 30,
+            "fat": 24.33,
+            "protein": 0.27,
+            "carbs": 0.03,
+            "kcal": 215.1
+          },
+          {
+            "name": "Rúcula",
+            "grams": 30,
+            "fat": 0.21,
+            "protein": 0.78,
+            "carbs": 0.63,
+            "kcal": 7.5
+          }
+        ],
+        "totals": {
+          "fat": 51.279999999999994,
+          "protein": 58.050000000000004,
+          "carbs": 4.62,
+          "kcal": 740.25
+        }
+      }
+    ],
+    "Snack": [
+      {
+        "name": "Batido Poteico de Kefir de Coco",
+        "displayName": "<strong>Batido Poteico de Kefir de Coco (473Kcal : 73%G:15%PT:8%HC: Ratio:1.4)</strong> (Aceite de Coco 10.0gr, Kéfir de coco 100.0gr, Whey Proteina 20.0gr, Arándanos 50.0gr)",
+        "recipe": [
+          {
+            "name": "Aceite de Coco",
+            "grams": 10,
+            "fat": 10,
+            "protein": 0,
+            "carbs": 0,
+            "kcal": 90
+          },
+          {
+            "name": "Kéfir de coco",
+            "grams": 100,
+            "fat": 27,
+            "protein": 3,
+            "carbs": 3.5,
+            "kcal": 280
+          },
+          {
+            "name": "Whey Proteina",
+            "grams": 20,
+            "fat": 1.16,
+            "protein": 14.66,
+            "carbs": 1.08,
+            "kcal": 74.2
+          },
+          {
+            "name": "Arándanos",
+            "grams": 50,
+            "fat": 0.15,
+            "protein": 0.4,
+            "carbs": 5,
+            "kcal": 28.85
+          }
+        ],
+        "totals": {
+          "fat": 38.309999999999995,
+          "protein": 18.06,
+          "carbs": 9.58,
+          "kcal": 473.05
+        }
+      }
+    ]
+  },
+  "Viernes": {
+    "Desayuno": [
+      {
+        "name": "Batido Verde Reprobiótico",
+        "displayName": "<strong>Batido Verde Reprobiótico (585Kcal : 69%G:20%PT:7%HC: Ratio:1.1)</strong> (Whey Proteina 25.0gr, Kéfir de coco 100.0gr, Espinacas frescas 50.0gr, Semillas de chía 10.0gr, Harina de Almendras 10.0gr, Aguacate 50.0gr, Cúrcuma 2.0gr, Spirulina 3.0gr)",
+        "recipe": [
+          {
+            "name": "Whey Proteina",
+            "grams": 25,
+            "fat": 1.45,
+            "protein": 18.325,
+            "carbs": 1.35,
+            "kcal": 92.75
+          },
+          {
+            "name": "Kéfir de coco",
+            "grams": 100,
+            "fat": 27,
+            "protein": 3,
+            "carbs": 3.5,
+            "kcal": 280
+          },
+          {
+            "name": "Espinacas frescas",
+            "grams": 50,
+            "fat": 0.2,
+            "protein": 1.45,
+            "carbs": 0.7,
+            "kcal": 11.5
+          },
+          {
+            "name": "Semillas de chía",
+            "grams": 10,
+            "fat": 3.07,
+            "protein": 1.65,
+            "carbs": 0.77,
+            "kcal": 48.6
+          },
+          {
+            "name": "Harina de Almendras",
+            "grams": 10,
+            "fat": 5.25,
+            "protein": 2.14,
+            "carbs": 0.87,
+            "kcal": 57.1
+          },
+          {
+            "name": "Aguacate",
+            "grams": 50,
+            "fat": 7.35,
+            "protein": 1,
+            "carbs": 0.9,
+            "kcal": 80
+          },
+          {
+            "name": "Cúrcuma",
+            "grams": 2,
+            "fat": 0.066,
+            "protein": 0.19399999999999998,
+            "carbs": 0.888,
+            "kcal": 6.24
+          },
+          {
+            "name": "Spirulina",
+            "grams": 3,
+            "fat": 0.231,
+            "protein": 1.725,
+            "carbs": 0.6090000000000001,
+            "kcal": 8.7
+          }
+        ],
+        "totals": {
+          "fat": 44.617000000000004,
+          "protein": 29.483999999999998,
+          "carbs": 9.587,
+          "kcal": 584.8900000000001
+        }
+      }
+    ],
+    "Almuerzo": [
+      {
+        "name": "Caballa Papillote",
+        "displayName": "<strong>Caballa Papillote (762Kcal : 96%G:16%PT:2%HC: Ratio:2.3)</strong> (Caballa (150g), Espárragos (100g), Espinacas (50g), Aceite de oliva (20g), Mantequilla (20g), Nata para montar [o Crema de leche] (30g), Jugo de limón (20ml))",
+        "recipe": [
+          {
+            "name": "Caballa Papillote",
+            "grams": 100,
+            "fat": 81.3,
+            "protein": 31.2,
+            "carbs": 3.4,
+            "kcal": 762.4
+          }
+        ],
+        "totals": {
+          "fat": 81.3,
+          "protein": 31.2,
+          "carbs": 3.4,
+          "kcal": 762.4
+        }
+      }
+    ],
+    "Cena": [
+      {
+        "name": "Crema de Brócoli con Pechuga",
+        "displayName": "<strong>Crema de Brócoli con Pechuga (770Kcal : 73%G:20%PT:6%HC: Ratio:1.2)</strong> (Brócoli 150.0gr, Coliflor 100.0gr, Aceite de oliva 40.0gr, Cúrcuma 2.0gr, Nata de Montar 50.0gr, Pechuga de pollo 100.0gr)",
+        "recipe": [
+          {
+            "name": "Brócoli",
+            "grams": 150,
+            "fat": 0.6,
+            "protein": 4.2,
+            "carbs": 6,
+            "kcal": 52.5
+          },
+          {
+            "name": "Coliflor",
+            "grams": 100,
+            "fat": 0.3,
+            "protein": 1.9,
+            "carbs": 3,
+            "kcal": 25
+          },
+          {
+            "name": "Aceite de oliva",
+            "grams": 40,
+            "fat": 40,
+            "protein": 0,
+            "carbs": 0,
+            "kcal": 353.6
+          },
+          {
+            "name": "Cúrcuma",
+            "grams": 2,
+            "fat": 0.066,
+            "protein": 0.19399999999999998,
+            "carbs": 0.888,
+            "kcal": 6.24
+          },
+          {
+            "name": "Nata de Montar",
+            "grams": 50,
+            "fat": 17.55,
+            "protein": 1,
+            "carbs": 1.55,
+            "kcal": 168
+          },
+          {
+            "name": "Pechuga de pollo",
+            "grams": 100,
+            "fat": 3.6,
+            "protein": 31,
+            "carbs": 0,
+            "kcal": 165
+          }
+        ],
+        "totals": {
+          "fat": 62.11600000000001,
+          "protein": 38.294,
+          "carbs": 11.438,
+          "kcal": 770.34
+        }
+      }
+    ],
+    "Snack": []
+  },
+  "Sábado": {
+    "Desayuno": [],
+    "Almuerzo": [],
+    "Cena": [],
+    "Snack": []
+  },
+  "Domingo": {
+    "Desayuno": [],
+    "Almuerzo": [],
+    "Cena": [],
+    "Snack": []
+  }
+}

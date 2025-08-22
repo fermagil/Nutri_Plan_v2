@@ -1,0 +1,753 @@
+[
+  {
+    "mealType": "Desayuno",
+    "name": "Bacon con huevos al estilo keto",
+    "fat": 42.6,
+    "protein": 22.4,
+    "carbs": 1.7,
+    "kcal": 489,
+    "ingredients": "Huevos (100g), Bacon (65g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Batido de arándanos",
+    "fat": 30.8,
+    "protein": 3.9,
+    "carbs": 9.1,
+    "kcal": 329.3,
+    "ingredients": "Leche de coco (162.5g), Arándanos (42.5g), Jugo de limón (7.5g), Extracto de vainilla (1g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Batido Proteína",
+    "fat": 22.5,
+    "protein": 22,
+    "carbs": 4.5,
+    "kcal": 315,
+    "ingredients": "Aceite de oliva (5g), Proteína de suero (20g), Leche de coco (50g), Semillas de calabaza tostadas (15g), Semillas de calabaza tostadas (15g), Almendras tostadas (10g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Batido Whey+Huevo+Aguacate y lino",
+    "fat": 34.3,
+    "protein": 25.5,
+    "carbs": 3.1,
+    "kcal": 440,
+    "ingredients": "Aguacate (100g), Huevo (100g), Clara de huevo pasteurizada (100g), Semillas de lino (50g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Huevos fritos y yogur de coco",
+    "fat": 62.8,
+    "protein": 22.6,
+    "carbs": 19.5,
+    "kcal": 744,
+    "ingredients": "Huevos (100g), Mantequilla (14g), Aguacate (50g), Tomate (110g), Yogur de coco (180g), Espinacas (14g), Arándanos (85g), Nueces (28g), Café (240ml), Nata para montar [o Crema de leche] (15g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Huevos fritos, tomate y queso",
+    "fat": 33.8,
+    "protein": 25.6,
+    "carbs": 3.0,
+    "kcal": 418,
+    "ingredients": "Huevos (100g), Mantequilla (7g), Queso cheddar (55g), Tomate (55g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Huevos revueltos con espinacas y salmón ahumado",
+    "fat": 34.6,
+    "protein": 24.1,
+    "carbs": 2.0,
+    "kcal": 409,
+    "ingredients": "Mantequilla (14g), Nata para montar [o Crema de leche] (30g), Huevos (100g), Espinacas (28g), Salmón ahumado (55g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Smoothie de espinacas y aguacate",
+    "fat": 65.2,
+    "protein": 11.4,
+    "carbs": 13.4,
+    "kcal": 698.9,
+    "ingredients": "Aguacate (100g), Espinacas (42.5g), Lima (33.5g), Jengibre (14g), Semillas de chía (14g), Crema de coco (237.5g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Keto Batido Brócoli",
+    "fat": 45,
+    "protein": 32,
+    "carbs": 12,
+    "kcal": 586,
+    "ingredients": "Proteína de suero (30g), Brócoli (30g), Espinacas (50g), Pepino (50g), Semillas de mostaza (5g), Semillas de chía (20g), Aguacate (100g), Leche de almendras (150ml), Jugo de limón (20ml), Nata para montar [o Crema de leche] (80g), Té Matcha Verde (2g)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Keto Batido Verde",
+    "fat": 48,
+    "protein": 22,
+    "carbs": 8,
+    "kcal": 554,
+    "ingredients": "Proteína de suero (20g), Leche de almendras (150ml), Espinacas (50g), Semillas de chía (10g), Aguacate (50g), Mantequilla (30g), Nata para montar [o Crema de leche] (70g), Canela (1g), Té Matcha (2g) con limón (200ml)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Keto Jugo Verde",
+    "fat": 65,
+    "protein": 34,
+    "carbs": 9,
+    "kcal": 758,
+    "ingredients": "Proteína de suero (40g), Espinacas (50g), Pepino (50g), Apio (50g), Jengibre (2g), Jugo de limón (20ml), Aceite de oliva (20g), Nata para montar [o Crema de leche] (70g), Canela (1g), Té verde con limón (200ml)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Keto Tostadas",
+    "fat": 64,
+    "protein": 38,
+    "carbs": 8,
+    "kcal": 759,
+    "ingredients": "Harina de almendras (30g), Cáscara de psyllium (5g), Huevos (100g, 2 unidades), Aguacate (50g), Tomate (30g), Semillas de girasol (15g), Aceite de oliva (15g), Proteína de suero (20g), Leche de almendras (100ml)"
+  },
+  {
+    "mealType": "Desayuno",
+    "name": "Tortilla de Aguacate",
+    "fat": 23.5,
+    "protein": 2,
+    "carbs": 1.8,
+    "kcal": 233,
+    "ingredients": "Aguacate (100g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Caballa Papillote",
+    "fat": 81.3,
+    "protein": 31.2,
+    "carbs": 3.4,
+    "kcal": 762.4,
+    "ingredients": "Caballa (150g), Espárragos (100g), Espinacas (50g), Aceite de oliva (20g), Mantequilla (20g), Nata para montar [o Crema de leche] (30g), Jugo de limón (20ml)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Chuletas keto de cerdo con judías verdes y mantequilla de ajo",
+    "fat": 53.8,
+    "protein": 26.8,
+    "carbs": 6.1,
+    "kcal": 622.9,
+    "ingredients": "Mantequilla (48.8g), Ajo en polvo (1.2g), Perejil seco (0.8g), Jugo de limón (3.8g), Chuleta de cerdo (150g), Judías verdes [o Ejotes / Vainitas] (112.5g), Sal, Pimienta"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Ensalada Templada Keto",
+    "fat": 64.7,
+    "protein": 31.9,
+    "carbs": 6.6,
+    "kcal": 748.9,
+    "ingredients": "Arroz de coliflor (100g), Espinacas (100g), Aguacate (70g), Nueces (15g), Aceite de oliva (30g), Jugo de limón (20ml), Pechuga de pollo (80g), Nata para montar [o Crema de leche] (30g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Hamburguesas con Salsa de Queso Azul",
+    "fat": 22.8,
+    "protein": 6.8,
+    "carbs": 0.8,
+    "kcal": 233.4,
+    "ingredients": "Carne molida de res (100g), Mantequilla (20g), Queso azul (30g), Crema (30g), Aceite de oliva (15g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Huevos Estrellados con Chistorra",
+    "fat": 44.5,
+    "protein": 21.8,
+    "carbs": 2.1,
+    "kcal": 506.9,
+    "ingredients": "Huevos (100g), Chistorra (50g), Calabacín [o Zapallo italiano] (50g), Mantequilla (20g), Queso crema (20g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "KetoMusaca",
+    "fat": 69.1,
+    "protein": 47.8,
+    "carbs": 12.6,
+    "kcal": 873.4,
+    "ingredients": "Berenjena (75g), Aceite de oliva (15g), Cebolla amarilla (27.5g), Ajo (4.5g), Canela (0.7g), Pimentón [o Paprika] (1.7g), Orégano (0.8g), Pollo molido (150g), Salsa de tomate (60g), Queso crema (25g), Nata para montar [o Crema de leche] (60g), Queso gouda (50g), Nuez moscada (0.2g), Espinacas (21.3g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Panceta con Chistorra y Huevo Frito",
+    "fat": 54,
+    "protein": 40,
+    "carbs": 3,
+    "kcal": 720,
+    "ingredients": "Chistorra (50g), Panceta de cerdo (125g), Huevo (100g), Lechuga (60g), Tomates cherry (30g), Chucrut fermentado (30g), Pimientos amarillos fermentados (15g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Pechuga de pollo rellena de queso con guacamole",
+    "fat": 61.5,
+    "protein": 63.7,
+    "carbs": 10.6,
+    "kcal": 827.1,
+    "ingredients": "Pechuga de pollo (162.5g), Aceite de oliva (14.3g), Pimiento rojo (35g), Ajo (6g), Jalapeños (6.8g), Comino (0.3g), Queso crema (21.3g), Queso mozzarella (27.5g), Aguacate (100g), Jugo de lima (2.8g), Cilantro (3.8g), Tomate (27.5g), Crema agria (60g), Espinacas (57.5g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Pollo frito con mantequilla y brócoli",
+    "fat": 156.9,
+    "protein": 145.3,
+    "carbs": 22.2,
+    "kcal": 2111.3,
+    "ingredients": "Mantequilla (140g), Muslos de pollo (650g), Brócoli (450g), Puerro (45g), Ajo en polvo (2.5g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Quinoa Keto con Brócoli",
+    "fat": 59.1,
+    "protein": 33.5,
+    "carbs": 10.6,
+    "kcal": 733.4,
+    "ingredients": "Arroz de coliflor (100g), Brócoli (100g), Aguacate (70g), Semillas de lino (10g), Aceite de oliva (30g), Jugo de limón (20ml), Pechuga de pollo (80g), Nata para montar [o Crema de leche] (30g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Revuelto de Verduras",
+    "fat": 74.6,
+    "protein": 41.1,
+    "carbs": 5.4,
+    "kcal": 756.4,
+    "ingredients": "Huevos (100g, 2 unidades), Calabacín [o Zapallo italiano] (100g), Champiñones (80g), Pechuga de pollo (80g), Aceite de oliva (30g), Mantequilla (20g), Aceite de coco (15g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Salmón Ajo y Limón",
+    "fat": 68.7,
+    "protein": 34.3,
+    "carbs": 7.2,
+    "kcal": 780.5,
+    "ingredients": "Salmón (150g), Ajo (3g), Jugo de limón (20ml), Aceite de oliva (30g), Brócoli (100g), Nata para montar [o Crema de leche] (50g), Eneldo (2g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Salmón al Horno",
+    "fat": 66.9,
+    "protein": 33.2,
+    "carbs": 5.2,
+    "kcal": 753.9,
+    "ingredients": "Salmón (150g), Brócoli (100g), Espinacas (50g), Aceite de oliva (30g), Mantequilla (20g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Salmón al Vapor",
+    "fat": 84.9,
+    "protein": 33.9,
+    "carbs": 6.4,
+    "kcal": 720.2,
+    "ingredients": "Salmón (150g), Brócoli (100g), Nata para montar [o Crema de leche] (30g), Aceite de oliva (20g), Mantequilla (20g), Aceite de coco (10g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Salmón con Espinacas",
+    "fat": 67.5,
+    "protein": 33.7,
+    "carbs": 3.4,
+    "kcal": 751.9,
+    "ingredients": "Salmón (150g), Aceite de oliva (30g), Romero (2g), Ajo (6g), Espinacas (200g), Jugo de limón (20ml), Mantequilla (20g), Coliflor (50g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Sardinas y Pollo Ensalada",
+    "fat": 66.8,
+    "protein": 40.6,
+    "carbs": 4.4,
+    "kcal": 791.6,
+    "ingredients": "Sardinas (80g), Tomate (30g), Pepino (30g), Apio (50g), Pechuga de pollo (60g), Aceite de oliva (30g), Nata para montar [o Crema de leche] (70g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Sopa de Calabaza Keto",
+    "fat": 63.1,
+    "protein": 37.6,
+    "carbs": 5.9,
+    "kcal": 757,
+    "ingredients": "Coliflor (100g), Pechuga de pollo (100g), Aceite de oliva (30g), Almendras (15g), Cúrcuma (2g), Nata para montar [o Crema de leche] (60g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Sopa keto de mariscos",
+    "fat": 68.8,
+    "protein": 44.7,
+    "carbs": 12.6,
+    "kcal": 842.6,
+    "ingredients": "Mantequilla (15g), Ajo (3g), Apio (81.3g), Jugo de almeja (60g), Nata para montar [o Crema de leche] (87.5g), Salvia/Tomillo (0.7g), Jugo de limón (2.8g), Queso crema (27.5g), Salmón (112.5g), Espinacas (13.8g), Camarones (57.5g), Hojuelas de chile rojo (0.7g)"
+  },
+  {
+    "mealType": "Almuerzo",
+    "name": "Tortilla de Espárragos",
+    "fat": 64.2,
+    "protein": 39.9,
+    "carbs": 4,
+    "kcal": 761.4,
+    "ingredients": "Huevos (100g, 2 unidades), Espárragos (100g), Pepino (30g), Pechuga de pollo (80g), Aceite de oliva (30g), Mantequilla (20g), Jugo de limón (20ml), Aceite de coco (5g)"
+  },
+
+  {
+    "mealType": "Cena",
+    "name": "Alitas de Pollo Especiadas",
+    "fat": 38,
+    "protein": 25,
+    "carbs": 1,
+    "kcal": 410,
+    "ingredients": "Alitas de pollo (150g), Mantequilla (20g), Aceite de oliva (15g), Especias (3g), Crema agria (30g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Crema de Brócoli Keto",
+    "fat": 61,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 730,
+    "ingredients": "Brócoli (200g), Coliflor (100g, sustituto de patata), Aceite de oliva (40g), Cúrcuma (2g), Jengibre (2g), Nata para montar [o Crema de leche] (50g), Pechuga de pollo (100g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Ensalada César Keto",
+    "fat": 61,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 730,
+    "ingredients": "Repollo morado [o Col lombarda] (100g), Col rizada [o Kale] (100g), Nueces (15g), Semillas de sésamo (10g), Aceite de oliva (40g), Jugo de limón (10ml), Mostaza (5g), Pechuga de pollo (150g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Ensalada de Burrata Keto",
+    "fat": 36,
+    "protein": 10,
+    "carbs": 4,
+    "kcal": 390,
+    "ingredients": "Burrata (50g), Aceitunas negras (30g), Nueces (15g), Aceite de oliva (30g), Vinagre balsámico (5g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Ensalada de Repollo Keto",
+    "fat": 60,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 720,
+    "ingredients": "Repollo morado [o Col lombarda] (150g), Aguacate (70g), Nueces (15g), Semillas de girasol (15g), Aceite de oliva (40g), Vinagre de sidra de manzana (5ml), Jengibre (2g), Pechuga de pollo (150g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Ensalada Mediterránea Keto",
+    "fat": 46,
+    "protein": 14,
+    "carbs": 4,
+    "kcal": 480,
+    "ingredients": "Aguacate (70g), Aceitunas negras (30g), Queso mozzarella (50g), Aceite de oliva (30g), Vinagre de vino (5g), Semillas de calabaza (10g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Hamburguesa con Salsa Roquefort",
+    "fat": 48,
+    "protein": 42,
+    "carbs": 6,
+    "kcal": 650,
+    "ingredients": "Carne molida de res (170g), Queso azul (50g), Nata para montar [o Crema de leche] (50g), Pepinillo encurtido (20g), Pimientos amarillos fermentados (20g), Tomates cherry (20g), Repollo morado [o Col lombarda] (50g), Aguacate (50g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Huevos Rellenos Keto (Atún)",
+    "fat": 32,
+    "protein": 24,
+    "carbs": 2,
+    "kcal": 370,
+    "ingredients": "Huevos (100g, 2 unidades), Atún en aceite (50g), Queso crema (30g), Aceitunas negras (20g), Mayonesa (15g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Merluza al Vapor",
+    "fat": 60,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 720,
+    "ingredients": "Merluza (180g), Espárragos (150g), Pepino (50g), Aceite de oliva (40g), Almendras (15g), Jugo de limón (20ml)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Merluza con Brócoli",
+    "fat": 60,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 720,
+    "ingredients": "Merluza (180g), Brócoli (150g), Espinacas (50g), Aceite de oliva (40g), Almendras (15g), Mantequilla (20g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Salmón Papillote",
+    "fat": 62,
+    "protein": 36,
+    "carbs": 5,
+    "kcal": 740,
+    "ingredients": "Salmón (180g), Espárragos (150g), Espinacas (50g), Aceite de oliva (40g), Mantequilla (20g), Jugo de limón (20ml)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Sardinas Ensalada Keto",
+    "fat": 61,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 730,
+    "ingredients": "Sardinas (100g), Tomate (50g), Pepino (50g), Apio (50g), Aceite de oliva (40g), Mantequilla (20g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Sopa de Calabaza Keto",
+    "fat": 60,
+    "protein": 35,
+    "carbs": 5,
+    "kcal": 720,
+    "ingredients": "Coliflor (150g, sustituto de calabaza), Pechuga de pollo (150g), Aceite de oliva (40g), Almendras (15g), Cúrcuma (2g), Nata para montar [o Crema de leche] (50g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Tortilla y Pollo Keto",
+    "fat": 61,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 730,
+    "ingredients": "Huevos (150g, 3 unidades), Calabacín [o Zapallo italiano] (150g), Champiñones (100g), Pechuga de pollo (100g), Aceite de oliva (40g), Mantequilla (20g)"
+  },
+  {
+    "mealType": "Cena",
+    "name": "Tortilla y Pollo Keto",
+    "fat": 61,
+    "protein": 34,
+    "carbs": 5,
+    "kcal": 730,
+    "ingredients": "Eggs (150g, 3 units), Zucchini (150g), Mushrooms (100g), Chicken breast (100g), Olive oil (40g), Butter (20g)"
+  },
+  
+  {
+    "mealType": "Snack",
+    "name": "Batido Keto",
+    "fat": 28,
+    "protein": 15,
+    "carbs": 3,
+    "kcal": 350,
+    "ingredients": "Proteína de suero (20g), Leche de almendras (250ml), Aguacate (50g), Almendras (10g), Aceite de coco (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Batido Verde Keto",
+    "fat": 29,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Espinacas (80g), Pepino (100g), Jugo de limón (10ml), Jengibre (2g), Proteína de suero (20g), Aceite de oliva (15g), Aguacate (50g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Bocaditos de Aguacate y Salmón",
+    "fat": 29.6,
+    "protein": 13.1,
+    "carbs": 2.7,
+    "kcal": 337.7,
+    "ingredients": "Aguacate (70g), Salmón ahumado (50g), Queso crema (20g), Jugo de limón (10ml), Mayonesa keto (10g), Aceite de coco (5g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Chips de Queso",
+    "fat": 31.6,
+    "protein": 13.9,
+    "carbs": 0.9,
+    "kcal": 343.4,
+    "ingredients": "Queso cheddar (50g), Mayonesa keto (10g), Aceite de coco (5g). Hornear el queso a 200°C durante 5-7 minutos hasta que esté crujiente, servir con mayonesa y salsa de aceite de coco derretido."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Claras y Almendras",
+    "fat": 28,
+    "protein": 15,
+    "carbs": 2,
+    "kcal": 350,
+    "ingredients": "Claras de huevo (100g, 3 unidades), Almendras (15g), Proteína de suero (20g), Aceite de coco (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Fat Bombs de Chocolate Keto",
+    "fat": 30.7,
+    "protein": 16.7,
+    "carbs": 3,
+    "kcal": 359.5,
+    "ingredients": "Manteca de cacao (25g), Cacao en polvo sin azúcar (5g), Eritritol (5g), Proteína de suero (20g), Mantequilla de almendras (10g). Derretir la manteca de cacao, mezclar con cacao en polvo, eritritol, proteína de suero, mantequilla de almendras; enfriar en moldes."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Huevos Rellenos Keto",
+    "fat": 32.2,
+    "protein": 16.8,
+    "carbs": 2.1,
+    "kcal": 363,
+    "ingredients": "2 huevos (100g), Mayonesa keto (20g), Mostaza (5g), Queso crema (20g), Pimentón (1g). Hervir los huevos, cortar por la mitad, mezclar las yemas con mayonesa, mostaza, queso crema, aceite de coco (5g); rellenar las claras, espolvorear con pimentón."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Huevos y Nueces",
+    "fat": 28,
+    "protein": 15,
+    "carbs": 2,
+    "kcal": 350,
+    "ingredients": "Huevos duros (100g, 2 unidades), Nueces (15g), Aceite de oliva (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Kéfir Keto",
+    "fat": 29,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Kéfir de coco (150g), Aguacate (50g), Proteína de suero (20g), Almendras (10g), Aceite de coco (10g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Mini Tortillas de Huevo",
+    "fat": 30.1,
+    "protein": 21.6,
+    "carbs": 1.3,
+    "kcal": 314.8,
+    "ingredients": "Huevos (100g, 2 unidades), Queso cheddar (30g), Espinacas (20g), Mayonesa keto (10g), Aceite de coco (5g). Mezclar huevos, queso, espinacas, mayonesa; hornear en moldes para muffins a 180°C durante 10-12 min, rociar con aceite de coco."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Nueces y Almendras Tostadas",
+    "fat": 38.1,
+    "protein": 15.5,
+    "carbs": 2.4,
+    "kcal": 297.4,
+    "ingredients": "Almendras (20g), Nueces (20g), Queso cheddar (25g), Sal (1g). Tostar frutos secos con sal, servir con queso rallado."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Palitos de Apio con Dip",
+    "fat": 34.2,
+    "protein": 9.6,
+    "carbs": 2.8,
+    "kcal": 366.2,
+    "ingredients": "Apio (100g), Mayonesa keto (30g), Queso crema (10g), Queso cheddar (20g). Mezclar mayonesa y queso crema como dip, servir con apio y queso rallado."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Pepitas de Calabaza Tostadas",
+    "fat": 32.2,
+    "protein": 14.3,
+    "carbs": 1.7,
+    "kcal": 354.2,
+    "ingredients": "Semillas de calabaza (25g), Aceite de oliva (10g), Queso cheddar (30g), Sal (1g). Tostar semillas en aceite de oliva con sal, servir con queso rallado."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Rollitos de Jamón y Queso",
+    "fat": 30.9,
+    "protein": 21.8,
+    "carbs": 1.8,
+    "kcal": 377.3,
+    "ingredients": "Jamón serrano (60g), Queso crema (40g), Mayonesa keto (10g), Aceite de coco (5g). Untar queso crema y mayonesa en el jamón, enrollar, rociar con aceite de coco derretido."
+  },
+  {
+    "mealType": "Snack",
+    "name": "Semillas y Frutos",
+    "fat": 29,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Semillas de calabaza (20g), Moras (50g, reducidas), Proteína de suero (20g), Aceite de oliva (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Snack Quesos",
+    "fat": 22,
+    "protein": 13,
+    "carbs": 2,
+    "kcal": 280,
+    "ingredients": "Rollo de queso de cabra (20g), Queso Edam (40g), Tomates cherry (30g), Rúcula (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Yogur Keto con Frutos",
+    "fat": 28,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 350,
+    "ingredients": "Yogur de coco (150g), Moras (50g, reducidas), Almendras (15g), Semillas de lino (10g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Batido Post-Keto",
+    "fat": 28,
+    "protein": 15,
+    "carbs": 3,
+    "kcal": 350,
+    "ingredients": "Proteína de suero (20g), Leche de almendras (250ml), Aguacate (50g), Almendras (10g), Aceite de coco (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Batido Post-Keto Plus",
+    "fat": 30,
+    "protein": 16,
+    "carbs": 3,
+    "kcal": 370,
+    "ingredients": "Proteína de suero (25g), Leche de almendras (300ml), Aguacate (50g), Almendras (15g), Aceite de coco (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Barritas Keto",
+    "fat": 29,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Proteína de cáñamo (40g), Almendras (20g), Semillas de chía (10g), Clara de huevo (60g), Aceite de coco (15g), Harina de plátano verde (10g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Manzana Keto",
+    "fat": 28,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 350,
+    "ingredients": "Aguacate (70g, sustituto de manzana), Nueces (10g), Almendras (10g), Proteína de suero (20g), Agua (200ml)"
+  },
+
+  
+  {
+    "mealType": "Snack",
+    "name": "Barritas Sin Granos",
+    "fat": 29,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Proteína de cáñamo (40g), Almendras (20g), Harina de plátano verde (20g), Semillas de chía (10g), Clara de huevo (60g), Aceite de coco (15g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Batido Ultrafermentado",
+    "fat": 30,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 370,
+    "ingredients": "Brócoli (50g), Espinacas (100g), Pepino (75g), Semillas de mostaza fermentadas (5g), Semillas de chía (10g), Aguacate (50g, sustituto de manzana), Kombucha (250ml), Proteína de cáñamo (40g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Batido Verde Reprobiótico",
+    "fat": 29,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Proteína de cáñamo (30g), Kéfir de agua de coco (200ml), Espinacas (50g), Aguacate (50g, sustituto de kiwi), Semillas de chía (10g), Mantequilla de almendras (10g), Harina de plátano verde (10g), Canela (1g), Cúrcuma (1g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Jugo Verde y Chía Keto",
+    "fat": 29,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Espinacas (80g), Pepino (50g), Apio (50g), Jengibre (2g), Jugo de limón (10ml), Semillas de chía (20g), Leche de coco (100ml), Inulina (5g), Proteína de colágeno (30g), Nueces (10g)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Tostadas Sin Granos",
+    "fat": 29,
+    "protein": 15,
+    "carbs": 3,
+    "kcal": 360,
+    "ingredients": "Harina de almendras (30g), Cáscara de psyllium (5g), Huevos (100g, 2 unidades), Aguacate (70g), Tomate (50g), Semillas de girasol (15g), Aceite de coco (15g), Infusión de jengibre y limón (200ml)"
+  },
+  {
+    "mealType": "Snack",
+    "name": "Yogur Probiótico Keto",
+    "fat": 28,
+    "protein": 14,
+    "carbs": 3,
+    "kcal": 350,
+    "ingredients": "Yogur de coco (150g), Moras (50g), Almendras (10g), Semillas de lino (10g)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Burger pizza",
+    "fat": 59.3,
+    "protein": 50.4,
+    "carbs": 5.0,
+    "kcal": 773,
+    "ingredients": "Carne molida de res (200g), Tomate (50g), Lechuga (50g), Cebolla fermentada (20g), Chucrut (25g), Queso cheddar (50g), Huevo (25g), Sal (3.75ml), Pimienta (1.25ml)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Coca de recapte o con escalibada",
+    "fat": 41.0,
+    "protein": 53.4,
+    "carbs": 14.2,
+    "kcal": 612.5,
+    "ingredients": "Pimiento rojo (70g), Berenjena (100g), Cebolla blanca (55g), Ajo (6g), Aceite de oliva (13.5g), Atún (92.5g), Queso parmesano (50g), Cáscara de psyllium (4.5g), Huevo (50g), Sal (pizca), Orégano (2.5ml), Ajo en polvo (2.5ml), Anchoas (25g)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Meatza con doble de queso y champiñones",
+    "fat": 41.9,
+    "protein": 66.2,
+    "carbs": 5.6,
+    "kcal": 681.5,
+    "ingredients": "Pavo molido (225g), Queso parmesano (22.5g), Huevo (25g), Sal (2.5ml), Cebolla en polvo (2.5ml), Pimienta (1.25ml), Salsa de tomate (30g), Ajo en polvo (1.25ml), Champiñones (42.5g), Queso mozzarella (70g), Orégano (0.75g)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Pan Suizo Keto",
+    "fat": 16,
+    "protein": 6,
+    "carbs": 3,
+    "kcal": 180,
+    "ingredients": "Harina de almendras (150g), Harina de coco (50g), Polvo de hornear (4g), Sal (3g), Huevos (250g, 5 unidades, yemas y claras separadas), Aceite de oliva o mantequilla derretida (74g), Lece de almendras sin azúcar (80g), Vinagre de sidra de manzana (5g), Semillas de sésamo o lino (10g)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Pizza low-carb de calabacín con pepperoni",
+    "fat": 184.8,
+    "protein": 165.2,
+    "carbs": 40.9,
+    "kcal": 2577.5,
+    "ingredients": "Calabacín [o Zapallo italiano] (650g), Huevos (100g), Queso mozzarella (110g), Polvo de hornear (4g), Pimienta (5ml), Orégano (5ml), Salsa de tomate (120g), Queso mozzarella (475g), Pepperoni (85g), Pimientos verdes (110g), Aceitunas (70g), Orégano (15ml)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Pan de taza keto (1 porción)",
+    "fat": 24.8,
+    "protein": 6.4,
+    "carbs": 2.1,
+    "kcal": 269.2,
+    "ingredients": "Mantequilla (14g), Harina de almendras (7g), Harina de coco (7g), Polvo de hornear (3.75g), Semillas de amapola (1.5g), Sal (pizca), Huevo (50g), Nata para montar [o Crema de leche] (15g)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Pan focaccia (1 porción)",
+    "fat": 23.6,
+    "protein": 10.2,
+    "carbs": 2.3,
+    "kcal": 268,
+    "ingredients": "Queso mozzarella (21.3g), Queso crema (3.5g), Vinagre de vino blanco (0.6g), Huevo (6.3g), Harina de almendras (22.5g), Sal (0.6g), Ajo en polvo (0.2g), Mantequilla (6.9g), Ajo (1.1g), Romero (0.1g)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Pan keto (1 porción)",
+    "fat": 17.3,
+    "protein": 8.8,
+    "carbs": 2.0,
+    "kcal": 211.8,
+    "ingredients": "Harina de almendras (23.3g), Semillas de lino (8.3g), Polvo de hornear (1.3g), Sal marina (1g), Vinagre de sidra de manzana (1.7g), Clara de huevo (16.7g), Semillas de sésamo (3g)"
+  },
+  {
+    "mealType": "Recetas",
+    "name": "Pan keto sin frutos secos (1 porción)",
+    "fat": 6.9,
+    "protein": 6.2,
+    "carbs": 0.8,
+    "kcal": 98.7,
+    "ingredients": "Huevos (30g), Queso mozzarella (16.3g), Queso crema (1.5g), Semillas de lino (1.5g), Polvo de hornear (0.5g), Fibra de avena (2.8g), Sal (0.3g), Mantequilla (0.5g), Semillas de sésamo (1.4g), Semillas de amapola (0.9g)"
+  }
+]
