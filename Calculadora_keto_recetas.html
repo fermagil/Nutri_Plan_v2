@@ -5944,6 +5944,59 @@ function showDailyNutrition(event) {
   }, 100);
 }
 
+// === Funcionalidad para mostrar gráfico nutricional diario ===
+// Añadir event listeners para doble click en celdas de día
+document.querySelectorAll('#weeklyPlanTable td[data-day]').forEach(cell => {
+  cell.addEventListener('dblclick', showDailyNutrition);
+});
+
+// Función para mostrar el modal con la información nutricional
+function showDailyNutrition(event) {
+  const dayCell = event.target.closest('td[data-day]');
+  if (!dayCell) {
+    console.error('No se encontró el elemento td con atributo data-day');
+    return;
+  }
+
+  let day = dayCell.getAttribute('data-day');
+  if (!day) {
+    console.warn('data-day no definido, intentando obtener desde modalNutritionTitle');
+    const title = document.getElementById('modalNutritionTitle').textContent;
+    const match = title.match(/Información Nutricional del (\w+)/);
+    day = match ? match[1] : null;
+  }
+
+  if (!day || !DAYS.includes(day)) {
+    console.error('Día no válido:', day);
+    alert('Error: No se pudo determinar el día para mostrar la información nutricional.');
+    return;
+  }
+
+  const nutritionData = calculateDailyNutrition(day);
+
+  if (nutritionData.kcal === 0) {
+    alert(`No hay datos nutricionales para el ${day}`);
+    return;
+  }
+
+  document.getElementById('modalNutritionTitle').textContent = `Información Nutricional del ${day}`;
+  document.getElementById('dailyKetoRatio').textContent = nutritionData.ketoRatio.toFixed(2);
+
+  const totalGrams = nutritionData.fat + nutritionData.protein + nutritionData.carbs;
+  const fatPercentage = totalGrams > 0 ? Math.round((nutritionData.fat * 9 / nutritionData.kcal) * 100) : 0;
+  const proteinPercentage = totalGrams > 0 ? Math.round((nutritionData.protein * 4 / nutritionData.kcal) * 100) : 0;
+  const carbsPercentage = totalGrams > 0 ? Math.round((nutritionData.carbs * 4 / nutritionData.kcal) * 100) : 0;
+
+  generateNutritionAdvice(fatPercentage, proteinPercentage, carbsPercentage, nutritionData.ketoRatio, nutritionData, day);
+
+  const modal = document.getElementById('dailyNutritionModal');
+  modal.style.display = 'flex';
+
+  setTimeout(() => {
+    renderNutritionChart(nutritionData);
+  }, 100);
+}
+
 // Función para generar consejos nutricionales personalizados
 // Función para generar consejos nutricionales personalizados
 function generateNutritionAdvice(fatPct, proteinPct, carbsPct, ketoRatio, nutritionData, day) {
@@ -6066,18 +6119,7 @@ function generateNutritionAdvice(fatPct, proteinPct, carbsPct, ketoRatio, nutrit
       <li><strong>Estrés hepático o renal:</strong> En personas susceptibles puede empeorar condiciones preexistentes</li>
     </ul>`;
   adviceList.appendChild(benefitsRisksAdvice);
-	
-	// Estrategia de periodización nutricional
-  const periodizationAdvice = document.createElement('li');
-  periodizationAdvice.innerHTML = `<strong>Evolución y periodización nutricional:</strong>
-    <ul style="padding-left: 20px; margin-top: 5px;">
-      <li><strong>Fase 1 (Inducción cetogénica):</strong> 4-6 semanas, 5-10% HC, 65-70% grasas - Reset metabólico y pérdida inicial de grasa</li>
-      <li><strong>Fase 2 (Ciclado metabólico):</strong> 8-12 semanas, 10-25% HC, 40-50% grasas - Mantener beneficios y rendimiento físico</li>
-      <li><strong>Fase 3 (Transición mantenimiento):</strong> Largo plazo, 26-40% HC, 30-35% grasas - Mantener peso y equilibrio nutricional</li>
-    </ul>
-    <strong>Estrategia combinada recomendada:</strong> Cetosis en días de descanso + carbohidratos estratégicos en días de entrenamiento (1-2 horas antes/después del ejercicio).`;
-  adviceList.appendChild(periodizationAdvice);
-  
+
   // Prolongación de la fase de inducción cetogénica
   const extendedInductionAdvice = document.createElement('li');
   extendedInductionAdvice.innerHTML = `<strong>Prolongación de la fase de inducción cetogénica (12–18 semanas):</strong>
@@ -6104,6 +6146,93 @@ function generateNutritionAdvice(fatPct, proteinPct, carbsPct, ketoRatio, nutrit
     </ul>`;
   adviceList.appendChild(metabolicCyclingAdvice);
 
+  // NUEVO: Ciclos hiperproteicos combinados con ciclado de HC y cetosis
+  const highProteinCyclingAdvice = document.createElement('li');
+  highProteinCyclingAdvice.innerHTML = `<strong>Combinación de ciclos hiperproteicos con ciclado de HC y cetosis:</strong>
+    <p><strong>Objetivo:</strong> Maximizar la pérdida de grasa mientras se preserva (o incluso se aumenta) la masa muscular magra, especialmente en déficit calórico.</p>
+    
+    <strong>¿Qué es un ciclo hiperproteico?</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Ingesta de proteína:</strong> 1.8–2.6 g/kg de peso corporal/día (vs. 1.2–2.0 g/kg en estándar).</li>
+      <li><strong>Duración:</strong> 4–8 semanas, intercaladas con fases de cetosis o ciclado de HC.</li>
+      <li><strong>Contexto:</strong> Usado en déficit calórico, entrenamiento de fuerza y en transiciones metabólicas.</li>
+    </ul>
+
+    <strong>Beneficios respaldados por evidencia:</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Preservación de masa muscular:</strong> Estudios muestran que dietas hiperproteicas durante déficit calórico reducen la pérdida de masa magra en hasta un 50% vs. dietas normoproteicas (Pasiakos et al., <em>AJCN</em>, 2013).</li>
+      <li><strong>Saciedad mejorada:</strong> Mayor ingesta proteica aumenta la liberación de péptidos anorexígenos (GLP-1, PYY), reduciendo el apetito (Leidy et al., <em>Obesity</em>, 2015).</li>
+      <li><strong>Termogénesis dietética elevada:</strong> La digestión de proteínas quema ~20–30% de sus kcal, frente al 5–10% de HC y grasas (Halton & Hu, <em>AJCN</em>, 2004).</li>
+      <li><strong>Mantenimiento del metabolismo basal:</strong> Reduce el "ramping down" metabólico en déficit prolongado (Müller et al., <em>Obesity Reviews</em>, 2015).</li>
+    </ul>
+
+    <strong>¿Cómo combinarlo con cetosis y ciclado de HC?</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Fase hiperproteica + cetosis ligera:</strong> 1.8–2.2 g/kg proteína, 30–50 g HC/día, resto en grasas. Ideal para <strong>inicio de pérdida de grasa con protección muscular</strong>.</li>
+      <li><strong>Fase hiperproteica + ciclado de HC:</strong> Días de entreno: 1.8–2.6 g/kg + 1.5–2 g/kg HC; días de descanso: 2.2 g/kg + <50 g HC. Potencia <strong>recuperación y anabolismo</strong>.</li>
+      <li><strong>Evitar en cetosis estricta:</strong> Más de 2.2–2.5 g/kg puede elevar insulina y reducir cetosis por gluconeogénesis (Cahill, <em>NEJM</em>, 2006).</li>
+    </ul>
+
+    <strong>Ejemplo de integración en el plan anual:</strong>
+    <div style="margin-top: 10px; overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <thead>
+          <tr style="background-color: #f5f5f5;">
+            <th style="border: 1px solid #ddd; padding: 8px;">Mes</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Fase</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Proteína</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">HC</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Objetivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="border: 1px solid #ddd; padding: 8px;">1–3</td><td style="border: 1px solid #ddd; padding: 8px;">Cetosis + Hiperproteica</td><td style="border: 1px solid #ddd; padding: 8px;">1.8–2.2 g/kg</td><td style="border: 1px solid #ddd; padding: 8px;">30–50 g/día</td><td style="border: 1px solid #ddd; padding: 8px;">Reset + protección muscular</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 8px;">4–5</td><td style="border: 1px solid #ddd; padding: 8px;">Hiperproteica + Ciclado HC</td><td style="border: 1px solid #ddd; padding: 8px;">2.0–2.6 g/kg</td><td style="border: 1px solid #ddd; padding: 8px;">Días entreno: 100–150 g</td><td style="border: 1px solid #ddd; padding: 8px;">Fuerza y recuperación</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 8px;">6–9</td><td style="border: 1px solid #ddd; padding: 8px;">Ciclado metabólico</td><td style="border: 1px solid #ddd; padding: 8px;">1.8–2.2 g/kg</td><td style="border: 1px solid #ddd; padding: 8px;">50–120 g/día</td><td style="border: 1px solid #ddd; padding: 8px;">Mantenimiento dinámico</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 8px;">10–12</td><td style="border: 1px solid #ddd; padding: 8px;">Transición + proteína moderada</td><td style="border: 1px solid #ddd; padding: 8px;">1.6–2.0 g/kg</td><td style="border: 1px solid #ddd; padding: 8px;">150–200 g/día</td><td style="border: 1px solid #ddd; padding: 8px;">Mantenimiento sostenible</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <strong>Precauciones clave:</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li>No prolongar ciclos hiperproteicos > 8 semanas sin descanso, especialmente en personas con riesgo renal.</li>
+      <li>Evitar proteína > 2.5 g/kg en fases cetogénicas estrictas para no interferir con la cetosis.</li>
+      <li>Combinar siempre con entrenamiento de fuerza para aprovechar el anabolismo.</li>
+      <li>Supervisar función renal y ácido úrico en personas susceptibles.</li>
+    </ul>`;
+  adviceList.appendChild(highProteinCyclingAdvice);
+
+  // NUEVO: Estrategia avanzada de ciclos hiperproteicos (análisis de la tabla proporcionada)
+  const advancedProteinCyclingAdvice = document.createElement('li');
+  advancedProteinCyclingAdvice.innerHTML = `<strong>Estrategia avanzada de ciclos hiperproteicos (basada en análisis científico):</strong>
+    <p><strong>Características de la estrategia analizada:</strong> Ciclos de 5 semanas (4 semanas hiperproteicas + 1 semana break) con proteína 2.1-2.5 g/kg (35% kcal) vs breaks 1.2-2.5 g/kg (20% kcal)</p>
+    
+    <strong>Aspectos positivos respaldados por evidencia:</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Proteína hiperproteica (2.1-2.5 g/kg):</strong> Respaldada por Pasiakos et al. (2013) y Helms et al. (2014) para preservación muscular en déficit calórico</li>
+      <li><strong>Breaks estratégicos (1.2-2.5 g/kg):</strong> Similar a estrategias de "refeed" que previenen adaptación metabólica (Stellingwerff, 2019)</li>
+      <li><strong>Déficit cíclico (-529 vs -264 kcal):</strong> Alineado con recomendaciones de déficit moderado (Müller et al., 2015)</li>
+      <li><strong>Ajuste calórico progresivo:</strong> Adaptación según pérdida de peso previene estancamiento metabólico</li>
+    </ul>
+
+    <strong>Consideraciones importantes basadas en evidencia:</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Límite de 4 semanas hiperproteica:</strong> Máximo seguro según literatura actual. Monitoreo de función renal y ácido úrico es esencial</li>
+      <li><strong>Distribución proteica óptima:</strong> 20-30g cada 3-4 horas para maximizar síntesis proteica (Moore et al., 2019)</li>
+      <li><strong>Hidratación y electrolitos:</strong> Especialmente importante en fases hiperproteicas intensas</li>
+      <li><strong>Perfil indicado:</strong> Personas con experiencia en nutrición, buena función renal, y objetivos de pérdida de grasa agresiva</li>
+    </ul>
+
+    <strong>Comparativa con estrategias estándar:</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Superior en proteína:</strong> 2.1-2.5 g/kg vs 1.6-2.2 g/kg estándar</li>
+      <li><strong>Más estructurado:</strong> Ciclado sistemático vs ocasional</li>
+      <li><strong>Prevención de adaptación:</strong> Déficit cíclico vs continuo</li>
+      <li><strong>Requiere seguimiento:</strong> Monitoreo avanzado necesario</li>
+    </ul>`;
+  adviceList.appendChild(advancedProteinCyclingAdvice);
+
   // Periodización nutricional anual
   const annualPeriodizationAdvice = document.createElement('li');
   annualPeriodizationAdvice.innerHTML = `<strong>Periodización nutricional anual (12 meses):</strong>
@@ -6126,46 +6255,53 @@ function generateNutritionAdvice(fatPct, proteinPct, carbsPct, ketoRatio, nutrit
             <td style="border: 1px solid #ddd; padding: 8px;">Fase de Inducción Cetogénica prolongada</td>
             <td style="border: 1px solid #ddd; padding: 8px;">5–10% (30–60 g/día)</td>
             <td style="border: 1px solid #ddd; padding: 8px;">65–70%</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">20–25%</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">20–25%<br>(1.8–2.2 g/kg peso)</td>
             <td style="border: 1px solid #ddd; padding: 8px;">Reset metabólico, pérdida rápida de grasa, mejora de glucosa/insulina y triglicéridos.</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Monitorizar lípidos, electrolitos, presión arterial. Priorizar grasas insaturadas.</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Ciclo hiperproteico inicial. Monitorizar lípidos, electrolitos, presión arterial. Priorizar grasas insaturadas.</td>
           </tr>
           <tr style="background-color: #f9f9f9;">
             <td style="border: 1px solid #ddd; padding: 8px;"><strong>4–6</strong></td>
             <td style="border: 1px solid #ddd; padding: 8px;">Fase de Ciclado Metabólico inicial</td>
             <td style="border: 1px solid #ddd; padding: 8px;">Días descanso: 5–8% CHO <br> Días entreno: 15–20% CHO</td>
             <td style="border: 1px solid #ddd; padding: 8px;">Ajuste grasas 50–65%</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Proteínas 25–30%</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">25–30%<br>(2.0–2.6 g/kg peso entreno,<br>1.8–2.2 g/kg descanso)</td>
             <td style="border: 1px solid #ddd; padding: 8px;">Mantener quema de grasa en descanso + soportar entreno.</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Carbohidratos estratégicos antes/después del ejercicio.</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Ciclo proteico avanzado: alta proteína en entreno, moderada en descanso. Carbohidratos estratégicos antes/después del ejercicio.</td>
           </tr>
           <tr>
             <td style="border: 1px solid #ddd; padding: 8px;"><strong>7–9</strong></td>
             <td style="border: 1px solid #ddd; padding: 8px;">Fase de Ciclado avanzado / Flexibilidad</td>
             <td style="border: 1px solid #ddd; padding: 8px;">10–25% promedio semanal (≈80–120 g/día)</td>
             <td style="border: 1px solid #ddd; padding: 8px;">40–50%</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">25–30%</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">25–30%<br>(1.8–2.4 g/kg peso)</td>
             <td style="border: 1px solid #ddd; padding: 8px;">Consolidar pérdida de peso, mejorar fuerza y rendimiento.</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Introducir frutas, tubérculos y legumbres en días de entreno.</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Ciclo proteico moderado. Introducir frutas, tubérculos y legumbres en días de entreno. Ajustar según respuesta metabólica.</td>
           </tr>
           <tr style="background-color: #f9f9f9;">
             <td style="border: 1px solid #ddd; padding: 8px;"><strong>10–12</strong></td>
             <td style="border: 1px solid #ddd; padding: 8px;">Transición y mantenimiento</td>
             <td style="border: 1px solid #ddd; padding: 8px;">26–40% (150–200 g/día)</td>
             <td style="border: 1px solid #ddd; padding: 8px;">30–35%</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">20–25%</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">20–25%<br>(1.6–2.0 g/kg peso)</td>
             <td style="border: 1px solid #ddd; padding: 8px;">Mantener peso perdido, equilibrio nutricional y adherencia social.</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Seguir entrenando, ajustar según objetivos. Revaluar analíticas y composición corporal.</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Ciclo proteico de mantenimiento. Seguir entrenando, ajustar según objetivos. Revaluar analíticas y composición corporal.</td>
           </tr>
         </tbody>
       </table>
     </div>
+    <strong>Lógica de ciclo de proteínas anual:</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Fase 1-3 (Cetosis hiperproteica):</strong> 1.8–2.2 g/kg peso corporal - Máxima preservación muscular durante cetosis estricta.</li>
+      <li><strong>Fase 4-6 (Ciclado proteico avanzado):</strong> 2.0–2.6 g/kg en entreno, 1.8–2.2 g/kg en descanso - Optimización anabólica durante esfuerzo.</li>
+      <li><strong>Fase 7-9 (Ciclado proteico moderado):</strong> 1.8–2.4 g/kg - Mantenimiento de masa muscular con flexibilidad metabólica.</li>
+      <li><strong>Fase 10-12 (Proteína de mantenimiento):</strong> 1.6–2.0 g/kg - Equilibrio sostenible a largo plazo.</li>
+    </ul>
     <strong>Estrategia dentro del año:</strong>
     <ul style="padding-left: 20px; margin-top: 5px;">
-      <li><strong>Cetosis larga (3 meses)</strong> → reset metabólico.</li>
-      <li><strong>Ciclado (6 meses)</strong> → base a medio plazo, combinando entreno + descanso.</li>
-      <li><strong>Moderada (3 meses)</strong> → mantenimiento flexible.</li>
-      <li>Al acabar los 12 meses → reevaluar: si hay rebote o estancamiento, se puede volver a una <strong>mini-fase cetogénica de 4–6 semanas</strong>.</li>
+      <li><strong>Cetosis larga (3 meses)</strong> → reset metabólico + ciclo hiperproteico.</li>
+      <li><strong>Ciclado (6 meses)</strong> → base a medio plazo, combinando entreno + descanso con ciclado proteico.</li>
+      <li><strong>Moderada (3 meses)</strong> → mantenimiento flexible con proteína moderada.</li>
+      <li>Al acabar los 12 meses → reevaluar: si hay rebote o estancamiento, se puede volver a una <strong>mini-fase cetogénica de 4–6 semanas</strong> con ciclo hiperproteico.</li>
     </ul>
     <strong>Checklist de seguimiento cada 3–4 meses:</strong>
     <ul style="padding-left: 20px; margin-top: 5px;">
@@ -6174,39 +6310,94 @@ function generateNutritionAdvice(fatPct, proteinPct, carbsPct, ketoRatio, nutrit
       <li>Analítica: glucosa, HbA1c, TG, HDL, LDL/ApoB</li>
       <li>Rendimiento en entrenos (energía, fuerza, recuperación)</li>
       <li>Adherencia y bienestar subjetivo</li>
+      <li><strong>Composición proteica:</strong> Ajustar según tolerancia renal y marcadores de recuperación</li>
     </ul>`;
   adviceList.appendChild(annualPeriodizationAdvice);
 
-  
+  // Evolución metabólica (para personas con alto % de grasa)
+  const metabolicEvolutionAdvice = document.createElement('li');
+  metabolicEvolutionAdvice.innerHTML = `<strong>Evolución metabólica (personas con alto % de grasa):</strong>
+    <ul style="padding-left: 20px; margin-top: 5px;">
+      <li><strong>Fase 1 (Reset cetogénico):</strong> 12-18 semanas, 5-10% HC, 65-70% grasas, 20-25% proteínas (1.8-2.2 g/kg) - Pérdida rápida de grasa visceral, mejora de insulina/glucosa</li>
+      <li><strong>Fase 2 (Ciclado metabólico):</strong> 4-6 meses, 10-25% HC, 40-60% grasas, 25-30% proteínas (2.0-2.6 g/kg entreno, 1.8-2.2 g/kg descanso) - Mantener cetosis en descanso, carbohidratos estratégicos en entreno</li>
+      <li><strong>Fase 3 (Transición sostenible):</strong> Largo plazo, 26-40% HC, 30-35% grasas, 20-25% proteínas (1.6-2.0 g/kg) - Mantenimiento del peso, adherencia social</li>
+    </ul>
+    <strong>Estrategia combinada:</strong> Cetosis en descanso + carbohidratos estratégicos en entreno + proteínas distribuidas (20-30g cada 3-4h).`;
+  adviceList.appendChild(metabolicEvolutionAdvice);
+
+  // Estrategia de periodización nutricional (rendimiento/composición atlética)
+  const athleticPeriodizationAdvice = document.createElement('li');
+  athleticPeriodizationAdvice.innerHTML = `<strong>Periodización anual (rendimiento/composición atlética):</strong>
+    <div style="margin-top: 10px; overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <thead>
+          <tr style="background-color: #f5f5f5;">
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Meses</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Fase</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">% Carbohidratos</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">% Grasas</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">% Proteínas</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Objetivo principal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 8px;"><strong>1–3</strong></td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Volumen (superávit)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">40–50% (200–300 g/día)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">25–35%</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">25–30%<br>(1.6–2.2 g/kg peso)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Ganancia muscular controlada</td>
+          </tr>
+          <tr style="background-color: #f9f9f9;">
+            <td style="border: 1px solid #ddd; padding: 8px;"><strong>4–9</strong></td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Definición (déficit)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">20–40% (100–200 g/día)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">30–40%</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">30–35%<br>(2.2–2.6 g/kg peso)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Pérdida de grasa + preservación muscular</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 8px;"><strong>10–12</strong></td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Mantenimiento</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">35–45% (150–250 g/día)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">25–35%</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">25–30%<br>(1.8–2.2 g/kg peso)</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Equilibrio energía + composición</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
+  adviceList.appendChild(athleticPeriodizationAdvice);
 
   // Consejo sobre electrolitos
   const electrolyteAdvice = document.createElement('li');
-  electrolyteAdvice.innerHTML = `<strong>Electrolitos:</strong> Asegura 3-5 g de sodio, 3-4 g de potasio y 300-400 mg de magnesio diarios (caldos, aguacate, suplementos) para prevenir fatiga y apoyar la adherencia (Phinney et al., 1983).`;
+  electrolyteAdvice.innerHTML = `<strong>Electrolitos:</strong> Asegura 3-5 g de sodio, 3-4 g de potasio y 300-400 mg de magnesio diarios (caldos, aguacate, suplementos) para prevenir fatiga y apoyar la adherencia (Phinney et al., 1983). En fases hiperproteicas, aumenta ligeramente el sodio y magnesio para compensar la carga renal.`;
   adviceList.appendChild(electrolyteAdvice);
 
   // Consejo sobre ejercicio
   const exerciseAdvice = document.createElement('li');
-  exerciseAdvice.innerHTML = `<strong>Ejercicio:</strong> Combina entrenamiento de fuerza (3-4 veces/semana) y cardio moderado (20-30 min, 2-3 veces/semana) para preservar músculo y aumentar quema de grasa (Vargas-Molina et al., 2020). Considera carb cycling metabólico: cetosis en descanso, carbohidratos en entrenamiento.`;
+  exerciseAdvice.innerHTML = `<strong>Ejercicio:</strong> Combina entrenamiento de fuerza (3-4 veces/semana) y cardio moderado (20-30 min, 2-3 veces/semana) para preservar músculo y aumentar quema de grasa (Vargas-Molina et al., 2020). Considera carb cycling metabólico: cetosis en descanso, carbohidratos en entrenamiento. <strong>Timing proteico:</strong> 25-30g de proteína de alto valor biológico (leche, huevo, carne) tras el entrenamiento para maximizar síntesis proteica.`;
   adviceList.appendChild(exerciseAdvice);
 
   // Consejo sobre personalización
   const personalAdvice = document.createElement('li');
-  personalAdvice.innerHTML = `<strong>Personalización:</strong> Ajusta carbohidratos (20-50 g netos para moderada, <20 g para estricta) y calorías según tu actividad y metabolismo. Monitorea cetonas y composición corporal (Gardner et al., 2018).`;
+  personalAdvice.innerHTML = `<strong>Personalización:</strong> Ajusta carbohidratos (20-50 g netos para moderada, <20 g para estricta), proteínas (1.6-2.6 g/kg según fase y actividad) y calorías según tu actividad y metabolismo. Monitorea cetonas y composición corporal (Gardner et al., 2018). Considera distribución proteica equitativa: 20-30g cada 3-4 horas para optimizar síntesis proteica (Moore et al., 2019).`;
   adviceList.appendChild(personalAdvice);
 
   // Consejo sobre ayuno intermitente
   const fastingAdvice = document.createElement('li');
-  fastingAdvice.innerHTML = `<strong>Ayuno intermitente (opcional):</strong> Considera protocolos como 16:8 (16 h ayuno, 8 h alimentación) para potenciar la lipólisis y mejorar sensibilidad a la insulina (Anton et al., 2018).`;
+  fastingAdvice.innerHTML = `<strong>Ayuno intermitente (opcional):</strong> Considera protocolos como 16:8 (16 h ayuno, 8 h alimentación) para potenciar la lipólisis y mejorar sensibilidad a la insulina (Anton et al., 2018). <strong>En ciclos hiperproteicos:</strong> Rompe el ayuno con 25-30g de proteína para evitar catabolismo muscular. Evita ayunos prolongados (>18h) en fases de alta proteína.`;
   adviceList.appendChild(fastingAdvice);
 
   // Consejo general sobre evidencia científica
   const generalAdvice = document.createElement('li');
-  generalAdvice.innerHTML = `<strong>Evidencia científica:</strong> La dieta cetogénica estándar (70-75% grasas, 20-25% proteínas, 5-10% HC) ha demostrado eficacia en epilepsia, diabetes tipo 2 y pérdida de peso (Paoli et al., 2013). Estudios muestran que incluso sin restricción calórica estricta, las dietas bajas en carbohidratos inducen menor ingesta espontánea y mejoran marcadores metabólicos.`;
+  generalAdvice.innerHTML = `<strong>Evidencia científica:</strong> La dieta cetogénica estándar (70-75% grasas, 20-25% proteínas, 5-10% HC) ha demostrado eficacia en epilepsia, diabetes tipo 2 y pérdida de peso (Paoli et al., 2013). Estudios muestran que incluso sin restricción calórica estricta, las dietas bajas en carbohidratos inducen menor ingesta espontánea y mejoran marcadores metabólicos. <strong>Síntesis proteica óptima:</strong> 20-30g de proteína por comida maximizan la MPS (Moore et al., 2019).`;
   adviceList.appendChild(generalAdvice);
 
   // Recomendaciones de seguridad a largo plazo
   const safetyAdvice = document.createElement('li');
-  safetyAdvice.innerHTML = `<strong>Seguridad a largo plazo:</strong> Realiza chequeos anuales con análisis de sangre (perfil lipídico, función hepática/renal, electrolitos, vitaminas). Considera transitar a dieta baja en carbohidratos (50-100 g/día) si presentas: LDL-P elevado, esteatosis hepática progresiva, pérdida excesiva de peso, trastornos menstruales persistentes, fatiga crónica o ácido úrico > 7 mg/dL.`;
+  safetyAdvice.innerHTML = `<strong>Seguridad a largo plazo:</strong> Realiza chequeos anuales con análisis de sangre (perfil lipídico, función hepática/renal, electrolitos, vitaminas). Considera transitar a dieta baja en carbohidratos (50-100 g/día) si presentas: LDL-P elevado, esteatosis hepática progresiva, pérdida excesiva de peso, trastornos menstruales persistentes, fatiga crónica o ácido úrico > 7 mg/dL. <strong>En ciclos hiperproteicos:</strong> Monitoriza función renal y ácido úrico cada 2-3 meses.`;
   adviceList.appendChild(safetyAdvice);
 
   adviceContainer.appendChild(adviceList);
@@ -6214,9 +6405,9 @@ function generateNutritionAdvice(fatPct, proteinPct, carbsPct, ketoRatio, nutrit
   const finalNote = document.createElement('p');
   finalNote.className = 'small muted';
   finalNote.style.marginTop = '15px';
-  finalNote.innerHTML = '💡 <em>Estos consejos son generales. Consulta con un profesional de salud para recomendaciones personalizadas. La cetosis espontánea puede inducir déficit calórico natural y mejoras metabólicas incluso sin restricción calórica estricta.</em>';
+  finalNote.innerHTML = '💡 <em>Estos consejos son generales. Consulta con un profesional de salud para recomendaciones personalizadas. La cetosis espontánea puede inducir déficit calórico natural y mejoras metabólicas incluso sin restricción calórica estricta. La distribución proteica óptima (20-30g cada 3-4h) maximiza síntesis proteica y previene catabolismo (Moore et al., 2019).</em>';
   adviceContainer.appendChild(finalNote);
-}
+}	
 
 function calculateDailyNutrition(day) {
   let totalFat = 0;
@@ -6294,7 +6485,7 @@ function renderNutritionChart(nutritionData) {
   
  // Crear nuevo gráfico
 window.nutritionChartInstance = new Chart(ctx, {
-  type: 'pie',
+  type: 'doughnut',
   data: {
     labels: ['Grasas', 'Proteínas', 'Carbohidratos'],
     datasets: [{
