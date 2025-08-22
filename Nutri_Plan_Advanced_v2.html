@@ -3044,23 +3044,23 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
         });
     }
 
-    function validarEntradas(peso, altura, edad, calorias, proteinasPct, carbohidratosPct, grasasPct) {
+    function validarEntradas(weight, height, age, calorias, proteinasPct, carbohidratosPct, grasasPct) {
         const errorDiv = document.getElementById('errorMessage');
         errorDiv.style.display = 'none';
         errorDiv.textContent = '';
 
-        if (isNaN(peso) || peso <= 0 || isNaN(altura) || altura <= 0 || isNaN(edad) || edad <= 0) {
+        if (isNaN(weight) || weight<= 0 || isNaN(height) || height <= 0 || isNaN(age) || age <= 0) {
             errorDiv.textContent = 'Por favor, ingrese valores válidos para peso, altura y edad.';
             errorDiv.style.display = 'block';
             return false;
         }
-        if (peso > 300 || altura > 250 || edad > 120) {
+        if (weight > 300 || height > 250 || age> 120) {
             errorDiv.textContent = 'Los valores ingresados son demasiado altos. Verifique sus datos.';
             errorDiv.style.display = 'block';
             return false;
         }
-        if (calorias > 0 && calorias < (document.getElementById('sexo').value === 'mujer' ? 1200 : 1500)) {
-            errorDiv.textContent = `Las calorías no pueden ser inferiores a ${document.getElementById('sexo').value === 'mujer' ? 1200 : 1500} kcal sin supervisión médica.`;
+        if (calorias > 0 && calorias < (document.getElementById('gender').value === 'Femenino' ? 1200 : 1500)) {
+            errorDiv.textContent = `Las calorías no pueden ser inferiores a ${document.getElementById('gender').value === 'Femenino' ? 1200 : 1500} kcal sin supervisión médica.`;
             errorDiv.style.display = 'block';
             return false;
         }
@@ -3072,15 +3072,15 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
         return true;
     }
 
-    function calcularTMB(peso, altura, edad, sexo) {
-        return sexo === 'hombre' ? 10 * peso + 6.25 * altura - 5 * edad + 5 : 10 * peso + 6.25 * altura - 5 * edad - 161;
+    function calcularTMB(weight, height, age, gender) {
+        return gender === 'Masculino' ? 10 * weight + 6.25 * height - 5 * age + 5 : 10 * weight + 6.25 * height - 5 * age - 161;
     }
 
     function getSelectedStrategies(prefix) {
         return Array.from(document.querySelectorAll(`#${prefix} input[type="checkbox"]:checked`)).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
     }
 
-    function calcularMacronutrientes(peso, gastoEnergetico, objetivo) {
+    function calcularMacronutrientes(weight, gastoEnergetico, objetivo) {
         let calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones;
         const estrategiaMap = {
             ninguna: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: 'Cetosis estricta <50g HC/día' },
@@ -3327,7 +3327,7 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
     }
 
     function crearSemana(semanaNum, fase, dieta, estrategias, calorias, proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas) {
-        if (!validarEntradas(parseFloat(document.getElementById('peso').value), parseFloat(document.getElementById('altura').value), parseFloat(document.getElementById('edad').value), calorias, proteinasPct, carbohidratosPct, grasasPct)) {
+        if (!validarEntradas(parseFloat(document.getElementById('weight').value), parseFloat(document.getElementById('height').value), parseFloat(document.getElementById('age').value), calorias, proteinasPct, carbohidratosPct, grasasPct)) {
             return null;
         }
         const proteinas = Math.round((calorias * proteinasPct / 100) / 4);
@@ -3348,12 +3348,12 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
         const semanas = periodo === 'mensual' ? 12 : 4;
 
         const dietas = {
-            cetogenica: { nombre: 'Cetogénica', proteinasPct: 22, carbohidratosPct: 8, grasasPct: 70 },
+            cetogenica: { nombre: 'Cetogénica', proteinasPct: 20, carbohidratosPct: 5, grasasPct: 75 },
             hiperproteica: { nombre: 'Hiperproteica', proteinasPct: 30, carbohidratosPct: 15, grasasPct: 55 },
             carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 25, grasasPct: 50 },
             if_16_8: { nombre: 'Intermittent Fasting (16:8)', proteinasPct: 25, carbohidratosPct: 25, grasasPct: 50 },
-            refeed: { nombre: 'Refeed', proteinasPct: 24, carbohidratosPct: 40, grasasPct: 36 },
-            ketoadaptation: { nombre: 'Ketoadaptation', proteinasPct: 22, carbohidratosPct: 10, grasasPct: 68 },
+            refeed: { nombre: 'Refeed', proteinasPct: 25, carbohidratosPct: 40, grasasPct: 35 },
+            ketoadaptation: { nombre: 'Ketoadaptation', proteinasPct: 20, carbohidratosPct: 10, grasasPct: 70 },
             flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 30, carbohidratosPct: 35, grasasPct: 35 }
         };
 
@@ -3790,8 +3790,8 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
             return;
         }
 
-        if (semana.calorias < (document.getElementById('sexo').value === 'mujer' ? 1200 : 1500)) {
-            document.getElementById(`errorMessageSem${semanaNum}`).textContent = `Error en Semana ${semanaNum}: Las calorías no pueden ser inferiores a ${document.getElementById('sexo').value === 'mujer' ? 1200 : 1500} kcal sin supervisión médica.`;
+        if (semana.calorias < (document.getElementById('gender').value === 'Femenino' ? 1200 : 1500)) {
+            document.getElementById(`errorMessageSem${semanaNum}`).textContent = `Error en Semana ${semanaNum}: Las calorías no pueden ser inferiores a ${document.getElementById('gender').value === 'Femenino' ? 1200 : 1500} kcal sin supervisión médica.`;
             document.getElementById(`errorMessageSem${semanaNum}`).style.display = 'block';
             return;
         }
@@ -3837,34 +3837,34 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
         return badgeClasses[faseOrDieta] || 'secondary';
     }
 
-    function calcularMacros() {
-        const peso = parseFloat(document.getElementById('peso').value);
-        const altura = parseFloat(document.getElementById('altura').value);
-        const edad = parseFloat(document.getElementById('edad').value);
-        const sexo = document.getElementById('sexo').value;
-        const actividad = parseFloat(document.getElementById('actividad').value);
+   function calcularMacros() {
+        const peso = parseFloat(document.getElementById('weight').value);
+        const altura = parseFloat(document.getElementById('height').value);
+        const edad = parseFloat(document.getElementById('age').value);
+        const sexo = document.getElementById('gender').value;
+        const actividad = parseFloat(document.getElementById('activity').value);
         const objetivo = document.getElementById('objetivo').value;
 
-        if (!validarEntradas(peso, altura, edad, 0, 0, 0, 0)) return;
+        if (!validarEntradas(weight, height, age, 0, 0, 0, 0)) return;
 
-        const gastoEnergetico = Math.round(calcularTMB(peso, altura, edad, sexo) * actividad);
-        const resultados = calcularMacronutrientes(peso, gastoEnergetico, objetivo);
+        const gastoEnergetico = Math.round(calcularTMB(wight, height, age, gender) * activity);
+        const resultados = calcularMacronutrientes(weight, gastoEnergetico, objetivo);
 
         if (!resultados) return;
 
         weeklyMacros = [];
         switch (objetivo) {
             case 'perdida':
-                weeklyMacros = generarPlanPerdida(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                weeklyMacros = generarPlanPerdida(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
                 break;
             case 'ganancia':
-                weeklyMacros = generarPlanGanancia(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                weeklyMacros = generarPlanGanancia(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
                 break;
             case 'mantenimiento':
-                weeklyMacros = generarPlanMantenimiento(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                weeklyMacros = generarPlanMantenimiento(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
                 break;
             case 'mixto':
-                weeklyMacros = generarPlanMixto(document.getElementById('periodoPlanificacion').value, peso, gastoEnergetico);
+                weeklyMacros = generarPlanMixto(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
                 break;
         }
 
@@ -3884,6 +3884,7 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
 
 </body>
 </html>
+
 
 
 
