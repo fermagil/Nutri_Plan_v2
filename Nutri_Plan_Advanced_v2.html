@@ -3860,38 +3860,70 @@ function validarEntradas() {
     }
 
    function calcularMacros() {
-        const peso = parseFloat(document.getElementById('weight').value);
-        const altura = parseFloat(document.getElementById('height').value);
-        const edad = parseFloat(document.getElementById('age').value);
-        const sexo = document.getElementById('gender').value;
-        const actividad = parseFloat(document.getElementById('activity').value);
-        const objetivo = document.getElementById('objetivo').value;
+    const peso = parseFloat(document.getElementById('weight').value);
+    const altura = parseFloat(document.getElementById('height').value);
+    const edad = parseInt(document.getElementById('age').value);
+    const sexo = document.getElementById('gender').value;
+    const actividadNivel = document.getElementById('activity-level').value;
+    const objetivo = document.getElementById('objetivo').value;
 
-        if (!validarEntradas(weight, height, age, 0, 0, 0, 0)) return;
-
-        const gastoEnergetico = Math.round(calcularTMB(weight, height, age, gender) * activity);
-        const resultados = calcularMacronutrientes(weight, gastoEnergetico, objetivo);
-
-        if (!resultados) return;
-
-        weeklyMacros = [];
-        switch (objetivo) {
-            case 'perdida':
-                weeklyMacros = generarPlanPerdida(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
-                break;
-            case 'ganancia':
-                weeklyMacros = generarPlanGanancia(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
-                break;
-            case 'mantenimiento':
-                weeklyMacros = generarPlanMantenimiento(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
-                break;
-            case 'mixto':
-                weeklyMacros = generarPlanMixto(document.getElementById('periodoPlanificacion').value, weight, gastoEnergetico);
-                break;
+    if (isNaN(peso) || isNaN(altura) || isNaN(edad) || !sexo || !actividadNivel || !objetivo) {
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.textContent = 'Por favor, completa todos los campos obligatorios en el Paso 1.';
+            errorMessage.style.display = 'block';
         }
-
-        actualizarUI(resultados, gastoEnergetico);
+        return;
     }
+
+    const activityMultipliers = sexo === 'Masculino'
+        ? { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, 'very-active': 2.3 }
+        : { sedentary: 1.2, light: 1.55, moderate: 1.64, active: 1.82, 'very-active': 2 };
+
+    if (!activityMultipliers[actividadNivel]) {
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.textContent = 'Nivel de actividad no válido.';
+            errorMessage.style.display = 'block';
+        }
+        console.error("Invalid activity level:", actividadNivel);
+        return;
+    }
+
+    const actividad = activityMultipliers[actividadNivel];
+    const gastoEnergetico = Math.round(calcularTMB(peso, altura, edad, sexo) * actividad);
+
+    if (isNaN(gastoEnergetico) || gastoEnergetico <= 0) {
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.textContent = 'Error al calcular el gasto energético. Verifique los datos personales.';
+            errorMessage.style.display = 'block';
+        }
+        return;
+    }
+
+    const resultados = calcularMacronutrientes(peso, gastoEnergetico, objetivo);
+    if (!resultados) return;
+
+    weeklyMacros = [];
+    const periodo = document.getElementById('periodoPlanificacion').value;
+    switch (objetivo) {
+        case 'perdida':
+            weeklyMacros = generarPlanPerdida(periodo, peso, gastoEnergetico);
+            break;
+        case 'ganancia':
+            weeklyMacros = generarPlanGanancia(periodo, peso, gastoEnergetico);
+            break;
+        case 'mantenimiento':
+            weeklyMacros = generarPlanMantenimiento(periodo, peso, gastoEnergetico);
+            break;
+        case 'mixto':
+            weeklyMacros = generarPlanMixto(periodo, peso, gastoEnergetico);
+            break;
+    }
+
+    actualizarUI(resultados, gastoEnergetico);
+}
 
     document.getElementById('objetivo').addEventListener('change', toggleOpcionesObjetivo);
     document.addEventListener('DOMContentLoaded', () => {
@@ -3906,6 +3938,7 @@ function validarEntradas() {
 
 </body>
 </html>
+
 
 
 
