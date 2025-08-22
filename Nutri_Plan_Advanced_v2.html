@@ -3860,10 +3860,8 @@ function validarEntradas() {
     }
 
   function calcularMacros() {
-    // Debug: Log the element to confirm it exists
     console.log('activity-level element:', document.getElementById('activity-level'));
 
-    // Check all required DOM elements
     const ids = ['weight', 'height', 'age', 'gender', 'activity-level', 'objetivo', 'periodoPlanificacion'];
     for (const id of ids) {
         const element = document.getElementById(id);
@@ -3878,7 +3876,6 @@ function validarEntradas() {
         }
     }
 
-    // Get values from form
     const peso = parseFloat(document.getElementById('weight').value);
     const altura = parseFloat(document.getElementById('height').value);
     const edad = parseInt(document.getElementById('age').value);
@@ -3886,7 +3883,6 @@ function validarEntradas() {
     const actividadNivel = document.getElementById('activity-level').value;
     const objetivo = document.getElementById('objetivo').value;
 
-    // Validate inputs
     if (isNaN(peso) || isNaN(altura) || isNaN(edad) || !sexo || !actividadNivel || !objetivo) {
         const errorMessage = document.getElementById('errorMessage');
         if (errorMessage) {
@@ -3896,12 +3892,10 @@ function validarEntradas() {
         return;
     }
 
-    // Define activity multipliers
     const activityMultipliers = sexo === 'Masculino'
         ? { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, 'very-active': 2.3 }
         : { sedentary: 1.2, light: 1.55, moderate: 1.64, active: 1.82, 'very-active': 2 };
 
-    // Validate activity level
     if (!activityMultipliers[actividadNivel]) {
         const errorMessage = document.getElementById('errorMessage');
         if (errorMessage) {
@@ -3912,11 +3906,9 @@ function validarEntradas() {
         return;
     }
 
-    // Calculate TDEE
     const actividad = activityMultipliers[actividadNivel];
     const gastoEnergetico = Math.round(calcularTMB(peso, altura, edad, sexo) * actividad);
 
-    // Validate TDEE
     if (isNaN(gastoEnergetico) || gastoEnergetico <= 0) {
         const errorMessage = document.getElementById('errorMessage');
         if (errorMessage) {
@@ -3926,11 +3918,9 @@ function validarEntradas() {
         return;
     }
 
-    // Calculate macronutrients
     const resultados = calcularMacronutrientes(peso, gastoEnergetico, objetivo);
     if (!resultados) return;
 
-    // Generate weekly plan
     weeklyMacros = [];
     const periodo = document.getElementById('periodoPlanificacion').value;
     switch (objetivo) {
@@ -3948,7 +3938,6 @@ function validarEntradas() {
             break;
     }
 
-    // Update UI
     actualizarUI(resultados, gastoEnergetico);
 }
 
@@ -3965,6 +3954,7 @@ function validarEntradas() {
 
 </body>
 </html>
+
 
 
 
