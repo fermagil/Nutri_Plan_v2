@@ -3044,26 +3044,14 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
         });
     }
 
-    function validarEntradas(weight, height, age, calorias, proteinasPct, carbohidratosPct, grasasPct) {
+    function validarEntradas(goalcalories, proteinasPct, carbohidratosPct, grasasPct) {
         const errorDiv = document.getElementById('errorMessage');
         errorDiv.style.display = 'none';
         errorDiv.textContent = '';
 
-        if (isNaN(weight) || weight<= 0 || isNaN(height) || height <= 0 || isNaN(age) || age <= 0) {
-            errorDiv.textContent = 'Por favor, ingrese valores válidos para peso, altura y edad.';
-            errorDiv.style.display = 'block';
-            return false;
-        }
-        if (weight > 300 || height > 250 || age> 120) {
-            errorDiv.textContent = 'Los valores ingresados son demasiado altos. Verifique sus datos.';
-            errorDiv.style.display = 'block';
-            return false;
-        }
-        if (calorias > 0 && calorias < (document.getElementById('gender').value === 'Femenino' ? 1200 : 1500)) {
-            errorDiv.textContent = `Las calorías no pueden ser inferiores a ${document.getElementById('gender').value === 'Femenino' ? 1200 : 1500} kcal sin supervisión médica.`;
-            errorDiv.style.display = 'block';
-            return false;
-        }
+       
+       
+       
         if (proteinasPct + carbohidratosPct + grasasPct > 0 && proteinasPct + carbohidratosPct + grasasPct !== 100) {
             errorDiv.textContent = 'Los porcentajes de macronutrientes deben sumar 100%.';
             errorDiv.style.display = 'block';
@@ -3884,6 +3872,7 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
 
 </body>
 </html>
+
 
 
 
