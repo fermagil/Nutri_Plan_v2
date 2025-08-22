@@ -644,55 +644,193 @@
             </div> 
 			<div><button id="download-pdf-btn" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
 
-			<section id="objetivoNutricional" class="container my-5">
-				  <h2>Objetivo Nutricional</h2>
-				
-				  <div class="mb-3">
-				    <label for="objetivo" class="form-label">Selecciona tu objetivo:</label>
-				    <select id="objetivo" class="form-select" onchange="toggleOpcionesObjetivo()">
-				      <option value="">-- Selecciona --</option>
-				      <option value="perdida">Pérdida de Peso</option>
-				      <option value="ganancia">Ganancia de Peso</option>
-				      <option value="mantenimiento">Mantenimiento</option>
-				      <option value="mixto">Mixto</option>
-				    </select>
-				  </div>
-				
-				  <!-- Subopciones dinámicas (se llenan por JS) -->
-				  <div id="subopcionesObjetivo" class="mb-3"></div>
-				
-				  <!-- Planificación temporal -->
-				  <div class="mb-3">
-				    <label for="planSemanas" class="form-label">Planificación Temporal</label>
-				    <select id="planSemanas" class="form-select">
-				      <option value="4">4 semanas</option>
-				      <option value="12">12 semanas</option>
-				    </select>
-				  </div>
-				
-				  <button class="btn btn-primary" onclick="calcularMacros()">Generar Plan</button>
-				
-				  <!-- Resultados -->
-				  <div id="resultadoMacros" class="mt-4"></div>
-				  <canvas id="graficoMacros" width="400" height="400"></canvas>
-				
-				  <!-- Tabla de planificación -->
-				  <table class="table mt-4">
-				    <thead>
-				      <tr>
-				        <th>Semana</th>
-				        <th>Fase</th>
-				        <th>Estrategias</th>
-				        <th>Calorías</th>
-				        <th>Proteínas</th>
-				        <th>Carbohidratos</th>
-				        <th>Grasas</th>
-				        <th>Notas</th>
-				      </tr>
-				    </thead>
-				    <tbody id="tablaPlanificacionBody"></tbody>
-				  </table>
-				</section>
+			<div class="card mb-4">
+            <div class="card-header"><h5>Objetivo Nutricional</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="objetivo" class="form-label">Selecciona tu objetivo:</label>
+                        <select id="objetivo" class="form-control" aria-label="Objetivo nutricional" required>
+                            <option value="perdida">1. Pérdida de Peso</option>
+                            <option value="ganancia">2. Ganancia de Peso</option>
+                            <option value="mantenimiento">3. Mantenimiento</option>
+                            <option value="mixto">4. Mixto/Combinado</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="opcionesPerdida" class="mt-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="fasePerdida" class="form-label">Fase del Ciclo:</label>
+                            <select id="fasePerdida" class="form-control" aria-label="Fase de pérdida de peso">
+                                <option value="induccion_cetogenica">Inducción Cetogénica</option>
+                                <option value="ciclado_metabolico">Ciclado Metabólico</option>
+                                <option value="transicion_mantenimiento">Transición a Mantenimiento</option>
+                                <option value="ketoadaptation">Ketoadaptation</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Estrategias Especiales:</label>
+                            <div class="strategy-checkboxes">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ninguna" value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_ninguna">Ninguna (Cetosis estricta <50g HC/día)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_tkd" value="tkd">
+                                    <label class="form-check-label" for="estrategia_tkd">TKD (25-50g HC pre/post entreno)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ckd" value="ckd">
+                                    <label class="form-check-label" for="estrategia_ckd">CKD (2 días carb-loading 150-200g HC)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_if_16_8" value="if_16_8">
+                                    <label class="form-check-label" for="estrategia_if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_refeed" value="refeed">
+                                    <label class="form-check-label" for="estrategia_refeed">Refeed (1-2 días/semana HC alto)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_hiperproteica" value="hiperproteica">
+                                    <label class="form-check-label" for="estrategia_hiperproteica">Hiperproteica (2.5-3.0 g/kg peso proteína)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_carb_cycling" value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_protein_cycling" value="protein_cycling">
+                                    <label class="form-check-label" for="estrategia_protein_cycling">Protein Cycling (4 semanas altas + 1 baja proteína)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_timing" value="timing">
+                                    <label class="form-check-label" for="estrategia_timing">Timing Nutricional (HC post-entreno)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_flexible_dieting" value="flexible_dieting">
+                                    <label class="form-check-label" for="estrategia_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="opcionesGanancia" class="mt-3" style="display:none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="faseGanancia" class="form-label">Fase del Ciclo:</label>
+                            <select id="faseGanancia" class="form-control" aria-label="Fase de ganancia de peso">
+                                <option value="volumen">Volumen Muscular</option>
+                                <option value="masa">Enfocado en Masa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Estrategias Especiales:</label>
+                            <div class="strategy-checkboxes">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_ninguna" value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_ganancia_ninguna">Ninguna (Balance HC/proteína)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_carb_cycling" value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_ganancia_carb_cycling">Carb Cycling (Días altos/moderados HC)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_refeed" value="refeed">
+                                    <label class="form-check-label" for="estrategia_ganancia_refeed">Refeed (Días altos HC semanales)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_timing" value="timing">
+                                    <label class="form-check-label" for="estrategia_ganancia_timing">Timing Nutricional (HC post-entreno)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_flexible_dieting" value="flexible_dieting">
+                                    <label class="form-check-label" for="estrategia_ganancia_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="opcionesMantenimiento" class="mt-3" style="display:none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="enfoqueMantenimiento" class="form-label">Enfoque:</label>
+                            <select id="enfoqueMantenimiento" class="form-control" aria-label="Enfoque de mantenimiento">
+                                <option value="equilibrio">Equilibrio Flexible</option>
+                                <option value="social">Adherencia Social</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Estrategias Especiales:</label>
+                            <div class="strategy-checkboxes">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_ninguna" value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_mantenimiento_ninguna">Ninguna (Equilibrio nutricional)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_flexible_dieting" value="flexible_dieting">
+                                    <label class="form-check-label" for="estrategia_mantenimiento_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_if_16_8" value="if_16_8">
+                                    <label class="form-check-label" for="estrategia_mantenimiento_if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_refeed" value="refeed">
+                                    <label class="form-check-label" for="estrategia_mantenimiento_refeed">Refeed (Días altos HC)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_carb_cycling" value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_mantenimiento_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="opcionesMixto" class="mt-3" style="display:none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="faseMixto" class="form-label">Fase Actual:</label>
+                            <select id="faseMixto" class="form-control" aria-label="Fase de plan mixto">
+                                <option value="volumen">Volumen</option>
+                                <option value="definicion">Definición</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Estrategias Especiales:</label>
+                            <div class="strategy-checkboxes">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_ninguna" value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_mixto_ninguna">Ninguna (Balance nutricional)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_carb_cycling" value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_mixto_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_refeed" value="refeed">
+                                    <label class="form-check-label" for="estrategia_mixto_refeed">Refeed (Días altos HC)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_flexible_dieting" value="flexible_dieting">
+                                    <label class="form-check-label" for="estrategia_mixto_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_timing" value="timing">
+                                    <label class="form-check-label" for="estrategia_mixto_timing">Timing Nutricional (HC post-entreno)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 				
 
     </main>
@@ -2529,6 +2667,7 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
 
 </body>
 </html>
+
 
 
 
