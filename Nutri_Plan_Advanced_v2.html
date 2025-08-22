@@ -3860,7 +3860,10 @@ function validarEntradas() {
     }
 
   function calcularMacros() {
-    // Check if all required DOM elements exist
+    // Debug: Log the element to confirm it exists
+    console.log('activity-level element:', document.getElementById('activity-level'));
+
+    // Check all required DOM elements
     const ids = ['weight', 'height', 'age', 'gender', 'activity-level', 'objetivo', 'periodoPlanificacion'];
     for (const id of ids) {
         const element = document.getElementById(id);
@@ -3962,6 +3965,7 @@ function validarEntradas() {
 
 </body>
 </html>
+
 
 
 
