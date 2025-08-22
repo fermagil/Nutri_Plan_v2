@@ -944,69 +944,80 @@
             </div> 
 			<div><button id="save-pdf-button" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
 
-			<div class="card mb-4">
-            <div class="card-header"><h5>Ciclos Diéteticos</h5></div>
-            <div class="card-body">
-                
-                
-                <div id="opcionesPerdida" class="mt-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="fasePerdida" class="form-label">Fase del Ciclo:</label>
-                            <select id="fasePerdida" class="form-control" aria-label="Fase de pérdida de peso">
-                                <option value="induccion_cetogenica">Inducción Cetogénica</option>
-                                <option value="ciclado_metabolico">Ciclado Metabólico</option>
-                                <option value="transicion_mantenimiento">Transición a Mantenimiento</option>
-                                <option value="ketoadaptation">Ketoadaptation</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Estrategias Especiales:</label>
-                            <div class="strategy-checkboxes">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ninguna" value="ninguna" checked>
-                                    <label class="form-check-label" for="estrategia_ninguna">Ninguna (Cetosis estricta <50g HC/día)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_tkd" value="tkd">
-                                    <label class="form-check-label" for="estrategia_tkd">TKD (25-50g HC pre/post entreno)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ckd" value="ckd">
-                                    <label class="form-check-label" for="estrategia_ckd">CKD (2 días carb-loading 150-200g HC)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_if_16_8" value="if_16_8">
-                                    <label class="form-check-label" for="estrategia_if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_refeed" value="refeed">
-                                    <label class="form-check-label" for="estrategia_refeed">Refeed (1-2 días/semana HC alto)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_hiperproteica" value="hiperproteica">
-                                    <label class="form-check-label" for="estrategia_hiperproteica">Hiperproteica (2.5-3.0 g/kg peso proteína)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_carb_cycling" value="carb_cycling">
-                                    <label class="form-check-label" for="estrategia_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_protein_cycling" value="protein_cycling">
-                                    <label class="form-check-label" for="estrategia_protein_cycling">Protein Cycling (4 semanas altas + 1 baja proteína)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_timing" value="timing">
-                                    <label class="form-check-label" for="estrategia_timing">Timing Nutricional (HC post-entreno)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_flexible_dieting" value="flexible_dieting">
-                                    <label class="form-check-label" for="estrategia_flexible_dieting">Flexible Dieting (80/20 regla)</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<div class="card mb-4">
+				    <div class="card-header"><h5>Ciclos Diéteticos</h5></div>
+				    <div class="card-body">
+				        <div id="opcionesPerdida" class="mt-3">
+				            <div class="form-check form-switch mb-3">
+				                <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitch">
+				                <label class="form-check-label" for="modoSimplificadoSwitch">Modo Simplificado (Para principiantes)</label>
+				            </div>
+				            <div class="row">
+				                <div class="col-md-6">
+				                    <label for="fasePerdida" class="form-label">Fase del Ciclo:</label>
+				                    <select id="fasePerdida" class="form-control" aria-label="Fase de pérdida de peso">
+				                        <option value="induccion_cetogenica">Inducción Cetogénica</option>
+				                        <option value="ciclado_metabolico">Ciclado Metabólico</option>
+				                        <option value="transicion_mantenimiento">Transición a Mantenimiento</option>
+				                        <option value="ketoadaptation">Ketoadaptation</option>
+				                    </select>
+				                    <small id="infoMacronutrientes" class="form-text text-muted mt-2"></small>
+				                </div>
+				                <div class="col-md-6">
+				                    <label class="form-label">Estrategias Especiales:</label>
+				                    <div class="strategy-checkboxes">
+				                        <div class="form-check" data-strategy="ninguna">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_ninguna" value="ninguna" checked>
+				                            <label class="form-check-label" for="estrategia_ninguna">Ninguna (Cetosis estricta &lt;50g HC/día)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="tkd">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_tkd" value="tkd">
+				                            <label class="form-check-label" for="estrategia_tkd">TKD (25-50g HC pre/post entreno)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="ckd">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_ckd" value="ckd">
+				                            <label class="form-check-label" for="estrategia_ckd">CKD (2 días carb-loading 300-500g HC)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="if_16_8">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_if_16_8" value="if_16_8">
+				                            <label class="form-check-label" for="estrategia_if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="refeed">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_refeed" value="refeed">
+				                            <label class="form-check-label" for="estrategia_refeed">Refeed (1-2 días/semana HC alto)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="hiperproteica">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_hiperproteica" value="hiperproteica">
+				                            <label class="form-check-label" for="estrategia_hiperproteica">Hiperproteica (2.5-3.0 g/kg peso proteína)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="carb_cycling">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_carb_cycling" value="carb_cycling">
+				                            <label class="form-check-label" for="estrategia_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="protein_cycling">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_protein_cycling" value="protein_cycling">
+				                            <label class="form-check-label" for="estrategia_protein_cycling">Protein Cycling (4 semanas altas + 1 baja proteína)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="timing">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_timing" value="timing">
+				                            <label class="form-check-label" for="estrategia_timing">Timing Nutricional (HC post-entreno)</label>
+				                        </div>
+				                        <div class="form-check" data-strategy="flexible_dieting">
+				                            <input class="form-check-input" type="checkbox" id="estrategia_flexible_dieting" value="flexible_dieting">
+				                            <label class="form-check-label" for="estrategia_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+				                        </div>
+				                    </div>
+				                </div>
+				            </div>
+				        </div>
+				        <div id="opcionesGanancia" class="mt-3" style="display:none;">
+				          </div>
+				        <div id="opcionesMantenimiento" class="mt-3" style="display:none;">
+				          </div>
+				        <div id="opcionesMixto" class="mt-3" style="display:none;">
+				          </div>
+				    </div>
+				</div>
 
                 <div id="opcionesGanancia" class="mt-3" style="display:none;">
                     <div class="row">
@@ -3993,10 +4004,74 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('errorMessage').style.display = 'block';
         }
     });
+		
+    document.addEventListener('DOMContentLoaded', () => {
+        const fasePerdida = document.getElementById('fasePerdida');
+        const estrategiasCheckboxes = document.querySelectorAll('.strategy-checkboxes .form-check');
+        const modoSimplificadoSwitch = document.getElementById('modoSimplificadoSwitch');
+        const infoMacronutrientes = document.getElementById('infoMacronutrientes');
+
+        // Mapeo de estrategias permitidas por fase
+        const estrategiasPermitidas = {
+            'induccion_cetogenica': ['ninguna', 'tkd', 'if_16_8', 'refeed'],
+            'ciclado_metabolico': ['ninguna', 'tkd', 'ckd', 'carb_cycling', 'timing', 'flexible_dieting'],
+            'transicion_mantenimiento': ['ninguna', 'carb_cycling', 'timing', 'flexible_dieting'],
+            'ketoadaptation': ['ninguna', 'tkd', 'if_16_8', 'refeed']
+        };
+
+        // Mapeo de descripciones de macronutrientes por fase
+        const infoMacros = {
+            'induccion_cetogenica': '5-10% HC | 65-70% Grasas | 20-25% Proteínas',
+            'ciclado_metabolico': '10-25% HC | 40-50% Grasas | 25-30% Proteínas',
+            'transicion_mantenimiento': '26-40% HC | 30-35% Grasas | 20-25% Proteínas',
+            'ketoadaptation': '60-70% Grasas | Más Proteína' // Ejemplo para la estrategia avanzada
+        };
+
+        // Función para actualizar el estado de los checkboxes
+        const actualizarEstrategias = () => {
+            const faseSeleccionada = fasePerdida.value;
+            const permitidas = estrategiasPermitidas[faseSeleccionada] || [];
+
+            estrategiasCheckboxes.forEach(div => {
+                const checkbox = div.querySelector('input');
+                const estrategia = checkbox.value;
+                const esSimplificada = ['ninguna', 'tkd', 'if_16_8', 'ckd'].includes(estrategia);
+                
+                // Mostrar/ocultar según el modo simplificado
+                if (modoSimplificadoSwitch.checked && !esSimplificada) {
+                    div.style.display = 'none';
+                } else {
+                    div.style.display = 'block';
+                }
+
+                // Habilitar/deshabilitar según la fase
+                if (permitidas.includes(estrategia)) {
+                    checkbox.disabled = false;
+                    div.style.opacity = 1;
+                } else {
+                    checkbox.disabled = true;
+                    checkbox.checked = false;
+                    div.style.opacity = 0.5;
+                }
+            });
+
+            // Actualizar la información de los macronutrientes
+            infoMacronutrientes.textContent = infoMacros[faseSeleccionada] || '';
+        };
+
+        // Event listeners
+        fasePerdida.addEventListener('change', actualizarEstrategias);
+        modoSimplificadoSwitch.addEventListener('change', actualizarEstrategias);
+
+        // Llamar a la función al cargar la página para establecer el estado inicial
+        actualizarEstrategias();
+    });
+
 </script>
 
 </body>
 </html>
+
 
 
 
