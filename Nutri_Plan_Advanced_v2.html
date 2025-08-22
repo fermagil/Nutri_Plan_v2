@@ -431,6 +431,290 @@
 			vertical-align: top;
 			line-height: 1.5;
 		}
+
+
+
+		.grid { display: grid; gap: 14px; }
+    .grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .muted { color: #6c757d; }
+    .btn {
+        display:inline-flex; align-items:center; gap:8px;
+        border:1px solid #c0e0c2; background:#e9f5e9; padding:8px 12px; border-radius:8px;
+        cursor:pointer; font-weight:600;
+        transition: all 0.2s ease-in-out;
+    }
+    .btn:hover { background:#dff0df; transform: translateY(-1px); }
+    .btn.secondary { background:#fff; border-color:#d0d7de; }
+    .btn.danger { background:#fdecea; border-color:#f5c2c7; color:#c92a2a; }
+    .btn.danger:hover { background:#fce0e3;}
+    .btn-primary {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #45a049;
+        border-color: #45a049;
+    }
+    .btn-lg {
+        padding: 12px 24px;
+        font-size: 1.1em;
+    }
+    input, select { 
+        width:100%; 
+        padding:8px 10px; 
+        border:1px solid #ced4da; 
+        border-radius:8px; 
+        box-sizing:border-box; 
+        font-family: inherit;
+        font-size: 0.95em;
+    }
+    input:focus, select:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+    table { 
+        width:100%; 
+        border-collapse: collapse; 
+        font-size: 0.95em; 
+        margin-top:10px; 
+    }
+    th, td { 
+        border-bottom:1px solid #eee; 
+        padding:10px; 
+        text-align:left; 
+        vertical-align: middle; 
+    }
+    th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+    }
+    tr:hover td { background:#fafdf9; }
+    tfoot td { font-weight:700; background-color: #f8f9fa;}
+    .right { text-align:right; }
+    .center { text-align: center; }
+    .ratio-badge { 
+        display:inline-block; 
+        padding:6px 10px; 
+        border-radius:8px; 
+        font-weight:700; 
+        font-size: 1.2em; 
+    }
+    .ratio-high { background:#e3f2fd; border:1px solid #90caf9; }
+    .ratio-ok { background:#e8f5e9; border:1px solid #a5d6a7; }
+    .ratio-low { background:#fff3cd; border:1px solid #ffecb5; }
+    .footer { 
+        position:fixed; 
+        bottom:0; 
+        left:0; 
+        right:0; 
+        background:#fff; 
+        border-top:1px solid #e0e0e0; 
+        padding:10px 16px; 
+        display:flex; 
+        justify-content:space-between; 
+        align-items:center; 
+        font-size:0.85em; 
+    }
+    .small { font-size: 0.9em; }
+		/* FIX: Estilos añadidos para la sección de ratio y distribución */
+    .kpi {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    .card {
+        background-color: #fdfdfd;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .card b { font-size: 1.2em; color: #2e7d32; }
+    .chip {
+        display: inline-block;
+        padding: 2px 8px;
+        background-color: #e9ecef;
+        border-radius: 12px;
+        font-size: 0.85em;
+    }
+    
+	
+	
+	
+    /* Estilos específicos para la calculadora nutricional */
+    .form-control {
+        margin-bottom: 15px;
+    }
+    .form-control label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #495057;
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px;
+    }
+    .col-md-4, .col-md-6, .col-md-12 {
+        padding: 0 10px;
+        margin-bottom: 15px;
+    }
+    .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+    .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 15px 20px;
+        border-radius: 8px 8px 0 0;
+        font-weight: 600;
+        color: #388E3C;
+    }
+    
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px solid transparent;
+    }
+    .alert-info {
+        background-color: #e3f2fd;
+        border-color: #bbdefb;
+        color: #1976d2;
+    }
+    
+    #resultados {
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .macro-value {
+        font-weight: 700;
+        color: #388E3C;
+    }
+    
+    .percentage-bar {
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        margin: 8px 0;
+        overflow: hidden;
+    }
+    
+    .percentage-fill {
+        height: 100%;
+        border-radius: 4px;
+    }
+    
+    .fat-fill { background-color: #4CAF50; }
+    .protein-fill { background-color: #2196F3; }
+    .carb-fill { background-color: #FF9800; }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .col-md-4, .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        
+        header {
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        nav ul {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        nav ul li {
+            margin: 5px 10px;
+        }
+        
+        h1 {
+            font-size: 1.8em;
+        }
+        
+        .kpi {
+            grid-template-columns: 1fr;
+        }
+    }
+		/* FIX: Estilos añadidos para mejorar la UI */
+    #recipeTable input.edit-grams {
+      text-align: right;
+      width: 80px;
+    }
+    #weeklyPlanTable ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    #weeklyPlanTable li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9em;
+        background: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    #weeklyPlanTable li button {
+        padding: 2px 6px;
+        font-size: 0.8em;
+    }
+    
+    /* Canvas chart container */
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+        margin: 20px 0;
+    }
+    
+    /* Loading spinner */
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4CAF50;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+        display: none;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+        .error-message { display: none; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-top: 10px; }
+        .form-control:invalid { border-color: #dc3545; }
+        .table-responsive { margin-top: 20px; }
+        .macro-input { width: 70px; display: inline-block; margin-right: 5px; }
+        .strategy-note { font-size: 0.9em; color: #555; }
+  
+        .error-message { display: none; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-top: 10px; }
+        .form-control:invalid { border-color: #dc3545; }
+        .table-responsive { margin-top: 20px; }
+        .macro-input { width: 70px; display: inline-block; margin-right: 5px; }
+        .strategy-note { font-size: 0.9em; color: #555; }
+        .strategy-checkboxes { max-height: 200px; overflow-y: auto; }
 </style>
 </head>
 
@@ -2667,6 +2951,7 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
 
 </body>
 </html>
+
 
 
 
