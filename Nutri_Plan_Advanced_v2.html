@@ -3869,7 +3869,7 @@ function validarEntradas() {
 
         if (!validarEntradas(weight, height, age, 0, 0, 0, 0)) return;
 
-        const gastoEnergetico = Math.round(calcularTMB(wight, height, age, gender) * activity);
+        const gastoEnergetico = Math.round(calcularTMB(weight, height, age, gender) * activity);
         const resultados = calcularMacronutrientes(weight, gastoEnergetico, objetivo);
 
         if (!resultados) return;
@@ -3906,6 +3906,7 @@ function validarEntradas() {
 
 </body>
 </html>
+
 
 
 
