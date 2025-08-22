@@ -11,10 +11,10 @@
     <title>Plan Dietético Personalizado - NutriPlan v2</title>
 	  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+	  
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.4.0/html-docx.min.js"></script>
-	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-	  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+	  
+	  
 
 
 
@@ -705,8 +705,7 @@
         100% { transform: rotate(360deg); }
     }
 
-        .error-message { display: none; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-top: 10px; }
-        .form-control:invalid { border-color: #dc3545; }
+        
         .table-responsive { margin-top: 20px; }
         .macro-input { width: 70px; display: inline-block; margin-right: 5px; }
         .strategy-note { font-size: 0.9em; color: #555; }
@@ -782,6 +781,8 @@
 
                         <button type="submit">Calcular GET y Balance</button>
                     </form>
+<div id="errorMeals" class="error-message" style="display:none;"></div>
+<div id="errorMacros" class="error-message" style="display:none;"></div>
                     <div id="calorie-result"></div>
                     <div id="energy-balance-result"></div>
                 </div>
@@ -819,7 +820,7 @@
                             <option value="yes">Sí</option>
                         </select>
 
-                        <button type="submit" id="calculate-goal-button" disabled>Calcular Objetivo y Recomendaciones</button>
+                        <button type="submit" id="calculate-goal-button" >Calcular Objetivo y Recomendaciones</button>
                     </form>
                     <div id="weight-goal-result">
                         <p class="info-message">Completa el Paso 1 para habilitar este cálculo.</p>
@@ -855,7 +856,7 @@
                              <p id="macro-percentage-total"></p>
                         </div>
 
-                        <button type="submit" id="calculate-macros-button" disabled>Calcular Gramos de Macronutrientes</button>
+                        <button type="submit" id="calculate-macros-button" >Calcular Gramos de Macronutrientes</button>
                     </form>
                     <div id="macro-result">
                         <p class="info-message">Completa los Pasos 1 y 2 para habilitar este cálculo.</p>
@@ -878,7 +879,7 @@
                              <div><label for="dinner-perc">Cena:</label><input type="number" id="dinner-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
                              <p id="meal-percentage-total"></p>
                          </div>
-                         <button type="submit" id="generate-meals-button" disabled>Generar Distribución por Comida</button>
+                         <button type="submit" id="generate-meals-button" >Generar Distribución por Comida</button>
                      </form>
                      <div id="meal-result">
                          <p class="info-message">Completa el Paso 3 para habilitar este cálculo.</p>
@@ -903,7 +904,7 @@
                         <input type="number" id="weekly-calorie-diff" name="weekly-calorie-diff" step="100" required placeholder="Ej: -3500 para perder 0.5kg/sem, 2000 para ganar">
                         <small>Nota: Se estima que 7700 kcal equivalen a 1 kg de grasa corporal. Para perdida gradual y sostenible no se aconseja perdidas de mas de 0.5kg/sem (3500kcal/sem). Para ganacia no se aconseja ganacias de mas de 0.3kg/sem (2000Kcal/sem) </small>
 
-                        <button type="submit" id="estimate-time-button" disabled>Estimar Tiempo</button>
+                        <button type="submit" id="estimate-time-button" >Estimar Tiempo</button>
                     </form>
                     <div id="time-estimation-result">
                          <p class="info-message">Completa el Paso 1 para habilitar esta estimación.</p>
@@ -935,13 +936,13 @@
                                 </tbody>
                         </table>
                         <div id="hyperprotein-note-container"></div> </div>
-                     <button id="generate-hyperprotein-button" onclick="generateHyperproteinCycles()" style="margin-top: 15px;" disabled>
+                     <button id="generate-hyperprotein-button" onclick="generateHyperproteinCycles()" style="margin-top: 15px;" >
                         Generar Tabla de Ciclos Hiperproteicos (Manual)
                     </button>
                 </section>
 
             </div> 
-			<div><button id="download-pdf-btn" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
+			<div><button id="save-pdf-button" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
 
 			<div class="card mb-4">
             <div class="card-header"><h5>Ciclos Diéteticos</h5></div>
@@ -2841,7 +2842,7 @@ function generateHyperproteinCycles() {
 
 
 // FUNCIONALIDAD PDF
-document.getElementById("download-pdf-btn").addEventListener("click", async function () {
+document.getElementById("save-pdf-button").addEventListener("click", async function () {
     // Convertir gráficos a imágenes
     const charts = document.querySelectorAll('canvas');
     const promises = Array.from(charts).map(chart => {
@@ -3044,19 +3045,53 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
         });
     }
 
-    function validarEntradas(goalcalories, proteinasPct, carbohidratosPct, grasasPct) {
-        const errorDiv = document.getElementById('errorMessage');
-        errorDiv.style.display = 'none';
-        errorDiv.textContent = '';
+    
+function validarEntradas() {
+    let valido = true;
 
-       
-       
-       
-        if (proteinasPct + carbohidratosPct + grasasPct > 0 && proteinasPct + carbohidratosPct + grasasPct !== 100) {
-            errorDiv.textContent = 'Los porcentajes de macronutrientes deben sumar 100%.';
-            errorDiv.style.display = 'block';
-            return false;
+    // Verificar suma de macros = 100%
+    const p = parseInt(document.getElementById("protein-percentage")?.value || 0);
+    const c = parseInt(document.getElementById("carb-percentage")?.value || 0);
+    const f = parseInt(document.getElementById("fat-percentage")?.value || 0);
+    const total = p + c + f;
+
+    const errorMacros = document.getElementById("errorMacros");
+    if (total !== 100) {
+        valido = false;
+        if (errorMacros) {
+            errorMacros.style.display = "block";
+            errorMacros.innerText = "⚠️ La suma de macronutrientes debe ser 100% (actual: " + total + "%).";
+        } else {
+            console.warn("Falta el contenedor #errorMacros en el HTML");
         }
+    } else if (errorMacros) {
+        errorMacros.style.display = "none";
+    }
+
+    // Validar distribución de comidas = 100%
+    const b = parseInt(document.getElementById("breakfast-perc")?.value || 0);
+    const s1 = parseInt(document.getElementById("snack1-perc")?.value || 0);
+    const l = parseInt(document.getElementById("lunch-perc")?.value || 0);
+    const s2 = parseInt(document.getElementById("snack2-perc")?.value || 0);
+    const d = parseInt(document.getElementById("dinner-perc")?.value || 0);
+    const totalMeals = b + s1 + l + s2 + d;
+
+    const errorMeals = document.getElementById("errorMeals");
+    if (totalMeals !== 100) {
+        valido = false;
+        if (errorMeals) {
+            errorMeals.style.display = "block";
+            errorMeals.innerText = "⚠️ La distribución de comidas debe sumar 100% (actual: " + totalMeals + "%).";
+        } else {
+            console.warn("Falta el contenedor #errorMeals en el HTML");
+        }
+    } else if (errorMeals) {
+        errorMeals.style.display = "none";
+    }
+
+    return valido;
+}
+
         return true;
     }
 
@@ -3872,6 +3907,22 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
