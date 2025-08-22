@@ -3862,13 +3862,13 @@ function validarEntradas() {
      function calcularMacros() {
         // Debug: Log all required elements
         console.log('Checking DOM elements:');
-        const ids = ['weight', 'height', 'age', 'gender', 'activity-level', 'objetivo', 'periodoPlanificacion'];
+        const ids = ['weight', 'height', 'age', 'gender', 'activity', 'objetivo', 'periodoPlanificacion'];
         ids.forEach(id => {
             console.log(`${id} element:`, document.getElementById(id));
         });
 
         // Retry if activity-level is not found (dynamic content)
-        const activitySelect = document.getElementById('activity-level');
+        const activitySelect = document.getElementById('activity');
         if (!activitySelect) {
             console.warn('activity-level not found. Retrying in 100ms...');
             //setTimeout(calcularMacros, 100);
@@ -3903,7 +3903,7 @@ function validarEntradas() {
         const altura = parseFloat(document.getElementById('height').value);
         const edad = parseInt(document.getElementById('age').value);
         const sexo = document.getElementById('gender').value;
-        const actividad = parseFloat(document.getElementById('activity-level').value);
+        const actividad = parseFloat(document.getElementById('activity').value);
         const objetivo = document.getElementById('objetivo').value;
 
         // Validate inputs
@@ -3980,6 +3980,7 @@ function validarEntradas() {
 
 </body>
 </html>
+
 
 
 
