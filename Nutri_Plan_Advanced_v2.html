@@ -1117,7 +1117,78 @@
                 </div>
             </div>
         </div>
-				
+		v class="card mb-4">
+            <div class="card-header"><h5>Planificación Temporal</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="periodoPlanificacion" class="form-label">Período de Planificación:</label>
+                        <select id="periodoPlanificacion" class="form-control" aria-label="Período de planificación" onchange="actualizarPlanificacion()">
+                            <option value="semanal">Semanal (4 semanas)</option>
+                            <option value="mensual">Mensual (12 semanas)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+			<div class="text-center mb-4">
+				<button onclick="calcularMacros();" class="btn btn-primary btn-lg" aria-label="Calcular macronutrientes y planificación">
+					🧮 Calcular Macronutrientes
+				</button>
+			</div>
+        <div id="resultados" class="card" style="display:none;">
+            <div class="card-header"><h5>📊 Resultados de tu Plan Nutricional</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>📈 Datos Calculados</h6>
+                        <p><strong>Gasto Energético:</strong> <span id="gastoEnergetico"></span> kcal/día</p>
+                        <p><strong>Calorías Diarias:</strong> <span id="calorias"></span> kcal</p>
+                        <p><strong>Proteínas:</strong> <span id="proteinas"></span>g (<span id="proteinasPct"></span>%)</p>
+                        <p><strong>Carbohidratos:</strong> <span id="carbohidratos"></span>g (<span id="carbohidratosPct"></span>%)</p>
+                        <p><strong>Grasas:</strong> <span id="grasas"></span>g (<span id="grasasPct"></span>%)</p>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="chartMacros" width="300" height="300" aria-label="Gráfico de distribución de macronutrientes"></canvas>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h6>📋 Recomendaciones Específicas</h6>
+                    <div id="recomendaciones" class="alert alert-info"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="planificacionTemporal" class="card" style="display:none;">
+            <div class="card-header"><h5>📅 Planificación Temporal</h5></div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" aria-label="Tabla de planificación nutricional">
+                        <thead>
+                            <tr>
+                                <th scope="col">Semana</th>
+                                <th scope="col">Fase</th>
+                              
+                                <th scope="col">Estrategias</th>
+                                <th scope="col">Calorías (kcal)</th>
+                                <th scope="col">Proteínas (%)</th>
+                                <th scope="col">Carbohidratos (%)</th>
+                                <th scope="col">Grasas (%)</th>
+                                <th scope="col">Proteínas (g)</th>
+                                <th scope="col">Carbohidratos (g)</th>
+                                <th scope="col">Grasas (g)</th>
+                                <th scope="col">Entreno/Días</th>
+                                <th scope="col">Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPlanificacionBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>		
 
     </main>
 
@@ -3810,6 +3881,7 @@ document.getElementById("download-pdf-btn").addEventListener("click", async func
 
 </body>
 </html>
+
 
 
 
