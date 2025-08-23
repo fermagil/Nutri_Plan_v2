@@ -4486,11 +4486,19 @@ function actualizarMacrosPorFase() {
             // Aquí también puedes llamar a actualizarMacrosPorFase() si la tienes
         });
     }
+	    // Este event listener ahora funcionará porque calculateMacros ya está definida
+    if (macroForm) {
+        macroForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            calculateMacros();
+        });
+    }
 });
 </script>
 
 </body>
 </html>
+
 
 
 
