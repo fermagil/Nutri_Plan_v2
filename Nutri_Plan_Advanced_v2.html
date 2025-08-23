@@ -1454,6 +1454,53 @@ function calculateCalories() {
     updateButtonStates(); // Enable next step button
 }
 
+			// Agrega estas funciones en tu código (fuera de otras funciones)
+
+function mostrarFasePorObjetivo(objetivo) {
+    // Ocultar todos los selects y labels de fase
+    const elementosFase = [
+        'fasePerdida1', 'labelFasePerdida1',
+        'faseGanancia1', 'labelFaseGanancia1',
+        'enfoqueMantenimiento1', 'labelEnfoqueMantenimiento1',
+        'faseMixto1', 'labelFaseMixto1'
+    ];
+    
+    elementosFase.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.style.display = 'none';
+        }
+    });
+
+    // Mostrar el select correspondiente al objetivo
+    switch(objetivo) {
+        case 'perdida':
+            if (document.getElementById('fasePerdida1')) {
+                document.getElementById('fasePerdida1').style.display = 'block';
+                document.getElementById('labelFasePerdida1').style.display = 'block';
+            }
+            break;
+        case 'ganancia':
+            if (document.getElementById('faseGanancia1')) {
+                document.getElementById('faseGanancia1').style.display = 'block';
+                document.getElementById('labelFaseGanancia1').style.display = 'block';
+            }
+            break;
+        case 'mantenimiento':
+            if (document.getElementById('enfoqueMantenimiento1')) {
+                document.getElementById('enfoqueMantenimiento1').style.display = 'block';
+                document.getElementById('labelEnfoqueMantenimiento1').style.display = 'block';
+            }
+            break;
+        case 'mixto':
+            if (document.getElementById('faseMixto1')) {
+                document.getElementById('faseMixto1').style.display = 'block';
+                document.getElementById('labelFaseMixto1').style.display = 'block';
+            }
+            break;
+    }
+}
+
 
             // --- Step 2: Calculate Weight Goal and Recommendations ---
             function calculateWeightGoal() {
@@ -4032,11 +4079,21 @@ function calcularMacros() {
             document.getElementById('errorMessage').textContent = 'No se pudo cargar Chart.js. Algunas funcionalidades estarán limitadas.';
             document.getElementById('errorMessage').style.display = 'block';
         }
+		// Agregar event listener para el cambio de objetivo
+	    const objetivoSelect = document.getElementById('objetivo');
+	    if (objetivoSelect) {
+	        objetivoSelect.addEventListener('change', function() {
+	            const objetivo = this.value;
+	            mostrarFasePorObjetivo(objetivo);
+	            // Aquí también puedes llamar a actualizarMacrosPorFase() si la tienes
+	        });
+	    }
     });
 </script>
 
 </body>
 </html>
+
 
 
 
