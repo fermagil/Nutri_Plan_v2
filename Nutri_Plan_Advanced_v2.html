@@ -2982,47 +2982,54 @@ function generateHyperproteinCycles() {
         return;
     }
 
-    // Define activity multipliers based on current userGender
-		const activityMultipliers = userGender === 'male'
-		    ? { 
-		        sedentary: 1.2, 
-		        light: 1.56, 
-		        moderate: 1.78, 
-		        active: 2.1, 
-		        very_active: 2.3 
-		    }
-		    : { 
-		        sedentary: 1.2, 
-		        light: 1.55, 
-		        moderate: 1.64, 
-		        active: 1.82, 
-		        very_active: 2.0 
-		    };
-		
-		// Map activity levels to descriptive names (optional - for better UX)
-		const activityLevelNames = {
-		    sedentary: 'Sedentario',
-		    light: 'Ligero',
-		    moderate: 'Moderado',
-		    active: 'Activo',
-		    very_active: 'Muy Activo'
-		};
-		
-		// Validate activity level with detailed error handling
-		const activityMultiplier = activityMultipliers[userActivityLevel];
-		if (activityMultiplier === undefined) {
-		    const errorMessage = `Nivel de actividad no válido: "${userActivityLevel}". Valores permitidos: ${Object.keys(activityMultipliers).join(', ')}`;
-		    
-		    if (infoMessage) {
-		        infoMessage.innerHTML = `<em>Error: ${errorMessage}</em>`;
-		    }
-		    
-		    console.error("Invalid activity level:", userActivityLevel);
-		    console.log("Available activity levels:", Object.keys(activityMultipliers));
-		    console.log("User gender:", userGender);
-		    
-		    return;
-		}
+   // Define multiplicadores por género usando valores numéricos como strings
+const maleActivityMultipliers = {
+    '1.2': 1.2,    // sedentary
+    '1.375': 1.56, // light
+    '1.55': 1.78,  // moderate
+    '1.725': 2.1,  // active
+    '1.9': 2.3     // very_active
+};
+
+const femaleActivityMultipliers = {
+    '1.2': 1.2,    // sedentary
+    '1.375': 1.55, // light
+    '1.55': 1.64,  // moderate
+    '1.725': 1.82, // active
+    '1.9': 2.0     // very_active
+};
+
+// Selecciona el objeto según el género
+const activityMultipliers = userGender === 'male' ? maleActivityMultipliers : femaleActivityMultipliers;
+
+// Map activity levels to descriptive names for better UX
+const activityLevelNames = {
+    '1.2': 'Sedentario',
+    '1.375': 'Ligero',
+    '1.55': 'Moderado',
+    '1.725': 'Activo',
+    '1.9': 'Muy Activo'
+};
+
+// Validate activity level with detailed error handling
+const activityMultiplier = activityMultipliers[userActivityLevel];
+if (activityMultiplier === undefined) {
+    const errorMessage = `Nivel de actividad no válido: "${userActivityLevel}". Valores permitidos: ${Object.keys(activityMultipliers).join(', ')}`;
+    
+    if (infoMessage) {
+        infoMessage.innerHTML = `<em>Error: ${errorMessage}</em>`;
+    }
+    
+    console.error("Invalid activity level:", userActivityLevel);
+    console.log("Available activity levels:", Object.keys(activityMultipliers));
+    console.log("User gender:", userGender);
+    
+    return;
+}
+
+// Optional: Log the selected activity level for debugging
+console.log(`Selected activity level: ${userActivityLevel} (${activityLevelNames[userActivityLevel] || 'Unknown'})`);
+console.log(`Activity multiplier: ${activityMultiplier}`);
 
 // Optional: Log the selected activity level for debugging
 console.log(`Selected activity level: ${userActivityLevel} (${activityLevelNames[userActivityLevel] || 'Unknown'})`);
@@ -4520,6 +4527,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
