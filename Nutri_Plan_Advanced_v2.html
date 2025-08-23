@@ -3994,12 +3994,355 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 		
-    
+    // Nuevo codigo-----------------------------------------------------------
+		<script>
+(function() {
+    // --- Global variables from Script_1.txt ---
+    let userAge = null;
+    let userGender = 'male';
+    let userHeightCm = null;
+    let userActivityLevel = 'sedentary';
+    let currentWeightKg = null;
+    let calculatedBMR = null;
+    let calculatedTDEE = null;
+    let targetWeightKgGlobal = null;
+    let goalTypeGlobal = 'maintenance';
+    let estimatedWeeksGlobal = 0;
+    let targetWeeklyRateKgGlobal = 0;
+    let calculatedMacros = { proteinGrams: 0, carbGrams: 0, fatGrams: 0, goalCalories: 0 };
+    let estimatedWeeksManualGlobal = null;
+    let weightChangeGoalManualGlobal = null;
+    let weeklyCalorieDiffManualGlobal = null;
+    let macroChartInstance = null;
+    let weightEvolutionChartInstance = null;
+    let timeEstimationChartInstance = null;
+    const activityMultipliers = userGender === 'male'
+        ? { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, very_active: 2.3 }
+        : { sedentary: 1.2, light: 1.55, moderate: 1.64, active: 1.82, very_active: 2 };
+    let weeklyMacros = []; // From Script_1.txt
+
+    // --- Combined DOMContentLoaded Listener ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DOM Element References from Script_1.txt ---
+        const calorieForm = document.getElementById('calorie-form');
+        const weightGoalForm = document.getElementById('weight-goal-form');
+        const macroForm = document.getElementById('macro-form');
+        const mealForm = document.getElementById('meal-form');
+        const timeEstimationForm = document.getElementById('time-estimation-form');
+        const calculateGoalButton = document.getElementById('calculate-goal-button');
+        const calculateMacrosButton = document.getElementById('calculate-macros-button');
+        const generateMealsButton = document.getElementById('generate-meals-button');
+        const estimateTimeButton = document.getElementById('estimate-time-button');
+        const generateHyperproteinButton = document.getElementById('generate-hyperprotein-button');
+        const savePdfButton = document.getElementById('save-pdf-button');
+        const macroPercentageInputs = document.querySelectorAll('#macro-percentage-inputs input[type="number"]');
+        const mealPercentageInputs = document.querySelectorAll('#meal-percentage-inputs input[type="number"]');
+        const calorieResultDiv = document.getElementById('calorie-result');
+        const energyBalanceResultDiv = document.getElementById('energy-balance-result');
+        const weightGoalResultDiv = document.getElementById('weight-goal-result');
+        const weightChartContainer = document.getElementById('weight-chart-container');
+        const macroResultDiv = document.getElementById('macro-result');
+        const chartContainer = document.getElementById('chart-container');
+        const mealResultDiv = document.getElementById('meal-result');
+        const timeEstimationResultDiv = document.getElementById('time-estimation-result');
+        const timeChartContainer = document.getElementById('time-estimation-chart-container');
+        const step5TableContainer = document.getElementById('detailed-cycle-table-container');
+        const hyperproteinTableContainer = document.getElementById('hyperprotein-cycle-table-container');
+        const hyperproteinTable = document.getElementById('hyperprotein-cycle-table');
+        const hyperproteinTableBody = document.getElementById('hyperprotein-cycle-table-body');
+        const hyperproteinInfoMessage = document.getElementById('hyperprotein-info-message');
+        const hyperproteinNoteContainer = document.getElementById('hyperprotein-note-container');
+        const macroPercentageTotalDiv = document.getElementById('macro-percentage-total');
+        const mealPercentageTotalDiv = document.getElementById('meal-percentage-total');
+        const goalCaloriesInput = document.getElementById('goal-calories');
+        const proteinPercentageInput = document.getElementById('protein-percentage');
+        const carbPercentageInput = document.getElementById('carb-percentage');
+        const fatPercentageInput = document.getElementById('fat-percentage');
+
+        // --- DOM Element References from New JavaScript ---
+        const fasePerdida = document.getElementById('fasePerdida');
+        const estrategiasCheckboxesPerdida = document.querySelectorAll('.strategy-checkboxes:nth-of-type(1) .form-check');
+        const modoSimplificadoSwitchPerdida = document.getElementById('modoSimplificadoSwitch');
+        const infoMacronutrientes = document.getElementById('infoMacronutrientes');
+        const faseGanancia = document.getElementById('faseGanancia');
+        const estrategiasCheckboxesGanancia = document.querySelectorAll('.strategy-checkboxes:nth-of-type(2) .form-check');
+        const modoSimplificadoSwitchGanancia = document.getElementById('modoSimplificadoSwitchGanancia');
+        const faseMantenimiento = document.getElementById('faseMantenimiento');
+        const estrategiasCheckboxesMantenimiento = document.querySelectorAll('.strategy-checkboxes:nth-of-type(3) .form-check');
+        const modoSimplificadoSwitchMantenimiento = document.getElementById('modoSimplificadoSwitchMantenimiento');
+        const faseActual = document.getElementById('faseActual');
+        const estrategiasCheckboxesActual = document.querySelectorAll('.strategy-checkboxes:nth-of-type(4) .form-check');
+        const modoSimplificadoSwitchActual = document.getElementById('modoSimplificadoSwitchActual');
+
+        // --- Mapeo de estrategias permitidas por fase (from New JavaScript) ---
+        const estrategiasPermitidas = {
+            'induccion_cetogenica': ['ninguna', 'tkd', 'if_16_8', 'refeed'],
+            'ciclado_metabolico': ['ninguna', 'tkd', 'ckd', 'carb_cycling', 'timing', 'flexible_dieting'],
+            'transicion_mantenimiento': ['ninguna', 'carb_cycling', 'timing', 'flexible_dieting'],
+            'ketoadaptation': ['ninguna', 'tkd', 'if_16_8', 'refeed'],
+            'volumen_muscular': ['ninguna', 'carb_cycling', 'refeed', 'timing', 'flexible_dieting'],
+            'enfocado_masa': ['ninguna', 'carb_cycling', 'refeed', 'timing', 'flexible_dieting'],
+            'equilibrio_flexible': ['ninguna', 'flexible_dieting', 'if_16_8', 'refeed', 'carb_cycling'],
+            'adherencia_social': ['ninguna', 'flexible_dieting', 'if_16_8', 'refeed', 'carb_cycling'],
+            'volumen': ['ninguna', 'carb_cycling', 'refeed', 'flexible_dieting', 'timing'],
+            'definicion': ['ninguna', 'carb_cycling', 'refeed', 'flexible_dieting', 'timing'],
+            'mantenimiento': ['ninguna', 'carb_cycling', 'refeed', 'flexible_dieting', 'timing']
+        };
+
+        // --- Mapeo de descripciones de macronutrientes por fase (from New JavaScript) ---
+        const infoMacros = {
+            'induccion_cetogenica': '5-10% HC | 65-70% Grasas | 20-25% Proteínas',
+            'ciclado_metabolico': '10-25% HC | 40-50% Grasas | 25-30% Proteínas',
+            'transicion_mantenimiento': '26-40% HC | 30-35% Grasas | 20-25% Proteínas',
+            'ketoadaptation': '60-70% Grasas | Más Proteína',
+            'volumen_muscular': '40-50% HC | 20-30% Grasas | 20-30% Proteínas',
+            'enfocado_masa': '45-55% HC | 20-25% Grasas | 25-30% Proteínas',
+            'equilibrio_flexible': '35-45% HC | 25-35% Grasas | 20-25% Proteínas',
+            'adherencia_social': '40-50% HC | 25-30% Grasas | 20-25% Proteínas',
+            'volumen': '40-50% HC | 20-30% Grasas | 20-30% Proteínas',
+            'definicion': '30-40% HC | 30-35% Grasas | 25-35% Proteínas',
+            'mantenimiento': '35-45% HC | 25-35% Grasas | 20-25% Proteínas'
+        };
+
+        // --- Utility Functions from Script_1.txt ---
+        function displayError(container, message) {
+            if (container) {
+                container.innerHTML = `<p class="error-message">${message}</p>`;
+            } else {
+                console.error("Error container not found for message:", message);
+            }
+        }
+
+        function displayInfo(container, message) {
+            if (container) {
+                container.innerHTML = `<p class="info-message">${message}</p>`;
+            } else {
+                console.error("Info container not found for message:", message);
+            }
+        }
+
+        function clearContainer(container) {
+            if (container) {
+                container.innerHTML = '';
+            }
+        }
+
+        function updateButtonStates() {
+            const step1Done = calculatedTDEE !== null && currentWeightKg !== null;
+            const step2Done = step1Done && targetWeightKgGlobal !== null;
+            const step3Done = step2Done && calculatedMacros.goalCalories > 0;
+            const step6Done = step1Done && estimatedWeeksManualGlobal !== null && estimatedWeeksManualGlobal > 0;
+
+            if (calculateGoalButton) calculateGoalButton.disabled = !step1Done;
+            if (calculateMacrosButton) calculateMacrosButton.disabled = !step2Done;
+            if (generateMealsButton) generateMealsButton.disabled = !step3Done;
+            if (estimateTimeButton) estimateTimeButton.disabled = !step1Done;
+            if (generateHyperproteinButton) generateHyperproteinButton.disabled = !step6Done;
+            if (savePdfButton) savePdfButton.disabled = !step1Done;
+        }
+
+        // --- New JavaScript: Function to Update Strategies ---
+        function actualizarEstrategias(faseSelect, checkboxes, modoSimplificadoSwitch) {
+            if (!faseSelect || !checkboxes || !modoSimplificadoSwitch) return;
+            const faseSeleccionada = faseSelect.value;
+            const permitidas = estrategiasPermitidas[faseSeleccionada] || [];
+
+            checkboxes.forEach(div => {
+                const checkbox = div.querySelector('input');
+                const estrategia = checkbox.value;
+                const esSimplificada = ['ninguna', 'tkd', 'if_16_8', 'ckd'].includes(estrategia);
+
+                if (modoSimplificadoSwitch.checked && !esSimplificada) {
+                    div.style.display = 'none';
+                } else {
+                    div.style.display = 'block';
+                }
+
+                if (permitidas.includes(estrategia)) {
+                    checkbox.disabled = false;
+                    div.style.opacity = 1;
+                } else {
+                    checkbox.disabled = true;
+                    checkbox.checked = false;
+                    div.style.opacity = 0.5;
+                }
+            });
+
+            if (faseSelect.id === 'fasePerdida' && infoMacronutrientes) {
+                infoMacronutrientes.textContent = infoMacros[faseSeleccionada] || '';
+            }
+        }
+
+        // --- Functions from Script_1.txt (abridged for brevity) ---
+        function calcularTMB(peso, altura, edad, sexo) {
+            return sexo === 'Masculino' ? 10 * peso + 6.25 * altura - 5 * edad + 5 : 10 * peso + 6.25 * altura - 5 * edad - 161;
+        }
+
+        function calculateCalories() {
+            clearContainer(calorieResultDiv);
+            clearContainer(energyBalanceResultDiv);
+
+            userAge = parseInt(calorieForm.elements['age'].value);
+            userGender = calorieForm.elements['gender'].value;
+            currentWeightKg = parseFloat(calorieForm.elements['weight'].value);
+            const heightM = parseFloat(calorieForm.elements['height'].value);
+            userActivityLevel = calorieForm.elements['activity'].value;
+            const estimatedIntake = parseInt(calorieForm.elements['estimated-intake'].value) || null;
+
+            if (isNaN(userAge) || isNaN(currentWeightKg) || isNaN(heightM) || userAge <= 0 || currentWeightKg <= 0 || heightM <= 0) {
+                displayError(calorieResultDiv, 'Por favor, introduce valores válidos para edad, peso y altura.');
+                calculatedTDEE = null;
+                calculatedBMR = null;
+                updateButtonStates();
+                return;
+            }
+            userHeightCm = heightM * 100;
+
+            if (userGender === 'male') {
+                calculatedBMR = (10 * currentWeightKg) + (6.25 * userHeightCm) - (5 * userAge) + 5;
+            } else {
+                calculatedBMR = (10 * currentWeightKg) + (6.25 * userHeightCm) - (5 * userAge) - 161;
+            }
+
+            calculatedTDEE = calculatedBMR * activityMultipliers[userActivityLevel] * 1.1;
+
+            calorieResultDiv.innerHTML = `
+                <h3>Resultados del Gasto Energético:</h3>
+                <p>Tu Tasa Metabólica Basal (TMB) estimada es: <strong>${calculatedBMR.toFixed(0)} kcal/día</strong>.</p>
+                <p>Tu Gasto Energético Total (GET/TDEE) estimado (con buffer +10%) es: <strong>${calculatedTDEE.toFixed(0)} kcal/día</strong>.</p>
+                <p>Este es el número aproximado de calorías que tu cuerpo quema diariamente, incluyendo un margen.</p>`;
+
+            if (estimatedIntake && estimatedIntake > 0) {
+                const balance = estimatedIntake - calculatedTDEE;
+                let balanceInterpretation = '';
+                if (balance > 100) {
+                    balanceInterpretation = `Estás en un <strong>superávit calórico</strong> de aproximadamente <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una ganancia de peso.`;
+                } else if (balance < -100) {
+                    balanceInterpretation = `Estás en un <strong>déficit calórico</strong> de aproximadamente <strong>${Math.abs(balance).toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una pérdida de peso.`;
+                } else {
+                    balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
+                }
+                energyBalanceResultDiv.innerHTML = `
+                    <h3>Balance Energético Estimado:</h3>
+                    <p>Tu ingesta estimada (${estimatedIntake} kcal) comparada con tu GET con buffer (${calculatedTDEE.toFixed(0)} kcal):</p>
+                    <p>${balanceInterpretation}</p>`;
+            } else {
+                clearContainer(energyBalanceResultDiv);
+            }
+
+            updateButtonStates();
+        }
+
+        function calcularMacros() {
+            const ids = ['weight', 'height', 'age', 'gender', 'activity', 'objetivo', 'periodoPlanificacion'];
+            for (const id of ids) {
+                const element = document.getElementById(id);
+                if (!element) {
+                    displayError(document.getElementById('errorMessage'), `Error: No se encontró el elemento con ID "${id}".`);
+                    return;
+                }
+            }
+
+            const activitySelect = document.getElementById('activity');
+            activitySelect.innerHTML = `
+                <option value="1.2">Sedentario (poco o nada)</option>
+                <option value="1.375">Ligero (1-3 días/semana)</option>
+                <option value="1.55" selected>Moderado (3-5 días/semana)</option>
+                <option value="1.725">Activo (6-7 días/semana)</option>
+                <option value="1.9">Muy activo (entrenamiento intenso)</option>
+            `;
+
+            const peso = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const altura = height * 100;
+            const edad = parseInt(document.getElementById('age').value);
+            const sexo = document.getElementById('gender').value;
+            const actividad = parseFloat(document.getElementById('activity').value);
+            const objetivo = document.getElementById('objetivo').value;
+
+            if (isNaN(peso) || isNaN(altura) || isNaN(edad) || !sexo || isNaN(actividad) || !objetivo) {
+                displayError(document.getElementById('errorMessage'), 'Por favor, completa todos los campos obligatorios en el Paso 1.');
+                return;
+            }
+
+            const validActivityLevels = [1.2, 1.375, 1.55, 1.725, 1.9];
+            if (!validActivityLevels.includes(actividad)) {
+                displayError(document.getElementById('errorMessage'), 'Nivel de actividad no válido.');
+                return;
+            }
+
+            const gastoEnergetico = Math.round(calcularTMB(peso, altura, edad, sexo) * actividad);
+            if (isNaN(gastoEnergetico) || gastoEnergetico <= 0) {
+                displayError(document.getElementById('errorMessage'), 'Error al calcular el gasto energético. Verifique los datos personales.');
+                return;
+            }
+
+            // Placeholder for calcularMacronutrientes and UI updates
+            console.log('calcularMacros called with:', { peso, gastoEnergetico, objetivo });
+            // Add calcularMacronutrientes and actualizarUI logic here if needed
+        }
+
+        // --- Event Listeners from Script_1.txt ---
+        const calcularMacrosBtn = document.getElementById('calcular-macros-btn');
+        if (calcularMacrosBtn) {
+            calcularMacrosBtn.addEventListener('click', calcularMacros);
+        } else {
+            console.error('Button with ID "calcular-macros-btn" not found.');
+        }
+
+        const objetivoSelect = document.getElementById('objetivo');
+        if (objetivoSelect) {
+            objetivoSelect.addEventListener('change', () => {
+                console.log('Objetivo changed:', objetivoSelect.value);
+                // Add toggleOpcionesObjetivo logic here if needed
+            });
+        }
+
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js no está disponible.');
+            const errorMessage = document.getElementById('errorMessage');
+            if (errorMessage) {
+                errorMessage.textContent = 'No se pudo cargar Chart.js. Algunas funcionalidades estarán limitadas.';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // --- Event Listeners from New JavaScript ---
+        if (fasePerdida) {
+            fasePerdida.addEventListener('change', () => actualizarEstrategias(fasePerdida, estrategiasCheckboxesPerdida, modoSimplificadoSwitchPerdida));
+            modoSimplificadoSwitchPerdida.addEventListener('change', () => actualizarEstrategias(fasePerdida, estrategiasCheckboxesPerdida, modoSimplificadoSwitchPerdida));
+            actualizarEstrategias(fasePerdida, estrategiasCheckboxesPerdida, modoSimplificadoSwitchPerdida);
+        }
+
+        if (faseGanancia) {
+            faseGanancia.addEventListener('change', () => actualizarEstrategias(faseGanancia, estrategiasCheckboxesGanancia, modoSimplificadoSwitchGanancia));
+            modoSimplificadoSwitchGanancia.addEventListener('change', () => actualizarEstrategias(faseGanancia, estrategiasCheckboxesGanancia, modoSimplificadoSwitchGanancia));
+            actualizarEstrategias(faseGanancia, estrategiasCheckboxesGanancia, modoSimplificadoSwitchGanancia);
+        }
+
+        if (faseMantenimiento) {
+            faseMantenimiento.addEventListener('change', () => actualizarEstrategias(faseMantenimiento, estrategiasCheckboxesMantenimiento, modoSimplificadoSwitchMantenimiento));
+            modoSimplificadoSwitchMantenimiento.addEventListener('change', () => actualizarEstrategias(faseMantenimiento, estrategiasCheckboxesMantenimiento, modoSimplificadoSwitchMantenimiento));
+            actualizarEstrategias(faseMantenimiento, estrategiasCheckboxesMantenimiento, modoSimplificadoSwitchMantenimiento);
+        }
+
+        if (faseActual) {
+            faseActual.addEventListener('change', () => actualizarEstrategias(faseActual, estrategiasCheckboxesActual, modoSimplificadoSwitchActual));
+            modoSimplificadoSwitchActual.addEventListener('change', () => actualizarEstrategias(faseActual, estrategiasCheckboxesActual, modoSimplificadoSwitchActual));
+            actualizarEstrategias(faseActual, estrategiasCheckboxesActual, modoSimplificadoSwitchActual);
+        }
+
+        // --- Initialize Button States ---
+        updateButtonStates();
+    });
+})();
+</script>
 
 </script>
 
 </body>
 </html>
+
 
 
 
