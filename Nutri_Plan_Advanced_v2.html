@@ -4262,6 +4262,9 @@ function calcularMacros() {
         actualizarUI(resultados, gastoEnergetico);
     }
 
+
+
+		
 			function mostrarFasePorObjetivo(objetivo) {
     // Ocultar todos los selects y labels de fase
     const elementosFase = [
@@ -4312,6 +4315,78 @@ function calcularMacros() {
     }
 }
 
+
+// Función para actualizar los porcentajes de macros según la fase seleccionada
+function actualizarMacrosPorFase() {
+    const objetivoSelect = document.getElementById('objetivo');
+    if (!objetivoSelect) return;
+    
+    const objetivo = objetivoSelect.value;
+    let faseSeleccionada = '';
+    
+    // Corregido: usar los nuevos valores de objetivo
+    if (objetivo === 'perdida1' && document.getElementById('fasePerdida1')) {
+        faseSeleccionada = document.getElementById('fasePerdida1').value;
+    } else if (objetivo === 'ganancia1' && document.getElementById('faseGanancia1')) {
+        faseSeleccionada = document.getElementById('faseGanancia1').value;
+    } else if (objetivo === 'mantenimiento1' && document.getElementById('enfoqueMantenimiento1')) {
+        faseSeleccionada = document.getElementById('enfoqueMantenimiento1').value;
+    } else if (objetivo === 'mixto1' && document.getElementById('faseMixto1')) {
+        faseSeleccionada = document.getElementById('faseMixto1').value;
+    }
+    
+    // Definir las distribuciones de macros para cada fase
+    const distribuciones = {
+        // Pérdida de peso
+        'induccion_cetogenica1': { protein: 20, carb: 5, fat: 70 },
+        'ciclado_metabolico1': { protein: 25, carb: 20, fat: 45 },
+        'transicion_mantenimiento1': { protein: 30, carb: 40, fat: 30 },
+        
+        // Ganancia de peso
+        'volumen1': { protein: 20, carb: 55, fat: 25 },
+        'masa1': { protein: 25, carb: 50, fat: 25 },
+        
+        // Mantenimiento
+        'equilibrio1': { protein: 22.5, carb: 40, fat: 32.5 },
+        'social1': { protein: 22.5, carb: 45, fat: 32.5 },
+        
+        // Mixto
+        'volumen1_mixto': { protein: 20, carb: 55, fat: 25 },
+        'definicion1': { protein: 30, carb: 40, fat: 30 },
+        'mantenimiento1_mixto': { protein: 22.5, carb: 40, fat: 32.5 } // Cambiado para evitar conflicto
+    };
+    
+    // Actualizar los valores en los inputs
+    if (distribuciones[faseSeleccionada]) {
+        if (document.getElementById('protein-percentage')) {
+            document.getElementById('protein-percentage').value = distribuciones[faseSeleccionada].protein;
+        }
+        if (document.getElementById('carb-percentage')) {
+            document.getElementById('carb-percentage').value = distribuciones[faseSeleccionada].carb;
+        }
+        if (document.getElementById('fat-percentage')) {
+            document.getElementById('fat-percentage').value = distribuciones[faseSeleccionada].fat;
+        }
+        
+        // Opcional: Actualizar el total de porcentajes
+        const proteinValue = parseFloat(document.getElementById('protein-percentage').value) || 0;
+        const carbValue = parseFloat(document.getElementById('carb-percentage').value) || 0;
+        const fatValue = parseFloat(document.getElementById('fat-percentage').value) || 0;
+        const total = proteinValue + carbValue + fatValue;
+        
+        const macroPercentageTotalDiv = document.getElementById('macro-percentage-total');
+        if (macroPercentageTotalDiv) {
+            macroPercentageTotalDiv.textContent = `Total: ${total}%`;
+            macroPercentageTotalDiv.className = total === 100 ? 'total-valid' : 'total-invalid';
+        }
+    }
+}
+
+
+
+
+
+		
     document.getElementById('objetivo').addEventListener('change', toggleOpcionesObjetivo);
 		
    document.addEventListener('DOMContentLoaded', () => {
@@ -4321,7 +4396,14 @@ function calcularMacros() {
         document.getElementById('errorMessage').textContent = 'No se pudo cargar Chart.js. Algunas funcionalidades estarán limitadas.';
         document.getElementById('errorMessage').style.display = 'block';
     }
-    
+    // Agregar event listeners a los selects de fase
+    const selectsFase = ['fasePerdida1', 'faseGanancia1', 'enfoqueMantenimiento1', 'faseMixto1'];
+    selectsFase.forEach(selectId => {
+        const elemento = document.getElementById(selectId);
+        if (elemento) {
+            elemento.addEventListener('change', actualizarMacrosPorFase);
+        }
+   
     // Agregar event listener para el cambio de objetivo
     const objetivoSelect = document.getElementById('objetivo');
     if (objetivoSelect) {
@@ -4336,6 +4418,7 @@ function calcularMacros() {
 
 </body>
 </html>
+
 
 
 
