@@ -1700,29 +1700,26 @@ if (balance > 100) {
 
 
             // --- Step 2: Calculate Weight Goal and Recommendations ---
+                        // --- Step 2: Calculate Weight Goal and Recommendations ---
             function calculateWeightGoal() {
                 clearContainer(weightGoalResultDiv); // Clear previous results
                 if(weightChartContainer) weightChartContainer.style.display = 'none'; // Hide chart initially
-
                 // Destroy previous weight chart instance
                 if (weightEvolutionChartInstance) {
                     weightEvolutionChartInstance.destroy();
                     weightEvolutionChartInstance = null;
                 }
-
                 // Check prerequisite
                 if (!currentWeightKg || !calculatedTDEE) {
                     displayError(weightGoalResultDiv, 'Error: Completa el Paso 1 antes de calcular el objetivo de peso.');
                     updateButtonStates();
                     return;
                 }
-
                 // Get values from form
                 const currentFatPerc = parseFloat(weightGoalForm.elements['current-fat-percentage'].value);
                 const targetFatPerc = parseFloat(weightGoalForm.elements['target-fat-percentage'].value);
                 const desiredLeanGainKg = parseFloat(weightGoalForm.elements['desired-lean-mass-gain'].value) || 0;
                 const isAthlete = weightGoalForm.elements['is-athlete'].value === 'yes';
-
                 // Validate inputs
                 if (isNaN(currentFatPerc) || isNaN(targetFatPerc) || currentFatPerc <= 0 || targetFatPerc <= 0 || targetFatPerc >= 100 || currentFatPerc >= 100) {
                     displayError(weightGoalResultDiv, 'Por favor, introduce porcentajes de grasa válidos (mayores que 0 y menores que 100).');
@@ -1731,15 +1728,12 @@ if (balance > 100) {
                     updateButtonStates();
                     return;
                 }
-
                 // --- Calculations ---
                 const currentFatMassKg = currentWeightKg * (currentFatPerc / 100);
                 const currentLeanMassKg = currentWeightKg - currentFatMassKg;
                 const targetLeanMassKg = currentLeanMassKg + desiredLeanGainKg;
-
                 // Calculate target weight based on target lean mass and target fat percentage
                 targetWeightKgGlobal = targetLeanMassKg / (1 - (targetFatPerc / 100));
-
                 if (targetWeightKgGlobal <= 0 || !isFinite(targetWeightKgGlobal) || targetWeightKgGlobal > 500) { // Added upper sanity check
                     displayError(weightGoalResultDiv, 'No se pudo calcular un peso objetivo válido con los datos introducidos. Revisa los porcentajes y la ganancia magra deseada.');
                     targetWeightKgGlobal = null; // Reset global value
@@ -1747,11 +1741,9 @@ if (balance > 100) {
                     updateButtonStates();
                     return;
                 }
-
                 const targetFatMassKg = targetWeightKgGlobal * (targetFatPerc / 100);
                 const fatMassToLoseGainKg = currentFatMassKg - targetFatMassKg;
                 const totalWeightChangeKg = targetWeightKgGlobal - currentWeightKg; // Target - Current
-
                 // --- Determine Goal Type ---
                 goalTypeGlobal = 'maintenance'; // Default to maintenance
                 if (totalWeightChangeKg < -0.1) { // Weight loss threshold
@@ -1759,12 +1751,10 @@ if (balance > 100) {
                 } else if (totalWeightChangeKg > 0.1) { // Weight gain threshold
                     goalTypeGlobal = 'gain';
                 }
-
                 // --- Automatic Calculation of Estimated Weeks & Rate (for Step 5 table) ---
                 estimatedWeeksGlobal = 0;
                 targetWeeklyRateKgGlobal = 0;
                 let targetWeeklyRatePerc = 0;
-
                 if (goalTypeGlobal === 'loss') {
                     targetWeeklyRatePerc = 0.004; // Target 0.40% loss per week
                     targetWeeklyRateKgGlobal = currentWeightKg * targetWeeklyRatePerc;
@@ -1783,21 +1773,17 @@ if (balance > 100) {
                     }
                 }
                 // No calculations needed for maintenance
-
                 estimatedWeeksGlobal = Math.max(0, Math.round(estimatedWeeksGlobal));
-
                 // --- Muscle Mass Assessment ---
                 const currentLeanMassPerc = (currentLeanMassKg / currentWeightKg) * 100;
                 let muscleAssessmentHTML = `<div class="notes-section"><h4>Evaluación de Masa Muscular (Basada en Masa Magra)</h4>`;
                 muscleAssessmentHTML += `<p>Tu <strong>Masa Magra Estimada</strong> es: <strong>${currentLeanMassKg.toFixed(1)} kg</strong> (<strong>${currentLeanMassPerc.toFixed(1)}%</strong> de tu peso corporal).</p>`;
                 muscleAssessmentHTML += `<p><em>(Recuerda: La masa magra incluye músculo, hueso, agua y órganos. Es un indicador indirecto de la masa muscular.)</em></p>`;
-
                 const ranges = { // General ranges for LEAN MASS %
                     male: { nonAthlete: [60, 85], athlete: [70, 90] },
                     female: { nonAthlete: [50, 75], athlete: [60, 85] }
                 };
                 const relevantRange = isAthlete ? ranges[userGender].athlete : ranges[userGender].nonAthlete;
-
                 muscleAssessmentHTML += `<p>Comparación con rangos generales de <strong>% Masa Magra</strong> para tu perfil (${isAthlete ? 'deportista' : 'no deportista'}):</p>`;
                 if (currentLeanMassPerc < relevantRange[0]) {
                     muscleAssessmentHTML += `<p>Tu porcentaje de masa magra estimada (${currentLeanMassPerc.toFixed(1)}%) está <strong>por debajo</strong> del rango general (${relevantRange[0]}-${relevantRange[1]}%). `;
@@ -1817,8 +1803,6 @@ if (balance > 100) {
                     muscleAssessmentHTML += `</p>`;
                 }
                 muscleAssessmentHTML += `</div>`;
-
-
                 // --- Display Initial Results ---
                 let resultsHTML = `<h3>Resultados del Objetivo de Composición Corporal:</h3>`;
                 resultsHTML += `<p><strong>Peso Actual:</strong> ${currentWeightKg.toFixed(2)} kg</p>`;
@@ -1828,7 +1812,6 @@ if (balance > 100) {
                 resultsHTML += `<p><strong>Peso Objetivo Calculado:</strong> ${targetWeightKgGlobal.toFixed(2)} kg</p>`;
                 resultsHTML += `<p><strong>Masa Grasa Objetivo:</strong> ${targetFatMassKg.toFixed(2)} kg (${targetFatPerc}%)</p>`;
                 resultsHTML += `<p><strong>Masa Magra Objetivo (Estimada):</strong> ${targetLeanMassKg.toFixed(1)} kg (Incluye ${desiredLeanGainKg} kg de ganancia deseada)</p>`;
-
                 if (fatMassToLoseGainKg > 0) {
                     resultsHTML += `<p><strong>Grasa a Perder:</strong> ${fatMassToLoseGainKg.toFixed(2)} kg</p>`;
                 } else if (fatMassToLoseGainKg < 0) {
@@ -1836,7 +1819,6 @@ if (balance > 100) {
                 } else {
                     resultsHTML += `<p><strong>Grasa a Perder/Ganar:</strong> 0 kg</p>`;
                 }
-
                 // Display total weight change and rate
                 if (goalTypeGlobal === 'loss') {
                     resultsHTML += `<p><strong>Pérdida de Peso Neta Total:</strong> ${Math.abs(totalWeightChangeKg).toFixed(2)} kg</p>`;
@@ -1848,14 +1830,11 @@ if (balance > 100) {
                     resultsHTML += `<p><strong>Cambio de Peso Neto Total:</strong> 0 kg</p>`;
                     resultsHTML += `<p><strong>Ritmo Semanal Objetivo Estimado (Auto):</strong> Mantenimiento</p>`;
                 }
-
                 if (goalTypeGlobal !== 'maintenance' && estimatedWeeksGlobal > 0) {
                     resultsHTML += `<p><strong>Duración Estimada del Plan (Auto - para Tabla Paso 5):</strong> Aproximadamente <strong>${estimatedWeeksGlobal} semanas</strong> (~${(estimatedWeeksGlobal / 4.3).toFixed(1)} meses)</p>`;
                 }
-
                 // --- Muscle Assessment Display ---
                 resultsHTML += muscleAssessmentHTML;
-
                 // --- General Recommendations Notes Section ---
                 resultsHTML += `<div class="notes-section"><h4>Notas y Recomendaciones Generales:</h4><ul>`;
                 const tdeeString = calculatedTDEE ? calculatedTDEE.toFixed(0) + ' kcal' : '(calcula GET en Paso 1)';
@@ -1879,19 +1858,15 @@ if (balance > 100) {
                 }
                 resultsHTML += `<li><strong>Monitorización:</strong> Pésate regularmente y ajusta tu ingesta según resultados.</li>`;
                 resultsHTML += `</ul></div>`;
-
                 // --- Monitoring & Adjustments Section ---
                 resultsHTML += generateMonitoringHTML();
-
                 // --- Display results ---
                 weightGoalResultDiv.innerHTML = resultsHTML;
-
                 // --- Generate and Display Weight Evolution Chart (Based on Auto Estimation) ---
                 if (goalTypeGlobal !== 'maintenance' && estimatedWeeksGlobal > 1 && weightChartContainer) {
                     generateWeightEvolutionChart(currentWeightKg, targetWeightKgGlobal, estimatedWeeksGlobal);
                     weightChartContainer.style.display = 'block';
                 }
-
                 // --- Calcular y rellenar Calorías Objetivo en Paso 3 ---
                 if (calculatedTDEE && goalCaloriesInput) {
                     let suggestedGoalCalories = calculatedTDEE; // Default to maintenance (using the buffered TDEE from Step 1)
@@ -1906,105 +1881,100 @@ if (balance > 100) {
                     console.warn("Could not set goal calories automatically. TDEE or input field missing.");
                     if (goalCaloriesInput) goalCaloriesInput.value = '';
                 }
-
                 // --- Ajustar Porcentajes de Macros por Defecto en Paso 3 ---
-if (proteinPercentageInput && carbPercentageInput && fatPercentageInput) {
-    // En lugar de usar valores fijos por goalType, usamos la lógica de fases
-    // Primero, establecemos un objetivo por defecto basado en goalTypeGlobal
-    const objetivoSelect = document.getElementById('objetivo');
-    if (objetivoSelect) {
-        if (goalTypeGlobal === 'loss') {
-            objetivoSelect.value = 'perdida1';
-        } else if (goalTypeGlobal === 'gain') {
-            objetivoSelect.value = 'ganancia1';
-        } else { // maintenance
-            objetivoSelect.value = 'mantenimiento1';
-        }
-        
-        // Disparamos el cambio para mostrar la fase correspondiente
-        objetivoSelect.dispatchEvent(new Event('change'));
-        
-        // Establecemos una fase por defecto según el objetivo
-        let fasePorDefecto = '';
-        switch(objetivoSelect.value) {
-            case 'perdida1':
-                fasePorDefecto = 'ciclado_metabolico1'; // Fase intermedia por defecto
-                break;
-            case 'ganancia1':
-                fasePorDefecto = 'volumen1'; // Fase principal de ganancia
-                break;
-            case 'mantenimiento1':
-                fasePorDefecto = 'equilibrio1'; // Fase de equilibrio
-                break;
-            case 'mixto1':
-                fasePorDefecto = 'mantenimiento1_mixto'; // Fase de mantenimiento mixto
-                break;
-        }
-        
-        // Establecemos la fase por defecto en el select correspondiente
-        setTimeout(() => { // Usamos setTimeout para asegurar que el select esté visible
-            let faseSelect = null;
-            switch(objetivoSelect.value) {
-                case 'perdida1':
-                    faseSelect = document.getElementById('fasePerdida1');
-                    break;
-                case 'ganancia1':
-                    faseSelect = document.getElementById('faseGanancia1');
-                    break;
-                case 'mantenimiento1':
-                    faseSelect = document.getElementById('enfoqueMantenimiento1');
-                    break;
-                case 'mixto1':
-                    faseSelect = document.getElementById('faseMixto1');
-                    break;
-            }
-            
-            if (faseSelect && faseSelect.options.length > 0) {
-                // Buscar la opción por defecto
-                for (let i = 0; i < faseSelect.options.length; i++) {
-                    if (faseSelect.options[i].value === fasePorDefecto) {
-                        faseSelect.selectedIndex = i;
-                        break;
+                if (proteinPercentageInput && carbPercentageInput && fatPercentageInput) {
+                    // En lugar de usar valores fijos por goalType, usamos la lógica de fases
+                    // Primero, establecemos un objetivo por defecto basado en goalTypeGlobal
+                    const objetivoSelect = document.getElementById('objetivo');
+                    if (objetivoSelect) {
+                        if (goalTypeGlobal === 'loss') {
+                            objetivoSelect.value = 'perdida1';
+                        } else if (goalTypeGlobal === 'gain') {
+                            objetivoSelect.value = 'ganancia1';
+                        } else { // maintenance
+                            objetivoSelect.value = 'mantenimiento1';
+                        }
+                        // Disparamos el cambio para mostrar la fase correspondiente
+                        objetivoSelect.dispatchEvent(new Event('change'));
+                        // Establecemos una fase por defecto según el objetivo
+                        let fasePorDefecto = '';
+                        switch(objetivoSelect.value) {
+                            case 'perdida1':
+                                fasePorDefecto = 'ciclado_metabolico1'; // Fase intermedia por defecto
+                                break;
+                            case 'ganancia1':
+                                fasePorDefecto = 'volumen1'; // Fase principal de ganancia
+                                break;
+                            case 'mantenimiento1':
+                                fasePorDefecto = 'equilibrio1'; // Fase de equilibrio
+                                break;
+                            case 'mixto1':
+                                fasePorDefecto = 'mantenimiento1_mixto'; // Fase de mantenimiento mixto
+                                break;
+                        }
+                        // Establecemos la fase por defecto en el select correspondiente
+                        setTimeout(() => { // Usamos setTimeout para asegurar que el select esté visible
+                            let faseSelect = null;
+                            switch(objetivoSelect.value) {
+                                case 'perdida1':
+                                    faseSelect = document.getElementById('fasePerdida1');
+                                    break;
+                                case 'ganancia1':
+                                    faseSelect = document.getElementById('faseGanancia1');
+                                    break;
+                                case 'mantenimiento1':
+                                    faseSelect = document.getElementById('enfoqueMantenimiento1');
+                                    break;
+                                case 'mixto1':
+                                    faseSelect = document.getElementById('faseMixto1');
+                                    break;
+                            }
+                            if (faseSelect && faseSelect.options.length > 0) {
+                                // Buscar la opción por defecto
+                                for (let i = 0; i < faseSelect.options.length; i++) {
+                                    if (faseSelect.options[i].value === fasePorDefecto) {
+                                        faseSelect.selectedIndex = i;
+                                        break;
+                                    }
+                                }
+                                // Si no encontramos la opción por defecto, usamos la primera
+                                if (faseSelect.selectedIndex === -1 && faseSelect.options.length > 0) {
+                                    faseSelect.selectedIndex = 0;
+                                }
+                                // Actualizar los macros basados en la fase seleccionada
+                                actualizarMacrosPorFase();
+                            } else {
+                                // Fallback: usar valores por defecto según goalType si no hay fases disponibles
+                                if (goalTypeGlobal === 'loss') {
+                                    proteinPercentageInput.value = 30;
+                                    carbPercentageInput.value = 40;
+                                    fatPercentageInput.value = 30;
+                                    console.log("Set default macros for LOSS: P:30 C:40 F:30");
+                                } else if (goalTypeGlobal === 'gain') {
+                                    proteinPercentageInput.value = 25;
+                                    carbPercentageInput.value = 50;
+                                    fatPercentageInput.value = 25;
+                                    console.log("Set default macros for GAIN: P:25 C:50 F:25");
+                                } else { // Maintenance
+                                    proteinPercentageInput.value = 20;
+                                    carbPercentageInput.value = 50;
+                                    fatPercentageInput.value = 30;
+                                    console.log("Set default macros for MAINTENANCE: P:20 C:50 F:30");
+                                }
+                                adjustMacroPercentages();
+                            }
+                        }, 100);
                     }
+                } else {
+                    console.warn("Could not set default macro percentages. Input fields missing.");
                 }
-                // Si no encontramos la opción por defecto, usamos la primera
-                if (faseSelect.selectedIndex === -1 && faseSelect.options.length > 0) {
-                    faseSelect.selectedIndex = 0;
-                }
-                
-                // Actualizar los macros basados en la fase seleccionada
-                actualizarMacrosPorFase();
-            } else {
-                // Fallback: usar valores por defecto según goalType si no hay fases disponibles
-                if (goalTypeGlobal === 'loss') {
-                    proteinPercentageInput.value = 30;
-                    carbPercentageInput.value = 40;
-                    fatPercentageInput.value = 30;
-                    console.log("Set default macros for LOSS: P:30 C:40 F:30");
-                } else if (goalTypeGlobal === 'gain') {
-                    proteinPercentageInput.value = 25;
-                    carbPercentageInput.value = 50;
-                    fatPercentageInput.value = 25;
-                    console.log("Set default macros for GAIN: P:25 C:50 F:25");
-                } else { // Maintenance
-                    proteinPercentageInput.value = 20;
-                    carbPercentageInput.value = 50;
-                    fatPercentageInput.value = 30;
-                    console.log("Set default macros for MAINTENANCE: P:20 C:50 F:30");
-                }
-                adjustMacroPercentages();
-            }
-        }, 100);
-    }
-} else {
-    console.warn("Could not set default macro percentages. Input fields missing.");
-}
+                // Reset subsequent steps as Step 2 results changed
+                resetStep3onwards();
+                updateButtonStates(); // Enable next step button
+            } // <-- Esta llave cierra correctamente la función calculateWeightGoal
 
-// Reset subsequent steps as Step 2 results changed
-resetStep3onwards();
-updateButtonStates(); // Enable next step button
-}
             // --- Helper Function to Generate Weight Evolution Chart (Step 2) ---
+            // NOTA: Esta función debe definirse FUERA de calculateWeightGoal
             function generateWeightEvolutionChart(startWeight, endWeight, weeks) {
                 if (!weightChartContainer) return; // Exit if container not found
                 weightChartContainer.innerHTML = '<canvas id="weightEvolutionChart"></canvas>'; // Ensure canvas exists
@@ -2013,23 +1983,20 @@ updateButtonStates(); // Enable next step button
                      console.error("Failed to get canvas context for weightEvolutionChart");
                      return;
                 }
-
                 // Destroy previous instance if exists
                 if (weightEvolutionChartInstance) { weightEvolutionChartInstance.destroy(); }
-
                 const labels = Array.from({ length: weeks + 1 }, (_, i) => `Sem ${i}`);
                 const weightData = Array.from({ length: weeks + 1 }, (_, i) => {
                     // Linear interpolation between start and end weight
                     return startWeight + (endWeight - startWeight) * (i / weeks);
                 });
-
                 weightEvolutionChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: labels,
                         datasets: [{
                             label: 'Peso Estimado (kg) - Auto',
-                            data: weightData,
+                             weightData,
                             borderColor: '#4CAF50',
                             backgroundColor: 'rgba(76, 175, 80, 0.1)',
                             fill: true,
@@ -2052,6 +2019,7 @@ updateButtonStates(); // Enable next step button
             }
 
             // --- Helper Function to Generate Monitoring Info HTML ---
+            // NOTA: Esta función también debe definirse FUERA de calculateWeightGoal
             function generateMonitoringHTML() {
                 // Static content, can be adjusted if needed
                 let monitoringHTML = `<div class="monitoring-section"><h4>Monitorización y Ajustes Sugeridos</h4><h5>Análisis de Sangre</h5><ul><li><strong>Frecuencia:</strong> Cada 12-16 semanas (aproximadamente cada 2-3 ciclos).</li><li><strong>Parámetros a evaluar:</strong><ul><li>Función renal: Creatinina y TFG.</li><li>Función hepática: ALT, AST, bilirrubina.</li><li>Colesterol: Total, LDL, HDL, triglicéridos.</li></ul></li><li><strong>Momentos clave sugeridos (ejemplo para ~55 semanas):</strong><ul><li>Inicio (semana 0).</li><li>Mitad del plan (~semana 28).</li><li>Final (~semana 55).</li></ul><em>Ajusta estos momentos a la duración real de tu plan.</em></li></ul><h5>Reevaluación de Composición Corporal</h5><ul><li><strong>Frecuencia:</strong> Cada 8-12 semanas, idealmente al final de cada ciclo completo.</li><li><strong>Momentos sugeridos (ejemplo para ~55 semanas con ciclos de 7 sem):</strong><ul><li>Semana 7 (final Ciclo 1).</li><li>Semana 21 (final Ciclo 3).</li><li>Semana 35 (final Ciclo 5).</li><li>Semana 49 (final Ciclo 7).</li></ul><em>Ajusta estos momentos a la duración real de tu plan y tus ciclos.</em></li><li><strong>Método:</strong> Bioimpedancia o DEXA.</li><li><strong>Ajustes:</strong> Recalcular GET y ajustar calorías/macros según nuevo peso/composición.</li></ul></div>`;
@@ -4501,6 +4469,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
