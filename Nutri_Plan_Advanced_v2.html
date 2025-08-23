@@ -2080,6 +2080,7 @@
                 currentWeightKg = parseFloat(calorieForm.elements['weight'].value);
                 const heightM = parseFloat(calorieForm.elements['height'].value);
                 userActivityLevel = calorieForm.elements['activity'].value;
+				const urlParams = new URLSearchParams(window.location.search);
                 const estimatedIntake = parseInt(calorieForm.elements['estimated-intake'].value) || null;
 
                 // Basic validation
@@ -4805,6 +4806,7 @@ function calcularMacros() {
 
 </body>
 </html>
+
 
 
 
