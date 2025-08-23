@@ -1652,28 +1652,29 @@ function calculateCalories() {
         // Variables para el select de objetivo
         const objetivoSelect = document.getElementById('objetivo');
         
-        if (balance > 100) {
-            balanceInterpretation = `Estás en un <strong>superávit calórico</strong> de aproximadamente <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una ganancia de peso.`;
-            // Actualizar automáticamente el objetivo a ganancia
-            if (objetivoSelect) {
-                objetivoSelect.value = 'ganancia';
-                objetivoSelect.dispatchEvent(new Event('change'));
-            }
-        } else if (balance < -100) {
-            balanceInterpretation = `Estás en un <strong>déficit calórico</strong> de aproximadamente <strong>${Math.abs(balance).toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una pérdida de peso.`;
-            // Actualizar automáticamente el objetivo a pérdida
-            if (objetivoSelect) {
-                objetivoSelect.value = 'perdida';
-                objetivoSelect.dispatchEvent(new Event('change'));
-            }
-        } else {
-            balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
-            // Actualizar automáticamente el objetivo a mantenimiento
-            if (objetivoSelect) {
-                objetivoSelect.value = 'mantenimiento';
-                objetivoSelect.dispatchEvent(new Event('change'));
-            }
-        }
+        // Actualiza estas líneas en tu función calculateCalories():
+if (balance > 100) {
+    balanceInterpretation = `Estás en un <strong>superávit calórico</strong> de aproximadamente <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una ganancia de peso.`;
+    // Actualizar automáticamente el objetivo a ganancia
+    if (objetivoSelect) {
+        objetivoSelect.value = 'ganancia1';
+        objetivoSelect.dispatchEvent(new Event('change'));
+    }
+} else if (balance < -100) {
+    balanceInterpretation = `Estás en un <strong>déficit calórico</strong> de aproximadamente <strong>${Math.abs(balance).toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una pérdida de peso.`;
+    // Actualizar automáticamente el objetivo a pérdida
+    if (objetivoSelect) {
+        objetivoSelect.value = 'perdida1';
+        objetivoSelect.dispatchEvent(new Event('change'));
+    }
+} else {
+    balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
+    // Actualizar automáticamente el objetivo a mantenimiento
+    if (objetivoSelect) {
+        objetivoSelect.value = 'mantenimiento1';
+        objetivoSelect.dispatchEvent(new Event('change'));
+    }
+}
         
         energyBalanceResultDiv.innerHTML = `
             <h3>Balance Energético Estimado:</h3>
@@ -1732,9 +1733,9 @@ function mostrarFasePorObjetivo(objetivo) {
                 document.getElementById('labelFaseMixto1').style.display = 'block';
             }
             break;
+        case 'sel':
         default:
-            // Si es 'sel' o cualquier otro valor, ocultar todos los selects
-            // (ya están ocultos por el forEach anterior)
+            // No mostrar ningún select de fase cuando es la opción por defecto
             break;
     }
 }
@@ -4331,6 +4332,7 @@ function calcularMacros() {
 
 </body>
 </html>
+
 
 
 
