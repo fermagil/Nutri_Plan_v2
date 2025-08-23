@@ -2846,7 +2846,8 @@ if (balance > 100) {
              if (savePdfButton) {
                  savePdfButton.addEventListener('click', guardarComoPDF);
              }
-
+			event.preventDefault();
+			calcularMacros(); 
              // Listeners for live percentage updates
              if(proteinPercentageInput && carbPercentageInput && fatPercentageInput) { // Check if elements exist before adding listeners
                  proteinPercentageInput.addEventListener('input', adjustMacroPercentages);
@@ -4437,6 +4438,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
