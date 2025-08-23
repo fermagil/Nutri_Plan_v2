@@ -4379,23 +4379,23 @@ function actualizarMacrosPorFase() {
     }
     
     // Definir las distribuciones de macros para cada fase
-    const distribuciones = {
+   const distribuciones = {
         // Pérdida de peso
         'induccion_cetogenica1': { protein: 20, carb: 10, fat: 70 },
-        'ciclado_metabolico1': { protein: 25, carb: 20, fat: 45 },
-        'transicion_mantenimiento1': { protein: 30, carb: 40, fat: 30 },
+        'ciclado_metabolico1': { protein: 25, carb: 20, fat: 55 },
+        'transicion_mantenimiento1': { protein: 25, carb: 25, fat: 50 },
         
         // Ganancia de peso
         'volumen1': { protein: 20, carb: 55, fat: 25 },
         'masa1': { protein: 25, carb: 50, fat: 25 },
         
         // Mantenimiento
-        'equilibrio1': { protein: 30, carb: 40, fat: 30 },
-        'social1': { protein: 20, carb: 45, fat: 25 },
+        'equilibrio1': { protein: 25, carb: 40, fat: 35 },
+        'social1': { protein: 25, carb: 45, fat: 30 },
         
         // Mixto
-        'volumen1_mixto': { protein: 20, carb: 55, fat: 25 },
-        'definicion1': { protein: 30, carb: 40, fat: 30 },
+        'volumen1_mixto': { protein: 25, carb: 50, fat: 25 },
+        'definicion1': { protein: 30, carb: 25, fat: 45 },
         'mantenimiento1_mixto': { protein: 22.5, carb: 40, fat: 32.5 } // Cambiado para evitar conflicto
     };
     
@@ -4469,6 +4469,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
