@@ -3994,72 +3994,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 		
-    document.addEventListener('DOMContentLoaded', () => {
-        const fasePerdida = document.getElementById('fasePerdida');
-        const estrategiasCheckboxes = document.querySelectorAll('.strategy-checkboxes .form-check');
-        const modoSimplificadoSwitch = document.getElementById('modoSimplificadoSwitch');
-        const infoMacronutrientes = document.getElementById('infoMacronutrientes');
-
-        // Mapeo de estrategias permitidas por fase
-        const estrategiasPermitidas = {
-            'induccion_cetogenica': ['ninguna', 'tkd', 'if_16_8', 'refeed'],
-            'ciclado_metabolico': ['ninguna', 'tkd', 'ckd', 'carb_cycling', 'timing', 'flexible_dieting'],
-            'transicion_mantenimiento': ['ninguna', 'carb_cycling', 'timing', 'flexible_dieting'],
-            'ketoadaptation': ['ninguna', 'tkd', 'if_16_8', 'refeed']
-        };
-
-        // Mapeo de descripciones de macronutrientes por fase
-        const infoMacros = {
-            'induccion_cetogenica': '5-10% HC | 65-70% Grasas | 20-25% Proteínas',
-            'ciclado_metabolico': '10-25% HC | 40-50% Grasas | 25-30% Proteínas',
-            'transicion_mantenimiento': '26-40% HC | 30-35% Grasas | 20-25% Proteínas',
-            'ketoadaptation': '60-70% Grasas | Más Proteína' // Ejemplo para la estrategia avanzada
-        };
-
-        // Función para actualizar el estado de los checkboxes
-        const actualizarEstrategias = () => {
-            const faseSeleccionada = fasePerdida.value;
-            const permitidas = estrategiasPermitidas[faseSeleccionada] || [];
-
-            estrategiasCheckboxes.forEach(div => {
-                const checkbox = div.querySelector('input');
-                const estrategia = checkbox.value;
-                const esSimplificada = ['ninguna', 'tkd', 'if_16_8', 'ckd'].includes(estrategia);
-                
-                // Mostrar/ocultar según el modo simplificado
-                if (modoSimplificadoSwitch.checked && !esSimplificada) {
-                    div.style.display = 'none';
-                } else {
-                    div.style.display = 'block';
-                }
-
-                // Habilitar/deshabilitar según la fase
-                if (permitidas.includes(estrategia)) {
-                    checkbox.disabled = false;
-                    div.style.opacity = 1;
-                } else {
-                    checkbox.disabled = true;
-                    checkbox.checked = false;
-                    div.style.opacity = 0.5;
-                }
-            });
-
-            // Actualizar la información de los macronutrientes
-            infoMacronutrientes.textContent = infoMacros[faseSeleccionada] || '';
-        };
-
-        // Event listeners
-        fasePerdida.addEventListener('change', actualizarEstrategias);
-        modoSimplificadoSwitch.addEventListener('change', actualizarEstrategias);
-
-        // Llamar a la función al cargar la página para establecer el estado inicial
-        actualizarEstrategias();
-    });
+    
 
 </script>
 
 </body>
 </html>
+
 
 
 
