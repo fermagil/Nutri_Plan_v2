@@ -744,472 +744,524 @@
                 Sigue estos pasos guiados para obtener una estimación de tus necesidades nutricionales y generar un plan de comidas orientativo.
                 Antes de utilizar los datos obtenidos con esta herramienta, consulta con su Dietista-Nutricionista.
             </p>
-	</section>
-	    <section>		
-            
-	
-                <div class="plan-step" id="step-1">
-                    <h2>1. Calcula tus Necesidades y Balance Energético</h2>
-                    <p>Introduce tus datos básicos para estimar tu Gasto Energético Total (GET) y, si lo deseas, tu ingesta actual para ver tu balance energético.</p>
-                    <form id="calorie-form">
-                        <label for="age">Edad (años):</label>
-                         <input type="number" id="age" name="age" required min="1" max="120">
+        </section>
+        <section>
+            <div class="plan-step" id="step-1">
+                <h2>1. Calcula tus Necesidades y Balance Energético</h2>
+                <p>Introduce tus datos básicos para estimar tu Gasto Energético Total (GET) y, si lo deseas, tu ingesta actual para ver tu balance energético.</p>
+                <form id="calorie-form">
+                    <label for="age">Edad (años):</label>
+                    <input type="number" id="age" name="age" required min="1" max="120">
 
-                        <label for="gender">Género Biológico:</label>
-                        <select id="gender" name="gender">
-                            <option value="male">Masculino</option>
-                            <option value="female">Femenino</option>
-                        </select>
+                    <label for="gender">Género Biológico:</label>
+                    <select id="gender" name="gender">
+                        <option value="male">Masculino</option>
+                        <option value="female">Femenino</option>
+                    </select>
 
-                        <label for="weight">Peso Actual (kg):</label>
-                        <input type="number" id="weight" name="weight" required min="1" step="0.1">
+                    <label for="weight">Peso Actual (kg):</label>
+                    <input type="number" id="weight" name="weight" required min="1" step="0.1">
 
-                        <label for="height">Altura (m):</label>
-                        <input type="number" id="height" name="height" step="0.01" required min="0.5" max="3" placeholder="Ej: 1.75">
+                    <label for="height">Altura (m):</label>
+                    <input type="number" id="height" name="height" step="0.01" required min="0.5" max="3" placeholder="Ej: 1.75">
 
-                        <label for="activity">Nivel de Actividad Física Semanal:</label>
-                        <select id="activity" name="activity">
-                            <option value="sedentary">Sedentario</option>
-                            <option value="light">Ligero (1-3 días/sem)</option>
-                            <option value="moderate">Moderado (3-5 días/sem)</option>
-                            <option value="active">Activo (6-7 días/sem)</option>
-                            <option value="very_active">Muy Activo (Intenso/Diario)</option>
-                        </select>
+                    <label for="activity">Nivel de Actividad Física Semanal:</label>
+                    <select id="activity" name="activity">
+                        <option value="sedentary">Sedentario</option>
+                        <option value="light">Ligero (1-3 días/sem)</option>
+                        <option value="moderate">Moderado (3-5 días/sem)</option>
+                        <option value="active">Activo (6-7 días/sem)</option>
+                        <option value="very_active">Muy Activo (Intenso/Diario)</option>
+                    </select>
 
-                        <label for="estimated-intake">Tu Ingesta Calórica Estimada Actual (kcal/día, opcional):</label>
-                        <input type="number" id="estimated-intake" name="estimated-intake" min="0" step="1" placeholder="Si la conoces, ej: 2100">
+                    <label for="estimated-intake">Tu Ingesta Calórica Estimada Actual (kcal/día, opcional):</label>
+                    <input type="number" id="estimated-intake" name="estimated-intake" min="0" step="1" placeholder="Si la conoces, ej: 2100">
 
-                        <button type="submit">Calcular GET y Balance</button>
+                    <button type="submit">Calcular GET y Balance</button>
+                </form>
+                <div id="errorMessage" class="error-message" style="display:none;"></div>
+                <div id="errorMeals" class="error-message" style="display:none;"></div>
+                <div id="errorMacros" class="error-message" style="display:none;"></div>
+                <div id="calorie-result"></div>
+                <div id="energy-balance-result"></div>
+            </div>
+
+            <div class="plan-step" id="step-2">
+                <h2>2. Establece tu Objetivo de Peso y Composición Corporal</h2>
+                <p>Define tu objetivo de composición corporal (% grasa). Puedes estimar tu % de grasa actual con básculas de bioimpedancia o calculadoras online.</p>
+                <p><em>Si no conoces tu % de grasa actual, puedes usar una <a href="https://www.calculator.net/body-fat-calculator.html" target="_blank" rel="noopener noreferrer">calculadora online</a> (en inglés) o buscar alternativas en español.</em></p>
+                <h3>Objetivo Nutricional</h3>
+                <label for="objetivo" class="form-label">Selecciona tu objetivo:</label>
+                <select id="objetivo" class="form-control" aria-label="Objetivo nutricional" required>
+                    <option value="perdida">1. Pérdida de Peso</option>
+                    <option value="ganancia">2. Ganancia de Peso</option>
+                    <option value="mantenimiento">3. Mantenimiento</option>
+                    <option value="mixto">4. Mixto/Combinado</option>
+                </select>
+                <form id="weight-goal-form">
+                    <label for="current-fat-percentage">Grasa Corporal Actual (%):</label>
+                    <input type="number" id="current-fat-percentage" name="current-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 25">
+
+                    <label for="target-fat-percentage">Grasa Corporal Objetivo (%):</label>
+                    <input type="number" id="target-fat-percentage" name="target-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 15">
+
+                    <label for="desired-lean-mass-gain">Ganancia de Masa Magra/Muscular Deseada (kg, opcional):</label>
+                    <input type="number" id="desired-lean-mass-gain" name="desired-lean-mass-gain" step="0.1" min="0" placeholder="Ej: 2 (Dejar en blanco o 0 si no buscas ganar músculo)">
+
+                    <label for="is-athlete">¿Te consideras deportista/atleta?</label>
+                    <select id="is-athlete" name="is-athlete">
+                        <option value="no">No</option>
+                        <option value="yes">Sí</option>
+                    </select>
+
+                    <button type="submit" id="calculate-goal-button">Calcular Objetivo y Recomendaciones</button>
+                </form>
+                <div id="weight-goal-result">
+                    <p class="info-message">Completa el Paso 1 para habilitar este cálculo.</p>
+                    <div id="weight-chart-container">
+                        <canvas id="weightEvolutionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-step" id="step-3">
+                <h2>3. Calcula tus Macronutrientes</h2>
+                <p>Define tu objetivo calórico (basado en tu GET y si quieres perder, mantener o ganar peso) y distribuye los macronutrientes.</p>
+                <p>Se recomienda para pérdida de peso gradual y sostenible reducir un aporte calórico de entre un 10-20% de tu GET, el cálculo automático lo realiza sobre un 10%. Para ganancia de peso la recomendación sería un aumento del GET entre un 5%-15%, el cálculo automático lo realiza sobre un 5%.</p>
+                <p>Tu ingesta objetivo por día puede variar en función de tus necesidades personales de AF y de los ciclos de carga-descarga proteica en un plan de pérdida de peso.</p>
+                <form id="macro-form">
+                    <label for="goal-calories">Calorías Objetivo Diarias (kcal):</label>
+                    <input type="number" id="goal-calories" name="goal-calories" required min="500" placeholder="Introduce las kcal calculadas o deseadas">
+
+                    <div id="macro-percentage-inputs">
+                        <label>Distribución de Macronutrientes (% del total calórico):</label>
+                        <div>
+                            <label for="protein-percentage">Proteína (%):</label>
+                            <input type="number" id="protein-percentage" name="protein-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
+                        </div>
+                        <div>
+                            <label for="carb-percentage">Carbohidratos (%):</label>
+                            <input type="number" id="carb-percentage" name="carb-percentage" value="40" min="10" max="80" step="1"> <span>%</span>
+                        </div>
+                        <div>
+                            <label for="fat-percentage">Grasas (%):</label>
+                            <input type="number" id="fat-percentage" name="fat-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
+                        </div>
+                        <p id="macro-percentage-total"></p>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="calculate-macros-button">Calcular Macronutrientes</button>
+                </form>
+                <div id="macro-result">
+                    <p class="info-message">Completa los Pasos 1 y 2 para habilitar este cálculo.</p>
+                </div>
+                <div id="chart-container">
+                    <canvas id="macroChart"></canvas>
+                </div>
+            </div>
+
+            <div class="plan-step" id="step-4">
+                <h2>4. Genera tu Plan de Comidas Orientativo</h2>
+                <p>Distribuye tus macronutrientes calculados en diferentes comidas a lo largo del día.</p>
+                <form id="meal-form">
+                    <div id="meal-percentage-inputs">
+                        <label>Distribución de Calorías por Comida (% del total diario):</label>
+                        <div><label for="breakfast-perc">Desayuno:</label><input type="number" id="breakfast-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="snack1-perc">Media Mañana:</label><input type="number" id="snack1-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="lunch-perc">Almuerzo:</label><input type="number" id="lunch-perc" value="30" min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="snack2-perc">Merienda:</label><input type="number" id="snack2-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="dinner-perc">Cena:</label><input type="number" id="dinner-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
+                        <p id="meal-percentage-total"></p>
+                    </div>
+                    <button type="submit" id="generate-meals-button">Generar Distribución por Comida</button>
+                </form>
+                <div id="meal-result">
+                    <p class="info-message">Completa el Paso 3 para habilitar este cálculo.</p>
+                </div>
+            </div>
+
+            <div class="plan-step" id="step-5">
+                <h2>5. Tabla de Ciclos y Breaks (Automática)</h2>
+                <p>Esta tabla muestra una estructura detallada y orientativa de ciclos de carga-descarga proteica, incluyendo fases de déficit o superávit y descansos (breaks) a mantenimiento. Los valores se basan en los cálculos automáticos de los Pasos 1, 2 y 3.</p>
+                <div id="step-5-results">
+                    <div id="detailed-cycle-table-container">
+                        <p class="info-message"><em>Completa los Pasos 1, 2 y 3 para generar esta tabla.</em></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-step" id="step-6">
+                <h2>6. Estimación de Tiempo (Manual y Opcional)</h2>
+                <p>Estima cuánto tiempo podría llevarte alcanzar un cambio de peso específico basándote en un déficit o superávit calórico semanal <strong>que tú definas</strong>. Este cálculo es independiente de la tabla automática del Paso 5 y se usa para la tabla manual del Paso 7.</p>
+                <form id="time-estimation-form">
+                    <label for="weight-change-goal">Cambio de Peso Total Deseado (kg):</label>
+                    <input type="number" id="weight-change-goal" name="weight-change-goal" step="0.1" required placeholder="Ej: -10 para perder, 5 para ganar">
+
+                    <label for="weekly-calorie-diff">Diferencia Calórica Semanal Estimada (kcal):</label>
+                    <input type="number" id="weekly-calorie-diff" name="weekly-calorie-diff" step="100" required placeholder="Ej: -3500 para perder 0.5kg/sem, 2000 para ganar">
+                    <small>Nota: Se estima que 7700 kcal equivalen a 1 kg de grasa corporal. Para pérdida gradual y sostenible no se aconseja pérdidas de más de 0.5kg/sem (3500kcal/sem). Para ganancia no se aconseja ganancias de más de 0.3kg/sem (2000Kcal/sem)</small>
+
+                    <button type="submit" id="estimate-time-button">Estimar Tiempo</button>
+                </form>
+                <div id="time-estimation-result">
+                    <p class="info-message">Completa el Paso 1 para habilitar esta estimación.</p>
+                </div>
+                <div id="time-estimation-chart-container">
+                    <canvas id="timeEstimationChart"></canvas>
+                </div>
+            </div>
+
+            <section id="step-7" class="plan-step">
+                <h2>7. Tabla de Ciclos Hiperproteicos (Manual)</h2>
+                <p>Esta tabla organiza ciclos hiperproteicos (Consumo alto, entre 30-40%) y breaks (Consumo moderado, entre 15-25%), cuya duración se basa en la estimación temporal manual del Paso 6. La cantidad de proteína objetivo para cada fase se calcula aplicando porcentajes específicos sobre las Kcal/día asignadas (un porcentaje más alto para la fase hiperproteica (35%) y uno más bajo para la fase de break (20%)).</p>
+                <p>La velocidad de pérdida indicada en kg/semana está basada en el ajuste constante de déficit calórico semanal, señalado en el paso 6. Para la fase hiperproteica se mantiene ese ritmo de pérdida semanal y se reduce a la mitad en la fase de Descanso. El progreso real puede variar.</p>
+                <div id="hyperprotein-cycle-table-container">
+                    <p id="hyperprotein-info-message" class="info-message">Completa el Paso 6 para generar esta tabla.</p>
+                    <table id="hyperprotein-cycle-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Ciclo</th>
+                                <th>Fase</th>
+                                <th>Semanas</th>
+                                <th>Peso (kg) <br>(Inicio → Fin)</th>
+                                <th>Kcal/día/AF</th>
+                                <th>Proteínas (g/kg)</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hyperprotein-cycle-table-body"></tbody>
+                    </table>
+                    <div id="hyperprotein-note-container"></div>
+                </div>
+                <button id="generate-hyperprotein-button" style="margin-top: 15px;">Generar Tabla de Ciclos Hiperproteicos (Manual)</button>
+            </section>
+
+            <div>
+                <button id="save-pdf-button" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;">Guardar Plan como PDF</button>
+            </div>
+
+            <h2>Ciclos Dietéticos</h2>
+
+            <div id="perdidaSection">
+                <div class="card my-4">
+                    <div class="card-body">
+                        <h3>Pérdida de Peso</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="fasePerdida" class="form-label">Fase del Ciclo:</label>
+                                <select class="form-select" id="fasePerdida">
+                                    <option value="induccion_cetogenica">Inducción Cetogénica</option>
+                                    <option value="ciclado_metabolico">Ciclado Metabólico</option>
+                                    <option value="transicion_mantenimiento">Transición a Mantenimiento</option>
+                                    <option value="ketoadaptation">Ketoadaptation</option>
+                                </select>
+                            </div>
+                            <p id="infoMacronutrientes"></p>
+                            <div class="mb-3">
+                                <label class="form-label">Estrategias Especiales:</label>
+                                <div class="strategy-checkboxes">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="ninguna" id="ninguna">
+                                        <label class="form-check-label" for="ninguna">Ninguna (Cetosis estricta)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="tkd" id="tkd">
+                                        <label class="form-check-label" for="tkd">TKD (25-50g HC pre/post entreno)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="ckd" id="ckd">
+                                        <label class="form-check-label" for="ckd">CKD (2 días carb-loading 150-200g HC)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="if_16_8" id="if_16_8">
+                                        <label class="form-check-label" for="if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="refeed" id="refeed">
+                                        <label class="form-check-label" for="refeed">Refeed (1-2 días/semana HC alto)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="hiperproteica" id="hiperproteica">
+                                        <label class="form-check-label" for="hiperproteica">Hiperproteica (2.5-3.0 g/kg peso proteína)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cycling">
+                                        <label class="form-check-label" for="carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="protein_cycling" id="protein_cycling">
+                                        <label class="form-check-label" for="protein_cycling">Protein Cycling (4 semanas altas + 1 baja proteína)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="timing" id="timing">
+                                        <label class="form-check-label" for="timing">Timing Nutricional (HC post-entreno)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dieting">
+                                        <label class="form-check-label" for="flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitch">
+                                <label class="form-check-label" for="modoSimplificadoSwitch">Modo Simplificado</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="gananciaSection">
+                <div class="card my-4">
+                    <div class="card-body">
+                        <h3>Ganancia Muscular</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="faseGanancia" class="form-label">Fase del Ciclo:</label>
+                                <select class="form-select" id="faseGanancia">
+                                    <option value="volumen_muscular">Volumen Muscular</option>
+                                    <option value="enfocado_masa">Enfocado en Masa</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estrategias Especiales:</label>
+                                <div class="strategy-checkboxes">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="ninguna" id="ningunaGanancia">
+                                        <label class="form-check-label" for="ningunaGanancia">Ninguna (Balance HC/proteína)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cyclingGanancia">
+                                        <label class="form-check-label" for="carb_cyclingGanancia">Carb Cycling (Días altos/moderados HC)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="refeed" id="refeedGanancia">
+                                        <label class="form-check-label" for="refeedGanancia">Refeed (Días altos HC semanales)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="timing" id="timingGanancia">
+                                        <label class="form-check-label" for="timingGanancia">Timing Nutricional (HC post-entreno)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dietingGanancia">
+                                        <label class="form-check-label" for="flexible_dietingGanancia">Flexible Dieting (80/20 regla)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitchGanancia">
+                                <label class="form-check-label" for="modoSimplificadoSwitchGanancia">Modo Simplificado</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mantenimientoSection">
+                <div class="card my-4">
+                    <div class="card-body">
+                        <h3>Mantenimiento</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="faseMantenimiento" class="form-label">Enfoque:</label>
+                                <select class="form-select" id="faseMantenimiento">
+                                    <option value="equilibrio_flexible">Equilibrio Flexible</option>
+                                    <option value="adherencia_social">Adherencia Social</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estrategias Especiales:</label>
+                                <div class="strategy-checkboxes">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="ninguna" id="ningunaMantenimiento">
+                                        <label class="form-check-label" for="ningunaMantenimiento">Ninguna (Equilibrio nutricional)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dietingMantenimiento">
+                                        <label class="form-check-label" for="flexible_dietingMantenimiento">Flexible Dieting (80/20 regla)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="if_16_8" id="if_16_8Mantenimiento">
+                                        <label class="form-check-label" for="if_16_8Mantenimiento">IF 16:8 (Ventana de alimentación 8 horas)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="refeed" id="refeedMantenimiento">
+                                        <label class="form-check-label" for="refeedMantenimiento">Refeed (Días altos HC)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cyclingMantenimiento">
+                                        <label class="form-check-label" for="carb_cyclingMantenimiento">Carb Cycling (Días altos/bajos HC)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitchMantenimiento">
+                                <label class="form-check-label" for="modoSimplificadoSwitchMantenimiento">Modo Simplificado</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="actualSection">
+                <div class="card my-4">
+                    <div class="card-body">
+                        <h3>Plan Actual</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="faseActual" class="form-label">Fase Actual:</label>
+                                <select class="form-select" id="faseActual">
+                                    <option value="volumen">Volumen</option>
+                                    <option value="definicion">Definición</option>
+                                    <option value="mantenimiento">Mantenimiento</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estrategias Especiales:</label>
+                                <div class="strategy-checkboxes">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="ninguna" id="ningunaActual">
+                                        <label class="form-check-label" for="ningunaActual">Ninguna (Balance nutricional)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cyclingActual">
+                                        <label class="form-check-label" for="carb_cyclingActual">Carb Cycling (Días altos/bajos HC)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="refeed" id="refeedActual">
+                                        <label class="form-check-label" for="refeedActual">Refeed (Días altos HC)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dietingActual">
+                                        <label class="form-check-label" for="flexible_dietingActual">Flexible Dieting (80/20 regla)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="timing" id="timingActual">
+                                        <label class="form-check-label" for="timingActual">Timing Nutricional (HC post-entreno)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitchActual">
+                                <label class="form-check-label" for="modoSimplificadoSwitchActual">Modo Simplificado</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mixtoSection" style="display: none;">
+                <div class="card my-4">
+                    <div class="card-body">
+                        <h3>Mixto/Combinado</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="faseMixto" class="form-label">Fase:</label>
+                                <select class="form-select" id="faseMixto">
+                                    <option value="volumen">Volumen</option>
+                                    <option value="definicion">Definición</option>
+                                    <option value="mantenimiento">Mantenimiento</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estrategias Especiales:</label>
+                                <div class="strategy-checkboxes">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="ninguna" id="ningunaMixto">
+                                        <label class="form-check-label" for="ningunaMixto">Ninguna</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cyclingMixto">
+                                        <label class="form-check-label" for="carb_cyclingMixto">Carb Cycling</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="refeed" id="refeedMixto">
+                                        <label class="form-check-label" for="refeedMixto">Refeed</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="timing" id="timingMixto">
+                                        <label class="form-check-label" for="timingMixto">Timing Nutricional</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dietingMixto">
+                                        <label class="form-check-label" for="flexible_dietingMixto">Flexible Dieting</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitchMixto">
+                                <label class="form-check-label" for="modoSimplificadoSwitchMixto">Modo Simplificado</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Planificación Temporal</h2>
+            <div class="card my-4">
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="periodoPlanificacion" class="form-label">Período de Planificación:</label>
+                            <select class="form-select" id="periodoPlanificacion">
+                                <option value="semanal">Semanal (4 semanas)</option>
+                                <option value="mensual">Mensual (12 semanas)</option>
+                            </select>
+                        </div>
                     </form>
-<div id="errorMeals" class="error-message" style="display:none;"></div>
-<div id="errorMacros" class="error-message" style="display:none;"></div>
-                    <div id="calorie-result"></div>
-                    <div id="energy-balance-result"></div>
                 </div>
+            </div>
 
-                <div class="plan-step" id="step-2">
-                    <h2>2. Establece tu Objetivo de Peso y Composición Corporal</h2>
-                    <p>Define tu objetivo de composición corporal (% grasa). Puedes estimar tu % de grasa actual con básculas de bioimpedancia o calculadoras online.</p>
-                    <p><em>Si no conoces tu % de grasa actual, puedes usar una <a href="https://www.calculator.net/body-fat-calculator.html" target="_blank" rel="noopener noreferrer">calculadora online</a> (en inglés) o buscar alternativas en español.</em></p>
-						 <!--<div class="card mb-4">  -->
-				            <h3>Objetivo Nutricional</h3>
-				                        <label for="objetivo" class="form-label">Selecciona tu objetivo:</label>
-				                        <select id="objetivo" class="form-control" aria-label="Objetivo nutricional" required>
-				                            <option value="perdida">1. Pérdida de Peso</option>
-				                            <option value="ganancia">2. Ganancia de Peso</option>
-				                            <option value="mantenimiento">3. Mantenimiento</option>
-				                            <option value="mixto">4. Mixto/Combinado</option>
-				                        </select>
-				                    
-				                	
-                     <!--</div>	-->
-					
-					<form id="weight-goal-form">
-                        <label for="current-fat-percentage">Grasa Corporal Actual (%):</label>
-                        <input type="number" id="current-fat-percentage" name="current-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 25">
+            <button type="button" class="btn btn-primary my-3" id="calculate-macros-button">🧮 Calcular Macronutrientes</button>
 
-                        <label for="target-fat-percentage">Grasa Corporal Objetivo (%):</label>
-                        <input type="number" id="target-fat-percentage" name="target-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 15">
-
-                        <label for="desired-lean-mass-gain">Ganancia de Masa Magra/Muscular Deseada (kg, opcional):</label>
-                        <input type="number" id="desired-lean-mass-gain" name="desired-lean-mass-gain" step="0.1" min="0" placeholder="Ej: 2 (Dejar en blanco o 0 si no buscas ganar músculo)">
-
-                        <label for="is-athlete">¿Te consideras deportista/atleta?</label>
-                        <select id="is-athlete" name="is-athlete">
-                            <option value="no">No</option>
-                            <option value="yes">Sí</option>
-                        </select>
-
-                        <button type="submit" id="calculate-goal-button" >Calcular Objetivo y Recomendaciones</button>
-                    </form>
-                    <div id="weight-goal-result">
-                        <p class="info-message">Completa el Paso 1 para habilitar este cálculo.</p>
-                        <div id="weight-chart-container">
-                            <canvas id="weightEvolutionChart"></canvas>
-                        </div>
-                    </div>
+            <h2>📊 Resultados de tu Plan Nutricional</h2>
+            <div class="card my-4">
+                <div class="card-body">
+                    <h3>📈 Datos Calculados</h3>
+                    <p>Gasto Energético: <span id="gastoEnergetico"></span> kcal/día</p>
+                    <p>Calorías Diarias: <span id="caloriasDiarias"></span> kcal</p>
+                    <p>Proteínas: <span id="proteinas"></span> g (%)</p>
+                    <p>Carbohidratos: <span id="carbohidratos"></span> g (%)</p>
+                    <p>Grasas: <span id="grasas"></span> g (%)</p>
                 </div>
+            </div>
 
-                <div class="plan-step" id="step-3">
-                    <h2>3. Calcula tus Macronutrientes</h2>
-                    <p>Define tu objetivo calórico (basado en tu GET y si quieres perder, mantener o ganar peso) y distribuye los macronutrientes.</p>
-					<p>Se recomienda para perdida de peso gradual y sostenible reducir un aporte calorico de ente un 10-20% de tu GET, el calculo automatico lo realiza sobre un 10%. Para ganacia de peso la recomendación seria un aumento del GET entre un 5%-15%, el calculo automatico lo realiza sobre un 5%.</p>
-					<p>Tu ingesta objetivo por dia puede variar en función de tus necesadidaes personales de AF y de los ciclos de carga-descarga proteica en un plan de perdida de peso.</p>
-                     <form id="macro-form">
-                        <label for="goal-calories">Calorías Objetivo Diarias (kcal):</label>
-                        <input type="number" id="goal-calories" name="goal-calories" required min="500" placeholder="Introduce las kcal calculadas o deseadas">
-
-                        <div id="macro-percentage-inputs">
-                            <label>Distribución de Macronutrientes (% del total calórico):</label>
-                            <div>
-                                <label for="protein-percentage">Proteína (%):</label>
-                                <input type="number" id="protein-percentage" name="protein-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
-                            </div>
-                            <div>
-                                <label for="carb-percentage">Carbohidratos (%):</label>
-                                <input type="number" id="carb-percentage" name="carb-percentage" value="40" min="10" max="80" step="1"> <span>%</span>
-                            </div>
-                            <div>
-                                <label for="fat-percentage">Grasas (%):</label>
-                                <input type="number" id="fat-percentage" name="fat-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
-                            </div>
-                             <p id="macro-percentage-total"></p>
-                        </div>
-
-                        <button type="button" class="btn btn-primary" id="calculate-macros-button">Calcular Macronutrientes</button>
-                    </form>
-                    <div id="macro-result">
-                        <p class="info-message">Completa los Pasos 1 y 2 para habilitar este cálculo.</p>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="macroChart"></canvas>
-                    </div>
+            <div class="card my-4">
+                <div class="card-body">
+                    <h3>📋 Recomendaciones Específicas</h3>
+                    <p id="recomendaciones"></p>
                 </div>
+            </div>
 
-                <div class="plan-step" id="step-4">
-                     <h2>4. Genera tu Plan de Comidas Orientativo</h2>
-                     <p>Distribuye tus macronutrientes calculados en diferentes comidas a lo largo del día.</p>
-                     <form id="meal-form">
-                         <div id="meal-percentage-inputs">
-                             <label>Distribución de Calorías por Comida (% del total diario):</label>
-                             <div><label for="breakfast-perc">Desayuno:</label><input type="number" id="breakfast-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="snack1-perc">Media Mañana:</label><input type="number" id="snack1-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="lunch-perc">Almuerzo:</label><input type="number" id="lunch-perc" value="30" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="snack2-perc">Merienda:</label><input type="number" id="snack2-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="dinner-perc">Cena:</label><input type="number" id="dinner-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
-                             <p id="meal-percentage-total"></p>
-                         </div>
-                         <button type="submit" id="generate-meals-button" >Generar Distribución por Comida</button>
-                     </form>
-                     <div id="meal-result">
-                         <p class="info-message">Completa el Paso 3 para habilitar este cálculo.</p>
-                     </div>
+            <h2>📅 Planificación Temporal</h2>
+            <div class="card my-4">
+                <div class="card-body">
+                    <table class="table" id="tablaPlanificacion">
+                        <thead>
+                            <tr>
+                                <th>Semana</th>
+                                <th>Fase</th>
+                                <th>Estrategias</th>
+                                <th>Calorías (kcal)</th>
+                                <th>Proteínas (%)</th>
+                                <th>Carbohidratos (%)</th>
+                                <th>Grasas (%)</th>
+                                <th>PT (g)</th>
+                                <th>CH (g)</th>
+                                <th>GR (g)</th>
+                                <th>Entreno/Días</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPlanificacionBody"></tbody>
+                    </table>
                 </div>
-
-                <div class="plan-step" id="step-5"> <h2>5. Tabla de Ciclos y Breaks (Automática)</h2>
-                    <p>Esta tabla muestra una estructura detallada y orientativa de ciclos de carga-descarga proteica, incluyendo fases de déficit o superávit y descansos (breaks) a mantenimiento. Los valores se basan en los cálculos automáticos de los Pasos 1, 2 y 3.</p>
-                    <div id="step-5-results"> <div id="detailed-cycle-table-container">
-                             <p class="info-message"><em>Completa los Pasos 1, 2 y 3 para generar esta tabla.</em></p>
-                             </div>
-                    </div>
-                </div>
-
-                <div class="plan-step" id="step-6"> <h2>6. Estimación de Tiempo (Manual y Opcional)</h2>
-                    <p>Estima cuánto tiempo podría llevarte alcanzar un cambio de peso específico basándote en un déficit o superávit calórico semanal <strong>que tú definas</strong>. Este cálculo es independiente de la tabla automática del Paso 5 y se usa para la tabla manual del Paso 7.</p>
-                    <form id="time-estimation-form">
-                        <label for="weight-change-goal">Cambio de Peso Total Deseado (kg):</label>
-                        <input type="number" id="weight-change-goal" name="weight-change-goal" step="0.1" required placeholder="Ej: -10 para perder, 5 para ganar">
-
-                        <label for="weekly-calorie-diff">Diferencia Calórica Semanal Estimada (kcal):</label>
-                        <input type="number" id="weekly-calorie-diff" name="weekly-calorie-diff" step="100" required placeholder="Ej: -3500 para perder 0.5kg/sem, 2000 para ganar">
-                        <small>Nota: Se estima que 7700 kcal equivalen a 1 kg de grasa corporal. Para perdida gradual y sostenible no se aconseja perdidas de mas de 0.5kg/sem (3500kcal/sem). Para ganacia no se aconseja ganacias de mas de 0.3kg/sem (2000Kcal/sem) </small>
-
-                        <button type="submit" id="estimate-time-button" >Estimar Tiempo</button>
-                    </form>
-                    <div id="time-estimation-result">
-                         <p class="info-message">Completa el Paso 1 para habilitar esta estimación.</p>
-                    </div>
-                    <div id="time-estimation-chart-container">
-						<canvas id="timeEstimationChart"></canvas>
-					</div>
-                </div>
-
-                <section id="step-7" class="plan-step">
-                    <h2>7. Tabla de Ciclos Hiperproteicos (Manual)</h2>
-                    <p>Esta tabla organiza ciclos hiperproteicos (Consumo alto, entre 30-40%) y breaks (Consumo moderado, entre 15-25%), cuya duración se basa en la estimación temporal manual del Paso 6. La cantidad de proteína objetivo para cada fase se calcula aplicando porcentajes específicos sobre las Kcal/día asignadas (un porcentaje más alto para la fase hiperproteica (35%) y uno más bajo para la fase de break(20%)).".</p>
-					<p>la velocidad de perdida indicada en kg/semana está basada en el ajuste constante de deficit calorico semanal, señalado en el paso 6. Para la fase hiperproteica se mantiene ese ritmo de perdida semanal y se reduduce a la mitad en la fase de Descanso. El progreso real puede variar.</p>
-                    <div id="hyperprotein-cycle-table-container">
-                        <p id="hyperprotein-info-message" class="info-message">Completa el Paso 6 para generar esta tabla.</p>
-                        <table id="hyperprotein-cycle-table" style="display: none;">
-                            <thead>
-                                <tr>
-                                    <th>Ciclo</th>
-                                    <th>Fase</th>
-                                    <th>Semanas</th>
-                                    <th>Peso (kg) <br>(Inicio → Fin)</th>
-									<th>Kcal/día/AF</th>
-                                    <th>Proteínas (g/kg)</th>
-                                    <th>Notas</th>
-                                </tr>
-                            </thead>
-                            <tbody id="hyperprotein-cycle-table-body">
-                                </tbody>
-                        </table>
-                        <div id="hyperprotein-note-container"></div> </div>
-                     <button id="generate-hyperprotein-button" onclick="generateHyperproteinCycles()" style="margin-top: 15px;" >
-                        Generar Tabla de Ciclos Hiperproteicos (Manual)
-                    </button>
-                </section>
-
-            </div> 
-			<div><button id="save-pdf-button" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
-
-				<h2>Ciclos Dietéticos</h2>
-
-        <div class="card my-4">
-            <div class="card-body">
-                <h3>Pérdida de Peso</h3>
-                <form>
-                    <div class="mb-3">
-                        <label for="fasePerdida" class="form-label">Fase del Ciclo:</label>
-                        <select class="form-select" id="fasePerdida">
-                            <option value="induccion_cetogenica">Inducción Cetogénica</option>
-                            <option value="ciclado_metabolico">Ciclado Metabólico</option>
-                            <option value="transicion_mantenimiento">Transición a Mantenimiento</option>
-                            <option value="ketoadaptation">Ketoadaptation</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estrategias Especiales:</label>
-                        <div class="strategy-checkboxes">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="ninguna" id="ninguna">
-                                <label class="form-check-label" for="ninguna">Ninguna (Cetosis estricta)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="tkd" id="tkd">
-                                <label class="form-check-label" for="tkd">TKD (25-50g HC pre/post entreno)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="ckd" id="ckd">
-                                <label class="form-check-label" for="ckd">CKD (2 días carb-loading 150-200g HC)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="if_16_8" id="if_16_8">
-                                <label class="form-check-label" for="if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="refeed" id="refeed">
-                                <label class="form-check-label" for="refeed">Refeed (1-2 días/semana HC alto)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="hiperproteica" id="hiperproteica">
-                                <label class="form-check-label" for="hiperproteica">Hiperproteica (2.5-3.0 g/kg peso proteína)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cycling">
-                                <label class="form-check-label" for="carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="protein_cycling" id="protein_cycling">
-                                <label class="form-check-label" for="protein_cycling">Protein Cycling (4 semanas altas + 1 baja proteína)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="timing" id="timing">
-                                <label class="form-check-label" for="timing">Timing Nutricional (HC post-entreno)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dieting">
-                                <label class="form-check-label" for="flexible_dieting">Flexible Dieting (80/20 regla)</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitch">
-                        <label class="form-check-label" for="modoSimplificadoSwitch">Modo Simplificado</label>
-                    </div>
-                </form>
             </div>
-        </div>
-
-        <div class="card my-4">
-            <div class="card-body">
-                <h3>Ganancia Muscular</h3>
-                <form>
-                    <div class="mb-3">
-                        <label for="faseGanancia" class="form-label">Fase del Ciclo:</label>
-                        <select class="form-select" id="faseGanancia">
-                            <option value="volumen_muscular">Volumen Muscular</option>
-                            <option value="enfocado_masa">Enfocado en Masa</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estrategias Especiales:</label>
-                        <div class="strategy-checkboxes">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="ninguna" id="ningunaGanancia">
-                                <label class="form-check-label" for="ningunaGanancia">Ninguna (Balance HC/proteína)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cyclingGanancia">
-                                <label class="form-check-label" for="carb_cyclingGanancia">Carb Cycling (Días altos/moderados HC)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="refeed" id="refeedGanancia">
-                                <label class="form-check-label" for="refeedGanancia">Refeed (Días altos HC semanales)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="timing" id="timingGanancia">
-                                <label class="form-check-label" for="timingGanancia">Timing Nutricional (HC post-entreno)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dietingGanancia">
-                                <label class="form-check-label" for="flexible_dietingGanancia">Flexible Dieting (80/20 regla)</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitchGanancia">
-                        <label class="form-check-label" for="modoSimplificadoSwitchGanancia">Modo Simplificado</label>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="card my-4">
-            <div class="card-body">
-                <h3>Mantenimiento</h3>
-                <form>
-                    <div class="mb-3">
-                        <label for="faseMantenimiento" class="form-label">Enfoque:</label>
-                        <select class="form-select" id="faseMantenimiento">
-                            <option value="equilibrio_flexible">Equilibrio Flexible</option>
-                            <option value="adherencia_social">Adherencia Social</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estrategias Especiales:</label>
-                        <div class="strategy-checkboxes">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="ninguna" id="ningunaMantenimiento">
-                                <label class="form-check-label" for="ningunaMantenimiento">Ninguna (Equilibrio nutricional)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dietingMantenimiento">
-                                <label class="form-check-label" for="flexible_dietingMantenimiento">Flexible Dieting (80/20 regla)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="if_16_8" id="if_16_8Mantenimiento">
-                                <label class="form-check-label" for="if_16_8Mantenimiento">IF 16:8 (Ventana de alimentación 8 horas)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="refeed" id="refeedMantenimiento">
-                                <label class="form-check-label" for="refeedMantenimiento">Refeed (Días altos HC)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cyclingMantenimiento">
-                                <label class="form-check-label" for="carb_cyclingMantenimiento">Carb Cycling (Días altos/bajos HC)</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitchMantenimiento">
-                        <label class="form-check-label" for="modoSimplificadoSwitchMantenimiento">Modo Simplificado</label>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="card my-4">
-            <div class="card-body">
-                <h3>Plan Actual</h3>
-                <form>
-                    <div class="mb-3">
-                        <label for="faseActual" class="form-label">Fase Actual:</label>
-                        <select class="form-select" id="faseActual">
-                            <option value="volumen">Volumen</option>
-                            <option value="definicion">Definición</option>
-                            <option value="mantenimiento">Mantenimiento</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estrategias Especiales:</label>
-                        <div class="strategy-checkboxes">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="ninguna" id="ningunaActual">
-                                <label class="form-check-label" for="ningunaActual">Ninguna (Balance nutricional)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="carb_cycling" id="carb_cyclingActual">
-                                <label class="form-check-label" for="carb_cyclingActual">Carb Cycling (Días altos/bajos HC)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="refeed" id="refeedActual">
-                                <label class="form-check-label" for="refeedActual">Refeed (Días altos HC)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="flexible_dieting" id="flexible_dietingActual">
-                                <label class="form-check-label" for="flexible_dietingActual">Flexible Dieting (80/20 regla)</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" value="timing" id="timingActual">
-                                <label class="form-check-label" for="timingActual">Timing Nutricional (HC post-entreno)</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="modoSimplificadoSwitchActual">
-                        <label class="form-check-label" for="modoSimplificadoSwitchActual">Modo Simplificado</label>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <h2>Planificación Temporal</h2>
-        <div class="card my-4">
-            <div class="card-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="periodoPlanificacion" class="form-label">Período de Planificación:</label>
-                        <select class="form-select" id="periodoPlanificacion">
-                            <option value="semanal">Semanal (4 semanas)</option>
-                            <option value="mensual">Mensual (12 semanas)</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <button type="button" class="btn btn-primary my-3">🧮 Calcular Macronutrientes</button>
-
-        <h2>📊 Resultados de tu Plan Nutricional</h2>
-        <div class="card my-4">
-            <div class="card-body">
-                <h3>📈 Datos Calculados</h3>
-                <p>Gasto Energético: <span id="gastoEnergetico"></span> kcal/día</p>
-                <p>Calorías Diarias: <span id="caloriasDiarias"></span> kcal</p>
-                <p>Proteínas: <span id="proteinas"></span> g (%)</p>
-                <p>Carbohidratos: <span id="carbohidratos"></span> g (%)</p>
-                <p>Grasas: <span id="grasas"></span> g (%)</p>
-            </div>
-        </div>
-
-        <div class="card my-4">
-            <div class="card-body">
-                <h3>📋 Recomendaciones Específicas</h3>
-                <p id="recomendaciones"></p>
-            </div>
-        </div>
-
-        <h2>📅 Planificación Temporal</h2>
-        <div class="card my-4">
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Semana</th>
-                            <th>Fase</th>
-                            <th>Estrategias</th>
-                            <th>Calorías (kcal)</th>
-                            <th>Proteínas (%)</th>
-                            <th>Carbohidratos (%)</th>
-                            <th>Grasas (%)</th>
-                            <th>PT (g)</th>
-                            <th>CH (g)</th>
-                            <th>GR (g)</th>
-                            <th>Entreno/Días</th>
-                            <th>Notas</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
+        </section>
     </main>
 
     <footer>
-        <p>&copy; 2024 NutriPlan - Herramienta de planificación dietética orientativa. Consulta siempre a un profesional.</p>
+        <p>&copy; 2025 NutriPlan - Herramienta de planificación dietética orientativa. Consulta siempre a un profesional.</p>
     </footer>
 
     <script>
@@ -4376,6 +4428,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
