@@ -1382,16 +1382,16 @@
                 <p>Introduce tus datos básicos para estimar tu Gasto Energético Total (GET) y, si lo deseas, tu ingesta actual para ver tu balance energético.</p>
                 <form id="calorie-form">
                     <label for="age">Edad (años):</label>
-                    <input type="number" id="age" name="age" required min="1" max="120">
+                    <input type="number" id="age" name="age" required min="6" max="110">
                     <label for="gender">Género Biológico:</label>
                     <select id="gender" name="gender">
                         <option value="male">Masculino</option>
                         <option value="female">Femenino</option>
                     </select>
                     <label for="weight">Peso Actual (kg):</label>
-                    <input type="number" id="weight" name="weight" required min="1" step="0.1">
+                    <input type="number" id="weight" name="weight" required min="20" max="300" step="0.1">
                     <label for="height">Altura (m):</label>
-                    <input type="number" id="height" name="height" step="0.01" required min="0.5" max="3"
+                    <input type="number" id="height" name="height" step="0.01" required min="0.5" max="2.5"
                         placeholder="Ej: 1.75">
                     <label for="activity">Nivel de Actividad Física Semanal:</label>
                     <select id="activity" name="activity">
@@ -1402,7 +1402,7 @@
                         <option value="very_active">Muy Activo (Intenso/Diario)</option>
                     </select>
                     <label for="estimated-intake">Tu Ingesta Calórica Estimada Actual (kcal/día, opcional):</label>
-                    <input type="number" id="estimated-intake" name="estimated-intake" min="0" step="1"
+                    <input type="number" id="estimated-intake" name="estimated-intake" min="500" step="1"
                         placeholder="Si la conoces, ej: 2100">
                     <button type="submit">Calcular GET y Balance</button>
                 </form>
@@ -1428,6 +1428,33 @@
                     <option value="mantenimiento">3. Mantenimiento</option>
                     <option value="mixto">4. Mixto/Combinado</option>
                 </select>
+				<!-- Selects de Fase (inicialmente ocultos) -->
+                <label for="fasePerdida1" class="form-label" id="labelFasePerdida1" style="display:none;">Fase del Ciclo (Pérdida de Peso):</label>
+                <select id="fasePerdida1" class="form-control" aria-label="Fase de pérdida de peso">
+                    <option value="induccion_cetogenica1">Inducción Cetogénica</option>
+                    <option value="ciclado_metabolico1">Ciclado Metabólico</option>
+                    <option value="transicion_mantenimiento1">Transición a Mantenimiento</option>
+                </select>
+
+                <label for="faseGanancia1" class="form-label" id="labelFaseGanancia1" style="display:none;">Fase del Ciclo (Ganancia de Peso):</label>
+                <select id="faseGanancia1" class="form-control" aria-label="Fase de ganancia de peso">
+                    <option value="volumen1">Volumen Muscular</option>
+                    <option value="masa1">Enfocado en Masa Muscular</option>
+                </select>
+
+                <label for="enfoqueMantenimiento1" class="form-label" id="labelEnfoqueMantenimiento1" style="display:none;">Enfoque (Mantenimiento):</label>
+                <select id="enfoqueMantenimiento1" class="form-control" aria-label="Enfoque de mantenimiento">
+                    <option value="equilibrio1">Equilibrio Flexible</option>
+                    <option value="social1">Adherencia Social</option>
+                </select>
+
+                <label for="faseMixto1" class="form-label" id="labelFaseMixto1" style="display:none;">Fase del Ciclo (Mixto/Combinado):</label>
+                <select id="faseMixto1" class="form-control" aria-label="Fase de plan mixto">
+                    <option value="volumen1">Volumen</option>
+                    <option value="definicion1">Definición</option>
+                    <option value="mantenimiento1">Mantenimiento</option>
+                </select>
+                <!--</div>	-->
                 <!--</div>	-->
                 <form id="weight-goal-form">
                     <label for="current-fat-percentage">Grasa Corporal Actual (%):</label>
@@ -2074,7 +2101,7 @@
                 }
 
                 // Calculate TDEE (Added 10% buffer as per original code)
-                calculatedTDEE = calculatedBMR * activityMultipliers[userActivityLevel] * 1.1; // Including 10% buffer
+                calculatedTDEE = calculatedBMR * activityMultipliers[userActivityLevel] ; // Including 10% buffer
 
                 // Display TDEE results
                 calorieResultDiv.innerHTML = `
@@ -2094,20 +2121,93 @@
                     } else {
                         balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
                     }
-                    energyBalanceResultDiv.innerHTML = `
-                        <h3>Balance Energético Estimado:</h3>
-                        <p>Tu ingesta estimada (${estimatedIntake} kcal) comparada con tu GET con buffer (${calculatedTDEE.toFixed(0)} kcal):</p>
-                        <p>${balanceInterpretation}</p>`;
-                } else {
-                    clearContainer(energyBalanceResultDiv); // Clear if no intake provided
-                }
+					// Display Energy Balance if intake provided
+					if (estimatedIntake && estimatedIntake > 0) {
+						const balance = estimatedIntake - calculatedTDEE;
+						let balanceInterpretation = '';
+						
+						// Variables para el select de objetivo
+						const objetivoSelect = document.getElementById('objetivo');
+						
+						 if (balance > 100) {
+				            balanceInterpretation = `Estás en un <strong>superávit calórico</strong> de aproximadamente <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una ganancia de peso.`;
+				            // Actualizar automáticamente el objetivo a ganancia
+				            if (objetivoSelect) {
+				                objetivoSelect.value = 'ganancia';
+				                objetivoSelect.dispatchEvent(new Event('change'));
+				            }
+				        } else if (balance < -100) {
+				            balanceInterpretation = `Estás en un <strong>déficit calórico</strong> de aproximadamente <strong>${Math.abs(balance).toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una pérdida de peso.`;
+				            // Actualizar automáticamente el objetivo a pérdida
+				            if (objetivoSelect) {
+				                objetivoSelect.value = 'perdida';
+				                objetivoSelect.dispatchEvent(new Event('change'));
+				            }
+				        } else {
+				            balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
+				            // Actualizar automáticamente el objetivo a mantenimiento
+				            if (objetivoSelect) {
+				                objetivoSelect.value = 'mantenimiento';
+				                objetivoSelect.dispatchEvent(new Event('change'));
+				            }
+				        }
+                   energyBalanceResultDiv.innerHTML = `
+				            <h3>Balance Energético Estimado:</h3>
+				            <p>Tu ingesta estimada (${estimatedIntake} kcal) comparada con tu GET con buffer (${calculatedTDEE.toFixed(0)} kcal):</p>
+				            <p>${balanceInterpretation}</p>`;
+				    } else {
+				        clearContainer(energyBalanceResultDiv); // Clear if no intake provided
+				    }
+				
+				    // Reset subsequent steps as Step 1 results changed
+				    resetStep2onwards();
+				    updateButtonStates(); // Enable next step button
+				}
 
-                // Reset subsequent steps as Step 1 results changed
-                resetStep2onwards();
-                updateButtonStates(); // Enable next step button
-            }
+				function mostrarFasePorObjetivo(objetivo) {
+			    // Ocultar todos los selects y labels de fase
+			    const elementosFase = [
+			        'fasePerdida1', 'labelFasePerdida1',
+			        'faseGanancia1', 'labelFaseGanancia1',
+			        'enfoqueMantenimiento1', 'labelEnfoqueMantenimiento1',
+			        'faseMixto1', 'labelFaseMixto1'
+			    ];
+			    
+			    elementosFase.forEach(id => {
+			        const elemento = document.getElementById(id);
+			        if (elemento) {
+			            elemento.style.display = 'none';
+			        }
+			    });
 
-
+					// Mostrar el select correspondiente al objetivo
+				    switch(objetivo) {
+				        case 'perdida':
+				            if (document.getElementById('fasePerdida1')) {
+				                document.getElementById('fasePerdida1').style.display = 'block';
+				                document.getElementById('labelFasePerdida1').style.display = 'block';
+				            }
+				            break;
+				        case 'ganancia':
+				            if (document.getElementById('faseGanancia1')) {
+				                document.getElementById('faseGanancia1').style.display = 'block';
+				                document.getElementById('labelFaseGanancia1').style.display = 'block';
+				            }
+				            break;
+				        case 'mantenimiento':
+				            if (document.getElementById('enfoqueMantenimiento1')) {
+				                document.getElementById('enfoqueMantenimiento1').style.display = 'block';
+				                document.getElementById('labelEnfoqueMantenimiento1').style.display = 'block';
+				            }
+				            break;
+				        case 'mixto':
+				            if (document.getElementById('faseMixto1')) {
+				                document.getElementById('faseMixto1').style.display = 'block';
+				                document.getElementById('labelFaseMixto1').style.display = 'block';
+				            }
+				            break;
+				    }
+				}
             // --- Step 2: Calculate Weight Goal and Recommendations ---
             function calculateWeightGoal() {
                 clearContainer(weightGoalResultDiv); // Clear previous results
@@ -4693,11 +4793,19 @@ function calcularMacros() {
             document.getElementById('errorMessage').textContent = 'No se pudo cargar Chart.js. Algunas funcionalidades estarán limitadas.';
             document.getElementById('errorMessage').style.display = 'block';
         }
+			if (objetivoSelect) {
+	        objetivoSelect.addEventListener('change', function() {
+	            const objetivo = this.value;
+	            mostrarFasePorObjetivo(objetivo);
+	            // Aquí también puedes llamar a actualizarMacrosPorFase() si la tienes
+	        });
+	    }
     });
 </script>
 
 </body>
 </html>
+
 
 
 
