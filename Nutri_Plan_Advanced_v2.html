@@ -1926,14 +1926,14 @@ if (balance > 100) {
                       //  console.log("Set default macros for MAINTENANCE: P:20 C:50 F:30");
                    // }
                     // Actualizar el total mostrado inmediatamente después de cambiar los valores
-                   // adjustMacroPercentages();
+                   adjustMacroPercentages();
                // } else {
                     //console.warn("Could not set default macro percentages. Input fields missing.");
                 //}
 
                 // Reset subsequent steps as Step 2 results changed
-               // resetStep3onwards();
-                //updateButtonStates(); // Enable next step button
+               resetStep3onwards();
+                updateButtonStates(); // Enable next step button
            //}
 
             // --- Helper Function to Generate Weight Evolution Chart (Step 2) ---
@@ -4428,6 +4428,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
