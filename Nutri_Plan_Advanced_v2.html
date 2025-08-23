@@ -4312,27 +4312,30 @@ function calcularMacros() {
 
 
     document.getElementById('objetivo').addEventListener('change', toggleOpcionesObjetivo);
-    document.addEventListener('DOMContentLoaded', () => {
-        toggleOpcionesObjetivo();
-        if (typeof Chart === 'undefined') {
-            console.error('Chart.js no está disponible.');
-            document.getElementById('errorMessage').textContent = 'No se pudo cargar Chart.js. Algunas funcionalidades estarán limitadas.';
-            document.getElementById('errorMessage').style.display = 'block';
-        }
-		// Agregar event listener para el cambio de objetivo
-	    const objetivoSelect = document.getElementById('objetivo');
-	    if (objetivoSelect) {
-	        objetivoSelect.addEventListener('change', function() {
-	            const objetivo = this.value;
-	            //mostrarFasePorObjetivo(objetivo);
-	            // Aquí también puedes llamar a actualizarMacrosPorFase() si la tienes
-	        });
-	    }
-    });
+		
+   document.addEventListener('DOMContentLoaded', () => {
+    toggleOpcionesObjetivo();
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js no está disponible.');
+        document.getElementById('errorMessage').textContent = 'No se pudo cargar Chart.js. Algunas funcionalidades estarán limitadas.';
+        document.getElementById('errorMessage').style.display = 'block';
+    }
+    
+    // Agregar event listener para el cambio de objetivo
+    const objetivoSelect = document.getElementById('objetivo');
+    if (objetivoSelect) {
+        objetivoSelect.addEventListener('change', function() {
+            const objetivo = this.value;
+            mostrarFasePorObjetivo(objetivo); // ← Descomentado y corregido
+            // Aquí también puedes llamar a actualizarMacrosPorFase() si la tienes
+        });
+    }
+});
 </script>
 
 </body>
 </html>
+
 
 
 
