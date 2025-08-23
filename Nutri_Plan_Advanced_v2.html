@@ -1908,7 +1908,7 @@ if (balance > 100) {
                 }
 
                 // --- Ajustar Porcentajes de Macros por Defecto en Paso 3 ---
-                if (proteinPercentageInput && carbPercentageInput && fatPercentageInput) {
+                //if (proteinPercentageInput && carbPercentageInput && fatPercentageInput) {
                     //if (goalTypeGlobal === 'loss') {
                         //proteinPercentageInput.value = 30;
                         //carbPercentageInput.value = 40;
@@ -1926,15 +1926,15 @@ if (balance > 100) {
                       //  console.log("Set default macros for MAINTENANCE: P:20 C:50 F:30");
                    // }
                     // Actualizar el total mostrado inmediatamente después de cambiar los valores
-                    adjustMacroPercentages();
-                } else {
-                    console.warn("Could not set default macro percentages. Input fields missing.");
+                   // adjustMacroPercentages();
+               // } else {
+                    //console.warn("Could not set default macro percentages. Input fields missing.");
                 }
 
                 // Reset subsequent steps as Step 2 results changed
-                resetStep3onwards();
-                updateButtonStates(); // Enable next step button
-            }
+               // resetStep3onwards();
+                //updateButtonStates(); // Enable next step button
+           //}
 
             // --- Helper Function to Generate Weight Evolution Chart (Step 2) ---
             function generateWeightEvolutionChart(startWeight, endWeight, weeks) {
@@ -4428,6 +4428,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
