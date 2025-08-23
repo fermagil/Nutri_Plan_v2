@@ -1148,9 +1148,11 @@
         </div>
 
         
-			<button id="calcular-macros-btn" class="btn btn-primary btn-lg" aria-label="Calcular macronutrientes y planificación">
-			    🧮 Calcular Macronutrientes
-			</button>
+			<div class="text-center mb-4">
+				<button onclick="calcularMacros();" class="btn btn-primary btn-lg" aria-label="Calcular macronutrientes y planificación">
+					🧮 Calcular Macronutrientes
+				</button>
+			</div>
         <div id="resultados" class="card" style="display:none;">
             <div class="card-header"><h5>📊 Resultados de tu Plan Nutricional</h5></div>
             <div class="card-body">
@@ -3985,7 +3987,7 @@ function calcularMacros() {
 
 // Ensure DOM is loaded before attaching button event
 document.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('calcular-macros-btn');
+    const button = document.querySelector('.btn-primary');
     if (button) {
         button.addEventListener('click', calcularMacros);
     } else {
@@ -4069,6 +4071,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
