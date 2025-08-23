@@ -2059,6 +2059,7 @@ updateButtonStates(); // Enable next step button
             }
 
             // --- Step 3: Calculate Macronutrients ---
+            // --- Step 3: Calculate Macronutrients ---
             function calculateMacros() {
                 clearContainer(macroResultDiv);
                 if(chartContainer) chartContainer.style.display = 'none'; // Hide macro chart
@@ -2125,72 +2126,66 @@ updateButtonStates(); // Enable next step button
                 // Display macro results
                 macroResultDiv.innerHTML = `<h3>Distribución de Macronutrientes:</h3><p>Para un objetivo de <strong>${goalCalories} kcal/día</strong>:</p><ul><li><strong>Proteínas:</strong> ${proteinGrams.toFixed(1)} g (${proteinPerc}%)</li><li><strong>Carbohidratos:</strong> ${carbGrams.toFixed(1)} g (${carbPerc}%)</li><li><strong>Grasas:</strong> ${fatGrams.toFixed(1)} g (${fatPerc}%)</li></ul>`;
 
-               // Generate and display macro chart
-if (chartContainer) {
-    chartContainer.style.display = 'block';
-    chartContainer.innerHTML = '<canvas id="macroChart"></canvas>'; // Ensure canvas exists
-    const ctx = document.getElementById('macroChart')?.getContext('2d');
-    if (ctx) {
-        // Calcular porcentajes desde los valores que ya tienes
-        const proteinPercentage = (proteinGrams * 4 / goalCalories) * 100;
-        const carbPercentage = (carbGrams * 4 / goalCalories) * 100;
-        const fatPercentage = (fatGrams * 9 / goalCalories) * 100;
-        
-        macroChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Proteínas (g)', 'Carbohidratos (g)', 'Grasas (g)'],
-                datasets: [{
-                    label: 'Gramos por Macronutriente',
-                    data: [parseFloat(proteinGrams.toFixed(1)), parseFloat(carbGrams.toFixed(1)), parseFloat(fatGrams.toFixed(1))],
-                    backgroundColor: [
-                        'rgba(46, 125, 50, 0.7)', // #2e7d32 (verde bosque oscuro para proteínas)
-                        'rgba(52, 199, 89, 0.7)', // #34c759 (verde manzana para carbohidratos)
-                        'rgba(32, 201, 151, 0.7)' // #20c997 (verde teal para grasas)
-                    ],
-                    borderColor: [
-                        'rgba(46, 125, 50, 1)', // #2e7d32
-                        'rgba(52, 199, 89, 1)', // #34c759
-                        'rgba(32, 201, 151, 1)' // #20c997
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: {
-                        display: true,
-                        text: `Distribución de Macronutrientes (${goalCalories} kcal)`
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed + ' g';
-                                    // Usar los porcentajes calculados
-                                    const percentages = [proteinPercentage, carbPercentage, fatPercentage];
-                                    if (context.dataIndex < percentages.length) {
-                                        label += ` (${percentages[context.dataIndex].toFixed(1)}%)`;
-                                    }
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } else {
-        console.error("Failed to get canvas context for macroChart");
-    }
-}
+                // Generate and display macro chart
+                if (chartContainer) {
+                    chartContainer.style.display = 'block';
+                    chartContainer.innerHTML = '<canvas id="macroChart"></canvas>'; // Ensure canvas exists
+                    const ctx = document.getElementById('macroChart')?.getContext('2d');
+                    if (ctx) {
+						macroChartInstance = new Chart(ctx, {
+							type: 'doughnut',
+							data: {
+								labels: ['Proteínas (g)', 'Carbohidratos (g)', 'Grasas (g)'],
+								datasets: [{
+									label: 'Gramos por Macronutriente',
+									data: [proteinGrams.toFixed(1), carbGrams.toFixed(1), fatGrams.toFixed(1)],
+									backgroundColor: [
+										'rgba(46, 125, 50, 0.7)', // #2e7d32 (verde bosque oscuro para proteínas)
+										'rgba(52, 199, 89, 0.7)', // #34c759 (verde manzana para carbohidratos)
+										'rgba(32, 201, 151, 0.7)' // #20c997 (verde teal para grasas)
+									],
+									borderColor: [
+										'rgba(46, 125, 50, 1)', // #2e7d32
+										'rgba(52, 199, 89, 1)', // #34c759
+										'rgba(32, 201, 151, 1)' // #20c997
+									],
+									borderWidth: 1
+								}]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								plugins: {
+									legend: { position: 'top' },
+									title: {
+										display: true,
+										text: `Distribución de Macronutrientes (${goalCalories} kcal)`
+									},
+									tooltip: {
+										callbacks: {
+											label: function(context) {
+												let label = context.label || '';
+												if (label) {
+													label += ': ';
+												}
+												if (context.parsed !== null) {
+													label += context.parsed + ' g';
+													const dataIndex = context.dataIndex;
+													const percentages = [proteinPerc, carbPerc, fatPerc];
+													if (dataIndex < percentages.length) {
+														label += ` (${percentages[dataIndex]}%)`;
+													}
+												}
+												return label;
+											}
+										}
+									}
+								}
+							}
+						});
+					} else {
+						console.error("Failed to get canvas context for macroChart");
+					}
                 }
 
                 // --- Generate Detailed Cycle Table (Step 5 - Auto) ---
@@ -4496,6 +4491,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
