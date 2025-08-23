@@ -1908,33 +1908,101 @@ if (balance > 100) {
                 }
 
                 // --- Ajustar Porcentajes de Macros por Defecto en Paso 3 ---
-                //if (proteinPercentageInput && carbPercentageInput && fatPercentageInput) {
-                    //if (goalTypeGlobal === 'loss') {
-                        //proteinPercentageInput.value = 30;
-                        //carbPercentageInput.value = 40;
-                        //fatPercentageInput.value = 30;
-                        //console.log("Set default macros for LOSS: P:30 C:40 F:30");
-                    //} else if (goalTypeGlobal === 'gain') {
-                       // proteinPercentageInput.value = 25;
-                       // carbPercentageInput.value = 50;
-                      //  fatPercentageInput.value = 25;
-                       // console.log("Set default macros for GAIN: P:25 C:50 F:25");
-                 //   } else { // Maintenance
-                      //  proteinPercentageInput.value = 20;
-                       // carbPercentageInput.value = 50;
-                       // fatPercentageInput.value = 30;
-                      //  console.log("Set default macros for MAINTENANCE: P:20 C:50 F:30");
-                   // }
-                    // Actualizar el total mostrado inmediatamente después de cambiar los valores
-                   adjustMacroPercentages();
-               // } else {
-                    //console.warn("Could not set default macro percentages. Input fields missing.");
-                //}
+if (proteinPercentageInput && carbPercentageInput && fatPercentageInput) {
+    // En lugar de usar valores fijos por goalType, usamos la lógica de fases
+    // Primero, establecemos un objetivo por defecto basado en goalTypeGlobal
+    const objetivoSelect = document.getElementById('objetivo');
+    if (objetivoSelect) {
+        if (goalTypeGlobal === 'loss') {
+            objetivoSelect.value = 'perdida1';
+        } else if (goalTypeGlobal === 'gain') {
+            objetivoSelect.value = 'ganancia1';
+        } else { // maintenance
+            objetivoSelect.value = 'mantenimiento1';
+        }
+        
+        // Disparamos el cambio para mostrar la fase correspondiente
+        objetivoSelect.dispatchEvent(new Event('change'));
+        
+        // Establecemos una fase por defecto según el objetivo
+        let fasePorDefecto = '';
+        switch(objetivoSelect.value) {
+            case 'perdida1':
+                fasePorDefecto = 'ciclado_metabolico1'; // Fase intermedia por defecto
+                break;
+            case 'ganancia1':
+                fasePorDefecto = 'volumen1'; // Fase principal de ganancia
+                break;
+            case 'mantenimiento1':
+                fasePorDefecto = 'equilibrio1'; // Fase de equilibrio
+                break;
+            case 'mixto1':
+                fasePorDefecto = 'mantenimiento1_mixto'; // Fase de mantenimiento mixto
+                break;
+        }
+        
+        // Establecemos la fase por defecto en el select correspondiente
+        setTimeout(() => { // Usamos setTimeout para asegurar que el select esté visible
+            let faseSelect = null;
+            switch(objetivoSelect.value) {
+                case 'perdida1':
+                    faseSelect = document.getElementById('fasePerdida1');
+                    break;
+                case 'ganancia1':
+                    faseSelect = document.getElementById('faseGanancia1');
+                    break;
+                case 'mantenimiento1':
+                    faseSelect = document.getElementById('enfoqueMantenimiento1');
+                    break;
+                case 'mixto1':
+                    faseSelect = document.getElementById('faseMixto1');
+                    break;
+            }
+            
+            if (faseSelect && faseSelect.options.length > 0) {
+                // Buscar la opción por defecto
+                for (let i = 0; i < faseSelect.options.length; i++) {
+                    if (faseSelect.options[i].value === fasePorDefecto) {
+                        faseSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                // Si no encontramos la opción por defecto, usamos la primera
+                if (faseSelect.selectedIndex === -1 && faseSelect.options.length > 0) {
+                    faseSelect.selectedIndex = 0;
+                }
+                
+                // Actualizar los macros basados en la fase seleccionada
+                actualizarMacrosPorFase();
+            } else {
+                // Fallback: usar valores por defecto según goalType si no hay fases disponibles
+                if (goalTypeGlobal === 'loss') {
+                    proteinPercentageInput.value = 30;
+                    carbPercentageInput.value = 40;
+                    fatPercentageInput.value = 30;
+                    console.log("Set default macros for LOSS: P:30 C:40 F:30");
+                } else if (goalTypeGlobal === 'gain') {
+                    proteinPercentageInput.value = 25;
+                    carbPercentageInput.value = 50;
+                    fatPercentageInput.value = 25;
+                    console.log("Set default macros for GAIN: P:25 C:50 F:25");
+                } else { // Maintenance
+                    proteinPercentageInput.value = 20;
+                    carbPercentageInput.value = 50;
+                    fatPercentageInput.value = 30;
+                    console.log("Set default macros for MAINTENANCE: P:20 C:50 F:30");
+                }
+                adjustMacroPercentages();
+            }
+        }, 100);
+    }
+} else {
+    console.warn("Could not set default macro percentages. Input fields missing.");
+}
 
-                // Reset subsequent steps as Step 2 results changed
-               resetStep3onwards();
-                updateButtonStates(); // Enable next step button
-           //}
+// Reset subsequent steps as Step 2 results changed
+resetStep3onwards();
+updateButtonStates(); // Enable next step button
 
             // --- Helper Function to Generate Weight Evolution Chart (Step 2) ---
             function generateWeightEvolutionChart(startWeight, endWeight, weeks) {
@@ -4428,6 +4496,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
