@@ -2983,19 +2983,50 @@ function generateHyperproteinCycles() {
     }
 
     // Define activity multipliers based on current userGender
-    const activityMultipliers = userGender === 'male'
-        ? { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, very_active: 2.3 }
-        : { sedentary: 1.2, light: 1.55, moderate: 1.64, active: 1.82, very_active: 2 };
+		const activityMultipliers = userGender === 'male'
+		    ? { 
+		        sedentary: 1.2, 
+		        light: 1.56, 
+		        moderate: 1.78, 
+		        active: 2.1, 
+		        very_active: 2.3 
+		    }
+		    : { 
+		        sedentary: 1.2, 
+		        light: 1.55, 
+		        moderate: 1.64, 
+		        active: 1.82, 
+		        very_active: 2.0 
+		    };
+		
+		// Map activity levels to descriptive names (optional - for better UX)
+		const activityLevelNames = {
+		    sedentary: 'Sedentario',
+		    light: 'Ligero',
+		    moderate: 'Moderado',
+		    active: 'Activo',
+		    very_active: 'Muy Activo'
+		};
+		
+		// Validate activity level with detailed error handling
+		const activityMultiplier = activityMultipliers[userActivityLevel];
+		if (activityMultiplier === undefined) {
+		    const errorMessage = `Nivel de actividad no válido: "${userActivityLevel}". Valores permitidos: ${Object.keys(activityMultipliers).join(', ')}`;
+		    
+		    if (infoMessage) {
+		        infoMessage.innerHTML = `<em>Error: ${errorMessage}</em>`;
+		    }
+		    
+		    console.error("Invalid activity level:", userActivityLevel);
+		    console.log("Available activity levels:", Object.keys(activityMultipliers));
+		    console.log("User gender:", userGender);
+		    
+		    return;
+		}
 
-    // Map activity levels to indices
-    const activityLevels = ['sedentary', 'light', 'moderate', 'active', 'very_active'];
-
-    // Validate activity level
-    if (!activityMultipliers[userActivityLevel]) {
-        if (infoMessage) infoMessage.innerHTML = '<em>Nivel de actividad no válido.</em>';
-        console.error("Invalid activity level:", userActivityLevel);
-        return;
-    }
+// Optional: Log the selected activity level for debugging
+console.log(`Selected activity level: ${userActivityLevel} (${activityLevelNames[userActivityLevel] || 'Unknown'})`);
+console.log(`Activity multiplier: ${activityMultiplier}`);
 
     // Use stored global values
     const totalWeeks = estimatedWeeksManualGlobal;
@@ -4489,6 +4520,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
