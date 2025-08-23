@@ -13,942 +13,1587 @@
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	  
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.4.0/html-docx.min.js"></script>
-	  
-	  
 
-
-
+    <title>NutriPlan_v2 - Planificación Avanzada</title>
     <style>
-    /* --- General Styles --- */
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        color: #212529;
-        line-height: 1.6;
-        font-size: 16px;
-        padding-bottom: 80px;
-    }
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-darker: #1B5E20;
+            --primary-light: #C8E6C9;
+            --secondary-color: #0275d8;
+            --secondary-light: #e3f2fd;
+            --accent-color: #FF9800;
+            --background-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --border-color: #dee2e6;
+            --border-light: #e0e0e0;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 3px 10px rgba(0, 0, 0, 0.07);
+            --error-color: #c62828;
+            --warning-color: #5f4300;
+            --success-color: #2e7d32;
+            --info-color: #1976d2;
+        }
 
-    /* --- Header & Navigation --- */
-    header {
-        background-color: #ffffff;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        border-bottom: 1px solid #dee2e6;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 1000;
-        box-sizing: border-box;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-   .logo a {
-            color: #4CAF50;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+            padding-bottom: 80px;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            background-color: var(--surface-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo a {
+            color: var(--primary-color);
             text-decoration: none;
             font-size: 1.75em;
             font-weight: 600;
         }
-	.dropdown {
-            display: none;
-            position: absolute;
-            top: 60px;
-            left: 30px;
-            background-color: #ffffff;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
-            z-index: 1000;
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
         }
 
-        .dropdown a {
-            display: block;
-            padding: 10px 15px;
-            color: #343a40;
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
             text-decoration: none;
-            font-size: 0.9em;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: #e9f5e9;
+            color: var(--primary-dark);
+        }
+
+        nav ul li a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-darker);
+            font-weight: 600;
+        }
+
+        /* --- Main Content & Sections --- */
+        main {
+            padding: 30px 10px;
+            max-width: 900px;
+            margin: 20px auto;
+            padding-top: 100px;
+            /* Adjusted for fixed header */
+            padding-bottom: 40px;
+            box-sizing: border-box;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            color: var(--primary-darker);
+            margin-top: 25px;
+        }
+
+        section {
+            background-color: var(--surface-color);
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-hover);
+            border: 1px solid var(--border-light);
+            box-sizing: border-box;
+        }
+
+        .intro-section {
+            box-shadow: none;
+            border: none;
+            background-color: transparent;
+            /* Make intro background transparent */
+            padding-top: 0;
+            margin-bottom: 15px;
+        }
+
+        /* --- Lists & Links --- */
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Forms & Inputs --- */
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #343a40;
+        }
+
+        select,
+        input[type="number"],
+        input[type="text"],
+        button {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #c0e0c2;
+            background: #e9f5e9;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            background: #dff0df;
+            transform: translateY(-1px);
+        }
+
+        .btn.secondary {
+            background: #fff;
+            border-color: #d0d7de;
+        }
+
+        .btn.danger {
+            background: #fdecea;
+            border-color: #f5c2c7;
+            color: #c92a2a;
+        }
+
+        .btn.danger:hover {
+            background: #fce0e3;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+
+        .btn-lg {
+            padding: 12px 24px;
+            font-size: 1.1em;
+        }
+
+        /* --- Plan Steps & Results --- */
+        #plan-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .plan-step {
+            border: 1px solid var(--border-light);
+            padding: 20px;
+            border-radius: 6px;
+            background-color: #fdfdfd;
+        }
+
+        .plan-step p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        /* Results divs styling */
+        #calorie-result,
+        #weight-goal-result,
+        #energy-balance-result,
+        #macro-result,
+        #meal-result,
+        #time-estimation-result,
+        #step-5-results {
+            margin-top: 20px;
+            padding: 18px;
+            background-color: #e9f5e9;
+            border: 1px solid var(--primary-light);
+            border-radius: 5px;
+            line-height: 1.7;
+            color: var(--primary-darker);
+            min-height: 30px;
+        }
+
+        #calorie-result p,
+        #weight-goal-result p,
+        #time-estimation-result p {
+            margin-bottom: 10px;
+        }
+
+        #calorie-result strong,
+        #weight-goal-result strong,
+        #time-estimation-result strong {
+            color: var(--primary-dark);
+        }
+
+        #macro-result ul,
+        #meal-result ul {
+            padding-left: 25px;
+            margin-top: 10px;
+        }
+
+        #macro-result li,
+        #meal-result li {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        #macro-result strong,
+        #meal-result strong {
+            color: var(--primary-dark);
+        }
+
+        #meal-result h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--primary-light);
+            padding-bottom: 10px;
+        }
+
+        #meal-result .plan-step {
+            background-color: #f5fbf5 !important;
+            border: 1px solid #d4eed5;
+        }
+
+        #meal-result h4 {
+            margin-bottom: 10px;
+        }
+
+        /* Chart Containers */
+        #chart-container,
+        #weight-chart-container,
+        #time-estimation-chart-container {
+            margin-top: 20px;
+            padding: 0;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            width: 95%;
+            height: 350px;
+            position: center;
+            display: none;
+            /* Initially hidden */
+            box-sizing: border-box;
+        }
+
+        #chart-container canvas,
+        #weight-chart-container canvas,
+        #time-estimation-chart-container canvas {
+            display: block;
+            width: 95% !important;
+            height: 100% !important;
+        }
+
+        /* Percentage inputs section styling */
+        #macro-percentage-inputs,
+        #meal-percentage-inputs {
+            margin-top: 20px;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px dashed #ced4da;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+
+        #macro-percentage-inputs>label,
+        #meal-percentage-inputs>label {
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        #macro-percentage-inputs div,
+        #meal-percentage-inputs div {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #macro-percentage-inputs div label,
+        #meal-percentage-inputs div label {
+            width: 130px;
+            margin-right: 10px;
+            margin-bottom: 0;
+            font-weight: normal;
+            text-align: right;
+            color: var(--text-secondary);
+        }
+
+        #macro-percentage-inputs div input,
+        #meal-percentage-inputs div input {
+            flex-grow: 1;
+            margin-bottom: 0;
+            padding: 8px 10px;
+            max-width: 100px;
+        }
+
+        #macro-percentage-inputs div span,
+        #meal-percentage-inputs div span {
+            margin-left: 8px;
             font-weight: 500;
         }
 
-        .dropdown a:hover {
-            background-color: #e9f5e9;
-            color: #388e3c;
+        #macro-percentage-total,
+        #meal-percentage-total {
+            font-size: 1.1em;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 1.2em;
         }
 
-    nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; }
-    nav ul li { margin-left: 25px; }
-    nav ul li a {
-        text-decoration: none;
-        color: #495057;
-        font-weight: 500;
-        padding: 8px 12px;
-        border-radius: 4px;
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    }
-    nav ul li a:hover, nav ul li a.active {
-        background-color: #e9f5e9;
-        color: #388e3c;
-    }
-    nav ul li a.active {
-        background-color: #c8e6c9;
-        color: #2e7d32;
-        font-weight: 600;
-    }
-
-    /* --- Main Content & Sections --- */
-    main {
-        padding: 30px 10px;
-        max-width: 900px;
-        margin: 20px auto;
-        padding-top: 100px; /* Adjusted for fixed header */
-        padding-bottom: 40px;
-        box-sizing: border-box;
-    }
-    h1, h2, h3, h4 { color: #388E3C; margin-bottom: 20px; font-weight: 600; }
-    h1 { font-size: 2.2em; text-align: center; margin-bottom: 30px;}
-    h2 { font-size: 1.8em; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px;}
-    h3 { font-size: 1.5em; }
-    h4 { font-size: 1.2em; color: #1B5E20; margin-top: 25px; }
-    section {
-        background-color: #ffffff;
-        padding: 25px 30px;
-        margin-bottom: 30px;
-        border-radius: 8px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
-        border: 1px solid #e0e0e0;
-        box-sizing: border-box;
-    }
-    .intro-section {
-        box-shadow: none;
-        border: none;
-        background-color: transparent; /* Make intro background transparent */
-        padding-top: 0;
-        margin-bottom: 15px;
-    }
-	/* --- Lists & Links --- */
-        p { color: #495057; margin-bottom: 15px; }
-        ul { padding-left: 25px; margin-bottom: 15px; }
-        li { margin-bottom: 10px; color: #333; }
-        a { color: #0275d8; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-
-    /* --- Forms & Inputs --- */
-    label { display: block; margin-bottom: 8px; font-weight: 500; color: #343a40; }
-    select, input[type="number"], input[type="text"], button { width: 100%; padding: 12px 15px; margin-bottom: 18px; border: 1px solid #ced4da; border-radius: 5px; box-sizing: border-box; font-size: 1em; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
-    input[type="number"]:focus, select:focus { border-color: #80bdff; outline: 0; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
-    input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
-    button { background-color: #5cb85c; color: white; cursor: pointer; font-weight: 500; border: none; transition: background-color 0.3s ease, transform 0.1s ease; border-radius: 5px; }
-    button:hover { background-color: #4cae4c; transform: translateY(-1px); }
-    button:disabled { background-color: #cccccc; cursor: not-allowed; transform: none; }
-
-    /* --- Plan Steps & Results --- */
-    #plan-container { display: grid; grid-template-columns: 1fr; gap: 25px; }
-    .plan-step { border: 1px solid #e0e0e0; padding: 20px; border-radius: 6px; background-color: #fdfdfd; }
-    .plan-step p { color: #495057; margin-bottom: 15px; }
-
-    /* Results divs styling */
-    #calorie-result, #weight-goal-result, #energy-balance-result, #macro-result, #meal-result, #time-estimation-result, #step-5-results { /* Updated ID */
-        margin-top: 20px; padding: 18px; background-color: #e9f5e9; border: 1px solid #c8e6c9; border-radius: 5px; line-height: 1.7; color: #1B5E20;
-        min-height: 30px;
-    }
-    #calorie-result p, #weight-goal-result p, #time-estimation-result p { margin-bottom: 10px; }
-    #calorie-result strong, #weight-goal-result strong, #time-estimation-result strong { color: #388E3C; }
-
-    #macro-result ul, #meal-result ul { padding-left: 25px; margin-top: 10px; }
-    #macro-result li, #meal-result li { margin-bottom: 10px; color: #333; }
-    #macro-result strong, #meal-result strong { color: #388E3C; }
-    #meal-result h3 { margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #c8e6c9; padding-bottom: 10px; }
-    #meal-result .plan-step { background-color: #f5fbf5 !important; border: 1px solid #d4eed5; }
-    #meal-result h4 { margin-bottom: 10px; }
-
-    /* Chart Containers */
-    #chart-container, #weight-chart-container, #time-estimation-chart-container {
-        margin-top: 20px;
-        padding: 0;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        width: 95%;
-        height: 350px;
-        position: center;
-        display: none; /* Initially hidden */
-        box-sizing: border-box;
-    }
-    #chart-container canvas, #weight-chart-container canvas, #time-estimation-chart-container canvas {
-        display: block;
-        width: 95% !important;
-        height: 100% !important;
-    }
-
-    /* Percentage inputs section styling */
-    #macro-percentage-inputs, #meal-percentage-inputs { margin-top: 20px; margin-bottom: 15px; padding: 15px; border: 1px dashed #ced4da; border-radius: 4px; background-color: #f8f9fa; }
-    #macro-percentage-inputs > label, #meal-percentage-inputs > label { font-weight: 600; margin-bottom: 15px; display: block; }
-    #macro-percentage-inputs div, #meal-percentage-inputs div { display: flex; align-items: center; margin-bottom: 10px; }
-    #macro-percentage-inputs div label, #meal-percentage-inputs div label { width: 130px; margin-right: 10px; margin-bottom: 0; font-weight: normal; text-align: right; color: #495057; }
-    #macro-percentage-inputs div input, #meal-percentage-inputs div input { flex-grow: 1; margin-bottom: 0; padding: 8px 10px; max-width: 100px; }
-    #macro-percentage-inputs div span, #meal-percentage-inputs div span { margin-left: 8px; font-weight: 500; }
-    #macro-percentage-total, #meal-percentage-total { font-size: 1.1em; text-align: center; margin-top: 15px; font-weight: bold; min-height: 1.2em; }
-
-    /* Notes & Monitoring Section specific styling */
-    .notes-section, .monitoring-section {
-        margin-top: 25px;
-        padding-top: 15px;
-        border-top: 1px dashed #a5d6a7;
-    }
-    .notes-section h4, .monitoring-section h4 {
-        margin-bottom: 10px;
-        color: #388E3C;
-    }
-    .notes-section ul, .monitoring-section ul {
-        list-style: disc;
-        padding-left: 20px;
-        margin: 0;
-    }
-    .notes-section li, .monitoring-section li {
-        margin-bottom: 8px;
-        color: #1B5E20;
-    }
-    .notes-section li strong, .monitoring-section li strong {
-        color: #1B5E20;
-    }
-    .monitoring-section h5 {
-        color: #388E3C;
-        font-weight: 600;
-        margin-top: 15px;
-        margin-bottom: 5px;
-        font-size: 1.1em;
-    }
-    .monitoring-section ul ul {
-        list-style: circle;
-        margin-top: 5px;
-        margin-left: 15px;
-    }
-    .monitoring-section ul ul li {
-        color: #333;
-    }
-
-    /* Detailed Cycle Table Styling (Step 5 - Auto) */
-    #detailed-cycle-table-container {
-        margin-top: 20px;
-        overflow-x: auto; /* Allow horizontal scroll on small screens */
-    }
-    #detailed-cycle-table {
-        width: 85%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        font-size: 0.9em;
-        min-width: 600px; /* Minimum width before scroll appears */
-    }
-    #detailed-cycle-table th, #detailed-cycle-table td {
-        border: 1px solid #c8e6c9;
-        padding: 8px 10px;
-        text-align: center;
-        vertical-align: middle;
-    }
-    #detailed-cycle-table th {
-        background-color: #dcedc8;
-        color: #1B5E20;
-        font-weight: 600;
-        white-space: nowrap; /* Prevent header text wrapping */
-    }
-    #detailed-cycle-table tr:nth-child(even) {
-        background-color: #f1f8e9;
-    }
-    #detailed-cycle-table td {
-        color: #333;
-    }
-    #detailed-cycle-table td:nth-child(2), /* Fase */
-    #detailed-cycle-table td:nth-child(4) { /* Peso */
-        text-align: left;
-    }
-    #detailed-cycle-table .phase-deficit {
-        color: #c62828; /* Red for deficit */
-    }
-    #detailed-cycle-table .phase-surplus {
-        color: #2e7d32; /* Dark green for surplus */
-    }
-    #detailed-cycle-table .phase-break {
-        background-color: #fff9c4; /* Light yellow for break */
-        color: #5f4300; /* Dark yellow text */
-    }
-
-    /* Error message styling */
-    .error-message {
-        color: #c62828; /* Red */
-        font-weight: bold;
-        margin-top: 10px;
-    }
-    /* Info message styling */
-    .info-message {
-        color: #0275d8; /* Blue */
-        font-style: italic;
-        margin-top: 10px;
-    }
-
-    /* --- Footer --- */
-    footer {
-        background-color: #e9ecef;
-        text-align: center;
-        padding: 25px 20px;
-        color: #6c757d;
-        border-top: 1px solid #dee2e6;
-        margin-top: 40px;
-        font-size: 0.9em;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 1000px) {
-        main {
-            max-width: 90%;
-            padding: 20px 10px; /* Slightly more padding */
-            padding-top: 90px; /* Adjust for header */
-            padding-bottom: 30px;
+        /* Notes & Monitoring Section specific styling */
+        .notes-section,
+        .monitoring-section {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--primary-light);
         }
-        section {
-            padding: 20px 15px;
-            margin-bottom: 20px;
-        }
-        #chart-container, #weight-chart-container, #time-estimation-chart-container {
-            height: 300px;
-        }
-    }
 
-    @media (max-width: 768px) {
-        header {
-            padding: 10px 15px;
-            flex-direction: column;
-            align-items: flex-start; /* Align logo left */
-            position: static; /* Header scrolls with content */
-            width: 100%;
-        }
-        .logo a {
-            font-size: 1.5em;
+        .notes-section h4,
+        .monitoring-section h4 {
             margin-bottom: 10px;
+            color: var(--primary-dark);
         }
-        nav ul {
-            justify-content: flex-start; /* Align nav items left */
-            flex-wrap: wrap;
-        }
-        nav ul li {
-            margin: 5px 10px 5px 0; /* Adjust nav item margin */
-        }
-        main {
-            padding-top: 20px; /* Less top padding when header scrolls */
-        }
-        #macro-percentage-inputs div, #meal-percentage-inputs div {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        #macro-percentage-inputs div label, #meal-percentage-inputs div label {
-            width: auto;
-            text-align: left;
-            margin-bottom: 5px;
-        }
-        #macro-percentage-inputs div input, #meal-percentage-inputs div input {
-            max-width: none; /* Allow inputs to fill width */
-        }
-        #detailed-cycle-table, #hyperprotein-cycle-table { /* Apply to both tables */
-            min-width: 400px;
-            font-size: 0.85em;
-        }
-        #detailed-cycle-table th, #detailed-cycle-table td,
-        #hyperprotein-cycle-table th, #hyperprotein-cycle-table td {
-            padding: 6px 8px;
-			vertical-align: top;
-			white-space: pre-line;
-			line-height: 1.5;
-			
-        }
-			
-    }
 
-    @media (max-width: 480px) {
-        nav ul li a {
-            padding: 6px 8px;
+        .notes-section ul,
+        .monitoring-section ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .notes-section li,
+        .monitoring-section li {
+            margin-bottom: 8px;
+            color: var(--primary-darker);
+        }
+
+        .notes-section li strong,
+        .monitoring-section li strong {
+            color: var(--primary-darker);
+        }
+
+        .monitoring-section h5 {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .monitoring-section ul ul {
+            list-style: circle;
+            margin-top: 5px;
+            margin-left: 15px;
+        }
+
+        .monitoring-section ul ul li {
+            color: #333;
+        }
+
+        /* Detailed Cycle Table Styling (Step 5 - Auto) */
+        #detailed-cycle-table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+            /* Allow horizontal scroll on small screens */
+        }
+
+        #detailed-cycle-table {
+            width: 85%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9em;
+            min-width: 600px;
+            /* Minimum width before scroll appears */
+        }
+
+        #detailed-cycle-table th,
+        #detailed-cycle-table td {
+            border: 1px solid var(--primary-light);
+            padding: 8px 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #detailed-cycle-table th {
+            background-color: #dcedc8;
+            color: var(--primary-darker);
+            font-weight: 600;
+            white-space: nowrap;
+            /* Prevent header text wrapping */
+        }
+
+        #detailed-cycle-table tr:nth-child(even) {
+            background-color: #f1f8e9;
+        }
+
+        #detailed-cycle-table td {
+            color: #333;
+        }
+
+        #detailed-cycle-table td:nth-child(2),
+        /* Fase */
+        #detailed-cycle-table td:nth-child(4) {
+            /* Peso */
+            text-align: left;
+        }
+
+        #detailed-cycle-table .phase-deficit {
+            color: var(--error-color);
+            /* Red for deficit */
+        }
+
+        #detailed-cycle-table .phase-surplus {
+            color: var(--success-color);
+            /* Dark green for surplus */
+        }
+
+        #detailed-cycle-table .phase-break {
+            background-color: #fff9c4;
+            /* Light yellow for break */
+            color: var(--warning-color);
+            /* Dark yellow text */
+        }
+
+        /* Error message styling */
+        .error-message {
+            color: var(--error-color);
+            /* Red */
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Info message styling */
+        .info-message {
+            color: var(--info-color);
+            /* Blue */
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #e9ecef;
+            text-align: center;
+            padding: 25px 20px;
+            color: #6c757d;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
             font-size: 0.9em;
         }
-        h1 { font-size: 1.8em; }
-        h2 { font-size: 1.5em; }
-        h3 { font-size: 1.3em; }
-        #detailed-cycle-table, #hyperprotein-cycle-table { /* Apply to both tables */
-            font-size: 0.8em; /* Smaller font for very small screens */
+
+        /* Responsive adjustments */
+        @media (max-width: 1000px) {
+            main {
+                max-width: 90%;
+                padding: 20px 10px;
+                /* Slightly more padding */
+                padding-top: 90px;
+                /* Adjust for header */
+                padding-bottom: 30px;
+            }
+
+            section {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+
+            #chart-container,
+            #weight-chart-container,
+            #time-estimation-chart-container {
+                height: 300px;
+            }
         }
-        #detailed-cycle-table th, #detailed-cycle-table td,
-        #hyperprotein-cycle-table th, #hyperprotein-cycle-table td {
-            padding: 5px 6px;
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                /* Align logo left */
+                position: static;
+                /* Header scrolls with content */
+                width: 100%;
+            }
+
+            .logo a {
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+
+            nav ul {
+                justify-content: flex-start;
+                /* Align nav items left */
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 5px 10px 5px 0;
+                /* Adjust nav item margin */
+            }
+
+            main {
+                padding-top: 20px;
+                /* Less top padding when header scrolls */
+            }
+
+            #macro-percentage-inputs div,
+            #meal-percentage-inputs div {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            #macro-percentage-inputs div label,
+            #meal-percentage-inputs div label {
+                width: auto;
+                text-align: left;
+                margin-bottom: 5px;
+            }
+
+            #macro-percentage-inputs div input,
+            #meal-percentage-inputs div input {
+                max-width: none;
+                /* Allow inputs to fill width */
+            }
+
+            #detailed-cycle-table,
+            #hyperprotein-cycle-table {
+
+                min-width: 400px;
+                font-size: 0.85em;
+            }
+
+            #detailed-cycle-table th,
+            #detailed-cycle-table td,
+            #hyperprotein-cycle-table th,
+            #hyperprotein-cycle-table td {
+                padding: 6px 8px;
+                vertical-align: top;
+                white-space: pre-line;
+                line-height: 1.5;
+            }
         }
-    }
-	  /* Styling for the hyperprotein cycle table (Step 7 - Manual) */
-    #hyperprotein-cycle-table-container {
-        margin-top: 20px;
-        overflow-x: auto; /* Allow horizontal scroll on small screens */
-    }
-    #hyperprotein-cycle-table {
-        width: 90%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        font-size: 0.9em;
-        min-width: 600px; /* Minimum width before scroll appears */
-    }
-    #hyperprotein-cycle-table th, #hyperprotein-cycle-table td {
-        border: 1px solid #c8e6c9;
-        padding: 8px 10px;
-        text-align: center;
-        vertical-align: middle;
-    }
-    #hyperprotein-cycle-table th {
-        background-color: #dcedc8;
-        color: #1B5E20;
-        font-weight: 600;
-        white-space: nowrap; /* Prevent header text wrapping */
-    }
-    #hyperprotein-cycle-table tr:nth-child(even) {
-        background-color: #f1f8e9;
-    }
-    #hyperprotein-cycle-table td {
-        color: #333;
-    }
-    #hyperprotein-cycle-table td:nth-child(2), /* Fase */
-    #hyperprotein-cycle-table td:nth-child(7) { /* Notas */
-        text-align: left;
-    }
-    #hyperprotein-cycle-table .phase-hyperprotein {
-        color: #0275d8; /* Blue for hyperprotein */
-    }
-    #hyperprotein-cycle-table .phase-break {
-        background-color: #fff9c4; /* Light yellow for break */
-        color: #5f4300; /* Dark yellow text */
-    }
-	#hyperprotein-cycle-table th:nth-child(6),
-			#hyperprotein-cycle-table td:nth-child(6) {
-			width: 200px;
-			min-width: 200px;
-			white-space: pre-line;
-			vertical-align: top;
-			line-height: 1.5;
-		}
+
+        @media (max-width: 480px) {
+            nav ul li a {
+                padding: 6px 8px;
+                font-size: 0.9em;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            h3 {
+                font-size: 1.3em;
+            }
+
+            #detailed-cycle-table,
+            #hyperprotein-cycle-table {
+
+                font-size: 0.8em;
+            }
+
+            #detailed-cycle-table th,
+            #detailed-cycle-table td,
+            #hyperprotein-cycle-table th,
+            #hyperprotein-cycle-table td {
+                padding: 5px 6px;
+            }
+        }
+
+        /* Styling for the hyperprotein cycle table (Step 7 - Manual) */
+        #hyperprotein-cycle-table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+            /* Allow horizontal scroll on small screens */
+        }
+
+        #hyperprotein-cycle-table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9em;
+            min-width: 600px;
+            /* Minimum width before scroll appears */
+        }
+
+        #hyperprotein-cycle-table th,
+        #hyperprotein-cycle-table td {
+            border: 1px solid var(--primary-light);
+            padding: 8px 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #hyperprotein-cycle-table th {
+            background-color: #dcedc8;
+            color: var(--primary-darker);
+            font-weight: 600;
+            white-space: nowrap;
+            /* Prevent header text wrapping */
+        }
+
+        #hyperprotein-cycle-table tr:nth-child(even) {
+            background-color: #f1f8e9;
+        }
+
+        #hyperprotein-cycle-table td {
+            color: #333;
+        }
+
+        #hyperprotein-cycle-table td:nth-child(2),
+        /* Fase */
+        #hyperprotein-cycle-table td:nth-child(7) {
+            /* Notas */
+            text-align: left;
+        }
+
+        #hyperprotein-cycle-table .phase-hyperprotein {
+            color: var(--secondary-color);
+            /* Blue for hyperprotein */
+        }
+
+        #hyperprotein-cycle-table .phase-break {
+            background-color: #fff9c4;
+            /* Light yellow for break */
+            color: var(--warning-color);
+            /* Dark yellow text */
+        }
+
+        #hyperprotein-cycle-table th:nth-child(6),
+        #hyperprotein-cycle-table td:nth-child(6) {
+            width: 200px;
+            min-width: 200px;
+            white-space: pre-line;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid.cols-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .grid.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .muted {
+            color: #6c757d;
+        }
 
 
+        input,
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 0.95em;
+        }
 
-		.grid { display: grid; gap: 14px; }
-    .grid.cols-2 { grid-template-columns: 1fr 1fr; }
-    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-    .muted { color: #6c757d; }
-    .btn {
-        display:inline-flex; align-items:center; gap:8px;
-        border:1px solid #c0e0c2; background:#e9f5e9; padding:8px 12px; border-radius:8px;
-        cursor:pointer; font-weight:600;
-        transition: all 0.2s ease-in-out;
-    }
-    .btn:hover { background:#dff0df; transform: translateY(-1px); }
-    .btn.secondary { background:#fff; border-color:#d0d7de; }
-    .btn.danger { background:#fdecea; border-color:#f5c2c7; color:#c92a2a; }
-    .btn.danger:hover { background:#fce0e3;}
-    .btn-primary {
-        background-color: #4CAF50;
-        border-color: #4CAF50;
-        color: white;
-    }
-    .btn-primary:hover {
-        background-color: #45a049;
-        border-color: #45a049;
-    }
-    .btn-lg {
-        padding: 12px 24px;
-        font-size: 1.1em;
-    }
-    input, select { 
-        width:100%; 
-        padding:8px 10px; 
-        border:1px solid #ced4da; 
-        border-radius:8px; 
-        box-sizing:border-box; 
-        font-family: inherit;
-        font-size: 0.95em;
-    }
-    input:focus, select:focus {
-        outline: none;
-        border-color: #4CAF50;
-        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-    }
-    table { 
-        width:100%; 
-        border-collapse: collapse; 
-        font-size: 0.95em; 
-        margin-top:10px; 
-    }
-    th, td { 
-        border-bottom:1px solid #eee; 
-        padding:10px; 
-        text-align:left; 
-        vertical-align: middle; 
-    }
-    th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-        color: #495057;
-    }
-    tr:hover td { background:#fafdf9; }
-    tfoot td { font-weight:700; background-color: #f8f9fa;}
-    .right { text-align:right; }
-    .center { text-align: center; }
-    .ratio-badge { 
-        display:inline-block; 
-        padding:6px 10px; 
-        border-radius:8px; 
-        font-weight:700; 
-        font-size: 1.2em; 
-    }
-    .ratio-high { background:#e3f2fd; border:1px solid #90caf9; }
-    .ratio-ok { background:#e8f5e9; border:1px solid #a5d6a7; }
-    .ratio-low { background:#fff3cd; border:1px solid #ffecb5; }
-    .footer { 
-        position:fixed; 
-        bottom:0; 
-        left:0; 
-        right:0; 
-        background:#fff; 
-        border-top:1px solid #e0e0e0; 
-        padding:10px 16px; 
-        display:flex; 
-        justify-content:space-between; 
-        align-items:center; 
-        font-size:0.85em; 
-    }
-    .small { font-size: 0.9em; }
-		/* FIX: Estilos añadidos para la sección de ratio y distribución */
-    .kpi {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-        margin-bottom: 20px;
-    }
-    .card {
-        background-color: #fdfdfd;
-        padding: 16px;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .card b { font-size: 1.2em; color: #2e7d32; }
-    .chip {
-        display: inline-block;
-        padding: 2px 8px;
-        background-color: #e9ecef;
-        border-radius: 12px;
-        font-size: 0.85em;
-    }
-    
-	
-	
-	
-    /* Estilos específicos para la calculadora nutricional */
-    .form-control {
-        margin-bottom: 15px;
-    }
-    .form-control label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
-        color: #495057;
-    }
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 0 -10px;
-    }
-    .col-md-4, .col-md-6, .col-md-12 {
-        padding: 0 10px;
-        margin-bottom: 15px;
-    }
-    .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-    .col-md-6 { flex: 0 0 50%; max-width: 50%; }
-    .col-md-12 { flex: 0 0 100%; max-width: 100%; }
-    
-    .card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #e0e0e0;
-        padding: 15px 20px;
-        border-radius: 8px 8px 0 0;
-        font-weight: 600;
-        color: #388E3C;
-    }
-    
-    .alert {
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        border: 1px solid transparent;
-    }
-    .alert-info {
-        background-color: #e3f2fd;
-        border-color: #bbdefb;
-        color: #1976d2;
-    }
-    
-    #resultados {
-        animation: fadeIn 0.5s ease-in;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .macro-value {
-        font-weight: 700;
-        color: #388E3C;
-    }
-    
-    .percentage-bar {
-        height: 8px;
-        background-color: #e9ecef;
-        border-radius: 4px;
-        margin: 8px 0;
-        overflow: hidden;
-    }
-    
-    .percentage-fill {
-        height: 100%;
-        border-radius: 4px;
-    }
-    
-    .fat-fill { background-color: #4CAF50; }
-    .protein-fill { background-color: #2196F3; }
-    .carb-fill { background-color: #FF9800; }
-    
-    /* Responsive design */
-    @media (max-width: 768px) {
-        .col-md-4, .col-md-6 {
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: #fafdf9;
+        }
+
+        tfoot td {
+            font-weight: 700;
+            background-color: #f8f9fa;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .ratio-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .ratio-high {
+            background: var(--secondary-light);
+            border: 1px solid #90caf9;
+        }
+
+        .ratio-ok {
+            background: #e8f5e9;
+            border: 1px solid var(--primary-light);
+        }
+
+        .ratio-low {
+            background: #fff3cd;
+            border: 1px solid #ffecb5;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85em;
+        }
+
+        .small {
+            font-size: 0.9em;
+        }
+
+        /* FIX: Estilos añadidos para la sección de ratio y distribución */
+        .kpi {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: #fdfdfd;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow);
+        }
+
+        .card b {
+            font-size: 1.2em;
+            color: var(--primary-darker);
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 2px 8px;
+            background-color: #e9ecef;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+
+        /* Estilos específicos para la calculadora nutricional */
+        .form-control label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .col-md-4,
+        .col-md-6,
+        .col-md-12 {
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .col-md-12 {
             flex: 0 0 100%;
             max-width: 100%;
         }
-        
-        header {
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--border-light);
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+        }
+
+        .alert-info {
+            background-color: var(--secondary-light);
+            border-color: #bbdefb;
+            color: var(--info-color);
+        }
+
+        #resultados {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .macro-value {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .percentage-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .percentage-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .fat-fill {
+            background-color: var(--primary-color);
+        }
+
+        .protein-fill {
+            background-color: #2196F3;
+        }
+
+        .carb-fill {
+            background-color: var(--accent-color);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .col-md-4,
+            .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li {
+                margin: 5px 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .kpi {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* FIX: Estilos añadidos para mejorar la UI */
+        #recipeTable input.edit-grams {
+            text-align: right;
+            width: 80px;
+        }
+
+        #weeklyPlanTable ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
             flex-direction: column;
-            gap: 15px;
-            padding: 15px;
+            gap: 4px;
         }
-        
-        nav ul {
+
+        #weeklyPlanTable li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        #weeklyPlanTable li button {
+            padding: 2px 6px;
+            font-size: 0.8em;
+        }
+
+        /* Canvas chart container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .table-responsive {
+            margin-top: 20px;
+        }
+
+        .macro-input {
+            width: 70px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .strategy-note {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .error-message {
+            display: none;
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+
+        .strategy-checkboxes {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-check {
+            margin-bottom: 8px;
+        }
+
+        /* --- Estilos Específicos para la Sección "Ciclos Dietéticos" Mejorada --- */
+        #step-7 .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        #step-7 .card-header {
+            background-color: #e8f5e9; /* Verde muy claro */
+            border-bottom: 1px solid var(--primary-light);
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 1.2em;
+        }
+
+        #step-7 .card-body {
+            padding: 20px;
+        }
+
+        #step-7 .form-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        #step-7 .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: var(--surface-color);
+            transition: border-color 0.2s ease-in-out;
+        }
+
+        #step-7 .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        #step-7 .row {
+            display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            margin: 0 -10px;
         }
-        
-        nav ul li {
-            margin: 5px 10px;
-        }
-        
-        h1 {
-            font-size: 1.8em;
-        }
-        
-        .kpi {
-            grid-template-columns: 1fr;
-        }
-    }
-		/* FIX: Estilos añadidos para mejorar la UI */
-    #recipeTable input.edit-grams {
-      text-align: right;
-      width: 80px;
-    }
-    #weeklyPlanTable ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-    #weeklyPlanTable li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.9em;
-        background: #f8f9fa;
-        padding: 4px 8px;
-        border-radius: 4px;
-    }
-    #weeklyPlanTable li button {
-        padding: 2px 6px;
-        font-size: 0.8em;
-    }
-    
-    /* Canvas chart container */
-    .chart-container {
-        position: relative;
-        height: 300px;
-        width: 100%;
-        margin: 20px 0;
-    }
-    
-    /* Loading spinner */
-    .spinner {
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #4CAF50;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        animation: spin 1s linear infinite;
-        margin: 20px auto;
-        display: none;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
 
-        
-        .table-responsive { margin-top: 20px; }
-        .macro-input { width: 70px; display: inline-block; margin-right: 5px; }
-        .strategy-note { font-size: 0.9em; color: #555; }
-  
-        .error-message { display: none; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-top: 10px; }
-        .form-control:invalid { border-color: #dc3545; }
-        .table-responsive { margin-top: 20px; }
-        .macro-input { width: 70px; display: inline-block; margin-right: 5px; }
-        .strategy-note { font-size: 0.9em; color: #555; }
-        .strategy-checkboxes { max-height: 200px; overflow-y: auto; }
-</style>
+        #step-7 .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 0 10px;
+            margin-bottom: 20px;
+        }
+
+        #step-7 .strategy-checkboxes {
+            max-height: 250px; /* Aumentado para mejor visibilidad */
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9; /* Fondo sutil */
+        }
+
+        #step-7 .form-check {
+            margin-bottom: 10px;
+        }
+
+        #step-7 .form-check-input {
+            margin-right: 8px;
+        }
+
+        #step-7 .form-check-label {
+            font-weight: normal;
+            color: var(--text-secondary);
+        }
+
+        #step-7 .mt-3 {
+            margin-top: 20px;
+        }
+
+        /* --- Estilos Específicos para la Tabla de Planificación Temporal Mejorada --- */
+        #planificacionTemporal .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        #planificacionTemporal .card-header {
+             background-color: #e3f2fd; /* Azul muy claro */
+            border-bottom: 1px solid #bbdefb;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: var(--info-color);
+            font-size: 1.2em;
+        }
+
+        #planificacionTemporal .card-body {
+            padding: 20px;
+        }
+
+        #planificacionTemporal .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        #planificacionTemporal .table th,
+        #planificacionTemporal .table td {
+            border: 1px solid #e0e0e0;
+            padding: 10px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #planificacionTemporal .table th {
+            background-color: #f5f5f5;
+            color: #333;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        #planificacionTemporal .table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        #planificacionTemporal .table tbody tr:hover {
+            background-color: #eeeeee;
+        }
+
+        /* Responsive para la tabla */
+        @media (max-width: 768px) {
+            #planificacionTemporal .table {
+                font-size: 0.8em;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            #planificacionTemporal .table th,
+            #planificacionTemporal .table td {
+                padding: 8px 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #planificacionTemporal .table {
+                font-size: 0.75em;
+            }
+
+            #planificacionTemporal .table th,
+            #planificacionTemporal .table td {
+                padding: 6px 4px;
+            }
+        }
+
+    </style>
 </head>
-
 <body>
     <header>
         <div class="logo">
-	  <a href="#" id="logo">NutriPlan_v2</a>
-	</div>
-	    <div class="dropdown" id="dropdown">
-	        <a href="#" onclick="logout()">Cerrar Sesión</a>
-	    </div>
+            <a href="#" id="logo">NutriPlan_v2</a>
+        </div>
         <nav>
             <ul>
                 <li><a href="https://fermagil.github.io/Nutri_Plan_v2/Inicio_NutriPlan_v2.html">Inicio</a></li>
-				<li><a href="https://fermagil.github.io/Nutri_Plan_v2/Valoracion_Antropometrica_1.html">Valoración Antropometrica</a></li>
+                <li><a href="https://fermagil.github.io/Nutri_Plan_v2/Valoracion_Antropometrica_1.html">Valoración Antropometrica</a></li>
                 <li><a href="#" class="active">Planificación Avanzada</a></li>
-                <li><a href="https://fermagil.github.io/Nutri_Plan_v2/Calculadora_keto_recetas.html">Calculadora</a></li> 
+                <li><a href="https://fermagil.github.io/Nutri_Plan_v2/Calculadora_keto_recetas.html">Calculadora</a></li>
             </ul>
         </nav>
     </header>
-	
     <main>
         <section>
             <h1>Crea tu Plan Dietético Personalizado</h1>
-            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px auto; color: #495057;">
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px auto; color: var(--text-secondary);">
                 Sigue estos pasos guiados para obtener una estimación de tus necesidades nutricionales y generar un plan de comidas orientativo.
                 Antes de utilizar los datos obtenidos con esta herramienta, consulta con su Dietista-Nutricionista.
             </p>
-	</section>
-	    <section>		
-            
-	
-                <div class="plan-step" id="step-1">
-                    <h2>1. Calcula tus Necesidades y Balance Energético</h2>
-                    <p>Introduce tus datos básicos para estimar tu Gasto Energético Total (GET) y, si lo deseas, tu ingesta actual para ver tu balance energético.</p>
-                    <form id="calorie-form">
-                        <label for="age">Edad (años):</label>
-                         <input type="number" id="age" name="age" required min="1" max="120">
-
-                        <label for="gender">Género Biológico:</label>
-                        <select id="gender" name="gender">
-                            <option value="male">Masculino</option>
-                            <option value="female">Femenino</option>
-                        </select>
-
-                        <label for="weight">Peso Actual (kg):</label>
-                        <input type="number" id="weight" name="weight" required min="1" step="0.1">
-
-                        <label for="height">Altura (m):</label>
-                        <input type="number" id="height" name="height" step="0.01" required min="0.5" max="3" placeholder="Ej: 1.75">
-
-                        <label for="activity">Nivel de Actividad Física Semanal:</label>
-                        <select id="activity" name="activity">
-                            <option value="sedentary">Sedentario</option>
-                            <option value="light">Ligero (1-3 días/sem)</option>
-                            <option value="moderate">Moderado (3-5 días/sem)</option>
-                            <option value="active">Activo (6-7 días/sem)</option>
-                            <option value="very_active">Muy Activo (Intenso/Diario)</option>
-                        </select>
-
-                        <label for="estimated-intake">Tu Ingesta Calórica Estimada Actual (kcal/día, opcional):</label>
-                        <input type="number" id="estimated-intake" name="estimated-intake" min="0" step="1" placeholder="Si la conoces, ej: 2100">
-
-                        <button type="submit">Calcular GET y Balance</button>
-                    </form>
-<div id="errorMeals" class="error-message" style="display:none;"></div>
-<div id="errorMacros" class="error-message" style="display:none;"></div>
-                    <div id="calorie-result"></div>
-                    <div id="energy-balance-result"></div>
+        </section>
+        <section>
+            <div class="plan-step" id="step-1">
+                <h2>1. Calcula tus Necesidades y Balance Energético</h2>
+                <p>Introduce tus datos básicos para estimar tu Gasto Energético Total (GET) y, si lo deseas, tu ingesta actual para ver tu balance energético.</p>
+                <form id="calorie-form">
+                    <label for="age">Edad (años):</label>
+                    <input type="number" id="age" name="age" required min="1" max="120">
+                    <label for="gender">Género Biológico:</label>
+                    <select id="gender" name="gender">
+                        <option value="male">Masculino</option>
+                        <option value="female">Femenino</option>
+                    </select>
+                    <label for="weight">Peso Actual (kg):</label>
+                    <input type="number" id="weight" name="weight" required min="1" step="0.1">
+                    <label for="height">Altura (m):</label>
+                    <input type="number" id="height" name="height" step="0.01" required min="0.5" max="3"
+                        placeholder="Ej: 1.75">
+                    <label for="activity">Nivel de Actividad Física Semanal:</label>
+                    <select id="activity" name="activity">
+                        <option value="sedentary">Sedentario</option>
+                        <option value="light">Ligero (1-3 días/sem)</option>
+                        <option value="moderate">Moderado (3-5 días/sem)</option>
+                        <option value="active">Activo (6-7 días/sem)</option>
+                        <option value="very_active">Muy Activo (Intenso/Diario)</option>
+                    </select>
+                    <label for="estimated-intake">Tu Ingesta Calórica Estimada Actual (kcal/día, opcional):</label>
+                    <input type="number" id="estimated-intake" name="estimated-intake" min="0" step="1"
+                        placeholder="Si la conoces, ej: 2100">
+                    <button type="submit">Calcular GET y Balance</button>
+                </form>
+                <div id="errorMeals" class="error-message" style="display:none;"></div>
+                <div id="errorMacros" class="error-message" style="display:none;"></div>
+                <div id="calorie-result"></div>
+                <div id="energy-balance-result"></div>
+            </div>
+            <div class="plan-step" id="step-2">
+                <h2>2. Establece tu Objetivo de Peso y Composición Corporal</h2>
+                <p>Define tu objetivo de composición corporal (% grasa). Puedes estimar tu % de grasa actual con básculas
+                    de bioimpedancia o calculadoras online.</p>
+                <p><em>Si no conoces tu % de grasa actual, puedes usar una <a
+                            href="https://www.calculator.net/body-fat-calculator.html" target="_blank"
+                            rel="noopener noreferrer">calculadora online</a> (en inglés) o buscar alternativas en
+                        español.</em></p>
+                <!--<div class="card mb-4">  -->
+                <h3>Objetivo Nutricional</h3>
+                <label for="objetivo" class="form-label">Selecciona tu objetivo:</label>
+                <select id="objetivo" class="form-control" aria-label="Objetivo nutricional" required>
+                    <option value="perdida">1. Pérdida de Peso</option>
+                    <option value="ganancia">2. Ganancia de Peso</option>
+                    <option value="mantenimiento">3. Mantenimiento</option>
+                    <option value="mixto">4. Mixto/Combinado</option>
+                </select>
+                <!--</div>	-->
+                <form id="weight-goal-form">
+                    <label for="current-fat-percentage">Grasa Corporal Actual (%):</label>
+                    <input type="number" id="current-fat-percentage" name="current-fat-percentage" step="0.1" min="3"
+                        max="60" required placeholder="Ej: 25">
+                    <label for="target-fat-percentage">Grasa Corporal Objetivo (%):</label>
+                    <input type="number" id="target-fat-percentage" name="target-fat-percentage" step="0.1" min="3"
+                        max="60" required placeholder="Ej: 15">
+                    <label for="desired-lean-mass-gain">Ganancia de Masa Magra/Muscular Deseada (kg, opcional):</label>
+                    <input type="number" id="desired-lean-mass-gain" name="desired-lean-mass-gain" step="0.1" min="0"
+                        placeholder="Ej: 2 (Dejar en blanco o 0 si no buscas ganar músculo)">
+                    <label for="is-athlete">¿Te consideras deportista/atleta?</label>
+                    <select id="is-athlete" name="is-athlete">
+                        <option value="no">No</option>
+                        <option value="yes">Sí</option>
+                    </select>
+                    <button type="submit" id="calculate-goal-button">Calcular Objetivo y Recomendaciones</button>
+                </form>
+                <div id="weight-goal-result">
+                    <p class="info-message">Completa el Paso 1 para habilitar este cálculo.</p>
+                    <div id="weight-chart-container">
+                        <canvas id="weightEvolutionChart"></canvas>
+                    </div>
                 </div>
-
-                <div class="plan-step" id="step-2">
-                    <h2>2. Establece tu Objetivo de Peso y Composición Corporal</h2>
-                    <p>Define tu objetivo de composición corporal (% grasa). Puedes estimar tu % de grasa actual con básculas de bioimpedancia o calculadoras online.</p>
-                    <p><em>Si no conoces tu % de grasa actual, puedes usar una <a href="https://www.calculator.net/body-fat-calculator.html" target="_blank" rel="noopener noreferrer">calculadora online</a> (en inglés) o buscar alternativas en español.</em></p>
-						 <!--<div class="card mb-4">  -->
-				            <h3>Objetivo Nutricional</h3>
-				                        <label for="objetivo" class="form-label">Selecciona tu objetivo:</label>
-				                        <select id="objetivo" class="form-control" aria-label="Objetivo nutricional" required>
-				                            <option value="perdida">1. Pérdida de Peso</option>
-				                            <option value="ganancia">2. Ganancia de Peso</option>
-				                            <option value="mantenimiento">3. Mantenimiento</option>
-				                            <option value="mixto">4. Mixto/Combinado</option>
-				                        </select>
-				                    
-				                	
-                     <!--</div>	-->
-					
-					<form id="weight-goal-form">
-                        <label for="current-fat-percentage">Grasa Corporal Actual (%):</label>
-                        <input type="number" id="current-fat-percentage" name="current-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 25">
-
-                        <label for="target-fat-percentage">Grasa Corporal Objetivo (%):</label>
-                        <input type="number" id="target-fat-percentage" name="target-fat-percentage" step="0.1" min="3" max="60" required placeholder="Ej: 15">
-
-                        <label for="desired-lean-mass-gain">Ganancia de Masa Magra/Muscular Deseada (kg, opcional):</label>
-                        <input type="number" id="desired-lean-mass-gain" name="desired-lean-mass-gain" step="0.1" min="0" placeholder="Ej: 2 (Dejar en blanco o 0 si no buscas ganar músculo)">
-
-                        <label for="is-athlete">¿Te consideras deportista/atleta?</label>
-                        <select id="is-athlete" name="is-athlete">
-                            <option value="no">No</option>
-                            <option value="yes">Sí</option>
-                        </select>
-
-                        <button type="submit" id="calculate-goal-button" >Calcular Objetivo y Recomendaciones</button>
-                    </form>
-                    <div id="weight-goal-result">
-                        <p class="info-message">Completa el Paso 1 para habilitar este cálculo.</p>
-                        <div id="weight-chart-container">
-                            <canvas id="weightEvolutionChart"></canvas>
+            </div>
+            <div class="plan-step" id="step-3">
+                <h2>3. Calcula tus Macronutrientes</h2>
+                <p>Define tu objetivo calórico (basado en tu GET y si quieres perder, mantener o ganar peso) y distribuye
+                    los macronutrientes.</p>
+                <p>Se recomienda para perdida de peso gradual y sostenible reducir un aporte calorico de ente un 10-20%
+                    de tu GET, el calculo automatico lo realiza sobre un 10%. Para ganacia de peso la recomendación seria
+                    un aumento del GET entre un 5%-15%, el calculo automatico lo realiza sobre un 5%.</p>
+                <p>Tu ingesta objetivo por dia puede variar en función de tus necesadidaes personales de AF y de los
+                    ciclos de carga-descarga proteica en un plan de perdida de peso.</p>
+                <form id="macro-form">
+                    <label for="goal-calories">Calorías Objetivo Diarias (kcal):</label>
+                    <input type="number" id="goal-calories" name="goal-calories" required min="500"
+                        placeholder="Introduce las kcal calculadas o deseadas">
+                    <div id="macro-percentage-inputs">
+                        <label>Distribución de Macronutrientes (% del total calórico):</label>
+                        <div>
+                            <label for="protein-percentage">Proteína (%):</label>
+                            <input type="number" id="protein-percentage" name="protein-percentage" value="30" min="10"
+                                max="50" step="1"> <span>%</span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="plan-step" id="step-3">
-                    <h2>3. Calcula tus Macronutrientes</h2>
-                    <p>Define tu objetivo calórico (basado en tu GET y si quieres perder, mantener o ganar peso) y distribuye los macronutrientes.</p>
-					<p>Se recomienda para perdida de peso gradual y sostenible reducir un aporte calorico de ente un 10-20% de tu GET, el calculo automatico lo realiza sobre un 10%. Para ganacia de peso la recomendación seria un aumento del GET entre un 5%-15%, el calculo automatico lo realiza sobre un 5%.</p>
-					<p>Tu ingesta objetivo por dia puede variar en función de tus necesadidaes personales de AF y de los ciclos de carga-descarga proteica en un plan de perdida de peso.</p>
-                     <form id="macro-form">
-                        <label for="goal-calories">Calorías Objetivo Diarias (kcal):</label>
-                        <input type="number" id="goal-calories" name="goal-calories" required min="500" placeholder="Introduce las kcal calculadas o deseadas">
-
-                        <div id="macro-percentage-inputs">
-                            <label>Distribución de Macronutrientes (% del total calórico):</label>
-                            <div>
-                                <label for="protein-percentage">Proteína (%):</label>
-                                <input type="number" id="protein-percentage" name="protein-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
-                            </div>
-                            <div>
-                                <label for="carb-percentage">Carbohidratos (%):</label>
-                                <input type="number" id="carb-percentage" name="carb-percentage" value="40" min="10" max="80" step="1"> <span>%</span>
-                            </div>
-                            <div>
-                                <label for="fat-percentage">Grasas (%):</label>
-                                <input type="number" id="fat-percentage" name="fat-percentage" value="30" min="10" max="50" step="1"> <span>%</span>
-                            </div>
-                             <p id="macro-percentage-total"></p>
+                        <div>
+                            <label for="carb-percentage">Carbohidratos (%):</label>
+                            <input type="number" id="carb-percentage" name="carb-percentage" value="40" min="10"
+                                max="80" step="1"> <span>%</span>
                         </div>
-
-                        <button type="submit" id="calculate-macros-button" >Calcular Gramos de Macronutrientes</button>
-                    </form>
-                    <div id="macro-result">
-                        <p class="info-message">Completa los Pasos 1 y 2 para habilitar este cálculo.</p>
+                        <div>
+                            <label for="fat-percentage">Grasas (%):</label>
+                            <input type="number" id="fat-percentage" name="fat-percentage" value="30" min="10" max="50"
+                                step="1"> <span>%</span>
+                        </div>
+                        <p id="macro-percentage-total"></p>
                     </div>
-                    <div id="chart-container">
-                        <canvas id="macroChart"></canvas>
+                    <button type="submit" id="calculate-macros-button">Calcular Gramos de Macronutrientes</button>
+                </form>
+                <div id="macro-result">
+                    <p class="info-message">Completa los Pasos 1 y 2 para habilitar este cálculo.</p>
+                </div>
+                <div id="chart-container">
+                    <canvas id="macroChart"></canvas>
+                </div>
+            </div>
+            <div class="plan-step" id="step-4">
+                <h2>4. Genera tu Plan de Comidas Orientativo</h2>
+                <p>Distribuye tus macronutrientes calculados en diferentes comidas a lo largo del día.</p>
+                <form id="meal-form">
+                    <div id="meal-percentage-inputs">
+                        <label>Distribución de Calorías por Comida (% del total diario):</label>
+                        <div><label for="breakfast-perc">Desayuno:</label><input type="number" id="breakfast-perc"
+                                value="25" min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="snack1-perc">Media Mañana:</label><input type="number" id="snack1-perc"
+                                value="10" min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="lunch-perc">Almuerzo:</label><input type="number" id="lunch-perc" value="30"
+                                min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="snack2-perc">Merienda:</label><input type="number" id="snack2-perc" value="10"
+                                min="0" max="100" step="1"><span>%</span></div>
+                        <div><label for="dinner-perc">Cena:</label><input type="number" id="dinner-perc" value="25"
+                                min="0" max="100" step="1"><span>%</span></div>
+                        <p id="meal-percentage-total"></p>
+                    </div>
+                    <button type="submit" id="generate-meals-button">Generar Distribución por Comida</button>
+                </form>
+                <div id="meal-result">
+                    <p class="info-message">Completa el Paso 3 para habilitar este cálculo.</p>
+                </div>
+            </div>
+            <div class="plan-step" id="step-5">
+                <h2>5. Tabla de Ciclos y Breaks (Automática)</h2>
+                <p>Esta tabla muestra una estructura detallada y orientativa de ciclos de carga-descarga proteica,
+                    incluyendo fases de déficit o superávit y descansos (breaks) a mantenimiento. Los valores se basan
+                    en los cálculos automáticos de los Pasos 1, 2 y 3.</p>
+                <div id="step-5-results">
+                    <div id="detailed-cycle-table-container">
+                        <p class="info-message"><em>Completa los Pasos 1, 2 y 3 para generar esta tabla.</em></p>
                     </div>
                 </div>
-
-                <div class="plan-step" id="step-4">
-                     <h2>4. Genera tu Plan de Comidas Orientativo</h2>
-                     <p>Distribuye tus macronutrientes calculados en diferentes comidas a lo largo del día.</p>
-                     <form id="meal-form">
-                         <div id="meal-percentage-inputs">
-                             <label>Distribución de Calorías por Comida (% del total diario):</label>
-                             <div><label for="breakfast-perc">Desayuno:</label><input type="number" id="breakfast-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="snack1-perc">Media Mañana:</label><input type="number" id="snack1-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="lunch-perc">Almuerzo:</label><input type="number" id="lunch-perc" value="30" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="snack2-perc">Merienda:</label><input type="number" id="snack2-perc" value="10" min="0" max="100" step="1"><span>%</span></div>
-                             <div><label for="dinner-perc">Cena:</label><input type="number" id="dinner-perc" value="25" min="0" max="100" step="1"><span>%</span></div>
-                             <p id="meal-percentage-total"></p>
-                         </div>
-                         <button type="submit" id="generate-meals-button" >Generar Distribución por Comida</button>
-                     </form>
-                     <div id="meal-result">
-                         <p class="info-message">Completa el Paso 3 para habilitar este cálculo.</p>
-                     </div>
+            </div>
+            <div class="plan-step" id="step-6">
+                <h2>6. Estimación de Tiempo (Manual y Opcional)</h2>
+                <p>Estima cuánto tiempo podría llevarte alcanzar un cambio de peso específico basándote en un déficit o
+                    superávit calórico semanal <strong>que tú definas</strong>. Este cálculo es independiente de la tabla
+                    automática del Paso 5 y se usa para la tabla manual del Paso 7.</p>
+                <form id="time-estimation-form">
+                    <label for="weight-change-goal">Cambio de Peso Total Deseado (kg):</label>
+                    <input type="number" id="weight-change-goal" name="weight-change-goal" step="0.1" required
+                        placeholder="Ej: -10 para perder, 5 para ganar">
+                    <label for="weekly-calorie-diff">Diferencia Calórica Semanal Estimada (kcal):</label>
+                    <input type="number" id="weekly-calorie-diff" name="weekly-calorie-diff" step="100" required
+                        placeholder="Ej: -3500 para perder 0.5kg/sem, 2000 para ganar">
+                    <small>Nota: Se estima que 7700 kcal equivalen a 1 kg de grasa corporal. Para perdida gradual y
+                        sostenible no se aconseja perdidas de mas de 0.5kg/sem (3500kcal/sem). Para ganacia no se aconseja
+                        ganacias de mas de 0.3kg/sem (2000Kcal/sem) </small>
+                    <button type="submit" id="estimate-time-button">Estimar Tiempo</button>
+                </form>
+                <div id="time-estimation-result">
+                    <p class="info-message">Completa el Paso 1 para habilitar esta estimación.</p>
                 </div>
-
-                <div class="plan-step" id="step-5"> <h2>5. Tabla de Ciclos y Breaks (Automática)</h2>
-                    <p>Esta tabla muestra una estructura detallada y orientativa de ciclos de carga-descarga proteica, incluyendo fases de déficit o superávit y descansos (breaks) a mantenimiento. Los valores se basan en los cálculos automáticos de los Pasos 1, 2 y 3.</p>
-                    <div id="step-5-results"> <div id="detailed-cycle-table-container">
-                             <p class="info-message"><em>Completa los Pasos 1, 2 y 3 para generar esta tabla.</em></p>
-                             </div>
-                    </div>
+                <div id="time-estimation-chart-container">
+                    <canvas id="timeEstimationChart"></canvas>
                 </div>
-
-                <div class="plan-step" id="step-6"> <h2>6. Estimación de Tiempo (Manual y Opcional)</h2>
-                    <p>Estima cuánto tiempo podría llevarte alcanzar un cambio de peso específico basándote en un déficit o superávit calórico semanal <strong>que tú definas</strong>. Este cálculo es independiente de la tabla automática del Paso 5 y se usa para la tabla manual del Paso 7.</p>
-                    <form id="time-estimation-form">
-                        <label for="weight-change-goal">Cambio de Peso Total Deseado (kg):</label>
-                        <input type="number" id="weight-change-goal" name="weight-change-goal" step="0.1" required placeholder="Ej: -10 para perder, 5 para ganar">
-
-                        <label for="weekly-calorie-diff">Diferencia Calórica Semanal Estimada (kcal):</label>
-                        <input type="number" id="weekly-calorie-diff" name="weekly-calorie-diff" step="100" required placeholder="Ej: -3500 para perder 0.5kg/sem, 2000 para ganar">
-                        <small>Nota: Se estima que 7700 kcal equivalen a 1 kg de grasa corporal. Para perdida gradual y sostenible no se aconseja perdidas de mas de 0.5kg/sem (3500kcal/sem). Para ganacia no se aconseja ganacias de mas de 0.3kg/sem (2000Kcal/sem) </small>
-
-                        <button type="submit" id="estimate-time-button" >Estimar Tiempo</button>
-                    </form>
-                    <div id="time-estimation-result">
-                         <p class="info-message">Completa el Paso 1 para habilitar esta estimación.</p>
-                    </div>
-                    <div id="time-estimation-chart-container">
-						<canvas id="timeEstimationChart"></canvas>
-					</div>
+            </div>
+            <section id="step-7" class="plan-step">
+                <h2>7. Tabla de Ciclos Hiperproteicos (Manual)</h2>
+                <p>Esta tabla organiza ciclos hiperproteicos (Consumo alto, entre 30-40%) y breaks (Consumo moderado,
+                    entre 15-25%), cuya duración se basa en la estimación temporal manual del Paso 6. La cantidad de
+                    proteína objetivo para cada fase se calcula aplicando porcentajes específicos sobre las Kcal/día
+                    asignadas (un porcentaje más alto para la fase hiperproteica (35%) y uno más bajo para la fase de
+                    break(20%)).".</p>
+                <p>la velocidad de perdida indicada en kg/semana está basada en el ajuste constante de deficit calorico
+                    semanal, señalado en el paso 6. Para la fase hiperproteica se mantiene ese ritmo de perdida semanal y
+                    se reduduce a la mitad en la fase de Descanso. El progreso real puede variar.</p>
+                <div id="hyperprotein-cycle-table-container">
+                    <p id="hyperprotein-info-message" class="info-message">Completa el Paso 6 para generar esta tabla.
+                    </p>
+                    <table id="hyperprotein-cycle-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Ciclo</th>
+                                <th>Fase</th>
+                                <th>Semanas</th>
+                                <th>Peso (kg) <br>(Inicio → Fin)</th>
+                                <th>Kcal/día/AF</th>
+                                <th>Proteínas (g/kg)</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hyperprotein-cycle-table-body">
+                        </tbody>
+                    </table>
+                    <div id="hyperprotein-note-container"></div>
                 </div>
-
-                <section id="step-7" class="plan-step">
-                    <h2>7. Tabla de Ciclos Hiperproteicos (Manual)</h2>
-                    <p>Esta tabla organiza ciclos hiperproteicos (Consumo alto, entre 30-40%) y breaks (Consumo moderado, entre 15-25%), cuya duración se basa en la estimación temporal manual del Paso 6. La cantidad de proteína objetivo para cada fase se calcula aplicando porcentajes específicos sobre las Kcal/día asignadas (un porcentaje más alto para la fase hiperproteica (35%) y uno más bajo para la fase de break(20%)).".</p>
-					<p>la velocidad de perdida indicada en kg/semana está basada en el ajuste constante de deficit calorico semanal, señalado en el paso 6. Para la fase hiperproteica se mantiene ese ritmo de perdida semanal y se reduduce a la mitad en la fase de Descanso. El progreso real puede variar.</p>
-                    <div id="hyperprotein-cycle-table-container">
-                        <p id="hyperprotein-info-message" class="info-message">Completa el Paso 6 para generar esta tabla.</p>
-                        <table id="hyperprotein-cycle-table" style="display: none;">
-                            <thead>
-                                <tr>
-                                    <th>Ciclo</th>
-                                    <th>Fase</th>
-                                    <th>Semanas</th>
-                                    <th>Peso (kg) <br>(Inicio → Fin)</th>
-									<th>Kcal/día/AF</th>
-                                    <th>Proteínas (g/kg)</th>
-                                    <th>Notas</th>
-                                </tr>
-                            </thead>
-                            <tbody id="hyperprotein-cycle-table-body">
-                                </tbody>
-                        </table>
-                        <div id="hyperprotein-note-container"></div> </div>
-                     <button id="generate-hyperprotein-button" onclick="generateHyperproteinCycles()" style="margin-top: 15px;" >
-                        Generar Tabla de Ciclos Hiperproteicos (Manual)
-                    </button>
-                </section>
-
-            </div> 
-			<div><button id="save-pdf-button" style="margin-top: 30px; background-color: #0275d8; width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;" >Guardar Plan como PDF</button></div>
-
-			<div class="card mb-4">
-            <div class="card-header"><h5>Ciclos Diéteticos</h5></div>
+                <button id="generate-hyperprotein-button" onclick="generateHyperproteinCycles()"
+                    style="margin-top: 15px;">
+                    Generar Tabla de Ciclos Hiperproteicos (Manual)
+                </button>
+            </section>
+        </div>
+        <div><button id="save-pdf-button"
+                style="margin-top: 30px; background-color: var(--secondary-color); width: auto; padding: 12px 25px; display: block; margin-left: auto; margin-right: auto;">Guardar
+                Plan como PDF</button></div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Ciclos Diéteticos</h5>
+            </div>
             <div class="card-body">
-                
-                
                 <div id="opcionesPerdida" class="mt-3">
                     <div class="row">
                         <div class="col-md-6">
@@ -964,50 +1609,67 @@
                             <label class="form-label">Estrategias Especiales:</label>
                             <div class="strategy-checkboxes">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ninguna" value="ninguna" checked>
-                                    <label class="form-check-label" for="estrategia_ninguna">Ninguna (Cetosis estricta <50g HC/día)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_ninguna"
+                                        value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_ninguna">Ninguna (Cetosis estricta
+                                        &lt;50g HC/día)</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="estrategia_tkd" value="tkd">
-                                    <label class="form-check-label" for="estrategia_tkd">TKD (25-50g HC pre/post entreno)</label>
+                                    <label class="form-check-label" for="estrategia_tkd">TKD (25-50g HC pre/post
+                                        entreno)</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="estrategia_ckd" value="ckd">
-                                    <label class="form-check-label" for="estrategia_ckd">CKD (2 días carb-loading 150-500g HC)</label>
+                                    <label class="form-check-label" for="estrategia_ckd">CKD (2 días carb-loading 150-500g
+                                        HC)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_if_16_8" value="if_16_8">
-                                    <label class="form-check-label" for="estrategia_if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_if_16_8"
+                                        value="if_16_8">
+                                    <label class="form-check-label" for="estrategia_if_16_8">IF 16:8 (Ventana de
+                                        alimentación 8 horas)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_refeed" value="refeed">
-                                    <label class="form-check-label" for="estrategia_refeed">Refeed (1-2 días/semana HC alto)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_refeed"
+                                        value="refeed">
+                                    <label class="form-check-label" for="estrategia_refeed">Refeed (1-2 días/semana HC
+                                        alto)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_hiperproteica" value="hiperproteica">
-                                    <label class="form-check-label" for="estrategia_hiperproteica">Hiperproteica (2.5-3.0 g/kg peso proteína)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_hiperproteica"
+                                        value="hiperproteica">
+                                    <label class="form-check-label" for="estrategia_hiperproteica">Hiperproteica (2.5-3.0
+                                        g/kg peso proteína)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_carb_cycling" value="carb_cycling">
-                                    <label class="form-check-label" for="estrategia_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_carb_cycling"
+                                        value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_carb_cycling">Carb Cycling (Días
+                                        altos/bajos HC)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_protein_cycling" value="protein_cycling">
-                                    <label class="form-check-label" for="estrategia_protein_cycling">Protein Cycling (4 semanas altas + 1 baja proteína)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_protein_cycling"
+                                        value="protein_cycling">
+                                    <label class="form-check-label" for="estrategia_protein_cycling">Protein Cycling (4
+                                        semanas altas + 1 baja proteína)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_timing" value="timing">
-                                    <label class="form-check-label" for="estrategia_timing">Timing Nutricional (HC post-entreno)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_timing"
+                                        value="timing">
+                                    <label class="form-check-label" for="estrategia_timing">Timing Nutricional (HC
+                                        post-entreno)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_flexible_dieting" value="flexible_dieting">
-                                    <label class="form-check-label" for="estrategia_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_flexible_dieting"
+                                        value="flexible_dieting">
+                                    <label class="form-check-label" for="estrategia_flexible_dieting">Flexible Dieting
+                                        (80/20 regla)</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div id="opcionesGanancia" class="mt-3" style="display:none;">
                     <div class="row">
                         <div class="col-md-6">
@@ -1021,35 +1683,45 @@
                             <label class="form-label">Estrategias Especiales:</label>
                             <div class="strategy-checkboxes">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_ninguna" value="ninguna" checked>
-                                    <label class="form-check-label" for="estrategia_ganancia_ninguna">Ninguna (Balance HC/proteína)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_ganancia_ninguna" value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_ganancia_ninguna">Ninguna (Balance
+                                        HC/proteína)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_carb_cycling" value="carb_cycling">
-                                    <label class="form-check-label" for="estrategia_ganancia_carb_cycling">Carb Cycling (Días altos/moderados HC)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_ganancia_carb_cycling" value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_ganancia_carb_cycling">Carb Cycling
+                                        (Días altos/moderados HC)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_refeed" value="refeed">
-                                    <label class="form-check-label" for="estrategia_ganancia_refeed">Refeed (Días altos HC semanales)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_ganancia_refeed" value="refeed">
+                                    <label class="form-check-label" for="estrategia_ganancia_refeed">Refeed (Días altos
+                                        HC semanales)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_timing" value="timing">
-                                    <label class="form-check-label" for="estrategia_ganancia_timing">Timing Nutricional (HC post-entreno)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_ganancia_timing" value="timing">
+                                    <label class="form-check-label" for="estrategia_ganancia_timing">Timing
+                                        Nutricional (HC post-entreno)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_ganancia_flexible_dieting" value="flexible_dieting">
-                                    <label class="form-check-label" for="estrategia_ganancia_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_ganancia_flexible_dieting" value="flexible_dieting">
+                                    <label class="form-check-label" for="estrategia_ganancia_flexible_dieting">Flexible
+                                        Dieting (80/20 regla)</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div id="opcionesMantenimiento" class="mt-3" style="display:none;">
                     <div class="row">
                         <div class="col-md-6">
                             <label for="enfoqueMantenimiento" class="form-label">Enfoque:</label>
-                            <select id="enfoqueMantenimiento" class="form-control" aria-label="Enfoque de mantenimiento">
+                            <select id="enfoqueMantenimiento" class="form-control"
+                                aria-label="Enfoque de mantenimiento">
                                 <option value="equilibrio">Equilibrio Flexible</option>
                                 <option value="social">Adherencia Social</option>
                             </select>
@@ -1058,30 +1730,40 @@
                             <label class="form-label">Estrategias Especiales:</label>
                             <div class="strategy-checkboxes">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_ninguna" value="ninguna" checked>
-                                    <label class="form-check-label" for="estrategia_mantenimiento_ninguna">Ninguna (Equilibrio nutricional)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_mantenimiento_ninguna" value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_mantenimiento_ninguna">Ninguna
+                                        (Equilibrio nutricional)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_flexible_dieting" value="flexible_dieting">
-                                    <label class="form-check-label" for="estrategia_mantenimiento_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_mantenimiento_flexible_dieting" value="flexible_dieting">
+                                    <label class="form-check-label"
+                                        for="estrategia_mantenimiento_flexible_dieting">Flexible Dieting (80/20
+                                        regla)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_if_16_8" value="if_16_8">
-                                    <label class="form-check-label" for="estrategia_mantenimiento_if_16_8">IF 16:8 (Ventana de alimentación 8 horas)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_mantenimiento_if_16_8" value="if_16_8">
+                                    <label class="form-check-label" for="estrategia_mantenimiento_if_16_8">IF 16:8
+                                        (Ventana de alimentación 8 horas)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_refeed" value="refeed">
-                                    <label class="form-check-label" for="estrategia_mantenimiento_refeed">Refeed (Días altos HC)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_mantenimiento_refeed" value="refeed">
+                                    <label class="form-check-label" for="estrategia_mantenimiento_refeed">Refeed (Días
+                                        altos HC)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mantenimiento_carb_cycling" value="carb_cycling">
-                                    <label class="form-check-label" for="estrategia_mantenimiento_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_mantenimiento_carb_cycling" value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_mantenimiento_carb_cycling">Carb
+                                        Cycling (Días altos/bajos HC)</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div id="opcionesMixto" class="mt-3" style="display:none;">
                     <div class="row">
                         <div class="col-md-6">
@@ -1096,24 +1778,34 @@
                             <label class="form-label">Estrategias Especiales:</label>
                             <div class="strategy-checkboxes">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_ninguna" value="ninguna" checked>
-                                    <label class="form-check-label" for="estrategia_mixto_ninguna">Ninguna (Balance nutricional)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_ninguna"
+                                        value="ninguna" checked>
+                                    <label class="form-check-label" for="estrategia_mixto_ninguna">Ninguna (Balance
+                                        nutricional)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_carb_cycling" value="carb_cycling">
-                                    <label class="form-check-label" for="estrategia_mixto_carb_cycling">Carb Cycling (Días altos/bajos HC)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_carb_cycling"
+                                        value="carb_cycling">
+                                    <label class="form-check-label" for="estrategia_mixto_carb_cycling">Carb Cycling
+                                        (Días altos/bajos HC)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_refeed" value="refeed">
-                                    <label class="form-check-label" for="estrategia_mixto_refeed">Refeed (Días altos HC)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_refeed"
+                                        value="refeed">
+                                    <label class="form-check-label" for="estrategia_mixto_refeed">Refeed (Días altos
+                                        HC)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_flexible_dieting" value="flexible_dieting">
-                                    <label class="form-check-label" for="estrategia_mixto_flexible_dieting">Flexible Dieting (80/20 regla)</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        id="estrategia_mixto_flexible_dieting" value="flexible_dieting">
+                                    <label class="form-check-label" for="estrategia_mixto_flexible_dieting">Flexible
+                                        Dieting (80/20 regla)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_timing" value="timing">
-                                    <label class="form-check-label" for="estrategia_mixto_timing">Timing Nutricional (HC post-entreno)</label>
+                                    <input class="form-check-input" type="checkbox" id="estrategia_mixto_timing"
+                                        value="timing">
+                                    <label class="form-check-label" for="estrategia_mixto_timing">Timing Nutricional
+                                        (HC post-entreno)</label>
                                 </div>
                             </div>
                         </div>
@@ -1121,13 +1813,16 @@
                 </div>
             </div>
         </div>
-		<div class="card mb-4">
-            <div class="card-header"><h5>Planificación Temporal</h5></div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Planificación Temporal</h5>
+            </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
                         <label for="periodoPlanificacion" class="form-label">Período de Planificación:</label>
-                        <select id="periodoPlanificacion" class="form-control" aria-label="Período de planificación" onchange="actualizarPlanificacion()">
+                        <select id="periodoPlanificacion" class="form-control" aria-label="Período de planificación"
+                            onchange="actualizarPlanificacion()">
                             <option value="semanal">Semanal (4 semanas)</option>
                             <option value="mensual">Mensual (12 semanas)</option>
                         </select>
@@ -1135,27 +1830,31 @@
                 </div>
             </div>
         </div>
-
-        
-			<div class="text-center mb-4">
-				<button onclick="calcularMacros();" class="btn btn-primary btn-lg" aria-label="Calcular macronutrientes y planificación">
-					🧮 Calcular Macronutrientes
-				</button>
-			</div>
+        <div class="text-center mb-4">
+            <button onclick="calcularMacros();" class="btn btn-primary btn-lg"
+                aria-label="Calcular macronutrientes y planificación">
+                🧮 Calcular Macronutrientes
+            </button>
+        </div>
         <div id="resultados" class="card" style="display:none;">
-            <div class="card-header"><h5>📊 Resultados de tu Plan Nutricional</h5></div>
+            <div class="card-header">
+                <h5>📊 Resultados de tu Plan Nutricional</h5>
+            </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <h6>📈 Datos Calculados</h6>
                         <p><strong>Gasto Energético:</strong> <span id="gastoEnergetico"></span> kcal/día</p>
                         <p><strong>Calorías Diarias:</strong> <span id="calorias"></span> kcal</p>
-                        <p><strong>Proteínas:</strong> <span id="proteinas"></span>g (<span id="proteinasPct"></span>%)</p>
-                        <p><strong>Carbohidratos:</strong> <span id="carbohidratos"></span>g (<span id="carbohidratosPct"></span>%)</p>
+                        <p><strong>Proteínas:</strong> <span id="proteinas"></span>g (<span id="proteinasPct"></span>%)
+                        </p>
+                        <p><strong>Carbohidratos:</strong> <span id="carbohidratos"></span>g (<span
+                                id="carbohidratosPct"></span>%)</p>
                         <p><strong>Grasas:</strong> <span id="grasas"></span>g (<span id="grasasPct"></span>%)</p>
                     </div>
                     <div class="col-md-6">
-                        <canvas id="chartMacros" width="300" height="300" aria-label="Gráfico de distribución de macronutrientes"></canvas>
+                        <canvas id="chartMacros" width="300" height="300"
+                            aria-label="Gráfico de distribución de macronutrientes"></canvas>
                     </div>
                 </div>
                 <div class="mt-3">
@@ -1164,9 +1863,10 @@
                 </div>
             </div>
         </div>
-
         <div id="planificacionTemporal" class="card" style="display:none;">
-            <div class="card-header"><h5>📅 Planificación Temporal</h5></div>
+            <div class="card-header">
+                <h5>📅 Planificación Temporal</h5>
+            </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" aria-label="Tabla de planificación nutricional">
@@ -1174,12 +1874,11 @@
                             <tr>
                                 <th scope="col">Semana</th>
                                 <th scope="col">Fase</th>
-                              
-                               <th scope="col">Estrategias</th>
+                                <th scope="col">Estrategias</th>
                                 <th scope="col">Calorías (kcal)</th>
                                 <th scope="col">Proteinas (%)</th>
-                                <th scope="col">CarboHid  (%)</th>
-                                <th scope="col">Grasasss    (%)</th>
+                                <th scope="col">CarboHid (%)</th>
+                                <th scope="col">Grasasss (%)</th>
                                 <th scope="col">PT (g)</th>
                                 <th scope="col">CH (g)</th>
                                 <th scope="col">GR (g)</th>
@@ -1192,12 +1891,11 @@
                 </div>
             </div>
         </div>
-    </div>		
-
+        </div>
     </main>
-
     <footer>
-        <p>&copy; 2024 NutriPlan - Herramienta de planificación dietética orientativa. Consulta siempre a un profesional.</p>
+        <p>&copy; 2024 NutriPlan - Herramienta de planificación dietética orientativa. Consulta siempre a un
+            profesional.</p>
     </footer>
 
     <script>
@@ -3997,6 +4695,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
