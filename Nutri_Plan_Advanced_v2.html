@@ -1708,29 +1708,33 @@ function mostrarFasePorObjetivo(objetivo) {
 
     // Mostrar el select correspondiente al objetivo
     switch(objetivo) {
-        case 'perdida':
+        case 'perdida1':
             if (document.getElementById('fasePerdida1')) {
                 document.getElementById('fasePerdida1').style.display = 'block';
                 document.getElementById('labelFasePerdida1').style.display = 'block';
             }
             break;
-        case 'ganancia':
+        case 'ganancia1':
             if (document.getElementById('faseGanancia1')) {
                 document.getElementById('faseGanancia1').style.display = 'block';
                 document.getElementById('labelFaseGanancia1').style.display = 'block';
             }
             break;
-        case 'mantenimiento':
+        case 'mantenimiento1':
             if (document.getElementById('enfoqueMantenimiento1')) {
                 document.getElementById('enfoqueMantenimiento1').style.display = 'block';
                 document.getElementById('labelEnfoqueMantenimiento1').style.display = 'block';
             }
             break;
-        case 'mixto':
+        case 'mixto1':
             if (document.getElementById('faseMixto1')) {
                 document.getElementById('faseMixto1').style.display = 'block';
                 document.getElementById('labelFaseMixto1').style.display = 'block';
             }
+            break;
+        default:
+            // Si es 'sel' o cualquier otro valor, ocultar todos los selects
+            // (ya están ocultos por el forEach anterior)
             break;
     }
 }
@@ -4327,6 +4331,7 @@ function calcularMacros() {
 
 </body>
 </html>
+
 
 
 
