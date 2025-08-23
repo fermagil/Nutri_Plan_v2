@@ -1500,9 +1500,25 @@ tr:nth-child(even) {
         // Activity multipliers (defined globally for reuse)
         //const activityMultipliers = { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, very_active: 2.3 };
 		//const activityMultipliers = userGender === 'male' ? [1.2, 1.56, 1.78, 2.1, 2.3] : [1.2, 1.55, 1.64, 1.82, 2];
-		const activityMultipliers = userGender === 'male' 
-		? { sedentary: 1.2, light: 1.56, moderate: 1.78, active: 2.1, very_active: 2.3 }
-		: { sedentary: 1.2, light: 1.55, moderate: 1.64, active: 1.82, very_active: 2 };
+		// Define multiplicadores por género usando valores numéricos
+			const maleActivityMultipliers = {
+			    '1.2': 1.2,    // sedentary
+			    '1.375': 1.56, // light
+			    '1.55': 1.78,  // moderate
+			    '1.725': 2.1,  // active
+			    '1.9': 2.3     // very_active
+			};
+			
+			const femaleActivityMultipliers = {
+			    '1.2': 1.2,    // sedentary
+			    '1.375': 1.55, // light
+			    '1.55': 1.64,  // moderate
+			    '1.725': 1.82, // active
+			    '1.9': 2.0     // very_active
+			};
+			
+			// Selecciona el objeto según el género
+			const activityMultipliers = userGender === 'male' ? maleActivityMultipliers : femaleActivityMultipliers;
         // --- Wait for the DOM to be fully loaded ---
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -1627,12 +1643,24 @@ function calculateCalories() {
     // Basic validation
     if (isNaN(userAge) || isNaN(currentWeightKg) || isNaN(heightM) || userAge <= 0 || currentWeightKg <= 0 || heightM <= 0) {
         displayError(calorieResultDiv, 'Por favor, introduce valores válidos para edad, peso y altura.');
-        calculatedTDEE = null; // Reset calculated values on error
+        calculatedTDEE = null;
         calculatedBMR = null;
-        resetStep2onwards(); // Reset subsequent steps on error
-        updateButtonStates(); // Update button states
+        resetStep2onwards();
+        updateButtonStates();
         return;
     }
+
+    // Validación de nivel de actividad
+    const activityMultiplier = activityMultipliers[userActivityLevel];
+    if (activityMultiplier === undefined) {
+        displayError(calorieResultDiv, 'Nivel de actividad no válido.');
+        calculatedTDEE = null;
+        calculatedBMR = null;
+        resetStep2onwards();
+        updateButtonStates();
+        return;
+    }
+
     userHeightCm = heightM * 100; // Store height in cm
 
     // Calculate BMR (Harris-Benedict Revised)
@@ -1643,54 +1671,77 @@ function calculateCalories() {
     }
 
     // Calculate TDEE (Added 10% buffer as per original code)
-    calculatedTDEE = calculatedBMR * activityMultipliers[userActivityLevel] * 1.1; // Including 10% buffer
+    calculatedTDEE = calculatedBMR * activityMultiplier ; // Including 10% buffer
 
     // Display TDEE results
     calorieResultDiv.innerHTML = `
         <h3>Resultados del Gasto Energético:</h3>
         <p>Tu Tasa Metabólica Basal (TMB) estimada es: <strong>${calculatedBMR.toFixed(0)} kcal/día</strong>.</p>
-        <p>Tu Gasto Energético Total (GET/TDEE) estimado (con buffer +10%) es: <strong>${calculatedTDEE.toFixed(0)} kcal/día</strong>.</p>
+        <p>Tu Gasto Energético Total (GET/TDEE) estimado es: <strong>${calculatedTDEE.toFixed(0)} kcal/día</strong>.</p>
         <p>Este es el número aproximado de calorías que tu cuerpo quema diariamente, incluyendo un margen.</p>`;
 
-    // Display Energy Balance if intake provided
-    if (estimatedIntake && estimatedIntake > 0) {
-        const balance = estimatedIntake - calculatedTDEE;
-        let balanceInterpretation = '';
+    // Display Energy Balance (con ingesta estimada si no se proporciona)
+    let actualIntake = estimatedIntake;
+    let intakeSource = 'ingesta estimada';
+
+    // Si no se proporciona ingesta, generar una estimación basada en características personales
+    if (!estimatedIntake || estimatedIntake <= 0) {
+        // Ajustar la ingesta según el nivel de actividad:
+        let intakeMultiplier;
+        if (userActivityLevel === '1.2' || userActivityLevel === 'sedentary') {
+            intakeMultiplier = 0.90;
+        } else if (userActivityLevel === '1.375' || userActivityLevel === 'light') {
+            intakeMultiplier = 0.95;
+        } else if (userActivityLevel === '1.55' || userActivityLevel === 'moderate') {
+            intakeMultiplier = 1.00;
+        } else if (userActivityLevel === '1.725' || userActivityLevel === 'active') {
+            intakeMultiplier = 1.05;
+        } else if (userActivityLevel === '1.9' || userActivityLevel === 'very_active') {
+            intakeMultiplier = 1.10;
+        } else {
+            intakeMultiplier = 1.00; // valor por defecto
+        }
         
-        // Variables para el select de objetivo
-        const objetivoSelect = document.getElementById('objetivo');
-        
-        // Actualiza estas líneas en tu función calculateCalories():
-if (balance > 100) {
-    balanceInterpretation = `Estás en un <strong>superávit calórico</strong> de aproximadamente <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una ganancia de peso.`;
-    // Actualizar automáticamente el objetivo a ganancia
-    if (objetivoSelect) {
-        objetivoSelect.value = 'ganancia1';
-        objetivoSelect.dispatchEvent(new Event('change'));
-    }
-} else if (balance < -100) {
-    balanceInterpretation = `Estás en un <strong>déficit calórico</strong> de aproximadamente <strong>${Math.abs(balance).toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una pérdida de peso.`;
-    // Actualizar automáticamente el objetivo a pérdida
-    if (objetivoSelect) {
-        objetivoSelect.value = 'perdida1';
-        objetivoSelect.dispatchEvent(new Event('change'));
-    }
-} else {
-    balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
-    // Actualizar automáticamente el objetivo a mantenimiento
-    if (objetivoSelect) {
-        objetivoSelect.value = 'mantenimiento1';
-        objetivoSelect.dispatchEvent(new Event('change'));
-    }
-}
-        
-        energyBalanceResultDiv.innerHTML = `
-            <h3>Balance Energético Estimado:</h3>
-            <p>Tu ingesta estimada (${estimatedIntake} kcal) comparada con tu GET con buffer (${calculatedTDEE.toFixed(0)} kcal):</p>
-            <p>${balanceInterpretation}</p>`;
+        actualIntake = calculatedTDEE * intakeMultiplier;
+        intakeSource = 'ingesta estimada (basada en tus características)';
     } else {
-        clearContainer(energyBalanceResultDiv); // Clear if no intake provided
+        intakeSource = 'tu ingesta proporcionada';
     }
+
+    // Calcular balance energético
+    const balance = actualIntake - calculatedTDEE;
+    let balanceInterpretation = '';
+
+    // Variables para el select de objetivo
+    const objetivoSelect = document.getElementById('objetivo');
+
+    if (balance > 100) {
+        balanceInterpretation = `Estás en un <strong>superávit calórico</strong> de aproximadamente <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una ganancia de peso.`;
+        // Actualizar automáticamente el objetivo a ganancia
+        if (objetivoSelect) {
+            objetivoSelect.value = 'ganancia1';
+            objetivoSelect.dispatchEvent(new Event('change'));
+        }
+    } else if (balance < -100) {
+        balanceInterpretation = `Estás en un <strong>déficit calórico</strong> de aproximadamente <strong>${Math.abs(balance).toFixed(0)} kcal/día</strong> respecto al GET con buffer. Esto generalmente conduce a una pérdida de peso.`;
+        // Actualizar automáticamente el objetivo a pérdida
+        if (objetivoSelect) {
+            objetivoSelect.value = 'perdida1';
+            objetivoSelect.dispatchEvent(new Event('change'));
+        }
+    } else {
+        balanceInterpretation = `Estás cerca de tu <strong>mantenimiento calórico</strong> (balance de <strong>${balance.toFixed(0)} kcal/día</strong> respecto al GET con buffer). Tu peso debería mantenerse relativamente estable.`;
+        // Actualizar automáticamente el objetivo a mantenimiento
+        if (objetivoSelect) {
+            objetivoSelect.value = 'mantenimiento1';
+            objetivoSelect.dispatchEvent(new Event('change'));
+        }
+    }
+
+    energyBalanceResultDiv.innerHTML = `
+        <h3>Balance Energético Estimado:</h3>
+        <p>Basado en ${intakeSource} (${actualIntake.toFixed(0)} kcal) comparada con tu GET con buffer (${calculatedTDEE.toFixed(0)} kcal):</p>
+        <p>${balanceInterpretation}</p>`;
 
     // Reset subsequent steps as Step 1 results changed
     resetStep2onwards();
@@ -4438,6 +4489,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
