@@ -4000,15 +4000,7 @@ function calcularMacros() {
         actualizarUI(resultados, gastoEnergetico);
     }
 
-// Ensure DOM is loaded before attaching button event
-document.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('calcular-macros-btn');
-    if (button) {
-        button.addEventListener('click', calcularMacros);
-    } else {
-        console.error('Button with ID "calcular-macros-btn" not found.');
-    }
-});
+
 
     document.getElementById('objetivo').addEventListener('change', toggleOpcionesObjetivo);
     document.addEventListener('DOMContentLoaded', () => {
@@ -4023,6 +4015,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
