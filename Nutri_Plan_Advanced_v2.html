@@ -716,6 +716,240 @@
         .macro-input { width: 70px; display: inline-block; margin-right: 5px; }
         .strategy-note { font-size: 0.9em; color: #555; }
         .strategy-checkboxes { max-height: 200px; overflow-y: auto; }
+		/* --- Estilos para los selects de fase --- */
+
+/* Contenedores de los selects de fase */
+#fasePerdida1, #faseGanancia1, #enfoqueMantenimiento1, #faseMixto1 {
+    display: none; /* Ocultos por defecto */
+    margin: 10px 0;
+    padding: 8px 12px;
+    border: 2px solid #4CAF50;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Labels de los selects de fase */
+#labelFasePerdida1, #labelFaseGanancia1, #labelEnfoqueMantenimiento1, #labelFaseMixto1 {
+    display: none; /* Ocultos por defecto */
+    font-weight: bold;
+    color: #2E7D32;
+    margin: 15px 0 5px 0;
+    font-size: 16px;
+}
+
+/* Cuando se muestran los selects */
+#fasePerdida1:target, #faseGanancia1:target,
+#enfoqueMantenimiento1:target, #faseMixto1:target {
+    display: block;
+}
+
+/* Estilos generales para selects visibles */
+#fasePerdida1[style*="block"], 
+#faseGanancia1[style*="block"],
+#enfoqueMantenimiento1[style*="block"], 
+#faseMixto1[style*="block"] {
+    display: block !important;
+    animation: fadeIn 0.3s ease-in;
+}
+
+#labelFasePerdida1[style*="block"], 
+#labelFaseGanancia1[style*="block"],
+#labelEnfoqueMantenimiento1[style*="block"], 
+#labelFaseMixto1[style*="block"] {
+    display: block !important;
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Animación de fade in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Estilos para el contenedor de fases --- */
+.fase-container {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4CAF50;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.fase-container h4 {
+    color: #2E7D32;
+    margin-top: 0;
+}
+
+/* --- Estilos para mensajes de error e información --- */
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 4px solid #f44336;
+    margin: 10px 0;
+}
+
+.info-message {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 4px solid #2196F3;
+    margin: 10px 0;
+}
+
+/* --- Estilos para los resultados --- */
+#calorie-result, #energy-balance-result, #weight-goal-result {
+    background-color: #f1f8e9;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+    border: 1px solid #c5e1a5;
+}
+
+#calorie-result h3, #energy-balance-result h3, #weight-goal-result h3 {
+    color: #2E7D32;
+    margin-top: 0;
+    border-bottom: 2px solid #81C784;
+    padding-bottom: 8px;
+}
+
+/* --- Estilos para las notas y secciones --- */
+.notes-section {
+    background-color: #fff3e0;
+    border-left: 4px solid #ff9800;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.notes-section h4 {
+    color: #ef6c00;
+    margin-top: 0;
+}
+
+.notes-section ul {
+    padding-left: 20px;
+}
+
+.notes-section li {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+/* --- Estilos responsivos --- */
+@media (max-width: 768px) {
+    #fasePerdida1, #faseGanancia1, #enfoqueMantenimiento1, #faseMixto1 {
+        max-width: 100%;
+        font-size: 14px;
+    }
+    
+    #labelFasePerdida1, #labelFaseGanancia1, #labelEnfoqueMantenimiento1, #labelFaseMixto1 {
+        font-size: 14px;
+    }
+    
+    .fase-container {
+        padding: 10px;
+    }
+}
+
+/* --- Estilos para formularios --- */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group select,
+.form-group input[type="number"],
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.form-group select:focus,
+.form-group input[type="number"]:focus,
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* --- Botones --- */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px 0;
+    transition: background-color 0.3s;
+}
+
+button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* --- Estilos para tablas (si las usas) --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    background-color: white;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* --- Estilos para charts (si usas Chart.js) --- */
+.chart-container {
+    position: relative;
+    margin: 20px 0;
+    height: 400px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+}
 </style>
 </head>
 
@@ -4093,6 +4327,7 @@ function calcularMacros() {
 
 </body>
 </html>
+
 
 
 
