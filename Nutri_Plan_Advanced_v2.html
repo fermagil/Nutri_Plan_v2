@@ -856,7 +856,7 @@
                              <p id="macro-percentage-total"></p>
                         </div>
 
-                        <button type="submit" id="calculate-macros-button" >Calcular Gramos de Macronutrientes</button>
+                        <button type="button" class="btn btn-primary" id="calculate-macros-button">Calcular Macronutrientes</button>
                     </form>
                     <div id="macro-result">
                         <p class="info-message">Completa los Pasos 1 y 2 para habilitar este cálculo.</p>
@@ -3055,7 +3055,30 @@ document.getElementById("save-pdf-button").addEventListener("click", async funct
         document.querySelectorAll('.strategy-checkboxes input[type="checkbox"]').forEach(checkbox => {
             checkbox.checked = checkbox.value === 'ninguna';
         });
+    }function toggleOpcionesObjetivo() {
+    const objetivo = document.getElementById('objetivo')?.value;
+    const contenedores = {
+        perdida: document.getElementById('perdidaSection'),
+        ganancia: document.getElementById('gananciaSection'),
+        mantenimiento: document.getElementById('mantenimientoSection'),
+        mixto: document.getElementById('mixtoSection'),
+        actual: document.getElementById('actualSection')
+    };
+
+    // Hide all containers
+    Object.values(contenedores).forEach(contenedor => {
+        if (contenedor) {
+            contenedor.style.display = 'none';
+        }
+    });
+
+    // Show the selected container
+    if (contenedores[objetivo]) {
+        contenedores[objetivo].style.display = 'block';
+    } else if (objetivo === 'actual' && contenedores.actual) {
+        contenedores.actual.style.display = 'block';
     }
+}
 
     
 function validarEntradas() {
@@ -4295,11 +4318,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // --- Event Listeners from Script_1.txt ---
-        const calcularMacrosBtn = document.getElementById('calcular-macros-btn');
-        if (calcularMacrosBtn) {
-            calcularMacrosBtn.addEventListener('click', calcularMacros);
+       if (calculateMacrosButton) {
+            calculateMacrosButton.addEventListener('click', calcularMacros);
         } else {
-            console.error('Button with ID "calcular-macros-btn" not found.');
+            console.error('Button with ID "calculate-macros-button" not found.');
         }
 
         const objetivoSelect = document.getElementById('objetivo');
@@ -4354,6 +4376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
