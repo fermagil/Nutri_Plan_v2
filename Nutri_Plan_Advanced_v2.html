@@ -3652,7 +3652,7 @@ document.getElementById("save-pdf-button").addEventListener("click", async funct
 		
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Ultima seccion Calculos segun Objetivo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		let chartInstance = null;
-    let weeklyMacros = [];
+    	let weeklyMacros = [];
 
     function toggleOpcionesObjetivo() {
         const objetivo = document.getElementById('objetivo').value;
@@ -3724,9 +3724,23 @@ function validarEntradas() {
     return sexo === 'Masculino' ? 10 * peso + 6.25 * altura - 5 * edad + 5 : 10 * peso + 6.25 * altura - 5 * edad - 161;
 }
 
-    function getSelectedStrategies(prefix) {
-        return Array.from(document.querySelectorAll(`#${prefix} input[type="checkbox"]:checked`)).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
-    }
+    //function getSelectedStrategies(prefix) {
+        //return Array.from(document.querySelectorAll(`#${prefix} input[type="checkbox"]:checked`)).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
+    //}
+		
+		// Corregido: Asegurarse de que el contenedor tiene un ID único y se usa correctamente
+	function getSelectedStrategies(containerId) {
+	    // Selecciona checkboxes dentro del contenedor específico
+	    const container = document.getElementById(containerId);
+	    if (!container) {
+	        console.warn(`Contenedor ${containerId} no encontrado para estrategias.`);
+	        return ['ninguna']; // Valor por defecto si no se encuentra
+	    }
+	    const checkedBoxes = container.querySelectorAll('input[type="checkbox"]:checked');
+	    const strategies = Array.from(checkedBoxes).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
+	    return strategies.length > 0 ? strategies : ['ninguna'];
+	}
+		
 
     function calcularMacronutrientes(peso, gastoEnergetico, objetivo) {
         let calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones;
@@ -3764,10 +3778,12 @@ function validarEntradas() {
             case 'perdida1':
                 calorias = Math.round(gastoEnergetico * 0.8);
                 const fasePerdida = document.getElementById('fasePerdida1')?.value || 'induccion_cetogenica';
-                const estrategiasPerdida = getSelectedStrategies('opcionesPerdida1');
+                const estrategiasPerdida = getSelectedStrategies('opcionesPerdida1'); // Corregido
                 const ranges = getCombinedRanges(estrategiasPerdida);
-
                 if (!ranges) return null;
+
+				// Calcular calorías basadas en el déficit
+            	calorias = Math.round(gastoEnergetico * ((ranges.deficit[0] + ranges.deficit[1]) / 2));
 
                 switch (fasePerdida) {
                     case 'induccion_cetogenica':
@@ -3810,6 +3826,13 @@ function validarEntradas() {
                         grasas = Math.round((calorias * grasasPct / 100) / 9);
                         recomendaciones = `Ketoadaptation: ${ranges.notas}. Enfocado en adaptación cetogénica a largo plazo (4-12 semanas).`;
                         break;
+						default:
+	                    // Valores por defecto si la fase no se reconoce
+	                    proteinasPct = 25;
+	                    carbohidratosPct = 10;
+	                    grasasPct = 65;
+	                    recomendaciones = `Pérdida de peso: ${ranges.notas || 'Sin estrategias especiales'}.`;
+            
                 }
                 break;
 
@@ -3872,7 +3895,12 @@ function validarEntradas() {
                         grasas = Math.round((calorias * grasasPct / 100) / 9);
                         recomendaciones = `Adherencia Social: Flexibilidad en HC, consistencia en proteína. ${rangesMantenimiento.notas}`;
                         break;
-                }
+						default:
+                    proteinasPct = 25;
+                    carbohidratosPct = 40;
+                    grasasPct = 35;
+                    recomendaciones = `Mantenimiento: ${rangesMantenimiento.notas || 'Sin estrategias especiales'}.`;
+           	 }
                 break;
 
             case 'mixto1':
@@ -3912,9 +3940,22 @@ function validarEntradas() {
                         carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
                         grasas = Math.round((calorias * grasasPct / 100) / 9);
                         recomendaciones = `Mantenimiento Mixto: Moderada en HC, equilibrio nutricional. ${rangesMixto.notas}`;
-                        break;
-                }
+                       default:
+	                    calorias = gastoEnergetico;
+	                    proteinasPct = 25;
+	                    carbohidratosPct = 40;
+	                    grasasPct = 35;
+	                    recomendaciones = `Plan Mixto: ${rangesMixto.notas || 'Sin estrategias especiales'}.`;
+            }
                 break;
+				
+				default:
+            // Valores por defecto si el objetivo no se reconoce
+            calorias = gastoEnergetico;
+            proteinasPct = 25;
+            carbohidratosPct = 40;
+            grasasPct = 35;
+            recomendaciones = 'Plan nutricional estándar.';
         }
 
         if (grasas < 0 || isNaN(grasas) || proteinas < 0 || isNaN(proteinas) || carbohidratos < 0 || isNaN(carbohidratos)) {
@@ -4757,6 +4798,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
