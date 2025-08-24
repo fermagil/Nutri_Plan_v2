@@ -3488,7 +3488,7 @@ function validarEntradas() {
         return Array.from(document.querySelectorAll(`#${prefix} input[type="checkbox"]:checked`)).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
     }
 
-    function calcularMacronutrientes(weight, gastoEnergetico, objetivo) {
+    function calcularMacronutrientes(peso, gastoEnergetico, objetivo) {
         let calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones;
         const estrategiaMap = {
             ninguna: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: 'Cetosis estricta <50g HC/día' },
@@ -4342,16 +4342,16 @@ function calcularMacros() {
         weeklyMacros = [];
         const periodo = document.getElementById('periodoPlanificacion').value;
         switch (objetivo) {
-            case 'perdida':
+            case 'perdida1':
                 weeklyMacros = generarPlanPerdida(periodo, peso, gastoEnergetico);
                 break;
-            case 'ganancia':
+            case 'ganancia1':
                 weeklyMacros = generarPlanGanancia(periodo, peso, gastoEnergetico);
                 break;
-            case 'mantenimiento':
+            case 'mantenimiento1':
                 weeklyMacros = generarPlanMantenimiento(periodo, peso, gastoEnergetico);
                 break;
-            case 'mixto':
+            case 'mixto1':
                 weeklyMacros = generarPlanMixto(periodo, peso, gastoEnergetico);
                 break;
         }
@@ -4517,6 +4517,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
