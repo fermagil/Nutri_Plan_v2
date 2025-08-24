@@ -3715,18 +3715,63 @@ function validarEntradas() {
     //}
 		
 		// Corregido: Asegurarse de que el contenedor tiene un ID único y se usa correctamente
-	function getSelectedStrategies(containerId) {
+	//function getSelectedStrategies(containerId) {
 	    // Selecciona checkboxes dentro del contenedor específico
-	    const container = document.getElementById(containerId);
-	    if (!container) {
-	        console.warn(`Contenedor ${containerId} no encontrado para estrategias.`);
-	        return ['ninguna']; // Valor por defecto si no se encuentra
-	    }
-	    const checkedBoxes = container.querySelectorAll('input[type="checkbox"]:checked');
-	    const strategies = Array.from(checkedBoxes).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
-	    return strategies.length > 0 ? strategies : ['ninguna'];
-	}
-		
+	   // const container = document.getElementById(containerId);
+	   // if (!container) {
+	       // console.warn(`Contenedor ${containerId} no encontrado para estrategias.`);
+	       // return ['ninguna']; // Valor por defecto si no se encuentra
+	    //}
+	   // const checkedBoxes = container.querySelectorAll('input[type="checkbox"]:checked');
+	    //const strategies = Array.from(checkedBoxes).map(checkbox => checkbox.value).filter(val => val !== 'ninguna');
+	   // return strategies.length > 0 ? strategies : ['ninguna'];
+	//}
+	/**
+ * Obtiene las estrategias seleccionadas según el objetivo.
+ * @returns {Array<string>} Un array con los valores de las estrategias seleccionadas.
+ *                          Si no hay ninguna seleccionada (además de 'ninguna'), devuelve ['ninguna'].
+ */
+			function getSelectedStrategies() {
+			    const objetivo = document.getElementById('objetivo').value;
+			    let containerId = '';
+			
+			    // Determinar el ID del contenedor de checkboxes basado en el objetivo
+			    switch (objetivo) {
+			        case 'perdida1':
+			            containerId = 'opcionesPerdida1';
+			            break;
+			        case 'ganancia1':
+			            containerId = 'opcionesGanancia1';
+			            break;
+			        case 'mantenimiento1':
+			            containerId = 'opcionesMantenimiento1';
+			            break;
+			        case 'mixto1':
+			            containerId = 'opcionesMixto1';
+			            break;
+			        default:
+			            console.warn('Objetivo no reconocido para obtener estrategias:', objetivo);
+			            return ['ninguna'];
+			    }
+			
+			    // Seleccionar el contenedor
+			    const container = document.getElementById(containerId);
+			    if (!container) {
+			        console.error(`Contenedor de estrategias '${containerId}' no encontrado.`);
+			        return ['ninguna'];
+			    }
+			
+			    // Obtener checkboxes marcados dentro del contenedor
+			    const checkedBoxes = container.querySelectorAll('input[type="checkbox"]:checked');
+			    
+			    // Extraer los valores, excluyendo 'ninguna'
+			    const strategies = Array.from(checkedBoxes)
+			        .map(checkbox => checkbox.value)
+			        .filter(val => val !== 'ninguna');
+			
+			    // Si no hay estrategias seleccionadas (además de 'ninguna'), devolver ['ninguna']
+			    return strategies.length > 0 ? strategies : ['ninguna'];
+			}	
 
     function calcularMacronutrientes(peso, gastoEnergetico, objetivo) {
         let calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones;
@@ -4785,6 +4830,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
