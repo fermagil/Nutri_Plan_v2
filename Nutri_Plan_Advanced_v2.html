@@ -1448,21 +1448,13 @@ tr:nth-child(even) {
                 
                 <div id="opcionesPerdida" class="mt-3">
                     <div class="row">
-                        <div class="col-md-6">
-                            <label for="fasePerdida" class="form-label">Fase del Ciclo:</label>
-                            <select id="fasePerdida" class="form-control" aria-label="Fase de pérdida de peso">
-                                <option value="induccion_cetogenica">Inducción Cetogénica</option>
-                                <option value="ciclado_metabolico">Ciclado Metabólico</option>
-                                <option value="transicion_mantenimiento">Transición a Mantenimiento</option>
-                                <option value="ketoadaptation">Ketoadaptation</option>
-                            </select>
-                        </div>
+                        
                         <div class="col-md-6">
                             <label class="form-label">Estrategias Especiales:</label>
                             <div class="strategy-checkboxes">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="estrategia_ninguna" value="ninguna" checked>
-                                    <label class="form-check-label" for="estrategia_ninguna">Ninguna (Cetosis estricta <50g HC/día)</label>
+                                    <label class="form-check-label" for="estrategia_ninguna">Cetosis estricta (<50g HC/día)</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="estrategia_tkd" value="tkd">
@@ -4793,6 +4785,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
