@@ -4770,15 +4770,14 @@ function actualizarMacrosPorFase() {
         }
    });
     // Agregar event listener para el cambio de objetivo
-     const objetivoSelect = document.getElementById('objetivo');
+     // Agregar event listener para el cambio de objetivo
+    const objetivoSelect = document.getElementById('objetivo');
     if (objetivoSelect) {
-        // Asociar la función toggleOpcionesObjetivo al evento 'change' del select
-        objetivoSelect.addEventListener('change', toggleOpcionesObjetivo);
-        
-        // Llamar a la función una vez al cargar para establecer el estado inicial
-        toggleOpcionesObjetivo();
-    } else {
-        console.warn("Select con ID 'objetivo' no encontrado en el DOM.");
+        objetivoSelect.addEventListener('change', function() {
+            const objetivo = this.value;
+            mostrarFasePorObjetivo(objetivo); // ← Descomentado y corregido
+            // Aquí también puedes llamar a actualizarMacrosPorFase() si la tienes
+        });
     }
 	   
 });
@@ -4786,6 +4785,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
