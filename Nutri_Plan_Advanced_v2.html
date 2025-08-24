@@ -3641,10 +3641,10 @@ document.getElementById("save-pdf-button").addEventListener("click", async funct
     function toggleOpcionesObjetivo() {
         const objetivo = document.getElementById('objetivo').value;
         const opciones = {
-            perdida: 'opcionesPerdida',
-            ganancia: 'opcionesGanancia',
-            mantenimiento: 'opcionesMantenimiento',
-            mixto: 'opcionesMixto'
+            perdida: 'opcionesPerdida1',
+            ganancia: 'opcionesGanancia1',
+            mantenimiento: 'opcionesMantenimiento1',
+            mixto: 'opcionesMixto1'
         };
         Object.values(opciones).forEach(id => document.getElementById(id).style.display = 'none');
         if (opciones[objetivo]) document.getElementById(opciones[objetivo]).style.display = 'block';
@@ -3747,8 +3747,8 @@ function validarEntradas() {
         switch (objetivo) {
             case 'perdida1':
                 calorias = Math.round(gastoEnergetico * 0.8);
-                const fasePerdida = document.getElementById('fasePerdida')?.value || 'induccion_cetogenica';
-                const estrategiasPerdida = getSelectedStrategies('opcionesPerdida');
+                const fasePerdida = document.getElementById('fasePerdida1')?.value || 'induccion_cetogenica';
+                const estrategiasPerdida = getSelectedStrategies('opcionesPerdida1');
                 const ranges = getCombinedRanges(estrategiasPerdida);
 
                 if (!ranges) return null;
@@ -3799,8 +3799,8 @@ function validarEntradas() {
 
             case 'ganancia1':
                 calorias = Math.round(gastoEnergetico * 1.1);
-                const faseGanancia = document.getElementById('faseGanancia')?.value || 'volumen';
-                const estrategiasGanancia = getSelectedStrategies('opcionesGanancia');
+                const faseGanancia = document.getElementById('faseGanancia1')?.value || 'volumen';
+                const estrategiasGanancia = getSelectedStrategies('opcionesGanancia1');
                 const rangesGanancia = getCombinedRanges(estrategiasGanancia);
 
                 if (!rangesGanancia) return null;
@@ -3831,8 +3831,8 @@ function validarEntradas() {
 
             case 'mantenimiento1':
                 calorias = gastoEnergetico;
-                const enfoqueMantenimiento = document.getElementById('enfoqueMantenimiento')?.value || 'equilibrio';
-                const estrategiasMantenimiento = getSelectedStrategies('opcionesMantenimiento');
+                const enfoqueMantenimiento = document.getElementById('enfoqueMantenimiento1')?.value || 'equilibrio';
+                const estrategiasMantenimiento = getSelectedStrategies('opcionesMantenimiento1');
                 const rangesMantenimiento = getCombinedRanges(estrategiasMantenimiento);
 
                 if (!rangesMantenimiento) return null;
@@ -3860,8 +3860,8 @@ function validarEntradas() {
                 break;
 
             case 'mixto1':
-                const faseMixto = document.getElementById('faseMixto')?.value || 'volumen';
-                const estrategiasMixto = getSelectedStrategies('opcionesMixto');
+                const faseMixto = document.getElementById('faseMixto1')?.value || 'volumen';
+                const estrategiasMixto = getSelectedStrategies('opcionesMixto1');
                 const rangesMixto = getCombinedRanges(estrategiasMixto);
 
                 if (!rangesMixto) return null;
@@ -3975,8 +3975,8 @@ function validarEntradas() {
 
     function generarPlanPerdida(periodo, peso, gastoEnergetico) {
         const plan = [];
-        const fasePerdida = document.getElementById('fasePerdida')?.value || 'induccion_cetogenica';
-        const estrategiasPerdida = getSelectedStrategies('opcionesPerdida');
+        const fasePerdida = document.getElementById('fasePerdida1')?.value || 'induccion_cetogenica';
+        const estrategiasPerdida = getSelectedStrategies('opcionesPerdida1');
         const semanas = periodo === 'mensual' ? 12 : 4;
 
         const dietas = {
@@ -4741,6 +4741,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
