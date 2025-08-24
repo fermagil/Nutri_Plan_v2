@@ -3647,23 +3647,7 @@ document.getElementById("save-pdf-button").addEventListener("click", async funct
         }
     });
 
-    // Mostrar la sección correspondiente al objetivo seleccionado
-    const objetivoSeleccionado = document.getElementById('objetivo').value;
-    const idSeccionMostrar = opciones[objetivoSeleccionado];
-	if (idSeccionMostrar) {
-        const elementoMostrar = document.getElementById(idSeccionMostrar);
-        if (elementoMostrar) {
-            elementoMostrar.style.display = 'block';
-        } else {
-            console.warn(`Elemento con ID '${idSeccionMostrar}' no encontrado.`);
-        }
-    }
     
-    // También gestionar la visibilidad de los selects de fase específicos
-    // (Asumiendo que estos selects están dentro de sus respectivas secciones de opciones)
-    // Si no están dentro, se pueden gestionar aquí directamente.
-    // Por ahora, asumimos que se gestionan con CSS al mostrar/ocultar el contenedor.
-}	
         Object.values(opciones).forEach(id => document.getElementById(id).style.display = 'none');
         if (opciones[objetivo]) document.getElementById(opciones[objetivo]).style.display = 'block';
 
@@ -4802,6 +4786,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
