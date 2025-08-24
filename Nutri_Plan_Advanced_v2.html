@@ -3521,7 +3521,7 @@ function validarEntradas() {
         }
 
         switch (objetivo) {
-            case 'perdida':
+            case 'perdida1':
                 calorias = Math.round(gastoEnergetico * 0.8);
                 const fasePerdida = document.getElementById('fasePerdida')?.value || 'induccion_cetogenica';
                 const estrategiasPerdida = getSelectedStrategies('opcionesPerdida');
@@ -3573,7 +3573,7 @@ function validarEntradas() {
                 }
                 break;
 
-            case 'ganancia':
+            case 'ganancia1':
                 calorias = Math.round(gastoEnergetico * 1.1);
                 const faseGanancia = document.getElementById('faseGanancia')?.value || 'volumen';
                 const estrategiasGanancia = getSelectedStrategies('opcionesGanancia');
@@ -3605,7 +3605,7 @@ function validarEntradas() {
                 }
                 break;
 
-            case 'mantenimiento':
+            case 'mantenimiento1':
                 calorias = gastoEnergetico;
                 const enfoqueMantenimiento = document.getElementById('enfoqueMantenimiento')?.value || 'equilibrio';
                 const estrategiasMantenimiento = getSelectedStrategies('opcionesMantenimiento');
@@ -3635,7 +3635,7 @@ function validarEntradas() {
                 }
                 break;
 
-            case 'mixto':
+            case 'mixto1':
                 const faseMixto = document.getElementById('faseMixto')?.value || 'volumen';
                 const estrategiasMixto = getSelectedStrategies('opcionesMixto');
                 const rangesMixto = getCombinedRanges(estrategiasMixto);
@@ -4517,6 +4517,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
