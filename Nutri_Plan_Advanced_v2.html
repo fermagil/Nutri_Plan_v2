@@ -1267,14 +1267,7 @@ tr:nth-child(even) {
 				                            <option value="mantenimiento1">3. Mantenimiento</option>
 				                            <option value="mixto1">4. Mixto/Combinado</option>
 				                        </select>
-				                    <!-- Selects de Fase (inicialmente ocultos) -->
-					                <label for="fasePerdida1" class="form-label" id="labelFasePerdida1" style="display:none;">Fase del Ciclo (Pérdida de Peso):</label>
-					                <select id="fasePerdida1" class="form-control" aria-label="Fase de pérdida de peso">
-										<option value="sel1">Selecciona Fase</option> 
-					                    <option value="induccion_cetogenica1">Inducción Cetogénica</option>
-					                    <option value="ciclado_metabolico1">Ciclado Metabólico</option>
-					                    <option value="transicion_mantenimiento1">Transición a Mantenimiento</option>
-					                </select>
+				                   
 					
 					                <label for="faseGanancia1" class="form-label" id="labelFaseGanancia1" style="display:none;">Fase del Ciclo (Ganancia de Peso):</label>
 					                <select id="faseGanancia1" class="form-control" aria-label="Fase de ganancia de peso">
@@ -1448,7 +1441,14 @@ tr:nth-child(even) {
     <div class="card-body">
         <div id="opcionesPerdida1" class="mt-3">
             <div class="row">
-               
+                <!-- Selects de Fase (inicialmente ocultos) -->
+					                <label for="fasePerdida1" class="form-label" id="labelFasePerdida1" style="display:none;">Fase del Ciclo (Pérdida de Peso):</label>
+					                <select id="fasePerdida1" class="form-control" aria-label="Fase de pérdida de peso">
+										<option value="sel1">Selecciona Fase</option> 
+					                    <option value="induccion_cetogenica1">Inducción Cetogénica</option>
+					                    <option value="ciclado_metabolico1">Ciclado Metabólico</option>
+					                    <option value="transicion_mantenimiento1">Transición a Mantenimiento</option>
+					                </select>
                 <div class="col-md-6">
                     <label class="form-label">Estrategias Especiales:</label>
                     <div class="strategy-checkboxes" id="opcionesPerdida1"> <!-- ID del contenedor -->
@@ -4830,6 +4830,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
