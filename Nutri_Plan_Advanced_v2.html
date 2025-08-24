@@ -1355,16 +1355,8 @@ tr:nth-child(even) {
                          <p class="info-message">Completa el Paso 3 para habilitar este cálculo.</p>
                      </div>
                 </div>
-
-                <div class="plan-step" id="step-5"> <h2>5. Tabla de Ciclos y Breaks (Automática)</h2>
-                    <p>Esta tabla muestra una estructura detallada y orientativa de ciclos de carga-descarga proteica, incluyendo fases de déficit o superávit y descansos (breaks) a mantenimiento. Los valores se basan en los cálculos automáticos de los Pasos 1, 2 y 3.</p>
-                    <div id="step-5-results"> <div id="detailed-cycle-table-container">
-                             <p class="info-message"><em>Completa los Pasos 1, 2 y 3 para generar esta tabla.</em></p>
-                             </div>
-                    </div>
-                </div>
-
-                <div class="plan-step" id="step-6"> <h2>6. Estimación de Tiempo (Manual y Opcional)</h2>
+			
+				<div class="plan-step" id="step-6"> <h2>5. Estimación de Tiempo (Manual y Opcional)</h2>
                     <p>Estima cuánto tiempo podría llevarte alcanzar un cambio de peso específico basándote en un déficit o superávit calórico semanal <strong>que tú definas</strong>. Este cálculo es independiente de la tabla automática del Paso 5 y se usa para la tabla manual del Paso 7.</p>
                     <form id="time-estimation-form">
                         <label for="weight-change-goal">Cambio de Peso Total Deseado (kg):</label>
@@ -1383,6 +1375,16 @@ tr:nth-child(even) {
 						<canvas id="timeEstimationChart"></canvas>
 					</div>
                 </div>
+			
+                <div class="plan-step" > <h2>6. Tabla de Ciclos y Breaks (Automática)</h2>
+                    <p>Esta tabla muestra una estructura detallada y orientativa de ciclos de carga-descarga proteica, incluyendo fases de déficit o superávit y descansos (breaks) a mantenimiento. Los valores se basan en los cálculos automáticos de los Pasos 1, 2 y 3.</p>
+                    <div id="step-5-results"> <div id="detailed-cycle-table-container">
+                             <p class="info-message"><em>Completa los Pasos 1, 2 y 3 para generar esta tabla.</em></p>
+                             </div>
+                    </div>
+                </div>
+
+                
 
                 <section id="step-7" class="plan-step">
                     <h2>7. Tabla de Ciclos Hiperproteicos (Manual)</h2>
@@ -4832,6 +4834,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
