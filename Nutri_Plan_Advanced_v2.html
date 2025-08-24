@@ -3638,7 +3638,7 @@ document.getElementById("save-pdf-button").addEventListener("click", async funct
     };
 
     // Ocultar todas las secciones primero
-    Object.values(secciones).forEach(id => {
+    Object.values(opciones).forEach(id => {
         const elemento = document.getElementById(id);
         if (elemento) {
             elemento.style.display = 'none';
@@ -3649,7 +3649,7 @@ document.getElementById("save-pdf-button").addEventListener("click", async funct
 
     // Mostrar la sección correspondiente al objetivo seleccionado
     const objetivoSeleccionado = document.getElementById('objetivo').value;
-    const idSeccionMostrar = secciones[objetivoSeleccionado];
+    const idSeccionMostrar = opciones[objetivoSeleccionado];
 	if (idSeccionMostrar) {
         const elementoMostrar = document.getElementById(idSeccionMostrar);
         if (elementoMostrar) {
@@ -4802,6 +4802,7 @@ function actualizarMacrosPorFase() {
 
 </body>
 </html>
+
 
 
 
