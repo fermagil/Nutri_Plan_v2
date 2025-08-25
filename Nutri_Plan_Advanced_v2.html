@@ -1020,7 +1020,162 @@ tr:nth-child(even) {
     }
     
 	
-	
+	/* --- Estilos Generales para las Tablas de Planificación --- */
+
+/* Contenedor principal de cada tabla para sombra y márgenes */
+.card.tabla-planificacion {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem; /* Espacio entre tablas */
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.375rem; /* Bordes redondeados como las cards de Bootstrap */
+}
+
+.card.tabla-planificacion .card-header {
+    background-color: #f8f9fa; /* Fondo gris claro para el encabezado */
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    padding: 0.75rem 1.25rem; /* Ajuste de padding */
+}
+
+.card.tabla-planificacion .card-body {
+    padding: 0; /* Eliminar padding para que la tabla llegue a los bordes */
+}
+
+/* Hacer que la tabla sea responsive */
+.table-responsive.tabla-planificacion-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Suaviza el scroll en móviles */
+    border: 0; /* Eliminar borde por defecto del wrapper */
+    margin: 0; /* Eliminar margen por defecto */
+}
+
+/* Estilo base de la tabla */
+.table.tabla-planificacion {
+    width: 100%;
+    margin-bottom: 0; /* Eliminar margen inferior por defecto */
+    /* Asegurar que las celdas se ajusten bien */
+    table-layout: auto; /* Cambiar a 'fixed' si quieres columnas de ancho fijo */
+    font-size: 0.875rem; /* Tamaño de fuente ligeramente más pequeño */
+    border: 0; /* La tabla en sí no necesita borde si está dentro del card-body */
+}
+
+/* Encabezado de la tabla */
+.table.tabla-planificacion thead th {
+    background-color: #e9ecef; /* Fondo gris más oscuro para encabezados */
+    color: #495057; /* Color de texto oscuro */
+    font-weight: 600; /* Negrita ligera */
+    text-align: center; /* Centrar texto del encabezado */
+    vertical-align: middle; /* Alinear verticalmente al centro */
+    white-space: nowrap; /* Evitar salto de línea en encabezados si es posible */
+    padding: 0.5rem; /* Padding reducido */
+    border-bottom: 2px solid #dee2e6; /* Borde inferior más grueso */
+}
+
+/* Cuerpo de la tabla */
+.table.tabla-planificacion tbody tr {
+    transition: background-color 0.15s ease-in-out; /* Transición suave al pasar el ratón */
+}
+
+.table.tabla-planificacion tbody tr:hover {
+    background-color: #f1f3f5; /* Fondo gris muy claro al pasar el ratón */
+}
+
+.table.tabla-planificacion tbody td {
+    padding: 0.4rem 0.5rem; /* Padding reducido para celdas */
+    vertical-align: top; /* Alinear contenido al inicio */
+    border-top: 1px solid #dee2e6; /* Borde superior sutil */
+    word-break: break-word; /* Romper palabras largas si es necesario */
+}
+
+/* --- Estilos para Badges dentro de las tablas --- */
+/* Reutilizamos los estilos de Bootstrap para badges, pero los definimos por si acaso */
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em; /* Tamaño de fuente más pequeño para badges */
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.375rem;
+    margin: 0.1rem;
+}
+/* Colores de badges (puedes reutilizar los de Bootstrap o definir los tuyos) */
+.bg-danger { background-color: #dc3545 !important; }
+.bg-warning { background-color: #ffc107 !important; color: #000 !important; } /* Texto negro para contraste */
+.bg-success { background-color: #198754 !important; }
+.bg-info { background-color: #0dcaf0 !important; color: #000 !important; }
+.bg-secondary { background-color: #6c757d !important; }
+.bg-primary { background-color: #0d6efd !important; }
+.bg-dark { background-color: #212529 !important; }
+
+/* --- Estilos específicos para la Tabla General del Proceso --- */
+/* Puedes usar un ID único si prefieres estilarla diferente */
+#tablaGeneralProcesoContainer .table.tabla-planificacion thead th {
+    background-color: #d1ecf1; /* Azul claro para distinguirla */
+    color: #0c5460;
+    border-bottom-color: #bee5eb;
+}
+
+/* --- Estilos específicos para la Tabla Específica (Planificación Temporal) --- */
+#planificacionTemporal .table.tabla-planificacion thead th {
+    background-color: #d4edda; /* Verde claro para distinguirla */
+    color: #155724;
+    border-bottom-color: #c3e6cb;
+}
+
+/* Asegurar que los inputs de macros dentro de esta tabla tengan un ancho razonable */
+#planificacionTemporal .macro-input {
+    width: 60px; /* Ancho fijo para inputs de porcentaje */
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8125rem;
+    text-align: center;
+}
+
+/* --- Estilos específicos para la Tabla Detallada de Fase --- */
+#tablaDetalladaFaseContainer .table.tabla-planificacion thead th {
+    background-color: #f8d7da; /* Rojo claro para distinguirla */
+    color: #721c24;
+    border-bottom-color: #f5c6cb;
+}
+
+/* Asegurar que los selects y inputs dentro de esta tabla se vean bien */
+#tablaDetalladaFaseContainer .form-select,
+#tablaDetalladaFaseContainer .form-control {
+    font-size: 0.8125rem;
+    padding: 0.25rem 0.5rem;
+    height: auto; /* Permitir que se ajusten en altura */
+    width: 100%; /* Ocupar todo el ancho de la celda */
+}
+
+#tablaDetalladaFaseContainer .form-control-sm {
+    min-width: 80px; /* Ancho mínimo para inputs de texto */
+}
+
+/* Para notas pequeñas dentro de las tablas */
+.table.tabla-planificacion .small-note {
+    font-size: 0.75rem; /* Fuente aún más pequeña para notas */
+    color: #6c757d; /* Gris para notas */
+    font-style: italic;
+    margin: 0; /* Eliminar márgenes por defecto de párrafos */
+}
+
+/* --- Media Queries para Responsividad (Opcional pero recomendado) --- */
+@media (max-width: 767.98px) {
+    .table.tabla-planificacion {
+        font-size: 0.75rem; /* Reducir aún más el tamaño de fuente en móviles */
+    }
+    .table.tabla-planificacion thead th,
+    .table.tabla-planificacion tbody td {
+        padding: 0.3rem 0.4rem; /* Reducir padding en móviles */
+    }
+    .badge {
+        font-size: 0.65em; /* Reducir tamaño de badges en móviles */
+        padding: 0.25em 0.5em;
+    }
+    /* Puedes ocultar columnas menos críticas en pantallas muy pequeñas usando clases como d-none d-md-table-cell */
+}
 	
     /* Estilos específicos para la calculadora nutricional */
     .form-control {
@@ -1182,6 +1337,128 @@ tr:nth-child(even) {
 
         .error-message { display: none; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-top: 10px; }
         .form-control:invalid { bor
+		
+		
+	/* Estilos básicos para el modal (similares a Bootstrap si no lo usas) */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 10px;
+  pointer-events: none;
+}
+
+/* Tamaños de modal */
+.modal-dialog.modal-lg {
+    max-width: 800px; /* Ancho para modal grande */
+}
+.modal-dialog.modal-xl {
+    max-width: 1140px; /* Ancho para modal extra grande */
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  outline: 0;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: calc(0.3rem - 1px);
+  border-top-right-radius: calc(0.3rem - 1px);
+}
+
+.modal-title {
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+.btn-close {
+  /* Estilo básico para el botón de cerrar */
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid #dee2e6;
+  border-bottom-right-radius: calc(0.3rem - 1px);
+  border-bottom-left-radius: calc(0.3rem - 1px);
+}
+
+/* Estilos específicos para el contenido del modal */
+#guiaCompatibilidad ul {
+    padding-left: 20px;
+}
+#guiaCompatibilidad li {
+    margin-bottom: 0.5rem;
+}
+
+.bloque-estrategia-manual {
+    background-color: #f8f9fa; /* Fondo gris claro */
+}
+
+.total-macro-manual .valor-total {
+    font-weight: bold;
+}
+
+.total-macro-manual .text-success {
+    color: #198754; /* Verde de Bootstrap */
+}
+
+.total-macro-manual .text-danger {
+    color: #dc3545; /* Rojo de Bootstrap */
+}
+
+/* Asegurar que los inputs de número tengan un ancho razonable */
+.input-macro-manual {
+    width: 100px;
+}
+
+/* Estilos para el botón de cerrar si no usas Bootstrap */
+/*
+.btn-close::before {
+    content: '×';
+    color: black;
+}
+*/
 </style>
 </head>
 
@@ -1195,10 +1472,10 @@ tr:nth-child(even) {
 	    </div>
         <nav>
             <ul>
-                <li><a href="https://fermagil.github.io/Nutri_Plan_v2/Inicio_NutriPlan_v2.html">Inicio</a></li>
+                <<li><a href="https://fermagil.github.io/Nutri_Plan_v2/Inicio_NutriPlan_v2.html">Inicio</a></li>
 				<li><a href="https://fermagil.github.io/Nutri_Plan_v2/Valoracion_Antropometrica_1.html">Valoración Antropometrica</a></li>
                 <li><a href="#" class="active">Planificación Avanzada</a></li>
-                <li><a href="https://fermagil.github.io/Nutri_Plan_v2/Calculadora_keto_recetas.html">Calculadora</a></li> 
+                <<li><a href="https://fermagil.github.io/Nutri_Plan_v2/Calculadora_keto_recetas.html">Calculadora</a></li>
             </ul>
         </nav>
     </header>
@@ -1478,7 +1755,7 @@ tr:nth-child(even) {
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="estrategia_hiperproteica" value="hiperproteica">
-                            <label class="form-check-label" for="estrategia_hiperproteica">Hiperproteica (2.5-3.0 g/kg peso proteína)</label>
+                            <label class="form-check-label" for="estrategia_hiperproteica">Hiperproteica (1.8-2.5 g/kg peso proteína)</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="estrategia_carb_cycling" value="carb_cycling">
@@ -1527,6 +1804,18 @@ tr:nth-child(even) {
                             <input class="form-check-input" type="checkbox" id="estrategia_ganancia_flexible_dieting" value="flexible_dieting">
                             <label class="form-check-label" for="estrategia_ganancia_flexible_dieting">Flexible Dieting (80/20 regla)</label>
                         </div>
+						<div class="form-check">
+					  <input class="form-check-input" type="checkbox" id="estrategia_ganancia_ckd" value="ckd_ganancia">
+					  <label class="form-check-label" for="estrategia_ganancia_ckd">CKD: 5+2 approach para optimizar glucógeno</label>
+					</div>
+					<div class="form-check">
+					  <input class="form-check-input" type="checkbox" id="estrategia_ganancia_timing_nutricional" value="timing_nutricional_ganancia">
+					  <label class="form-check-label" for="estrategia_ganancia_timing_nutricional">Timing nutricional: Proteína post-entreno</label>
+					</div>
+					<div class="form-check">
+					  <input class="form-check-input" type="checkbox" id="estrategia_ganancia_carb_loading" value="carb_loading_ganancia">
+					  <label class="form-check-label" for="estrategia_ganancia_carb_loading">Carb-loading: Días previos a entrenos intensos</label>
+					</div>
                     </div>
                 </div>
             </div>
@@ -1644,14 +1933,28 @@ tr:nth-child(even) {
     </div>
 </div>
 
+<!-- Sección para la Tabla General del Proceso -->
+<div id="tablaGeneralProcesoContainer" class="card mb-4">
+    <div class="card-header">
+        <h5>📅 Planificación General del Proceso</h5>
+        <p class="mb-0"><small>Basada en tu objetivo y el tiempo estimado del Paso 6.</small></p>
+    </div>
+    <div class="card-body">
+        <!-- El contenido de la tabla general se generará aquí -->
+        <p class="info-message">Completa el Paso 6 (Estimación Manual) para generar esta planificación.</p>
+    </div>
+</div>
+
+<!-- Sección para la Tabla Específica (Planificación Temporal Original) -->
 <div id="planificacionTemporal" class="card" style="display:none;">
     <div class="card-header">
-        <h5>📅 Planificación Temporal</h5>
+        <h5>📅 Planificación Temporal Específica</h5> <!-- Título modificado para diferenciar -->
+        <p class="mb-0"><small>Basada en el período seleccionado (semanal/mensual).</small></p> <!-- Subtítulo añadido -->
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-striped table-bordered" aria-label="Tabla de planificación nutricional">
-                <thead>
+                <thead class="table-dark"> <!-- Añadido estilo de encabezado oscuro -->
                     <tr>
                         <th scope="col">Semana</th>
                         <th scope="col">Fase</th>
@@ -1672,6 +1975,19 @@ tr:nth-child(even) {
         </div>
     </div>
 </div>
+
+<!-- Contenedor para la Tabla Detallada de Fase Seleccionada -->
+<div id="tablaDetalladaFaseContainer" class="mt-4 card" style="display:none;"> <!-- Añadido estilo de tarjeta y oculto por defecto -->
+    <div class="card-header">
+        <h5>🔍 Detalles de la Fase Seleccionada</h5> <!-- Título del contenedor -->
+        <p class="mb-0"><small>Desglose semanal detallado basado en la fase general.</small></p> <!-- Subtítulo -->
+    </div>
+    <div class="card-body">
+        <!-- El contenido de la tabla detallada se generará aquí -->
+        <p class="info-message">Selecciona una fase en la "Planificación General del Proceso" para ver su desglose semanal detallado.</p>
+    </div>
+</div>
+<!-- Fin del nuevo contenedor -->
 <!-- Fin de la sección -->		
 
     </main>
@@ -3093,7 +3409,7 @@ function calculateCalories() {
                 macroForm.addEventListener('submit', (event) => {
                     event.preventDefault();
                     calculateMacros();
-					calcularMacros(); 
+					//calcularMacros(); 
                 });
             }
             if (mealForm) {
@@ -3627,7 +3943,7 @@ document.getElementById("save-pdf-button").addEventListener("click", async funct
 
 
 		
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Ultima seccion Calculos segun Objetivo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+///////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Ultima seccion Calculos segun Objetivo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		let chartInstance = null;
     	let weeklyMacros = [];
 
@@ -3777,230 +4093,423 @@ function validarEntradas() {
 			    return strategies.length > 0 ? strategies : ['ninguna'];
 			}	
 
-    function calcularMacronutrientes(peso, gastoEnergetico, objetivo) {
-        let calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones;
-        const estrategiaMap = {
-            ninguna: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: 'Cetosis estricta <50g HC/día' },
-            tkd: { grasas: [65, 70], proteinas: [20, 25], carbohidratos: [8, 12], deficit: [0.8, 0.85], nota: '25-50g HC pre/post entreno' },
-            ckd: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.85, 0.9], nota: '2 días carb-loading (150-200g HC)' },
-            if_16_8: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 15], deficit: [0.75, 0.85], nota: 'Ventana de alimentación 8 horas' },
-            refeed: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.9, 0.95], nota: '1-2 días/semana HC alto' },
-            hiperproteica: { grasas: [60, 65], proteinas: [28, 32], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: '2.5-3.0 g/kg peso proteína' },
-            carb_cycling: { grasas: [60, 70], proteinas: [22, 28], carbohidratos: [8, 20], deficit: [0.8, 0.9], nota: 'Días altos (100-130g)/bajos HC (<50g)' },
-            protein_cycling: { grasas: [60, 70], proteinas: [18, 30], carbohidratos: [5, 15], deficit: [0.8, 0.9], nota: '4 semanas altas + 1 baja proteína' },
-            timing: { grasas: [50, 60], proteinas: [28, 35], carbohidratos: [10, 20], deficit: [0.85, 0.9], nota: 'HC post-entreno' },
-            flexible_dieting: { grasas: [30, 40], proteinas: [25, 35], carbohidratos: [30, 45], deficit: [0.9, 1.0], nota: '80/20 regla: 80% saludable, 20% flexible' }
-        };
+    /**
+ * Calcula los macronutrientes basados en objetivo, fase y estrategias.
+ * @param {number} peso - El peso del usuario en kg.
+ * @param {number} gastoEnergetico - El TDEE (Gasto Energético Total) calculado.
+ * @param {string} objetivo - El objetivo seleccionado ('perdida1', 'ganancia1', etc.).
+ * @returns {Object|null} Un objeto con los resultados del cálculo o null si hay error.
+ */
+ function formatearNombreCodigo(codigo) {
+    const mapaCodigos = {
+        // Objetivos
+        'perdida1': 'pérdida de peso',
+        'ganancia1': 'ganancia de peso',
+        'mantenimiento1': 'mantenimiento',
+        'mixto1': 'plan mixto',
+        'sel': 'no seleccionado',
+        // Fases de Pérdida
+        'induccion_cetogenica1': 'inducción cetogénica',
+        'ciclado_metabolico1': 'ciclado metabólico',
+        'transicion_mantenimiento1': 'transición a mantenimiento',
+        'ketoadaptation': 'ketoadaptación',
+        // Fases de Ganancia
+        'volumen1': 'volumen muscular',
+        'masa1': 'enfoque en masa muscular',
+        // Enfoques de Mantenimiento
+        'equilibrio1': 'equilibrio flexible',
+        'social1': 'adherencia social',
+        // Fases de Mixto (asumiendo que pueden reusar algunos nombres o tienen específicos)
+        // Puedes añadir más mapeos aquí si es necesario
+        // Por defecto, intentar formatear el código si no está en el mapa
+    };
 
-        function getCombinedRanges(strategies) {
-            if (!strategies.length) return estrategiaMap.ninguna;
-            const ranges = {
-                grasas: [Math.max(...strategies.map(s => estrategiaMap[s].grasas[0])), Math.min(...strategies.map(s => estrategiaMap[s].grasas[1]))],
-                proteinas: [Math.max(...strategies.map(s => estrategiaMap[s].proteinas[0])), Math.min(...strategies.map(s => estrategiaMap[s].proteinas[1]))],
-                carbohidratos: [Math.max(...strategies.map(s => estrategiaMap[s].carbohidratos[0])), Math.min(...strategies.map(s => estrategiaMap[s].carbohidratos[1]))],
-                deficit: [Math.min(...strategies.map(s => estrategiaMap[s].deficit[0])), Math.max(...strategies.map(s => estrategiaMap[s].deficit[1]))],
-                notas: strategies.map(s => estrategiaMap[s].nota).join('; ')
-            };
-            if (ranges.grasas[0] > ranges.grasas[1] || ranges.proteinas[0] > ranges.proteinas[1] || ranges.carbohidratos[0] > ranges.carbohidratos[1]) {
-                document.getElementById('errorMessage').textContent = 'Las estrategias seleccionadas tienen rangos de macronutrientes incompatibles.';
-                document.getElementById('errorMessage').style.display = 'block';
-                return null;
+    if (mapaCodigos[codigo]) {
+        return mapaCodigos[codigo];
+    }
+
+    // Formateo básico por si acaso: reemplazar guiones bajos por espacios y convertir a minúsculas
+    // Esto ayuda si se añaden nuevas fases sin actualizar el mapa.
+    return codigo ? codigo.replace(/_/g, ' ') : 'no especificado';
+}
+/**
+ * Calcula los macronutrientes basados en objetivo, fase y estrategias.
+ * @param {number} peso - El peso del usuario en kg.
+ * @param {number} gastoEnergetico - El TDEE (Gasto Energético Total) calculado.
+ * @param {string} objetivo - El objetivo seleccionado ('perdida1', 'ganancia1', etc.).
+ * @returns {Object|null} Un objeto con los resultados del cálculo o null si hay error.
+ */
+function calcularMacronutrientes(peso, gastoEnergetico, objetivo) {
+    let calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones;
+
+    // --- 1. Definir el mapa de estrategias con sus rangos ---
+    // NOTA: Asegúrate de que este mapa sea idéntico al usado en las funciones de generación de plan
+    const estrategiaMap = {
+        ninguna: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: 'Cetosis estricta <50g HC/día' },
+        tkd: { grasas: [65, 70], proteinas: [20, 25], carbohidratos: [8, 12], deficit: [0.8, 0.85], nota: '25-50g HC pre/post entreno' },
+        ckd: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.85, 0.9], nota: '2 días carb-loading (150-200g HC)' },
+        if_16_8: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 15], deficit: [0.75, 0.85], nota: 'Ventana de alimentación 8 horas' },
+        refeed: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.9, 0.95], nota: '1-2 días/semana HC alto' },
+        hiperproteica: { grasas: [60, 65], proteinas: [28, 32], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: '2.5-3.0 g/kg peso proteína' },
+        carb_cycling: { grasas: [60, 70], proteinas: [22, 28], carbohidratos: [8, 20], deficit: [0.8, 0.9], nota: 'Días altos (100-130g)/bajos HC (<50g)' },
+        protein_cycling: { grasas: [60, 70], proteinas: [18, 30], carbohidratos: [5, 15], deficit: [0.8, 0.9], nota: '4 semanas altas + 1 baja proteína' },
+        timing: { grasas: [50, 60], proteinas: [28, 35], carbohidratos: [10, 20], deficit: [0.85, 0.9], nota: 'HC post-entreno' },
+        flexible_dieting: { grasas: [30, 40], proteinas: [25, 35], carbohidratos: [30, 45], deficit: [0.9, 1.0], nota: '80/20 regla: 80% saludable, 20% flexible' }
+    };
+
+    // --- 2. Obtener fase y estrategias seleccionadas por el usuario ---
+    let fase = '';
+    let estrategiasSeleccionadas = [];
+    switch (objetivo) {
+        case 'perdida1':
+            fase = document.getElementById('fasePerdida1')?.value || 'induccion_cetogenica1';
+            estrategiasSeleccionadas = getSelectedStrategies(); // Llama a tu función existente
+            break;
+        case 'ganancia1':
+            fase = document.getElementById('faseGanancia1')?.value || 'volumen1';
+            estrategiasSeleccionadas = getSelectedStrategies(); // Llama a tu función existente
+            break;
+        case 'mantenimiento1':
+            fase = document.getElementById('enfoqueMantenimiento1')?.value || 'equilibrio1';
+            estrategiasSeleccionadas = getSelectedStrategies(); // Llama a tu función existente
+            break;
+        case 'mixto1':
+            fase = document.getElementById('faseMixto1')?.value || 'volumen1';
+            estrategiasSeleccionadas = getSelectedStrategies(); // Llama a tu función existente
+            break;
+        default:
+            console.error('Objetivo no reconocido en calcularMacronutrientes:', objetivo);
+            const errorMsgElement = document.getElementById('errorMessage');
+            if (errorMsgElement) {
+                errorMsgElement.textContent = 'Objetivo no reconocido.';
+                errorMsgElement.style.display = 'block';
             }
-            return ranges;
+            return null;
+    }
+
+    // --- 3. Integración de configuración manual ---
+    // 1. Verificar si hay una configuración manual disponible para TODAS las estrategias activas
+    const estrategiasActivas = estrategiasSeleccionadas.filter(s => s !== 'ninguna');
+
+    // 2. Si hay configuración manual completa, usarla
+    let usandoConfigManual = false;
+    if (estrategiasActivas.length > 0 &&
+        estrategiasActivas.every(estrat => macrosConfiguracionManual[estrat])) {
+
+        usandoConfigManual = true;
+        console.log("Usando configuración manual de macronutrientes para calcular macros.");
+
+        // Calcular un promedio de los porcentajes manuales.
+        let totalProteinas = 0, totalCarbohidratos = 0, totalGrasas = 0;
+        estrategiasActivas.forEach(estrat => {
+            const config = macrosConfiguracionManual[estrat];
+            totalProteinas += config.proteinas;
+            totalCarbohidratos += config.carbohidratos;
+            totalGrasas += config.grasas;
+        });
+        proteinasPct = Math.round(totalProteinas / estrategiasActivas.length);
+        carbohidratosPct = Math.round(totalCarbohidratos / estrategiasActivas.length);
+        grasasPct = Math.round(totalGrasas / estrategiasActivas.length);
+
+        // Validación final de porcentajes (por si el redondeo los desajustó)
+        const totalPct = proteinasPct + carbohidratosPct + grasasPct;
+        if (Math.abs(totalPct - 100) > 0.1) {
+            const diff = 100 - totalPct;
+            grasasPct += diff; // Ajustar grasas
+            console.warn("Porcentajes ajustados para sumar 100%:", { proteinasPct, carbohidratosPct, grasasPct });
         }
 
+        // --- Calcular calorías y gramos usando valores manuales ---
+        // Para calorías, necesitamos un calMult. Podemos promediar los deficit de las configs manuales si se guardaran,
+        // o usar un valor por defecto basado en el objetivo, o uno de las estrategias.
+        // Aquí usamos un enfoque simple: promediar los 'deficit' del estrategiaMap de las estrategias activas.
+        // NOTA: Esto asume que 'deficit' en estrategiaMap representa el factor calórico (e.g., 0.8 para perdida).
+        let calMultManual = 1.0;
+        if (estrategiasActivas.length > 0) {
+             const factores = estrategiasActivas.map(s => {
+                 const rangoDeficit = estrategiaMap[s]?.deficit;
+                 // Tomar el promedio del rango de deficit como calMult
+                 return rangoDeficit ? (rangoDeficit[0] + rangoDeficit[1]) / 2 : 1.0;
+             });
+             calMultManual = factores.reduce((a, b) => a + b, 0) / factores.length;
+        } else {
+            // Si solo está 'ninguna', usar su deficit
+            const rangoDeficitNinguna = estrategiaMap['ninguna']?.deficit || [1.0, 1.0];
+            calMultManual = (rangoDeficitNinguna[0] + rangoDeficitNinguna[1]) / 2;
+        }
+
+        // Determinar calMult basado en el objetivo y la configuración manual
         switch (objetivo) {
             case 'perdida1':
-                calorias = Math.round(gastoEnergetico * 0.8);
-                const fasePerdida = document.getElementById('fasePerdida1')?.value || 'induccion_cetogenica';
-                const estrategiasPerdida = getSelectedStrategies('opcionesPerdida1'); // Corregido
-                const ranges = getCombinedRanges(estrategiasPerdida);
-                if (!ranges) return null;
-
-				// Calcular calorías basadas en el déficit
-            	calorias = Math.round(gastoEnergetico * ((ranges.deficit[0] + ranges.deficit[1]) / 2));
-
-                switch (fasePerdida) {
-                    case 'induccion_cetogenica':
-                        proteinasPct = Math.round((ranges.proteinas[0] + ranges.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((ranges.carbohidratos[0] + ranges.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        calorias = Math.round(gastoEnergetico * (ranges.deficit[0] + ranges.deficit[1]) / 2);
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Inducción Cetogénica: ${ranges.notas}. Prioriza grasas saludables, proteína moderada. Supervisión médica recomendada.`;
-                        break;
-                    case 'ciclado_metabolico':
-                        proteinasPct = Math.round((ranges.proteinas[0] + ranges.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((ranges.carbohidratos[0] + ranges.carbohidratos[1]) / 2) + 5;
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        calorias = Math.round(gastoEnergetico * (ranges.deficit[0] + ranges.deficit[1]) / 2);
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Ciclado Metabólico: ${ranges.notas}. HC estratégicos en días de entreno, cetosis en descanso.`;
-                        break;
-                    case 'transicion_mantenimiento':
-                        proteinasPct = 22;
-                        carbohidratosPct = 33;
-                        grasasPct = 45;
-                        calorias = Math.round(gastoEnergetico * 0.9);
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Transición a Mantenimiento: Aumenta HC (100-150g), incluye cereales integrales, frutas, legumbres. ${ranges.notas}.`;
-                        break;
-                    case 'ketoadaptation':
-                        proteinasPct = Math.round((ranges.proteinas[0] + ranges.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((ranges.carbohidratos[0] + ranges.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        calorias = Math.round(gastoEnergetico * (ranges.deficit[0] + ranges.deficit[1]) / 2);
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Ketoadaptation: ${ranges.notas}. Enfocado en adaptación cetogénica a largo plazo (4-12 semanas).`;
-                        break;
-						default:
-	                    // Valores por defecto si la fase no se reconoce
-	                    proteinasPct = 25;
-	                    carbohidratosPct = 10;
-	                    grasasPct = 65;
-	                    recomendaciones = `Pérdida de peso: ${ranges.notas || 'Sin estrategias especiales'}.`;
-            
-                }
+                // Ya calculado en calMultManual
                 break;
-
             case 'ganancia1':
-                calorias = Math.round(gastoEnergetico * 1.1);
-                const faseGanancia = document.getElementById('faseGanancia1')?.value || 'volumen';
-                const estrategiasGanancia = getSelectedStrategies('opcionesGanancia1');
-                const rangesGanancia = getCombinedRanges(estrategiasGanancia);
-
-                if (!rangesGanancia) return null;
-
-                switch (faseGanancia) {
-                    case 'volumen':
-                        proteinasPct = Math.round((rangesGanancia.proteinas[0] + rangesGanancia.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((rangesGanancia.carbohidratos[0] + rangesGanancia.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        calorias = Math.round(gastoEnergetico * (rangesGanancia.deficit[0] + rangesGanancia.deficit[1]) / 2);
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Volumen: Prioriza HC complejos, proteína post-entreno. ${rangesGanancia.notas}`;
-                        break;
-                    case 'masa':
-                        proteinasPct = Math.round((rangesGanancia.proteinas[0] + rangesGanancia.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((rangesGanancia.carbohidratos[0] + rangesGanancia.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        calorias = Math.round(gastoEnergetico * (rangesGanancia.deficit[0] + rangesGanancia.deficit[1]) / 2);
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Enfocado en Masa: Balance HC/proteína, timing post-entreno. ${rangesGanancia.notas}`;
-                        break;
-                }
+                // Los valores en estrategiaMap para ganancia son > 1.0, así que está bien
                 break;
-
             case 'mantenimiento1':
-                calorias = gastoEnergetico;
-                const enfoqueMantenimiento = document.getElementById('enfoqueMantenimiento1')?.value || 'equilibrio';
-                const estrategiasMantenimiento = getSelectedStrategies('opcionesMantenimiento1');
-                const rangesMantenimiento = getCombinedRanges(estrategiasMantenimiento);
-
-                if (!rangesMantenimiento) return null;
-
-                switch (enfoqueMantenimiento) {
-                    case 'equilibrio':
-                        proteinasPct = Math.round((rangesMantenimiento.proteinas[0] + rangesMantenimiento.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((rangesMantenimiento.carbohidratos[0] + rangesMantenimiento.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Equilibrio Flexible: ${rangesMantenimiento.notas}`;
-                        break;
-                    case 'social':
-                        proteinasPct = Math.round((rangesMantenimiento.proteinas[0] + rangesMantenimiento.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((rangesMantenimiento.carbohidratos[0] + rangesMantenimiento.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Adherencia Social: Flexibilidad en HC, consistencia en proteína. ${rangesMantenimiento.notas}`;
-                        break;
-						default:
-                    proteinasPct = 25;
-                    carbohidratosPct = 40;
-                    grasasPct = 35;
-                    recomendaciones = `Mantenimiento: ${rangesMantenimiento.notas || 'Sin estrategias especiales'}.`;
-           	 }
-                break;
-
             case 'mixto1':
-                const faseMixto = document.getElementById('faseMixto1')?.value || 'volumen';
-                const estrategiasMixto = getSelectedStrategies('opcionesMixto1');
-                const rangesMixto = getCombinedRanges(estrategiasMixto);
-
-                if (!rangesMixto) return null;
-
-                switch (faseMixto) {
-                    case 'volumen':
-                        calorias = Math.round(gastoEnergetico * 1.08);
-                        proteinasPct = Math.round((rangesMixto.proteinas[0] + rangesMixto.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((rangesMixto.carbohidratos[0] + rangesMixto.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Volumen Mixto: Proteína alta, timing HC post-entreno. ${rangesMixto.notas}`;
-                        break;
-                    case 'definicion':
-                        calorias = Math.round(gastoEnergetico * 0.85);
-                        proteinasPct = Math.round((rangesMixto.proteinas[0] + rangesMixto.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((rangesMixto.carbohidratos[0] + rangesMixto.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Definición Mixto: Ciclado metabólico, cetosis en descanso. ${rangesMixto.notas}`;
-                        break;
-                    case 'mantenimiento':
-                        calorias = gastoEnergetico;
-                        proteinasPct = Math.round((rangesMixto.proteinas[0] + rangesMixto.proteinas[1]) / 2);
-                        carbohidratosPct = Math.round((rangesMixto.carbohidratos[0] + rangesMixto.carbohidratos[1]) / 2);
-                        grasasPct = 100 - proteinasPct - carbohidratosPct;
-                        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
-                        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
-                        grasas = Math.round((calorias * grasasPct / 100) / 9);
-                        recomendaciones = `Mantenimiento Mixto: Moderada en HC, equilibrio nutricional. ${rangesMixto.notas}`;
-                       default:
-	                    calorias = gastoEnergetico;
-	                    proteinasPct = 25;
-	                    carbohidratosPct = 40;
-	                    grasasPct = 35;
-	                    recomendaciones = `Plan Mixto: ${rangesMixto.notas || 'Sin estrategias especiales'}.`;
-            }
+                // Para mantenimiento, quizás quieras forzar calMultManual a 1.0
+                // o dejar que las estrategias lo definan. Por ahora lo dejamos.
+                // calMultManual = 1.0;
                 break;
-				
-				default:
-            // Valores por defecto si el objetivo no se reconoce
-            calorias = gastoEnergetico;
-            proteinasPct = 25;
-            carbohidratosPct = 40;
-            grasasPct = 35;
-            recomendaciones = 'Plan nutricional estándar.';
+            default:
+                calMultManual = 1.0;
         }
 
-        if (grasas < 0 || isNaN(grasas) || proteinas < 0 || isNaN(proteinas) || carbohidratos < 0 || isNaN(carbohidratos)) {
-            document.getElementById('errorMessage').textContent = 'Error en el cálculo de macronutrientes. Verifique los valores ingresados.';
-            document.getElementById('errorMessage').style.display = 'block';
+        calorias = Math.round(gastoEnergetico * calMultManual);
+        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+        grasas = Math.round((calorias * grasasPct / 100) / 9);
+
+        // --- Generar recomendaciones para configuración manual ---
+        const objetivoLegible = formatearNombreCodigo(objetivo);
+        const faseLegible = formatearNombreCodigo(fase);
+        const estrategiasTexto = estrategiasSeleccionadas.join(', ');
+
+        recomendaciones = `Basado en tu objetivo de <strong>${objetivoLegible}</strong> y fase <strong>${faseLegible}</strong>.<br><br>`;
+        recomendaciones += `<strong>Valores calculados a partir de tu configuración manual:</strong><br>`;
+        recomendaciones += `Proteínas: ${proteinasPct}%, Carbohidratos: ${carbohidratosPct}%, Grasas: ${grasasPct}%<br><br>`;
+
+        // Añadir explicaciones breves de las estrategias activas (si tienes el objeto global)
+        // Asegúrate de que `explicacionesEstrategias` esté definido en el scope global o pásalo como argumento.
+        if (typeof explicacionesEstrategias !== 'undefined') {
+            if (estrategiasActivas.length > 0) {
+                recomendaciones += `<strong>¿Qué implican estas estrategias?</strong><br><ul>`;
+                const estrategiasUnicas = [...new Set(estrategiasActivas)];
+                estrategiasUnicas.forEach(estrategia => {
+                    const explicacion = explicacionesEstrategias[estrategia] || `Explicación no disponible para la estrategia '${estrategia}'.`;
+                    recomendaciones += `<li><strong>${formatearNombreCodigo(estrategia)}:</strong> ${explicacion}</li>`;
+                });
+                recomendaciones += `</ul>`;
+            } else {
+                recomendaciones += `<strong>¿Qué implican estas estrategias?</strong><br>${explicacionesEstrategias['ninguna']}`;
+            }
+        } else {
+             recomendaciones += `<em>Configuración manual aplicada. Explicaciones de estrategias no disponibles.</em>`;
+        }
+
+    } else {
+        // 3. Si NO hay configuración manual completa, usar la lógica automática de rangos
+        console.log("Usando lógica automática de rangos para calcular macronutrientes.");
+
+        // --- 4. Combinar los rangos de las estrategias seleccionadas (con manejo de modal) ---
+        const combinedRanges = getCombinedRangesConModal(estrategiasSeleccionadas, estrategiaMap, "macros");
+
+        if (!combinedRanges) {
+            // El error ya se muestra en getCombinedRangesConModal
+            // que llama a mostrarModalIncompatibilidad
             return null;
         }
 
-        return { calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct, recomendaciones };
+        // --- 5. Calcular el multiplicador de calorías basado en el déficit/superávit de las estrategias ---
+        let calMult;
+        switch (objetivo) {
+            case 'perdida1':
+                calMult = (combinedRanges.deficit[0] + combinedRanges.deficit[1]) / 2;
+                break;
+            case 'ganancia1':
+                calMult = (combinedRanges.deficit[0] + combinedRanges.deficit[1]) / 2;
+                break;
+            case 'mantenimiento1':
+            case 'mixto1':
+                calMult = (combinedRanges.deficit[0] + combinedRanges.deficit[1]) / 2;
+                break;
+            default:
+                console.warn('Objetivo no manejado específicamente para calMult, usando 1.0:', objetivo);
+                calMult = 1.0;
+        }
+
+        // --- 6. Calcular calorías objetivo ---
+        calorias = Math.round(gastoEnergetico * calMult);
+
+        // --- 7. Calcular porcentajes de macronutrientes promedio de los rangos combinados ---
+        proteinasPct = Math.round((combinedRanges.proteinas[0] + combinedRanges.proteinas[1]) / 2);
+        carbohidratosPct = Math.round((combinedRanges.carbohidratos[0] + combinedRanges.carbohidratos[1]) / 2);
+        grasasPct = 100 - proteinasPct - carbohidratosPct;
+
+        // Validación final de porcentajes
+        if (grasasPct < 0) {
+            const diff = -grasasPct;
+            carbohidratosPct = Math.max(0, carbohidratosPct - diff);
+            grasasPct = 0;
+            console.warn("Porcentaje de grasas ajustado a 0, carbohidratos reducidos en:", diff);
+        }
+
+        // --- 8. Calcular gramos ---
+        proteinas = Math.round((calorias * proteinasPct / 100) / 4);
+        carbohidratos = Math.round((calorias * carbohidratosPct / 100) / 4);
+        grasas = Math.round((calorias * grasasPct / 100) / 9);
+
+        // --- 9. Generar recomendaciones (Automáticas) ---
+        const objetivoLegible = formatearNombreCodigo(objetivo);
+        const faseLegible = formatearNombreCodigo(fase);
+        const estrategiasTexto = combinedRanges.notas || 'Ninguna';
+
+        recomendaciones = `Basado en tu objetivo de <strong>${objetivoLegible}</strong>, te dispones a seguir una fase de <strong>${faseLegible}</strong>.<br><br>`;
+        recomendaciones += `<strong>Estrategias Seleccionadas:</strong> <em>${estrategiasTexto}</em><br><br>`;
+
+        // Añadir explicaciones breves (asegúrate de que `explicacionesEstrategias` esté accesible)
+        if (typeof explicacionesEstrategias !== 'undefined') {
+            const estrategiasActivasAuto = estrategiasSeleccionadas.filter(s => s !== 'ninguna');
+            if (estrategiasActivasAuto.length > 0) {
+                recomendaciones += `<strong>¿Qué implican estas estrategias?</strong><br><ul>`;
+                const estrategiasUnicas = [...new Set(estrategiasActivasAuto)];
+                estrategiasUnicas.forEach(estrategia => {
+                    const explicacion = explicacionesEstrategias[estrategia] || `Explicación no disponible para la estrategia '${estrategia}'.`;
+                    recomendaciones += `<li><strong>${formatearNombreCodigo(estrategia)}:</strong> ${explicacion}</li>`;
+                });
+                recomendaciones += `</ul>`;
+            } else {
+                recomendaciones += `<strong>¿Qué implican estas estrategias?</strong><br>${explicacionesEstrategias['ninguna']}`;
+            }
+        } else {
+             recomendaciones += `<em>Recomendaciones basadas en estrategias combinadas. Explicaciones no disponibles.</em>`;
+        }
     }
+
+    // --- 10. Validación básica de resultados finales ---
+    if (isNaN(calorias) || isNaN(proteinas) || isNaN(carbohidratos) || isNaN(grasas) ||
+        calorias <= 0 || proteinas < 0 || carbohidratos < 0 || grasas < 0) {
+        const calcError = 'Error en el cálculo de macronutrientes: valores resultantes inválidos.';
+        console.error(calcError, { calorias, proteinas, carbohidratos, grasas, proteinasPct, carbohidratosPct, grasasPct });
+        const errorMsgElement = document.getElementById('errorMessage');
+        if (errorMsgElement) {
+            errorMsgElement.textContent = calcError;
+            errorMsgElement.style.display = 'block';
+        }
+        return null;
+    }
+
+    // --- 11. Devolver resultados ---
+    return {
+        calorias,
+        proteinas,
+        carbohidratos,
+        grasas,
+        proteinasPct,
+        carbohidratosPct,
+        grasasPct,
+        recomendaciones
+    };
+}
+
+// --- Asegúrate de que getCombinedRangesConModal esté definida en el mismo archivo o cargada antes ---
+// Si no la tienes definida por separado, aquí la incluyo para que funcione:
+
+/**
+ * (Definición de getCombinedRangesConModal)
+ * Esta función debe estar disponible globalmente o definida antes de ser usada por calcularMacronutrientes.
+ * Combina los rangos de macronutrientes de múltiples estrategias y maneja incompatibilidades con un modal.
+ * @param {Array<string>} strategies - Array de nombres de estrategias seleccionadas.
+ * @param {Object} estrategiaMap - El mapa de estrategias con sus rangos.
+ * @param {string} contexto - "macros" o "plan" para determinar dónde mostrar el error.
+ * @returns {Object|null} Un objeto con los rangos combinados o null si son incompatibles.
+ */
+function getCombinedRangesConModal(strategies, estrategiaMap, contexto = "plan") {
+    if (!strategies || strategies.length === 0 || (strategies.length === 1 && strategies.includes('ninguna'))) {
+        return estrategiaMap.ninguna;
+    }
+
+    const activeStrats = strategies.filter(s => s !== 'ninguna');
+    if (activeStrats.length === 0) return estrategiaMap.ninguna;
+
+    try {
+        const combinedRanges = {
+            grasas: [
+                Math.max(...activeStrats.map(s => estrategiaMap[s].grasas[0])),
+                Math.min(...activeStrats.map(s => estrategiaMap[s].grasas[1]))
+            ],
+            proteinas: [
+                Math.max(...activeStrats.map(s => estrategiaMap[s].proteinas[0])),
+                Math.min(...activeStrats.map(s => estrategiaMap[s].proteinas[1]))
+            ],
+            carbohidratos: [
+                Math.max(...activeStrats.map(s => estrategiaMap[s].carbohidratos[0])),
+                Math.min(...activeStrats.map(s => estrategiaMap[s].carbohidratos[1]))
+            ],
+            deficit: [ // Para déficit/superávit
+                Math.min(...activeStrats.map(s => estrategiaMap[s].deficit[0])),
+                Math.max(...activeStrats.map(s => estrategiaMap[s].deficit[1]))
+            ],
+            notas: activeStrats.map(s => estrategiaMap[s].nota).join('; ')
+        };
+
+        // Validar que los rangos combinados sean válidos
+        const rangosInvalidos = {};
+        let hayIncompatibilidad = false;
+        for (const [macro, rango] of Object.entries(combinedRanges)) {
+             // 'notas' y 'deficit' no se validan como rangos de porcentajes
+             if (macro !== 'notas' && macro !== 'deficit' && rango[0] > rango[1]) {
+                 rangosInvalidos[macro] = rango;
+                 hayIncompatibilidad = true;
+             }
+        }
+
+        if (hayIncompatibilidad) {
+            console.error('Rangos de macronutrientes incompatibles detectados:', rangosInvalidos);
+            // Llamar al modal de incompatibilidad SOLO si es para macros
+            if (contexto === "macros") {
+                 mostrarModalIncompatibilidad(activeStrats, rangosInvalidos);
+            }
+            // Devolver null para indicar error al código que llamó a esta función
+            return null;
+        }
+
+        return combinedRanges;
+    } catch (error) {
+        console.error('Error al combinar rangos de estrategias:', error, strategies);
+        return null;
+    }
+}
+
+// --- Asegúrate también de que formatearNombreCodigo esté definida ---
+// Si no la tienes, aquí la incluyo:
+
+/**
+ * Formatea los códigos internos de objetivo y fase a nombres legibles.
+ * @param {string} codigo - El código interno (e.g., 'perdida1', 'induccion_cetogenica1').
+ * @returns {string} El nombre formateado (e.g., 'pérdida de peso', 'inducción cetogénica').
+ */
+function formatearNombreCodigo(codigo) {
+    const mapaCodigos = {
+        // Objetivos
+        'perdida1': 'pérdida de peso',
+        'ganancia1': 'ganancia de peso',
+        'mantenimiento1': 'mantenimiento',
+        'mixto1': 'plan mixto',
+        'sel': 'no seleccionado',
+        // Fases de Pérdida
+        'induccion_cetogenica1': 'inducción cetogénica',
+        'ciclado_metabolico1': 'ciclado metabólico',
+        'transicion_mantenimiento1': 'transición a mantenimiento',
+        'ketoadaptation': 'ketoadaptación',
+        // Fases de Ganancia
+        'volumen1': 'volumen muscular',
+        'masa1': 'enfoque en masa muscular',
+        // Enfoques de Mantenimiento
+        'equilibrio1': 'equilibrio flexible',
+        'social1': 'adherencia social',
+        // Fases de Mixto
+        // Estrategias (si quieres que se formateen en las recomendaciones)
+        'ninguna': 'Ninguna',
+        'tkd': 'TKD',
+        'ckd': 'CKD',
+        'if_16_8': 'IF 16:8',
+        'refeed': 'Refeed',
+        'hiperproteica': 'Hiperproteica',
+        'carb_cycling': 'Carb Cycling',
+        'protein_cycling': 'Protein Cycling',
+        'timing': 'Timing Nutricional',
+        'flexible_dieting': 'Flexible Dieting'
+        // Por defecto, intentar formatear el código si no está en el mapa
+    };
+
+    if (mapaCodigos[codigo]) {
+        return mapaCodigos[codigo];
+    }
+    return codigo ? codigo.replace(/_/g, ' ') : 'no especificado';
+}
+
 
     function crearGrafico(datos) {
         const ctx = document.getElementById('chartMacros').getContext('2d');
@@ -4048,6 +4557,16 @@ function validarEntradas() {
         }
         document.getElementById('planificacionTemporal').style.display = 'block';
         actualizarPlanificacion();
+		// Mostrar/Ocultar sección de planificación
+    document.getElementById('planificacionTemporal').style.display = 'block';
+
+		// --- NUEVO: Mostrar la Tabla General del Proceso ---
+		// Esta función creará/mostrará la tabla general SI los datos del Paso 6 están disponibles
+		mostrarTablaGeneralProceso('tablaGeneralProcesoContainer');
+		// -----------------------------------------------
+
+		// Actualizar la tabla semanal detallada (la actual)
+		actualizarPlanificacion();
     }
 
     function crearSemana(semanaNum, fase, dieta, estrategias, calorias, proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas) {
@@ -4065,205 +4584,409 @@ function validarEntradas() {
         return { semana: `Sem ${semanaNum}`, fase, dieta, estrategias, calorias, proteinasPct, carbohidratosPct, grasasPct, proteinas, carbohidratos, grasas, entrenoDias, notas };
     }
 
-    function generarPlanPerdida(periodo, peso, gastoEnergetico) {
-        const plan = [];
-        const fasePerdida = document.getElementById('fasePerdida1')?.value || 'induccion_cetogenica';
-        const estrategiasPerdida = getSelectedStrategies('opcionesPerdida1');
-        const semanas = periodo === 'mensual' ? 12 : 4;
+    // --- Reemplaza tu función generarPlanPerdida actual con esta ---
+	function generarPlanPerdida(periodo, peso, gastoEnergetico) {
+		const plan = [];
+	   
+		/// --- 1. Obtener selecciones del usuario ---
+		const fasePerdida = document.getElementById('fasePerdida1')?.value || 'induccion_cetogenica1';
+		const estrategiasPerdida = getSelectedStrategies(); // Asumiendo que esta función ya maneja el objetivo 'perdida1'
+		
+		// --- 2. Validación básica ---
+		if (!gastoEnergetico || gastoEnergetico <= 0) {
+			console.error("Gasto energético inválido para generar plan de pérdida.");
+			return plan;
+		}
+		
 
-        const dietas = {
-            cetogenica: { nombre: 'Cetogénica', proteinasPct: 20, carbohidratosPct: 5, grasasPct: 75 },
-            hiperproteica: { nombre: 'Hiperproteica', proteinasPct: 30, carbohidratosPct: 15, grasasPct: 55 },
-            carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 25, grasasPct: 50 },
-            if_16_8: { nombre: 'Intermittent Fasting (16:8)', proteinasPct: 25, carbohidratosPct: 25, grasasPct: 50 },
-            refeed: { nombre: 'Refeed', proteinasPct: 25, carbohidratosPct: 40, grasasPct: 35 },
-            ketoadaptation: { nombre: 'Ketoadaptation', proteinasPct: 20, carbohidratosPct: 10, grasasPct: 70 },
-            flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 30, carbohidratosPct: 35, grasasPct: 35 }
-        };
+    // --- 3. Definir constantes ---
+    const semanas = periodo === 'mensual' ? 12 : 4;
+    // Mapa de nombres formateados para las fases
+    const nombresFase = {
+        'induccion_cetogenica1': 'Inducción Cetogénica',
+        'ciclado_metabolico1': 'Ciclado Metabólico',
+        'transicion_mantenimiento1': 'Transición a Mantenimiento',
+        'ketoadaptation': 'Ketoadaptation'
+    };
+    const nombreFaseLegible = nombresFase[fasePerdida] || 'Fase no especificada';
 
-        const estrategiaMap = {
-            ninguna: { dieta: 'cetogenica', calMult: 0.825, notas: 'Cetosis estricta <50g HC/día', entrenoDias: '7 días descanso' },
-            tkd: { dieta: 'cetogenica', calMult: 0.825, notas: '25-50g HC pre/post entreno', entrenoDias: '4 días entreno, 3 días descanso' },
-            ckd: { dieta: 'cetogenica', calMult: 0.875, notas: '2 días carb-loading (150-200g HC)', entrenoDias: '5 días cetosis, 2 días carb-loading' },
-            if_16_8: { dieta: 'if_16_8', calMult: 0.8, notas: 'Ventana de alimentación 8 horas', entrenoDias: '4 días entreno, 3 días descanso' },
-            refeed: { dieta: 'refeed', calMult: 0.925, notas: '1-2 días/semana HC alto', entrenoDias: '5 días bajos, 2 días refeed' },
-            hiperproteica: { dieta: 'hiperproteica', calMult: 0.825, notas: '2.5-3.0 g/kg peso proteína', entrenoDias: '4 días entreno, 3 días descanso' },
-            carb_cycling: { dieta: 'carb_cycling', calMult: 0.85, notas: 'Días altos (100-130g)/bajos HC (<50g)', entrenoDias: '4 días entreno, 3 días descanso' },
-            protein_cycling: { dieta: 'hiperproteica', calMult: 0.85, notas: '4 semanas altas + 1 baja proteína', entrenoDias: '4 días entreno, 3 días descanso' },
-            timing: { dieta: 'hiperproteica', calMult: 0.85, notas: 'HC post-entreno', entrenoDias: '4 días entreno, 3 días descanso' },
-            flexible_dieting: { dieta: 'flexible_dieting', calMult: 0.9, notas: '80/20 regla: 80% saludable, 20% flexible', entrenoDias: '4 días entreno, 3 días descanso' }
-        };
+		// --- 4. Definir el mapa de estrategias (debe coincidir con el de calcularMacronutrientes) ---
+    const estrategiaMap = {
+        ninguna: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: 'Cetosis estricta <50g HC/día' },
+        tkd: { grasas: [65, 70], proteinas: [20, 25], carbohidratos: [8, 12], deficit: [0.8, 0.85], nota: '25-50g HC pre/post entreno' },
+        ckd: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.85, 0.9], nota: '2 días carb-loading (150-200g HC)' },
+        if_16_8: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 15], deficit: [0.75, 0.85], nota: 'Ventana de alimentación 8 horas' },
+        refeed: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.9, 0.95], nota: '1-2 días/semana HC alto' },
+        hiperproteica: { grasas: [60, 65], proteinas: [28, 32], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: '2.5-3.0 g/kg peso proteína' },
+        carb_cycling: { grasas: [60, 70], proteinas: [22, 28], carbohidratos: [8, 20], deficit: [0.8, 0.9], nota: 'Días altos (100-130g)/bajos HC (<50g)' },
+        protein_cycling: { grasas: [60, 70], proteinas: [18, 30], carbohidratos: [5, 15], deficit: [0.8, 0.9], nota: '4 semanas altas + 1 baja proteína' },
+        timing: { grasas: [50, 60], proteinas: [28, 35], carbohidratos: [10, 20], deficit: [0.85, 0.9], nota: 'HC post-entreno' },
+        flexible_dieting: { grasas: [30, 40], proteinas: [25, 35], carbohidratos: [30, 45], deficit: [0.9, 1.0], nota: '80/20 regla: 80% saludable, 20% flexible' }
+    };
+	
+	
+    // --- 5. Definir dietas base ---
+    const dietasBase = {
+        cetogenica: { nombre: 'Cetogénica', proteinasPct: 20, carbohidratosPct: 5, grasasPct: 75 },
+        hiperproteica_dieta: { nombre: 'Hiperproteica', proteinasPct: 30, carbohidratosPct: 5, grasasPct: 65 }, // Valores base
+        // Las demás se derivarán de las estrategias o se usarán valores por defecto
+        flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 25, carbohidratosPct: 40, grasasPct: 35 },
+        carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 20, grasasPct: 55 } // Valor base, se ajusta
+         // Valor base, se ajusta
+    };
+	
+	// --- 6. Determinar la dieta base principal ---
+    // Prioridad: Hiperproteica y Protein Cycling como dietas base, luego Carb Cycling, luego Cetogénica por defecto.
+    let dietaBaseKey = 'cetogenica'; // Valor por defecto para pérdida de peso
+    if (estrategiasPerdida.includes('hiperproteica')) {
+        dietaBaseKey = 'hiperproteica_dieta';
+        // Esta estrategia define directamente la dieta base como Hiperproteica (2.5-3.0 g/kg peso proteína)
+    } else if (estrategiasPerdida.includes('protein_cycling')) {
+        dietaBaseKey = 'hiperproteica_dieta'; // Protein Cycling se basa en una dieta hiperproteica
+        // La variación de proteína se manejará semana a semana
+    } else if (estrategiasPerdida.includes('carb_cycling')) {
+			
+        dietaBaseKey = 'carb_cycling_dieta';
+    } else if (estrategiasPerdida.includes('flexible_dieting')) {
+        dietaBaseKey = 'flexible_dieting_dieta';
+        // Para Carb Cycling en fase de pérdida, la base puede seguir siendo cetogenica o moderada
+        // pero la estrategia implica variar los carbohidratos.
+        // Mantenemos cetogenica como base y ajustamos según la estrategia.
+        // Si prefieres una base específica para carb cycling, defínela en dietasBase y úsala aquí.
+    }
+    // Para otras estrategias como 'ninguna', 'if_16_8', 'timing', 'flexible_dieting',
+    // la base sigue siendo cetogenica en el contexto de una fase de pérdida de peso cetogénica o similar.
+    // Las modificaciones específicas se aplican semana a semana más adelante.
 
-        const periodization = {
-            induccion_cetogenica: Array.from({ length: 6 }, (_, i) => ({
-                semana: i + 1,
-                dieta: estrategiasPerdida.length ? (estrategiasPerdida.includes('hiperproteica') || estrategiasPerdida.includes('protein_cycling') ? 'hiperproteica' : estrategiasPerdida.includes('carb_cycling') ? 'carb_cycling' : 'cetogenica') : 'cetogenica',
-                estrategias: estrategiasPerdida.length ? estrategiasPerdida : ['ninguna'],
-                calMult: estrategiasPerdida.length ? Math.min(...estrategiasPerdida.map(s => estrategiaMap[s].calMult)) : estrategiaMap.ninguna.calMult,
-                entrenoDias: estrategiasPerdida.length ? estrategiasPerdida.map(s => estrategiaMap[s].entrenoDias).join('; ') : estrategiaMap.ninguna.entrenoDias,
-                notas: estrategiasPerdida.length ? estrategiasPerdida.map(s => estrategiaMap[s].notas).join('; ') : estrategiaMap.ninguna.notas
-            })),
-            ciclado_metabolico: Array.from({ length: 10 }, (_, i) => ({
-                semana: i + 1,
-                dieta: estrategiasPerdida.includes('carb_cycling') ? 'carb_cycling' : 'cetogenica',
-                estrategias: estrategiasPerdida,
-                calMult: Math.min(...estrategiasPerdida.map(s => estrategiaMap[s].calMult)),
-                entrenoDias: estrategiasPerdida.map(s => estrategiaMap[s].entrenoDias).join('; '),
-                notas: estrategiasPerdida.map(s => estrategiaMap[s].notas).join('; ')
-            })),
-            transicion_mantenimiento: Array.from({ length: 4 }, (_, i) => ({
-                semana: i + 1,
-                dieta: 'flexible_dieting',
-                estrategias: estrategiasPerdida,
-                calMult: 0.9,
-                entrenoDias: '4 días entreno, 3 días descanso',
-                notas: 'Equilibrio nutricional, 80/20 regla'
-            })),
-            ketoadaptation: Array.from({ length: 12 }, (_, i) => ({
-                semana: i + 1,
-                dieta: estrategiasPerdida.includes('hiperproteica') || estrategiasPerdida.includes('protein_cycling') ? 'hiperproteica' : 'ketoadaptation',
-                estrategias: estrategiasPerdida,
-                calMult: Math.min(...estrategiasPerdida.map(s => estrategiaMap[s].calMult)),
-                entrenoDias: estrategiasPerdida.map(s => estrategiaMap[s].entrenoDias).join('; '),
-                notas: estrategiasPerdida.map(s => estrategiaMap[s].notas).join('; ')
-            }))
-        };
+        const nombreDietaBase = dietasBase[dietaBaseKey] ? dietasBase[dietaBaseKey].nombre : dietasBase['cetogenica'].nombre;
 
-        let planSemanas = [];
-        if (periodo === 'mensual') {
-            if (fasePerdida === 'induccion_cetogenica') {
-                planSemanas = periodization.induccion_cetogenica.slice(0, 6).concat(
-                    periodization.ciclado_metabolico.slice(0, 4),
-                    periodization.transicion_mantenimiento.slice(0, 2)
-                );
-            } else if (fasePerdida === 'ketoadaptation') {
-                planSemanas = periodization.ketoadaptation.slice(0, 12);
-            } else {
-                planSemanas = periodization[fasePerdida].slice(0, 12);
+	// --- 7. Combinar rangos de estrategias para obtener parámetros base ---
+    function getCombinedParams(strategies) {
+        if (!strategies || strategies.length === 0 || (strategies.length === 1 && strategies.includes('ninguna'))) {
+            return estrategiaMap.ninguna;
+        }
+        const activeStrats = strategies.filter(s => s !== 'ninguna');
+        if (activeStrats.length === 0) return estrategiaMap.ninguna;
+
+        try {
+            const combinedRanges = {
+                grasas: [
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].grasas[0])),
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].grasas[1]))
+                ],
+                proteinas: [
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].proteinas[0])),
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].proteinas[1]))
+                ],
+                carbohidratos: [
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].carbohidratos[0])),
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].carbohidratos[1]))
+                ],
+                deficit: [
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].deficit[0])),
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].deficit[1]))
+                ],
+                notas: activeStrats.map(s => estrategiaMap[s].nota).join('; ')
+            };
+			
+			if (combinedRanges.grasas[0] > combinedRanges.grasas[1] ||
+                combinedRanges.proteinas[0] > combinedRanges.proteinas[1] ||
+                combinedRanges.carbohidratos[0] > combinedRanges.carbohidratos[1]) {
+                console.error('Rangos de macronutrientes incompatibles al generar plan:', combinedRanges);
+                return null; // Indicar error
             }
-        } else {
-            planSemanas = periodization[fasePerdida].slice(0, 4);
+            return combinedRanges;
+        } catch (error) {
+             console.error('Error al combinar rangos para el plan:', error, strategies);
+             return null;
+        }
+    }
+	
+	
+		const paramsBase = getCombinedParams(estrategiasPerdida);
+		if (!paramsBase) {
+			// Manejar error
+			return plan;
+		}
+
+		// --- 8. Generar semanas ---
+    for (let i = 0; i < semanas; i++) {
+        const semanaNum = i + 1;
+        
+        // --- Valores iniciales para la semana basados en estrategias combinadas ---
+        let faseSemana = nombreFaseLegible;
+        let dietaSemana = nombreDietaBase; // Empieza con la dieta base
+        let proteinasPct = Math.round((paramsBase.proteinas[0] + paramsBase.proteinas[1]) / 2);
+        let carbohidratosPct = Math.round((paramsBase.carbohidratos[0] + paramsBase.carbohidratos[1]) / 2);
+        let grasasPct = 100 - proteinasPct - carbohidratosPct; // Asegurar 100%
+        
+        // Ajustar si grasas es negativo
+        if (grasasPct < 0) {
+            const diff = -grasasPct;
+            carbohidratosPct = Math.max(0, carbohidratosPct - diff);
+            grasasPct = 0;
         }
 
-        for (let semana = 1; semana <= semanas; semana++) {
-            let semanaConfig = planSemanas[semana - 1] || planSemanas[planSemanas.length - 1];
-            let dieta = dietas[semanaConfig.dieta].nombre;
-            let estrategias = semanaConfig.estrategias;
-            let proteinasPct = dietas[semanaConfig.dieta].proteinasPct;
-            let carbohidratosPct = dietas[semanaConfig.dieta].carbohidratosPct;
-            let grasasPct = dietas[semanaConfig.dieta].grasasPct;
-            let calMult = semanaConfig.calMult;
-            let entrenoDias = semanaConfig.entrenoDias;
-            let notas = semanaConfig.notas;
-
-            // Asegurar que las calorías sean válidas
-            let calorias = Math.round(gastoEnergetico * calMult);
-            if (isNaN(calorias) || calorias <= 0) {
-                document.getElementById('errorMessage').textContent = `Error en Semana ${semana}: No se pudieron calcular las calorías. Verifique los datos personales.`;
-                document.getElementById('errorMessage').style.display = 'block';
-                return plan;
-            }
-
-            if (estrategias.includes('ckd') && (semana === 4 || semana === 8 || semana === 12)) {
-                dieta = dietas.refeed.nombre;
-                proteinasPct = dietas.refeed.proteinasPct;
-                carbohidratosPct = dietas.refeed.carbohidratosPct;
-                grasasPct = dietas.refeed.grasasPct;
-                calMult = 0.925;
-                calorias = Math.round(gastoEnergetico * calMult);
-                notas = '2 días carb-loading (150-200g HC)' + (notas ? '; ' + notas : '');
-                entrenoDias = '2 días carb-loading';
-            } else if (estrategias.includes('refeed') && (semana === 4 || semana === 8 || semana === 12)) {
-                dieta = dietas.refeed.nombre;
-                proteinasPct = dietas.refeed.proteinasPct;
-                carbohidratosPct = dietas.refeed.carbohidratosPct;
-                grasasPct = dietas.refeed.grasasPct;
-                calMult = 0.925;
-                calorias = Math.round(gastoEnergetico * calMult);
-                notas = '1-2 días/semana HC alto' + (notas ? '; ' + notas : '');
-                entrenoDias = '2 días refeed';
-            } else if (estrategias.includes('protein_cycling') && semana % 5 === 0) {
-                dieta = dietas.hiperproteica.nombre;
-                proteinasPct = 20;
-                carbohidratosPct = 20;
-                grasasPct = 60;
-                calMult = 0.85;
-                calorias = Math.round(gastoEnergetico * calMult);
-                notas = 'Semana baja proteína' + (notas ? '; ' + notas : '');
-                entrenoDias = '4 días entreno, 3 días descanso';
-            } else if (estrategias.includes('carb_cycling') && semana % 2 === 0) {
-                dieta = dietas.carb_cycling.nombre;
-                proteinasPct = dietas.carb_cycling.proteinasPct;
-                carbohidratosPct = 35;
-                grasasPct = 40;
-                calMult = 0.9;
-                calorias = Math.round(gastoEnergetico * calMult);
-                notas = 'Días altos HC (100-130g)' + (notas ? '; ' + notas : '');
-                entrenoDias = '4 días entreno';
-            }
-
-            const semanaObj = crearSemana(semana, fasePerdida, dieta, estrategias.join(', '), calorias, proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas);
-            if (semanaObj) plan.push(semanaObj);
+        let calMult = (paramsBase.deficit[0] + paramsBase.deficit[1]) / 2;
+        let calorias = Math.round(gastoEnergetico * calMult);
+        let entrenoDias = '4 días entreno, 3 días descanso'; // Valor por defecto
+        let notasSemana = paramsBase.notas || 'Sin estrategias especiales';
+   
+		// --- 9. Aplicar modificaciones por estrategias específicas en semanas específicas ---
+        
+        // --- Refeed Semanal ---
+        if (estrategiasPerdida.includes('refeed') && (semanaNum % 4 === 0 || semanaNum === semanas)) {
+            // Aumentar carbohidratos, reducir grasas
+            carbohidratosPct = Math.min(95, carbohidratosPct + 20); // Ejemplo de ajuste
+            grasasPct = Math.max(5, 100 - proteinasPct - carbohidratosPct);
+            calMult = Math.min(1.0, calMult * 1.05); // Pequeño aumento de calorías
+            calorias = Math.round(gastoEnergetico * calMult);
+            dietaSemana = nombresDietas['refeed_dieta']; // Cambiar dieta para la semana
+            notasSemana = `Día de Refeed (${carbohidratosPct}% HC). ` + notasSemana;
+            entrenoDias = 'Día de Refeed';
         }
+        // --- Carb Cycling (ej: semanas pares) ---
+        else if (estrategiasPerdida.includes('carb_cycling') && (semanaNum % 2 === 0)) {
+            // Día alto en carbohidratos
+            carbohidratosPct = Math.min(90, carbohidratosPct + 15); // Ejemplo de ajuste
+            grasasPct = Math.max(5, 100 - proteinasPct - carbohidratosPct);
+            notasSemana = `Día alto HC (${carbohidratosPct}%). ` + notasSemana;
+            entrenoDias = 'Día alto HC';
+		}
+		// --- Protein Cycling (ej: cada 5 semanas) ---
+        else if (estrategiasPerdida.includes('protein_cycling') && (semanaNum % 5 === 0)) {
+             // Reducir proteína
+             const proteinasPctBaja = Math.max(15, proteinasPct - 10); // Ejemplo de ajuste
+             proteinasPct = proteinasPctBaja;
+             grasasPct = 100 - proteinasPct - carbohidratosPct; // Recalcular grasas
+             notasSemana = `Semana baja proteína (${proteinasPct}%). ` + notasSemana;
+             entrenoDias = 'Entreno ligero esta semana';
+        }
+        // --- CKD (ej: semanas 4, 8, 12) ---
+        else if (estrategiasPerdida.includes('ckd') && (semanaNum % 4 === 0)) {
+            // Similar a refeed, pero más extremo y específico
+            carbohidratosPct = Math.min(95, carbohidratosPct + 30); // Aumento muy alto
+            grasasPct = Math.max(2, 100 - proteinasPct - carbohidratosPct);
+            calMult = Math.min(1.0, calMult * 1.1); // Aumento de calorías
+            calorias = Math.round(gastoEnergetico * calMult);
+            dietaSemana = nombresDietas['refeed_dieta']; // Tambien alta en HC
+            notasSemana = `CKD - 2 días carb-loading (150-200g HC). ` + notasSemana;
+            entrenoDias = '2 días carb-loading';
+        }
+		
+			// --- IF 16:8, TKD, Timing, Flexible Dieting ---
+			// Estas estrategias afectan más el timing o la adherencia que los macros brutos semanales.
+			// Sus notas ya están incluidas en paramsBase.notas. Podemos enfatizarlas:
+			// else if (estrategiasPerdida.includes('if_16_8')) { ... }
+			// else if (estrategiasPerdida.includes('tkd')) { ... }
+			// else if (estrategiasPerdida.includes('timing')) { ... }
+			// else if (estrategiasPerdida.includes('flexible_dieting')) { ... }
+			
+			// --- 10. Validación final de calorías ---
+			// (Opcional, puedes reutilizar la lógica de límites mínimos si la tenías)
 
+			// --- 11. Crear objeto de semana ---
+			const semanaObj = crearSemana(
+				semanaNum,
+				faseSemana, // Fase legible como "Inducción Cetogénica"
+				dietaSemana, // Dieta derivada de estrategias como "Hiperproteica"
+				estrategiasPerdida.join(', '), // Todas las estrategias aplicables
+				calorias,
+				proteinasPct,
+				carbohidratosPct,
+				grasasPct,
+				entrenoDias,
+				notasSemana // Notas específicas de la semana + generales
+			);
+
+			if (semanaObj) {
+				plan.push(semanaObj);
+			}
+		}
+
+		return plan;
+	}
+		
+    
+    /**
+ * Genera un plan semanal para el objetivo de Ganancia de Peso, considerando las estrategias.
+ * @param {string} periodo - 'semanal' o 'mensual'.
+ * @param {number} peso - El peso del usuario en kg.
+ * @param {number} gastoEnergetico - El TDEE calculado.
+ * @returns {Array} Un array de objetos, cada uno representando una semana del plan.
+ */
+function generarPlanGanancia(periodo, peso, gastoEnergetico) {
+    const plan = [];
+    
+    // --- 1. Obtener selecciones del usuario ---
+    const estrategiasGanancia = getSelectedStrategies(); // Usar tu función que ya funciona
+    // Para ganancia, no hay una "fase" como tal en tu HTML, pero podemos definir un nombre genérico
+    const faseGanancia = 'Volumen Muscular'; // O como se defina en tu contexto
+
+    // --- 2. Validación básica ---
+    if (!gastoEnergetico || gastoEnergetico <= 0) {
+        console.error("Gasto energético inválido para generar plan de ganancia.");
         return plan;
     }
 
-    function generarPlanGanancia(periodo, peso, gastoEnergetico) {
-        const plan = [];
-        const estrategiasGanancia = getSelectedStrategies('opcionesGanancia');
-        const semanas = periodo === 'mensual' ? 12 : 4;
+    // --- 3. Definir constantes ---
+    const semanas = periodo === 'mensual' ? 12 : 4;
 
-        const dietas = {
-            moderada: { nombre: 'Moderada en HC', proteinasPct: 25, carbohidratosPct: 45, grasasPct: 30 },
-            carb_cycling: { nombre: 'Carb Cycling', proteinasPct: 25, carbohidratosPct: 35, grasasPct: 40 },
-            refeed: { nombre: 'Refeed', proteinasPct: 24, carbohidratosPct: 40, grasasPct: 36 },
-            timing: { nombre: 'Timing Nutricional', proteinasPct: 28, carbohidratosPct: 35, grasasPct: 37 },
-            flexible_dieting: { nombre: 'Flexible Dieting', proteinasPct: 30, carbohidratosPct: 35, grasasPct: 35 }
-        };
+    // --- 4. Definir el mapa de estrategias (debe coincidir con el de calcularMacronutrientes) ---
+    const estrategiaMap = {
+       
+		ninguna: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: 'Cetosis estricta <50g HC/día' },
+        tkd: { grasas: [65, 70], proteinas: [20, 25], carbohidratos: [8, 12], deficit: [0.8, 0.85], nota: '25-50g HC pre/post entreno' },
+        ckd: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.85, 0.9], nota: '2 días carb-loading (150-200g HC)' },
+        if_16_8: { grasas: [70, 75], proteinas: [20, 25], carbohidratos: [5, 15], deficit: [0.75, 0.85], nota: 'Ventana de alimentación 8 horas' },
+        refeed: { grasas: [60, 65], proteinas: [20, 25], carbohidratos: [12, 18], deficit: [0.9, 0.95], nota: '1-2 días/semana HC alto' },
+        hiperproteica: { grasas: [60, 65], proteinas: [28, 32], carbohidratos: [5, 10], deficit: [0.8, 0.85], nota: '2.5-3.0 g/kg peso proteína' },
+        carb_cycling: { grasas: [60, 70], proteinas: [22, 28], carbohidratos: [8, 20], deficit: [0.8, 0.9], nota: 'Días altos (100-130g)/bajos HC (<50g)' },
+        protein_cycling: { grasas: [60, 70], proteinas: [18, 30], carbohidratos: [5, 15], deficit: [0.8, 0.9], nota: '4 semanas altas + 1 baja proteína' },
+        timing: { grasas: [50, 60], proteinas: [28, 35], carbohidratos: [10, 20], deficit: [0.85, 0.9], nota: 'HC post-entreno' },
+        flexible_dieting: { grasas: [30, 40], proteinas: [25, 35], carbohidratos: [30, 45], deficit: [0.9, 1.0], nota: '80/20 regla: 80% saludable, 20% flexible' }
+    
+    };
 
-        const estrategiaMap = {
-            ninguna: { dieta: 'moderada', calMult: 1.1, notas: 'Balance HC/proteína', entrenoDias: '4 días entreno, 3 días descanso' },
-            carb_cycling: { dieta: 'carb_cycling', calMult: 1.1, notas: 'Días altos (400-450g)/moderados HC (200g)', entrenoDias: '4 días entreno, 3 días descanso' },
-            refeed: { dieta: 'refeed', calMult: 1.15, notas: 'Días altos HC (450g) semanales', entrenoDias: '2 días refeed' },
-            timing: { dieta: 'timing', calMult: 1.1, notas: 'HC post-entreno', entrenoDias: '4 días entreno, 3 días descanso' },
-            flexible_dieting: { dieta: 'flexible_dieting', calMult: 1.1, notas: '80/20 regla: 80% saludable, 20% flexible', entrenoDias: '4 días entreno, 3 días descanso' }
-        };
+    // --- 5. Definir dietas base ---
+    const nombresDietas = {
+        moderada_en_hc: 'Moderada en HC',
+        carb_cycling_dieta: 'Carb Cycling',
+        refeed_dieta: 'Refeed (Alta HC)',
+        timing_dieta: 'Timing Nutricional',
+        flexible_dieting_dieta: 'Flexible Dieting',
+		protein_cycling_dieta: 'Protein Cycling'
+    };
 
-        for (let semana = 1; semana <= semanas; semana++) {
-            let dieta = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].nombre;
-            let estrategias = estrategiasGanancia;
-            let proteinasPct = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].proteinasPct;
-            let carbohidratosPct = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].carbohidratosPct;
-            let grasasPct = dietas[estrategiasGanancia.length ? estrategiaMap[estrategiasGanancia[0]].dieta : 'moderada'].grasasPct;
-            let calMult = Math.max(...estrategiasGanancia.map(s => estrategiaMap[s].calMult));
-            let entrenoDias = estrategiasGanancia.map(s => estrategiaMap[s].entrenoDias).join('; ');
-            let notas = estrategiasGanancia.map(s => estrategiaMap[s].notas).join('; ');
+    // --- 6. Determinar la dieta base principal ---
+    let dietaBaseKey = 'moderada_en_hc'; // Valor por defecto para ganancia
+    if (estrategiasGanancia.includes('carb_cycling')) {
+        dietaBaseKey = 'carb_cycling_dieta';
+    } else if (estrategiasGanancia.includes('refeed')) {
+        dietaBaseKey = 'refeed_dieta';
+    } else if (estrategiasGanancia.includes('timing')) {
+        dietaBaseKey = 'timing_dieta';
+    } else if (estrategiasGanancia.includes('flexible_dieting')) {
+        dietaBaseKey = 'flexible_dieting_dieta';
+    }else if (estrategiasGanancia.includes('protein_cycling')) {
+        dietaBaseKey = 'protein_cycling_dieta';
+    }
+    const nombreDietaBase = nombresDietas[dietaBaseKey] || nombresDietas['moderada_en_hc'];
 
-            if (estrategias.includes('refeed') && (semana === 4 || semana === 8 || semana === 12)) {
-                dieta = dietas.refeed.nombre;
-                proteinasPct = dietas.refeed.proteinasPct;
-                carbohidratosPct = dietas.refeed.carbohidratosPct;
-                grasasPct = dietas.refeed.grasasPct;
-                calMult = 1.15;
-                notas = 'Días altos HC (450g)' + (notas ? '; ' + notas : '');
-                entrenoDias = '2 días refeed';
-            } else if (estrategias.includes('carb_cycling') && semana % 2 === 0) {
-                dieta = dietas.carb_cycling.nombre;
-                proteinasPct = dietas.carb_cycling.proteinasPct;
-                carbohidratosPct = 45;
-                grasasPct = 30;
-                calMult = 1.15;
-                notas = 'Días altos HC (400-450g)' + (notas ? '; ' + notas : '');
-                entrenoDias = '4 días entreno';
-            }
-
-            const semanaObj = crearSemana(semana, 'Volumen', dieta, estrategias.join(', '), Math.round(gastoEnergetico * calMult), proteinasPct, carbohidratosPct, grasasPct, entrenoDias, notas);
-            if (semanaObj) plan.push(semanaObj);
+    // --- 7. Combinar rangos de estrategias para obtener parámetros base ---
+    function getCombinedParams(strategies) {
+        if (!strategies || strategies.length === 0 || (strategies.length === 1 && strategies.includes('ninguna'))) {
+            return estrategiaMap.ninguna;
         }
+        const activeStrats = strategies.filter(s => s !== 'ninguna');
+        if (activeStrats.length === 0) return estrategiaMap.ninguna;
 
+        try {
+            const combinedRanges = {
+                grasas: [
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].grasas[0])),
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].grasas[1]))
+                ],
+                proteinas: [
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].proteinas[0])),
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].proteinas[1]))
+                ],
+                carbohidratos: [
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].carbohidratos[0])),
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].carbohidratos[1]))
+                ],
+                deficit: [ // En este contexto, deficit es superávit
+                    Math.min(...activeStrats.map(s => estrategiaMap[s].deficit[0])),
+                    Math.max(...activeStrats.map(s => estrategiaMap[s].deficit[1]))
+                ],
+                notas: activeStrats.map(s => estrategiaMap[s].nota).join('; ')
+            };
+
+            if (combinedRanges.grasas[0] > combinedRanges.grasas[1] ||
+                combinedRanges.proteinas[0] > combinedRanges.proteinas[1] ||
+                combinedRanges.carbohidratos[0] > combinedRanges.carbohidratos[1]) {
+                console.error('Rangos de macronutrientes incompatibles al generar plan de ganancia:', combinedRanges);
+                return null;
+            }
+            return combinedRanges;
+        } catch (error) {
+            console.error('Error al combinar rangos para el plan de ganancia:', error, strategies);
+            return null;
+        }
+    }
+
+    const paramsBase = getCombinedParams(estrategiasGanancia);
+    if (!paramsBase) {
+        console.error("No se pudieron combinar los parámetros de las estrategias para el plan de ganancia.");
         return plan;
     }
+
+    // --- 8. Generar semanas ---
+    for (let i = 0; i < semanas; i++) {
+        const semanaNum = i + 1;
+        
+        // --- Valores iniciales para la semana basados en estrategias combinadas ---
+        let faseSemana = faseGanancia; // 'Volumen Muscular'
+        let dietaSemana = nombreDietaBase;
+        let proteinasPct = Math.round((paramsBase.proteinas[0] + paramsBase.proteinas[1]) / 2);
+        let carbohidratosPct = Math.round((paramsBase.carbohidratos[0] + paramsBase.carbohidratos[1]) / 2);
+        let grasasPct = 100 - proteinasPct - carbohidratosPct;
+        
+        if (grasasPct < 0) {
+            const diff = -grasasPct;
+            carbohidratosPct = Math.max(0, carbohidratosPct - diff);
+            grasasPct = 0;
+        }
+
+        let calMult = (paramsBase.deficit[0] + paramsBase.deficit[1]) / 2;
+        let calorias = Math.round(gastoEnergetico * calMult);
+        let entrenoDias = '4 días entreno, 3 días descanso';
+        let notasSemana = paramsBase.notas || 'Sin estrategias especiales';
+
+        // --- 9. Aplicar modificaciones por estrategias específicas en semanas específicas ---
+        
+        // --- Refeed Semanal ---
+        if (estrategiasGanancia.includes('refeed') && (semanaNum % 4 === 0 || semanaNum === semanas)) {
+            carbohidratosPct = Math.min(95, carbohidratosPct + 15);
+            grasasPct = Math.max(5, 100 - proteinasPct - carbohidratosPct);
+            calMult = Math.min(1.25, calMult * 1.05);
+            calorias = Math.round(gastoEnergetico * calMult);
+            dietaSemana = nombresDietas['refeed_dieta'];
+            notasSemana = `Día de Refeed (${carbohidratosPct}% HC). ` + notasSemana;
+            entrenoDias = 'Día de Refeed';
+        }
+        // --- Carb Cycling (ej: semanas pares) ---
+        else if (estrategiasGanancia.includes('carb_cycling') && (semanaNum % 2 === 0)) {
+            carbohidratosPct = Math.min(90, carbohidratosPct + 10);
+            grasasPct = Math.max(5, 100 - proteinasPct - carbohidratosPct);
+            notasSemana = `Día alto HC (${carbohidratosPct}%). ` + notasSemana;
+            entrenoDias = 'Día alto HC';
+        }
+        // --- Timing Nutricional ---
+        // Se refleja en las notas generales y en la distribución de comidas
+        // else if (estrategiasGanancia.includes('timing')) { ... }
+
+        // --- 10. Crear objeto de semana ---
+        const semanaObj = crearSemana(
+            semanaNum,
+            faseSemana,
+            dietaSemana,
+            estrategiasGanancia.join(', '),
+            calorias,
+            proteinasPct,
+            carbohidratosPct,
+            grasasPct,
+            entrenoDias,
+            notasSemana
+        );
+
+        if (semanaObj) {
+            plan.push(semanaObj);
+        }
+    }
+
+    return plan;
+}
 
     function generarPlanMantenimiento(periodo, peso, gastoEnergetico) {
         const plan = [];
@@ -4494,7 +5217,7 @@ function validarEntradas() {
         };
 
         // Validar límite de proteínas (2.5 g/kg) para días altos de proteína
-        const peso = parseFloat(document.getElementById('peso').value);
+        const peso = parseFloat(document.getElementById('weight').value);
         const isHighProtein = semana.dieta === 'Hiperproteica' || semana.estrategias.includes('hiperproteica');
         if (isHighProtein && !isNaN(peso) && semana.proteinas > 2.5 * peso) {
             document.getElementById(`errorMessageSem${semanaNum}`).textContent = `Error en Semana ${semanaNum}: Las proteínas no deben exceder 2.5 g/kg de peso corporal (${(2.5 * peso).toFixed(1)} g).`;
@@ -4614,7 +5337,56 @@ function calcularMacros() {
         const sexo = document.getElementById('gender').value;
         const actividad = parseFloat(document.getElementById('activity').value);
         const objetivo = document.getElementById('objetivo').value;
-
+		
+		// --- Validación de fase seleccionada (AÑADIDO) ---
+		let faseValida = true;
+		let nombreSelectFase = ''; // Para el mensaje de error
+		
+		switch (objetivo) {
+        case 'perdida1':
+            const fasePerdida = document.getElementById('fasePerdida1')?.value;
+            if (!fasePerdida || fasePerdida.startsWith('sel')) {
+                faseValida = false;
+                nombreSelectFase = 'Fase de Pérdida de Peso';
+            }
+            break;
+        case 'ganancia1':
+            const faseGanancia = document.getElementById('faseGanancia1')?.value;
+            if (!faseGanancia || faseGanancia.startsWith('sel')) {
+                faseValida = false;
+                nombreSelectFase = 'Fase de Ganancia de Peso';
+            }
+            break;
+        case 'mantenimiento1':
+            const enfoqueMantenimiento = document.getElementById('enfoqueMantenimiento1')?.value;
+            if (!enfoqueMantenimiento || enfoqueMantenimiento.startsWith('sel')) {
+                faseValida = false;
+                nombreSelectFase = 'Enfoque de Mantenimiento';
+            }
+            break;
+        case 'mixto1':
+            const faseMixto = document.getElementById('faseMixto1')?.value;
+            if (!faseMixto || faseMixto.startsWith('sel')) {
+                faseValida = false;
+                nombreSelectFase = 'Fase del Plan Mixto';
+				 }
+            break;
+        // 'sel' u otros objetivos no requieren fase, faseValida sigue siendo true por defecto
+        default:
+            // Si el objetivo no es ninguno de los que requieren fase específica, no hacemos nada aquí.
+            break;
+    }
+	if (!faseValida) {
+        const errorMsg = `Por favor, selecciona una opción válida en "${nombreSelectFase}" antes de calcular.`;
+        console.error(errorMsg);
+        const errorMsgElement = document.getElementById('errorMessage'); // Asegúrate de que este ID exista
+        if (errorMsgElement) {
+            errorMsgElement.textContent = errorMsg;
+            errorMsgElement.style.display = 'block';
+        }
+        // Detener la ejecución
+        return;
+    }
         // Validate inputs
         if (isNaN(peso) || isNaN(altura) || isNaN(edad) || !sexo || isNaN(actividad) || !objetivo) {
             const errorMessage = document.getElementById('errorMessage');
@@ -4638,21 +5410,45 @@ function calcularMacros() {
         }
 
         // Calculate TDEE
-        const gastoEnergetico = Math.round(calcularTMB(peso, altura, edad, sexo) * actividad);
+			const tmb = calcularTMB(peso, altura, edad, sexo);
+			if (isNaN(tmb) || tmb <= 0) {
+				 const errorMessage = document.getElementById('errorMessage');
+				 if (errorMessage) {
+					 errorMessage.textContent = 'Error al calcular el TMB. Verifique los datos personales.';
+					 errorMessage.style.display = 'block';
+				 }
+				 return;
+			}
+			
+			const gastoEnergetico = Math.round(tmb * actividad);
+        
+		
+		// Validate TDEE
+			if (isNaN(gastoEnergetico) || gastoEnergetico <= 0) {
+				const errorMessage = document.getElementById('errorMessage');
+				if (errorMessage) {
+					errorMessage.textContent = 'Error al calcular el gasto energético. Verifique los datos personales.';
+					errorMessage.style.display = 'block';
+				}
+				return;
+			}
+		
+		
+		/**
+ * Formatea los códigos internos de objetivo y fase a nombres legibles.
+ * @param {string} codigo - El código interno (e.g., 'perdida1', 'induccion_cetogenica1').
+ * @returns {string} El nombre formateado (e.g., 'pérdida de peso', 'inducción cetogénica').
+ */
 
-        // Validate TDEE
-        if (isNaN(gastoEnergetico) || gastoEnergetico <= 0) {
-            const errorMessage = document.getElementById('errorMessage');
-            if (errorMessage) {
-                errorMessage.textContent = 'Error al calcular el gasto energético. Verifique los datos personales.';
-                errorMessage.style.display = 'block';
-            }
-            return;
-        }
-
+		
+		
         // Calculate macronutrients
         const resultados = calcularMacronutrientes(peso, gastoEnergetico, objetivo);
-        if (!resultados) return;
+        if (!resultados) {
+			// El error ya se muestra dentro de calcularMacronutrientes, pero puedes agregar un log general aquí si lo deseas
+			console.log("No se pudieron calcular los macronutrientes.");
+			return; // Salir si calcularMacronutrientes falló
+		}
 
         // Generate weekly plan
         weeklyMacros = [];
@@ -4670,6 +5466,10 @@ function calcularMacros() {
             case 'mixto1':
                 weeklyMacros = generarPlanMixto(periodo, peso, gastoEnergetico);
                 break;
+			default:
+				// Para objetivos que no generan plan automático, dejar weeklyMacros como []
+				console.log("Objetivo no requiere generación de plan semanal automático.");
+				break;
         }
 
         // Update UI
@@ -4696,29 +5496,35 @@ function calcularMacros() {
     });
 
     // Mostrar el select correspondiente al objetivo
+    // Mostrar el select correspondiente al objetivo
     switch(objetivo) {
         case 'perdida1':
             if (document.getElementById('fasePerdida1')) {
                 document.getElementById('fasePerdida1').style.display = 'block';
-                document.getElementById('labelFasePerdida1').style.display = 'block';
+                // Asegúrate de que el label también exista
+                const label = document.getElementById('labelFasePerdida1');
+                if (label) label.style.display = 'block';
             }
             break;
         case 'ganancia1':
             if (document.getElementById('faseGanancia1')) {
                 document.getElementById('faseGanancia1').style.display = 'block';
-                document.getElementById('labelFaseGanancia1').style.display = 'block';
+                const label = document.getElementById('labelFaseGanancia1');
+                if (label) label.style.display = 'block';
             }
             break;
         case 'mantenimiento1':
             if (document.getElementById('enfoqueMantenimiento1')) {
                 document.getElementById('enfoqueMantenimiento1').style.display = 'block';
-                document.getElementById('labelEnfoqueMantenimiento1').style.display = 'block';
+                const label = document.getElementById('labelEnfoqueMantenimiento1');
+                if (label) label.style.display = 'block';
             }
             break;
         case 'mixto1':
             if (document.getElementById('faseMixto1')) {
                 document.getElementById('faseMixto1').style.display = 'block';
-                document.getElementById('labelFaseMixto1').style.display = 'block';
+                const label = document.getElementById('labelFaseMixto1');
+                if (label) label.style.display = 'block';
             }
             break;
         case 'sel':
@@ -4830,10 +5636,376 @@ function actualizarMacrosPorFase() {
     }
 	   
 });
+// --- Variables Globales para Configuración Manual ---
+// Almacena los valores de macros introducidos manualmente por el usuario.
+// Formato: { estrategia1: { proteinas: X, carbohidratos: Y, grasas: Z }, estrategia2: {...} }
+let macrosConfiguracionManual = {};
+
+/**
+ * Muestra el modal de incompatibilidad de estrategias.
+ * @param {Array<string>} estrategias - Las estrategias seleccionadas.
+ * @param {Object} rangosConflicto - (Opcional) Información detallada de los rangos que causan conflicto.
+ */
+	function mostrarModalIncompatibilidad(estrategias, rangosConflicto = null) {
+		const modal = document.getElementById('modalIncompatibilidad');
+		const mensajeElement = document.getElementById('mensajeIncompatibilidad');
+		const guiaElement = document.getElementById('guiaCompatibilidad');
+
+		if (!modal || !mensajeElement || !guiaElement) {
+			console.error("No se encontraron los elementos del modal de incompatibilidad.");
+			// Fallback: mostrar mensaje de error básico
+			const errorMsgElement = document.getElementById('errorMessage');
+			if (errorMsgElement) {
+				errorMsgElement.textContent = 'Las estrategias seleccionadas son incompatibles. Por favor, selecciona una combinación válida.';
+				errorMsgElement.style.display = 'block';
+			}
+			return;
+		}
+
+		// 1. Construir mensaje principal
+		let mensaje = `<p>Las estrategias que has seleccionado (<strong>${estrategias.join(', ')}</strong>) tienen requerimientos nutricionales contradictorios y no se pueden combinar automáticamente para calcular un rango válido de macronutrientes.</p>`;
+		
+		// 2. (Opcional) Añadir detalles técnicos si se proporcionan
+		if (rangosConflicto) {
+			mensaje += `<p><strong>Detalles del conflicto:</strong></p><ul>`;
+			for (const [macro, rango] of Object.entries(rangosConflicto)) {
+				if (Array.isArray(rango) && rango[0] > rango[1]) {
+					 mensaje += `<li><strong>${macro.charAt(0).toUpperCase() + macro.slice(1)}:</strong> Rango resultante inválido [${rango[0]}, ${rango[1]}].</li>`;
+				}
+			}
+			mensaje += `</ul>`;
+		}
+		mensajeElement.innerHTML = mensaje;
+
+		// 3. Construir guía de compatibilidad
+		// Esta es una guía básica. Puedes ampliarla o hacerla más dinámica.
+		let guiaHTML = `
+			<p><strong>Para el objetivo de Pérdida de Peso:</strong></p>
+			<ul>
+				<li><code>ninguna</code> + <code>hiperproteica</code></li>
+				<li><code>carb_cycling</code> (evitar combinar con <code>refeed</code>)</li>
+				<li><code>refeed</code> (evitar combinar con <code>carb_cycling</code>)</li>
+				<li><code>flexible_dieting</code> (mejor sin otras estrategias de extremos)</li>
+			</ul>
+			<p><strong>Para el objetivo de Ganancia de Peso:</strong></p>
+			<ul>
+				<li><code>ninguna</code> + <code>hiperproteica</code></li>
+				<li><code>carb_cycling</code> (evitar combinar con <code>refeed</code>)</li>
+				<li><code>refeed</code> (evitar combinar con <code>carb_cycling</code>)</li>
+			</ul>
+			<p><strong>Para el objetivo de Mantenimiento:</strong></p>
+			<ul>
+				<li><code>ninguna</code> + <code>flexibilidad_selectiva</code></li>
+				<li><code>ciclado_ch_suave</code> (evitar combinar con <code>refeed</code>)</li>
+				<li><code>refeed</code> (evitar combinar con <code>ciclado_ch_suave</code>)</li>
+			</ul>
+			<p><i>Nota: Las estrategias como <code>timing</code>, <code>if_16_8</code>, etc., suelen ser compatibles con varias otras.</i></p>
+		`;
+		guiaElement.innerHTML = guiaHTML;
+
+		// 4. Mostrar el modal
+		modal.style.display = 'flex'; // Usamos flex para centrarlo como en el CSS
+	}
+
+/**
+ * Cierra un modal específico.
+ * @param {string} modalId - El ID del modal a cerrar.
+ */
+function cerrarModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+/**
+ * Abre el modal de configuración manual de macronutrientes.
+ */
+	function abrirModalConfiguracionManual() {
+		// Primero, cerrar el modal de incompatibilidad
+		cerrarModal('modalIncompatibilidad');
+
+		const modal = document.getElementById('modalConfiguracionManual');
+		const contenedor = document.getElementById('contenedorEntradasManuales');
+		const errorElement = document.getElementById('errorConfiguracionManual');
+
+		if (!modal || !contenedor) {
+			console.error("No se encontraron los elementos del modal de configuración manual.");
+			return;
+		}
+
+		// Limpiar mensajes de error anteriores
+		if (errorElement) {
+			errorElement.style.display = 'none';
+			errorElement.textContent = '';
+		}
+
+		// Obtener estrategias seleccionadas
+		// Asumimos que getSelectedStrategies() ya sabe cómo obtenerlas basándose en el objetivo actual
+		const estrategias = getSelectedStrategies();
+		const estrategiasActivas = estrategias.filter(s => s !== 'ninguna');
+
+		if (estrategiasActivas.length === 0) {
+			if (errorElement) {
+				errorElement.textContent = 'No hay estrategias seleccionadas para configurar.';
+				errorElement.style.display = 'block';
+			}
+			modal.style.display = 'flex';
+			return;
+		}
+
+		// 1. Generar bloques de entrada para cada estrategia
+		contenedor.innerHTML = ''; // Limpiar contenido previo
+		estrategiasActivas.forEach(estrategia => {
+			const bloqueId = `bloque_${estrategia}`;
+			const inputProteinaId = `manual_proteina_${estrategia}`;
+			const inputCarbohidratosId = `manual_carbohidratos_${estrategia}`;
+			const inputGrasasId = `manual_grasas_${estrategia}`;
+
+			// Intentar obtener valores guardados previamente o usar valores por defecto razonables
+			const configGuardada = macrosConfiguracionManual[estrategia];
+			const valorProteina = configGuardada?.proteinas ?? 25;
+			const valorCarbohidratos = configGuardada?.carbohidratos ?? 40;
+			const valorGrasas = configGuardada?.grasas ?? 35;
+			const totalInicial = valorProteina + valorCarbohidratos + valorGrasas;
+
+			const bloqueHTML = `
+				<div class="bloque-estrategia-manual mb-3 p-3 border rounded" id="${bloqueId}" data-estrategia="${estrategia}">
+					<h6>Estrategia: <span class="nombre-estrategia fw-bold">${estrategia}</span></h6>
+					<div class="row">
+						<div class="col-md-4 mb-2">
+							<label for="${inputProteinaId}" class="form-label">Proteína (%)</label>
+							<input type="number" class="form-control input-macro-manual" id="${inputProteinaId}" name="${inputProteinaId}" 
+								   data-estrategia="${estrategia}" data-macro="proteinas" 
+								   min="0" max="100" value="${valorProteina}" required>
+						</div>
+						<div class="col-md-4 mb-2">
+							<label for="${inputCarbohidratosId}" class="form-label">Carbohidratos (%)</label>
+							<input type="number" class="form-control input-macro-manual" id="${inputCarbohidratosId}" name="${inputCarbohidratosId}" 
+								   data-estrategia="${estrategia}" data-macro="carbohidratos" 
+								   min="0" max="100" value="${valorCarbohidratos}" required>
+						</div>
+						<div class="col-md-4 mb-2">
+							<label for="${inputGrasasId}" class="form-label">Grasas (%)</label>
+							<input type="number" class="form-control input-macro-manual" id="${inputGrasasId}" name="${inputGrasasId}" 
+								   data-estrategia="${estrategia}" data-macro="grasas" 
+								   min="0" max="100" value="${valorGrasas}" required>
+						</div>
+					</div>
+					<div class="total-macro-manual mt-2">
+						<strong>Total: <span class="valor-total">${totalInicial}</span>%</strong>
+						<span class="estado-total text-success" style="${totalInicial === 100 ? 'display:inline;' : 'display:none;'}">✓ Correcto</span>
+						<span class="estado-total text-danger" style="${totalInicial !== 100 ? 'display:inline;' : 'display:none;'}">✗ Debe ser 100%</span>
+					</div>
+				</div>
+			`;
+			contenedor.insertAdjacentHTML('beforeend', bloqueHTML);
+		});
+
+		// 2. Añadir event listeners a los inputs recién creados para validación en tiempo real
+		document.querySelectorAll('.input-macro-manual').forEach(input => {
+			input.addEventListener('input', function() {
+				// Encontrar el bloque padre de esta estrategia
+				const bloque = this.closest('.bloque-estrategia-manual');
+				if (!bloque) return;
+
+				const estrategia = bloque.dataset.estrategia;
+				const inputs = bloque.querySelectorAll('.input-macro-manual');
+				let total = 0;
+				inputs.forEach(inp => {
+					const val = parseInt(inp.value) || 0; // Convertir a número, 0 si NaN
+					// Asegurar que esté dentro del rango 0-100
+					if (val < 0) inp.value = 0;
+					if (val > 100) inp.value = 100;
+					total += parseInt(inp.value) || 0;
+				});
+
+				const totalElement = bloque.querySelector('.valor-total');
+				const estadoCorrecto = bloque.querySelector('.estado-total.text-success');
+				const estadoError = bloque.querySelector('.estado-total.text-danger');
+
+				if (totalElement) totalElement.textContent = total;
+				if (estadoCorrecto) estadoCorrecto.style.display = total === 100 ? 'inline' : 'none';
+				if (estadoError) estadoError.style.display = total !== 100 ? 'inline' : 'none';
+			});
+		});
+
+		// 3. Mostrar el modal
+		modal.style.display = 'flex';
+	}
+
+/**
+ * Valida y aplica la configuración manual de macronutrientes.
+ * Almacena los valores en `macrosConfiguracionManual` y cierra el modal.
+ */
+	function aplicarConfiguracionManual() {
+		const contenedor = document.getElementById('contenedorEntradasManuales');
+		const errorElement = document.getElementById('errorConfiguracionManual');
+		const modal = document.getElementById('modalConfiguracionManual');
+
+		if (!contenedor || !errorElement || !modal) {
+			console.error("No se encontraron elementos necesarios para aplicar la configuración manual.");
+			return;
+		}
+
+		// Limpiar mensajes de error
+		errorElement.style.display = 'none';
+		errorElement.textContent = '';
+
+		// Obtener todos los bloques
+		const bloques = contenedor.querySelectorAll('.bloque-estrategia-manual');
+		const nuevaConfiguracion = {};
+
+		let todoValido = true;
+
+		bloques.forEach(bloque => {
+			const estrategia = bloque.dataset.estrategia;
+			const inputProteina = bloque.querySelector(`#manual_proteina_${estrategia}`);
+			const inputCarbohidratos = bloque.querySelector(`#manual_carbohidratos_${estrategia}`);
+			const inputGrasas = bloque.querySelector(`#manual_grasas_${estrategia}`);
+
+			const p = parseInt(inputProteina.value) || 0;
+			const c = parseInt(inputCarbohidratos.value) || 0;
+			const g = parseInt(inputGrasas.value) || 0;
+			const total = p + c + g;
+
+			if (total !== 100) {
+				todoValido = false;
+				// Resaltar el bloque con error
+				bloque.style.borderColor = '#dc3545'; // Rojo de Bootstrap
+				bloque.style.backgroundColor = '#f8d7da'; // Fondo rojo claro
+				// Asegurarse de que el mensaje de error del bloque sea visible
+				const estadoError = bloque.querySelector('.estado-total.text-danger');
+				if (estadoError) estadoError.style.display = 'inline';
+			} else {
+				// Restaurar estilo si es válido
+				bloque.style.borderColor = '';
+				bloque.style.backgroundColor = '';
+				nuevaConfiguracion[estrategia] = {
+					proteinas: p,
+					carbohidratos: c,
+					grasas: g
+				};
+			}
+		});
+
+		if (!todoValido) {
+			errorElement.textContent = 'Por favor, corrige los errores. La suma de macros para cada estrategia debe ser 100%.';
+			errorElement.style.display = 'block';
+			return;
+		}
+
+		// Si todo es válido, almacenar la configuración
+		macrosConfiguracionManual = nuevaConfiguracion;
+		console.log("Configuración manual aplicada:", macrosConfiguracionManual);
+
+		// Cerrar el modal
+		modal.style.display = 'none';
+
+		// Opcional: Mostrar un mensaje de confirmación o disparar el cálculo
+		// Por ejemplo, podrías llamar a calcularMacros() aquí si quieres que se recalcule inmediatamente
+		// calcularMacros(); 
+		// O simplemente mostrar un mensaje
+		const confirmMsg = document.getElementById('errorMessage'); // Reusamos el div de error para mensajes
+		if (confirmMsg) {
+			confirmMsg.textContent = 'Configuración manual de macronutrientes guardada. Puedes ahora calcular tus macros.';
+			confirmMsg.className = 'alert alert-success'; // Cambiar clase para que parezca éxito
+			confirmMsg.style.display = 'block';
+			// Opcional: ocultar el mensaje después de unos segundos
+			// setTimeout(() => { confirmMsg.style.display = 'none'; }, 5000);
+		}
+	}
+
+
 </script>
+
+
+<!-- Modal para Incompatibilidad de Estrategias -->
+<div id="modalIncompatibilidad" class="modal" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog modal-lg" role="document"> <!-- modal-lg para más espacio -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">⚠️ Estrategias Incompatibles Seleccionadas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal('modalIncompatibilidad')"></button>
+      </div>
+      <div class="modal-body">
+        <p id="mensajeIncompatibilidad">
+          <!-- El mensaje se llenará dinámicamente -->
+        </p>
+        <hr>
+        <h6>Guía de Compatibilidad Sugerida:</h6>
+        <div id="guiaCompatibilidad">
+            <!-- La guía se llenará dinámicamente -->
+        </div>
+        <hr>
+        <p><strong>¿Quieres definir manualmente los macronutrientes para tus estrategias?</strong></p>
+        <p>Puedes hacerlo pulsando el botón de abajo. Esto te permitirá personalizar los valores incluso si las estrategias iniciales son incompatibles según nuestra lógica automática.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalIncompatibilidad')">Aceptar y Corregir</button>
+        <button type="button" class="btn btn-primary" onclick="abrirModalConfiguracionManual()">Configurar Macros Manualmente</button>
+        <!-- Botón oculto por ahora, se puede activar si se implementa "Forzar Combinación"
+        <button type="button" class="btn btn-warning" style="display:none;">Forzar Combinación (Avanzado)</button>
+        -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Configuración Manual de Macronutrientes -->
+<div id="modalConfiguracionManual" class="modal" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog modal-xl" role="document"> <!-- modal-xl para mucho contenido -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">⚙️ Configuración Manual de Macronutrientes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal('modalConfiguracionManual')"></button>
+      </div>
+      <div class="modal-body">
+        <p>Define los porcentajes de macronutrientes para tus estrategias seleccionadas. <strong>La suma debe ser 100% para cada estrategia.</strong></p>
+        <form id="formConfiguracionManual">
+            <div id="contenedorEntradasManuales">
+                <!-- Los bloques de entrada se generarán aquí dinámicamente -->
+                <!-- Ejemplo de bloque (se generará por JS):
+                <div class="bloque-estrategia-manual mb-3 p-3 border rounded" data-estrategia="nombre_estrategia">
+                    <h6>Estrategia: <span class="nombre-estrategia">nombre_estrategia</span></h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="manual_proteina_nombre_estrategia" class="form-label">Proteína (%)</label>
+                            <input type="number" class="form-control input-macro-manual" id="manual_proteina_nombre_estrategia" name="manual_proteina_nombre_estrategia" min="0" max="100" value="25" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="manual_carbohidratos_nombre_estrategia" class="form-label">Carbohidratos (%)</label>
+                            <input type="number" class="form-control input-macro-manual" id="manual_carbohidratos_nombre_estrategia" name="manual_carbohidratos_nombre_estrategia" min="0" max="100" value="40" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="manual_grasas_nombre_estrategia" class="form-label">Grasas (%)</label>
+                            <input type="number" class="form-control input-macro-manual" id="manual_grasas_nombre_estrategia" name="manual_grasas_nombre_estrategia" min="0" max="100" value="35" required>
+                        </div>
+                    </div>
+                    <div class="total-macro-manual mt-2">
+                        <strong>Total: <span class="valor-total">100</span>%</strong>
+                        <span class="estado-total text-success" style="display:none;">✓ Correcto</span>
+                        <span class="estado-total text-danger" style="display:none;">✗ Debe ser 100%</span>
+                    </div>
+                </div>
+                -->
+            </div>
+        </form>
+        <div id="errorConfiguracionManual" class="alert alert-danger mt-3" style="display: none;">
+            <!-- Mensajes de error específicos se mostrarán aquí -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalConfiguracionManual')">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="aplicarConfiguracionManual()">Aplicar y Calcular</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
+
 
 
 
