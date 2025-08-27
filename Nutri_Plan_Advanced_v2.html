@@ -2520,6 +2520,88 @@ h1, h2, h3, h4 {
 		
 <!-- Fin del nuevo contenedor -->
 <!-- Fin de la sección -->		
+		<!-- Modal para Incompatibilidad de Estrategias -->
+<div id="modalIncompatibilidad" class="modal" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog modal-lg" role="document"> <!-- modal-lg para más espacio -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">⚠️ Estrategias Incompatibles Seleccionadas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal('modalIncompatibilidad')"></button>
+      </div>
+      <div class="modal-body">
+        <p id="mensajeIncompatibilidad">
+          <!-- El mensaje se llenará dinámicamente -->
+        </p>
+        <hr>
+        <h6>Guía de Compatibilidad Sugerida:</h6>
+        <div id="guiaCompatibilidad">
+            <!-- La guía se llenará dinámicamente -->
+        </div>
+        <hr>
+        <p><strong>¿Quieres definir manualmente los macronutrientes para tus estrategias?</strong></p>
+        <p>Puedes hacerlo pulsando el botón de abajo. Esto te permitirá personalizar los valores incluso si las estrategias iniciales son incompatibles según nuestra lógica automática.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalIncompatibilidad')">Aceptar y Corregir</button>
+        <button type="button" class="btn btn-primary" onclick="abrirModalConfiguracionManual()">Configurar Macros Manualmente</button>
+        <!-- Botón oculto por ahora, se puede activar si se implementa "Forzar Combinación"
+        <button type="button" class="btn btn-warning" style="display:none;">Forzar Combinación (Avanzado)</button>
+        -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Configuración Manual de Macronutrientes -->
+<div id="modalConfiguracionManual" class="modal" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog modal-xl" role="document"> <!-- modal-xl para mucho contenido -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">⚙️ Configuración Manual de Macronutrientes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal('modalConfiguracionManual')"></button>
+      </div>
+      <div class="modal-body">
+        <p>Define los porcentajes de macronutrientes para tus estrategias seleccionadas. <strong>La suma debe ser 100% para cada estrategia.</strong></p>
+        <form id="formConfiguracionManual">
+            <div id="contenedorEntradasManuales">
+                <!-- Los bloques de entrada se generarán aquí dinámicamente -->
+                <!-- Ejemplo de bloque (se generará por JS):
+                <div class="bloque-estrategia-manual mb-3 p-3 border rounded" data-estrategia="nombre_estrategia">
+                    <h6>Estrategia: <span class="nombre-estrategia">nombre_estrategia</span></h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="manual_proteina_nombre_estrategia" class="form-label">Proteína (%)</label>
+                            <input type="number" class="form-control input-macro-manual" id="manual_proteina_nombre_estrategia" name="manual_proteina_nombre_estrategia" min="0" max="100" value="25" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="manual_carbohidratos_nombre_estrategia" class="form-label">Carbohidratos (%)</label>
+                            <input type="number" class="form-control input-macro-manual" id="manual_carbohidratos_nombre_estrategia" name="manual_carbohidratos_nombre_estrategia" min="0" max="100" value="40" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="manual_grasas_nombre_estrategia" class="form-label">Grasas (%)</label>
+                            <input type="number" class="form-control input-macro-manual" id="manual_grasas_nombre_estrategia" name="manual_grasas_nombre_estrategia" min="0" max="100" value="35" required>
+                        </div>
+                    </div>
+                    <div class="total-macro-manual mt-2">
+                        <strong>Total: <span class="valor-total">100</span>%</strong>
+                        <span class="estado-total text-success" style="display:none;">✓ Correcto</span>
+                        <span class="estado-total text-danger" style="display:none;">✗ Debe ser 100%</span>
+                    </div>
+                </div>
+                -->
+            </div>
+        </form>
+        <div id="errorConfiguracionManual" class="alert alert-danger mt-3" style="display: none;">
+            <!-- Mensajes de error específicos se mostrarán aquí -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalConfiguracionManual')">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="aplicarConfiguracionManual()">Aplicar y Calcular</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     </main>
 <!-- Coloca este div en tu archivo HTML -->
@@ -9021,91 +9103,11 @@ function cerrarModal(modalId) {
 </script>
 
 
-<!-- Modal para Incompatibilidad de Estrategias -->
-<div id="modalIncompatibilidad" class="modal" tabindex="-1" role="dialog" style="display: none;">
-  <div class="modal-dialog modal-lg" role="document"> <!-- modal-lg para más espacio -->
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">⚠️ Estrategias Incompatibles Seleccionadas</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal('modalIncompatibilidad')"></button>
-      </div>
-      <div class="modal-body">
-        <p id="mensajeIncompatibilidad">
-          <!-- El mensaje se llenará dinámicamente -->
-        </p>
-        <hr>
-        <h6>Guía de Compatibilidad Sugerida:</h6>
-        <div id="guiaCompatibilidad">
-            <!-- La guía se llenará dinámicamente -->
-        </div>
-        <hr>
-        <p><strong>¿Quieres definir manualmente los macronutrientes para tus estrategias?</strong></p>
-        <p>Puedes hacerlo pulsando el botón de abajo. Esto te permitirá personalizar los valores incluso si las estrategias iniciales son incompatibles según nuestra lógica automática.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalIncompatibilidad')">Aceptar y Corregir</button>
-        <button type="button" class="btn btn-primary" onclick="abrirModalConfiguracionManual()">Configurar Macros Manualmente</button>
-        <!-- Botón oculto por ahora, se puede activar si se implementa "Forzar Combinación"
-        <button type="button" class="btn btn-warning" style="display:none;">Forzar Combinación (Avanzado)</button>
-        -->
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Modal para Configuración Manual de Macronutrientes -->
-<div id="modalConfiguracionManual" class="modal" tabindex="-1" role="dialog" style="display: none;">
-  <div class="modal-dialog modal-xl" role="document"> <!-- modal-xl para mucho contenido -->
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">⚙️ Configuración Manual de Macronutrientes</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal('modalConfiguracionManual')"></button>
-      </div>
-      <div class="modal-body">
-        <p>Define los porcentajes de macronutrientes para tus estrategias seleccionadas. <strong>La suma debe ser 100% para cada estrategia.</strong></p>
-        <form id="formConfiguracionManual">
-            <div id="contenedorEntradasManuales">
-                <!-- Los bloques de entrada se generarán aquí dinámicamente -->
-                <!-- Ejemplo de bloque (se generará por JS):
-                <div class="bloque-estrategia-manual mb-3 p-3 border rounded" data-estrategia="nombre_estrategia">
-                    <h6>Estrategia: <span class="nombre-estrategia">nombre_estrategia</span></h6>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label for="manual_proteina_nombre_estrategia" class="form-label">Proteína (%)</label>
-                            <input type="number" class="form-control input-macro-manual" id="manual_proteina_nombre_estrategia" name="manual_proteina_nombre_estrategia" min="0" max="100" value="25" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="manual_carbohidratos_nombre_estrategia" class="form-label">Carbohidratos (%)</label>
-                            <input type="number" class="form-control input-macro-manual" id="manual_carbohidratos_nombre_estrategia" name="manual_carbohidratos_nombre_estrategia" min="0" max="100" value="40" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="manual_grasas_nombre_estrategia" class="form-label">Grasas (%)</label>
-                            <input type="number" class="form-control input-macro-manual" id="manual_grasas_nombre_estrategia" name="manual_grasas_nombre_estrategia" min="0" max="100" value="35" required>
-                        </div>
-                    </div>
-                    <div class="total-macro-manual mt-2">
-                        <strong>Total: <span class="valor-total">100</span>%</strong>
-                        <span class="estado-total text-success" style="display:none;">✓ Correcto</span>
-                        <span class="estado-total text-danger" style="display:none;">✗ Debe ser 100%</span>
-                    </div>
-                </div>
-                -->
-            </div>
-        </form>
-        <div id="errorConfiguracionManual" class="alert alert-danger mt-3" style="display: none;">
-            <!-- Mensajes de error específicos se mostrarán aquí -->
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalConfiguracionManual')">Cancelar</button>
-        <button type="button" class="btn btn-success" onclick="aplicarConfiguracionManual()">Aplicar y Calcular</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
+
 
 
 
