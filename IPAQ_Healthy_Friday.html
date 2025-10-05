@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -41,7 +40,7 @@
         const { useState, useEffect } = React;
 
         const App = () => {
-            const [currentStep, setCurrentStep] = useState(0);
+            const [currentStep, setCurrentStep] = useState(-1); // Start in dashboard mode
             const [userData, setUserData] = useState({
                 nombre: '',
                 edad: '',
@@ -101,47 +100,93 @@
                 return () => unsubscribe();
             }, []);
 
-            // Generar estadísticas para el informe
+            // Generar estadísticas para el informe (FIXED)
             useEffect(() => {
                 if (users.length > 0) {
                     const stats = {
                         total: users.length,
+                        levels: { ALTO: 0, MODERADO: 0, BAJO: 0 },  // Renamed from 'nivel' for JSX consistency
+                        percentages: { ALTO: 0, MODERADO: 0, BAJO: 0 },
                         sexo: {},
-                        curso: {},
-                        nivel: {}
+                        curso: {}
                     };
 
+                    // Count totals and levels
                     users.forEach(user => {
-                        // Contar por sexo
-                        if (stats.sexo[user.sexo]) {
-                            stats.sexo[user.sexo]++;
-                        } else {
-                            stats.sexo[user.sexo] = 1;
-                        }
-
-                        // Contar por curso
-                        if (stats.curso[user.curso]) {
-                            stats.curso[user.curso]++;
-                        } else {
-                            stats.curso[user.curso] = 1;
-                        }
+                        // Safe access to level
+                        const level = user.report?.level || 'BAJO';
                         
-                        // Contar por nivel
-                        if (stats.nivel[user.report.level]) {
-                            stats.nivel[user.report.level]++;
-                        } else {
-                            stats.nivel[user.report.level] = 1;
-                        }
+                        // Count levels
+                        stats.levels[level] = (stats.levels[level] || 0) + 1;
+
+                        // Count sexo total
+                        stats.sexo[user.sexo] = (stats.sexo[user.sexo] || 0) + 1;
+
+                        // Count curso total
+                        stats.curso[user.curso] = (stats.curso[user.curso] || 0) + 1;
                     });
 
+                    // Compute level percentages
+                    Object.keys(stats.levels).forEach(key => {
+                        stats.percentages[key] = stats.total > 0 ? ((stats.levels[key] / stats.total) * 100).toFixed(1) : 0;
+                    });
+
+                    // Compute nested details for sexo
+                    Object.keys(stats.sexo).forEach(sex => {
+                        const sexUsers = users.filter(u => u.sexo === sex);
+                        const levels = { ALTO: 0, MODERADO: 0, BAJO: 0 };
+                        sexUsers.forEach(u => {
+                            const l = u.report?.level || 'BAJO';
+                            levels[l] = (levels[l] || 0) + 1;
+                        });
+                        const totalSex = stats.sexo[sex];
+                        const percentages = {};
+                        Object.keys(levels).forEach(key => {
+                            percentages[key] = totalSex > 0 ? ((levels[key] / totalSex) * 100).toFixed(1) : 0;
+                        });
+                        stats.sexo[sex] = {
+                            total: totalSex,
+                            levels,
+                            percentages
+                        };
+                    });
+
+                    // Compute nested details for curso (same logic)
+                    Object.keys(stats.curso).forEach(curs => {
+                        const courseUsers = users.filter(u => u.curso === curs);
+                        const levels = { ALTO: 0, MODERADO: 0, BAJO: 0 };
+                        courseUsers.forEach(u => {
+                            const l = u.report?.level || 'BAJO';
+                            levels[l] = (levels[l] || 0) + 1;
+                        });
+                        const totalCourse = stats.curso[curs];
+                        const percentages = {};
+                        Object.keys(levels).forEach(key => {
+                            percentages[key] = totalCourse > 0 ? ((levels[key] / totalCourse) * 100).toFixed(1) : 0;
+                        });
+                        stats.curso[curs] = {
+                            total: totalCourse,
+                            levels,
+                            percentages
+                        };
+                    });
+
+                    // For backward compatibility with charts (which expect simple objects for totals)
+                    stats.nivel = { ...stats.levels };  // Simple counts for chartNivel
+                    // For sexo/curso charts, create simple total maps
+                    stats.sexoTotals = Object.fromEntries(Object.entries(stats.sexo).map(([k, v]) => [k, v.total]));
+                    stats.cursoTotals = Object.fromEntries(Object.entries(stats.curso).map(([k, v]) => [k, v.total]));
+
                     setReportStats(stats);
+                } else {
+                    setReportStats(null);
                 }
             }, [users]);
 
-            // Crear gráficos cuando se abra el modal
+            // Crear gráficos cuando se abra el modal (FIXED for totals)
             useEffect(() => {
                 if (showReportModal && reportStats) {
-                    // Gráfico de Sexo
+                    // Gráfico de Sexo (use totals)
                     const ctxSexo = document.getElementById('chartSexo');
                     if (ctxSexo && reportCharts.sexo) {
                         reportCharts.sexo.destroy();
@@ -150,9 +195,9 @@
                         const chartSexo = new Chart(ctxSexo, {
                             type: 'pie',
                             data: {
-                                labels: Object.keys(reportStats.sexo),
+                                labels: Object.keys(reportStats.sexoTotals || reportStats.sexo),
                                 datasets: [{
-                                    data: Object.values(reportStats.sexo),
+                                    data: Object.values(reportStats.sexoTotals || reportStats.sexo),
                                     backgroundColor: ['#3b82f6', '#ef4444', '#10b981'],
                                 }]
                             },
@@ -173,7 +218,7 @@
                         setReportCharts(prev => ({ ...prev, sexo: chartSexo }));
                     }
 
-                    // Gráfico de Curso
+                    // Gráfico de Curso (use totals)
                     const ctxCurso = document.getElementById('chartCurso');
                     if (ctxCurso && reportCharts.curso) {
                         reportCharts.curso.destroy();
@@ -182,9 +227,9 @@
                         const chartCurso = new Chart(ctxCurso, {
                             type: 'pie',
                             data: {
-                                labels: Object.keys(reportStats.curso),
+                                labels: Object.keys(reportStats.cursoTotals || reportStats.curso),
                                 datasets: [{
-                                    data: Object.values(reportStats.curso),
+                                    data: Object.values(reportStats.cursoTotals || reportStats.curso),
                                     backgroundColor: [
                                         '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6',
                                         '#f97316', '#6366f1', '#10b981', '#ef4444',
@@ -398,12 +443,12 @@
                         user.q5,
                         (parseInt(user.q5) || 0) * ((parseInt(user.q6Hours) || 0) * 60 + (parseInt(user.q6Minutes) || 0)),
                         (parseInt(user.q7Hours) || 0) * 60 + (parseInt(user.q7Minutes) || 0),
-                        user.report.vpaMET,
-                        user.report.mpaMET,
-                        user.report.walkMET,
-                        user.report.totalMET,
-                        user.report.totalKcal.toFixed(2),
-                        user.report.level
+                        user.report?.vpaMET || 0,
+                        user.report?.mpaMET || 0,
+                        user.report?.walkMET || 0,
+                        user.report?.totalMET || 0,
+                        (user.report?.totalKcal || 0).toFixed(2),
+                        user.report?.level || 'BAJO'
                     ].join(','))
                 ].join('\n');
 
@@ -424,6 +469,7 @@
                     if (exportOption === 'current' && reportData) {
                         // Exportar solo los datos del encuestado actual
                         exportToCSV([{
+                            id: 'current',
                             ...userData,
                             report: reportData
                         }]);
@@ -453,7 +499,7 @@
                             return age >= min && age <= max;
                         });
                     case 'activity':
-                        return users.filter(user => user.report.level === filter.value);
+                        return users.filter(user => user.report?.level === filter.value);
                     default:
                         return users;
                 }
@@ -484,9 +530,9 @@
                                 ? (ageRanges[range].reduce((sum, u) => sum + parseFloat(u.peso), 0) / ageRanges[range].length).toFixed(1) 
                                 : 0,
                             activityLevels: {
-                                ALTO: ageRanges[range].filter(u => u.report.level === 'ALTO').length,
-                                MODERADO: ageRanges[range].filter(u => u.report.level === 'MODERADO').length,
-                                BAJO: ageRanges[range].filter(u => u.report.level === 'BAJO').length
+                                ALTO: ageRanges[range].filter(u => u.report?.level === 'ALTO').length,
+                                MODERADO: ageRanges[range].filter(u => u.report?.level === 'MODERADO').length,
+                                BAJO: ageRanges[range].filter(u => u.report?.level === 'BAJO').length
                             }
                         }));
                         break;
@@ -505,9 +551,9 @@
                                     ? (courseUsers.reduce((sum, u) => sum + parseFloat(u.peso), 0) / courseUsers.length).toFixed(1) 
                                     : 0,
                                 activityLevels: {
-                                    ALTO: courseUsers.filter(u => u.report.level === 'ALTO').length,
-                                    MODERADO: courseUsers.filter(u => u.report.level === 'MODERADO').length,
-                                    BAJO: courseUsers.filter(u => u.report.level === 'BAJO').length
+                                    ALTO: courseUsers.filter(u => u.report?.level === 'ALTO').length,
+                                    MODERADO: courseUsers.filter(u => u.report?.level === 'MODERADO').length,
+                                    BAJO: courseUsers.filter(u => u.report?.level === 'BAJO').length
                                 }
                             };
                         });
@@ -527,9 +573,9 @@
                                     ? (sexUsers.reduce((sum, u) => sum + parseFloat(u.peso), 0) / sexUsers.length).toFixed(1) 
                                     : 0,
                                 activityLevels: {
-                                    ALTO: sexUsers.filter(u => u.report.level === 'ALTO').length,
-                                    MODERADO: sexUsers.filter(u => u.report.level === 'MODERADO').length,
-                                    BAJO: sexUsers.filter(u => u.report.level === 'BAJO').length
+                                    ALTO: sexUsers.filter(u => u.report?.level === 'ALTO').length,
+                                    MODERADO: sexUsers.filter(u => u.report?.level === 'MODERADO').length,
+                                    BAJO: sexUsers.filter(u => u.report?.level === 'BAJO').length
                                 }
                             };
                         });
@@ -565,9 +611,9 @@
                                     ? (groupUsers.reduce((sum, u) => sum + parseFloat(u.peso), 0) / groupUsers.length).toFixed(1) 
                                     : 0,
                                 activityLevels: {
-                                    ALTO: groupUsers.filter(u => u.report.level === 'ALTO').length,
-                                    MODERADO: groupUsers.filter(u => u.report.level === 'MODERADO').length,
-                                    BAJO: groupUsers.filter(u => u.report.level === 'BAJO').length
+                                    ALTO: groupUsers.filter(u => u.report?.level === 'ALTO').length,
+                                    MODERADO: groupUsers.filter(u => u.report?.level === 'MODERADO').length,
+                                    BAJO: groupUsers.filter(u => u.report?.level === 'BAJO').length
                                 }
                             };
                         });
@@ -591,7 +637,7 @@
                                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                                         <div 
                                             className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
-                                            style={{ width: `${(currentStep / 7) * 100}%` }}
+                                            style={{ width: `${((currentStep + 1) / 8) * 100}%` }}
                                         ></div>
                                     </div>
                                     <p className="text-sm text-gray-500 mt-2">Paso {currentStep + 1} de 8</p>
@@ -995,6 +1041,7 @@
                         <div className="mt-6">
                             <button
                                 onClick={() => exportToCSV([{
+                                    id: 'current',
                                     ...userData,
                                     report: reportData
                                 }])}
@@ -1125,9 +1172,9 @@
                 const avgWeight = users.length > 0 ? (users.reduce((sum, user) => sum + parseFloat(user.peso), 0) / users.length).toFixed(1) : 0;
                 
                 const activityLevels = {
-                    ALTO: users.filter(u => u.report.level === 'ALTO').length,
-                    MODERADO: users.filter(u => u.report.level === 'MODERADO').length,
-                    BAJO: users.filter(u => u.report.level === 'BAJO').length
+                    ALTO: users.filter(u => u.report?.level === 'ALTO').length,
+                    MODERADO: users.filter(u => u.report?.level === 'MODERADO').length,
+                    BAJO: users.filter(u => u.report?.level === 'BAJO').length
                 };
 
                 return (
@@ -1275,11 +1322,11 @@
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.peso} kg</td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                                        user.report.level === 'ALTO' ? 'bg-green-100 text-green-800' :
-                                                        user.report.level === 'MODERADO' ? 'bg-yellow-100 text-yellow-800' :
+                                                        user.report?.level === 'ALTO' ? 'bg-green-100 text-green-800' :
+                                                        user.report?.level === 'MODERADO' ? 'bg-yellow-100 text-yellow-800' :
                                                         'bg-red-100 text-red-800'
                                                     }`}>
-                                                        {user.report.level}
+                                                        {user.report?.level || 'BAJO'}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -1287,6 +1334,7 @@
                                                         onClick={() => {
                                                             setSelectedUser(user);
                                                             setReportData(user.report);
+                                                            setUserData(user); // For personal data in report
                                                             setShowReport(true);
                                                         }}
                                                         className="text-blue-600 hover:text-blue-900 mr-2"
@@ -1467,7 +1515,7 @@
                         </div>
                     )}
                     
-                    {/* Modal de Informe */}
+                    {/* Modal de Informe (with safe access) */}
                     {showReportModal && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
                             <div className="bg-white rounded-lg p-6 w-11/12 md:w-3/4 max-h-[90vh] overflow-y-auto">
@@ -1486,18 +1534,18 @@
                                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                                                     <div className="bg-red-100 p-3 rounded-md">
                                                         <h5 className="font-medium text-red-700">Nivel Bajo</h5>
-                                                        <p className="text-xl font-bold text-red-800">{reportStats.levels.BAJO}</p>
-                                                        <p className="text-sm text-red-600">{reportStats.percentages ? reportStats.percentages.BAJO : 0}%</p>
+                                                        <p className="text-xl font-bold text-red-800">{reportStats?.levels?.BAJO || 0}</p>
+                                                        <p className="text-sm text-red-600">{reportStats?.percentages?.BAJO || 0}%</p>
                                                     </div>
                                                     <div className="bg-yellow-100 p-3 rounded-md">
                                                         <h5 className="font-medium text-yellow-700">Nivel Moderado</h5>
-                                                        <p className="text-xl font-bold text-yellow-800">{reportStats.levels.MODERADO}</p>
-                                                        <p className="text-sm text-yellow-600">{reportStats.percentages ? reportStats.percentages.MODERADO : 0}%</p>
+                                                        <p className="text-xl font-bold text-yellow-800">{reportStats?.levels?.MODERADO || 0}</p>
+                                                        <p className="text-sm text-yellow-600">{reportStats?.percentages?.MODERADO || 0}%</p>
                                                     </div>
                                                     <div className="bg-green-100 p-3 rounded-md">
                                                         <h5 className="font-medium text-green-700">Nivel Alto</h5>
-                                                        <p className="text-xl font-bold text-green-800">{reportStats.levels.ALTO}</p>
-                                                        <p className="text-sm text-green-600">{reportStats.percentages ? reportStats.percentages.ALTO : 0}%</p>
+                                                        <p className="text-xl font-bold text-green-800">{reportStats?.levels?.ALTO || 0}</p>
+                                                        <p className="text-sm text-green-600">{reportStats?.percentages?.ALTO || 0}%</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1512,9 +1560,9 @@
                                                             <p className="font-medium text-gray-700">{sexo}</p>
                                                             <p className="text-xl font-bold text-gray-800">{data.total}</p>
                                                             <div className="text-sm text-gray-600 mt-1">
-                                                                <p>ALTO: {data.levels.ALTO} ({data.percentages ? data.percentages.ALTO : 0}%)</p>
-                                                                <p>MOD: {data.levels.MODERADO} ({data.percentages ? data.percentages.MODERADO : 0}%)</p>
-                                                                <p>BAJO: {data.levels.BAJO} ({data.percentages ? data.percentages.BAJO : 0}%)</p>
+                                                                <p>ALTO: {data.levels.ALTO} ({data.percentages.ALTO}%)</p>
+                                                                <p>MOD: {data.levels.MODERADO} ({data.percentages.MODERADO}%)</p>
+                                                                <p>BAJO: {data.levels.BAJO} ({data.percentages.BAJO}%)</p>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -1527,14 +1575,14 @@
                                             <div>
                                                 <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución por Curso</h4>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                                    {Object.entries(reportStats.course).map(([curso, data]) => (
+                                                    {Object.entries(reportStats.curso).map(([curso, data]) => (
                                                         <div key={curso} className="bg-gray-100 p-3 rounded-md">
                                                             <p className="font-medium text-gray-700">{curso}</p>
                                                             <p className="text-xl font-bold text-gray-800">{data.total}</p>
                                                             <div className="text-sm text-gray-600 mt-1">
-                                                                <p>ALTO: {data.levels.ALTO} ({data.percentages ? data.percentages.ALTO : 0}%)</p>
-                                                                <p>MOD: {data.levels.MODERADO} ({data.percentages ? data.percentages.MODERADO : 0}%)</p>
-                                                                <p>BAJO: {data.levels.BAJO} ({data.percentages ? data.percentages.BAJO : 0}%)</p>
+                                                                <p>ALTO: {data.levels.ALTO} ({data.percentages.ALTO}%)</p>
+                                                                <p>MOD: {data.levels.MODERADO} ({data.percentages.MODERADO}%)</p>
+                                                                <p>BAJO: {data.levels.BAJO} ({data.percentages.BAJO}%)</p>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -1550,18 +1598,18 @@
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                                 <div className="bg-red-100 p-3 rounded-md">
                                                     <h5 className="font-medium text-red-700">Nivel Bajo</h5>
-                                                    <p className="text-xl font-bold text-red-800">{reportStats.levels.BAJO}</p>
-                                                    <p className="text-sm text-red-600">{reportStats.percentages ? reportStats.percentages.BAJO : 0}%</p>
+                                                    <p className="text-xl font-bold text-red-800">{reportStats?.levels?.BAJO || 0}</p>
+                                                    <p className="text-sm text-red-600">{reportStats?.percentages?.BAJO || 0}%</p>
                                                 </div>
                                                 <div className="bg-yellow-100 p-3 rounded-md">
                                                     <h5 className="font-medium text-yellow-700">Nivel Moderado</h5>
-                                                    <p className="text-xl font-bold text-yellow-800">{reportStats.levels.MODERADO}</p>
-                                                    <p className="text-sm text-yellow-600">{reportStats.percentages ? reportStats.percentages.MODERADO : 0}%</p>
+                                                    <p className="text-xl font-bold text-yellow-800">{reportStats?.levels?.MODERADO || 0}</p>
+                                                    <p className="text-sm text-yellow-600">{reportStats?.percentages?.MODERADO || 0}%</p>
                                                 </div>
                                                 <div className="bg-green-100 p-3 rounded-md">
                                                     <h5 className="font-medium text-green-700">Nivel Alto</h5>
-                                                    <p className="text-xl font-bold text-green-800">{reportStats.levels.ALTO}</p>
-                                                    <p className="text-sm text-green-600">{reportStats.percentages ? reportStats.percentages.ALTO : 0}%</p>
+                                                    <p className="text-xl font-bold text-green-800">{reportStats?.levels?.ALTO || 0}</p>
+                                                    <p className="text-sm text-green-600">{reportStats?.percentages?.ALTO || 0}%</p>
                                                 </div>
                                             </div>
                                             <div className="h-64">
@@ -1575,9 +1623,9 @@
                                                 <div>
                                                     <h5 className="font-medium text-blue-700">Análisis General</h5>
                                                     <p className="text-sm text-gray-600">
-                                                        {reportStats.levels.ALTO >= 50 
+                                                        {reportStats?.levels?.ALTO >= 50 
                                                             ? "Más de la mitad de los encuestados tienen un nivel de actividad física alto, lo cual es positivo." 
-                                                            : reportStats.levels.MODERADO >= 50 
+                                                            : reportStats?.levels?.MODERADO >= 50 
                                                                 ? "La mayoría de los encuestados tienen un nivel de actividad física moderado, lo cual es aceptable pero se puede mejorar." 
                                                                 : "La mayoría de los encuestados tienen un nivel de actividad física bajo, lo cual requiere atención."}
                                                     </p>
@@ -1588,10 +1636,10 @@
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                                         {Object.entries(reportStats.sexo).map(([sexo, data]) => (
                                                             <div key={sexo} className="text-sm text-gray-600">
-                                                                <p><strong>{sexo}:</strong> {data.percentages ? data.percentages.ALTO : 0}% ALTO, {data.percentages ? data.percentages.MODERADO : 0}% MODERADO, {data.percentages ? data.percentages.BAJO : 0}% BAJO</p>
-                                                                {data.percentages && data.percentages.ALTO > 50 
+                                                                <p><strong>{sexo}:</strong> {data.percentages.ALTO}% ALTO, {data.percentages.MODERADO}% MODERADO, {data.percentages.BAJO}% BAJO</p>
+                                                                {data.percentages.ALTO > 50 
                                                                     ? <p className="text-green-600">Mayoría con actividad adecuada</p>
-                                                                    : data.percentages && data.percentages.MODERADO > 50 
+                                                                    : data.percentages.MODERADO > 50 
                                                                         ? <p className="text-yellow-600">Actividad moderada predominante</p>
                                                                         : <p className="text-red-600">Necesita mejorar actividad física</p>}
                                                             </div>
@@ -1602,12 +1650,12 @@
                                                 <div>
                                                     <h5 className="font-medium text-blue-700">Comparación por Curso</h5>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                        {Object.entries(reportStats.course).map(([curso, data]) => (
+                                                        {Object.entries(reportStats.curso).map(([curso, data]) => (
                                                             <div key={curso} className="text-sm text-gray-600">
-                                                                <p><strong>{curso}:</strong> {data.percentages ? data.percentages.ALTO : 0}% ALTO, {data.percentages ? data.percentages.MODERADO : 0}% MODERADO, {data.percentages ? data.percentages.BAJO : 0}% BAJO</p>
-                                                                {data.percentages && data.percentages.ALTO > 50 
+                                                                <p><strong>{curso}:</strong> {data.percentages.ALTO}% ALTO, {data.percentages.MODERADO}% MODERADO, {data.percentages.BAJO}% BAJO</p>
+                                                                {data.percentages.ALTO > 50 
                                                                     ? <p className="text-green-600">Mayoría con actividad adecuada</p>
-                                                                    : data.percentages && data.percentages.MODERADO > 50 
+                                                                    : data.percentages.MODERADO > 50 
                                                                         ? <p className="text-yellow-600">Actividad moderada predominante</p>
                                                                         : <p className="text-red-600">Necesita mejorar actividad física</p>}
                                                             </div>
