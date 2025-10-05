@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -799,10 +800,20 @@
             return;
         }
 
+        // --- Captura de respuestas individuales ---
+        const respuestas = {};
+        for (let i = 1; i <= 16; i++) {
+            const selectedRadio = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selectedRadio) {
+                respuestas[`q${i}`] = selectedRadio.value; // Guardamos el valor: "1", "0", "-1"
+            }
+        }
+        // --- Fin de captura ---
+
+        // Cálculo de la puntuación (como antes)
         let score = 0;
         for (let i = 1; i <= 16; i++) {
-            const selectedValue = document.querySelector(`input[name="q${i}"]:checked`).value;
-            score += parseInt(selectedValue);
+            score += parseInt(respuestas[`q${i}`]); // Usamos las respuestas capturadas
         }
 
         // Limitar puntuación a 0 si es negativa
@@ -860,15 +871,18 @@
         const curso = document.getElementById('curso').value;
         const fecha = document.getElementById('fecha').value;
 
+        // --- Incluir respuestas en el objeto a guardar ---
         const currentResult = {
             edad: edad,
             genero: genero,
             curso: curso,
             fecha: fecha,
-            score: score,
+            score: score, // Puntuación total calculada
+            respuestas: respuestas, // <-- Nuevo: Incluimos las respuestas individuales
             interpretation: interpretation,
             recommendations: recommendations
         };
+        // --- Fin de inclusión ---
 
         // Almacenar en memoria y localStorage
         allResults.push(currentResult);
@@ -877,7 +891,7 @@
         // Almacenar en Firebase usando la instancia `db` obtenida previamente
         try {
             await db.collection("kidmedResults").add(currentResult); // Usar `db.collection`
-            console.log("Documento guardado en Firebase con éxito");
+            console.log("Documento guardado en Firebase con éxito, incluyendo respuestas detalladas");
         } catch (error) {
             console.error("Error al guardar en Firebase: ", error);
             alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
@@ -965,7 +979,7 @@
             return;
         }
 
-        // Calcular estadísticas
+        // Calcular estadísticas generales
         const totalResults = allResults.length;
         const scores = allResults.map(r => r.score);
         
@@ -996,7 +1010,31 @@
             }
             courseCounts[r.curso]++;
         });
-        
+
+        // --- Análisis detallado de respuestas ---
+        // Contadores para cada pregunta
+        const contadoresSi = {};
+        const contadoresNo = {};
+
+        for (let i = 1; i <= 16; i++) {
+            contadoresSi[i] = 0;
+            contadoresNo[i] = 0;
+        }
+
+        // Recorremos todos los resultados
+        allResults.forEach(resultado => {
+            const respuestas = resultado.respuestas;
+            for (let i = 1; i <= 16; i++) {
+                const valor = respuestas[`q${i}`];
+                if (valor === "1") {
+                    contadoresSi[i]++;
+                } else {
+                    contadoresNo[i]++; // Incluye tanto "0" como "-1"
+                }
+            }
+        });
+        // --- Fin del análisis detallado ---
+
         // Crear contenido del informe
         const reportContent = document.getElementById('reportContent');
         
@@ -1034,6 +1072,12 @@
             <div class="chart-container">
                 <canvas id="courseChart"></canvas>
             </div>
+
+            <h3>Detalles de Respuestas por Pregunta</h3>
+            <div class="chart-container">
+                <canvas id="detallePreguntasChart"></canvas>
+            </div>
+            <p>Este gráfico muestra cuántas veces se respondió "Sí" o "No" a cada pregunta del cuestionario. Las preguntas con más respuestas "No" pueden indicar áreas donde se necesitan mejorar los hábitos alimenticios.</p>
         `;
         
         // Mostrar sección de informe
@@ -1043,20 +1087,21 @@
         createCategoryChart(highQuality, mediumQuality, lowQuality);
         createGenderChart(genderCounts);
         createCourseChart(courseCounts);
+        createDetallePreguntasChart(contadoresSi, contadoresNo); // Nuevo gráfico
     }
 
     function createCategoryChart(high, medium, low) {
         const ctx = document.getElementById('categoryChart').getContext('2d');
         new Chart(ctx, {
             type: 'pie',
-            data: {
+             {
                 labels: [
                     `Calidad Óptima (≥8): ${high} (${((high / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Intermedia (4-7): ${medium} (${((medium / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Baja (≤3): ${low} (${((low / (high + medium + low)) * 100).toFixed(1)}%)`
                 ],
                 datasets: [{
-                    data: [high, medium, low],
+                     [high, medium, low],
                     backgroundColor: [
                         '#27ae60',
                         '#f39c12',
@@ -1089,7 +1134,7 @@
             data: {
                 labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
                 datasets: [{
-                    data: data,
+                     data,
                     backgroundColor: [
                         '#3498db',
                         '#e91e63',
@@ -1121,11 +1166,11 @@
         
         new Chart(ctx, {
             type: 'bar',
-            data: {
+             {
                 labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
                 datasets: [{
                     label: 'Número de Encuestados',
-                    data: data,
+                     data,
                     backgroundColor: '#27ae60',
                     borderWidth: 1
                 }]
@@ -1144,6 +1189,66 @@
                 scales: {
                     y: {
                         beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Función para crear el gráfico de detalle de preguntas
+    function createDetallePreguntasChart(contadoresSi, contadoresNo) {
+        const ctx = document.getElementById('detallePreguntasChart').getContext('2d');
+        
+        // Etiquetas para las preguntas
+        const labels = [
+            "Q1: Fruta diaria", "Q2: Segunda fruta", "Q3: Verduras diarias", "Q4: Más de una verdura",
+            "Q5: Pescado semanal", "Q6: Comida rápida", "Q7: Legumbres semanal", "Q8: Cereal integral",
+            "Q9: Desayuno integral", "Q10: Frutos secos", "Q11: Aceite oliva", "Q12: No desayunar",
+            "Q13: Lácteo desayuno", "Q14: Bollería desayuno", "Q15: Lácteos diarios", "Q16: Dulces diarios"
+        ];
+
+        // Datos para "Sí" y "No"
+        const dataSi = Object.values(contadoresSi);
+        const dataNo = Object.values(contadoresNo);
+
+        new Chart(ctx, {
+            type: 'bar',
+             {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Respuestas "Sí"',
+                        data: dataSi,
+                        backgroundColor: '#27ae60',
+                    },
+                    {
+                        label: 'Respuestas "No"',
+                         dataNo,
+                        backgroundColor: '#e74c3c',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Distribución de Respuestas por Pregunta'
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 90, // Rotar etiquetas si es necesario
+                            minRotation: 45
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Respuestas'
+                        }
                     }
                 }
             }
