@@ -462,7 +462,7 @@
                 setReportData(null);
             };
 
-                        const exportToCSV = (data = users) => {
+                                    const exportToCSV = (data = users) => {
                 if (data.length === 0) return;
                 const headers = [
                     'ID', 'Nombre', 'Edad', 'Curso', 'Sexo', 'Peso', 'Fecha',
@@ -507,8 +507,7 @@
                         (typeof user.report?.totalKcal === 'number' ? user.report.totalKcal : 0).toFixed(2),
                         user.report?.level || 'BAJO'
                     ].join(','))
-                ].join('
-');
+                ].join('\n'); // <-- Corregido: usa \n para el salto de línea
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
