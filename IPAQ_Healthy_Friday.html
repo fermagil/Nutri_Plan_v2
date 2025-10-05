@@ -289,65 +289,72 @@
                 }));
             };
 
-            const calculateReport = (data) => {
+                        const calculateReport = (data) => {
+                // --- Cálculo de minutos totales por semana para cada actividad ---
+                // Este cálculo ya estaba correcto en el código original
                 const vpaDays = parseInt(data.q1) || 0;
                 const vpaHours = parseInt(data.q2Hours) || 0;
                 const vpaMinutes = parseInt(data.q2Minutes) || 0;
-                const vpaMinPerDay = vpaHours * 60 + vpaMinutes;
-                const vpaTotalMinutes = vpaDays * vpaMinPerDay;
-                const vpaMET = 8 * vpaTotalMinutes;
+                const vpaMinPerDay = vpaHours * 60 + vpaMinutes; // Minutos por día de VPA
+                const vpaTotalMinutes = vpaDays * vpaMinPerDay; // Minutos totales por semana de VPA
 
                 const mpaDays = parseInt(data.q3) || 0;
                 const mpaHours = parseInt(data.q4Hours) || 0;
                 const mpaMinutes = parseInt(data.q4Minutes) || 0;
-                const mpaMinPerDay = mpaHours * 60 + mpaMinutes;
-                const mpaTotalMinutes = mpaDays * mpaMinPerDay;
-                const mpaMET = 4 * mpaTotalMinutes;
+                const mpaMinPerDay = mpaHours * 60 + mpaMinutes; // Minutos por día de MPA
+                const mpaTotalMinutes = mpaDays * mpaMinPerDay; // Minutos totales por semana de MPA
 
                 const walkDays = parseInt(data.q5) || 0;
                 const walkHours = parseInt(data.q6Hours) || 0;
                 const walkMinutes = parseInt(data.q6Minutes) || 0;
-                const walkMinPerDay = walkHours * 60 + walkMinutes;
-                const walkTotalMinutes = walkDays * walkMinPerDay;
-                const walkMET = 3.3 * walkTotalMinutes;
+                const walkMinPerDay = walkHours * 60 + walkMinutes; // Minutos por día de caminata
+                const walkTotalMinutes = walkDays * walkMinPerDay; // Minutos totales por semana de caminata
 
-                const totalMET = vpaMET + mpaMET + walkMET;
+                // --- Cálculo de MET-minutos semanales (usando MET por minuto) ---
+                // Aplicando: MET-min = MET_valor_por_minuto * minutos_totales_semana
+                const vpaMETMinutes = 8 * vpaTotalMinutes; // MET-min VPA
+                const mpaMETMinutes = 4 * mpaTotalMinutes; // MET-min MPA
+                const walkMETMinutes = 3.3 * walkTotalMinutes; // MET-min caminata
 
+                // --- Cálculo de Calorías (Kcal) usando la nueva fórmula ---
+                // Aplicando: Kcal = METs-min * 3.5 * (Peso / 60)
                 const weight = parseFloat(data.peso) || 60; // Default to 60 if not provided
 
-                const vpaKcal = vpaMET * 0.0175 * weight;
-                const mpaKcal = mpaMET * 0.0175 * weight;
-                const walkKcal = walkMET * 0.0175 * weight;
+                const vpaKcal = vpaMETMinutes * 3.5 * (weight / 60);
+                const mpaKcal = mpaMETMinutes * 3.5 * (weight / 60);
+                const walkKcal = walkMETMinutes * 3.5 * (weight / 60);
                 const totalKcal = vpaKcal + mpaKcal + walkKcal;
 
-                // Clasificación de nivel de actividad basada en IPAQ estándar
-                let level = 'BAJO';
+                // --- Cálculo total de MET-minutos ---
+                const totalMETMinutes = vpaMETMinutes + mpaMETMinutes + walkMETMinutes;
 
-                // Nivel ALTO
+                // --- Clasificación de nivel de actividad basada en IPAQ estándar ---
+                // (Esta parte no cambia, sigue usando los minutos totales o MET-min totales según el estándar IPAQ)
+                let level = 'BAJO';
                 if (
-                    (vpaDays >= 3 && vpaMET >= 1500) ||  // Opción A: ≥3 días VPA y ≥1500 MET-min/sem VPA
-                    ((vpaDays + mpaDays + walkDays) >= 7 && totalMET >= 3000)  // Opción B: ≥7 días combinación y ≥3000 MET-min/sem total
+                    (vpaDays >= 3 && vpaMETMinutes >= 1500) ||  // Opción A: ≥3 días VPA y ≥1500 MET-min/sem VPA
+                    ((vpaDays + mpaDays + walkDays) >= 7 && totalMETMinutes >= 3000)  // Opción B: ≥7 días combinación y ≥3000 MET-min/sem total
                 ) {
                     level = 'ALTO';
-                } 
-                // Nivel MODERADO
+                }
                 else if (
                     (vpaDays >= 3 && vpaMinPerDay >= 20) ||  // Opción A: ≥3 días VPA ≥20 min/día
                     (mpaDays >= 5 && mpaMinPerDay >= 30) ||  // Opción B: ≥5 días MPA ≥30 min/día
                     (walkDays >= 5 && walkMinPerDay >= 30) ||  // Opción B: ≥5 días caminata ≥30 min/día
-                    ((vpaDays + mpaDays + walkDays) >= 5 && totalMET >= 600)  // Opción C: ≥5 días combinación y ≥600 MET-min/sem total
+                    ((vpaDays + mpaDays + walkDays) >= 5 && totalMETMinutes >= 600)  // Opción C: ≥5 días combinación y ≥600 MET-min/sem total
                 ) {
                     level = 'MODERADO';
                 }
 
-                // Tiempo sedentario diario en horas
-                const sedentaryHours = parseInt(data.q7Hours) || 0 + (parseInt(data.q7Minutes) || 0) / 60;
+                // --- Cálculo de tiempo sedentario diario ---
+                const sedentaryHours = (parseInt(data.q7Hours) || 0) + (parseInt(data.q7Minutes) || 0) / 60;
 
-                // MET-hours semanal
-                const weeklyMETHours = totalMET / 60;
+                // --- Cálculo de MET-hours semanal (dividir MET-min totales entre 60) ---
+                const weeklyMETHours = totalMETMinutes / 60;
 
+                // --- Generación de feedback ---
+                // (Esta parte tampoco cambia, usa weeklyMETHours y sedentaryHours)
                 let feedback = '';
-
                 if (weeklyMETHours <= 2.5) {
                     if (sedentaryHours >= 8) {
                         feedback = 'Definitivamente debes mejorar tus niveles de actividad física. Tus bajos/inexistentes niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
@@ -382,13 +389,18 @@
                     }
                 }
 
+                // --- Devolver los resultados ---
                 return {
+                    // Kcal calculadas con la nueva fórmula
                     vpaKcal: vpaKcal.toFixed(2),
                     mpaKcal: mpaKcal.toFixed(2),
                     walkKcal: walkKcal.toFixed(2),
                     totalKcal: totalKcal.toFixed(2),
+                    // Nivel de actividad calculado con los criterios IPAQ (que usan MET-min o minutos)
                     level,
-                    feedback, // Add feedback
+                    // Feedback basado en MET-horas semanales y tiempo sedentario
+                    feedback,
+                    // Minutos totales por actividad (para mostrar en el informe)
                     vpaTotalMinutes,
                     mpaTotalMinutes,
                     walkTotalMinutes
