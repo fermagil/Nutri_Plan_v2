@@ -38,7 +38,7 @@
         const db = firebase.firestore();
         // --- Fin de Inicialización ---
 
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
         const App = () => {
             const [currentStep, setCurrentStep] = useState(0);
@@ -104,71 +104,36 @@
             // Generar estadísticas para el informe
             useEffect(() => {
                 if (users.length > 0) {
-                    // Calcular estadísticas generales
-                    const totalUsers = users.length;
-                    const activityLevels = {
-                        ALTO: users.filter(u => u.report.level === 'ALTO').length,
-                        MODERADO: users.filter(u => u.report.level === 'MODERADO').length,
-                        BAJO: users.filter(u => u.report.level === 'BAJO').length
-                    };
-                    
-                    // Calcular porcentajes
-                    const activityPercentages = {
-                        ALTO: ((activityLevels.ALTO / totalUsers) * 100).toFixed(1),
-                        MODERADO: ((activityLevels.MODERADO / totalUsers) * 100).toFixed(1),
-                        BAJO: ((activityLevels.BAJO / totalUsers) * 100).toFixed(1)
-                    };
-                    
-                    // Calcular por sexo
-                    const sexStats = {};
-                    const sexes = [...new Set(users.map(u => u.sexo))];
-                    sexes.forEach(sex => {
-                        const sexUsers = users.filter(u => u.sexo === sex);
-                        const sexTotal = sexUsers.length;
-                        sexStats[sex] = {
-                            total: sexTotal,
-                            levels: {
-                                ALTO: sexUsers.filter(u => u.report.level === 'ALTO').length,
-                                MODERADO: sexUsers.filter(u => u.report.level === 'MODERADO').length,
-                                BAJO: sexUsers.filter(u => u.report.level === 'BAJO').length
-                            },
-                            percentages: {
-                                ALTO: sexTotal > 0 ? ((sexUsers.filter(u => u.report.level === 'ALTO').length / sexTotal) * 100).toFixed(1) : 0,
-                                MODERADO: sexTotal > 0 ? ((sexUsers.filter(u => u.report.level === 'MODERADO').length / sexTotal) * 100).toFixed(1) : 0,
-                                BAJO: sexTotal > 0 ? ((sexUsers.filter(u => u.report.level === 'BAJO').length / sexTotal) * 100).toFixed(1) : 0
-                            }
-                        };
-                    });
-                    
-                    // Calcular por curso
-                    const courseStats = {};
-                    const courses = [...new Set(users.map(u => u.curso))];
-                    courses.forEach(course => {
-                        const courseUsers = users.filter(u => u.curso === course);
-                        const courseTotal = courseUsers.length;
-                        courseStats[course] = {
-                            total: courseTotal,
-                            levels: {
-                                ALTO: courseUsers.filter(u => u.report.level === 'ALTO').length,
-                                MODERADO: courseUsers.filter(u => u.report.level === 'MODERADO').length,
-                                BAJO: courseUsers.filter(u => u.report.level === 'BAJO').length
-                            },
-                            percentages: {
-                                ALTO: courseTotal > 0 ? ((courseUsers.filter(u => u.report.level === 'ALTO').length / courseTotal) * 100).toFixed(1) : 0,
-                                MODERADO: courseTotal > 0 ? ((courseUsers.filter(u => u.report.level === 'MODERADO').length / courseTotal) * 100).toFixed(1) : 0,
-                                BAJO: courseTotal > 0 ? ((courseUsers.filter(u => u.report.level === 'BAJO').length / courseTotal) * 100).toFixed(1) : 0
-                            }
-                        };
-                    });
-                    
                     const stats = {
-                        total: totalUsers,
-                        levels: activityLevels,
-                        percentages: activityPercentages,
-                        sex: sexStats,
-                        course: courseStats
+                        total: users.length,
+                        sexo: {},
+                        curso: {},
+                        nivel: {}
                     };
-                    
+
+                    users.forEach(user => {
+                        // Contar por sexo
+                        if (stats.sexo[user.sexo]) {
+                            stats.sexo[user.sexo]++;
+                        } else {
+                            stats.sexo[user.sexo] = 1;
+                        }
+
+                        // Contar por curso
+                        if (stats.curso[user.curso]) {
+                            stats.curso[user.curso]++;
+                        } else {
+                            stats.curso[user.curso] = 1;
+                        }
+                        
+                        // Contar por nivel
+                        if (stats.nivel[user.report.level]) {
+                            stats.nivel[user.report.level]++;
+                        } else {
+                            stats.nivel[user.report.level] = 1;
+                        }
+                    });
+
                     setReportStats(stats);
                 }
             }, [users]);
@@ -176,54 +141,19 @@
             // Crear gráficos cuando se abra el modal
             useEffect(() => {
                 if (showReportModal && reportStats) {
-                    // Gráfico de Nivel de Actividad General
-                    const ctxGeneral = document.getElementById('chartGeneral');
-                    if (ctxGeneral && reportCharts.general) {
-                        reportCharts.general.destroy();
+                    // Gráfico de Sexo
+                    const ctxSexo = document.getElementById('chartSexo');
+                    if (ctxSexo && reportCharts.sexo) {
+                        reportCharts.sexo.destroy();
                     }
-                    if (ctxGeneral) {
-                        const chartGeneral = new Chart(ctxGeneral, {
+                    if (ctxSexo) {
+                        const chartSexo = new Chart(ctxSexo, {
                             type: 'pie',
-                            data: {
-                                labels: ['ALTO', 'MODERADO', 'BAJO'],
+                             {
+                                labels: Object.keys(reportStats.sexo),
                                 datasets: [{
-                                    data: [reportStats.levels.ALTO, reportStats.levels.MODERADO, reportStats.levels.BAJO],
-                                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Distribución General por Nivel de Actividad'
-                                    },
-                                    legend: {
-                                        position: 'bottom'
-                                    }
-                                },
-                                maintainAspectRatio: false
-                            }
-                        });
-                        setReportCharts(prev => ({ ...prev, general: chartGeneral }));
-                    }
-
-                    // Gráfico por Sexo
-                    const ctxSex = document.getElementById('chartSex');
-                    if (ctxSex && reportCharts.sex) {
-                        reportCharts.sex.destroy();
-                    }
-                    if (ctxSex) {
-                        const sexLabels = Object.keys(reportStats.sex);
-                        const sexData = sexLabels.map(sex => reportStats.sex[sex].total);
-                        const chartSex = new Chart(ctxSex, {
-                            type: 'bar',
-                            data: {
-                                labels: sexLabels,
-                                datasets: [{
-                                    label: 'Número de Usuarios',
-                                    data: sexData,
-                                    backgroundColor: '#3b82f6',
+                                     Object.values(reportStats.sexo),
+                                    backgroundColor: ['#3b82f6', '#ef4444', '#10b981'],
                                 }]
                             },
                             options: {
@@ -234,31 +164,32 @@
                                         text: 'Distribución por Sexo'
                                     },
                                     legend: {
-                                        display: false
+                                        position: 'bottom'
                                     }
                                 },
                                 maintainAspectRatio: false
                             }
                         });
-                        setReportCharts(prev => ({ ...prev, sex: chartSex }));
+                        setReportCharts(prev => ({ ...prev, sexo: chartSexo }));
                     }
 
-                    // Gráfico por Curso
-                    const ctxCourse = document.getElementById('chartCourse');
-                    if (ctxCourse && reportCharts.course) {
-                        reportCharts.course.destroy();
+                    // Gráfico de Curso
+                    const ctxCurso = document.getElementById('chartCurso');
+                    if (ctxCurso && reportCharts.curso) {
+                        reportCharts.curso.destroy();
                     }
-                    if (ctxCourse) {
-                        const courseLabels = Object.keys(reportStats.course);
-                        const courseData = courseLabels.map(course => reportStats.course[course].total);
-                        const chartCourse = new Chart(ctxCourse, {
-                            type: 'bar',
-                            data: {
-                                labels: courseLabels,
+                    if (ctxCurso) {
+                        const chartCurso = new Chart(ctxCurso, {
+                            type: 'pie',
+                             {
+                                labels: Object.keys(reportStats.curso),
                                 datasets: [{
-                                    label: 'Número de Usuarios',
-                                    data: courseData,
-                                    backgroundColor: '#8b5cf6',
+                                     Object.values(reportStats.curso),
+                                    backgroundColor: [
+                                        '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6',
+                                        '#f97316', '#6366f1', '#10b981', '#ef4444',
+                                        '#06b6d4', '#8b5cf6'
+                                    ],
                                 }]
                             },
                             options: {
@@ -269,13 +200,45 @@
                                         text: 'Distribución por Curso'
                                     },
                                     legend: {
-                                        display: false
+                                        position: 'bottom'
                                     }
                                 },
                                 maintainAspectRatio: false
                             }
                         });
-                        setReportCharts(prev => ({ ...prev, course: chartCourse }));
+                        setReportCharts(prev => ({ ...prev, curso: chartCurso }));
+                    }
+                    
+                    // Gráfico de Nivel
+                    const ctxNivel = document.getElementById('chartNivel');
+                    if (ctxNivel && reportCharts.nivel) {
+                        reportCharts.nivel.destroy();
+                    }
+                    if (ctxNivel) {
+                        const chartNivel = new Chart(ctxNivel, {
+                            type: 'pie',
+                             {
+                                labels: Object.keys(reportStats.nivel),
+                                datasets: [{
+                                     Object.values(reportStats.nivel),
+                                    backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Distribución por Nivel de Actividad'
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                },
+                                maintainAspectRatio: false
+                            }
+                        });
+                        setReportCharts(prev => ({ ...prev, nivel: chartNivel }));
                     }
                 }
             }, [showReportModal, reportStats]);
@@ -471,6 +434,10 @@
                 } else {
                     setExportError('Clave incorrecta');
                 }
+            };
+
+            const printReport = () => {
+                window.print();
             };
 
             const getFilteredUsers = () => {
@@ -1027,9 +994,15 @@
                                     ...userData,
                                     report: reportData
                                 }])}
-                                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 mr-2"
                             >
                                 Exportar Datos de este Informe a CSV
+                            </button>
+                            <button
+                                onClick={printReport}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                            >
+                                Imprimir Informe
                             </button>
                         </div>
                     </div>
@@ -1070,7 +1043,8 @@
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {analysisType === 'ageRange' ? 'Rango de Edad' : 
                                              analysisType === 'course' ? 'Curso' : 
-                                             analysisType === 'sex' ? 'Sexo' : 'Grupo'}
+                                             analysisType === 'sex' ? 'Sexo' : 
+                                             'Grupo'}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edad Promedio</th>
@@ -1327,43 +1301,6 @@
                 );
             };
 
-            // Función para obtener recomendaciones basadas en los criterios proporcionados
-            const getRecommendation = (mvpaRatio, sedentaryHours) => {
-                if (mvpaRatio <= 2.5) {
-                    if (sedentaryHours >= 8) {
-                        return "Definitivamente debes mejorar tus niveles de actividad física. Tus bajos/inexistentes niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
-                        return "Definitivamente debes mejorar tus niveles de actividad física. Tus bajos/inexistentes niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles medio/altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    } else {
-                        return "Debes mejorar tus niveles de actividad física. Aunque tu tiempo diario sedentario es bajo, por debajo de las 4 horas, tus bajos/inexistentes niveles de actividad física moderada a vigorosa diarios producirán efectos negativos en tu salud presente y futura. De acuerdo con tu estado de salud deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    }
-                } else if (mvpaRatio <= 16) {
-                    if (sedentaryHours >= 8) {
-                        return "Debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tu alto tiempo sedentario diario tendrá efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
-                        return "Debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tu alto tiempo sedentario diario tendrá efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    } else {
-                        return "Debes mejorar tus niveles de actividad física. Aunque tu tiempo diario sedentario es bajo, por debajo de las 4 horas, tus bajos niveles de actividad física moderada a vigorosa diarios producirán efectos negativos en tu salud presente y futura. De acuerdo con tu estado de salud y para contrarrestar los efectos negativos que tus altos niveles de sedentarismo tendrán en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    }
-                } else if (mvpaRatio <= 35.5) {
-                    if (sedentaryHours >= 8) {
-                        return "Deberías mejorar ligeramente tus niveles de actividad física. Tu mayor problema es tu alto nivel de tiempo sedentario diario, que producirá efectos negativos en tu salud presente y futura, aunque tus niveles diarios de actividad física a intensidad moderada a intensa son casi adecuados. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
-                        return "Tus niveles de actividad física son adecuados tanto en cuanto a calidad como a cantidad. Tanto el tiempo que dedicas a realizar actividad física a intensidad moderada a vigorosa como tu tiempo sedentario diario es casi ideal. Tu tiempo sedentario diario debería permanecer por debajo de las 4 horas. Si esto no es posible y para contrarrestar los efectos negativos que niveles altos de sedentarismo tendrán en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    } else {
-                        return "Tus niveles de actividad física son adecuados tanto en cuanto a calidad como a cantidad. Tanto el tiempo que dedicas a realizar actividad física a intensidad moderada a vigorosa como tu tiempo sedentario diario es casi ideal. Para contrarrestar los efectos negativos que niveles altos de sedentarismo tendrán en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a  realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.";
-                    }
-                } else {
-                    if (sedentaryHours >= 8) {
-                        return "Tus niveles de actividad física son óptimos a pesar de tus altos niveles de tiempo sedentario diario tus niveles de actividad física son óptimos. Esto es así gracias al alto número de horas que dedicas a realizar actividad física a intensidad moderada a vigorosa.";
-                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
-                        return "Tus niveles de actividad física son excelentes. Tu tiempo sedentario diario es bajo y dedicas un número alto de horas a realizar actividad física a intensidad moderada a vigorosa.";
-                    } else {
-                        return "Tus niveles de actividad física son excelentes. Tu tiempo sedentario diario es bajo y dedicas un número alto de horas a realizar actividad física a intensidad moderada a vigorosa.";
-                    }
-                }
-            };
-
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
                     <header className="bg-white shadow">
@@ -1549,7 +1486,7 @@
                                             <h4 className="text-lg font-semibold text-gray-700 mb-2">Resultados Absolutos y Porcentuales</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div className="bg-blue-100 p-4 rounded-lg">
-                                                    <h5 className="font-medium text-blue-700">Total de Encuestados</h5>
+                                                    <h5 className="font-medium text-blue-700">Total General</h5>
                                                     <p className="text-2xl font-bold text-blue-800">{reportStats.total}</p>
                                                     <p className="text-sm text-blue-600">100%</p>
                                                 </div>
@@ -1557,17 +1494,17 @@
                                                     <div className="bg-red-100 p-3 rounded-md">
                                                         <h5 className="font-medium text-red-700">Nivel Bajo</h5>
                                                         <p className="text-xl font-bold text-red-800">{reportStats.levels.BAJO}</p>
-                                                        <p className="text-sm text-red-600">{reportStats.percentages.BAJO}%</p>
+                                                        <p className="text-sm text-red-600">{reportStats.total > 0 ? ((reportStats.levels.BAJO / reportStats.total) * 100).toFixed(1) : 0}%</p>
                                                     </div>
                                                     <div className="bg-yellow-100 p-3 rounded-md">
                                                         <h5 className="font-medium text-yellow-700">Nivel Moderado</h5>
                                                         <p className="text-xl font-bold text-yellow-800">{reportStats.levels.MODERADO}</p>
-                                                        <p className="text-sm text-yellow-600">{reportStats.percentages.MODERADO}%</p>
+                                                        <p className="text-sm text-yellow-600">{reportStats.total > 0 ? ((reportStats.levels.MODERADO / reportStats.total) * 100).toFixed(1) : 0}%</p>
                                                     </div>
                                                     <div className="bg-green-100 p-3 rounded-md">
                                                         <h5 className="font-medium text-green-700">Nivel Alto</h5>
                                                         <p className="text-xl font-bold text-green-800">{reportStats.levels.ALTO}</p>
-                                                        <p className="text-sm text-green-600">{reportStats.percentages.ALTO}%</p>
+                                                        <p className="text-sm text-green-600">{reportStats.total > 0 ? ((reportStats.levels.ALTO / reportStats.total) * 100).toFixed(1) : 0}%</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1577,7 +1514,7 @@
                                             <div>
                                                 <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución por Sexo</h4>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                                    {Object.entries(reportStats.sex).map(([sexo, data]) => (
+                                                    {Object.entries(reportStats.sexo).map(([sexo, data]) => (
                                                         <div key={sexo} className="bg-gray-100 p-3 rounded-md">
                                                             <p className="font-medium text-gray-700">{sexo}</p>
                                                             <p className="text-xl font-bold text-gray-800">{data.total}</p>
@@ -1590,7 +1527,7 @@
                                                     ))}
                                                 </div>
                                                 <div className="h-64">
-                                                    <canvas id="chartSex"></canvas>
+                                                    <canvas id="chartSexo"></canvas>
                                                 </div>
                                             </div>
                                             
@@ -1610,7 +1547,7 @@
                                                     ))}
                                                 </div>
                                                 <div className="h-64">
-                                                    <canvas id="chartCourse"></canvas>
+                                                    <canvas id="chartCurso"></canvas>
                                                 </div>
                                             </div>
                                         </div>
@@ -1621,17 +1558,17 @@
                                                 <div className="bg-red-100 p-3 rounded-md">
                                                     <h5 className="font-medium text-red-700">Nivel Bajo</h5>
                                                     <p className="text-xl font-bold text-red-800">{reportStats.levels.BAJO}</p>
-                                                    <p className="text-sm text-red-600">{reportStats.percentages.BAJO}%</p>
+                                                    <p className="text-sm text-red-600">{reportStats.total > 0 ? ((reportStats.levels.BAJO / reportStats.total) * 100).toFixed(1) : 0}%</p>
                                                 </div>
                                                 <div className="bg-yellow-100 p-3 rounded-md">
                                                     <h5 className="font-medium text-yellow-700">Nivel Moderado</h5>
                                                     <p className="text-xl font-bold text-yellow-800">{reportStats.levels.MODERADO}</p>
-                                                    <p className="text-sm text-yellow-600">{reportStats.percentages.MODERADO}%</p>
+                                                    <p className="text-sm text-yellow-600">{reportStats.total > 0 ? ((reportStats.levels.MODERADO / reportStats.total) * 100).toFixed(1) : 0}%</p>
                                                 </div>
                                                 <div className="bg-green-100 p-3 rounded-md">
                                                     <h5 className="font-medium text-green-700">Nivel Alto</h5>
                                                     <p className="text-xl font-bold text-green-800">{reportStats.levels.ALTO}</p>
-                                                    <p className="text-sm text-green-600">{reportStats.percentages.ALTO}%</p>
+                                                    <p className="text-sm text-green-600">{reportStats.total > 0 ? ((reportStats.levels.ALTO / reportStats.total) * 100).toFixed(1) : 0}%</p>
                                                 </div>
                                             </div>
                                             <div className="h-64">
@@ -1645,9 +1582,9 @@
                                                 <div>
                                                     <h5 className="font-medium text-blue-700">Análisis General</h5>
                                                     <p className="text-sm text-gray-600">
-                                                        {reportStats.percentages.ALTO >= 50 
+                                                        {reportStats.levels.ALTO >= 50 
                                                             ? "Más de la mitad de los encuestados tienen un nivel de actividad física alto, lo cual es positivo." 
-                                                            : reportStats.percentages.MODERADO >= 50 
+                                                            : reportStats.levels.MODERADO >= 50 
                                                                 ? "La mayoría de los encuestados tienen un nivel de actividad física moderado, lo cual es aceptable pero se puede mejorar." 
                                                                 : "La mayoría de los encuestados tienen un nivel de actividad física bajo, lo cual requiere atención."}
                                                     </p>
@@ -1656,7 +1593,7 @@
                                                 <div>
                                                     <h5 className="font-medium text-blue-700">Comparación por Sexo</h5>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                        {Object.entries(reportStats.sex).map(([sexo, data]) => (
+                                                        {Object.entries(reportStats.sexo).map(([sexo, data]) => (
                                                             <div key={sexo} className="text-sm text-gray-600">
                                                                 <p><strong>{sexo}:</strong> {data.percentages.ALTO}% ALTO, {data.percentages.MODERADO}% MODERADO, {data.percentages.BAJO}% BAJO</p>
                                                                 {data.percentages.ALTO > 50 
@@ -1702,7 +1639,13 @@
                                     <p>Cargando estadísticas...</p>
                                 )}
                                 
-                                <div className="mt-6 flex justify-end">
+                                <div className="mt-6 flex justify-end space-x-3">
+                                    <button
+                                        onClick={printReport}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                    >
+                                        Imprimir Informe
+                                    </button>
                                     <button
                                         onClick={() => setShowReportModal(false)}
                                         className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
