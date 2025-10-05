@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -183,10 +184,10 @@
                     if (ctxGeneral) {
                         const chartGeneral = new Chart(ctxGeneral, {
                             type: 'pie',
-                             {
+                            data: {
                                 labels: ['ALTO', 'MODERADO', 'BAJO'],
                                 datasets: [{
-                                     [reportStats.levels.ALTO, reportStats.levels.MODERADO, reportStats.levels.BAJO],
+                                    data: [reportStats.levels.ALTO, reportStats.levels.MODERADO, reportStats.levels.BAJO],
                                     backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
                                 }]
                             },
@@ -217,11 +218,11 @@
                         const sexData = sexLabels.map(sex => reportStats.sex[sex].total);
                         const chartSex = new Chart(ctxSex, {
                             type: 'bar',
-                             {
+                            data: {
                                 labels: sexLabels,
                                 datasets: [{
                                     label: 'Número de Usuarios',
-                                     sexData,
+                                    data: sexData,
                                     backgroundColor: '#3b82f6',
                                 }]
                             },
@@ -252,11 +253,11 @@
                         const courseData = courseLabels.map(course => reportStats.course[course].total);
                         const chartCourse = new Chart(ctxCourse, {
                             type: 'bar',
-                             {
+                            data: {
                                 labels: courseLabels,
                                 datasets: [{
                                     label: 'Número de Usuarios',
-                                     courseData,
+                                    data: courseData,
                                     backgroundColor: '#8b5cf6',
                                 }]
                             },
