@@ -1088,4 +1088,211 @@
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Curso</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
-                                            <th className="px-6 py-3 text-left text-xs
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peso</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {filteredUsers.map(user => (
+                                            <tr key={user.id}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.id}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.nombre}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.edad}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.curso}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.sexo}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.peso} kg</td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                        user.report.level === 'ALTO' ? 'bg-green-100 text-green-800' :
+                                                        user.report.level === 'MODERADO' ? 'bg-yellow-100 text-yellow-800' :
+                                                        'bg-red-100 text-red-800'
+                                                    }`}>
+                                                        {user.report.level}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedUser(user);
+                                                            setReportData(user.report);
+                                                            setShowReport(true);
+                                                        }}
+                                                        className="text-blue-600 hover:text-blue-900 mr-2"
+                                                    >
+                                                        Ver Informe
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+                    <header className="bg-white shadow">
+                        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
+                            <h1 className="text-3xl font-bold text-gray-900">
+                                Cuestionario IPAQ - Actividad Física
+                            </h1>
+                            <button
+                                onClick={resetForm}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                            >
+                                Nueva Encuesta
+                            </button>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+                        {showReport ? (
+                            <div className="space-y-6">
+                                {renderReport()}
+                                <div className="flex justify-between">
+                                    <button
+                                        onClick={() => setShowReport(false)}
+                                        className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+                                    >
+                                        Volver al Panel
+                                    </button>
+                                    <button
+                                        onClick={resetForm}
+                                        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                    >
+                                        Nueva Encuesta
+                                    </button>
+                                </div>
+                            </div>
+                        ) : showAnalysis ? (
+                            renderAnalysis()
+                        ) : currentStep === -1 ? (
+                            renderDashboard()
+                        ) : (
+                            <div className="bg-white rounded-lg shadow-lg p-6">
+                                {renderStep()}
+
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handleBack}
+                                        disabled={currentStep === 0}
+                                        className={`px-4 py-2 rounded-md ${
+                                            currentStep === 0 
+                                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                                : 'bg-gray-600 text-white hover:bg-gray-700'
+                                        }`}
+                                    >
+                                        Anterior
+                                    </button>
+                                    
+                                    <button
+                                        onClick={handleNext}
+                                        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                    >
+                                        {currentStep === 7 ? 'Finalizar' : 'Siguiente'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {!showReport && !showAnalysis && currentStep === -1 && (
+                            <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
+                                <h2 className="text-2xl font-bold text-blue-700 mb-4">Sobre el Cuestionario IPAQ</h2>
+                                <p className="text-gray-600 mb-4">
+                                    El Cuestionario Internacional de Actividad Física (IPAQ) es una herramienta estandarizada 
+                                    utilizada para evaluar la actividad física en diferentes poblaciones. Este cuestionario 
+                                    evalúa la actividad física en tres dominios: trabajo, transporte, hogar y ocio.
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="bg-blue-50 p-4 rounded-lg">
+                                        <h3 className="font-semibold text-blue-700">Actividades Vigorosas</h3>
+                                        <p className="text-sm">Requieren un esfuerzo físico intenso y hacen respirar mucho más fuerte que lo normal.</p>
+                                    </div>
+                                    <div className="bg-green-50 p-4 rounded-lg">
+                                        <h3 className="font-semibold text-green-700">Actividades Moderadas</h3>
+                                        <p className="text-sm">Requieren un esfuerzo físico moderado y hacen respirar algo más fuerte que lo normal.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Modal de Exportación */}
+                    {showExportModal && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-white rounded-lg p-6 w-11/12 md:w-1/3">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Exportar Datos</h3>
+                                <p className="text-sm text-gray-600 mb-4">Ingrese la clave para exportar los datos a CSV:</p>
+                                <input
+                                    type="password"
+                                    value={exportPassword}
+                                    onChange={(e) => setExportPassword(e.target.value)}
+                                    placeholder="Clave de acceso"
+                                    className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                                />
+                                {exportError && <p className="text-red-500 text-sm mb-2">{exportError}</p>}
+                                
+                                {/* Selección de qué datos exportar */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">¿Qué datos desea exportar?</label>
+                                    <div className="flex space-x-4">
+                                        <label className="inline-flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="exportOption"
+                                                value="all"
+                                                checked={exportOption === 'all'}
+                                                onChange={(e) => setExportOption(e.target.value)}
+                                                className="form-radio text-blue-600"
+                                            />
+                                            <span className="ml-2">Todos los datos</span>
+                                        </label>
+                                        <label className="inline-flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="exportOption"
+                                                value="current"
+                                                checked={exportOption === 'current'}
+                                                onChange={(e) => setExportOption(e.target.value)}
+                                                className="form-radio text-blue-600"
+                                            />
+                                            <span className="ml-2">Solo mis datos</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex justify-end space-x-3">
+                                    <button
+                                        onClick={() => {
+                                            setShowExportModal(false);
+                                            setExportPassword('');
+                                            setExportError('');
+                                            setExportOption('all'); // Resetear opción
+                                        }}
+                                        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={handleExportWithPassword}
+                                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                                    >
+                                        Exportar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
