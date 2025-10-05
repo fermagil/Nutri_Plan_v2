@@ -706,14 +706,20 @@
 </div>
 
 <script>
-    // Generar opciones de edad (10 a 18 años)
-    const edadSelect = document.getElementById('edad');
-    for (let i = 10; i <= 18; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = i;
-        edadSelect.appendChild(option);
-    }
+    // Generar opciones de edad (10 a 18 años) - Debe ejecutarse después de que el DOM esté cargado
+    document.addEventListener('DOMContentLoaded', function() {
+        const edadSelect = document.getElementById('edad');
+        if (edadSelect) { // Verificar si el elemento existe
+            for (let i = 10; i <= 18; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                edadSelect.appendChild(option);
+            }
+        } else {
+            console.error("No se encontró el elemento con id='edad'");
+        }
+    });
 
     // Establecer fecha actual por defecto
     const today = new Date().toISOString().split('T')[0];
@@ -1093,14 +1099,14 @@
         const ctx = document.getElementById('categoryChart').getContext('2d');
         new Chart(ctx, {
             type: 'pie',
-             {
+            data: { // <-- Añadido 'data:'
                 labels: [
                     `Calidad Óptima (≥8): ${high} (${((high / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Intermedia (4-7): ${medium} (${((medium / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Baja (≤3): ${low} (${((low / (high + medium + low)) * 100).toFixed(1)}%)`
                 ],
                 datasets: [{
-                     [high, medium, low],
+                    data: [high, medium, low], // <-- Añadido 'data:'
                     backgroundColor: [
                         '#27ae60',
                         '#f39c12',
@@ -1109,7 +1115,7 @@
                     borderWidth: 1
                 }]
             },
-            options: {
+            options: { // <-- Añadido 'options:'
                 responsive: true,
                 plugins: {
                     title: {
@@ -1130,10 +1136,10 @@
         
         new Chart(ctx, {
             type: 'pie',
-             {
+            data: { // <-- Añadido 'data:'
                 labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
                 datasets: [{
-                     data,
+                    data: data, // <-- Añadido 'data:'
                     backgroundColor: [
                         '#3498db',
                         '#e91e63',
@@ -1143,7 +1149,7 @@
                     borderWidth: 1
                 }]
             },
-            options: {
+            options: { // <-- Añadido 'options:'
                 responsive: true,
                 plugins: {
                     title: {
@@ -1165,16 +1171,16 @@
         
         new Chart(ctx, {
             type: 'bar',
-             {
+            data: { // <-- Añadido 'data:'
                 labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
                 datasets: [{
                     label: 'Número de Encuestados',
-                     data,
+                    data: data, // <-- Añadido 'data:'
                     backgroundColor: '#27ae60',
                     borderWidth: 1
                 }]
             },
-            options: {
+            options: { // <-- Añadido 'options:'
                 responsive: true,
                 plugins: {
                     title: {
@@ -1212,22 +1218,22 @@
 
         new Chart(ctx, {
             type: 'bar',
-             {
+            data: { // <-- Añadido 'data:'
                 labels: labels,
                 datasets: [
                     {
                         label: 'Respuestas "Sí"',
-                        data: dataSi,
+                        data: dataSi, // <-- Añadido 'data:'
                         backgroundColor: '#27ae60',
                     },
                     {
                         label: 'Respuestas "No"',
-                         dataNo,
+                        data: dataNo, // <-- Añadido 'data:'
                         backgroundColor: '#e74c3c',
                     }
                 ]
             },
-            options: {
+            options: { // <-- Añadido 'options:'
                 responsive: true,
                 plugins: {
                     title: {
