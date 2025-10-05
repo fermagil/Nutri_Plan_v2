@@ -106,7 +106,8 @@
                     const stats = {
                         total: users.length,
                         sexo: {},
-                        curso: {}
+                        curso: {},
+                        nivel: {}
                     };
 
                     users.forEach(user => {
@@ -123,6 +124,13 @@
                         } else {
                             stats.curso[user.curso] = 1;
                         }
+                        
+                        // Contar por nivel
+                        if (stats.nivel[user.report.level]) {
+                            stats.nivel[user.report.level]++;
+                        } else {
+                            stats.nivel[user.report.level] = 1;
+                        }
                     });
 
                     setReportStats(stats);
@@ -137,56 +145,100 @@
                     if (ctxSexo && reportCharts.sexo) {
                         reportCharts.sexo.destroy();
                     }
-                    const chartSexo = new Chart(ctxSexo, {
-                        type: 'pie',
-                        data: {
-                            labels: Object.keys(reportStats.sexo),
-                            datasets: [{
-                                data: Object.values(reportStats.sexo),
-                                backgroundColor: ['#3b82f6', '#ef4444', '#10b981'],
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Distribución por Sexo'
-                                }
+                    if (ctxSexo) {
+                        const chartSexo = new Chart(ctxSexo, {
+                            type: 'pie',
+                             {
+                                labels: Object.keys(reportStats.sexo),
+                                datasets: [{
+                                    data: Object.values(reportStats.sexo),
+                                    backgroundColor: ['#3b82f6', '#ef4444', '#10b981'],
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Distribución por Sexo'
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                },
+                                maintainAspectRatio: false
                             }
-                        }
-                    });
-                    setReportCharts(prev => ({ ...prev, sexo: chartSexo }));
+                        });
+                        setReportCharts(prev => ({ ...prev, sexo: chartSexo }));
+                    }
 
                     // Gráfico de Curso
                     const ctxCurso = document.getElementById('chartCurso');
                     if (ctxCurso && reportCharts.curso) {
                         reportCharts.curso.destroy();
                     }
-                    const chartCurso = new Chart(ctxCurso, {
-                        type: 'pie',
-                        data: {
-                            labels: Object.keys(reportStats.curso),
-                            datasets: [{
-                                data: Object.values(reportStats.curso),
-                                backgroundColor: [
-                                    '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6',
-                                    '#f97316', '#6366f1', '#10b981', '#ef4444',
-                                    '#06b6d4', '#8b5cf6'
-                                ],
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Distribución por Curso'
-                                }
+                    if (ctxCurso) {
+                        const chartCurso = new Chart(ctxCurso, {
+                            type: 'pie',
+                             {
+                                labels: Object.keys(reportStats.curso),
+                                datasets: [{
+                                    data: Object.values(reportStats.curso),
+                                    backgroundColor: [
+                                        '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6',
+                                        '#f97316', '#6366f1', '#10b981', '#ef4444',
+                                        '#06b6d4', '#8b5cf6'
+                                    ],
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Distribución por Curso'
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                },
+                                maintainAspectRatio: false
                             }
-                        }
-                    });
-                    setReportCharts(prev => ({ ...prev, curso: chartCurso }));
+                        });
+                        setReportCharts(prev => ({ ...prev, curso: chartCurso }));
+                    }
+                    
+                    // Gráfico de Nivel
+                    const ctxNivel = document.getElementById('chartNivel');
+                    if (ctxNivel && reportCharts.nivel) {
+                        reportCharts.nivel.destroy();
+                    }
+                    if (ctxNivel) {
+                        const chartNivel = new Chart(ctxNivel, {
+                            type: 'pie',
+                             {
+                                labels: Object.keys(reportStats.nivel),
+                                datasets: [{
+                                    data: Object.values(reportStats.nivel),
+                                    backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Distribución por Nivel de Actividad'
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                },
+                                maintainAspectRatio: false
+                            }
+                        });
+                        setReportCharts(prev => ({ ...prev, nivel: chartNivel }));
+                    }
                 }
             }, [showReportModal, reportStats]);
 
@@ -1410,41 +1462,93 @@
                                     <div className="space-y-6">
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-700 mb-2">Resultados Absolutos y Porcentuales</h4>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                 <div className="bg-blue-100 p-4 rounded-lg">
                                                     <h5 className="font-medium text-blue-700">Total de Encuestados</h5>
                                                     <p className="text-2xl font-bold text-blue-800">{reportStats.total}</p>
                                                     <p className="text-sm text-blue-600">100%</p>
                                                 </div>
+                                                <div className="bg-green-100 p-4 rounded-lg">
+                                                    <h5 className="font-medium text-green-700">Nivel Alto</h5>
+                                                    <p className="text-2xl font-bold text-green-800">{reportStats.nivel.ALTO || 0}</p>
+                                                    <p className="text-sm text-green-600">{reportStats.total ? ((reportStats.nivel.ALTO || 0) / reportStats.total * 100).toFixed(1) : 0}%</p>
+                                                </div>
+                                                <div className="bg-yellow-100 p-4 rounded-lg">
+                                                    <h5 className="font-medium text-yellow-700">Nivel Moderado</h5>
+                                                    <p className="text-2xl font-bold text-yellow-800">{reportStats.nivel.MODERADO || 0}</p>
+                                                    <p className="text-sm text-yellow-600">{reportStats.total ? ((reportStats.nivel.MODERADO || 0) / reportStats.total * 100).toFixed(1) : 0}%</p>
+                                                </div>
+                                                <div className="bg-red-100 p-4 rounded-lg">
+                                                    <h5 className="font-medium text-red-700">Nivel Bajo</h5>
+                                                    <p className="text-2xl font-bold text-red-800">{reportStats.nivel.BAJO || 0}</p>
+                                                    <p className="text-sm text-red-600">{reportStats.total ? ((reportStats.nivel.BAJO || 0) / reportStats.total * 100).toFixed(1) : 0}%</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución por Sexo</h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                    {Object.entries(reportStats.sexo).map(([sexo, count]) => (
+                                                        <div key={sexo} className="bg-gray-100 p-3 rounded-md">
+                                                            <p className="font-medium text-gray-700">{sexo}</p>
+                                                            <p className="text-xl font-bold text-gray-800">{count}</p>
+                                                            <p className="text-sm text-gray-600">{((count / reportStats.total) * 100).toFixed(1)}%</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <div className="h-64">
+                                                    <canvas id="chartSexo"></canvas>
+                                                </div>
+                                            </div>
+                                            
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución por Curso</h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                    {Object.entries(reportStats.curso).map(([curso, count]) => (
+                                                        <div key={curso} className="bg-gray-100 p-3 rounded-md">
+                                                            <p className="font-medium text-gray-700">{curso}</p>
+                                                            <p className="text-xl font-bold text-gray-800">{count}</p>
+                                                            <p className="text-sm text-gray-600">{((count / reportStats.total) * 100).toFixed(1)}%</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <div className="h-64">
+                                                    <canvas id="chartCurso"></canvas>
+                                                </div>
                                             </div>
                                         </div>
                                         
                                         <div>
-                                            <h4 className="text-lg font-semibold text-gray-700 mb-2">Resultados por Sexo</h4>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                                {Object.entries(reportStats.sexo).map(([sexo, count]) => (
-                                                    <div key={sexo} className="bg-gray-100 p-3 rounded-md">
-                                                        <p className="font-medium text-gray-700">{sexo}</p>
-                                                        <p className="text-xl font-bold text-gray-800">{count}</p>
-                                                        <p className="text-sm text-gray-600">{((count / reportStats.total) * 100).toFixed(1)}%</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <canvas id="chartSexo" width="400" height="200"></canvas>
-                                        </div>
-                                        
-                                        <div>
-                                            <h4 className="text-lg font-semibold text-gray-700 mb-2">Resultados por Curso</h4>
+                                            <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución por Nivel de Actividad</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                                {Object.entries(reportStats.curso).map(([curso, count]) => (
-                                                    <div key={curso} className="bg-gray-100 p-3 rounded-md">
-                                                        <p className="font-medium text-gray-700">{curso}</p>
+                                                {Object.entries(reportStats.nivel).map(([nivel, count]) => (
+                                                    <div key={nivel} className={`p-3 rounded-md ${
+                                                        nivel === 'ALTO' ? 'bg-green-100' :
+                                                        nivel === 'MODERADO' ? 'bg-yellow-100' : 'bg-red-100'
+                                                    }`}>
+                                                        <p className="font-medium text-gray-700">{nivel}</p>
                                                         <p className="text-xl font-bold text-gray-800">{count}</p>
                                                         <p className="text-sm text-gray-600">{((count / reportStats.total) * 100).toFixed(1)}%</p>
                                                     </div>
                                                 ))}
                                             </div>
-                                            <canvas id="chartCurso" width="400" height="200"></canvas>
+                                            <div className="h-64">
+                                                <canvas id="chartNivel"></canvas>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="bg-blue-50 p-4 rounded-lg">
+                                            <h4 className="text-lg font-semibold text-blue-700 mb-2">Estimación del Nivel de Actividad</h4>
+                                            <p className="text-sm text-gray-600">
+                                                El nivel de actividad física se clasifica según los minutos MET semanales:
+                                            </p>
+                                            <ul className="list-disc pl-5 text-sm text-gray-600 mt-2">
+                                                <li><strong>Nivel Alto:</strong> ≥ 3000 MET-min/semana o ≥ 1500 MET-min/semana con ≥ 3 días de actividad vigorosa</li>
+                                                <li><strong>Nivel Moderado:</strong> ≥ 600 MET-min/semana o ≥ 5 días de actividad moderada/caminata</li>
+                                                <li><strong>Nivel Bajo:</strong> No cumple los criterios anteriores</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 ) : (
