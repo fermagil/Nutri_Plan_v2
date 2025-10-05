@@ -5,39 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cuestionario KIDMED - Calidad de la Dieta Mediterránea</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Firebase SDK -->
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "firebase/app";
-        import { getAnalytics } from "firebase/analytics";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "firebase/firestore";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyC1Uzw-sS7wW2vhAUXPRIhRDSZ8wKJyd6c",
-            authDomain: "kidmed-e8320.firebaseapp.com",
-            projectId: "kidmed-e8320",
-            storageBucket: "kidmed-e8320.firebasestorage.app",
-            messagingSenderId: "566899185119",
-            appId: "1:566899185119:web:254d46d7ab4f0666cf206a",
-            measurementId: "G-2TNGWBRLKL"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getFirestore(app);
-
-        // Make Firebase functions available globally for use in HTML
-        window.firebaseApp = app;
-        window.firebaseDb = db;
-        window.firebaseAddDoc = addDoc;
-        window.firebaseGetDocs = getDocs;
-        window.firebaseCollection = collection;
-        window.firebaseQuery = query;
-        window.firebaseOrderBy = orderBy;
-        window.firebaseLimit = limit;
-    </script>
+    <!-- SDK de Firebase v9.x para navegadores (UMD) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary-color: #27ae60;
@@ -751,6 +722,22 @@
     // Almacenamiento en memoria de los resultados
     let allResults = JSON.parse(localStorage.getItem('allKIDMEDResults')) || [];
 
+    // Inicializar Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1Uzw-sS7wW2vhAUXPRIhRDSZ8wKJyd6c",
+        authDomain: "kidmed-e8320.firebaseapp.com",
+        projectId: "kidmed-e8320",
+        storageBucket: "kidmed-e8320.firebasestorage.app",
+        messagingSenderId: "566899185119",
+        appId: "1:566899185119:web:254d46d7ab4f0666cf206a",
+        measurementId: "G-2TNGWBRLKL"
+    };
+
+    // Inicializar la aplicación de Firebase
+    firebase.initializeApp(firebaseConfig);
+    const analytics = firebase.analytics();
+    const db = firebase.firestore(); // Obtener la instancia de Firestore
+
     function startTest() {
         const edad = document.getElementById('edad').value;
         const genero = document.getElementById('genero').value;
@@ -805,110 +792,103 @@
         document.getElementById(`progress${pageNum}`).style.width = `${progressPercent}%`;
     }
 
-   async function calculateScore() {
-    // Validar última página
-    if (!validatePage(4)) {
-        alert('Por favor, responde todas las preguntas de esta página.');
-        return;
-    }
-
-    let score = 0;
-    for (let i = 1; i <= 16; i++) {
-        const selectedValue = document.querySelector(`input[name="q${i}"]:checked`).value;
-        score += parseInt(selectedValue);
-    }
-
-    // Limitar puntuación a 0 si es negativa
-    if (score < 0) score = 0;
-
-    let interpretation = "";
-    let recommendations = [];
-    let resultClass = "";
-
-    if (score >= 8) {
-        interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
-        recommendations = [
-            "Sigue manteniendo estos hábitos saludables.",
-            "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
-            "¡Eres un gran ejemplo de alimentación saludable!"
-        ];
-        resultClass = "result-high";
-    } else if (score >= 4 && score <= 7) {
-        interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
-        recommendations = [
-            "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
-            "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
-            "Incorpora pescado al menos 2 veces por semana.",
-            "Evita la comida rápida y los dulces industriales con frecuencia.",
-            "Cocina con aceite de oliva en lugar de mantequilla o margarina."
-        ];
-        resultClass = "result-medium";
-    } else if (score <= 3) {
-        interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
-        recommendations = [
-            "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
-            "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
-            "Reduce la ingesta de dulces, bollería y comida rápida.",
-            "Bebe mucha agua en lugar de refrescos azucarados.",
-            "Incluye pescado y legumbres en la dieta semanalmente.",
-            "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
-        ];
-        resultClass = "result-low";
-    }
-
-    const resultDiv = document.getElementById('result');
-    let recHTML = "<div class='recommendation'><h4>Recomendaciones:</h4><ul>";
-    recommendations.forEach(rec => {
-        recHTML += `<li>${rec}</li>`;
-    });
-    recHTML += "</ul></div>";
-
-    resultDiv.innerHTML = `<div class="result-content"><h3>Resultado</h3><p><strong>Puntuación Total: ${score}</strong></p><p>${interpretation}</p>${recHTML}</div>`;
-    resultDiv.className = resultClass;
-    resultDiv.style.display = "block";
-
-    // Guardar datos para exportar
-    const edad = document.getElementById('edad').value;
-    const genero = document.getElementById('genero').value;
-    const curso = document.getElementById('curso').value;
-    const fecha = document.getElementById('fecha').value;
-
-    const currentResult = {
-        edad: edad,
-        genero: genero,
-        curso: curso,
-        fecha: fecha,
-        score: score,
-        interpretation: interpretation,
-        recommendations: recommendations
-    };
-
-    // Almacenar en memoria y localStorage
-    allResults.push(currentResult);
-    localStorage.setItem('allKIDMEDResults', JSON.stringify(allResults));
-
-    // Almacenar en Firebase - AHORA LLAMAMOS LAS FUNCIONES DIRECTAMENTE
-    try {
-        // Obtenemos la instancia de Firestore que ya se inicializó en el módulo
-        const db = window.firebaseDb; // Usamos la instancia ya creada
-        if (!db) {
-            throw new Error("La base de datos de Firebase no está inicializada.");
+    async function calculateScore() {
+        // Validar última página
+        if (!validatePage(4)) {
+            alert('Por favor, responde todas las preguntas de esta página.');
+            return;
         }
-        // Llamamos directamente a addDoc, collection, etc.
-        await addDoc(collection(db, "kidmedResults"), currentResult);
-        console.log("Documento guardado en Firebase con éxito");
-    } catch (error) {
-        console.error("Error al guardar en Firebase: ", error);
-        alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
+
+        let score = 0;
+        for (let i = 1; i <= 16; i++) {
+            const selectedValue = document.querySelector(`input[name="q${i}"]:checked`).value;
+            score += parseInt(selectedValue);
+        }
+
+        // Limitar puntuación a 0 si es negativa
+        if (score < 0) score = 0;
+
+        let interpretation = "";
+        let recommendations = [];
+        let resultClass = "";
+
+        if (score >= 8) {
+            interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
+            recommendations = [
+                "Sigue manteniendo estos hábitos saludables.",
+                "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
+                "¡Eres un gran ejemplo de alimentación saludable!"
+            ];
+            resultClass = "result-high";
+        } else if (score >= 4 && score <= 7) {
+            interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
+            recommendations = [
+                "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
+                "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
+                "Incorpora pescado al menos 2 veces por semana.",
+                "Evita la comida rápida y los dulces industriales con frecuencia.",
+                "Cocina con aceite de oliva en lugar de mantequilla o margarina."
+            ];
+            resultClass = "result-medium";
+        } else if (score <= 3) {
+            interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
+            recommendations = [
+                "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
+                "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
+                "Reduce la ingesta de dulces, bollería y comida rápida.",
+                "Bebe mucha agua en lugar de refrescos azucarados.",
+                "Incluye pescado y legumbres en la dieta semanalmente.",
+                "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
+            ];
+            resultClass = "result-low";
+        }
+
+        const resultDiv = document.getElementById('result');
+        let recHTML = "<div class='recommendation'><h4>Recomendaciones:</h4><ul>";
+        recommendations.forEach(rec => {
+            recHTML += `<li>${rec}</li>`;
+        });
+        recHTML += "</ul></div>";
+
+        resultDiv.innerHTML = `<div class="result-content"><h3>Resultado</h3><p><strong>Puntuación Total: ${score}</strong></p><p>${interpretation}</p>${recHTML}</div>`;
+        resultDiv.className = resultClass;
+        resultDiv.style.display = "block";
+
+        // Guardar datos para exportar
+        const edad = document.getElementById('edad').value;
+        const genero = document.getElementById('genero').value;
+        const curso = document.getElementById('curso').value;
+        const fecha = document.getElementById('fecha').value;
+
+        const currentResult = {
+            edad: edad,
+            genero: genero,
+            curso: curso,
+            fecha: fecha,
+            score: score,
+            interpretation: interpretation,
+            recommendations: recommendations
+        };
+
+        // Almacenar en memoria y localStorage
+        allResults.push(currentResult);
+        localStorage.setItem('allKIDMEDResults', JSON.stringify(allResults));
+
+        // Almacenar en Firebase usando la instancia `db` obtenida previamente
+        try {
+            await db.collection("kidmedResults").add(currentResult); // Usar `db.collection`
+            console.log("Documento guardado en Firebase con éxito");
+        } catch (error) {
+            console.error("Error al guardar en Firebase: ", error);
+            alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
+        }
+
+        // Mostrar botones de exportar y reset
+        document.getElementById('exportBtn').classList.remove('hidden');
+        document.getElementById('exportAllBtn').classList.remove('hidden');
+        document.getElementById('reportBtn').classList.remove('hidden');
+        document.getElementById('resetBtn').classList.remove('hidden');
     }
-
-
-    // Mostrar botones de exportar y reset
-    document.getElementById('exportBtn').classList.remove('hidden');
-    document.getElementById('exportAllBtn').classList.remove('hidden');
-    document.getElementById('reportBtn').classList.remove('hidden');
-    document.getElementById('resetBtn').classList.remove('hidden');
-}
 
     function exportData() {
         if (allResults.length === 0) {
@@ -966,12 +946,8 @@
     async function generateReport() {
         // Cargar datos desde Firebase
         try {
-            const querySnapshot = await window.firebaseGetDocs(
-                window.firebaseQuery(
-                    window.firebaseCollection(window.firebaseDb, "kidmedResults"),
-                    window.firebaseOrderBy("fecha")
-                )
-            );
+            // Usar la instancia `db` para obtener los documentos
+            const querySnapshot = await db.collection("kidmedResults").orderBy("fecha").get(); // Usar `db.collection`
             
             allResults = [];
             querySnapshot.forEach((doc) => {
