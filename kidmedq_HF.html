@@ -805,103 +805,110 @@
         document.getElementById(`progress${pageNum}`).style.width = `${progressPercent}%`;
     }
 
-    async function calculateScore() {
-        // Validar última página
-        if (!validatePage(4)) {
-            alert('Por favor, responde todas las preguntas de esta página.');
-            return;
-        }
-
-        let score = 0;
-        for (let i = 1; i <= 16; i++) {
-            const selectedValue = document.querySelector(`input[name="q${i}"]:checked`).value;
-            score += parseInt(selectedValue);
-        }
-
-        // Limitar puntuación a 0 si es negativa
-        if (score < 0) score = 0;
-
-        let interpretation = "";
-        let recommendations = [];
-        let resultClass = "";
-
-        if (score >= 8) {
-            interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
-            recommendations = [
-                "Sigue manteniendo estos hábitos saludables.",
-                "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
-                "¡Eres un gran ejemplo de alimentación saludable!"
-            ];
-            resultClass = "result-high";
-        } else if (score >= 4 && score <= 7) {
-            interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
-            recommendations = [
-                "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
-                "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
-                "Incorpora pescado al menos 2 veces por semana.",
-                "Evita la comida rápida y los dulces industriales con frecuencia.",
-                "Cocina con aceite de oliva en lugar de mantequilla o margarina."
-            ];
-            resultClass = "result-medium";
-        } else if (score <= 3) {
-            interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
-            recommendations = [
-                "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
-                "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
-                "Reduce la ingesta de dulces, bollería y comida rápida.",
-                "Bebe mucha agua en lugar de refrescos azucarados.",
-                "Incluye pescado y legumbres en la dieta semanalmente.",
-                "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
-            ];
-            resultClass = "result-low";
-        }
-
-        const resultDiv = document.getElementById('result');
-        let recHTML = "<div class='recommendation'><h4>Recomendaciones:</h4><ul>";
-        recommendations.forEach(rec => {
-            recHTML += `<li>${rec}</li>`;
-        });
-        recHTML += "</ul></div>";
-
-        resultDiv.innerHTML = `<div class="result-content"><h3>Resultado</h3><p><strong>Puntuación Total: ${score}</strong></p><p>${interpretation}</p>${recHTML}</div>`;
-        resultDiv.className = resultClass;
-        resultDiv.style.display = "block";
-
-        // Guardar datos para exportar
-        const edad = document.getElementById('edad').value;
-        const genero = document.getElementById('genero').value;
-        const curso = document.getElementById('curso').value;
-        const fecha = document.getElementById('fecha').value;
-
-        const currentResult = {
-            edad: edad,
-            genero: genero,
-            curso: curso,
-            fecha: fecha,
-            score: score,
-            interpretation: interpretation,
-            recommendations: recommendations
-        };
-
-        // Almacenar en memoria y localStorage
-        allResults.push(currentResult);
-        localStorage.setItem('allKIDMEDResults', JSON.stringify(allResults));
-
-        // Almacenar en Firebase
-        try {
-            await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, "kidmedResults"), currentResult);
-            console.log("Documento guardado en Firebase con éxito");
-        } catch (error) {
-            console.error("Error al guardar en Firebase: ", error);
-            alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
-        }
-
-        // Mostrar botones de exportar y reset
-        document.getElementById('exportBtn').classList.remove('hidden');
-        document.getElementById('exportAllBtn').classList.remove('hidden');
-        document.getElementById('reportBtn').classList.remove('hidden');
-        document.getElementById('resetBtn').classList.remove('hidden');
+   async function calculateScore() {
+    // Validar última página
+    if (!validatePage(4)) {
+        alert('Por favor, responde todas las preguntas de esta página.');
+        return;
     }
+
+    let score = 0;
+    for (let i = 1; i <= 16; i++) {
+        const selectedValue = document.querySelector(`input[name="q${i}"]:checked`).value;
+        score += parseInt(selectedValue);
+    }
+
+    // Limitar puntuación a 0 si es negativa
+    if (score < 0) score = 0;
+
+    let interpretation = "";
+    let recommendations = [];
+    let resultClass = "";
+
+    if (score >= 8) {
+        interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
+        recommendations = [
+            "Sigue manteniendo estos hábitos saludables.",
+            "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
+            "¡Eres un gran ejemplo de alimentación saludable!"
+        ];
+        resultClass = "result-high";
+    } else if (score >= 4 && score <= 7) {
+        interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
+        recommendations = [
+            "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
+            "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
+            "Incorpora pescado al menos 2 veces por semana.",
+            "Evita la comida rápida y los dulces industriales con frecuencia.",
+            "Cocina con aceite de oliva en lugar de mantequilla o margarina."
+        ];
+        resultClass = "result-medium";
+    } else if (score <= 3) {
+        interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
+        recommendations = [
+            "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
+            "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
+            "Reduce la ingesta de dulces, bollería y comida rápida.",
+            "Bebe mucha agua en lugar de refrescos azucarados.",
+            "Incluye pescado y legumbres en la dieta semanalmente.",
+            "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
+        ];
+        resultClass = "result-low";
+    }
+
+    const resultDiv = document.getElementById('result');
+    let recHTML = "<div class='recommendation'><h4>Recomendaciones:</h4><ul>";
+    recommendations.forEach(rec => {
+        recHTML += `<li>${rec}</li>`;
+    });
+    recHTML += "</ul></div>";
+
+    resultDiv.innerHTML = `<div class="result-content"><h3>Resultado</h3><p><strong>Puntuación Total: ${score}</strong></p><p>${interpretation}</p>${recHTML}</div>`;
+    resultDiv.className = resultClass;
+    resultDiv.style.display = "block";
+
+    // Guardar datos para exportar
+    const edad = document.getElementById('edad').value;
+    const genero = document.getElementById('genero').value;
+    const curso = document.getElementById('curso').value;
+    const fecha = document.getElementById('fecha').value;
+
+    const currentResult = {
+        edad: edad,
+        genero: genero,
+        curso: curso,
+        fecha: fecha,
+        score: score,
+        interpretation: interpretation,
+        recommendations: recommendations
+    };
+
+    // Almacenar en memoria y localStorage
+    allResults.push(currentResult);
+    localStorage.setItem('allKIDMEDResults', JSON.stringify(allResults));
+
+    // Almacenar en Firebase - AHORA LLAMAMOS LAS FUNCIONES DIRECTAMENTE
+    try {
+        // Obtenemos la instancia de Firestore que ya se inicializó en el módulo
+        const db = window.firebaseDb; // Usamos la instancia ya creada
+        if (!db) {
+            throw new Error("La base de datos de Firebase no está inicializada.");
+        }
+        // Llamamos directamente a addDoc, collection, etc.
+        await addDoc(collection(db, "kidmedResults"), currentResult);
+        console.log("Documento guardado en Firebase con éxito");
+    } catch (error) {
+        console.error("Error al guardar en Firebase: ", error);
+        alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
+    }
+
+
+    // Mostrar botones de exportar y reset
+    document.getElementById('exportBtn').classList.remove('hidden');
+    document.getElementById('exportAllBtn').classList.remove('hidden');
+    document.getElementById('reportBtn').classList.remove('hidden');
+    document.getElementById('resetBtn').classList.remove('hidden');
+}
 
     function exportData() {
         if (allResults.length === 0) {
