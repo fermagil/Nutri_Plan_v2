@@ -84,8 +84,6 @@
                     (snapshot) => {
                         const usersArray = [];
                         snapshot.forEach((doc) => {
-                            // El ID de Firestore se almacena como doc.id
-                            // Los datos del documento se obtienen con doc.data()
                             usersArray.push({ id: doc.id, ...doc.data() });
                         });
                         setUsers(usersArray);
@@ -97,42 +95,34 @@
                     }
                 );
 
-                // Devuelve la función de desuscripción para limpiar el listener
                 return () => unsubscribe();
             }, []);
 
-            // Generar estadísticas para el informe (FIXED)
+            // Generar estadísticas para el informe
             useEffect(() => {
                 if (users.length > 0) {
                     const stats = {
                         total: users.length,
-                        levels: { ALTO: 0, MODERADO: 0, BAJO: 0 },  // Renamed from 'nivel' for JSX consistency
+                        levels: { ALTO: 0, MODERADO: 0, BAJO: 0 },
                         percentages: { ALTO: 0, MODERADO: 0, BAJO: 0 },
                         sexo: {},
                         curso: {}
                     };
 
-                    // Count totals and levels
                     users.forEach(user => {
-                        // Safe access to level
                         const level = user.report?.level || 'BAJO';
                         
-                        // Count levels
                         stats.levels[level] = (stats.levels[level] || 0) + 1;
 
-                        // Count sexo total
                         stats.sexo[user.sexo] = (stats.sexo[user.sexo] || 0) + 1;
 
-                        // Count curso total
                         stats.curso[user.curso] = (stats.curso[user.curso] || 0) + 1;
                     });
 
-                    // Compute level percentages
                     Object.keys(stats.levels).forEach(key => {
                         stats.percentages[key] = stats.total > 0 ? ((stats.levels[key] / stats.total) * 100).toFixed(1) : 0;
                     });
 
-                    // Compute nested details for sexo
                     Object.keys(stats.sexo).forEach(sex => {
                         const sexUsers = users.filter(u => u.sexo === sex);
                         const levels = { ALTO: 0, MODERADO: 0, BAJO: 0 };
@@ -152,7 +142,6 @@
                         };
                     });
 
-                    // Compute nested details for curso (same logic)
                     Object.keys(stats.curso).forEach(curs => {
                         const courseUsers = users.filter(u => u.curso === curs);
                         const levels = { ALTO: 0, MODERADO: 0, BAJO: 0 };
@@ -172,9 +161,7 @@
                         };
                     });
 
-                    // For backward compatibility with charts (which expect simple objects for totals)
-                    stats.nivel = { ...stats.levels };  // Simple counts for chartNivel
-                    // For sexo/curso charts, create simple total maps
+                    stats.nivel = { ...stats.levels };
                     stats.sexoTotals = Object.fromEntries(Object.entries(stats.sexo).map(([k, v]) => [k, v.total]));
                     stats.cursoTotals = Object.fromEntries(Object.entries(stats.curso).map(([k, v]) => [k, v.total]));
 
@@ -184,10 +171,9 @@
                 }
             }, [users]);
 
-            // Crear gráficos cuando se abra el modal (FIXED for totals)
+            // Crear gráficos cuando se abra el modal
             useEffect(() => {
                 if (showReportModal && reportStats) {
-                    // Gráfico de Sexo (use totals)
                     const ctxSexo = document.getElementById('chartSexo');
                     if (ctxSexo && reportCharts.sexo) {
                         reportCharts.sexo.destroy();
@@ -219,7 +205,6 @@
                         setReportCharts(prev => ({ ...prev, sexo: chartSexo }));
                     }
 
-                    // Gráfico de Curso (use totals)
                     const ctxCurso = document.getElementById('chartCurso');
                     if (ctxCurso && reportCharts.curso) {
                         reportCharts.curso.destroy();
@@ -255,7 +240,6 @@
                         setReportCharts(prev => ({ ...prev, curso: chartCurso }));
                     }
                     
-                    // Gráfico de Nivel
                     const ctxNivel = document.getElementById('chartNivel');
                     if (ctxNivel && reportCharts.nivel) {
                         reportCharts.nivel.destroy();
@@ -306,51 +290,105 @@
             };
 
             const calculateReport = (data) => {
-                // Cálculos según IPAQ
                 const vpaDays = parseInt(data.q1) || 0;
                 const vpaHours = parseInt(data.q2Hours) || 0;
                 const vpaMinutes = parseInt(data.q2Minutes) || 0;
-                const vpaTotalMinutes = vpaDays * (vpaHours * 60 + vpaMinutes);
+                const vpaMinPerDay = vpaHours * 60 + vpaMinutes;
+                const vpaTotalMinutes = vpaDays * vpaMinPerDay;
                 const vpaMET = 8 * vpaTotalMinutes;
 
                 const mpaDays = parseInt(data.q3) || 0;
                 const mpaHours = parseInt(data.q4Hours) || 0;
                 const mpaMinutes = parseInt(data.q4Minutes) || 0;
-                const mpaTotalMinutes = mpaDays * (mpaHours * 60 + mpaMinutes);
+                const mpaMinPerDay = mpaHours * 60 + mpaMinutes;
+                const mpaTotalMinutes = mpaDays * mpaMinPerDay;
                 const mpaMET = 4 * mpaTotalMinutes;
 
                 const walkDays = parseInt(data.q5) || 0;
                 const walkHours = parseInt(data.q6Hours) || 0;
                 const walkMinutes = parseInt(data.q6Minutes) || 0;
-                const walkTotalMinutes = walkDays * (walkHours * 60 + walkMinutes);
+                const walkMinPerDay = walkHours * 60 + walkMinutes;
+                const walkTotalMinutes = walkDays * walkMinPerDay;
                 const walkMET = 3.3 * walkTotalMinutes;
 
                 const totalMET = vpaMET + mpaMET + walkMET;
-                const totalKcal = totalMET * 0.0175; // Aproximación
 
-                // Clasificación de nivel de actividad basada en los criterios proporcionados
+                const weight = parseFloat(data.peso) || 60; // Default to 60 if not provided
+
+                const vpaKcal = vpaMET * 0.0175 * weight;
+                const mpaKcal = mpaMET * 0.0175 * weight;
+                const walkKcal = walkMET * 0.0175 * weight;
+                const totalKcal = vpaKcal + mpaKcal + walkKcal;
+
+                // Clasificación de nivel de actividad basada en IPAQ estándar
                 let level = 'BAJO';
-                
-                // Criterio ALTO: ≥ 3000 MET-min/semana O (≥ 3 días VPA y ≥ 1500 MET-min/semana)
-                if (totalMET >= 3000 || (vpaDays >= 3 && vpaTotalMinutes >= 1500)) {
+
+                // Nivel ALTO
+                if (
+                    (vpaDays >= 3 && vpaMET >= 1500) ||  // Opción A: ≥3 días VPA y ≥1500 MET-min/sem VPA
+                    ((vpaDays + mpaDays + walkDays) >= 7 && totalMET >= 3000)  // Opción B: ≥7 días combinación y ≥3000 MET-min/sem total
+                ) {
                     level = 'ALTO';
                 } 
-                // Criterio MODERADO: (≥ 3 días VPA y ≥ 20 minutos/día) OR (≥ 5 días MPA y/o caminata y ≥ 30 minutos/día) OR (≥ 5 días cualquier combinación y ≥ 600 MET-min/semana)
+                // Nivel MODERADO
                 else if (
-                    (vpaDays >= 3 && vpaHours >= 1/3) || 
-                    (mpaDays >= 5 && mpaHours >= 1/2) || 
-                    (mpaDays >= 5 && totalMET >= 600)
+                    (vpaDays >= 3 && vpaMinPerDay >= 20) ||  // Opción A: ≥3 días VPA ≥20 min/día
+                    (mpaDays >= 5 && mpaMinPerDay >= 30) ||  // Opción B: ≥5 días MPA ≥30 min/día
+                    (walkDays >= 5 && walkMinPerDay >= 30) ||  // Opción B: ≥5 días caminata ≥30 min/día
+                    ((vpaDays + mpaDays + walkDays) >= 5 && totalMET >= 600)  // Opción C: ≥5 días combinación y ≥600 MET-min/sem total
                 ) {
                     level = 'MODERADO';
                 }
 
+                // Tiempo sedentario diario en horas
+                const sedentaryHours = parseInt(data.q7Hours) || 0 + (parseInt(data.q7Minutes) || 0) / 60;
+
+                // MET-hours semanal
+                const weeklyMETHours = totalMET / 60;
+
+                let feedback = '';
+
+                if (weeklyMETHours <= 2.5) {
+                    if (sedentaryHours >= 8) {
+                        feedback = 'Definitivamente debes mejorar tus niveles de actividad física. Tus bajos/inexistentes niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
+                        feedback = 'Definitivamente debes mejorar tus niveles de actividad física. Tus bajos/inexistentes niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles medio/altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    } else if (sedentaryHours <= 4) {
+                        feedback = 'Debes mejorar tus niveles de actividad física. Aunque tu tiempo diario sedentario es bajo, por debajo de las 4 horas, tus bajos/inexistentes niveles de actividad física moderada a vigorosa diarios producirán efectos negativos en tu salud presente y futura. De acuerdo con tu estado de salud deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    }
+                } else if (weeklyMETHours > 2.5 && weeklyMETHours <= 16) {
+                    if (sedentaryHours >= 8) {
+                        feedback = 'Debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tu alto tiempo sedentario diario tendrá efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
+                        feedback = 'Debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tu alto tiempo sedentario diario tendrá efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    } else if (sedentaryHours <= 4) {
+                        feedback = 'Debes mejorar tus niveles de actividad física. Aunque tu tiempo diario sedentario es bajo, por debajo de las 4 horas, tus bajos niveles de actividad física moderada a vigorosa diarios producirán efectos negativos en tu salud presente y futura. De acuerdo con tu estado de salud y para contrarrestar los efectos negativos que tus altos niveles de sedentarismo tendrán en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    }
+                } else if (weeklyMETHours > 16 && weeklyMETHours <= 35.5) {
+                    if (sedentaryHours >= 8) {
+                        feedback = 'Deberías mejorar ligeramente tus niveles de actividad física. Tu mayor problema es tu alto nivel de tiempo sedentario diario, que producirá efectos negativos en tu salud presente y futura, aunque tus niveles diarios de actividad física a intensidad moderada a intensa son casi adecuados. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
+                        feedback = 'Tus niveles de actividad física son adecuados tanto en cuanto a calidad como a cantidad. Tanto el tiempo que dedicas a realizar actividad física a intensidad moderada a vigorosa como tu tiempo sedentario diario es casi ideal. Tu tiempo sedentario diario debería permanecer por debajo de las 4 horas. Si esto no es posible y para contrarrestar los efectos negativos que niveles altos de sedentarismo tendrán en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    } else if (sedentaryHours <= 4) {
+                        feedback = 'Tus niveles de actividad física son adecuados tanto en cuanto a calidad como a cantidad. Tanto el tiempo que dedicas a realizar actividad física a intensidad moderada a vigorosa como tu tiempo sedentario diario es casi ideal. Para contrarrestar los efectos negativos que niveles altos de sedentarismo tendrán en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
+                    }
+                } else if (weeklyMETHours > 35.5) {
+                    if (sedentaryHours >= 8) {
+                        feedback = 'Tus niveles de actividad física son óptimos a pesar de tus altos niveles de tiempo sedentario diario tus niveles de actividad física son óptimos. Esto es así gracias al alto número de horas que dedicas a realizar actividad física a intensidad moderada a vigorosa.';
+                    } else if (sedentaryHours > 4 && sedentaryHours < 8) {
+                        feedback = 'Tus nivles de actividad física son excelentes. Tu tiempo sedentario diario es bajo y dedicas un número alto de horas a realizar actividad física a intensidad moderada a vigorosa.';
+                    } else if (sedentaryHours <= 4) {
+                        feedback = 'Tus niveles de actividad física son excelentes. Tu tiempo sedentario diario es bajo y dedicas un número alto de horas a realizar actividad física a intensidad moderada a vigorosa.';
+                    }
+                }
+
                 return {
-                    vpaMET,
-                    mpaMET,
-                    walkMET,
-                    totalMET,
-                    totalKcal,
+                    vpaKcal: vpaKcal.toFixed(2),
+                    mpaKcal: mpaKcal.toFixed(2),
+                    walkKcal: walkKcal.toFixed(2),
+                    totalKcal: totalKcal.toFixed(2),
                     level,
+                    feedback, // Add feedback
                     vpaTotalMinutes,
                     mpaTotalMinutes,
                     walkTotalMinutes
@@ -365,16 +403,12 @@
                     const calculatedReport = calculateReport(userData);
                     const newUser = {
                         ...userData,
-                        // El ID de Firestore se generará automáticamente
                         report: calculatedReport
                     };
                     
-                    // Guardar en Firestore - CORREGIDO
                     db.collection('encuestas').add(newUser)
                         .then((docRef) => {
                             console.log("Documento escrito con ID: ", docRef.id);
-                            // Opcional: Actualizar el estado local inmediatamente si es necesario
-                            // setUsers(prev => [...prev, { id: docRef.id, ...newUser }]);
                         })
                         .catch((error) => {
                             console.error("Error al añadir el documento: ", error);
@@ -385,7 +419,7 @@
                 }
             };
 
-            const handleBack = () => {
+            st handleBack = () => {
                 if (currentStep > 0) {
                     setCurrentStep(currentStep - 1);
                 }
@@ -651,8 +685,7 @@
                 setAnalysisData(analysisResult);
                 setShowAnalysis(true);
             };
-
-            const renderStep = () => {
+			const renderStep = () => {
                 switch (currentStep) {
                     case 0:
                         return (
@@ -1028,39 +1061,32 @@
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                             <div className="bg-blue-50 p-4 rounded-lg">
                                 <h4 className="font-semibold text-blue-700">Actividades Vigorosas</h4>
-                                <p className="text-2xl font-bold text-blue-600">{reportData.vpaMET.toFixed(0)}</p>
-                                <p className="text-sm">MET-min/semana</p>
+                                <p className="text-2xl font-bold text-blue-600">{reportData.vpaKcal}</p>
+                                <p className="text-sm">Kcal/semana</p>
                                 <p className="text-sm">{reportData.vpaTotalMinutes} min/semana</p>
                             </div>
                             <div className="bg-green-50 p-4 rounded-lg">
                                 <h4 className="font-semibold text-green-700">Actividades Moderadas</h4>
-                                <p className="text-2xl font-bold text-green-600">{reportData.mpaMET.toFixed(0)}</p>
-                                <p className="text-sm">MET-min/semana</p>
+                                <p className="text-2xl font-bold text-green-600">{reportData.mpaKcal}</p>
+                                <p className="text-sm">Kcal/semana</p>
                                 <p className="text-sm">{reportData.mpaTotalMinutes} min/semana</p>
                             </div>
                             <div className="bg-purple-50 p-4 rounded-lg">
                                 <h4 className="font-semibold text-purple-700">Caminatas</h4>
-                                <p className="text-2xl font-bold text-purple-600">{reportData.walkMET.toFixed(0)}</p>
-                                <p className="text-sm">MET-min/semana</p>
+                                <p className="text-2xl font-bold text-purple-600">{reportData.walkKcal}</p>
+                                <p className="text-sm">Kcal/semana</p>
                                 <p className="text-sm">{reportData.walkTotalMinutes} min/semana</p>
                             </div>
                         </div>
 
                         <div className="bg-gray-50 p-4 rounded-lg mb-6">
                             <h4 className="font-semibold text-gray-700">Total</h4>
-                            <p className="text-3xl font-bold text-gray-800">{reportData.totalMET.toFixed(0)} MET-min/semana</p>
-                            <p className="text-lg text-gray-600">{reportData.totalKcal.toFixed(2)} Kcal/semana</p>
+                            <p className="text-3xl font-bold text-gray-800">{reportData.totalKcal} Kcal/semana</p>
                         </div>
 
                         <div className="bg-yellow-50 p-4 rounded-lg">
                             <h4 className="font-semibold text-yellow-700">Recomendación</h4>
-                            <p>
-                                {reportData.level === 'BAJO' 
-                                    ? 'Debe mejorar sus niveles de actividad física. Se recomienda dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.' 
-                                    : reportData.level === 'MODERADO' 
-                                        ? 'Sus niveles de actividad física son adecuados. Continúe manteniendo esta rutina para promover un buen estado de salud.' 
-                                        : '¡Felicidades! Sus niveles de actividad física son óptimos. Mantenga esta excelente rutina de actividad física.'}
-                            </p>
+                            <p>{reportData.feedback}</p>
                         </div>
                         
                         <div className="mt-6">
@@ -1744,8 +1770,8 @@
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
     </script>
 </body>
 </html>
