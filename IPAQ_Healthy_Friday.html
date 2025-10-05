@@ -462,17 +462,15 @@
                 setReportData(null);
             };
 
-            const exportToCSV = (data = users) => {
+                        const exportToCSV = (data = users) => {
                 if (data.length === 0) return;
-
                 const headers = [
                     'ID', 'Nombre', 'Edad', 'Curso', 'Sexo', 'Peso', 'Fecha',
                     'Días VPA', 'Minutos VPA', 'Días MPA', 'Minutos MPA',
                     'Días Caminar', 'Minutos Caminar', 'Minutos Sentado',
-                    'VPA MET', 'MPA MET', 'Caminar MET', 'Total MET',
+                    'VPA MET-min', 'MPA MET-min', 'Caminar MET-min', 'Total MET-min', // Cambiado nombre de columna
                     'Total Kcal', 'Nivel'
                 ];
-
                 const csvContent = [
                     headers.join(','),
                     ...data.map(user => [
@@ -484,21 +482,33 @@
                         user.peso,
                         user.fecha,
                         user.q1,
+                        // Calcula minutos totales de VPA: días * (horas * 60 + minutos)
                         (parseInt(user.q1) || 0) * ((parseInt(user.q2Hours) || 0) * 60 + (parseInt(user.q2Minutes) || 0)),
                         user.q3,
+                         // Calcula minutos totales de MPA: días * (horas * 60 + minutos)
                         (parseInt(user.q3) || 0) * ((parseInt(user.q4Hours) || 0) * 60 + (parseInt(user.q4Minutes) || 0)),
                         user.q5,
+                        // Calcula minutos totales de caminata: días * (horas * 60 + minutos)
                         (parseInt(user.q5) || 0) * ((parseInt(user.q6Hours) || 0) * 60 + (parseInt(user.q6Minutes) || 0)),
+                        // Calcula minutos sedentario: (horas * 60 + minutos)
                         (parseInt(user.q7Hours) || 0) * 60 + (parseInt(user.q7Minutes) || 0),
-                        user.report?.vpaMET || 0,
-                        user.report?.mpaMET || 0,
-                        user.report?.walkMET || 0,
-                        user.report?.totalMET || 0,
-                        (user.report?.totalKcal || 0).toFixed(2),
+                        // --- Exporta MET-minutos calculados, no los valores crudos ---
+                        // Accede a los valores calculados en calculateReport si existen
+                        // Si no existen, usa 0 o calcula como antes (menos preciso)
+                        // Asumiendo que calculateReport guarda MET-minutos en user.report.vpaMETMinutes, etc.
+                        // Si no se cambió calculateReport para guardarlos, hay que hacerlo o calcularlos aquí.
+                        // Suponiendo calculateReport ya guarda vpaMETMinutes, mpaMETMinutes, walkMETMinutes, totalMETMinutes
+                        parseFloat(user.report?.vpaMETMinutes || 0), // Asegura que sea número
+                        parseFloat(user.report?.mpaMETMinutes || 0), // Asegura que sea número
+                        parseFloat(user.report?.walkMETMinutes || 0), // Asegura que sea número
+                        parseFloat(user.report?.totalMETMinutes || 0), // Asegura que sea número
+                        // --- Exporta Kcal calculadas con la nueva fórmula ---
+                        // Asegura que sea número antes de toFixed
+                        (typeof user.report?.totalKcal === 'number' ? user.report.totalKcal : 0).toFixed(2),
                         user.report?.level || 'BAJO'
                     ].join(','))
-                ].join('\n');
-
+                ].join('
+');
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
