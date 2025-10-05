@@ -1167,9 +1167,18 @@
                 
                 const filteredUsers = getFilteredUsers();
                 
-                // Estadísticas generales
-                const avgAge = users.length > 0 ? (users.reduce((sum, user) => sum + parseInt(user.edad), 0) / users.length).toFixed(1) : 0;
-                const avgWeight = users.length > 0 ? (users.reduce((sum, user) => sum + parseFloat(user.peso), 0) / users.length).toFixed(1) : 0;
+                // Estadísticas generales (FIXED: Filter valid values to avoid NaN)
+                const validAges = users.filter(u => {
+                    const age = parseInt(u.edad);
+                    return !isNaN(age) && age > 0;
+                });
+                const avgAge = validAges.length > 0 ? (validAges.reduce((sum, u) => sum + parseInt(u.edad), 0) / validAges.length).toFixed(1) : 0;
+                
+                const validWeights = users.filter(u => {
+                    const weight = parseFloat(u.peso);
+                    return !isNaN(weight) && weight > 0;
+                });
+                const avgWeight = validWeights.length > 0 ? (validWeights.reduce((sum, u) => sum + parseFloat(u.peso), 0) / validWeights.length).toFixed(1) : 0;
                 
                 const activityLevels = {
                     ALTO: users.filter(u => u.report?.level === 'ALTO').length,
@@ -1360,6 +1369,12 @@
                                 Cuestionario IPAQ - Actividad Física
                             </h1>
                             <div className="flex space-x-2">
+                                <button
+                                    onClick={() => setCurrentStep(0)}
+                                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 mr-2"
+                                >
+                                    Iniciar Encuesta
+                                </button>
                                 <button
                                     onClick={() => setShowReportModal(true)}
                                     className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
