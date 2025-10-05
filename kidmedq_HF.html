@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1017,27 +1018,46 @@
         });
 
         // --- Análisis detallado de respuestas ---
-        // Contadores para cada pregunta
-        const contadoresSi = {};
-        const contadoresNo = {};
+			// Contadores para cada pregunta
+			const contadoresSi = {};
+			const contadoresNo = {};
 
-        for (let i = 1; i <= 16; i++) {
-            contadoresSi[i] = 0;
-            contadoresNo[i] = 0;
-        }
+			for (let i = 1; i <= 16; i++) {
+				contadoresSi[i] = 0;
+				contadoresNo[i] = 0;
+			}
 
-        // Recorremos todos los resultados
-        allResults.forEach(resultado => {
-            const respuestas = resultado.respuestas;
-            for (let i = 1; i <= 16; i++) {
-                const valor = respuestas[`q${i}`];
-                if (valor === "1") {
-                    contadoresSi[i]++;
-                } else {
-                    contadoresNo[i]++; // Incluye tanto "0" como "-1"
-                }
-            }
-        });
+			// Recorremos todos los resultados
+			allResults.forEach(resultado => {
+				// Verificar si 'respuestas' existe y es un objeto antes de usarlo
+				if (resultado.respuestas && typeof resultado.respuestas === 'object') {
+					const respuestas = resultado.respuestas;
+					for (let i = 1; i <= 16; i++) {
+						// Verificar si la clave específica existe en 'respuestas'
+						if (respuestas.hasOwnProperty(`q${i}`)) {
+							const valor = respuestas[`q${i}`];
+							if (valor === "1") {
+								contadoresSi[i]++;
+							} else {
+								contadoresNo[i]++; // Incluye tanto "0" como "-1"
+							}
+						} else {
+							// Opcional: Si una pregunta específica no existe, puedes tratarla como "No respondida"
+							// Por ejemplo, considerarla como "No" (contadoresNo[i]++)
+							// console.warn(`La pregunta q${i} no existe en el resultado ${resultado.id || 'desconocido'}`);
+							contadoresNo[i]++; // Opcional: Contar como "No" si no está presente
+						}
+					}
+				} else {
+					// Opcional: Si 'respuestas' no existe, se podrían considerar todas las preguntas como "No respondidas"
+					// console.warn(`El resultado ${resultado.id || 'desconocido'} no tiene la propiedad 'respuestas'`);
+					// Por ejemplo, incrementar contadoresNo para las 16 preguntas
+					for (let i = 1; i <= 16; i++) {
+						contadoresNo[i]++;
+					}
+				}
+			});
+			// --- Fin del análisis detallado ---
         // --- Fin del análisis detallado ---
 
         // Crear contenido del informe
