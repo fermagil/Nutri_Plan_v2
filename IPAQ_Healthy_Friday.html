@@ -410,6 +410,53 @@
                         return (
                             <div className="space-y-6">
                                 <h2 className="text-2xl font-bold text-blue-700">Datos Personales</h2>
+                                <div className="mb-6">
+                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div 
+                                            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+                                            style={{ width: `${(currentStep / 7) * 100}%` }}
+                                        ></div>
+                                    </div>
+                                    <p className="text-sm text-gray-500 mt-2">Paso {currentStep + 1} de 8</p>
+                                </div>
+                                
+                                {/* Contador de Usuarios - Aparece solo en el paso 0 */}
+                                {currentStep === 0 && (
+                                    <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
+                                        <h3 className="text-lg font-semibold text-gray-700 mb-2">Estadísticas de Usuarios</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div className="bg-blue-100 p-3 rounded-md">
+                                                <p className="text-sm text-blue-700">Total General</p>
+                                                <p className="text-xl font-bold text-blue-800">{users.length}</p>
+                                            </div>
+                                            <div className="bg-green-100 p-3 rounded-md">
+                                                <p className="text-sm text-green-700">Por Curso</p>
+                                                {users.length > 0 ? (
+                                                    [...new Set(users.map(u => u.curso))].slice(0, 3).map(c => (
+                                                        <p key={c} className="text-sm font-medium text-green-800">
+                                                            {c}: {users.filter(u => u.curso === c).length}
+                                                        </p>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-sm text-gray-500">No hay datos</p>
+                                                )}
+                                            </div>
+                                            <div className="bg-purple-100 p-3 rounded-md">
+                                                <p className="text-sm text-purple-700">Por Sexo</p>
+                                                {users.length > 0 ? (
+                                                    [...new Set(users.map(u => u.sexo))].slice(0, 3).map(s => (
+                                                        <p key={s} className="text-sm font-medium text-purple-800">
+                                                            {s}: {users.filter(u => u.sexo === s).length}
+                                                        </p>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-sm text-gray-500">No hay datos</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Nombre y apellidos</label>
@@ -1115,16 +1162,6 @@
                             renderDashboard()
                         ) : (
                             <div className="bg-white rounded-lg shadow-lg p-6">
-                                <div className="mb-6">
-                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div 
-                                            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
-                                            style={{ width: `${(currentStep / 7) * 100}%` }}
-                                        ></div>
-                                    </div>
-                                    <p className="text-sm text-gray-500 mt-2">Paso {currentStep + 1} de 8</p>
-                                </div>
-
                                 {renderStep()}
 
                                 <div className="flex justify-between mt-8">
