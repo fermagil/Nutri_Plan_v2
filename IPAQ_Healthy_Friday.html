@@ -148,7 +148,7 @@
                     if (ctxSexo) {
                         const chartSexo = new Chart(ctxSexo, {
                             type: 'pie',
-                             {
+                            data: {
                                 labels: Object.keys(reportStats.sexo),
                                 datasets: [{
                                     data: Object.values(reportStats.sexo),
@@ -180,10 +180,10 @@
                     if (ctxCurso) {
                         const chartCurso = new Chart(ctxCurso, {
                             type: 'pie',
-                             {
+                            data: {
                                 labels: Object.keys(reportStats.curso),
                                 datasets: [{
-                                     Object.values(reportStats.curso),
+                                    data: Object.values(reportStats.curso),
                                     backgroundColor: [
                                         '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6',
                                         '#f97316', '#6366f1', '#10b981', '#ef4444',
@@ -216,7 +216,7 @@
                     if (ctxNivel) {
                         const chartNivel = new Chart(ctxNivel, {
                             type: 'pie',
-                             {
+                            data: {
                                 labels: Object.keys(reportStats.nivel),
                                 datasets: [{
                                     data: Object.values(reportStats.nivel),
@@ -926,67 +926,6 @@
             const renderReport = () => {
                 if (!reportData) return null;
 
-                // Calcular el tiempo sedentario promedio diario en horas y minutos
-                const sedentaryHours = parseInt(userData.q7Hours) || 0;
-                const sedentaryMinutes = parseInt(userData.q7Minutes) || 0;
-                const totalSedentaryMinutes = sedentaryHours * 60 + sedentaryMinutes;
-                const totalSedentaryHours = totalSedentaryMinutes / 60;
-
-                // Calcular el tiempo de actividad física moderada y vigorosa semanal
-                const vpaTotalMinutes = reportData.vpaTotalMinutes;
-                const mpaTotalMinutes = reportData.mpaTotalMinutes;
-                const mvpaTotalMinutes = vpaTotalMinutes + mpaTotalMinutes;
-
-                // Calcular el ratio de tiempo sedentario a actividad física
-                const ratioSedentaryMVPA = totalSedentaryMinutes / mvpaTotalMinutes;
-
-                // Determinar el comentario personalizado basado en los resultados
-                let comment = '';
-                if (mvpaTotalMinutes === 0) {
-                    // Sin actividad física moderada o vigorosa
-                    if (totalSedentaryHours <= 4) {
-                        comment = 'Debes mejorar tus niveles de actividad física. Aunque tu tiempo diario sedentario es bajo, por debajo de las 4 horas, tus bajos/inexistentes niveles de actividad física moderada a vigorosa diarios producirán efectos negativos en tu salud presente y futura. De acuerdo con tu estado de salud deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    } else {
-                        comment = 'Definitivamente debes mejorar tus niveles de actividad física. Tus bajos/inexistentes niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    }
-                } else if (ratioSedentaryMVPA <= 2.5) {
-                    // Relación sedentario/MVPA baja
-                    if (totalSedentaryHours >= 8) {
-                        comment = 'Definitivamente debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    } else if (totalSedentaryHours > 4 && totalSedentaryHours < 8) {
-                        comment = 'Definitivamente debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tus niveles medio/altos de tiempo sedentario producirán efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    } else {
-                        comment = 'Debes mejorar tus niveles de actividad física. Aunque tu tiempo diario sedentario es bajo, por debajo de las 4 horas, tus bajos niveles de actividad física moderada a vigorosa diarios producirán efectos negativos en tu salud presente y futura. De acuerdo con tu estado de salud deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    }
-                } else if (ratioSedentaryMVPA <= 16) {
-                    // Relación sedentario/MVPA media
-                    if (totalSedentaryHours >= 8) {
-                        comment = 'Debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tu alto tiempo sedentario diario tendrá efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    } else if (totalSedentaryHours > 4 && totalSedentaryHours < 8) {
-                        comment = 'Debes mejorar tus niveles de actividad física. Tus bajos niveles diarios de actividad física a intensidad moderada a vigorosa y tu alto tiempo sedentario diario tendrá efectos negativos en tu salud presente y futura. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    } else {
-                        comment = 'Debes mejorar tus niveles de actividad física. Aunque tu tiempo diario sedentario es bajo, por debajo de las 4 horas, tus bajos niveles de actividad física moderada a vigorosa diarios producirán efectos negativos en tu salud presente y futura. De acuerdo con tu estado de salud y para contrarrestar los efectos negativos que tus altos niveles de sedentarismo tendrán en tu salud presente y futura, deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    }
-                } else if (ratioSedentaryMVPA <= 35.5) {
-                    // Relación sedentario/MVPA alta
-                    if (totalSedentaryHours >= 8) {
-                        comment = 'Deberías mejorar ligeramente tus niveles de actividad física. Tu mayor problema es tu alto nivel de tiempo sedentario diario, que producirá efectos negativos en tu salud presente y futura, aunque tus niveles diarios de actividad física a intensidad moderada a intensa son casi adecuados. Lo ideal es que reduzcas tu tiempo sedentario diario por debajo de 4 horas e incrementes tu actividad física moderada a vigorosa de acuerdo con tu estado de salud. Si esto no es posible para ti reducir tu tiempo diario sedentario por motivos laborales o personales y para contrarrestar los efectos negativos que tu alto sedentarismo tendrá en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    } else if (totalSedentaryHours > 4 && totalSedentaryHours < 8) {
-                        comment = 'Tus niveles de actividad física son adecuados tanto en cuanto a calidad como a cantidad. Tanto el tiempo que dedicas a realizar actividad física a intensidad moderada a vigorosa como tu tiempo sedentario diario es casi ideal. Tu tiempo sedentario diario debería permanecer por debajo de las 4 horas. Si esto no es posible y para contrarrestar los efectos negativos que niveles altos de sedentarismo tendrán en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    } else {
-                        comment = 'Tus niveles de actividad física son adecuados tanto en cuanto a calidad como a cantidad. Tanto el tiempo que dedicas a realizar actividad física a intensidad moderada a vigorosa como tu tiempo sedentario diario es casi ideal. Para contrarrestar los efectos negativos que niveles altos de sedentarismo tendrán en tu salud presente y futura deberías dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o, de 45 a 55 minutos diarios a actividad física moderada y vigorosa.';
-                    }
-                } else {
-                    // Relación sedentario/MVPA muy alta
-                    if (totalSedentaryHours >= 8) {
-                        comment = 'Tus niveles de actividad física son óptimos a pesar de tus altos niveles de tiempo sedentario diario tus niveles de actividad física son óptimos. Esto es así gracias al alto número de horas que dedicas a realizar actividad física a intensidad moderada a vigorosa.';
-                    } else if (totalSedentaryHours > 4 && totalSedentaryHours < 8) {
-                        comment = 'Tus niveles de actividad física son excelentes. Tu tiempo sedentario diario es bajo y dedicas un número alto de horas a realizar actividad física a intensidad moderada a vigorosa.';
-                    } else {
-                        comment = 'Tus niveles de actividad física son excelentes. Tu tiempo sedentario diario es bajo y dedicas un número alto de horas a realizar actividad física a intensidad moderada a vigorosa.';
-                    }
-                }
-
                 return (
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-blue-700 mb-4">Informe de Actividad Física</h2>
@@ -1036,7 +975,11 @@
                         <div className="bg-yellow-50 p-4 rounded-lg">
                             <h4 className="font-semibold text-yellow-700">Recomendación</h4>
                             <p>
-                                {comment}
+                                {reportData.level === 'BAJO' 
+                                    ? 'Debe mejorar sus niveles de actividad física. Se recomienda dedicar de 60 a 75 minutos diarios a realizar actividad física a intensidad moderada o de 45 a 55 minutos diarios a actividad física moderada y vigorosa.' 
+                                    : reportData.level === 'MODERADO' 
+                                        ? 'Sus niveles de actividad física son adecuados. Continúe manteniendo esta rutina para promover un buen estado de salud.' 
+                                        : '¡Felicidades! Sus niveles de actividad física son óptimos. Mantenga esta excelente rutina de actividad física.'}
                             </p>
                         </div>
                         
@@ -1089,7 +1032,8 @@
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {analysisType === 'ageRange' ? 'Rango de Edad' : 
                                              analysisType === 'course' ? 'Curso' : 
-                                             analysisType === 'sex' ? 'Sexo' : 'Grupo'}
+                                             analysisType === 'sex' ? 'Sexo' : 
+                                             'Grupo'}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edad Promedio</th>
@@ -1525,21 +1469,6 @@
                                                     <p className="text-2xl font-bold text-blue-800">{reportStats.total}</p>
                                                     <p className="text-sm text-blue-600">100%</p>
                                                 </div>
-                                                <div className="bg-green-100 p-4 rounded-lg">
-                                                    <h5 className="font-medium text-green-700">Nivel Alto</h5>
-                                                    <p className="text-2xl font-bold text-green-800">{reportStats.nivel.ALTO || 0}</p>
-                                                    <p className="text-sm text-green-600">{reportStats.total ? ((reportStats.nivel.ALTO || 0) / reportStats.total * 100).toFixed(1) : 0}%</p>
-                                                </div>
-                                                <div className="bg-yellow-100 p-4 rounded-lg">
-                                                    <h5 className="font-medium text-yellow-700">Nivel Moderado</h5>
-                                                    <p className="text-2xl font-bold text-yellow-800">{reportStats.nivel.MODERADO || 0}</p>
-                                                    <p className="text-sm text-yellow-600">{reportStats.total ? ((reportStats.nivel.MODERADO || 0) / reportStats.total * 100).toFixed(1) : 0}%</p>
-                                                </div>
-                                                <div className="bg-red-100 p-4 rounded-lg">
-                                                    <h5 className="font-medium text-red-700">Nivel Bajo</h5>
-                                                    <p className="text-2xl font-bold text-red-800">{reportStats.nivel.BAJO || 0}</p>
-                                                    <p className="text-sm text-red-600">{reportStats.total ? ((reportStats.nivel.BAJO || 0) / reportStats.total * 100).toFixed(1) : 0}%</p>
-                                                </div>
                                             </div>
                                         </div>
                                         
@@ -1555,7 +1484,7 @@
                                                         </div>
                                                     ))}
                                                 </div>
-                                                <div className="h-48">
+                                                <div className="h-64">
                                                     <canvas id="chartSexo"></canvas>
                                                 </div>
                                             </div>
@@ -1571,7 +1500,7 @@
                                                         </div>
                                                     ))}
                                                 </div>
-                                                <div className="h-48">
+                                                <div className="h-64">
                                                     <canvas id="chartCurso"></canvas>
                                                 </div>
                                             </div>
@@ -1591,7 +1520,7 @@
                                                     </div>
                                                 ))}
                                             </div>
-                                            <div className="h-48">
+                                            <div className="h-64">
                                                 <canvas id="chartNivel"></canvas>
                                             </div>
                                         </div>
