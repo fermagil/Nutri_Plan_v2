@@ -40,7 +40,8 @@
         const { useState, useEffect } = React;
 
         const App = () => {
-            const [currentStep, setCurrentStep] = useState(-1); // Start in dashboard mode
+            const [currentStep, setCurrentStep] = useState(0); // Start at questionnaire
+            const [isAdmin, setIsAdmin] = useState(false);
             const [userData, setUserData] = useState({
                 nombre: '',
                 edad: '',
@@ -488,6 +489,30 @@
 
             const printReport = () => {
                 window.print();
+            };
+
+            const handleAdminPanel = () => {
+                let pass = isAdmin ? 'ok' : window.prompt('Ingrese la clave para acceder al panel:');
+                if (!isAdmin && pass === 'healthy_Friday_2025') {
+                    setIsAdmin(true);
+                }
+                if (isAdmin || pass === 'healthy_Friday_2025') {
+                    setCurrentStep(-1);
+                } else {
+                    alert('Clave incorrecta');
+                }
+            };
+
+            const handleInforme = () => {
+                let pass = isAdmin ? 'ok' : window.prompt('Ingrese la clave para acceder al informe:');
+                if (!isAdmin && pass === 'healthy_Friday_2025') {
+                    setIsAdmin(true);
+                }
+                if (isAdmin || pass === 'healthy_Friday_2025') {
+                    setShowReportModal(true);
+                } else {
+                    alert('Clave incorrecta');
+                }
             };
 
             const getFilteredUsers = () => {
@@ -1370,16 +1395,16 @@
                             </h1>
                             <div className="flex space-x-2">
                                 <button
-                                    onClick={() => setCurrentStep(0)}
-                                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 mr-2"
-                                >
-                                    Iniciar Encuesta
-                                </button>
-                                <button
-                                    onClick={() => setShowReportModal(true)}
+                                    onClick={handleInforme}
                                     className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
                                 >
                                     Informe
+                                </button>
+                                <button
+                                    onClick={handleAdminPanel}
+                                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+                                >
+                                    Panel de Control
                                 </button>
                                 <button
                                     onClick={resetForm}
@@ -1397,10 +1422,13 @@
                                 {renderReport()}
                                 <div className="flex justify-between">
                                     <button
-                                        onClick={() => setShowReport(false)}
+                                        onClick={() => {
+                                            setShowReport(false);
+                                            setCurrentStep(isAdmin ? -1 : 0);
+                                        }}
                                         className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
                                     >
-                                        Volver al Panel
+                                        Volver
                                     </button>
                                     <button
                                         onClick={resetForm}
