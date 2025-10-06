@@ -1570,44 +1570,42 @@
             
             const valoresRef = [refIMC, refCintura, refCardio, refSalto, refFuerza];
             
-            comparacionResultadosChart = new Chart(ctx, {
-                type: 'bar',
-                 data:{
-                    labels: ['IMC', 'Perímetro Cintura', 'Cardiorespiratorio', 'Salto Horizontal', 'Fuerza Manual'],
-                    datasets: [
-                        {
-                            label: 'Resultado del Usuario',
-                             resultados,
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Valor de Referencia',
-                             valoresRef,
-                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Comparación de Resultados con Valores de Referencia'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
+           comparacionResultadosChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['IMC', 'Perímetro Cintura', 'Cardiorespiratorio', 'Salto Horizontal', 'Fuerza Manual'],
+        datasets: [
+            {
+                label: 'Resultado del Usuario',
+                data: resultados,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Valor de Referencia',
+                data: valoresRef,
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Comparación de Resultados con Valores de Referencia'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: false
+            }
         }
-
+    }
+});
         // Mostrar recomendaciones
         function mostrarRecomendaciones(datos, cardio, salto, fuerza, imc, cintura, shuttle4x10) {
             let recomendaciones = '<h4>Recomendaciones:</h4><ul>';
@@ -2071,4 +2069,5 @@
 </body>
 </html>
 ```
+
 
