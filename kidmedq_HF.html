@@ -1751,6 +1751,8 @@
                     lowestQuestion = i;
                 }
             }
+        let questionText = '';
+            
             if (lowestQuestion) {
                 let questionText = '';
                 switch(lowestQuestion) {
@@ -1771,9 +1773,15 @@
                     case 15: questionText = 'Toma 2 yogures y/o queso (40g) todos los días.'; break;
                     case 16: questionText = 'Toma dulces y golosinas varias veces al día.'; break;
                 }
-                recommendationsHTML += `<li>El hábito "${questionText}" es el menos común en este grupo. Se debe promover su adopción.</li>`;
-            }
-            recommendationsHTML += `<li>Revisar y mejorar los hábitos relacionados con la pregunta ${lowestQuestion} (${questionText}).</li>`;
+              // Ahora questionText está definida y se puede usar aquí
+                    recommendationsHTML += `<li>El hábito "${questionText}" es el menos común en este grupo. Se debe promover su adopción.</li>`;
+                    recommendationsHTML += `<li>Revisar y mejorar los hábitos relacionados con la pregunta ${lowestQuestion} (${questionText}).</li>`;
+                } else {
+                    // Si no se encontró ninguna pregunta con contadoresNo > 0 (caso raro)
+                    recommendationsHTML += `<li>No se identificaron hábitos problemáticos específicos con los datos filtrados.</li>`;
+                }
+            
+            
             recommendationsHTML += `<li>Implementar programas de educación nutricional específicos para este grupo demográfico.</li>`;
             recommendationsHTML += '</ul>';
 
@@ -1887,6 +1895,7 @@
 
 </body>
 </html>
+
 
 
 
