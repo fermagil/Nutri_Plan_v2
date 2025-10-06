@@ -624,19 +624,19 @@
             
             comparacionResultadosChart = new Chart(ctx, {
                 type: 'bar',
-                 data:{
+                data: {
                     labels: ['IMC', 'Perímetro Cintura', 'Cardiorespiratorio', 'Salto Horizontal', 'Fuerza Manual'],
                     datasets: [
                         {
                             label: 'Resultado del Usuario',
-                             resultados,
+                            data: resultados,
                             backgroundColor: 'rgba(54, 162, 235, 0.6)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Valor de Referencia',
-                             valoresRef,
+                            data: valoresRef,
                             backgroundColor: 'rgba(255, 99, 132, 0.6)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
@@ -868,11 +868,11 @@
             if (distribucionEdadChart) distribucionEdadChart.destroy();
             distribucionEdadChart = new Chart(ctx1, {
                 type: 'bar',
-                 data:{
+                data: {
                     labels: Object.keys(edadCount),
                     datasets: [{
                         label: 'Número de Evaluaciones',
-                         Object.values(edadCount),
+                        data: Object.values(edadCount),
                         backgroundColor: 'rgba(52, 152, 219, 0.6)',
                         borderColor: 'rgba(52, 152, 219, 1)',
                         borderWidth: 1
@@ -898,7 +898,7 @@
                     labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
                     datasets: [{
                         label: 'Promedio General',
-                         [
+                        data: [
                             evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / evaluaciones.length,
                             evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / evaluaciones.length,
                             evaluaciones.reduce((sum, e) => sum + e.salto, 0) / evaluaciones.length,
@@ -975,21 +975,21 @@
                     datasets: [
                         {
                             label: 'Rendimiento Cardiorespiratorio',
-                             cardioPorEdad,
+                            data: cardioPorEdad,
                             borderColor: 'rgb(75, 192, 192)',
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             tension: 0.1
                         },
                         {
                             label: 'Salto Horizontal',
-                             saltoPorEdad,
+                            data: saltoPorEdad,
                             borderColor: 'rgb(255, 99, 132)',
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                             tension: 0.1
                         },
                         {
                             label: 'Fuerza Manual',
-                             fuerzaPorEdad,
+                            data: fuerzaPorEdad,
                             borderColor: 'rgb(54, 162, 235)',
                             backgroundColor: 'rgba(54, 162, 235, 0.2)',
                             tension: 0.1
@@ -1025,7 +1025,7 @@
                     datasets: [
                         {
                             label: 'Hombres',
-                             [
+                            data: [
                                 hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle20m, 0) / hombres.length : 0,
                                 hombres.length ? hombres.reduce((sum, e) => sum + e.fuerza, 0) / hombres.length : 0,
                                 hombres.length ? hombres.reduce((sum, e) => sum + e.salto, 0) / hombres.length : 0,
@@ -1036,7 +1036,7 @@
                         },
                         {
                             label: 'Mujeres',
-                             [
+                            data: [
                                 mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle20m, 0) / mujeres.length : 0,
                                 mujeres.length ? mujeres.reduce((sum, e) => sum + e.fuerza, 0) / mujeres.length : 0,
                                 mujeres.length ? mujeres.reduce((sum, e) => sum + e.salto, 0) / mujeres.length : 0,
@@ -1118,5 +1118,3 @@
     </script>
 </body>
 </html>
-
-
