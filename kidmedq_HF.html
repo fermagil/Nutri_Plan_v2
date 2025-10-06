@@ -194,19 +194,19 @@
             transform: translateY(0);
         }
 
-        #exportBtn, #exportAllBtn, #reportBtn, #adminReportBtn, #adminControlBtn {
+        #exportBtn, #exportAllBtn, #reportBtn, #adminReportBtn, #adminControlBtn, #backToFrontBtn, #exportFilteredBtn {
             background-color: #3498db;
         }
 
-        #exportBtn:hover, #exportAllBtn:hover, #reportBtn:hover, #adminReportBtn:hover, #adminControlBtn:hover {
+        #exportBtn:hover, #exportAllBtn:hover, #reportBtn:hover, #adminReportBtn:hover, #adminControlBtn:hover, #backToFrontBtn:hover, #exportFilteredBtn:hover {
             background-color: #2980b9;
         }
 
-        #resetBtn {
+        #resetBtn, #backToFrontBtn {
             background-color: #e74c3c;
         }
 
-        #resetBtn:hover {
+        #resetBtn:hover, #backToFrontBtn:hover {
             background-color: #c0392b;
         }
 
@@ -390,15 +390,17 @@
 
         .filter-buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-top: 15px;
         }
 
         .filter-buttons button {
             flex: 1;
+            min-width: 200px;
         }
 
-        .recommendations-panel {
+        .analysis-results, .recommendations-panel {
             margin-top: 20px;
             padding: 15px;
             background-color: #fff;
@@ -406,13 +408,20 @@
             border-left: 4px solid var(--secondary-color);
         }
 
-        .recommendations-panel h4 {
+        .analysis-results h4, .recommendations-panel h4 {
             margin-top: 0;
             color: var(--primary-dark);
         }
 
-        .recommendations-panel ul {
+        .analysis-results ul, .recommendations-panel ul {
             padding-left: 20px;
+        }
+
+        .interpretation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: var(--border-radius);
         }
     </style>
 </head>
@@ -793,6 +802,9 @@
     <div id="reportSection" class="report-section hidden">
         <h2>Informe Estadístico de Resultados</h2>
         <div id="reportContent" class="report-content"></div>
+        <div class="button-container">
+            <button id="backToFrontBtn" onclick="backToFront()">Volver a Página Principal</button>
+        </div>
     </div>
 
     <!-- Sección para el panel de control/admin -->
@@ -849,13 +861,24 @@
                     <button onclick="applyFilter('edad_genero')">Análisis Edad y Género</button>
                 </div>
             </div>
-            <div id="analysisResults" class="recommendations-panel">
+            <div id="analysisResults" class="analysis-results">
                 <h4>Resultados del Análisis</h4>
                 <p>Seleccione filtros y haga clic en un botón de análisis para ver los resultados aquí.</p>
+            </div>
+            <div id="analysisChartContainer" class="chart-container">
+                <canvas id="analysisChart"></canvas>
+            </div>
+            <div id="interpretationPanel" class="interpretation">
+                <h4>Interpretación del Análisis</h4>
+                <p>La interpretación aparecerá aquí basada en los resultados del análisis.</p>
             </div>
             <div id="recommendationsPanel" class="recommendations-panel">
                 <h4>Recomendaciones</h4>
                 <p>Las recomendaciones aparecerán aquí basadas en el análisis realizado.</p>
+            </div>
+            <div class="button-container">
+                <button id="exportFilteredBtn" class="hidden" onclick="exportFilteredData()">Exportar Datos Filtrados</button>
+                <button id="backToFrontBtn" onclick="backToFront()">Volver a Página Principal</button>
             </div>
         </div>
     </div>
@@ -894,6 +917,7 @@
 
     // Almacenamiento en memoria de los resultados
     let allResults = JSON.parse(localStorage.getItem('allKIDMEDResults')) || [];
+    let filteredResults = []; // Para almacenar resultados filtrados
 
     // Inicializar Firebase
     const firebaseConfig = {
@@ -1322,6 +1346,13 @@
         
         // Mostrar sección de informe
         document.getElementById('reportSection').classList.remove('hidden');
+        document.getElementById('introPage').classList.remove('active');
+        document.getElementById('adminSection').classList.add('hidden');
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('exportBtn').classList.add('hidden');
+        document.getElementById('exportAllBtn').classList.add('hidden');
+        document.getElementById('reportBtn').classList.add('hidden');
+        document.getElementById('resetBtn').classList.add('hidden');
         
         // Crear gráficos
         createCategoryChart(highQuality, mediumQuality, lowQuality);
@@ -1341,7 +1372,7 @@
                     `Calidad Baja (≤3): ${low} (${((low / (high + medium + low)) * 100).toFixed(1)}%)`
                 ],
                 datasets: [{
-                    data: [high, medium, low], // <-- Añadido 'data:'
+                     [high, medium, low], // <-- Añadido 'data:'
                     backgroundColor: [
                         '#27ae60',
                         '#f39c12',
@@ -1371,10 +1402,10 @@
         
         new Chart(ctx, {
             type: 'pie',
-            data: { // <-- Añadido ''
+             { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
                 datasets: [{
-                    data: data, // <-- Añadido 'data:'
+                     data, // <-- Añadido ''
                     backgroundColor: [
                         '#3498db',
                         '#e91e63',
@@ -1410,7 +1441,7 @@
                 labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
                 datasets: [{
                     label: 'Número de Encuestados',
-                    data: data, // <-- Añadido 'data:'
+                     data, // <-- Añadido 'data:'
                     backgroundColor: '#27ae60',
                     borderWidth: 1
                 }]
@@ -1441,10 +1472,8 @@
         
         // Etiquetas para las preguntas
         const labels = [
-            "Q1: Fruta diaria", "Q2: Segunda fruta", "Q3: Verduras diarias", "Q4: Más de una verdura",
-            "Q5: Pescado semanal", "Q6: Comida rápida", "Q7: Legumbres semanal", "Q8: Cereal integral",
-            "Q9: Desayuno integral", "Q10: Frutos secos", "Q11: Aceite oliva", "Q12: No desayunar",
-            "Q13: Lácteo desayuno", "Q14: Bollería desayuno", "Q15: Lácteos diarios", "Q16: Dulces diarios"
+            "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8",
+            "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16"
         ];
 
         // Datos para "Sí" y "No"
@@ -1453,17 +1482,17 @@
 
         new Chart(ctx, {
             type: 'bar',
-            data: { // <-- Añadido ''
+             { // <-- Añadido ''
                 labels: labels,
                 datasets: [
                     {
                         label: 'Respuestas "Sí"',
-                        data: dataSi, // <-- Añadido 'data:'
+                         dataSi, // <-- Añadido ''
                         backgroundColor: '#27ae60',
                     },
                     {
                         label: 'Respuestas "No"',
-                        data: dataNo, // <-- Añadido 'data:'
+                         dataNo, // <-- Añadido 'data:'
                         backgroundColor: '#e74c3c',
                     }
                 ]
@@ -1479,8 +1508,8 @@
                 scales: {
                     x: {
                         ticks: {
-                            maxRotation: 90, // Rotar etiquetas si es necesario
-                            minRotation: 45
+                            maxRotation: 45, // Rotar etiquetas si es necesario
+                            minRotation: 0
                         }
                     },
                     y: {
@@ -1639,41 +1668,219 @@
             if (generoFilter) querySnapshot = querySnapshot.where("genero", "==", generoFilter);
 
             const querySnapshotResult = await querySnapshot.get();
-            const filteredResults = [];
+            filteredResults = []; // Limpiar array anterior
             querySnapshotResult.forEach((doc) => {
                 filteredResults.push({ id: doc.id, ...doc.data() });
             });
 
             if (filteredResults.length === 0) {
                 document.getElementById('analysisResults').innerHTML = '<p>No se encontraron resultados con los filtros aplicados.</p>';
+                document.getElementById('interpretationPanel').innerHTML = '<h4>Interpretación del Análisis</h4><p>No hay datos suficientes para generar una interpretación con los filtros actuales.</p>';
                 document.getElementById('recommendationsPanel').innerHTML = '<h4>Recomendaciones</h4><p>No hay datos suficientes para generar recomendaciones con los filtros actuales.</p>';
+                document.getElementById('exportFilteredBtn').classList.add('hidden');
+                // Limpiar gráfico si no hay resultados
+                const ctx = document.getElementById('analysisChart').getContext('2d');
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 return;
             }
 
+            // Mostrar resultados del análisis
             let analysisHTML = `<h4>Resultados del Análisis (${filteredResults.length} usuarios encontrados)</h4>`;
-            let recommendationHTML = `<h4>Recomendaciones</h4><ul>`;
-
-            if (type === 'edad') {
-                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por edad no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
-                recommendationHTML += '<li>Este grupo de edad puede necesitar una intervención específica para mejorar su alimentación.</li>';
-            } else if (type === 'curso') {
-                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por curso no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
-                recommendationHTML += '<li>Este curso puede necesitar una intervención específica para mejorar su alimentación.</li>';
-            } else if (type === 'genero') {
-                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por género no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
-                recommendationHTML += '<li>Este género puede necesitar una intervención específica para mejorar su alimentación.</li>';
-            } else if (type === 'edad_genero') {
-                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por edad y género no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
-                recommendationHTML += '<li>Este grupo específico puede necesitar una intervención personalizada.</li>';
-            }
+            analysisHTML += `<ul>
+                                <li><strong>Edad Filtro:</strong> ${edadFilter || 'Todas'}</li>
+                                <li><strong>Nivel Filtro:</strong> ${nivelFilter || 'Todos'}</li>
+                                <li><strong>Curso Filtro:</strong> ${cursoFilter || 'Todos'}</li>
+                                <li><strong>Género Filtro:</strong> ${generoFilter || 'Todos'}</li>
+                             </ul>`;
 
             document.getElementById('analysisResults').innerHTML = analysisHTML;
-            document.getElementById('recommendationsPanel').innerHTML = recommendationHTML + '</ul>';
+
+            // --- Análisis detallado de respuestas para los resultados filtrados ---
+            // Contadores para cada pregunta
+            const contadoresSi = {};
+            const contadoresNo = {};
+
+            for (let i = 1; i <= 16; i++) {
+                contadoresSi[i] = 0;
+                contadoresNo[i] = 0;
+            }
+
+            // Recorremos los resultados filtrados
+            filteredResults.forEach(resultado => {
+                if (resultado.respuestas && typeof resultado.respuestas === 'object') {
+                    const respuestas = resultado.respuestas;
+                    for (let i = 1; i <= 16; i++) {
+                        if (respuestas.hasOwnProperty(`q${i}`)) {
+                            const valor = respuestas[`q${i}`];
+                            if (valor === "1") {
+                                contadoresSi[i]++;
+                            } else {
+                                contadoresNo[i]++;
+                            }
+                        }
+                    }
+                } else {
+                    for (let i = 1; i <= 16; i++) {
+                        contadoresNo[i]++;
+                    }
+                }
+            });
+
+            // Calcular promedio de puntuación
+            const scores = filteredResults.map(r => r.score);
+            const avgScore = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
+
+            // Interpretación
+            let interpretationText = '';
+            if (avgScore >= 8) {
+                interpretationText = `El grupo analizado tiene una calidad dietética promedio <strong>Óptima</strong> (${avgScore}).`;
+            } else if (avgScore >= 4) {
+                interpretationText = `El grupo analizado tiene una calidad dietética promedio <strong>Intermedia</strong> (${avgScore}). Se recomienda mejorar ciertos hábitos.`;
+            } else {
+                interpretationText = `El grupo analizado tiene una calidad dietética promedio <strong>Muy Baja</strong> (${avgScore}). Es necesario implementar cambios importantes.`;
+            }
+
+            // Recomendaciones
+            let recommendationsHTML = '<ul>';
+            // Basado en las respuestas más comunes con valor 0 o -1
+            let lowestCount = Infinity;
+            let lowestQuestion = '';
+            for (let i = 1; i <= 16; i++) {
+                if (contadoresNo[i] > 0 && contadoresNo[i] < lowestCount) {
+                    lowestCount = contadoresNo[i];
+                    lowestQuestion = i;
+                }
+            }
+            if (lowestQuestion) {
+                let questionText = '';
+                switch(lowestQuestion) {
+                    case 1: questionText = 'Toma una fruta todos los días.'; break;
+                    case 2: questionText = 'Toma una segunda fruta todos los días.'; break;
+                    case 3: questionText = 'Toma verduras frescas o cocinadas regularmente todos los días.'; break;
+                    case 4: questionText = 'Toma verduras frescas o cocinadas más de una vez al día.'; break;
+                    case 5: questionText = 'Toma pescado regularmente (al menos 2-3 veces/semana).'; break;
+                    case 6: questionText = 'Acude a un restaurante de comida rápida una o más veces a la semana.'; break;
+                    case 7: questionText = 'Toma legumbres más de una vez a la semana.'; break;
+                    case 8: questionText = 'Toma pasta integral o arroz integral casi a diario.'; break;
+                    case 9: questionText = 'Desayuna un cereal integral o derivado integral.'; break;
+                    case 10: questionText = 'Toma frutos secos regularmente.'; break;
+                    case 11: questionText = 'En casa se utiliza aceite de oliva.'; break;
+                    case 12: questionText = 'No desayuna a diario.'; break;
+                    case 13: questionText = 'Desayuna un lácteo.'; break;
+                    case 14: questionText = 'Desayuna bollería industrial.'; break;
+                    case 15: questionText = 'Toma 2 yogures y/o queso (40g) todos los días.'; break;
+                    case 16: questionText = 'Toma dulces y golosinas varias veces al día.'; break;
+                }
+                recommendationsHTML += `<li>El hábito "${questionText}" es el menos común en este grupo. Se debe promover su adopción.</li>`;
+            }
+            recommendationsHTML += `<li>Revisar y mejorar los hábitos relacionados con la pregunta ${lowestQuestion} (${questionText}).</li>`;
+            recommendationsHTML += `<li>Implementar programas de educación nutricional específicos para este grupo demográfico.</li>`;
+            recommendationsHTML += '</ul>';
+
+            document.getElementById('interpretationPanel').innerHTML = `<h4>Interpretación del Análisis</h4><p>${interpretationText}</p>`;
+            document.getElementById('recommendationsPanel').innerHTML = `<h4>Recomendaciones</h4>${recommendationsHTML}`;
+
+            // Mostrar botón de exportar
+            document.getElementById('exportFilteredBtn').classList.remove('hidden');
+
+            // Crear gráfico de análisis
+            createAnalysisChart(contadoresSi, contadoresNo, type);
 
         } catch (error) {
             console.error("Error al aplicar filtro: ", error);
             alert("Hubo un error al aplicar el filtro.");
         }
+    }
+
+    function createAnalysisChart(contadoresSi, contadoresNo, type) {
+        const ctx = document.getElementById('analysisChart').getContext('2d');
+        
+        // Etiquetas para las preguntas
+        const labels = [
+            "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8",
+            "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16"
+        ];
+
+        // Datos para "Sí" y "No"
+        const dataSi = Object.values(contadoresSi);
+        const dataNo = Object.values(contadoresNo);
+
+        // Destruir el gráfico anterior si existe
+        if (window.analysisChartInstance) {
+            window.analysisChartInstance.destroy();
+        }
+
+        window.analysisChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Respuestas "Sí"',
+                         dataSi,
+                        backgroundColor: '#27ae60',
+                    },
+                    {
+                        label: 'Respuestas "No"',
+                         dataNo,
+                        backgroundColor: '#e74c3c',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Análisis de Preguntas - Filtro: ${type}`
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Respuestas'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function exportFilteredData() {
+        if (filteredResults.length === 0) {
+            alert('No hay datos filtrados para exportar.');
+            return;
+        }
+
+        const csvContent = convertToCSV(filteredResults);
+        const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+
+        const exportFileDefaultName = `KIDMED_Datos_Filtrados_${new Date().toISOString().split('T')[0]}.csv`;
+
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    }
+
+    function backToFront() {
+        document.getElementById('introPage').classList.add('active');
+        document.getElementById('reportSection').classList.add('hidden');
+        document.getElementById('adminSection').classList.add('hidden');
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('exportBtn').classList.add('hidden');
+        document.getElementById('exportAllBtn').classList.add('hidden');
+        document.getElementById('reportBtn').classList.add('hidden');
+        document.getElementById('resetBtn').classList.add('hidden');
+        document.getElementById('exportFilteredBtn').classList.add('hidden');
     }
 
 </script>
