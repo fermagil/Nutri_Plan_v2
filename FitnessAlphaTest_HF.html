@@ -850,7 +850,7 @@ function procesarResultados(datos) {
 
     // Crear elemento de resultado de test con barra de progreso
    // Crear elemento de resultado de test con escala visual
-// Crear elemento de resultado de test con escala visual
+// Crear elemento de resultado de test con escala visual precisa
 function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, tipo) {
     const div = document.createElement('div');
     div.className = 'test-result';
@@ -869,114 +869,220 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     valorDiv.innerHTML = `${valor} ${unidad}`;
     infoDiv.appendChild(valorDiv);
 
-    // === Obtener clasificación real usando la edad de referencia ===
-    const edadRef = Math.max(edad, 13); // Mapear edades <13 a 13
+    // === Edad de referencia (mapear <13 a 13) ===
+    const edadRef = Math.max(edad, 13);
+
+    // === Obtener clasificación y límites reales ===
     let clasificacion = '';
+    let limites = null;
+
     switch (tipo) {
-        case 'cardio':       clasificacion = getClasificacionCardio(valor, genero, edadRef); break;
-        case 'salto':        clasificacion = getClasificacionSalto(valor, genero, edadRef); break;
-        case 'fuerza':       clasificacion = getClasificacionFuerza(valor, genero, edadRef); break;
-        case 'cintura':      clasificacion = getClasificacionCintura(valor, genero, edadRef); break;
-        case 'imc':          clasificacion = getClasificacionIMC(valor, genero, edadRef); break;
-        case 'shuttle4x10':  clasificacion = getClasificacionShuttle4x10(valor, genero, edadRef); break;
-        default:             clasificacion = 'No clasificado';
+        case 'cardio':
+            clasificacion = getClasificacionCardio(valor, genero, edadRef);
+            if (genero === 'masculino') {
+                limites = { muy_bajo: 3.0, bajo: 4.5, promedio: 6.0, alto: 7.5, muy_alto: 9.0 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 3.5, bajo: 5.5, promedio: 6.5, alto: 8.5, muy_alto: 9.0 }; break;
+                    case 15: case 16: limites = { muy_bajo: 4.0, bajo: 5.5, promedio: 7.0, alto: 8.5, muy_alto: 9.0 }; break;
+                    case 17: limites = { muy_bajo: 4.5, bajo: 6.0, promedio: 7.5, alto: 9.0, muy_alto: 9.5 }; break;
+                }
+            } else {
+                limites = { muy_bajo: 2.0, bajo: 2.5, promedio: 3.5, alto: 4.5, muy_alto: 5.0 };
+                switch(edadRef) {
+                    case 14: case 15: case 16: case 17:
+                        limites = { muy_bajo: 2.0, bajo: 3.0, promedio: 4.0, alto: 5.0, muy_alto: 5.5 }; break;
+                }
+            }
+            break;
+        case 'salto':
+            clasificacion = getClasificacionSalto(valor, genero, edadRef);
+            if (genero === 'masculino') {
+                limites = { muy_bajo: 135, bajo: 152, promedio: 167, alto: 184, muy_alto: 185 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 151, bajo: 169, promedio: 183, alto: 200, muy_alto: 201 }; break;
+                    case 15: limites = { muy_bajo: 165, bajo: 182, promedio: 196, alto: 212, muy_alto: 213 }; break;
+                    case 16: limites = { muy_bajo: 175, bajo: 192, promedio: 206, alto: 221, muy_alto: 222 }; break;
+                    case 17: limites = { muy_bajo: 184, bajo: 201, promedio: 215, alto: 229, muy_alto: 230 }; break;
+                }
+            } else {
+                limites = { muy_bajo: 118, bajo: 133, promedio: 147, alto: 163, muy_alto: 164 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 121, bajo: 137, promedio: 151, alto: 167, muy_alto: 168 }; break;
+                    case 15: limites = { muy_bajo: 123, bajo: 138, promedio: 151, alto: 167, muy_alto: 168 }; break;
+                    case 16: limites = { muy_bajo: 126, bajo: 141, promedio: 154, alto: 169, muy_alto: 170 }; break;
+                    case 17: limites = { muy_bajo: 129, bajo: 144, promedio: 157, alto: 172, muy_alto: 173 }; break;
+                }
+            }
+            break;
+        case 'fuerza':
+            clasificacion = getClasificacionFuerza(valor, genero, edadRef);
+            if (genero === 'masculino') {
+                limites = { muy_bajo: 21.4, bajo: 24.7, promedio: 27.8, alto: 31.8, muy_alto: 31.9 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 26.3, bajo: 30.4, promedio: 34.0, alto: 38.5, muy_alto: 38.6 }; break;
+                    case 15: limites = { muy_bajo: 31.3, bajo: 35.7, promedio: 39.7, alto: 44.3, muy_alto: 44.4 }; break;
+                    case 16: limites = { muy_bajo: 35.9, bajo: 40.0, promedio: 43.7, alto: 48.1, muy_alto: 48.2 }; break;
+                    case 17: limites = { muy_bajo: 39.9, bajo: 43.5, promedio: 46.7, alto: 50.6, muy_alto: 50.7 }; break;
+                }
+            } else {
+                limites = { muy_bajo: 19.9, bajo: 22.5, promedio: 24.8, alto: 27.6, muy_alto: 27.7 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 21.5, bajo: 24.1, promedio: 26.4, alto: 29.2, muy_alto: 29.3 }; break;
+                    case 15: limites = { muy_bajo: 22.5, bajo: 25.1, promedio: 27.4, alto: 30.3, muy_alto: 30.4 }; break;
+                    case 16: limites = { muy_bajo: 22.9, bajo: 25.4, promedio: 27.8, alto: 30.8, muy_alto: 30.9 }; break;
+                    case 17: limites = { muy_bajo: 23.9, bajo: 26.4, promedio: 28.9, alto: 32.1, muy_alto: 32.2 }; break;
+                }
+            }
+            break;
+        case 'cintura':
+            clasificacion = getClasificacionCintura(valor, genero, edadRef);
+            if (genero === 'masculino') {
+                limites = { muy_bajo: 62, bajo: 66, promedio: 78, alto: 87, muy_alto: 88 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 65, bajo: 69, promedio: 80, alto: 88, muy_alto: 89 }; break;
+                    case 15: limites = { muy_bajo: 67, bajo: 71, promedio: 81, alto: 89, muy_alto: 90 }; break;
+                    case 16: limites = { muy_bajo: 67, bajo: 71, promedio: 81, alto: 88, muy_alto: 88 }; break;
+                    case 17: limites = { muy_bajo: 70, bajo: 73, promedio: 83, alto: 91, muy_alto: 92 }; break;
+                }
+            } else {
+                limites = { muy_bajo: 61, bajo: 65, promedio: 75, alto: 83, muy_alto: 84 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 61, bajo: 64, promedio: 73, alto: 80, muy_alto: 81 }; break;
+                    case 15: case 16: limites = { muy_bajo: 63, bajo: 66, promedio: 75, alto: 81, muy_alto: 82 }; break;
+                    case 17: limites = { muy_bajo: 62, bajo: 65, promedio: 74, alto: 80, muy_alto: 81 }; break;
+                }
+            }
+            break;
+        case 'imc':
+            clasificacion = getClasificacionIMC(valor, genero, edadRef);
+            if (genero === 'masculino') {
+                limites = { muy_bajo: 16.7, bajo: 18.0, promedio: 22.2, alto: 25.7, muy_alto: 25.8 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 17.5, bajo: 19.0, promedio: 23.3, alto: 26.5, muy_alto: 26.6 }; break;
+                    case 15: limites = { muy_bajo: 17.9, bajo: 19.5, promedio: 23.8, alto: 26.7, muy_alto: 26.8 }; break;
+                    case 16: limites = { muy_bajo: 18.0, bajo: 19.6, promedio: 23.7, alto: 26.4, muy_alto: 26.5 }; break;
+                    case 17: limites = { muy_bajo: 19.0, bajo: 20.5, promedio: 24.6, alto: 27.5, muy_alto: 27.6 }; break;
+                }
+            } else {
+                limites = { muy_bajo: 17.5, bajo: 19.0, promedio: 23.2, alto: 26.4, muy_alto: 26.5 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 17.6, bajo: 18.9, promedio: 22.8, alto: 25.6, muy_alto: 25.7 }; break;
+                    case 15: limites = { muy_bajo: 18.1, bajo: 19.4, promedio: 23.0, alto: 25.6, muy_alto: 25.7 }; break;
+                    case 16: limites = { muy_bajo: 18.3, bajo: 19.6, promedio: 23.1, alto: 25.8, muy_alto: 25.9 }; break;
+                    case 17: limites = { muy_bajo: 18.2, bajo: 19.5, promedio: 23.2, alto: 25.8, muy_alto: 25.9 }; break;
+                }
+            }
+            break;
+        case 'shuttle4x10':
+            clasificacion = getClasificacionShuttle4x10(valor, genero, edadRef);
+            if (genero === 'masculino') {
+                limites = { muy_bajo: 13.0, bajo: 12.2, promedio: 11.8, alto: 11.1, muy_alto: 11.1 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 12.6, bajo: 11.8, promedio: 11.4, alto: 10.8, muy_alto: 10.8 }; break;
+                    case 15: limites = { muy_bajo: 12.1, bajo: 12.0, promedio: 11.4, alto: 10.4, muy_alto: 10.4 }; break;
+                    case 16: case 17: limites = { muy_bajo: 11.8, bajo: 11.7, promedio: 11.0, alto: 10.1, muy_alto: 10.1 }; break;
+                }
+            } else {
+                limites = { muy_bajo: 13.9, bajo: 13.0, promedio: 12.5, alto: 11.8, muy_alto: 11.8 };
+                switch(edadRef) {
+                    case 14: limites = { muy_bajo: 13.8, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.7 }; break;
+                    case 15: limites = { muy_bajo: 13.7, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.7 }; break;
+                    case 16: limites = { muy_bajo: 13.6, bajo: 12.8, promedio: 12.3, alto: 11.6, muy_alto: 11.6 }; break;
+                    case 17: limites = { muy_bajo: 13.5, bajo: 12.8, promedio: 12.3, alto: 11.7, muy_alto: 11.7 }; break;
+                }
+            }
+            break;
+        default:
+            clasificacion = 'No clasificado';
+            limites = { muy_bajo: 0, bajo: 25, promedio: 50, alto: 75, muy_alto: 100 };
     }
 
-    // Badge de clasificación con color alineado
-    // === Determinar clase CSS según el tipo de test ===
-const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc' || tipo === 'shuttle4x10');
+    // Badge y zone-indicator con lógica invertida para "menos es mejor"
+    const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc' || tipo === 'shuttle4x10');
+    let claseBadge;
+    if (isMenorEsMejor) {
+        const inverso = { 'Muy Bajo': 'muy-alto', 'Bajo': 'alto', 'Promedio': 'promedio', 'Alto': 'bajo', 'Muy Alto': 'muy-bajo' };
+        claseBadge = inverso[clasificacion] || 'muy-bajo';
+    } else {
+        const normal = { 'Muy Bajo': 'muy-bajo', 'Bajo': 'bajo', 'Promedio': 'promedio', 'Alto': 'alto', 'Muy Alto': 'muy-alto' };
+        claseBadge = normal[clasificacion] || 'muy-bajo';
+    }
 
-let claseBadge;
-if (isMenorEsMejor) {
-    // Invertir colores: Muy Bajo → muy-alto visual (azul), Muy Alto → muy-bajo visual (rojo)
-    const inverso = {
-        'Muy Bajo': 'muy-alto',
-        'Bajo': 'alto',
-        'Promedio': 'promedio',
-        'Alto': 'bajo',
-        'Muy Alto': 'muy-bajo'
-    };
-    claseBadge = inverso[clasificacion] || 'muy-bajo';
-} else {
-    // Normal: Muy Bajo → rojo, Muy Alto → azul
-    const normal = {
-        'Muy Bajo': 'muy-bajo',
-        'Bajo': 'bajo',
-        'Promedio': 'promedio',
-        'Alto': 'alto',
-        'Muy Alto': 'muy-alto'
-    };
-    claseBadge = normal[clasificacion] || 'muy-bajo';
-}
-
-// Badge
-const badge = document.createElement('span');
-badge.className = `category-badge category-${claseBadge}`;
-badge.textContent = clasificacion;
-infoDiv.appendChild(badge);
+    const badge = document.createElement('span');
+    badge.className = `category-badge category-${claseBadge}`;
+    badge.textContent = clasificacion;
+    infoDiv.appendChild(badge);
     div.appendChild(infoDiv);
 
-    // === Escala visual con 5 segmentos coloreados ===
+    // === Escala visual con segmentos de ancho real ===
     const scaleDiv = document.createElement('div');
     scaleDiv.className = 'test-scale';
 
-    // Definir min/max para cálculo de posición (usar edadRef)
-    let minVal, maxVal;
-    switch(tipo) {
-        case 'cardio':      minVal = 0;   maxVal = 21; break;
-        case 'salto':       minVal = 15;  maxVal = 330; break;
-        case 'fuerza':      minVal = 0;   maxVal = 80; break;
-        case 'cintura':     minVal = 40;  maxVal = 130; break;
-        case 'imc':         minVal = 15;  maxVal = 30; break;
-        case 'shuttle4x10': minVal = 10;  maxVal = 15; break;
-        default:            minVal = 0;   maxVal = 100;
-    }
+    // Determinar min y max reales
+    const minReal = limites.muy_bajo;
+    const maxReal = limites.muy_alto;
 
-    // Posición del puntero
-    const posicion = ((valor - minVal) / (maxVal - minVal)) * 100;
+    // Calcular posición exacta del puntero (0-100%)
+    const posicion = ((valor - minReal) / (maxReal - minReal)) * 100;
     const pointer = document.createElement('div');
     pointer.className = 'test-pointer';
-    pointer.style.left = `${posicion}%`;
+    pointer.style.left = `${Math.max(0, Math.min(100, posicion))}%`;
     scaleDiv.appendChild(pointer);
 
-    // Contenedor de los 5 segmentos coloreados
-    // Contenedor de los 5 segmentos coloreados
+    // Crear segmentos con anchos reales
     const scaleInner = document.createElement('div');
     scaleInner.className = 'test-scale-inner';
-    
-    // Definir el orden de los segmentos según el tipo de test
-    const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc' || tipo === 'shuttle4x10');
+
+    const segmentos = [
+        { key: 'very-low', start: 0, end: limites.bajo },
+        { key: 'low', start: limites.bajo, end: limites.promedio },
+        { key: 'average', start: limites.promedio, end: limites.alto },
+        { key: 'high', start: limites.alto, end: limites.muy_alto },
+        { key: 'very-high', start: limites.muy_alto, end: limites.muy_alto }
+    ];
+
+    // Para "menos es mejor", invertimos el orden visual
     const segmentOrder = isMenorEsMejor
-        ? ['very-high', 'high', 'average', 'low', 'very-low'] // Invertido visualmente
-        : ['very-low', 'low', 'average', 'high', 'very-high']; // Normal
-    
-    segmentOrder.forEach(seg => {
+        ? ['very-high', 'high', 'average', 'low', 'very-low']
+        : ['very-low', 'low', 'average', 'high', 'very-high'];
+
+    // Calcular ancho de cada segmento en %
+    const totalRango = maxReal - minReal;
+    const segmentWidths = {
+        'very-low': ((limites.bajo - minReal) / totalRango) * 100,
+        'low': ((limites.promedio - limites.bajo) / totalRango) * 100,
+        'average': ((limites.alto - limites.promedio) / totalRango) * 100,
+        'high': ((limites.muy_alto - limites.alto) / totalRango) * 100,
+        'very-high': 0 // no tiene rango, es un punto
+    };
+
+    segmentOrder.forEach(segKey => {
         const segDiv = document.createElement('div');
-        segDiv.className = `scale-segment segment-${seg}`;
+        segDiv.className = `scale-segment segment-${segKey}`;
+        segDiv.style.width = `${segmentWidths[segKey] || 0}%`;
         scaleInner.appendChild(segDiv);
     });
-        scaleDiv.appendChild(scaleInner);
 
-    // Etiquetas de la escala
+    scaleDiv.appendChild(scaleInner);
+
+    // Etiquetas
     const labelsDiv = document.createElement('div');
     labelsDiv.className = 'test-labels';
-    labelsDiv.innerHTML = `<span>${minVal}</span><span>${maxVal}</span>`;
+    labelsDiv.innerHTML = `<span>${minReal}</span><span>${maxReal}</span>`;
     scaleDiv.appendChild(labelsDiv);
     div.appendChild(scaleDiv);
 
-    // === Zona de salud con 5 colores ===
+    // Zona de salud
     const zonaDiv = document.createElement('div');
     zonaDiv.style.display = 'flex';
     zonaDiv.style.alignItems = 'center';
     zonaDiv.style.marginTop = '10px';
 
     const zonaIndicator = document.createElement('div');
-zonaIndicator.className = `zone-indicator zone-${claseBadge}`; // mismo color que el badge
-
+    zonaIndicator.className = `zone-indicator zone-${claseBadge}`;
     const zonaText = document.createElement('span');
     zonaText.textContent = `Categoría: ${clasificacion}`;
 
-    // Puntuación numérica
     const scoreMap = { 'Muy Bajo': 0, 'Bajo': 25, 'Promedio': 50, 'Alto': 75, 'Muy Alto': 100 };
     const score = scoreMap[clasificacion] || 0;
     const scoreSpan = document.createElement('span');
@@ -988,7 +1094,7 @@ zonaIndicator.className = `zone-indicator zone-${claseBadge}`; // mismo color qu
     zonaDiv.appendChild(scoreSpan);
     div.appendChild(zonaDiv);
 
-    // === Consejo basado en la categoría ===
+    // Consejo
     const adviceDiv = document.createElement('div');
     adviceDiv.className = 'advice-box';
     const adviceTitle = document.createElement('div');
@@ -996,34 +1102,24 @@ zonaIndicator.className = `zone-indicator zone-${claseBadge}`; // mismo color qu
     adviceTitle.textContent = 'Consejo:';
     let adviceText = '';
 
-    if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
-        adviceText = 'Tu puntuación está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
-    } else if (clasificacion === 'Promedio') {
-        adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
+    if (tipo === 'imc') {
+        if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
+            adviceText = 'Tu IMC indica bajo peso. Es importante asegurar una ingesta calórica y nutricional adecuada para un crecimiento saludable. Consulta con un nutricionista.';
+        } else if (clasificacion === 'Promedio') {
+            adviceText = 'Tu IMC está en el rango saludable. ¡Sigue así! Mantén una dieta equilibrada y actividad física regular.';
+        } else {
+            adviceText = 'Tu IMC indica sobrepeso u obesidad. Habla con un profesional de la salud para recibir orientación sobre alimentación y ejercicio.';
+        }
     } else {
-        adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
+        if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
+            adviceText = 'Tu puntuación está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
+        } else if (clasificacion === 'Promedio') {
+            adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
+        } else {
+            adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
+        }
     }
 
-    let adviceText = '';
-
-if (tipo === 'imc') {
-    if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
-        adviceText = 'Tu IMC indica bajo peso. Es importante asegurar una ingesta calórica y nutricional adecuada para un crecimiento saludable. Consulta con un nutricionista.';
-    } else if (clasificacion === 'Promedio') {
-        adviceText = 'Tu IMC está en el rango saludable. ¡Sigue así! Mantén una dieta equilibrada y actividad física regular.';
-    } else {
-        adviceText = 'Tu IMC indica sobrepeso u obesidad. Habla con un profesional de la salud para recibir orientación sobre alimentación y ejercicio.';
-    }
-} else {
-    // Consejos genéricos para otros tests
-    if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
-        adviceText = 'Tu puntuación está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
-    } else if (clasificacion === 'Promedio') {
-        adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
-    } else {
-        adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
-    }
-}
     const adviceContent = document.createElement('div');
     adviceContent.textContent = adviceText;
     adviceDiv.appendChild(adviceTitle);
@@ -1553,6 +1649,7 @@ if (tipo === 'imc') {
     </script>
 </body>
 </html>
+
 
 
 
