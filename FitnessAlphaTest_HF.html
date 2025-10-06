@@ -883,18 +883,37 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     }
 
     // Badge de clasificación con color alineado
-    const badge = document.createElement('span');
-    const categoriaAClase = {
+    // === Determinar clase CSS según el tipo de test ===
+const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc' || tipo === 'shuttle4x10');
+
+let claseBadge;
+if (isMenorEsMejor) {
+    // Invertir colores: Muy Bajo → muy-alto visual (azul), Muy Alto → muy-bajo visual (rojo)
+    const inverso = {
+        'Muy Bajo': 'muy-alto',
+        'Bajo': 'alto',
+        'Promedio': 'promedio',
+        'Alto': 'bajo',
+        'Muy Alto': 'muy-bajo'
+    };
+    claseBadge = inverso[clasificacion] || 'muy-bajo';
+} else {
+    // Normal: Muy Bajo → rojo, Muy Alto → azul
+    const normal = {
         'Muy Bajo': 'muy-bajo',
         'Bajo': 'bajo',
         'Promedio': 'promedio',
         'Alto': 'alto',
         'Muy Alto': 'muy-alto'
     };
-    const claseBadge = categoriaAClase[clasificacion] || 'muy-bajo';
-    badge.className = `category-badge category-${claseBadge}`;
-    badge.textContent = clasificacion;
-    infoDiv.appendChild(badge);
+    claseBadge = normal[clasificacion] || 'muy-bajo';
+}
+
+// Badge
+const badge = document.createElement('span');
+badge.className = `category-badge category-${claseBadge}`;
+badge.textContent = clasificacion;
+infoDiv.appendChild(badge);
     div.appendChild(infoDiv);
 
     // === Escala visual con 5 segmentos coloreados ===
@@ -952,8 +971,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     zonaDiv.style.marginTop = '10px';
 
     const zonaIndicator = document.createElement('div');
-    const claseZona = categoriaAClase[clasificacion] || 'muy-bajo';
-    zonaIndicator.className = `zone-indicator zone-${claseZona}`;
+zonaIndicator.className = `zone-indicator zone-${claseBadge}`; // mismo color que el badge
 
     const zonaText = document.createElement('span');
     zonaText.textContent = `Categoría: ${clasificacion}`;
@@ -986,6 +1004,26 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
     }
 
+    let adviceText = '';
+
+if (tipo === 'imc') {
+    if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
+        adviceText = 'Tu IMC indica bajo peso. Es importante asegurar una ingesta calórica y nutricional adecuada para un crecimiento saludable. Consulta con un nutricionista.';
+    } else if (clasificacion === 'Promedio') {
+        adviceText = 'Tu IMC está en el rango saludable. ¡Sigue así! Mantén una dieta equilibrada y actividad física regular.';
+    } else {
+        adviceText = 'Tu IMC indica sobrepeso u obesidad. Habla con un profesional de la salud para recibir orientación sobre alimentación y ejercicio.';
+    }
+} else {
+    // Consejos genéricos para otros tests
+    if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
+        adviceText = 'Tu puntuación está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
+    } else if (clasificacion === 'Promedio') {
+        adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
+    } else {
+        adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
+    }
+}
     const adviceContent = document.createElement('div');
     adviceContent.textContent = adviceText;
     adviceDiv.appendChild(adviceTitle);
@@ -1515,6 +1553,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
