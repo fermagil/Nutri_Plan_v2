@@ -1372,7 +1372,7 @@
                     `Calidad Baja (≤3): ${low} (${((low / (high + medium + low)) * 100).toFixed(1)}%)`
                 ],
                 datasets: [{
-                     [high, medium, low], // <-- Añadido 'data:'
+                    data: [high, medium, low], 
                     backgroundColor: [
                         '#27ae60',
                         '#f39c12',
@@ -1887,3 +1887,4 @@
 
 </body>
 </html>
+
