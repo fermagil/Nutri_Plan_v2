@@ -947,6 +947,8 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     // ... (dentro de crearResultadoTest, después de obtener limites y clasificacion)
 
 // Badge y zone-indicator con lógica ajustada
+// ...
+// Badge y zone-indicator con lógica ajustada
 // CORRECCIÓN: Incluir 'shuttle4x10' en la lógica de "menos es mejor"
 const isMenorEsMejor = (tipo === 'cintura' || tipo === 'shuttle4x10'); // <-- Añadido 'shuttle4x10'
 const isIMC = (tipo === 'imc'); // <-- Identificar IMC por separado
@@ -960,14 +962,26 @@ let claseBadgeMap = {
 };
 
 if (isMenorEsMejor) {
-    // Para tests donde "menos es mejor", invertir la clasificación visual
-    claseBadgeMap = {
-        'Muy Bajo': 'muy-alto', // El valor más bajo (mejor) se ve como "muy alto"
-        'Bajo': 'alto',
-        'Promedio': 'promedio',
-        'Alto': 'bajo',
-        'Muy Alto': 'muy-bajo' // El valor más alto (peor) se ve como "muy bajo"
-    };
+    if (tipo === 'shuttle4x10') {
+         // Para shuttle4x10: "Alto" y "Muy Alto" (buen rendimiento) se visualizan como "bajo" (naranja)
+         // "Bajo" y "Muy Bajo" (mal rendimiento) se visualizan como "Alto" y "Muy Alto" respectivamente
+         claseBadgeMap = {
+             'Muy Bajo': 'muy-alto', // Mal rendimiento -> muy alto visual
+             'Bajo': 'alto',         // Mal rendimiento -> alto visual
+             'Promedio': 'promedio', // Igual
+             'Alto': 'bajo',         // Buen rendimiento -> bajo visual (naranja en imagen)
+             'Muy Alto': 'bajo'      // Buen rendimiento -> bajo visual (naranja en imagen)
+         };
+    } else { // cintura
+         // Para tests donde "menos es mejor", invertir la clasificación visual
+         claseBadgeMap = {
+             'Muy Bajo': 'muy-alto', // El valor más bajo (mejor) se ve como "muy alto"
+             'Bajo': 'alto',
+             'Promedio': 'promedio',
+             'Alto': 'bajo',
+             'Muy Alto': 'muy-bajo' // El valor más alto (peor) se ve como "muy bajo"
+         };
+    }
 } else if (isIMC) {
     // Para IMC, solo "Promedio" es bueno, los extremos son malos
     claseBadgeMap = {
@@ -985,6 +999,7 @@ badge.className = `category-badge category-${claseBadge}`;
 badge.textContent = clasificacion;
 infoDiv.appendChild(badge);
 div.appendChild(infoDiv);
+
 
 // === Escala visual con segmentos de ancho real ===
 const scaleDiv = document.createElement('div');
@@ -1637,5 +1652,6 @@ div.appendChild(zonaDiv);
     </script>
 </body>
 </html>
+
 
 
