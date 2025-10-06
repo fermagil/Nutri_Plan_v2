@@ -289,9 +289,12 @@
     margin-right: 6px;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 }
-.zone-green { background: #8bc34a; }
-.zone-yellow { background: #ffcc00; }
-.zone-red { background: #ff5f6d; }
+/* === Indicadores de zona (5 niveles) === */
+.zone-muy-bajo { background: #ff5f6d; }      /* rojo */
+.zone-bajo { background: #ff9800; }         /* naranja */
+.zone-promedio { background: #8bc34a; }     /* verde */
+.zone-alto { background: #4dd0e1; }         /* azul claro */
+.zone-muy-alto { background: #42a5f5; }     /* azul */
 
     .advice-box {
         background: #fff;
@@ -845,1044 +848,148 @@
     }
 
     // Crear elemento de resultado de test con barra de progreso
-    function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, tipo) {
-        const div = document.createElement('div');
-        div.className = 'test-result';
+   // Crear elemento de resultado de test con escala visual
+function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, tipo) {
+    const div = document.createElement('div');
+    div.className = 'test-result';
 
-        // Información del test
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'test-info';
-        const titulo = document.createElement('h4');
-        titulo.textContent = nombre;
-        infoDiv.appendChild(titulo);
-        const desc = document.createElement('p');
-        desc.textContent = descripcion;
-        infoDiv.appendChild(desc);
-        const valorDiv = document.createElement('div');
-        valorDiv.className = 'test-value';
-        valorDiv.innerHTML = `${valor} ${unidad}`;
-        infoDiv.appendChild(valorDiv);
+    // Información del test
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'test-info';
+    const titulo = document.createElement('h4');
+    titulo.textContent = nombre;
+    infoDiv.appendChild(titulo);
+    const desc = document.createElement('p');
+    desc.textContent = descripcion;
+    infoDiv.appendChild(desc);
+    const valorDiv = document.createElement('div');
+    valorDiv.className = 'test-value';
+    valorDiv.innerHTML = `${valor} ${unidad}`;
+    infoDiv.appendChild(valorDiv);
+    div.appendChild(infoDiv);
 
-        // Clasificación
-        let clasificacion = '';
-        switch (tipo) {
-            case 'cardio':
-                clasificacion = getClasificacionCardio(valor, genero, edad);
-                break;
-            case 'salto':
-                clasificacion = getClasificacionSalto(valor, genero, edad);
-                break;
-            case 'fuerza':
-                clasificacion = getClasificacionFuerza(valor, genero, edad);
-                break;
-            case 'cintura':
-                clasificacion = getClasificacionCintura(valor, genero, edad);
-                break;
-            case 'imc':
-                clasificacion = getClasificacionIMC(valor, genero, edad);
-                break;
-            case 'shuttle4x10':
-                clasificacion = getClasificacionShuttle4x10(valor, genero, edad);
-                break;
-        }
-
-        // Badge de clasificación
-        const badgeClass = `category-${clasificacion.toLowerCase().replace(/\s+/g, '-')}`;
-        const badge = document.createElement('span');
-        badge.className = `category-badge ${badgeClass}`;
-        badge.textContent = clasificacion;
-        infoDiv.appendChild(badge);
-
-        div.appendChild(infoDiv);
-
-        // Escala visual (barra de progreso)
-        const scaleDiv = document.createElement('div');
-        scaleDiv.className = 'test-scale';
-
-        // Calcular posición del puntero
-        let minVal, maxVal, segmentos = [];
-
-        switch (tipo) {
-            case 'cardio':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [3.0, 4.5, 6.0, 7.5];
-                            break;
-                        case 14:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [3.5, 5.5, 6.5, 8.5];
-                            break;
-                        case 15:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [4.0, 5.5, 7.0, 8.5];
-                            break;
-                        case 16:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [4.0, 5.5, 7.0, 8.5];
-                            break;
-                        case 17:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [4.5, 6.0, 7.5, 9.0];
-                            break;
-                        default:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [4.0, 5.5, 7.0, 8.5];
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [2.0, 2.5, 3.5, 4.5];
-                            break;
-                        case 14:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [2.0, 3.0, 4.0, 5.0];
-                            break;
-                        case 15:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [2.0, 3.0, 4.0, 5.0];
-                            break;
-                        case 16:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [2.0, 3.0, 4.0, 5.0];
-                            break;
-                        case 17:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [2.0, 3.0, 4.0, 5.0];
-                            break;
-                        default:
-                            minVal = 0; maxVal = 21;
-                            segmentos = [2.0, 3.0, 4.0, 5.0];
-                    }
-                }
-                break;
-            case 'salto':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [135, 152, 167, 184];
-                            break;
-                        case 14:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [151, 169, 183, 200];
-                            break;
-                        case 15:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [165, 182, 196, 212];
-                            break;
-                        case 16:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [175, 192, 206, 221];
-                            break;
-                        case 17:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [184, 201, 215, 229];
-                            break;
-                        default:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [165, 182, 196, 212];
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [118, 133, 147, 163];
-                            break;
-                        case 14:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [121, 137, 151, 167];
-                            break;
-                        case 15:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [123, 138, 151, 167];
-                            break;
-                        case 16:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [126, 141, 154, 169];
-                            break;
-                        case 17:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [129, 144, 157, 172];
-                            break;
-                        default:
-                            minVal = 15; maxVal = 330;
-                            segmentos = [123, 138, 151, 167];
-                    }
-                }
-                break;
-            case 'fuerza':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [21.4, 24.7, 27.8, 31.8];
-                            break;
-                        case 14:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [26.3, 30.4, 34.0, 38.5];
-                            break;
-                        case 15:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [31.3, 35.7, 39.7, 44.3];
-                            break;
-                        case 16:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [35.9, 40.0, 43.7, 48.1];
-                            break;
-                        case 17:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [39.9, 43.5, 46.7, 50.6];
-                            break;
-                        default:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [31.3, 35.7, 39.7, 44.3];
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [19.9, 22.5, 24.8, 27.6];
-                            break;
-                        case 14:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [21.5, 24.1, 26.4, 29.2];
-                            break;
-                        case 15:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [22.5, 25.1, 27.4, 30.3];
-                            break;
-                        case 16:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [22.9, 25.4, 27.8, 30.8];
-                            break;
-                        case 17:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [23.9, 26.4, 28.9, 32.1];
-                            break;
-                        default:
-                            minVal = 0; maxVal = 80;
-                            segmentos = [22.5, 25.1, 27.4, 30.3];
-                    }
-                }
-                break;
-            case 'cintura':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [62, 66, 78, 87];
-                            break;
-                        case 14:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [65, 69, 80, 88];
-                            break;
-                        case 15:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [67, 71, 81, 89];
-                            break;
-                        case 16:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [67, 71, 81, 88];
-                            break;
-                        case 17:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [70, 73, 83, 91];
-                            break;
-                        default:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [67, 71, 81, 89];
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [61, 65, 75, 83];
-                            break;
-                        case 14:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [61, 64, 73, 80];
-                            break;
-                        case 15:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [63, 66, 75, 81];
-                            break;
-                        case 16:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [63, 66, 75, 81];
-                            break;
-                        case 17:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [62, 65, 74, 80];
-                            break;
-                        default:
-                            minVal = 40; maxVal = 130;
-                            segmentos = [63, 66, 75, 81];
-                    }
-                }
-                break;
-            case 'imc':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [16.7, 18.0, 22.2, 25.7];
-                            break;
-                        case 14:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [17.5, 19.0, 23.3, 26.5];
-                            break;
-                        case 15:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [17.9, 19.5, 23.8, 26.7];
-                            break;
-                        case 16:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [18.0, 19.6, 23.7, 26.4];
-                            break;
-                        case 17:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [19.0, 20.5, 24.6, 27.5];
-                            break;
-                        default:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [17.9, 19.5, 23.8, 26.7];
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [17.5, 19.0, 23.2, 26.4];
-                            break;
-                        case 14:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [17.6, 18.9, 22.8, 25.6];
-                            break;
-                        case 15:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [18.1, 19.4, 23.0, 25.6];
-                            break;
-                        case 16:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [18.3, 19.6, 23.1, 25.8];
-                            break;
-                        case 17:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [18.2, 19.5, 23.2, 25.8];
-                            break;
-                        default:
-                            minVal = 15; maxVal = 30;
-                            segmentos = [18.1, 19.4, 23.0, 25.6];
-                    }
-                }
-                break;
-            case 'shuttle4x10':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [13.0, 12.3, 11.8, 11.2];
-                            break;
-                        case 14:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [12.6, 11.9, 11.4, 10.9];
-                            break;
-                        case 15:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [12.1, 11.5, 11.0, 10.5];
-                            break;
-                        case 16:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [11.8, 11.1, 10.7, 10.2];
-                            break;
-                        case 17:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [11.8, 11.1, 10.7, 10.2];
-                            break;
-                        default:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [11.8, 11.1, 10.7, 10.2];
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [13.9, 13.1, 12.5, 11.9];
-                            break;
-                        case 14:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [13.8, 13.0, 12.4, 11.8];
-                            break;
-                        case 15:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [13.7, 13.0, 12.4, 11.8];
-                            break;
-                        case 16:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [13.6, 12.9, 12.3, 11.7];
-                            break;
-                        case 17:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [13.5, 12.9, 12.4, 11.8];
-                            break;
-                        default:
-                            minVal = 10; maxVal = 15;
-                            segmentos = [13.5, 12.9, 12.4, 11.8];
-                    }
-                }
-                break;
-        }
-
-        // Calcular posición del puntero (0-100%)
-        const posicion = ((valor - minVal) / (maxVal - minVal)) * 100;
-        const pointer = document.createElement('div');
-        pointer.className = 'test-pointer';
-        pointer.style.left = `${posicion}%`;
-        scaleDiv.appendChild(pointer);
-
-        // Crear la barra de progreso con segmentos coloreados
-        const scaleInner = document.createElement('div');
-        scaleInner.className = 'test-scale-inner';
-
-        // Segmento 1: Muy Bajo
-        const segment1 = document.createElement('div');
-        segment1.className = 'scale-segment segment-very-low';
-        scaleInner.appendChild(segment1);
-
-        // Segmento 2: Bajo
-        const segment2 = document.createElement('div');
-        segment2.className = 'scale-segment segment-low';
-        scaleInner.appendChild(segment2);
-
-        // Segmento 3: Promedio
-        const segment3 = document.createElement('div');
-        segment3.className = 'scale-segment segment-average';
-        scaleInner.appendChild(segment3);
-
-        // Segmento 4: Alto
-        const segment4 = document.createElement('div');
-        segment4.className = 'scale-segment segment-high';
-        scaleInner.appendChild(segment4);
-
-        // Segmento 5: Muy Alto
-        const segment5 = document.createElement('div');
-        segment5.className = 'scale-segment segment-very-high';
-        scaleInner.appendChild(segment5);
-
-        scaleDiv.appendChild(scaleInner);
-
-        // Etiquetas de la escala
-        const labelsDiv = document.createElement('div');
-        labelsDiv.className = 'test-labels';
-        const minLabel = document.createElement('span');
-        minLabel.textContent = minVal;
-        labelsDiv.appendChild(minLabel);
-        const maxLabel = document.createElement('span');
-        maxLabel.textContent = maxVal;
-        labelsDiv.appendChild(maxLabel);
-        scaleDiv.appendChild(labelsDiv);
-
-        div.appendChild(scaleDiv);
-
-        // Zona de salud (opcional, puedes mantenerlo o quitarlo)
-        const zonaDiv = document.createElement('div');
-        zonaDiv.style.display = 'flex';
-        zonaDiv.style.alignItems = 'center';
-        zonaDiv.style.marginTop = '10px';
-
-        const zonaIndicator = document.createElement('div');
-        zonaIndicator.className = 'zone-indicator';
-        // Determinar zona de salud
-        let zonaColor = 'green';
-        let zonaTexto = 'Zona Verde';
-        let score = 100;
-        switch (tipo) {
-            case 'cardio':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 3.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 4.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 6.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 7.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor <= 3.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 5.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 6.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 8.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor <= 4.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 5.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 7.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 8.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor <= 4.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 5.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 7.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 8.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor <= 4.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 6.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 7.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 9.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor <= 4.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 5.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 7.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 8.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 2.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 2.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 3.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 4.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor <= 2.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 3.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 4.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 5.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor <= 2.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 3.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 4.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 5.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor <= 2.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 3.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 4.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 5.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor <= 2.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 3.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 4.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 5.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor <= 2.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 3.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 4.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 5.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                }
-                break;
-            case 'salto':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 135) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 152) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 167) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 184) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor <= 151) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 169) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 183) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 200) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor <= 165) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 182) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 196) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 212) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor <= 175) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 192) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 206) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 221) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor <= 184) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 201) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 215) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 229) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor <= 165) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 182) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 196) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 212) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 118) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 133) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 147) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 163) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor <= 121) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 137) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 151) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 167) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor <= 123) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 138) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 151) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 167) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor <= 126) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 141) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 154) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 169) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor <= 129) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 144) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 157) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 172) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor <= 123) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 138) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 151) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 167) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                }
-                break;
-            case 'fuerza':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 21.4) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 24.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 27.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 31.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor <= 26.3) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 30.4) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 34.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 38.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor <= 31.3) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 35.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 39.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 44.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor <= 35.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 40.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 43.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 48.1) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor <= 39.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 43.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 46.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 50.6) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor <= 31.3) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 35.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 39.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 44.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 19.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 22.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 24.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 27.6) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor <= 21.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 24.1) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 26.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 29.2) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor <= 22.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 25.1) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 27.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 30.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor <= 22.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 25.4) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 27.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 30.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor <= 23.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 26.4) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 28.9) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 32.1) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor <= 22.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 25.1) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 27.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 30.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                }
-                break;
-            case 'cintura':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 62) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 66) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 78) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 87) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 14:
-                            if (valor <= 65) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 69) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 80) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 88) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 15:
-                            if (valor <= 67) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 71) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 81) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 89) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 16:
-                            if (valor <= 67) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 71) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 81) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 88) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 17:
-                            if (valor <= 70) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 73) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 83) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 91) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        default:
-                            if (valor <= 67) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 71) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 81) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 89) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 61) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 65) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 75) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 83) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 14:
-                            if (valor <= 61) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 64) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 73) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 80) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 15:
-                            if (valor <= 63) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 66) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 75) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 81) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 16:
-                            if (valor <= 63) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 66) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 75) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 81) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 17:
-                            if (valor <= 62) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 65) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 74) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 80) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        default:
-                            if (valor <= 63) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            else if (valor <= 66) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else if (valor <= 75) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 81) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                    }
-                }
-                break;
-            case 'imc':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 16.7) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 18.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 22.2) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 25.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 14:
-                            if (valor <= 17.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 26.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 15:
-                            if (valor <= 17.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 26.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 16:
-                            if (valor <= 18.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.6) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 26.4) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 17:
-                            if (valor <= 19.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 20.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 24.6) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 27.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        default:
-                            if (valor <= 17.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 26.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            if (valor <= 17.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.2) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 26.4) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 14:
-                            if (valor <= 17.6) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 18.9) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 22.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 25.6) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 15:
-                            if (valor <= 18.1) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.4) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 25.6) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 16:
-                            if (valor <= 18.3) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.6) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.1) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 25.8) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        case 17:
-                            if (valor <= 18.2) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.5) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.2) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 25.8) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            break;
-                        default:
-                            if (valor <= 18.1) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor <= 19.4) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor <= 23.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor <= 25.6) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                    }
-                }
-                break;
-            case 'shuttle4x10':
-                if (genero === 'masculino') {
-                    switch (edad) {
-                        case 13:
-                            if (valor >= 13.0) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 12.2) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 11.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 11.1) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor >= 12.6) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 11.8) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 11.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 10.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor >= 12.1) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 12.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 11.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 10.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor >= 11.8) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 11.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 11.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 10.1) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor >= 11.8) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 11.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 11.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 10.1) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor >= 11.8) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 11.7) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 11.0) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 10.1) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                } else {
-                    switch (edad) {
-                        case 13:
-                            if (valor >= 13.9) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 13.0) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 12.5) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 11.8) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 14:
-                            if (valor >= 13.8) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 12.9) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 12.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 11.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 15:
-                            if (valor >= 13.7) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 12.9) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 12.4) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 11.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 16:
-                            if (valor >= 13.6) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 12.8) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 12.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 11.6) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        case 17:
-                            if (valor >= 13.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 12.8) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 12.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 11.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                            break;
-                        default:
-                            if (valor >= 13.5) { zonaColor = 'red'; zonaTexto = 'Zona Roja'; score = 0; }
-                            else if (valor >= 12.8) { zonaColor = 'yellow'; zonaTexto = 'Zona Amarilla'; score = 25; }
-                            else if (valor >= 12.3) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 50; }
-                            else if (valor >= 11.7) { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 75; }
-                            else { zonaColor = 'green'; zonaTexto = 'Zona Verde'; score = 100; }
-                    }
-                }
-                break;
-        }
-        zonaIndicator.className = `zone-indicator zone-${zonaColor}`;
-        zonaDiv.appendChild(zonaIndicator);
-        const zonaText = document.createElement('span');
-        zonaText.textContent = zonaTexto;
-        zonaDiv.appendChild(zonaText);
-        const scoreSpan = document.createElement('span');
-        scoreSpan.className = 'score-box';
-        scoreSpan.textContent = `${score} Puntos`;
-        zonaDiv.appendChild(scoreSpan);
-        div.appendChild(zonaDiv);
-
-        // Consejo basado en la zona
-        const adviceDiv = document.createElement('div');
-        adviceDiv.className = 'advice-box';
-        const adviceTitle = document.createElement('div');
-        adviceTitle.className = 'advice-title';
-        adviceTitle.textContent = 'Consejo:';
-        let adviceText = '';
-        switch (zonaColor) {
-            case 'green':
-                adviceText = 'Has obtenido una puntuación excelente en este componente de la condición física. ¡Sigue así! Para mantener o mejorar tu nivel, sigue practicando actividades físicas regulares que disfrutes.';
-                break;
-            case 'yellow':
-                adviceText = 'Tu puntuación está en la zona de mejora. Tu objetivo debe ser progresar hacia la zona verde estableciendo pequeños objetivos, comprobándolos regularmente en tu progreso. Aprovecha todas las oportunidades que puedas para saltar más (por ejemplo, salta en las escaleras, en el patio de recreo y en la naturaleza, salta a la comba) y no olvides también otras actividades de fuerza muscular (por ejemplo, lanzando conos/arcos o bolas de nieve tanto como quieras). Habla con tu profesor/a y averigua más sobre cómo establecer objetivos personales y cómo mejorar la potencia explosiva.';
-                break;
-            case 'red':
-                adviceText = 'Tu puntuación está en la zona roja, lo que indica que es necesaria una mejora significativa para prevenir riesgos sanitarios actuales o futuros. Es importante hablar con tu profesor/a de Educación Física para saber más sobre cómo mejorar tu condición física. También puedes consultar con un médico o nutricionista para obtener recomendaciones personalizadas.';
-                break;
-        }
-        const adviceContent = document.createElement('div');
-        adviceContent.textContent = adviceText;
-        adviceDiv.appendChild(adviceTitle);
-        adviceDiv.appendChild(adviceContent);
-        div.appendChild(adviceDiv);
-
-        return div;
+    // === NUEVO: Obtener la clasificación real del resultado ===
+    let clasificacion = '';
+    switch (tipo) {
+        case 'cardio':       clasificacion = getClasificacionCardio(valor, genero, edad); break;
+        case 'salto':        clasificacion = getClasificacionSalto(valor, genero, edad); break;
+        case 'fuerza':       clasificacion = getClasificacionFuerza(valor, genero, edad); break;
+        case 'cintura':      clasificacion = getClasificacionCintura(valor, genero, edad); break;
+        case 'imc':          clasificacion = getClasificacionIMC(valor, genero, edad); break;
+        case 'shuttle4x10':  clasificacion = getClasificacionShuttle4x10(valor, genero, edad); break;
+        default:             clasificacion = 'No clasificado';
     }
+
+    // Badge de clasificación (opcional, pero útil)
+    const badge = document.createElement('span');
+    badge.className = 'category-badge';
+    badge.textContent = clasificacion;
+    infoDiv.appendChild(badge);
+
+    // === Escala visual con 5 segmentos ===
+    const scaleDiv = document.createElement('div');
+    scaleDiv.className = 'test-scale';
+
+    // Definir min/max para cálculo de posición
+    let minVal, maxVal;
+    switch(tipo) {
+        case 'cardio':      minVal = 0;   maxVal = 21; break;
+        case 'salto':       minVal = 15;  maxVal = 330; break;
+        case 'fuerza':      minVal = 0;   maxVal = 80; break;
+        case 'cintura':     minVal = 40;  maxVal = 130; break;
+        case 'imc':         minVal = 15;  maxVal = 30; break;
+        case 'shuttle4x10': minVal = 10;  maxVal = 15; break;
+        default:            minVal = 0;   maxVal = 100;
+    }
+
+    // Posición del puntero
+    const posicion = ((valor - minVal) / (maxVal - minVal)) * 100;
+    const pointer = document.createElement('div');
+    pointer.className = 'test-pointer';
+    pointer.style.left = `${posicion}%`;
+    scaleDiv.appendChild(pointer);
+
+    // Contenedor de los 5 segmentos coloreados
+    const scaleInner = document.createElement('div');
+    scaleInner.className = 'test-scale-inner';
+
+    const segmentos = ['very-low', 'low', 'average', 'high', 'very-high'];
+    segmentos.forEach(seg => {
+        const segDiv = document.createElement('div');
+        segDiv.className = `scale-segment segment-${seg}`;
+        scaleInner.appendChild(segDiv);
+    });
+
+    scaleDiv.appendChild(scaleInner);
+
+    // Etiquetas de la escala
+    const labelsDiv = document.createElement('div');
+    labelsDiv.className = 'test-labels';
+    labelsDiv.innerHTML = `<span>${minVal}</span><span>${maxVal}</span>`;
+    scaleDiv.appendChild(labelsDiv);
+
+    div.appendChild(scaleDiv);
+
+    // === Zona de salud con 5 colores ===
+    const zonaDiv = document.createElement('div');
+    zonaDiv.style.display = 'flex';
+    zonaDiv.style.alignItems = 'center';
+    zonaDiv.style.marginTop = '10px';
+
+    const zonaIndicator = document.createElement('div');
+    zonaIndicator.className = 'zone-indicator';
+
+    // Mapeo de categoría a clase CSS
+    const categoriaAClase = {
+        'Muy Bajo': 'muy-bajo',
+        'Bajo': 'bajo',
+        'Promedio': 'promedio',
+        'Alto': 'alto',
+        'Muy Alto': 'muy-alto'
+    };
+
+    const claseZona = categoriaAClase[clasificacion] || 'muy-bajo';
+    zonaIndicator.className = `zone-indicator zone-${claseZona}`;
+
+    const zonaText = document.createElement('span');
+    zonaText.textContent = `Categoría: ${clasificacion}`;
+
+    // Puntuación numérica (opcional)
+    const scoreMap = { 'Muy Bajo': 0, 'Bajo': 25, 'Promedio': 50, 'Alto': 75, 'Muy Alto': 100 };
+    const score = scoreMap[clasificacion] || 0;
+    const scoreSpan = document.createElement('span');
+    scoreSpan.className = 'score-box';
+    scoreSpan.textContent = `${score} Puntos`;
+
+    zonaDiv.appendChild(zonaIndicator);
+    zonaDiv.appendChild(zonaText);
+    zonaDiv.appendChild(scoreSpan);
+    div.appendChild(zonaDiv);
+
+    // === Consejo basado en la categoría ===
+    const adviceDiv = document.createElement('div');
+    adviceDiv.className = 'advice-box';
+    const adviceTitle = document.createElement('div');
+    adviceTitle.className = 'advice-title';
+    adviceTitle.textContent = 'Consejo:';
+    let adviceText = '';
+
+    if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
+        adviceText = 'Tu puntuación está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
+    } else if (clasificacion === 'Promedio') {
+        adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
+    } else {
+        adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
+    }
+
+    const adviceContent = document.createElement('div');
+    adviceContent.textContent = adviceText;
+    adviceDiv.appendChild(adviceTitle);
+    adviceDiv.appendChild(adviceContent);
+    div.appendChild(adviceDiv);
+
+    return div;
+}
 
     // Mostrar gráfico de comparación de resultados
     function mostrarGraficoComparacion(datos, edad) {
@@ -2482,6 +1589,7 @@
     </script>
 </body>
 </html>
+
 
 
 
