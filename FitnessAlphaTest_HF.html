@@ -315,34 +315,23 @@
         font-weight: bold;
         margin-left: 10px;
     }
-    .category-badge {
-        display: inline-block;
-        padding: 3px 8px;
-        border-radius: 15px;
-        font-size: 12px;
-        font-weight: bold;
-        margin-left: 5px;
-    }
-    .category-muy-bajo {
-        background: #ff4d4d;
-        color: white;
-    }
-    .category-bajo {
-        background: #ffcc00;
-        color: #333;
-    }
-    .category-promedio {
-        background: #4dff4d;
-        color: #333;
-    }
-    .category-alto {
-        background: #4dffa0;
-        color: #333;
-    }
-    .category-muy-alto {
-        background: #4dff4d;
-        color: #333;
-    }
+   .category-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 8px;
+    color: white;
+    min-width: 80px;
+    text-align: center;
+}
+.category-muy-bajo  { background: #ff5f6d; }  /* rojo */
+.category-bajo      { background: #ff9800; }  /* naranja */
+.category-promedio  { background: #8bc34a; }  /* verde */
+.category-alto      { background: #4dd0e1; }  /* azul claro */
+.category-muy-alto  { background: #42a5f5; }  /* azul */
+       
 </style>
 </head>
 <body>
@@ -880,9 +869,21 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         default:             clasificacion = 'No clasificado';
     }
 
-    // Badge de clasificación (opcional, pero útil)
+   // Badge de clasificación con color alineado a la categoría
     const badge = document.createElement('span');
     badge.className = 'category-badge';
+    
+    // Mapeo de texto a clase CSS
+    const categoriaAClase = {
+        'Muy Bajo': 'muy-bajo',
+        'Bajo': 'bajo',
+        'Promedio': 'promedio',
+        'Alto': 'alto',
+        'Muy Alto': 'muy-alto'
+    };
+    
+    const claseBadge = categoriaAClase[clasificacion] || 'muy-bajo';
+    badge.className = `category-badge category-${claseBadge}`;
     badge.textContent = clasificacion;
     infoDiv.appendChild(badge);
 
@@ -1589,6 +1590,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
