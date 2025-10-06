@@ -782,7 +782,7 @@ function procesarResultados(datos) {
             datos.shuttle20m,
             'etapas',
             genero,
-            edad,
+            edadRef,
             'cardio'
         );
         container.appendChild(cardioResult);
@@ -794,7 +794,7 @@ function procesarResultados(datos) {
             datos.salto,
             'cm',
             genero,
-            edad,
+            edadRef,
             'salto'
         );
         container.appendChild(saltoResult);
@@ -806,7 +806,7 @@ function procesarResultados(datos) {
             datos.fuerza,
             'kg',
             genero,
-            edad,
+            edadRef,
             'fuerza'
         );
         container.appendChild(fuerzaResult);
@@ -818,7 +818,7 @@ function procesarResultados(datos) {
             datos.cintura,
             'cm',
             genero,
-            edad,
+            edadRef,
             'cintura'
         );
         container.appendChild(cinturaResult);
@@ -830,7 +830,7 @@ function procesarResultados(datos) {
             calcularIMC(datos.peso, datos.altura),
             '',
             genero,
-            edad,
+            edadRef,
             'imc'
         );
         container.appendChild(imcResult);
@@ -842,7 +842,7 @@ function procesarResultados(datos) {
             datos.shuttle4x10m,
             'seg',
             genero,
-            edad,
+            edadRef,
             'shuttle4x10'
         );
         container.appendChild(shuttle4x10Result);
@@ -1507,6 +1507,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
