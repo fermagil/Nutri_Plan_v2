@@ -944,160 +944,149 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
             limites = { muy_bajo: 0, bajo: 25, promedio: 50, alto: 75, muy_alto: 100 };
     }
     // Badge y zone-indicator con lógica ajustada
-    const isMenorEsMejor = (tipo === 'cintura' || tipo === 'shuttle4x10'); // Incluye shuttle4x10
-    const isIMC = (tipo === 'imc'); // Identificar IMC para lógica especial
+    // ... (dentro de crearResultadoTest, después de obtener limites y clasificacion)
 
-    let claseBadgeMap = {
-        'Muy Bajo': 'muy-bajo',
-        'Bajo': 'bajo',
+// Badge y zone-indicator con lógica ajustada
+// CORRECCIÓN: Incluir 'shuttle4x10' en la lógica de "menos es mejor"
+const isMenorEsMejor = (tipo === 'cintura' || tipo === 'shuttle4x10'); // <-- Añadido 'shuttle4x10'
+const isIMC = (tipo === 'imc'); // <-- Identificar IMC por separado
+
+let claseBadgeMap = {
+    'Muy Bajo': 'muy-bajo',
+    'Bajo': 'bajo',
+    'Promedio': 'promedio',
+    'Alto': 'alto',
+    'Muy Alto': 'muy-alto'
+};
+
+if (isMenorEsMejor) {
+    // Para tests donde "menos es mejor", invertir la clasificación visual
+    claseBadgeMap = {
+        'Muy Bajo': 'muy-alto', // El valor más bajo (mejor) se ve como "muy alto"
+        'Bajo': 'alto',
         'Promedio': 'promedio',
-        'Alto': 'alto',
-        'Muy Alto': 'muy-alto'
+        'Alto': 'bajo',
+        'Muy Alto': 'muy-bajo' // El valor más alto (peor) se ve como "muy bajo"
     };
+} else if (isIMC) {
+    // Para IMC, solo "Promedio" es bueno, los extremos son malos
+    claseBadgeMap = {
+        'Muy Bajo': 'muy-bajo', // Malo
+        'Bajo': 'bajo',         // Malo
+        'Promedio': 'promedio', // Bueno
+        'Alto': 'bajo',         // Malo
+        'Muy Alto': 'muy-bajo'  // Malo
+    };
+}
+// Aplicar el mapeo para obtener la clase visual del badge
+const claseBadge = claseBadgeMap[clasificacion] || 'muy-bajo';
+const badge = document.createElement('span');
+badge.className = `category-badge category-${claseBadge}`;
+badge.textContent = clasificacion;
+infoDiv.appendChild(badge);
+div.appendChild(infoDiv);
 
-    if (isMenorEsMejor) {
-        // Para tests donde "menos es mejor", invertir la clasificación visual
-        claseBadgeMap = {
-            'Muy Bajo': 'muy-alto', // El valor más bajo (mejor) se ve como "muy alto"
-            'Bajo': 'alto',
-            'Promedio': 'promedio',
-            'Alto': 'bajo',
-            'Muy Alto': 'muy-bajo' // El valor más alto (peor) se ve como "muy bajo"
-        };
-    } else if (isIMC) {
-        // Para IMC, solo "Promedio" es bueno, los extremos son malos
-        claseBadgeMap = {
-            'Muy Bajo': 'muy-bajo', // Malo
-            'Bajo': 'bajo',         // Malo
-            'Promedio': 'promedio', // Bueno
-            'Alto': 'bajo',         // Malo
-            'Muy Alto': 'muy-bajo'  // Malo
-        };
-    }
-    // Aplicar el mapeo para obtener la clase visual del badge
-    const claseBadge = claseBadgeMap[clasificacion] || 'muy-bajo';
-    const badge = document.createElement('span');
-    badge.className = `category-badge category-${claseBadge}`;
-    badge.textContent = clasificacion;
-    infoDiv.appendChild(badge);
-    div.appendChild(infoDiv);
+// === Escala visual con segmentos de ancho real ===
+const scaleDiv = document.createElement('div');
+scaleDiv.className = 'test-scale';
 
-    // === Escala visual con segmentos de ancho real ===
-    const scaleDiv = document.createElement('div');
-    scaleDiv.className = 'test-scale';
-    // Determinar min y max reales
-    let minReal = limites.muy_bajo;
-    let maxReal = limites.muy_alto;
+// Determinar min y max reales para cálculo de posición
+let minReal = limites.muy_bajo;
+let maxReal = limites.muy_alto;
 
-    // Ajustar minReal y maxReal para tests donde "menos es mejor"
-    // La escala visual debe mostrar el rango de valores, pero el puntero debe moverse opuestamente al valor numérico
-    // Por lo tanto, si el test es "menos es mejor", intercambiamos minReal y maxReal para la escala visual
-    if (isMenorEsMejor) {
-         const temp = minReal;
-         minReal = maxReal; // El mejor valor (numéricamente más bajo) ahora es el "mínimo" visual
-         maxReal = temp;    // El peor valor (numéricamente más alto) ahora es el "máximo" visual
-    }
+// Ajustar minReal y maxReal para tests donde "menos es mejor"
+// La escala visual debe mostrar el rango de valores, pero el puntero debe moverse opuestamente al valor numérico
+// Por lo tanto, si el test es "menos es mejor", intercambiamos minReal y maxReal para la escala visual
+if (isMenorEsMejor) {
+     const temp = minReal;
+     minReal = maxReal; // El mejor valor (numéricamente más bajo) ahora es el "mínimo" visual
+     maxReal = temp;    // El peor valor (numéricamente más alto) ahora es el "máximo" visual
+}
 
-    // Calcular posición exacta del puntero (0-100%)
-    // La fórmula (valor - minReal) / (maxReal - minReal) asume que minReal es el valor más bajo y maxReal el más alto
-    // Si isMenorEsMejor, minReal y maxReal ya están intercambiados, por lo que la fórmula funcionará correctamente
-    // para que un valor numérico más bajo (mejor) resulte en una posición más a la derecha (zona azul).
-    let posicion = ((valor - minReal) / (maxReal - minReal)) * 100;
-    // Asegurar que la posición esté entre 0% y 100%
-    posicion = Math.max(0, Math.min(100, posicion));
+// Calcular posición exacta del puntero (0-100%)
+// La fórmula (valor - minReal) / (maxReal - minReal) asume que minReal es el valor más bajo y maxReal el más alto
+// Si isMenorEsMejor, minReal y maxReal ya están intercambiados, por lo que la fórmula funcionará correctamente
+// para que un valor numérico más bajo (mejor) resulte en una posición más a la derecha (zona azul).
+let posicion = ((valor - minReal) / (maxReal - minReal)) * 100;
+// Asegurar que la posición esté entre 0% y 100%
+posicion = Math.max(0, Math.min(100, posicion));
 
-    const pointer = document.createElement('div');
-    pointer.className = 'test-pointer';
-    pointer.style.left = `${posicion}%`;
-    scaleDiv.appendChild(pointer);
+const pointer = document.createElement('div');
+pointer.className = 'test-pointer';
+pointer.style.left = `${posicion}%`;
+scaleDiv.appendChild(pointer);
 
-    // Crear segmentos con anchos reales
-    const scaleInner = document.createElement('div');
-    scaleInner.className = 'test-scale-inner';
+// Crear segmentos con anchos reales
+const scaleInner = document.createElement('div');
+scaleInner.className = 'test-scale-inner';
 
-    // Definir segmentos en el orden lógico (muy_bajo -> muy_alto)
-    const segmentosLogicos = [
-        limites.muy_bajo,
-        limites.bajo,
-        limites.promedio,
-        limites.alto,
-        limites.muy_alto
-    ];
+// Calcular ancho de cada segmento en %
+const totalRango = maxReal - minReal; // Usar los límites reales (ya intercambiados si es necesario)
+const segmentWidths = [
+    ((limites.bajo - limites.muy_bajo) / (limites.muy_alto - limites.muy_bajo)) * 100, // Usar límites lógicos originales para ancho
+    ((limites.promedio - limites.bajo) / (limites.muy_alto - limites.muy_bajo)) * 100,
+    ((limites.alto - limites.promedio) / (limites.muy_alto - limites.muy_bajo)) * 100,
+    ((limites.muy_alto - limites.alto) / (limites.muy_alto - limites.muy_bajo)) * 100,
+    0 // último segmento punto
+];
 
-    // Calcular ancho de cada segmento en %
-    const totalRango = limites.muy_alto - limites.muy_bajo; // Usar los límites lógicos originales para el cálculo de ancho
-    const segmentWidths = [
-        ((limites.bajo - limites.muy_bajo) / totalRango) * 100,
-        ((limites.promedio - limites.bajo) / totalRango) * 100,
-        ((limites.alto - limites.promedio) / totalRango) * 100,
-        ((limites.muy_alto - limites.alto) / totalRango) * 100,
-        0 // último segmento punto
-    ];
+// Definir clases de colores para los segmentos
+// La lógica de colores debe reflejar la calidad del rendimiento en la escala visual
+let segmentClasses = ['very-low', 'low', 'average', 'high', 'very-high'];
+if (isMenorEsMejor) {
+    // Para tests "menos es mejor", el rango "muy_bajo" (numérico) es el mejor, por lo tanto, debe ser "very-high" visual
+    // Invertir el orden de las clases de color
+    segmentClasses = ['very-high', 'high', 'average', 'low', 'very-low'];
+} else if (isIMC) {
+    // Para IMC, "Promedio" es el mejor, los extremos son peores
+    segmentClasses = ['very-low', 'low', 'average', 'low', 'very-low']; // Verde en el centro, rojo en extremos
+}
 
-    // Definir clases de colores para los segmentos
-    // La lógica de colores debe reflejar la calidad del rendimiento en la escala visual
-    let segmentClasses = ['very-low', 'low', 'average', 'high', 'very-high'];
-    if (isMenorEsMejor) {
-        // Para tests "menos es mejor", el rango "muy_bajo" (numérico) es el mejor, por lo tanto, debe ser "very-high" visual
-        // Invertir el orden de las clases de color
-        segmentClasses = ['very-high', 'high', 'average', 'low', 'very-low'];
-    } else if (isIMC) {
-        // Para IMC, "Promedio" es el mejor, los extremos son peores
-        segmentClasses = ['very-low', 'low', 'average', 'low', 'very-low']; // Verde en el centro, rojo en extremos
-    }
+segmentClasses.forEach((segKey, index) => {
+    const segDiv = document.createElement('div');
+    segDiv.className = `scale-segment segment-${segKey}`;
+    segDiv.style.width = `${segmentWidths[index] || 0}%`;
+    scaleInner.appendChild(segDiv);
+});
+scaleDiv.appendChild(scaleInner);
 
-    segmentClasses.forEach((segKey, index) => {
-        const segDiv = document.createElement('div');
-        segDiv.className = `scale-segment segment-${segKey}`;
-        segDiv.style.width = `${segmentWidths[index] || 0}%`;
-        scaleInner.appendChild(segDiv);
-    });
-    scaleDiv.appendChild(scaleInner);
+// Etiquetas
+const labelsDiv = document.createElement('div');
+labelsDiv.className = 'test-labels';
+// Mostrar las etiquetas con los valores reales, teniendo en cuenta isMenorEsMejor
+if (isMenorEsMejor) {
+    // Si "menos es mejor", la etiqueta izquierda debe ser el valor más alto (peor) y la derecha el más bajo (mejor)
+    labelsDiv.innerHTML = `<span>${limites.muy_bajo}</span><span>${limites.muy_alto}</span>`; // Invertido visualmente
+} else {
+    // Si "más es mejor", la etiqueta izquierda es el valor más bajo (peor) y la derecha el más alto (mejor)
+    labelsDiv.innerHTML = `<span>${limites.muy_bajo}</span><span>${limites.muy_alto}</span>`;
+}
+scaleDiv.appendChild(labelsDiv);
+div.appendChild(scaleDiv);
 
-    // Etiquetas
-    const labelsDiv = document.createElement('div');
-    labelsDiv.className = 'test-labels';
-    // Mostrar las etiquetas con los valores reales, teniendo en cuenta isMenorEsMejor
-    if (isMenorEsMejor) {
-        // Si "menos es mejor", la etiqueta izquierda debe ser el valor más alto (peor) y la derecha el más bajo (mejor)
-        labelsDiv.innerHTML = `<span>${limites.muy_bajo}</span><span>${limites.muy_alto}</span>`; // Invertido visualmente
-    } else {
-        // Si "más es mejor", la etiqueta izquierda es el valor más bajo (peor) y la derecha el más alto (mejor)
-        labelsDiv.innerHTML = `<span>${limites.muy_bajo}</span><span>${limites.muy_alto}</span>`;
-    }
-    scaleDiv.appendChild(labelsDiv);
-    div.appendChild(scaleDiv);
+// Zona de salud
+const zonaDiv = document.createElement('div');
+zonaDiv.style.display = 'flex';
+zonaDiv.style.alignItems = 'center';
+zonaDiv.style.marginTop = '10px';
+const zonaIndicator = document.createElement('div');
+zonaIndicator.className = `zone-indicator zone-${claseBadge}`;
+const zonaText = document.createElement('span');
+zonaText.textContent = `Categoría: ${clasificacion}`;
 
-    // Zona de salud
-    const zonaDiv = document.createElement('div');
-    zonaDiv.style.display = 'flex';
-    zonaDiv.style.alignItems = 'center';
-    zonaDiv.style.marginTop = '10px';
-    const zonaIndicator = document.createElement('div');
-    zonaIndicator.className = `zone-indicator zone-${claseBadge}`;
-    const zonaText = document.createElement('span');
-    zonaText.textContent = `Categoría: ${clasificacion}`;
-    const scoreMap = { 'Muy Bajo': 0, 'Bajo': 25, 'Promedio': 50, 'Alto': 75, 'Muy Alto': 100 };
-    // Para tests "menos es mejor", el puntaje debe reflejar la calidad del valor, no el valor numérico
-    let score = scoreMap[clasificacion] || 0;
-    if (isMenorEsMejor) {
-        // Invertir el puntaje: clasificación "Muy Bajo" (mejor valor) -> 100 puntos, "Muy Alto" (peor valor) -> 0 puntos
-        score = 100 - score;
-    } else if (isIMC && (clasificacion === 'Muy Bajo' || clasificacion === 'Muy Alto')) {
-        // Para IMC, extremos son malos, asignar 0
-        score = 0;
-    } else if (isIMC && clasificacion === 'Promedio') {
-        // Para IMC, promedio es bueno, asignar 50
-        score = 50;
-    } // Otros casos (Bajo/Alto en IMC) siguen la lógica normal (25/75), que se mapea a 'bajo' visualmente (25 puntos)
+// CORRECCIÓN: Calcular el score basado en la clase visual del badge, no en la clasificación original
+const scoreMap = { 'muy-bajo': 0, 'bajo': 25, 'promedio': 50, 'alto': 75, 'muy-alto': 100 };
+const score = scoreMap[claseBadge] || 0; // Usar claseBadge en lugar de clasificacion
 
-    const scoreSpan = document.createElement('span');
-    scoreSpan.className = 'score-box';
-    scoreSpan.textContent = `${score} Puntos`;
-    zonaDiv.appendChild(zonaIndicator);
-    zonaDiv.appendChild(zonaText);
-    zonaDiv.appendChild(scoreSpan);
-    div.appendChild(zonaDiv);
+const scoreSpan = document.createElement('span');
+scoreSpan.className = 'score-box';
+scoreSpan.textContent = `${score} Puntos`;
+zonaDiv.appendChild(zonaIndicator);
+zonaDiv.appendChild(zonaText);
+zonaDiv.appendChild(scoreSpan);
+div.appendChild(zonaDiv);
+
+// ... (resto del código para consejos sigue igual)
 
     // Consejo
     const adviceDiv = document.createElement('div');
@@ -1648,4 +1637,5 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
