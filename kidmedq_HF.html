@@ -1476,7 +1476,7 @@
         
         new Chart(ctx, {
             type: 'bar',
-             { // <-- Añadido ''
+            data: { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
                 datasets: [{
                     label: 'Número de Encuestados',
@@ -2067,6 +2067,7 @@
 
 </body>
 </html>
+
 
 
 
