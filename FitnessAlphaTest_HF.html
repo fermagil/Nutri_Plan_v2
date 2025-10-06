@@ -1839,58 +1839,57 @@
                 }
             });
 
-            // Gráfico de rendimiento promedio (radar)
-            const ctx2 = document.getElementById('rendimientoChart').getContext('2d');
-            if (rendimientoChart) rendimientoChart.destroy();
-            rendimientoChart = new Chart(ctx2, {
-                type: 'radar',
-                 data:{
-                    labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
-                    datasets: [{
-                        label: 'Promedio General',
-                         [
-                            evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / evaluaciones.length,
-                            evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / evaluaciones.length,
-                            evaluaciones.reduce((sum, e) => sum + e.salto, 0) / evaluaciones.length,
-                            evaluaciones.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / evaluaciones.length,
-                            evaluaciones.reduce((sum, e) => sum + e.shuttle4x10m, 0) / evaluaciones.length
-                        ],
-                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
-                        borderColor: 'rgba(46, 204, 113, 1)',
-                        borderWidth: 3,
-                        pointBackgroundColor: 'rgba(46, 204, 113, 1)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(46, 204, 113, 1)'
-                    }]
+           // Gráfico de rendimiento promedio (radar)
+        const ctx2 = document.getElementById('rendimientoChart').getContext('2d');
+        if (rendimientoChart) rendimientoChart.destroy();
+        rendimientoChart = new Chart(ctx2, {
+            type: 'radar',
+             {
+                labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
+                datasets: [{
+                    label: 'Promedio General',
+                    data: [
+                        evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / evaluaciones.length,
+                        evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / evaluaciones.length,
+                        evaluaciones.reduce((sum, e) => sum + e.salto, 0) / evaluaciones.length,
+                        evaluaciones.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / evaluaciones.length,
+                        evaluaciones.reduce((sum, e) => sum + e.shuttle4x10m, 0) / evaluaciones.length
+                    ],
+                    backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: 'rgba(46, 204, 113, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(46, 204, 113, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Rendimiento Promedio'
+                    }
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
+                scales: {
+                    r: {
+                        angleLines: {
                             display: true,
-                            text: 'Rendimiento Promedio'
-                        }
-                    },
-                    scales: {
-                        r: {
-                            angleLines: {
-                                display: true,
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            pointLabels: {
-                                font: {
-                                    size: 14
-                                }
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 14
                             }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
 
         // Actualizar análisis detallado
         function actualizarAnalisis() {
@@ -2069,6 +2068,7 @@
 </body>
 </html>
 ```
+
 
 
 
