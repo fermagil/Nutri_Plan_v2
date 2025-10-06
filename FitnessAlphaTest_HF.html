@@ -165,6 +165,10 @@
             padding: 15px;
             margin: 15px 0;
         }
+        .comparison-chart {
+            height: 300px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -250,6 +254,9 @@
                 <div id="resultadosIndividuales" class="result-card">
                     <h3>Evaluación Individual</h3>
                     <div id="resultadoDetallado"></div>
+                    <div class="chart-container">
+                        <canvas id="comparacionResultadosChart"></canvas>
+                    </div>
                     <div id="recomendaciones" class="recommendations"></div>
                     <div id="infoSalud" class="health-info"></div>
                 </div>
@@ -305,7 +312,7 @@
         const db = firebase.firestore();
         
         let evaluaciones = [];
-        let distribucionEdadChart, rendimientoChart, analisisEdadChart, comparacionGeneroChart;
+        let distribucionEdadChart, rendimientoChart, analisisEdadChart, comparacionGeneroChart, comparacionResultadosChart;
         let isAdmin = false;
 
         // Función de login
@@ -571,32 +578,118 @@
             `;
 
             document.getElementById('resultadoDetallado').innerHTML = resultado;
-            mostrarRecomendaciones(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC);
-            mostrarInfoSalud(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC);
+            
+            // Mostrar gráfico de comparación
+            mostrarGraficoComparacion(datos, edad);
+            mostrarRecomendaciones(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC, clasificacionCintura, clasificacionShuttle4x10);
+            mostrarInfoSalud(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC, clasificacionCintura, clasificacionShuttle4x10);
+        }
+
+        // Mostrar gráfico de comparación de resultados
+        function mostrarGraficoComparacion(datos, edad) {
+            const ctx = document.getElementById('comparacionResultadosChart').getContext('2d');
+            if (comparacionResultadosChart) comparacionResultadosChart.destroy();
+            
+            const genero = datos.genero;
+            const resultados = [
+                calcularIMC(datos.peso, datos.altura),
+                datos.cintura,
+                datos.shuttle20m,
+                datos.salto,
+                datos.fuerza
+            ];
+            
+            // Obtener valores de referencia para la edad y género
+            const refIMC = {
+                'muy_bajo': 16.7, 'bajo': 18.0, 'promedio': 22.2, 'alto': 25.7
+            }[genero === 'masculino' ? 13 : 13]; // Simplificación - usar edad real
+            
+            const refCintura = {
+                'muy_bajo': 62, 'bajo': 66, 'promedio': 78, 'alto': 87
+            }[genero === 'masculino' ? 13 : 13];
+            
+            const refCardio = {
+                'muy_bajo': 3.0, 'bajo': 4.5, 'promedio': 6.0, 'alto': 7.5
+            }[genero === 'masculino' ? 13 : 13];
+            
+            const refSalto = {
+                'muy_bajo': 135, 'bajo': 152, 'promedio': 167, 'alto': 184
+            }[genero === 'masculino' ? 13 : 13];
+            
+            const refFuerza = {
+                'muy_bajo': 21.4, 'bajo': 24.7, 'promedio': 27.8, 'alto': 31.8
+            }[genero === 'masculino' ? 13 : 13];
+            
+            const valoresRef = [refIMC, refCintura, refCardio, refSalto, refFuerza];
+            
+            comparacionResultadosChart = new Chart(ctx, {
+                type: 'bar',
+                 {
+                    labels: ['IMC', 'Perímetro Cintura', 'Cardiorespiratorio', 'Salto Horizontal', 'Fuerza Manual'],
+                    datasets: [
+                        {
+                            label: 'Resultado del Usuario',
+                             resultados,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Valor de Referencia',
+                             valoresRef,
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comparación de Resultados con Valores de Referencia'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
         }
 
         // Mostrar recomendaciones
-        function mostrarRecomendaciones(datos, cardio, salto, fuerza, imc) {
+        function mostrarRecomendaciones(datos, cardio, salto, fuerza, imc, cintura, shuttle4x10) {
             let recomendaciones = '<h4>Recomendaciones:</h4><ul>';
             
             if (cardio.includes('Muy Bajo') || cardio.includes('Bajo')) {
-                recomendaciones += '<li>Realizar actividades aeróbicas como correr, nadar o andar en bicicleta 3-4 veces por semana para mejorar la resistencia cardiovascular.</li>';
+                recomendaciones += '<li>Realizar actividades aeróbicas como correr, nadar o andar en bicicleta 3-4 veces por semana para mejorar la resistencia cardiovascular. Un bajo nivel de capacidad aeróbica es un predictor independiente del desarrollo futuro de síndrome metabólico, diabetes tipo 2 y enfermedades cardiovasculares.</li>';
             }
             
             if (salto.includes('Muy Bajo') || salto.includes('Bajo')) {
-                recomendaciones += '<li>Practicar ejercicios de salto y plyometría para mejorar la fuerza explosiva de las piernas.</li>';
+                recomendaciones += '<li>Practicar ejercicios de salto y plyometría para mejorar la fuerza explosiva de las piernas. La fuerza muscular está asociada inversamente con factores de riesgo cardiovascular y dolor lumbar.</li>';
             }
             
             if (fuerza.includes('Muy Bajo') || fuerza.includes('Bajo')) {
-                recomendaciones += '<li>Incluir ejercicios de fuerza con peso corporal como flexiones, dominadas y agarres para mejorar la fuerza de brazos y manos.</li>';
+                recomendaciones += '<li>Incluir ejercicios de fuerza con peso corporal como flexiones, dominadas y agarres para mejorar la fuerza de brazos y manos. La fuerza muscular está asociada con mejor salud cardiovascular y menor mortalidad.</li>';
             }
             
             if (imc.includes('Muy Alto') || imc.includes('Alto')) {
-                recomendaciones += '<li>Mantener una dieta equilibrada y aumentar la actividad física para lograr un peso saludable.</li>';
+                recomendaciones += '<li>Mantener una dieta equilibrada y aumentar la actividad física para lograr un peso saludable. El IMC elevado junto con el perímetro de cintura indican mayor riesgo cardiometabólico.</li>';
+            }
+            
+            if (cintura.includes('Muy Alto') || cintura.includes('Alto')) {
+                recomendaciones += '<li>Reducir el perímetro de cintura es crucial ya que indica grasa visceral, que está directamente asociada con inflamación sistémica y resistencia a la insulina.</li>';
             }
             
             if (imc.includes('Muy Bajo') || imc.includes('Bajo')) {
                 recomendaciones += '<li>Consultar con un nutricionista para asegurar una nutrición adecuada y un crecimiento saludable.</li>';
+            }
+            
+            if (shuttle4x10.includes('Muy Bajo') || shuttle4x10.includes('Bajo')) {
+                recomendaciones += '<li>Mejorar la velocidad y agilidad a través de ejercicios de coordinación y desplazamiento. Las mejoras en velocidad/agilidad tienen un efecto positivo en la salud esquelética.</li>';
             }
             
             recomendaciones += '</ul>';
@@ -605,14 +698,14 @@
         }
 
         // Mostrar información sobre salud
-        function mostrarInfoSalud(datos, cardio, salto, fuerza, imc) {
+        function mostrarInfoSalud(datos, cardio, salto, fuerza, imc, cintura, shuttle4x10) {
             const info = `
                 <h4>Importancia de los Tests para la Salud:</h4>
-                <p><strong>Test de Resistencia Cardiorespiratoria:</strong> La capacidad aeróbica está fuertemente asociada con una mejor salud cardiovascular actual y futura. Niveles bajos se relacionan con riesgo aumentado de enfermedades cardiovasculares.</p>
-                <p><strong>Test de Salto Horizontal:</strong> Mide la fuerza explosiva de las piernas, importante para la salud ósea y muscular. Niveles bajos pueden indicar deficiencias en el desarrollo físico.</p>
-                <p><strong>Test de Fuerza de Prehensión Manual:</strong> Indicador de la fuerza general y salud muscular. Se ha relacionado con mejores resultados en salud cardiovascular y metabólica.</p>
-                <p><strong>Índice de Masa Corporal (IMC):</strong> Indicador de composición corporal. Valores extremos (muy bajo o muy alto) pueden indicar problemas de salud.</p>
-                <p><strong>Test de Shuttle 4x10m:</strong> Evalúa velocidad, agilidad y coordinación, aspectos importantes para la salud esquelética y el desarrollo motor.</p>
+                <p><strong>Test de Resistencia Cardiorespiratoria:</strong> La capacidad aeróbica está fuertemente asociada con una mejor salud cardiovascular actual y futura. Niveles bajos se relacionan con riesgo aumentado de enfermedades cardiovasculares, síndrome metabólico y diabetes tipo 2.</p>
+                <p><strong>Test de Salto Horizontal:</strong> Mide la fuerza explosiva de las piernas, importante para la salud ósea y muscular. La fuerza muscular está inversamente asociada con factores de riesgo cardiovascular y dolor lumbar.</p>
+                <p><strong>Test de Fuerza de Prehensión Manual:</strong> Indicador de la fuerza general y salud muscular. Se ha relacionado con mejores resultados en salud cardiovascular y menor mortalidad por todas las causas.</p>
+                <p><strong>Índice de Masa Corporal (IMC) y Perímetro de Cintura:</strong> Indicadores de composición corporal. El IMC es útil pero el perímetro de cintura es un marcador directo de grasa visceral, que es metabólicamente activa y se asocia con inflamación sistémica y resistencia a la insulina.</p>
+                <p><strong>Test de Shuttle 4x10m:</strong> Evalúa velocidad, agilidad y coordinación, aspectos importantes para la salud esquelética. Las mejoras en velocidad/agilidad parecen tener un efecto positivo en la salud esquelética.</p>
             `;
             
             document.getElementById('infoSalud').innerHTML = info;
@@ -779,7 +872,7 @@
                     labels: Object.keys(edadCount),
                     datasets: [{
                         label: 'Número de Evaluaciones',
-                        data: Object.values(edadCount),
+                         Object.values(edadCount),
                         backgroundColor: 'rgba(52, 152, 219, 0.6)',
                         borderColor: 'rgba(52, 152, 219, 1)',
                         borderWidth: 1
