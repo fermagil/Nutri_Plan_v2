@@ -851,6 +851,7 @@ function procesarResultados(datos) {
     // Crear elemento de resultado de test con barra de progreso
    // Crear elemento de resultado de test con escala visual
 // Crear elemento de resultado de test con escala visual precisa
+// Crear elemento de resultado de test con escala visual precisa
 function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, tipo) {
     const div = document.createElement('div');
     div.className = 'test-result';
@@ -976,19 +977,19 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         case 'shuttle4x10':
             clasificacion = getClasificacionShuttle4x10(valor, genero, edadRef);
             if (genero === 'masculino') {
-                limites = { muy_bajo: 13.0, bajo: 12.2, promedio: 11.8, alto: 11.1, muy_alto: 11.1 };
+                limites = { muy_bajo: 13.0, bajo: 12.2, promedio: 11.8, alto: 11.1, muy_alto: 11.0 };
                 switch(edadRef) {
-                    case 14: limites = { muy_bajo: 12.6, bajo: 11.8, promedio: 11.4, alto: 10.8, muy_alto: 10.8 }; break;
-                    case 15: limites = { muy_bajo: 12.1, bajo: 12.0, promedio: 11.4, alto: 10.4, muy_alto: 10.4 }; break;
-                    case 16: case 17: limites = { muy_bajo: 11.8, bajo: 11.7, promedio: 11.0, alto: 10.1, muy_alto: 10.1 }; break;
+                    case 14: limites = { muy_bajo: 12.6, bajo: 11.8, promedio: 11.4, alto: 10.8, muy_alto: 10.7 }; break;
+                    case 15: limites = { muy_bajo: 12.1, bajo: 12.0, promedio: 11.4, alto: 10.4, muy_alto: 10.3 }; break;
+                    case 16: case 17: limites = { muy_bajo: 11.8, bajo: 11.7, promedio: 11.0, alto: 10.1, muy_alto: 10.0 }; break;
                 }
             } else {
-                limites = { muy_bajo: 13.9, bajo: 13.0, promedio: 12.5, alto: 11.8, muy_alto: 11.8 };
+                limites = { muy_bajo: 13.9, bajo: 13.0, promedio: 12.5, alto: 11.8, muy_alto: 11.7 };
                 switch(edadRef) {
-                    case 14: limites = { muy_bajo: 13.8, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.7 }; break;
-                    case 15: limites = { muy_bajo: 13.7, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.7 }; break;
-                    case 16: limites = { muy_bajo: 13.6, bajo: 12.8, promedio: 12.3, alto: 11.6, muy_alto: 11.6 }; break;
-                    case 17: limites = { muy_bajo: 13.5, bajo: 12.8, promedio: 12.3, alto: 11.7, muy_alto: 11.7 }; break;
+                    case 14: limites = { muy_bajo: 13.8, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.6 }; break;
+                    case 15: limites = { muy_bajo: 13.7, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.6 }; break;
+                    case 16: limites = { muy_bajo: 13.6, bajo: 12.8, promedio: 12.3, alto: 11.6, muy_alto: 11.5 }; break;
+                    case 17: limites = { muy_bajo: 13.5, bajo: 12.8, promedio: 12.3, alto: 11.7, muy_alto: 11.6 }; break;
                 }
             }
             break;
@@ -999,12 +1000,25 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
 
     // Badge y zone-indicator con lógica invertida para "menos es mejor"
     const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc' || tipo === 'shuttle4x10');
+
     let claseBadge;
     if (isMenorEsMejor) {
-        const inverso = { 'Muy Bajo': 'muy-alto', 'Bajo': 'alto', 'Promedio': 'promedio', 'Alto': 'bajo', 'Muy Alto': 'muy-bajo' };
+        const inverso = {
+            'Muy Bajo': 'muy-alto', // Azul fuerte
+            'Bajo': 'alto',         // Azul claro
+            'Promedio': 'promedio', // Verde
+            'Alto': 'bajo',         // Naranja
+            'Muy Alto': 'muy-bajo'  // Rojo
+        };
         claseBadge = inverso[clasificacion] || 'muy-bajo';
     } else {
-        const normal = { 'Muy Bajo': 'muy-bajo', 'Bajo': 'bajo', 'Promedio': 'promedio', 'Alto': 'alto', 'Muy Alto': 'muy-alto' };
+        const normal = {
+            'Muy Bajo': 'muy-bajo', // Rojo
+            'Bajo': 'bajo',         // Naranja
+            'Promedio': 'promedio', // Verde
+            'Alto': 'alto',         // Azul claro
+            'Muy Alto': 'muy-alto'  // Azul fuerte
+        };
         claseBadge = normal[clasificacion] || 'muy-bajo';
     }
 
@@ -1110,11 +1124,28 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         } else {
             adviceText = 'Tu IMC indica sobrepeso u obesidad. Habla con un profesional de la salud para recibir orientación sobre alimentación y ejercicio.';
         }
+    } else if (tipo === 'cintura') {
+        if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
+            adviceText = 'Tu perímetro de cintura es bajo, lo cual puede indicar un peso insuficiente. Asegúrate de consumir suficientes calorías y nutrientes para crecer y desarrollarte adecuadamente.';
+        } else if (clasificacion === 'Promedio') {
+            adviceText = 'Tu perímetro de cintura está en el rango saludable. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
+        } else {
+            adviceText = 'Tu perímetro de cintura indica un riesgo cardiovascular. Es importante reducir la grasa abdominal mediante ejercicio aeróbico y una dieta baja en calorías.';
+        }
+    } else if (tipo === 'shuttle4x10') {
+        if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
+            adviceText = 'Tu puntuación en velocidad/agilidad está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
+        } else if (clasificacion === 'Promedio') {
+            adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regulares para mantener y mejorar tu nivel!';
+        } else {
+            adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
+        }
     } else {
+        // Consejos genéricos para otros tests
         if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
             adviceText = 'Tu puntuación está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
         } else if (clasificacion === 'Promedio') {
-            adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
+            adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regulares para mantener y mejorar tu nivel!';
         } else {
             adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
         }
@@ -1649,6 +1680,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
