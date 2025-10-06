@@ -1008,7 +1008,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         let refIMC, refCintura, refCardio, refSalto, refFuerza, refShuttle4x10;
 
         if (genero === 'masculino') {
-        switch(edad) {
+        switch(edadRef) {
             case 13: refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8; refShuttle4x10 = 12.0; break;
             case 14: refIMC = 23.3; refCintura = 80; refCardio = 6.5; refSalto = 183; refFuerza = 34.0; refShuttle4x10 = 11.6; break;
             case 15: refIMC = 23.8; refCintura = 81; refCardio = 7.0; refSalto = 196; refFuerza = 39.7; refShuttle4x10 = 11.2; break;
@@ -1019,7 +1019,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
                 refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8; refShuttle4x10 = 12.0;
         }
     } else {
-        switch(edad) {
+        switch(edadRef) {
             case 13: refIMC = 23.2; refCintura = 75; refCardio = 3.5; refSalto = 147; refFuerza = 24.8; refShuttle4x10 = 12.75; break;
             case 14: refIMC = 22.8; refCintura = 73; refCardio = 4.0; refSalto = 151; refFuerza = 26.4; refShuttle4x10 = 12.65; break;
             case 15: refIMC = 23.0; refCintura = 75; refCardio = 4.0; refSalto = 151; refFuerza = 27.4; refShuttle4x10 = 12.65; break;
@@ -1507,6 +1507,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
