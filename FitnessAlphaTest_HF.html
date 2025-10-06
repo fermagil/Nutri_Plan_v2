@@ -725,39 +725,51 @@
         }
         return edad;
     }
-
-    // Procesar y mostrar resultados
-    function procesarResultados(datos) {
-        const edad = getEdad(datos.fechaNacimiento);
-        const imc = calcularIMC(datos.peso, datos.altura);
-        const clasificacionIMC = getClasificacionIMC(imc, datos.genero, edad);
-        const clasificacionCintura = getClasificacionCintura(datos.cintura, datos.genero, edad);
-        const clasificacionCardio = getClasificacionCardio(datos.shuttle20m, datos.genero, edad);
-        const clasificacionSalto = getClasificacionSalto(datos.salto, datos.genero, edad);
-        const clasificacionFuerza = getClasificacionFuerza(datos.fuerza, datos.genero, edad);
-        const clasificacionShuttle4x10 = getClasificacionShuttle4x10(datos.shuttle4x10m, datos.genero, edad);
-
-        // Mostrar resumen en la parte superior
-        const resultadoResumen = `
-            <h4>Evaluación de: ${datos.nombre}</h4>
-            <p><strong>Edad:</strong> ${edad} años</p>
-            <p><strong>Género:</strong> ${datos.genero}</p>
-            <h4>Valoración General:</h4>
-            <p>El estado físico general del usuario se clasifica como: <strong>${evaluarEstadoFisico(clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC)}</strong></p>
-        `;
-        document.getElementById('resultadoDetallado').innerHTML = resultadoResumen;
-
-        // Mostrar gráfico de comparación
-        mostrarGraficoComparacion(datos, edad);
-        mostrarRecomendaciones(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC, clasificacionCintura, clasificacionShuttle4x10);
-        mostrarInfoSalud(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC, clasificacionCintura, clasificacionShuttle4x10);
-
-        // Mostrar resultados detallados con barras de progreso
-        mostrarResultadosDetallados(datos, edad);
+    // Función para obtener la edad de referencia (mínimo 13 años)
+    function getEdadReferencia(edad) {
+        return Math.max(edad, 13);
     }
+    // Procesar y mostrar resultados
+   // Procesar y mostrar resultados
+function procesarResultados(datos) {
+    const edad = getEdad(datos.fechaNacimiento);
+    const edadRef = Math.max(edad, 13); // <-- NUEVO: mapear a 13 si es menor
+
+    const imc = calcularIMC(datos.peso, datos.altura);
+    const clasificacionIMC = getClasificacionIMC(imc, datos.genero, edadRef);
+    const clasificacionCintura = getClasificacionCintura(datos.cintura, datos.genero, edadRef);
+    const clasificacionCardio = getClasificacionCardio(datos.shuttle20m, datos.genero, edadRef);
+    const clasificacionSalto = getClasificacionSalto(datos.salto, datos.genero, edadRef);
+    const clasificacionFuerza = getClasificacionFuerza(datos.fuerza, datos.genero, edadRef);
+    const clasificacionShuttle4x10 = getClasificacionShuttle4x10(datos.shuttle4x10m, datos.genero, edadRef);
+
+    const resultado = `
+        <h4>Evaluación de: ${datos.nombre}</h4>
+        <p><strong>Edad:</strong> ${edad} años</p>
+        <p><strong>Género:</strong> ${datos.genero}</p>
+        <h4>Resultados y Clasificaciones:</h4>
+        <p><strong>IMC:</strong> ${imc.toFixed(2)} - Categoría: ${clasificacionIMC}</p>
+        <p><strong>Perímetro de Cintura:</strong> ${datos.cintura} cm - Categoría: ${clasificacionCintura}</p>
+        <p><strong>Cardiorespiratorio:</strong> ${datos.shuttle20m} etapas - Categoría: ${clasificacionCardio}</p>
+        <p><strong>Salto Horizontal:</strong> ${datos.salto} cm - Categoría: ${clasificacionSalto}</p>
+        <p><strong>Fuerza Manual:</strong> ${datos.fuerza} kg - Categoría: ${clasificacionFuerza}</p>
+        <p><strong>Shuttle 4x10m:</strong> ${datos.shuttle4x10m} seg - Categoría: ${clasificacionShuttle4x10}</p>
+        <h4>Valoración General:</h4>
+        <p>El estado físico general del usuario se clasifica como: <strong>${evaluarEstadoFisico(clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC)}</strong></p>
+    `;
+    document.getElementById('resultadoDetallado').innerHTML = resultado;
+
+    // Mostrar gráfico de comparación (usando edadRef)
+    mostrarGraficoComparacion(datos, edadRef);
+    mostrarRecomendaciones(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC, clasificacionCintura, clasificacionShuttle4x10);
+    mostrarInfoSalud(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC, clasificacionCintura, clasificacionShuttle4x10);
+    
+    // Mostrar resultados detallados (usando edadRef)
+    mostrarResultadosDetallados(datos, edadRef);
+}
 
     // Mostrar resultados detallados con barras de progreso
-    function mostrarResultadosDetallados(datos, edad) {
+    function mostrarResultadosDetallados(datos, edadRef) {
         const container = document.getElementById('testResultsContainer');
         container.innerHTML = '';
 
@@ -986,7 +998,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
 }
 
     // Mostrar gráfico de comparación de resultados
-    function mostrarGraficoComparacion(datos, edad) {
+    function mostrarGraficoComparacion(datos, edadRef) {
         const ctx = document.getElementById('comparacionResultadosChart').getContext('2d');
         if (comparacionResultadosChart) comparacionResultadosChart.destroy();
 
@@ -1583,6 +1595,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
