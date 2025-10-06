@@ -868,7 +868,7 @@
             if (distribucionEdadChart) distribucionEdadChart.destroy();
             distribucionEdadChart = new Chart(ctx1, {
                 type: 'bar',
-                 {
+                 data:{
                     labels: Object.keys(edadCount),
                     datasets: [{
                         label: 'Número de Evaluaciones',
@@ -894,7 +894,7 @@
             if (rendimientoChart) rendimientoChart.destroy();
             rendimientoChart = new Chart(ctx2, {
                 type: 'radar',
-                 {
+                data: {
                     labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
                     datasets: [{
                         label: 'Promedio General',
@@ -970,7 +970,7 @@
             if (analisisEdadChart) analisisEdadChart.destroy();
             analisisEdadChart = new Chart(ctx3, {
                 type: 'line',
-                 {
+                data: {
                     labels: edades,
                     datasets: [
                         {
@@ -1020,7 +1020,7 @@
             if (comparacionGeneroChart) comparacionGeneroChart.destroy();
             comparacionGeneroChart = new Chart(ctx4, {
                 type: 'bar',
-                 {
+                data: {
                     labels: ['Cardio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
                     datasets: [
                         {
@@ -1118,4 +1118,5 @@
     </script>
 </body>
 </html>
+
 
