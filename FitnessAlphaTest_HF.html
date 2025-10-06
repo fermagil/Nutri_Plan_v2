@@ -1965,47 +1965,50 @@
             const hombres = evaluaciones.filter(e => e.genero === 'masculino');
             const mujeres = evaluaciones.filter(e => e.genero === 'femenino');
 
+           
             const ctx4 = document.getElementById('comparacionGeneroChart').getContext('2d');
-        if (comparacionGeneroChart) comparacionGeneroChart.destroy();
-        comparacionGeneroChart = new Chart(ctx4, {
-            type: 'bar',
-             data:{
-                labels: ['Cardio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
-                datasets: [
-                    {
-                        label: 'Hombres',
-                        data: [
-                            hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle20m, 0) / hombres.length : 0,
-                            hombres.length ? hombres.reduce((sum, e) => sum + e.fuerza, 0) / hombres.length : 0,
-                            hombres.length ? hombres.reduce((sum, e) => sum + e.salto, 0) / hombres.length : 0,
-                            hombres.length ? hombres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / hombres.length : 0,
-                            hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle4x10m, 0) / hombres.length : 0
-                        ],
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                    },
-                    {
-                        label: 'Mujeres',
-                        data: [
-                            mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle20m, 0) / mujeres.length : 0,
-                            mujeres.length ? mujeres.reduce((sum, e) => sum + e.fuerza, 0) / mujeres.length : 0,
-                            mujeres.length ? mujeres.reduce((sum, e) => sum + e.salto, 0) / mujeres.length : 0,
-                            mujeres.length ? mujeres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / mujeres.length : 0,
-                            mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle4x10m, 0) / mujeres.length : 0
-                        ],
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Comparación por Género'
+            if (comparacionGeneroChart) comparacionGeneroChart.destroy();
+            comparacionGeneroChart = new Chart(ctx4, {
+                type: 'bar',
+                 {
+                    labels: ['Cardio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
+                    datasets: [
+                        {
+                            label: 'Hombres',
+                             [
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle20m, 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.fuerza, 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.salto, 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle4x10m, 0) / hombres.length : 0
+                            ],
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                        },
+                        {
+                            label: 'Mujeres',
+                             [
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle20m, 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.fuerza, 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.salto, 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle4x10m, 0) / mujeres.length : 0
+                            ],
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comparación por Género'
+                        }
                     }
                 }
-            }
-        });
+            });
+
+    
 
         // Exportar a CSV
         function exportToCSV() {
@@ -2066,6 +2069,7 @@
     </script>
 </body>
 </html>
+
 
 
 
