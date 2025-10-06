@@ -921,14 +921,22 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     scaleDiv.appendChild(pointer);
 
     // Contenedor de los 5 segmentos coloreados
+    // Contenedor de los 5 segmentos coloreados
     const scaleInner = document.createElement('div');
     scaleInner.className = 'test-scale-inner';
-    ['very-low', 'low', 'average', 'high', 'very-high'].forEach(seg => {
+    
+    // Definir el orden de los segmentos según el tipo de test
+    const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc' || tipo === 'shuttle4x10');
+    const segmentOrder = isMenorEsMejor
+        ? ['very-high', 'high', 'average', 'low', 'very-low'] // Invertido visualmente
+        : ['very-low', 'low', 'average', 'high', 'very-high']; // Normal
+    
+    segmentOrder.forEach(seg => {
         const segDiv = document.createElement('div');
         segDiv.className = `scale-segment segment-${seg}`;
         scaleInner.appendChild(segDiv);
     });
-    scaleDiv.appendChild(scaleInner);
+        scaleDiv.appendChild(scaleInner);
 
     // Etiquetas de la escala
     const labelsDiv = document.createElement('div');
@@ -1507,6 +1515,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
