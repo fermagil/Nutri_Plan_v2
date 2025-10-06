@@ -1403,7 +1403,7 @@
         const ctx = document.getElementById('categoryChart').getContext('2d');
         new Chart(ctx, {
             type: 'pie',
-             { // <-- Añadido ''
+            data: { // <-- Añadido ''
                 labels: [
                     `Calidad Óptima (≥8): ${high} (${((high / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Intermedia (4-7): ${medium} (${((medium / (high + medium + low)) * 100).toFixed(1)}%)`,
@@ -1440,7 +1440,7 @@
         
         new Chart(ctx, {
             type: 'pie',
-             { // <-- Añadido ''
+            data: { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
                 datasets: [{
                      data, // <-- Añadido ''
@@ -1475,7 +1475,7 @@
         
         new Chart(ctx, {
             type: 'bar',
-             { // <-- Añadido ''
+            data: { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
                 datasets: [{
                     label: 'Número de Encuestados',
@@ -1520,7 +1520,7 @@
 
         new Chart(ctx, {
             type: 'bar',
-             { // <-- Añadido ''
+             data: { // <-- Añadido ''
                 labels: labels,
                 datasets: [
                     {
@@ -1866,7 +1866,7 @@
 
         window.analysisChartInstance = new Chart(ctx, {
             type: 'bar',
-             { // <-- CORRECCIÓN AQUÍ: Añadido ''
+             data: { // <-- CORRECCIÓN AQUÍ: Añadido ''
                 labels: labels,
                 datasets: [
                     {
@@ -2067,3 +2067,4 @@
 
 </body>
 </html>
+
