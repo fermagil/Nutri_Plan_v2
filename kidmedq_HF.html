@@ -194,11 +194,11 @@
             transform: translateY(0);
         }
 
-        #exportBtn, #exportAllBtn, #reportBtn {
+        #exportBtn, #exportAllBtn, #reportBtn, #adminReportBtn, #adminControlBtn {
             background-color: #3498db;
         }
 
-        #exportBtn:hover, #exportAllBtn:hover, #reportBtn:hover {
+        #exportBtn:hover, #exportAllBtn:hover, #reportBtn:hover, #adminReportBtn:hover, #adminControlBtn:hover {
             background-color: #2980b9;
         }
 
@@ -210,11 +210,11 @@
             background-color: #c0392b;
         }
 
-        #reportBtn {
+        #reportBtn, #adminReportBtn, #adminControlBtn {
             background-color: #9b59b6;
         }
 
-        #reportBtn:hover {
+        #reportBtn:hover, #adminReportBtn:hover, #adminControlBtn:hover {
             background-color: #8e44ad;
         }
 
@@ -318,7 +318,7 @@
             border-color: #e74c3c;
         }
 
-        .report-section {
+        .report-section, .admin-section {
             background-color: #f9f9f9;
             padding: 20px;
             border-radius: var(--border-radius);
@@ -330,7 +330,7 @@
             height: 300px;
         }
 
-        .report-content h3 {
+        .report-content h3, .admin-content h3 {
             color: var(--primary-dark);
             margin-bottom: 15px;
         }
@@ -366,6 +366,54 @@
             padding: 20px;
             color: var(--primary-color);
         }
+
+        .admin-controls {
+            margin-top: 20px;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .filter-buttons button {
+            flex: 1;
+        }
+
+        .recommendations-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .recommendations-panel h4 {
+            margin-top: 0;
+            color: var(--primary-dark);
+        }
+
+        .recommendations-panel ul {
+            padding-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -379,6 +427,42 @@
             <p><strong>Instrucciones:</strong> Este cuestionario evalúa la calidad de tu dieta según los principios de la dieta mediterránea.</p>
             <p><strong>Interpretación:</strong> Puntuación ≥8: Calidad dietética óptima. Puntuación 4-7: Calidad dietética intermedia. Puntuación ≤3: Calidad dietética muy baja.</p>
             <p><strong>Importancia:</strong> La dieta mediterránea es beneficiosa para la salud cardiovascular, cognitiva y el desarrollo general.</p>
+        </div>
+
+        <!-- Contadores en la página principal -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalUsers">0</div>
+                <div class="stat-label">Total de Usuarios</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="maleUsers">0</div>
+                <div class="stat-label">Hombres</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="femaleUsers">0</div>
+                <div class="stat-label">Mujeres</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="otherUsers">0</div>
+                <div class="stat-label">Otros</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="curso1ESOUsers">0</div>
+                <div class="stat-label">1º ESO</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="curso2ESOUsers">0</div>
+                <div class="stat-label">2º ESO</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="curso3ESOUsers">0</div>
+                <div class="stat-label">3º ESO</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="curso4ESOUsers">0</div>
+                <div class="stat-label">4º ESO</div>
+            </div>
         </div>
 
         <div class="datos-personales">
@@ -425,6 +509,12 @@
 
         <div class="button-container">
             <button onclick="startTest()">Comenzar Test</button>
+        </div>
+
+        <!-- Botones de administración -->
+        <div class="button-container">
+            <button id="adminReportBtn" onclick="showAdminLogin('report')">Informe Global</button>
+            <button id="adminControlBtn" onclick="showAdminLogin('control')">Panel de Control</button>
         </div>
     </div>
 
@@ -704,6 +794,71 @@
         <h2>Informe Estadístico de Resultados</h2>
         <div id="reportContent" class="report-content"></div>
     </div>
+
+    <!-- Sección para el panel de control/admin -->
+    <div id="adminSection" class="admin-section hidden">
+        <h2>Panel de Control Administrativo</h2>
+        <div id="adminContent" class="admin-content">
+            <div class="admin-controls">
+                <div class="filter-group">
+                    <label for="filterEdad">Filtrar por Edad:</label>
+                    <select id="filterEdad">
+                        <option value="">Todas las edades</option>
+                        <!-- Opciones generadas por JS -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterNivel">Filtrar por Nivel de Alimentación:</label>
+                    <select id="filterNivel">
+                        <option value="">Todos los niveles</option>
+                        <option value="Alto">Alto (≥8)</option>
+                        <option value="Moderado">Moderado (4-7)</option>
+                        <option value="Bajo">Bajo (≤3)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterCurso">Filtrar por Curso:</label>
+                    <select id="filterCurso">
+                        <option value="">Todos los cursos</option>
+                        <option value="1º ESO">1º ESO</option>
+                        <option value="2º ESO">2º ESO</option>
+                        <option value="3º ESO">3º ESO</option>
+                        <option value="4º ESO">4º ESO</option>
+                        <option value="1º Bachillerato">1º Bachillerato</option>
+                        <option value="2º Bachillerato">2º Bachillerato</option>
+                        <option value="1º FP Básica">1º FP Básica</option>
+                        <option value="2º FP Básica">2º FP Básica</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterGenero">Filtrar por Género:</label>
+                    <select id="filterGenero">
+                        <option value="">Todos los géneros</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Otro">Otro</option>
+                        <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+                    </select>
+                </div>
+                
+                <div class="filter-buttons">
+                    <button onclick="applyFilter('edad')">Análisis por Edad</button>
+                    <button onclick="applyFilter('curso')">Análisis por Curso</button>
+                    <button onclick="applyFilter('genero')">Análisis por Género</button>
+                    <button onclick="applyFilter('edad_genero')">Análisis Edad y Género</button>
+                </div>
+            </div>
+            <div id="analysisResults" class="recommendations-panel">
+                <h4>Resultados del Análisis</h4>
+                <p>Seleccione filtros y haga clic en un botón de análisis para ver los resultados aquí.</p>
+            </div>
+            <div id="recommendationsPanel" class="recommendations-panel">
+                <h4>Recomendaciones</h4>
+                <p>Las recomendaciones aparecerán aquí basadas en el análisis realizado.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -719,6 +874,17 @@
             }
         } else {
             console.error("No se encontró el elemento con id='edad'");
+        }
+
+        // Generar opciones de edad para el filtro de admin
+        const edadFilterSelect = document.getElementById('filterEdad');
+        if (edadFilterSelect) {
+            for (let i = 10; i <= 18; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                edadFilterSelect.appendChild(option);
+            }
         }
     });
 
@@ -744,6 +910,54 @@
     firebase.initializeApp(firebaseConfig);
     const analytics = firebase.analytics();
     const db = firebase.firestore(); // Obtener la instancia de Firestore
+
+    // Cargar contadores en la página principal
+    loadCounters();
+
+    async function loadCounters() {
+        try {
+            const querySnapshot = await db.collection("kidmedResults").get();
+            const results = [];
+            querySnapshot.forEach((doc) => {
+                results.push({ id: doc.id, ...doc.data() });
+            });
+
+            // Contadores
+            let total = 0;
+            let male = 0;
+            let female = 0;
+            let other = 0;
+            const cursoCounts = {};
+
+            results.forEach(r => {
+                total++;
+                if (r.genero === 'Masculino') male++;
+                else if (r.genero === 'Femenino') female++;
+                else other++;
+
+                if (!cursoCounts[r.curso]) {
+                    cursoCounts[r.curso] = 0;
+                }
+                cursoCounts[r.curso]++;
+            });
+
+            // Actualizar elementos HTML
+            document.getElementById('totalUsers').textContent = total;
+            document.getElementById('maleUsers').textContent = male;
+            document.getElementById('femaleUsers').textContent = female;
+            document.getElementById('otherUsers').textContent = other;
+
+            // Actualizar contadores por curso (solo los 4 primeros ESO)
+            for (let i = 1; i <= 4; i++) {
+                const cursoId = `curso${i}ESOUsers`;
+                const cursoKey = `${i}º ESO`;
+                document.getElementById(cursoId).textContent = cursoCounts[cursoKey] || 0;
+            }
+
+        } catch (error) {
+            console.error("Error al cargar contadores: ", error);
+        }
+    }
 
     function startTest() {
         const edad = document.getElementById('edad').value;
@@ -898,6 +1112,8 @@
         try {
             await db.collection("kidmedResults").add(currentResult); // Usar `db.collection`
             console.log("Documento guardado en Firebase con éxito, incluyendo respuestas detalladas");
+            // Recargar contadores
+            loadCounters();
         } catch (error) {
             console.error("Error al guardar en Firebase: ", error);
             alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
@@ -1018,46 +1234,45 @@
         });
 
         // --- Análisis detallado de respuestas ---
-			// Contadores para cada pregunta
-			const contadoresSi = {};
-			const contadoresNo = {};
+        // Contadores para cada pregunta
+        const contadoresSi = {};
+        const contadoresNo = {};
 
-			for (let i = 1; i <= 16; i++) {
-				contadoresSi[i] = 0;
-				contadoresNo[i] = 0;
-			}
+        for (let i = 1; i <= 16; i++) {
+            contadoresSi[i] = 0;
+            contadoresNo[i] = 0;
+        }
 
-			// Recorremos todos los resultados
-			allResults.forEach(resultado => {
-				// Verificar si 'respuestas' existe y es un objeto antes de usarlo
-				if (resultado.respuestas && typeof resultado.respuestas === 'object') {
-					const respuestas = resultado.respuestas;
-					for (let i = 1; i <= 16; i++) {
-						// Verificar si la clave específica existe en 'respuestas'
-						if (respuestas.hasOwnProperty(`q${i}`)) {
-							const valor = respuestas[`q${i}`];
-							if (valor === "1") {
-								contadoresSi[i]++;
-							} else {
-								contadoresNo[i]++; // Incluye tanto "0" como "-1"
-							}
-						} else {
-							// Opcional: Si una pregunta específica no existe, puedes tratarla como "No respondida"
-							// Por ejemplo, considerarla como "No" (contadoresNo[i]++)
-							// console.warn(`La pregunta q${i} no existe en el resultado ${resultado.id || 'desconocido'}`);
-							contadoresNo[i]++; // Opcional: Contar como "No" si no está presente
-						}
-					}
-				} else {
-					// Opcional: Si 'respuestas' no existe, se podrían considerar todas las preguntas como "No respondidas"
-					// console.warn(`El resultado ${resultado.id || 'desconocido'} no tiene la propiedad 'respuestas'`);
-					// Por ejemplo, incrementar contadoresNo para las 16 preguntas
-					for (let i = 1; i <= 16; i++) {
-						contadoresNo[i]++;
-					}
-				}
-			});
-			// --- Fin del análisis detallado ---
+        // Recorremos todos los resultados
+        allResults.forEach(resultado => {
+            // Verificar si 'respuestas' existe y es un objeto antes de usarlo
+            if (resultado.respuestas && typeof resultado.respuestas === 'object') {
+                const respuestas = resultado.respuestas;
+                for (let i = 1; i <= 16; i++) {
+                    // Verificar si la clave específica existe en 'respuestas'
+                    if (respuestas.hasOwnProperty(`q${i}`)) {
+                        const valor = respuestas[`q${i}`];
+                        if (valor === "1") {
+                            contadoresSi[i]++;
+                        } else {
+                            contadoresNo[i]++; // Incluye tanto "0" como "-1"
+                        }
+                    } else {
+                        // Opcional: Si una pregunta específica no existe, puedes tratarla como "No respondida"
+                        // Por ejemplo, considerarla como "No" (contadoresNo[i]++)
+                        // console.warn(`La pregunta q${i} no existe en el resultado ${resultado.id || 'desconocido'}`);
+                        contadoresNo[i]++; // Opcional: Contar como "No" si no está presente
+                    }
+                }
+            } else {
+                // Opcional: Si 'respuestas' no existe, se podrían considerar todas las preguntas como "No respondidas"
+                // console.warn(`El resultado ${resultado.id || 'desconocido'} no tiene la propiedad 'respuestas'`);
+                // Por ejemplo, incrementar contadoresNo para las 16 preguntas
+                for (let i = 1; i <= 16; i++) {
+                    contadoresNo[i]++;
+                }
+            }
+        });
         // --- Fin del análisis detallado ---
 
         // Crear contenido del informe
@@ -1119,7 +1334,7 @@
         const ctx = document.getElementById('categoryChart').getContext('2d');
         new Chart(ctx, {
             type: 'pie',
-            data: { // <-- Añadido 'data:'
+            data: { // <-- Añadido ''
                 labels: [
                     `Calidad Óptima (≥8): ${high} (${((high / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Intermedia (4-7): ${medium} (${((medium / (high + medium + low)) * 100).toFixed(1)}%)`,
@@ -1156,7 +1371,7 @@
         
         new Chart(ctx, {
             type: 'pie',
-            data: { // <-- Añadido 'data:'
+            data: { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
                 datasets: [{
                     data: data, // <-- Añadido 'data:'
@@ -1191,7 +1406,7 @@
         
         new Chart(ctx, {
             type: 'bar',
-            data: { // <-- Añadido 'data:'
+            data: { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
                 datasets: [{
                     label: 'Número de Encuestados',
@@ -1238,7 +1453,7 @@
 
         new Chart(ctx, {
             type: 'bar',
-            data: { // <-- Añadido 'data:'
+            data: { // <-- Añadido ''
                 labels: labels,
                 datasets: [
                     {
@@ -1297,6 +1512,7 @@
         document.getElementById('introPage').classList.add('active');
         document.getElementById('result').style.display = 'none';
         document.getElementById('reportSection').classList.add('hidden');
+        document.getElementById('adminSection').classList.add('hidden');
         document.getElementById('exportBtn').classList.add('hidden');
         document.getElementById('exportAllBtn').classList.add('hidden');
         document.getElementById('reportBtn').classList.add('hidden');
@@ -1307,6 +1523,159 @@
             document.getElementById(`progress${i}`).style.width = '0%';
         }
     }
+
+    // Funciones de administración
+    function showAdminLogin(action) {
+        const password = prompt("Introduzca la contraseña de administrador:");
+        if (password === "healthy_Friday_2025") {
+            if (action === 'report') {
+                generateGlobalReport();
+            } else if (action === 'control') {
+                document.getElementById('adminSection').classList.remove('hidden');
+                document.getElementById('introPage').classList.remove('active');
+                document.getElementById('reportSection').classList.add('hidden');
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('exportBtn').classList.add('hidden');
+                document.getElementById('exportAllBtn').classList.add('hidden');
+                document.getElementById('reportBtn').classList.add('hidden');
+                document.getElementById('resetBtn').classList.add('hidden');
+            }
+        } else {
+            alert("Contraseña incorrecta.");
+        }
+    }
+
+    async function generateGlobalReport() {
+        try {
+            const querySnapshot = await db.collection("kidmedResults").get();
+            const results = [];
+            querySnapshot.forEach((doc) => {
+                results.push({ id: doc.id, ...doc.data() });
+            });
+
+            if (results.length === 0) {
+                alert('No hay resultados para generar el informe global.');
+                return;
+            }
+
+            // Contar por nivel, edad, género y curso
+            const levelCounts = { Alto: 0, Moderado: 0, Bajo: 0 };
+            const ageCounts = {};
+            const genderLevelCounts = {};
+            const courseLevelCounts = {};
+
+            results.forEach(r => {
+                let level = '';
+                if (r.score >= 8) level = 'Alto';
+                else if (r.score >= 4) level = 'Moderado';
+                else level = 'Bajo';
+
+                levelCounts[level]++;
+                
+                if (!ageCounts[r.edad]) ageCounts[r.edad] = 0;
+                ageCounts[r.edad]++;
+
+                if (!genderLevelCounts[r.genero]) genderLevelCounts[r.genero] = { Alto: 0, Moderado: 0, Bajo: 0 };
+                genderLevelCounts[r.genero][level]++;
+
+                if (!courseLevelCounts[r.curso]) courseLevelCounts[r.curso] = { Alto: 0, Moderado: 0, Bajo: 0 };
+                courseLevelCounts[r.curso][level]++;
+            });
+
+            // Mostrar resultados en un nuevo panel o alerta (simplificado aquí)
+            let reportHTML = `<h3>Informe Global de Niveles</h3>
+                              <p><strong>Total de Usuarios:</strong> ${results.length}</p>
+                              <p><strong>Nivel Alto (≥8):</strong> ${levelCounts.Alto}</p>
+                              <p><strong>Nivel Moderado (4-7):</strong> ${levelCounts.Moderado}</p>
+                              <p><strong>Nivel Bajo (≤3):</strong> ${levelCounts.Bajo}</p>
+                              <h4>Por Edad</h4><ul>`;
+            for (const [age, count] of Object.entries(ageCounts)) {
+                reportHTML += `<li>${age} años: ${count}</li>`;
+            }
+            reportHTML += `</ul><h4>Por Género y Nivel</h4><ul>`;
+            for (const [gender, levels] of Object.entries(genderLevelCounts)) {
+                reportHTML += `<li>${gender}:<ul>`;
+                for (const [level, count] of Object.entries(levels)) {
+                    reportHTML += `<li>${level}: ${count}</li>`;
+                }
+                reportHTML += `</ul></li>`;
+            }
+            reportHTML += `</ul><h4>Por Curso y Nivel</h4><ul>`;
+            for (const [course, levels] of Object.entries(courseLevelCounts)) {
+                reportHTML += `<li>${course}:<ul>`;
+                for (const [level, count] of Object.entries(levels)) {
+                    reportHTML += `<li>${level}: ${count}</li>`;
+                }
+                reportHTML += `</ul></li>`;
+            }
+            reportHTML += `</ul>`;
+
+            document.getElementById('reportContent').innerHTML = reportHTML;
+            document.getElementById('reportSection').classList.remove('hidden');
+            document.getElementById('introPage').classList.remove('active');
+            document.getElementById('adminSection').classList.add('hidden');
+
+        } catch (error) {
+            console.error("Error al generar informe global: ", error);
+            alert("Hubo un error al generar el informe global.");
+        }
+    }
+
+    async function applyFilter(type) {
+        const edadFilter = document.getElementById('filterEdad').value;
+        const nivelFilter = document.getElementById('filterNivel').value;
+        const cursoFilter = document.getElementById('filterCurso').value;
+        const generoFilter = document.getElementById('filterGenero').value;
+
+        try {
+            let querySnapshot = db.collection("kidmedResults");
+            if (edadFilter) querySnapshot = querySnapshot.where("edad", "==", parseInt(edadFilter));
+            if (nivelFilter) {
+                if (nivelFilter === "Alto") querySnapshot = querySnapshot.where("score", ">=", 8);
+                else if (nivelFilter === "Moderado") querySnapshot = querySnapshot.where("score", ">=", 4).where("score", "<=", 7);
+                else if (nivelFilter === "Bajo") querySnapshot = querySnapshot.where("score", "<=", 3);
+            }
+            if (cursoFilter) querySnapshot = querySnapshot.where("curso", "==", cursoFilter);
+            if (generoFilter) querySnapshot = querySnapshot.where("genero", "==", generoFilter);
+
+            const querySnapshotResult = await querySnapshot.get();
+            const filteredResults = [];
+            querySnapshotResult.forEach((doc) => {
+                filteredResults.push({ id: doc.id, ...doc.data() });
+            });
+
+            if (filteredResults.length === 0) {
+                document.getElementById('analysisResults').innerHTML = '<p>No se encontraron resultados con los filtros aplicados.</p>';
+                document.getElementById('recommendationsPanel').innerHTML = '<h4>Recomendaciones</h4><p>No hay datos suficientes para generar recomendaciones con los filtros actuales.</p>';
+                return;
+            }
+
+            let analysisHTML = `<h4>Resultados del Análisis (${filteredResults.length} usuarios encontrados)</h4>`;
+            let recommendationHTML = `<h4>Recomendaciones</h4><ul>`;
+
+            if (type === 'edad') {
+                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por edad no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
+                recommendationHTML += '<li>Este grupo de edad puede necesitar una intervención específica para mejorar su alimentación.</li>';
+            } else if (type === 'curso') {
+                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por curso no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
+                recommendationHTML += '<li>Este curso puede necesitar una intervención específica para mejorar su alimentación.</li>';
+            } else if (type === 'genero') {
+                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por género no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
+                recommendationHTML += '<li>Este género puede necesitar una intervención específica para mejorar su alimentación.</li>';
+            } else if (type === 'edad_genero') {
+                analysisHTML += '<p>Se muestran los resultados filtrados. Análisis por edad y género no implementado en detalle aquí, pero se puede calcular el promedio de puntuación, etc.</p>';
+                recommendationHTML += '<li>Este grupo específico puede necesitar una intervención personalizada.</li>';
+            }
+
+            document.getElementById('analysisResults').innerHTML = analysisHTML;
+            document.getElementById('recommendationsPanel').innerHTML = recommendationHTML + '</ul>';
+
+        } catch (error) {
+            console.error("Error al aplicar filtro: ", error);
+            alert("Hubo un error al aplicar el filtro.");
+        }
+    }
+
 </script>
 
 </body>
