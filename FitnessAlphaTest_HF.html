@@ -585,36 +585,39 @@
         }
 
         // Cálculo de la clasificación del shuttle 4x10m (menores tiempos son mejores)
-        function getClasificacionShuttle4x10(valor, genero, edad) {
-            const clasificaciones = {
-                'masculino': {
-                    13: { 'muy_bajo': 13.0, 'bajo': 12.2, 'promedio': 11.8, 'alto': 11.1 },
-                    14: { 'muy_bajo': 12.6, 'bajo': 11.8, 'promedio': 11.4, 'alto': 10.8 },
-                    15: { 'muy_bajo': 12.1, 'bajo': 12.0, 'promedio': 11.4, 'alto': 10.4 },
-                    16: { 'muy_bajo': 11.8, 'bajo': 11.7, 'promedio': 11.0, 'alto': 10.1 },
-                    17: { 'muy_bajo': 11.8, 'bajo': 11.7, 'promedio': 11.0, 'alto': 10.1 }
-                },
-                'femenino': {
-                    13: { 'muy_bajo': 13.9, 'bajo': 13.0, 'promedio': 12.5, 'alto': 11.8 },
-                    14: { 'muy_bajo': 13.8, 'bajo': 12.9, 'promedio': 12.4, 'alto': 11.7 },
-                    15: { 'muy_bajo': 13.7, 'bajo': 12.9, 'promedio': 12.4, 'alto': 11.7 },
-                    16: { 'muy_bajo': 13.6, 'bajo': 12.8, 'promedio': 12.3, 'alto': 11.6 },
-                    17: { 'muy_bajo': 13.5, 'bajo': 12.8, 'promedio': 12.3, 'alto': 11.7 }
-                }
-            };
+        // Cálculo de la clasificación del shuttle 4x10m (menores tiempos son mejores)
+			function getClasificacionShuttle4x10(valor, genero, edad) {
+				const clasificaciones = {
+					'masculino': {
+						13: { muy_bajo_min: 13.0, bajo_min: 12.3, promedio_min: 11.8, alto_min: 11.2 },
+						14: { muy_bajo_min: 12.6, bajo_min: 11.9, promedio_min: 11.4, alto_min: 10.9 },
+						15: { muy_bajo_min: 12.1, bajo_min: 11.5, promedio_min: 11.0, alto_min: 10.5 },
+						16: { muy_bajo_min: 11.8, bajo_min: 11.1, promedio_min: 10.7, alto_min: 10.2 },
+						17: { muy_bajo_min: 11.8, bajo_min: 11.1, promedio_min: 10.7, alto_min: 10.2 }
+					},
+					'femenino': {
+						13: { muy_bajo_min: 13.9, bajo_min: 13.1, promedio_min: 12.5, alto_min: 11.9 },
+						14: { muy_bajo_min: 13.8, bajo_min: 13.0, promedio_min: 12.4, alto_min: 11.8 },
+						15: { muy_bajo_min: 13.7, bajo_min: 13.0, promedio_min: 12.4, alto_min: 11.8 },
+						16: { muy_bajo_min: 13.6, bajo_min: 12.9, promedio_min: 12.3, alto_min: 11.7 },
+						17: { muy_bajo_min: 13.5, bajo_min: 12.9, promedio_min: 12.4, alto_min: 11.8 }
+					}
+				};
 
-            if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
-                return 'No clasificado';
-            }
+				if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
+					return 'No clasificado';
+				}
 
-            const lim = clasificaciones[genero][edad];
-            
-            if (valor >= lim.muy_bajo) return 'Muy Bajo';
-            if (valor >= lim.bajo) return 'Bajo';
-            if (valor >= lim.promedio) return 'Promedio';
-            if (valor >= lim.alto) return 'Alto';
-            return 'Muy Alto';
-        }
+				const lim = clasificaciones[genero][edad];
+
+				if (valor >= lim.muy_bajo_min) return 'Muy Bajo';
+				if (valor >= lim.bajo_min) return 'Bajo';
+				if (valor >= lim.promedio_min) return 'Promedio';
+				if (valor >= lim.alto_min) return 'Alto';
+				return 'Muy Alto';
+
+				//return 'No clasificado'; // Fallback
+			}
 
         // Obtener edad a partir de fecha de nacimiento
         function getEdad(fechaNacimiento) {
@@ -1538,22 +1541,22 @@
         }
 
         // Mostrar gráfico de comparación de resultados
-       // Mostrar gráfico de comparación de resultados
-function mostrarGraficoComparacion(datos, edad) {
-    const ctx = document.getElementById('comparacionResultadosChart').getContext('2d');
-    if (comparacionResultadosChart) comparacionResultadosChart.destroy();
+       // Mostrar gráfico de comparación de resultados (CORREGIDO: incluye shuttle4x10m y usa valores de referencia correctos)
+    function mostrarGraficoComparacion(datos, edad) {
+        const ctx = document.getElementById('comparacionResultadosChart').getContext('2d');
+        if (comparacionResultadosChart) comparacionResultadosChart.destroy();
 
-    const genero = datos.genero;
+        const genero = datos.genero;
 
-    // Incluir shuttle4x10m en los resultados
-    const resultados = [
-        calcularIMC(datos.peso, datos.altura),
-        datos.cintura,
-        datos.shuttle20m,
-        datos.salto,
-        datos.fuerza,
-        datos.shuttle4x10m // <-- Añadido aquí
-    ];
+        // Incluir shuttle4x10m en los resultados
+        const resultados = [
+            calcularIMC(datos.peso, datos.altura),
+            datos.cintura,
+            datos.shuttle20m,
+            datos.salto,
+            datos.fuerza,
+            datos.shuttle4x10m // <-- Añadido aquí
+        ];
 
     // Obtener valores de referencia para la edad y género
     let refIMC, refCintura, refCardio, refSalto, refFuerza, refShuttle4x10; // <-- Añadido refShuttle4x10
@@ -2100,7 +2103,7 @@ comparacionGeneroChart = new Chart(ctx4, {
     </script>
 </body>
 </html>
-```
+
 
 
 
