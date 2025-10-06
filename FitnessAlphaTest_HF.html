@@ -940,14 +940,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     const zonaIndicator = document.createElement('div');
     zonaIndicator.className = 'zone-indicator';
 
-    // Mapeo de categoría a clase CSS
-    const categoriaAClase = {
-        'Muy Bajo': 'muy-bajo',
-        'Bajo': 'bajo',
-        'Promedio': 'promedio',
-        'Alto': 'alto',
-        'Muy Alto': 'muy-alto'
-    };
+    
 
     const claseZona = categoriaAClase[clasificacion] || 'muy-bajo';
     zonaIndicator.className = `zone-indicator zone-${claseZona}`;
@@ -1590,6 +1583,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
