@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1820,11 +1820,11 @@
             if (distribucionEdadChart) distribucionEdadChart.destroy();
             distribucionEdadChart = new Chart(ctx1, {
                 type: 'bar',
-                 data:{
+                data: {
                     labels: Object.keys(edadCount),
                     datasets: [{
                         label: 'Número de Evaluaciones',
-                         Object.values(edadCount),
+                        data: Object.values(edadCount),
                         backgroundColor: 'rgba(52, 152, 219, 0.6)',
                         borderColor: 'rgba(52, 152, 219, 1)',
                         borderWidth: 1
@@ -1840,17 +1840,17 @@
                     }
                 }
             });
-
+            // Gráfico de rendimiento promedio (radar)
             // Gráfico de rendimiento promedio (radar)
             const ctx2 = document.getElementById('rendimientoChart').getContext('2d');
             if (rendimientoChart) rendimientoChart.destroy();
             rendimientoChart = new Chart(ctx2, {
                 type: 'radar',
-                data: {
+                 {
                     labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
                     datasets: [{
                         label: 'Promedio General',
-                         [
+                        data: [
                             evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / evaluaciones.length,
                             evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / evaluaciones.length,
                             evaluaciones.reduce((sum, e) => sum + e.salto, 0) / evaluaciones.length,
@@ -1892,7 +1892,7 @@
                     }
                 }
             });
-        }
+    }
 
         // Actualizar análisis detallado
         function actualizarAnalisis() {
@@ -2071,3 +2071,4 @@
 </body>
 </html>
 ```
+
