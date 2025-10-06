@@ -1441,7 +1441,7 @@
         
         new Chart(ctx, {
             type: 'pie',
-             { // <-- Añadido ''
+            data: { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
                 datasets: [{
                      data, // <-- Añadido ''
@@ -2067,5 +2067,6 @@
 
 </body>
 </html>
+
 
 
