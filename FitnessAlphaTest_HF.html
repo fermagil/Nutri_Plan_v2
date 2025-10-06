@@ -1008,106 +1008,28 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         let refIMC, refCintura, refCardio, refSalto, refFuerza, refShuttle4x10;
 
         if (genero === 'masculino') {
-            switch(edad) {
-                case 13:
-                    refIMC = 22.2; // (18.1 + 22.2) / 2 = 20.15, pero el manual usa 22.2 como punto de referencia
-                    refCintura = 78; // (67 + 78) / 2 = 72.5, pero el manual usa 78
-                    refCardio = 6.0; // (5.0 + 6.0) / 2 = 5.5, pero el manual usa 6.0
-                    refSalto = 167; // (153 + 167) / 2 = 160, pero el manual usa 167
-                    refFuerza = 27.8; // (24.8 + 27.8) / 2 = 26.3, pero el manual usa 27.8
-                    refShuttle4x10 = 12.0; // (11.8 + 12.2) / 2 = 12.0
-                    break;
-                case 14:
-                    refIMC = 23.3;
-                    refCintura = 80;
-                    refCardio = 6.5;
-                    refSalto = 183;
-                    refFuerza = 34.0;
-                    refShuttle4x10 = 11.6; // (11.4 + 11.8) / 2 = 11.6
-                    break;
-                case 15:
-                    refIMC = 23.8;
-                    refCintura = 81;
-                    refCardio = 7.0;
-                    refSalto = 196;
-                    refFuerza = 39.7;
-                    refShuttle4x10 = 11.2; // (11.0 + 11.4) / 2 = 11.2
-                    break;
-                case 16:
-                    refIMC = 23.7;
-                    refCintura = 81;
-                    refCardio = 7.0;
-                    refSalto = 206;
-                    refFuerza = 43.7;
-                    refShuttle4x10 = 10.85; // (10.7 + 11.0) / 2 = 10.85
-                    break;
-                case 17:
-                    refIMC = 24.6;
-                    refCintura = 83;
-                    refCardio = 7.5;
-                    refSalto = 215;
-                    refFuerza = 46.7;
-                    refShuttle4x10 = 10.85; // (10.7 + 11.0) / 2 = 10.85
-                    break;
-                default:
-                    refIMC = 22.2;
-                    refCintura = 78;
-                    refCardio = 6.0;
-                    refSalto = 167;
-                    refFuerza = 27.8;
-                    refShuttle4x10 = 12.0;
-            }
-        } else { // femenino
-            switch(edad) {
-                case 13:
-                    refIMC = 23.2;
-                    refCintura = 75;
-                    refCardio = 3.5;
-                    refSalto = 147;
-                    refFuerza = 24.8;
-                    refShuttle4x10 = 12.75; // (12.5 + 13.0) / 2 = 12.75
-                    break;
-                case 14:
-                    refIMC = 22.8;
-                    refCintura = 73;
-                    refCardio = 4.0;
-                    refSalto = 151;
-                    refFuerza = 26.4;
-                    refShuttle4x10 = 12.65; // (12.4 + 12.9) / 2 = 12.65
-                    break;
-                case 15:
-                    refIMC = 23.0;
-                    refCintura = 75;
-                    refCardio = 4.0;
-                    refSalto = 151;
-                    refFuerza = 27.4;
-                    refShuttle4x10 = 12.65; // (12.4 + 12.9) / 2 = 12.65
-                    break;
-                case 16:
-                    refIMC = 23.1;
-                    refCintura = 75;
-                    refCardio = 4.0;
-                    refSalto = 154;
-                    refFuerza = 27.8;
-                    refShuttle4x10 = 12.55; // (12.3 + 12.8) / 2 = 12.55
-                    break;
-                case 17:
-                    refIMC = 23.2;
-                    refCintura = 74;
-                    refCardio = 4.0;
-                    refSalto = 157;
-                    refFuerza = 28.9;
-                    refShuttle4x10 = 12.6; // (12.4 + 12.8) / 2 = 12.6
-                    break;
-                default:
-                    refIMC = 23.2;
-                    refCintura = 75;
-                    refCardio = 3.5;
-                    refSalto = 147;
-                    refFuerza = 24.8;
-                    refShuttle4x10 = 12.75;
-            }
+        switch(edad) {
+            case 13: refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8; refShuttle4x10 = 12.0; break;
+            case 14: refIMC = 23.3; refCintura = 80; refCardio = 6.5; refSalto = 183; refFuerza = 34.0; refShuttle4x10 = 11.6; break;
+            case 15: refIMC = 23.8; refCintura = 81; refCardio = 7.0; refSalto = 196; refFuerza = 39.7; refShuttle4x10 = 11.2; break;
+            case 16: refIMC = 23.7; refCintura = 81; refCardio = 7.0; refSalto = 206; refFuerza = 43.7; refShuttle4x10 = 10.85; break;
+            case 17: refIMC = 24.6; refCintura = 83; refCardio = 7.5; refSalto = 215; refFuerza = 46.7; refShuttle4x10 = 10.85; break;
+            default: 
+                // ✅ Si edad no es 13-17, usar 13 (para edades <13)
+                refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8; refShuttle4x10 = 12.0;
         }
+    } else {
+        switch(edad) {
+            case 13: refIMC = 23.2; refCintura = 75; refCardio = 3.5; refSalto = 147; refFuerza = 24.8; refShuttle4x10 = 12.75; break;
+            case 14: refIMC = 22.8; refCintura = 73; refCardio = 4.0; refSalto = 151; refFuerza = 26.4; refShuttle4x10 = 12.65; break;
+            case 15: refIMC = 23.0; refCintura = 75; refCardio = 4.0; refSalto = 151; refFuerza = 27.4; refShuttle4x10 = 12.65; break;
+            case 16: refIMC = 23.1; refCintura = 75; refCardio = 4.0; refSalto = 154; refFuerza = 27.8; refShuttle4x10 = 12.55; break;
+            case 17: refIMC = 23.2; refCintura = 74; refCardio = 4.0; refSalto = 157; refFuerza = 28.9; refShuttle4x10 = 12.6; break;
+            default: 
+                refIMC = 23.2; refCintura = 75; refCardio = 3.5; refSalto = 147; refFuerza = 24.8; refShuttle4x10 = 12.75;
+        }
+    }
+
 
         const valoresRef = [refIMC, refCintura, refCardio, refSalto, refFuerza, refShuttle4x10]; // <-- Añadido aquí
 
@@ -1585,6 +1507,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
