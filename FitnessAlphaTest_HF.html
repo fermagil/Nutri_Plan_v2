@@ -324,16 +324,22 @@
             </div>
 
             <!-- Pestaña de Resultados -->
-            <div id="resultados" class="tab-content">
-                <h2>Resultados de Evaluación</h2>
-                <div id="resultadosIndividuales" class="result-card">
-                    <h3>Evaluación Individual</h3>
-                    <div id="resultadoDetallado"></div>
-                    <div id="testResultsContainer"></div>
-                    <div id="recomendaciones" class="recommendations"></div>
-                    <div id="infoSalud" class="health-info"></div>
+                <div id="resultados" class="tab-content">
+                    <h2>Resultados de Evaluación</h2>
+                    <div id="resultadosIndividuales" class="result-card">
+                        <h3>Evaluación Individual</h3>
+                        <div id="resultadoDetallado"></div>
+                        
+                        <!-- Añadir este canvas para el gráfico de comparación -->
+                        <div class="chart-container">
+                            <canvas id="comparacionResultadosChart"></canvas>
+                        </div>
+                        
+                        <div id="testResultsContainer"></div>
+                        <div id="recomendaciones" class="recommendations"></div>
+                        <div id="infoSalud" class="health-info"></div>
+                    </div>
                 </div>
-            </div>
 
             <!-- Pestaña de Estadísticas -->
             <div id="estadisticas" class="tab-content">
@@ -2071,6 +2077,7 @@ comparacionGeneroChart = new Chart(ctx4, {
 </body>
 </html>
 ```
+
 
 
 
