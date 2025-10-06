@@ -1538,81 +1538,105 @@
         }
 
         // Mostrar gráfico de comparación de resultados
-        function mostrarGraficoComparacion(datos, edad) {
-            const ctx = document.getElementById('comparacionResultadosChart').getContext('2d');
-            if (comparacionResultadosChart) comparacionResultadosChart.destroy();
-            
-            const genero = datos.genero;
-            const resultados = [
-                calcularIMC(datos.peso, datos.altura),
-                datos.cintura,
-                datos.shuttle20m,
-                datos.salto,
-                datos.fuerza
-            ];
-            
-            // Obtener valores de referencia para la edad y género
-            let refIMC, refCintura, refCardio, refSalto, refFuerza;
-            
-            if (genero === 'masculino') {
-                switch(edad) {
-                    case 13: refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8; break;
-                    case 14: refIMC = 23.3; refCintura = 80; refCardio = 6.5; refSalto = 183; refFuerza = 34.0; break;
-                    case 15: refIMC = 23.8; refCintura = 81; refCardio = 7.0; refSalto = 196; refFuerza = 39.7; break;
-                    case 16: refIMC = 23.7; refCintura = 81; refCardio = 7.0; refSalto = 206; refFuerza = 43.7; break;
-                    case 17: refIMC = 24.6; refCintura = 83; refCardio = 7.5; refSalto = 215; refFuerza = 46.7; break;
-                    default: refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8;
+       // Mostrar gráfico de comparación de resultados
+function mostrarGraficoComparacion(datos, edad) {
+    const ctx = document.getElementById('comparacionResultadosChart').getContext('2d');
+    if (comparacionResultadosChart) comparacionResultadosChart.destroy();
+
+    const genero = datos.genero;
+
+    // Incluir shuttle4x10m en los resultados
+    const resultados = [
+        calcularIMC(datos.peso, datos.altura),
+        datos.cintura,
+        datos.shuttle20m,
+        datos.salto,
+        datos.fuerza,
+        datos.shuttle4x10m // <-- Añadido aquí
+    ];
+
+    // Obtener valores de referencia para la edad y género
+    let refIMC, refCintura, refCardio, refSalto, refFuerza, refShuttle4x10; // <-- Añadido refShuttle4x10
+
+    if (genero === 'masculino') {
+        switch(edad) {
+            case 13: // Media del rango "Average": (11.8 + 12.2) / 2 = 12.0
+                refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8; refShuttle4x10 = 12.0; break;
+            case 14: // Media del rango "Average": (11.4 + 11.8) / 2 = 11.6
+                refIMC = 23.3; refCintura = 80; refCardio = 6.5; refSalto = 183; refFuerza = 34.0; refShuttle4x10 = 11.6; break;
+            case 15: // Media del rango "Average": (11.0 + 11.4) / 2 = 11.2
+                refIMC = 23.8; refCintura = 81; refCardio = 7.0; refSalto = 196; refFuerza = 39.7; refShuttle4x10 = 11.2; break;
+            case 16: // Media del rango "Average": (10.7 + 11.0) / 2 = 10.85
+                refIMC = 23.7; refCintura = 81; refCardio = 7.0; refSalto = 206; refFuerza = 43.7; refShuttle4x10 = 10.85; break;
+            case 17: // Media del rango "Average": (10.7 + 11.0) / 2 = 10.85
+                refIMC = 24.6; refCintura = 83; refCardio = 7.5; refSalto = 215; refFuerza = 46.7; refShuttle4x10 = 10.85; break;
+            default:
+                refIMC = 22.2; refCintura = 78; refCardio = 6.0; refSalto = 167; refFuerza = 27.8; refShuttle4x10 = 12.0;
+        }
+    } else { // femenino
+        switch(edad) {
+            case 13: // Media del rango "Average": (12.5 + 13.0) / 2 = 12.75
+                refIMC = 23.2; refCintura = 75; refCardio = 3.5; refSalto = 147; refFuerza = 24.8; refShuttle4x10 = 12.75; break;
+            case 14: // Media del rango "Average": (12.4 + 12.9) / 2 = 12.65
+                refIMC = 22.8; refCintura = 73; refCardio = 4.0; refSalto = 151; refFuerza = 26.4; refShuttle4x10 = 12.65; break;
+            case 15: // Media del rango "Average": (12.4 + 12.9) / 2 = 12.65
+                refIMC = 23.0; refCintura = 75; refCardio = 4.0; refSalto = 151; refFuerza = 27.4; refShuttle4x10 = 12.65; break;
+            case 16: // Media del rango "Average": (12.3 + 12.8) / 2 = 12.55
+                refIMC = 23.1; refCintura = 75; refCardio = 4.0; refSalto = 154; refFuerza = 27.8; refShuttle4x10 = 12.55; break;
+            case 17: // Media del rango "Average": (12.4 + 12.8) / 2 = 12.6
+                refIMC = 23.2; refCintura = 74; refCardio = 4.0; refSalto = 157; refFuerza = 28.9; refShuttle4x10 = 12.6; break;
+            default:
+                refIMC = 23.2; refCintura = 75; refCardio = 3.5; refSalto = 147; refFuerza = 24.8; refShuttle4x10 = 12.75;
+        }
+    }
+
+    // Incluir refShuttle4x10 en los valores de referencia
+    const valoresRef = [refIMC, refCintura, refCardio, refSalto, refFuerza, refShuttle4x10]; // <-- Añadido aquí
+
+    comparacionResultadosChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+                'IMC',
+                'Perímetro Cintura',
+                'Cardiorespiratorio',
+                'Salto Horizontal',
+                'Fuerza Manual',
+                'Shuttle 4x10m' // <-- Etiqueta añadida
+            ],
+            datasets: [
+                {
+                    label: 'Resultado del Usuario',
+                    data: resultados, // <-- Aquí ya están todos los datos
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Valor de Referencia',
+                    data: valoresRef, // <-- Aquí también
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
                 }
-            } else {
-                switch(edad) {
-                    case 13: refIMC = 23.2; refCintura = 75; refCardio = 3.5; refSalto = 147; refFuerza = 24.8; break;
-                    case 14: refIMC = 22.8; refCintura = 73; refCardio = 4.0; refSalto = 151; refFuerza = 26.4; break;
-                    case 15: refIMC = 23.0; refCintura = 75; refCardio = 4.0; refSalto = 151; refFuerza = 27.4; break;
-                    case 16: refIMC = 23.1; refCintura = 75; refCardio = 4.0; refSalto = 154; refFuerza = 27.8; break;
-                    case 17: refIMC = 23.2; refCintura = 74; refCardio = 4.0; refSalto = 157; refFuerza = 28.9; break;
-                    default: refIMC = 23.2; refCintura = 75; refCardio = 3.5; refSalto = 147; refFuerza = 24.8;
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Comparación de Resultados con Valores de Referencia'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false
                 }
             }
-            
-            const valoresRef = [refIMC, refCintura, refCardio, refSalto, refFuerza];
-            
-            comparacionResultadosChart = new Chart(ctx, {
-                type: 'bar',
-                 data:{
-                    labels: ['IMC', 'Perímetro Cintura', 'Cardiorespiratorio', 'Salto Horizontal', 'Fuerza Manual'],
-                    datasets: [
-                        {
-                            label: 'Resultado del Usuario',
-                             resultados,
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Valor de Referencia',
-                             valoresRef,
-                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Comparación de Resultados con Valores de Referencia'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
         }
+    });
+}
 
         // Mostrar recomendaciones
         function mostrarRecomendaciones(datos, cardio, salto, fuerza, imc, cintura, shuttle4x10) {
@@ -2077,6 +2101,7 @@ comparacionGeneroChart = new Chart(ctx4, {
 </body>
 </html>
 ```
+
 
 
 
