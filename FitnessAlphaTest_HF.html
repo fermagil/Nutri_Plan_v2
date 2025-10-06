@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -241,19 +240,19 @@
 
 /* === Paleta de colores refinada === */
 .segment-very-low {
-    background: linear-gradient(90deg, #ff5f6d, #ffc371);
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
 }
 .segment-low {
-    background: linear-gradient(90deg, #ffcc00, #ffe066);
+    background: linear-gradient(90deg, #f39c12, #e67e22);
 }
 .segment-average {
     background: linear-gradient(90deg, #8bc34a, #b3ff66);
 }
 .segment-high {
-    background: linear-gradient(90deg, #4dd0e1, #4db6ac);
+    background: linear-gradient(90deg, #81d4fa, #03a9f4);
 }
 .segment-very-high {
-    background: linear-gradient(90deg, #42a5f5, #1e88e5);
+    background: linear-gradient(90deg, #1e88e5, #1565c0);
 }
 
 /* === Marcador === */
@@ -290,11 +289,11 @@
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 }
 /* === Indicadores de zona (5 niveles) === */
-.zone-muy-bajo { background: #ff5f6d; }      /* rojo */
-.zone-bajo { background: #ff9800; }         /* naranja */
+.zone-muy-bajo { background: #e74c3c; }      /* rojo */
+.zone-bajo { background: #f39c12; }         /* naranja */
 .zone-promedio { background: #8bc34a; }     /* verde */
-.zone-alto { background: #4dd0e1; }         /* azul claro */
-.zone-muy-alto { background: #42a5f5; }     /* azul */
+.zone-alto { background: #81d4fa; }         /* azul claro */
+.zone-muy-alto { background: #1e88e5; }     /* azul fuerte */
 
     .advice-box {
         background: #fff;
@@ -326,11 +325,11 @@
     min-width: 80px;
     text-align: center;
 }
-.category-muy-bajo  { background: #ff5f6d; }  /* rojo */
-.category-bajo      { background: #ff9800; }  /* naranja */
+.category-muy-bajo  { background: #e74c3c; }  /* rojo */
+.category-bajo      { background: #f39c12; }  /* naranja */
 .category-promedio  { background: #8bc34a; }  /* verde */
-.category-alto      { background: #4dd0e1; }  /* azul claro */
-.category-muy-alto  { background: #42a5f5; }  /* azul */
+.category-alto      { background: #81d4fa; }  /* azul claro */
+.category-muy-alto  { background: #1e88e5; }  /* azul fuerte */
        
 </style>
 </head>
@@ -848,10 +847,7 @@ function procesarResultados(datos) {
         container.appendChild(shuttle4x10Result);
     }
 
-    // Crear elemento de resultado de test con barra de progreso
-   // Crear elemento de resultado de test con escala visual
-// Crear elemento de resultado de test con escala visual precisa
-// Crear elemento de resultado de test con escala visual precisa
+    // Crear elemento de resultado de test con escala visual precisa
 function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, tipo) {
     const div = document.createElement('div');
     div.className = 'test-result';
@@ -977,19 +973,19 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         case 'shuttle4x10':
             clasificacion = getClasificacionShuttle4x10(valor, genero, edadRef);
             if (genero === 'masculino') {
-                limites = { muy_bajo: 13.0, bajo: 12.2, promedio: 11.8, alto: 11.1, muy_alto: 11.0 };
+                limites = { muy_bajo: 13.0, bajo: 12.3, promedio: 11.8, alto: 11.2, muy_alto: 11.2 };
                 switch(edadRef) {
-                    case 14: limites = { muy_bajo: 12.6, bajo: 11.8, promedio: 11.4, alto: 10.8, muy_alto: 10.7 }; break;
-                    case 15: limites = { muy_bajo: 12.1, bajo: 12.0, promedio: 11.4, alto: 10.4, muy_alto: 10.3 }; break;
-                    case 16: case 17: limites = { muy_bajo: 11.8, bajo: 11.7, promedio: 11.0, alto: 10.1, muy_alto: 10.0 }; break;
+                    case 14: limites = { muy_bajo: 12.6, bajo: 11.9, promedio: 11.4, alto: 10.9, muy_alto: 10.9 }; break;
+                    case 15: limites = { muy_bajo: 12.1, bajo: 11.5, promedio: 11.0, alto: 10.5, muy_alto: 10.5 }; break;
+                    case 16: case 17: limites = { muy_bajo: 11.8, bajo: 11.1, promedio: 10.7, alto: 10.2, muy_alto: 10.2 }; break;
                 }
             } else {
-                limites = { muy_bajo: 13.9, bajo: 13.0, promedio: 12.5, alto: 11.8, muy_alto: 11.7 };
+                limites = { muy_bajo: 13.9, bajo: 13.1, promedio: 12.5, alto: 11.9, muy_alto: 11.9 };
                 switch(edadRef) {
-                    case 14: limites = { muy_bajo: 13.8, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.6 }; break;
-                    case 15: limites = { muy_bajo: 13.7, bajo: 12.9, promedio: 12.4, alto: 11.7, muy_alto: 11.6 }; break;
-                    case 16: limites = { muy_bajo: 13.6, bajo: 12.8, promedio: 12.3, alto: 11.6, muy_alto: 11.5 }; break;
-                    case 17: limites = { muy_bajo: 13.5, bajo: 12.8, promedio: 12.3, alto: 11.7, muy_alto: 11.6 }; break;
+                    case 14: limites = { muy_bajo: 13.8, bajo: 13.0, promedio: 12.4, alto: 11.8, muy_alto: 11.8 }; break;
+                    case 15: limites = { muy_bajo: 13.7, bajo: 13.0, promedio: 12.4, alto: 11.8, muy_alto: 11.8 }; break;
+                    case 16: limites = { muy_bajo: 13.6, bajo: 12.9, promedio: 12.3, alto: 11.7, muy_alto: 11.7 }; break;
+                    case 17: limites = { muy_bajo: 13.5, bajo: 12.9, promedio: 12.4, alto: 11.8, muy_alto: 11.8 }; break;
                 }
             }
             break;
@@ -998,29 +994,34 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
             limites = { muy_bajo: 0, bajo: 25, promedio: 50, alto: 75, muy_alto: 100 };
     }
 
-    // Badge y zone-indicator con lógica invertida para "menos es mejor"
-    const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc' || tipo === 'shuttle4x10');
-
-    let claseBadge;
+    // Badge y zone-indicator con lógica ajustada
+    const isMenorEsMejor = (tipo === 'cintura' || tipo === 'imc');
+    let claseBadgeMap = {
+        'Muy Bajo': 'muy-bajo',
+        'Bajo': 'bajo',
+        'Promedio': 'promedio',
+        'Alto': 'alto',
+        'Muy Alto': 'muy-alto'
+    };
     if (isMenorEsMejor) {
-        const inverso = {
-            'Muy Bajo': 'muy-alto', // Azul fuerte
-            'Bajo': 'alto',         // Azul claro
-            'Promedio': 'promedio', // Verde
-            'Alto': 'bajo',         // Naranja
-            'Muy Alto': 'muy-bajo'  // Rojo
+        claseBadgeMap = {
+            'Muy Bajo': 'muy-alto',
+            'Bajo': 'alto',
+            'Promedio': 'promedio',
+            'Alto': 'bajo',
+            'Muy Alto': 'muy-bajo'
         };
-        claseBadge = inverso[clasificacion] || 'muy-bajo';
-    } else {
-        const normal = {
-            'Muy Bajo': 'muy-bajo', // Rojo
-            'Bajo': 'bajo',         // Naranja
-            'Promedio': 'promedio', // Verde
-            'Alto': 'alto',         // Azul claro
-            'Muy Alto': 'muy-alto'  // Azul fuerte
-        };
-        claseBadge = normal[clasificacion] || 'muy-bajo';
     }
+    if (tipo === 'imc') {
+        claseBadgeMap = {
+            'Muy Bajo': 'muy-bajo',
+            'Bajo': 'bajo',
+            'Promedio': 'promedio',
+            'Alto': 'bajo',
+            'Muy Alto': 'muy-bajo'
+        };
+    }
+    const claseBadge = claseBadgeMap[clasificacion] || 'muy-bajo';
 
     const badge = document.createElement('span');
     badge.className = `category-badge category-${claseBadge}`;
@@ -1033,11 +1034,19 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     scaleDiv.className = 'test-scale';
 
     // Determinar min y max reales
-    const minReal = limites.muy_bajo;
-    const maxReal = limites.muy_alto;
+    let minReal = limites.muy_bajo;
+    let maxReal = limites.muy_alto;
+    if (minReal > maxReal) { // Para shuttle4x10
+        const temp = minReal;
+        minReal = maxReal;
+        maxReal = temp;
+    }
 
     // Calcular posición exacta del puntero (0-100%)
-    const posicion = ((valor - minReal) / (maxReal - minReal)) * 100;
+    let posicion = ((valor - minReal) / (maxReal - minReal)) * 100;
+    if (limites.muy_bajo > limites.muy_alto && tipo === 'shuttle4x10') {
+        posicion = 100 - posicion; // Invertir si es necesario, pero la fórmula ya maneja con temp
+    }
     const pointer = document.createElement('div');
     pointer.className = 'test-pointer';
     pointer.style.left = `${Math.max(0, Math.min(100, posicion))}%`;
@@ -1048,32 +1057,36 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     scaleInner.className = 'test-scale-inner';
 
     const segmentos = [
-        { key: 'very-low', start: 0, end: limites.bajo },
-        { key: 'low', start: limites.bajo, end: limites.promedio },
-        { key: 'average', start: limites.promedio, end: limites.alto },
-        { key: 'high', start: limites.alto, end: limites.muy_alto },
-        { key: 'very-high', start: limites.muy_alto, end: limites.muy_alto }
+        { start: limites.muy_bajo, end: limites.bajo },
+        { start: limites.bajo, end: limites.promedio },
+        { start: limites.promedio, end: limites.alto },
+        { start: limites.alto, end: limites.muy_alto },
+        { start: limites.muy_alto, end: limites.muy_alto }
     ];
 
-    // Para "menos es mejor", invertimos el orden visual
-    const segmentOrder = isMenorEsMejor
-        ? ['very-high', 'high', 'average', 'low', 'very-low']
-        : ['very-low', 'low', 'average', 'high', 'very-high'];
+    // Para "menos es mejor" (excepto IMC), invertimos el orden visual
+    let segmentClasses = ['very-low', 'low', 'average', 'high', 'very-high'];
+    if (isMenorEsMejor && tipo !== 'imc') {
+        segmentClasses = ['very-high', 'high', 'average', 'low', 'very-low'];
+    }
+    if (tipo === 'imc') {
+        segmentClasses = ['very-low', 'low', 'average', 'low', 'very-low'];
+    }
 
     // Calcular ancho de cada segmento en %
     const totalRango = maxReal - minReal;
-    const segmentWidths = {
-        'very-low': ((limites.bajo - minReal) / totalRango) * 100,
-        'low': ((limites.promedio - limites.bajo) / totalRango) * 100,
-        'average': ((limites.alto - limites.promedio) / totalRango) * 100,
-        'high': ((limites.muy_alto - limites.alto) / totalRango) * 100,
-        'very-high': 0 // no tiene rango, es un punto
-    };
+    const segmentWidths = [
+        ((limites.bajo - limites.muy_bajo) / totalRango) * 100,
+        ((limites.promedio - limites.bajo) / totalRango) * 100,
+        ((limites.alto - limites.promedio) / totalRango) * 100,
+        ((limites.muy_alto - limites.alto) / totalRango) * 100,
+        0 // último segmento punto
+    ];
 
-    segmentOrder.forEach(segKey => {
+    segmentClasses.forEach((segKey, index) => {
         const segDiv = document.createElement('div');
         segDiv.className = `scale-segment segment-${segKey}`;
-        segDiv.style.width = `${segmentWidths[segKey] || 0}%`;
+        segDiv.style.width = `${segmentWidths[index] || 0}%`;
         scaleInner.appendChild(segDiv);
     });
 
@@ -1118,34 +1131,25 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
 
     if (tipo === 'imc') {
         if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
-            adviceText = 'Tu IMC indica bajo peso. Es importante asegurar una ingesta calórica y nutricional adecuada para un crecimiento saludable. Consulta con un nutricionista.';
+            adviceText = 'Tu IMC indica bajo peso. Asegúrate de tener una alimentación nutritiva y equilibrada para apoyar tu crecimiento. Consulta con un nutricionista para obtener consejos personalizados.';
         } else if (clasificacion === 'Promedio') {
-            adviceText = 'Tu IMC está en el rango saludable. ¡Sigue así! Mantén una dieta equilibrada y actividad física regular.';
+            adviceText = 'Tu IMC está en un rango saludable. ¡Excelente! Continúa con hábitos alimenticios equilibrados y actividad física regular para mantenerlo.';
         } else {
-            adviceText = 'Tu IMC indica sobrepeso u obesidad. Habla con un profesional de la salud para recibir orientación sobre alimentación y ejercicio.';
+            adviceText = 'Tu IMC sugiere sobrepeso u obesidad. Es recomendable consultar con un profesional de la salud para recibir orientación sobre dieta y ejercicio adaptados a ti.';
         }
     } else if (tipo === 'cintura') {
-        if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
-            adviceText = 'Tu perímetro de cintura es bajo, lo cual puede indicar un peso insuficiente. Asegúrate de consumir suficientes calorías y nutrientes para crecer y desarrollarte adecuadamente.';
+        if (clasificacion === 'Muy Alto' || clasificacion === 'Alto') {
+            adviceText = 'Tu perímetro de cintura es alto, lo que puede indicar un mayor riesgo de problemas de salud. Considera mejorar tu dieta, reducir el consumo de azúcares y aumentar la actividad física. Habla con un profesional para un plan personalizado.';
         } else if (clasificacion === 'Promedio') {
-            adviceText = 'Tu perímetro de cintura está en el rango saludable. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
+            adviceText = 'Tu perímetro de cintura está en un rango saludable. Mantén un estilo de vida activo y una alimentación equilibrada para conservarlo.';
         } else {
-            adviceText = 'Tu perímetro de cintura indica un riesgo cardiovascular. Es importante reducir la grasa abdominal mediante ejercicio aeróbico y una dieta baja en calorías.';
-        }
-    } else if (tipo === 'shuttle4x10') {
-        if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
-            adviceText = 'Tu puntuación en velocidad/agilidad está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
-        } else if (clasificacion === 'Promedio') {
-            adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regulares para mantener y mejorar tu nivel!';
-        } else {
-            adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
+            adviceText = 'Tu perímetro de cintura es bajo, lo cual es positivo para tu salud. Sigue con hábitos saludables para mantener estos buenos resultados.';
         }
     } else {
-        // Consejos genéricos para otros tests
         if (clasificacion === 'Muy Bajo' || clasificacion === 'Bajo') {
             adviceText = 'Tu puntuación está en la zona de mejora. Es importante trabajar en este componente de la condición física. Habla con tu profesor/a de Educación Física para diseñar un plan de mejora personalizado.';
         } else if (clasificacion === 'Promedio') {
-            adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regulares para mantener y mejorar tu nivel!';
+            adviceText = 'Tu puntuación es adecuada. ¡Sigue practicando actividades físicas regularmente para mantener y mejorar tu nivel!';
         } else {
             adviceText = '¡Excelente! Has obtenido una puntuación alta en este componente. Sigue así y considera retos más avanzados para seguir progresando.';
         }
@@ -1680,25 +1684,3 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
