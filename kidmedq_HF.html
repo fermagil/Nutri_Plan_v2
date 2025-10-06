@@ -423,6 +423,42 @@
             background-color: #e3f2fd;
             border-radius: var(--border-radius);
         }
+
+        .results-table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -875,6 +911,9 @@
             <div id="recommendationsPanel" class="recommendations-panel">
                 <h4>Recomendaciones</h4>
                 <p>Las recomendaciones aparecerán aquí basadas en el análisis realizado.</p>
+            </div>
+            <div id="resultsTableContainer" class="results-table-container">
+                <!-- Tabla de resultados filtrados -->
             </div>
             <div class="button-container">
                 <button id="exportFilteredBtn" class="hidden" onclick="exportFilteredData()">Exportar Datos Filtrados</button>
@@ -1365,14 +1404,14 @@
         const ctx = document.getElementById('categoryChart').getContext('2d');
         new Chart(ctx, {
             type: 'pie',
-            data: { // <-- Añadido ''
+             { // <-- Añadido ''
                 labels: [
                     `Calidad Óptima (≥8): ${high} (${((high / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Intermedia (4-7): ${medium} (${((medium / (high + medium + low)) * 100).toFixed(1)}%)`,
                     `Calidad Baja (≤3): ${low} (${((low / (high + medium + low)) * 100).toFixed(1)}%)`
                 ],
                 datasets: [{
-                    data: [high, medium, low], 
+                     [high, medium, low], // <-- Añadido 'data:'
                     backgroundColor: [
                         '#27ae60',
                         '#f39c12',
@@ -1402,7 +1441,7 @@
         
         new Chart(ctx, {
             type: 'pie',
-              data:{ // <-- Añadido ''
+             { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
                 datasets: [{
                      data, // <-- Añadido ''
@@ -1437,11 +1476,11 @@
         
         new Chart(ctx, {
             type: 'bar',
-            data: { // <-- Añadido ''
+             { // <-- Añadido ''
                 labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
                 datasets: [{
                     label: 'Número de Encuestados',
-                     data, // <-- Añadido 'data:'
+                     data, // <-- Añadido ''
                     backgroundColor: '#27ae60',
                     borderWidth: 1
                 }]
@@ -1482,7 +1521,7 @@
 
         new Chart(ctx, {
             type: 'bar',
-            data: { // <-- Añadido ''
+             { // <-- Añadido ''
                 labels: labels,
                 datasets: [
                     {
@@ -1492,7 +1531,7 @@
                     },
                     {
                         label: 'Respuestas "No"',
-                         dataNo, // <-- Añadido 'data:'
+                         dataNo, // <-- Añadido ''
                         backgroundColor: '#e74c3c',
                     }
                 ]
@@ -1677,6 +1716,7 @@
                 document.getElementById('analysisResults').innerHTML = '<p>No se encontraron resultados con los filtros aplicados.</p>';
                 document.getElementById('interpretationPanel').innerHTML = '<h4>Interpretación del Análisis</h4><p>No hay datos suficientes para generar una interpretación con los filtros actuales.</p>';
                 document.getElementById('recommendationsPanel').innerHTML = '<h4>Recomendaciones</h4><p>No hay datos suficientes para generar recomendaciones con los filtros actuales.</p>';
+                document.getElementById('resultsTableContainer').innerHTML = ''; // Limpiar tabla
                 document.getElementById('exportFilteredBtn').classList.add('hidden');
                 // Limpiar gráfico si no hay resultados
                 const ctx = document.getElementById('analysisChart').getContext('2d');
@@ -1742,6 +1782,7 @@
 
             // Recomendaciones
             let recommendationsHTML = '<ul>';
+
             // Basado en las respuestas más comunes con valor 0 o -1
             let lowestCount = Infinity;
             let lowestQuestion = '';
@@ -1751,10 +1792,12 @@
                     lowestQuestion = i;
                 }
             }
-        let questionText = '';
-            
-            if (lowestQuestion) {
-                let questionText = '';
+
+            // --- CORRECCIÓN AQUÍ ---
+            // Declarar questionText antes del switch
+            let questionText = '';
+
+            if (lowestQuestion) { // Verificar si se encontró una pregunta
                 switch(lowestQuestion) {
                     case 1: questionText = 'Toma una fruta todos los días.'; break;
                     case 2: questionText = 'Toma una segunda fruta todos los días.'; break;
@@ -1772,16 +1815,17 @@
                     case 14: questionText = 'Desayuna bollería industrial.'; break;
                     case 15: questionText = 'Toma 2 yogures y/o queso (40g) todos los días.'; break;
                     case 16: questionText = 'Toma dulces y golosinas varias veces al día.'; break;
+                    default: questionText = 'Hábito no identificado.'; // Caso por si acaso lowestQuestion no es 1-16
                 }
-              // Ahora questionText está definida y se puede usar aquí
-                    recommendationsHTML += `<li>El hábito "${questionText}" es el menos común en este grupo. Se debe promover su adopción.</li>`;
-                    recommendationsHTML += `<li>Revisar y mejorar los hábitos relacionados con la pregunta ${lowestQuestion} (${questionText}).</li>`;
-                } else {
-                    // Si no se encontró ninguna pregunta con contadoresNo > 0 (caso raro)
-                    recommendationsHTML += `<li>No se identificaron hábitos problemáticos específicos con los datos filtrados.</li>`;
-                }
-            
-            
+                // Ahora questionText está definida y se puede usar aquí
+                recommendationsHTML += `<li>El hábito "${questionText}" es el menos común en este grupo. Se debe promover su adopción.</li>`;
+                recommendationsHTML += `<li>Revisar y mejorar los hábitos relacionados con la pregunta ${lowestQuestion} (${questionText}).</li>`;
+            } else {
+                // Si no se encontró ninguna pregunta con contadoresNo > 0 (caso raro)
+                recommendationsHTML += `<li>No se identificaron hábitos problemáticos específicos con los datos filtrados.</li>`;
+            }
+            // --- FIN CORRECCIÓN ---
+
             recommendationsHTML += `<li>Implementar programas de educación nutricional específicos para este grupo demográfico.</li>`;
             recommendationsHTML += '</ul>';
 
@@ -1793,6 +1837,9 @@
 
             // Crear gráfico de análisis
             createAnalysisChart(contadoresSi, contadoresNo, type);
+
+            // Crear tabla de resultados
+            createResultsTable(filteredResults);
 
         } catch (error) {
             console.error("Error al aplicar filtro: ", error);
@@ -1820,7 +1867,7 @@
 
         window.analysisChartInstance = new Chart(ctx, {
             type: 'bar',
-            data: {
+             {
                 labels: labels,
                 datasets: [
                     {
@@ -1862,6 +1909,131 @@
         });
     }
 
+    function createResultsTable(results) {
+        const tableContainer = document.getElementById('resultsTableContainer');
+        if (results.length === 0) {
+            tableContainer.innerHTML = '<p>No hay datos para mostrar en la tabla.</p>';
+            return;
+        }
+
+        let tableHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Edad</th>
+                        <th>Curso</th>
+                        <th>Sexo</th>
+                        <th>Nivel</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        results.forEach(result => {
+            let level = '';
+            if (result.score >= 8) level = 'Alto';
+            else if (result.score >= 4) level = 'Moderado';
+            else level = 'Bajo';
+
+            // Generar enlace para ver informe individual
+            const viewReportLink = `<a href="#" onclick="viewIndividualReport('${result.id}', ${result.score}, '${result.edad}', '${result.genero}', '${result.curso}', '${result.fecha}', ${JSON.stringify(result.respuestas).replace(/"/g, '&quot;')})">Ver Informe</a>`;
+
+            tableHTML += `
+                <tr>
+                    <td>${result.id}</td>
+                    <td>${result.edad}</td>
+                    <td>${result.curso}</td>
+                    <td>${result.genero}</td>
+                    <td>${level}</td>
+                    <td>${viewReportLink}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += `
+                </tbody>
+            </table>
+        `;
+
+        tableContainer.innerHTML = tableHTML;
+    }
+
+    // Función para ver el informe individual (simplificada)
+    function viewIndividualReport(id, score, edad, genero, curso, fecha, respuestas) {
+        // Aquí puedes implementar la lógica para mostrar el informe individual
+        // Por ahora, simplemente mostramos una alerta con los datos
+        let interpretation = "";
+        let recommendations = [];
+        let resultClass = "";
+
+        if (score >= 8) {
+            interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
+            recommendations = [
+                "Sigue manteniendo estos hábitos saludables.",
+                "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
+                "¡Eres un gran ejemplo de alimentación saludable!"
+            ];
+            resultClass = "result-high";
+        } else if (score >= 4 && score <= 7) {
+            interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
+            recommendations = [
+                "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
+                "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
+                "Incorpora pescado al menos 2 veces por semana.",
+                "Evita la comida rápida y los dulces industriales con frecuencia.",
+                "Cocina con aceite de oliva en lugar de mantequilla o margarina."
+            ];
+            resultClass = "result-medium";
+        } else if (score <= 3) {
+            interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
+            recommendations = [
+                "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
+                "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
+                "Reduce la ingesta de dulces, bollería y comida rápida.",
+                "Bebe mucha agua en lugar de refrescos azucarados.",
+                "Incluye pescado y legumbres en la dieta semanalmente.",
+                "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
+            ];
+            resultClass = "result-low";
+        }
+
+        let recHTML = "<ul>";
+        recommendations.forEach(rec => {
+            recHTML += `<li>${rec}</li>`;
+        });
+        recHTML += "</ul>";
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `
+            <div class="result-content">
+                <h3>Informe Individual - ID: ${id}</h3>
+                <p><strong>Edad:</strong> ${edad}</p>
+                <p><strong>Curso:</strong> ${curso}</p>
+                <p><strong>Sexo:</strong> ${genero}</p>
+                <p><strong>Fecha:</strong> ${fecha}</p>
+                <p><strong>Puntuación Total:</strong> ${score}</p>
+                <p><strong>Interpretación:</strong> ${interpretation}</p>
+                <p><strong>Recomendaciones:</strong></p>
+                ${recHTML}
+            </div>
+        `;
+        resultDiv.className = resultClass;
+        resultDiv.style.display = "block";
+
+        // Mostrar sección de resultados y ocultar otras
+        document.getElementById('introPage').classList.remove('active');
+        document.getElementById('adminSection').classList.add('hidden');
+        document.getElementById('reportSection').classList.add('hidden');
+        document.getElementById('exportBtn').classList.add('hidden');
+        document.getElementById('exportAllBtn').classList.add('hidden');
+        document.getElementById('reportBtn').classList.add('hidden');
+        document.getElementById('resetBtn').classList.add('hidden');
+        document.getElementById('exportFilteredBtn').classList.add('hidden');
+    }
+
+
     function exportFilteredData() {
         if (filteredResults.length === 0) {
             alert('No hay datos filtrados para exportar.');
@@ -1869,7 +2041,7 @@
         }
 
         const csvContent = convertToCSV(filteredResults);
-        const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+        const dataUri = 'text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
 
         const exportFileDefaultName = `KIDMED_Datos_Filtrados_${new Date().toISOString().split('T')[0]}.csv`;
 
@@ -1895,7 +2067,3 @@
 
 </body>
 </html>
-
-
-
-
