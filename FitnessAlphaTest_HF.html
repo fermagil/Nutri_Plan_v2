@@ -850,6 +850,7 @@ function procesarResultados(datos) {
 
     // Crear elemento de resultado de test con barra de progreso
    // Crear elemento de resultado de test con escala visual
+// Crear elemento de resultado de test con escala visual
 function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, tipo) {
     const div = document.createElement('div');
     div.className = 'test-result';
@@ -867,25 +868,22 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     valorDiv.className = 'test-value';
     valorDiv.innerHTML = `${valor} ${unidad}`;
     infoDiv.appendChild(valorDiv);
-    div.appendChild(infoDiv);
 
-    // === NUEVO: Obtener la clasificación real del resultado ===
+    // === Obtener clasificación real usando la edad de referencia ===
+    const edadRef = Math.max(edad, 13); // Mapear edades <13 a 13
     let clasificacion = '';
     switch (tipo) {
-        case 'cardio':       clasificacion = getClasificacionCardio(valor, genero, edad); break;
-        case 'salto':        clasificacion = getClasificacionSalto(valor, genero, edad); break;
-        case 'fuerza':       clasificacion = getClasificacionFuerza(valor, genero, edad); break;
-        case 'cintura':      clasificacion = getClasificacionCintura(valor, genero, edad); break;
-        case 'imc':          clasificacion = getClasificacionIMC(valor, genero, edad); break;
-        case 'shuttle4x10':  clasificacion = getClasificacionShuttle4x10(valor, genero, edad); break;
+        case 'cardio':       clasificacion = getClasificacionCardio(valor, genero, edadRef); break;
+        case 'salto':        clasificacion = getClasificacionSalto(valor, genero, edadRef); break;
+        case 'fuerza':       clasificacion = getClasificacionFuerza(valor, genero, edadRef); break;
+        case 'cintura':      clasificacion = getClasificacionCintura(valor, genero, edadRef); break;
+        case 'imc':          clasificacion = getClasificacionIMC(valor, genero, edadRef); break;
+        case 'shuttle4x10':  clasificacion = getClasificacionShuttle4x10(valor, genero, edadRef); break;
         default:             clasificacion = 'No clasificado';
     }
 
-   // Badge de clasificación con color alineado a la categoría
+    // Badge de clasificación con color alineado
     const badge = document.createElement('span');
-    badge.className = 'category-badge';
-    
-    // Mapeo de texto a clase CSS
     const categoriaAClase = {
         'Muy Bajo': 'muy-bajo',
         'Bajo': 'bajo',
@@ -893,17 +891,17 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
         'Alto': 'alto',
         'Muy Alto': 'muy-alto'
     };
-    
     const claseBadge = categoriaAClase[clasificacion] || 'muy-bajo';
     badge.className = `category-badge category-${claseBadge}`;
     badge.textContent = clasificacion;
     infoDiv.appendChild(badge);
+    div.appendChild(infoDiv);
 
-    // === Escala visual con 5 segmentos ===
+    // === Escala visual con 5 segmentos coloreados ===
     const scaleDiv = document.createElement('div');
     scaleDiv.className = 'test-scale';
 
-    // Definir min/max para cálculo de posición
+    // Definir min/max para cálculo de posición (usar edadRef)
     let minVal, maxVal;
     switch(tipo) {
         case 'cardio':      minVal = 0;   maxVal = 21; break;
@@ -925,14 +923,11 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     // Contenedor de los 5 segmentos coloreados
     const scaleInner = document.createElement('div');
     scaleInner.className = 'test-scale-inner';
-
-    const segmentos = ['very-low', 'low', 'average', 'high', 'very-high'];
-    segmentos.forEach(seg => {
+    ['very-low', 'low', 'average', 'high', 'very-high'].forEach(seg => {
         const segDiv = document.createElement('div');
         segDiv.className = `scale-segment segment-${seg}`;
         scaleInner.appendChild(segDiv);
     });
-
     scaleDiv.appendChild(scaleInner);
 
     // Etiquetas de la escala
@@ -940,7 +935,6 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     labelsDiv.className = 'test-labels';
     labelsDiv.innerHTML = `<span>${minVal}</span><span>${maxVal}</span>`;
     scaleDiv.appendChild(labelsDiv);
-
     div.appendChild(scaleDiv);
 
     // === Zona de salud con 5 colores ===
@@ -950,17 +944,13 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     zonaDiv.style.marginTop = '10px';
 
     const zonaIndicator = document.createElement('div');
-    zonaIndicator.className = 'zone-indicator';
-
-    
-
     const claseZona = categoriaAClase[clasificacion] || 'muy-bajo';
     zonaIndicator.className = `zone-indicator zone-${claseZona}`;
 
     const zonaText = document.createElement('span');
     zonaText.textContent = `Categoría: ${clasificacion}`;
 
-    // Puntuación numérica (opcional)
+    // Puntuación numérica
     const scoreMap = { 'Muy Bajo': 0, 'Bajo': 25, 'Promedio': 50, 'Alto': 75, 'Muy Alto': 100 };
     const score = scoreMap[clasificacion] || 0;
     const scoreSpan = document.createElement('span');
@@ -1595,6 +1585,7 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
     </script>
 </body>
 </html>
+
 
 
 
