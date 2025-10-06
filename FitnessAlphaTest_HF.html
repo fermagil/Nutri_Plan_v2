@@ -1814,7 +1814,7 @@
                 edadCount[edad] = (edadCount[edad] || 0) + 1;
             });
 
-            const ctx1 = document.getElementById('distribucionEdadChart').getContext('2d');
+           const ctx1 = document.getElementById('distribucionEdadChart').getContext('2d');
             if (distribucionEdadChart) distribucionEdadChart.destroy();
             distribucionEdadChart = new Chart(ctx1, {
                 type: 'bar',
@@ -1822,7 +1822,7 @@
                     labels: Object.keys(edadCount),
                     datasets: [{
                         label: 'Número de Evaluaciones',
-                         Object.values(edadCount),
+                        data: Object.values(edadCount),
                         backgroundColor: 'rgba(52, 152, 219, 0.6)',
                         borderColor: 'rgba(52, 152, 219, 1)',
                         borderWidth: 1
@@ -2069,5 +2069,6 @@
 </body>
 </html>
 ```
+
 
 
