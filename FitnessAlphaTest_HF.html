@@ -170,103 +170,129 @@
         margin: 20px 0;
     }
 
-    /* Estilos para las barras de progreso */
-    .test-result {
-        display: flex;
-        align-items: center;
-        margin: 15px 0;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        background: #fff;
-        flex-wrap: wrap;
-    }
-    .test-info {
-        flex: 1;
-        min-width: 250px;
-        padding-right: 20px;
-    }
-    .test-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-    }
-    .test-scale {
-        flex: 2;
-        position: relative;
-        height: 20px;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-    }
-    .test-scale-inner {
-        height: 100%;
-        display: flex;
-    }
-    .scale-segment {
-        flex-grow: 1;
-        height: 100%;
-        position: relative;
-    }
-    .scale-segment::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 1px;
-        background: rgba(0,0,0,0.2);
-        right: 0;
-    }
-    .scale-segment:last-child::after {
-        display: none;
-    }
-    .segment-very-low {
-        background: linear-gradient(to right, #ff4d4d, #ff994d);
-    }
-    .segment-low {
-        background: linear-gradient(to right, #ffcc00, #ffff4d);
-    }
-    .segment-average {
-        background: linear-gradient(to right, #4dff4d, #4dffa0);
-    }
-    .segment-high {
-        background: linear-gradient(to right, #4dffa0, #4dff4d);
-    }
-    .segment-very-high {
-        background: linear-gradient(to right, #4dff4d, #4dffa0);
-    }
-    .test-pointer {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: #333;
-        z-index: 10;
-        transform: translateX(-50%);
-    }
-    .test-labels {
-        display: flex;
-        justify-content: space-between;
-        font-size: 12px;
-        margin-top: 5px;
-        color: #666;
-    }
-    .zone-indicator {
-        display: inline-block;
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        margin-right: 5px;
-    }
-    .zone-green {
-        background: #4dff4d;
-    }
-    .zone-yellow {
-        background: #ffcc00;
-    }
-    .zone-red {
-        background: #ff4d4d;
-    }
+   /* === Estilos base === */
+.test-result {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #ffffff, #f6f6f6);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-wrap: wrap;
+}
+
+.test-result:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* === Información del test === */
+.test-info {
+    flex: 1;
+    min-width: 250px;
+    padding-right: 25px;
+}
+
+.test-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+}
+
+/* === Barra principal === */
+.test-scale {
+    flex: 2;
+    position: relative;
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #e9ecef;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.test-scale-inner {
+    height: 100%;
+    display: flex;
+}
+
+/* === Segmentos === */
+.scale-segment {
+    flex-grow: 1;
+    height: 100%;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.scale-segment::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.4);
+    right: 0;
+}
+
+.scale-segment:last-child::after {
+    display: none;
+}
+
+/* === Paleta de colores refinada === */
+.segment-very-low {
+    background: linear-gradient(90deg, #ff5f6d, #ffc371);
+}
+.segment-low {
+    background: linear-gradient(90deg, #ffcc00, #ffe066);
+}
+.segment-average {
+    background: linear-gradient(90deg, #8bc34a, #b3ff66);
+}
+.segment-high {
+    background: linear-gradient(90deg, #4dd0e1, #4db6ac);
+}
+.segment-very-high {
+    background: linear-gradient(90deg, #42a5f5, #1e88e5);
+}
+
+/* === Marcador === */
+.test-pointer {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    width: 4px;
+    background: #222;
+    border-radius: 2px;
+    z-index: 10;
+    transform: translateX(-50%);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    transition: left 0.4s ease;
+}
+
+/* === Etiquetas === */
+.test-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-top: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+/* === Indicadores de zona === */
+.zone-indicator {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.zone-green { background: #8bc34a; }
+.zone-yellow { background: #ffcc00; }
+.zone-red { background: #ff5f6d; }
+
     .advice-box {
         background: #fff;
         border-left: 4px solid #3498db;
@@ -2173,6 +2199,7 @@ comparacionGeneroChart = new Chart(ctx4, {
     </script>
 </body>
 </html>
+
 
 
 
