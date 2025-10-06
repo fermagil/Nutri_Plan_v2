@@ -1,0 +1,820 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALPHA Fitness Test - Sistema de Evaluación</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(90deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .nav-tabs {
+            display: flex;
+            background: #ecf0f1;
+            border-bottom: 2px solid #bdc3c7;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn-success {
+            background: #27ae60;
+        }
+        .btn-warning {
+            background: #f39c12;
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .result-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        .hidden {
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .login-section {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .login-section input {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ALPHA Fitness Test - Sistema de Evaluación</h1>
+            <p>Sistema de evaluación de condición física para niños y adolescentes</p>
+        </div>
+
+        <div id="loginSection" class="login-section">
+            <h2>Inicio de Sesión (Admin)</h2>
+            <input type="password" id="adminPassword" placeholder="Contraseña de administrador">
+            <button class="btn" onclick="loginAdmin()">Iniciar Sesión</button>
+        </div>
+
+        <div id="mainContent" class="hidden">
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="showTab('registro')">Registro</button>
+                <button class="tab-btn" onclick="showTab('resultados')">Resultados</button>
+                <button class="tab-btn" onclick="showTab('estadisticas')">Estadísticas</button>
+                <button class="tab-btn" onclick="showTab('analisis')">Análisis Detallado</button>
+            </div>
+
+            <!-- Pestaña de Registro -->
+            <div id="registro" class="tab-content active">
+                <h2>Registro de Evaluación Física</h2>
+                <form id="fitnessForm">
+                    <div class="form-group">
+                        <label>Nombre (ID):</label>
+                        <input type="text" id="nombre" maxlength="30" placeholder="Opcional - Se generará ID automático si está vacío">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento:</label>
+                        <input type="date" id="fechaNacimiento" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Género:</label>
+                        <select id="genero" required>
+                            <option value="">Seleccionar</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="femenino">Femenino</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Evaluación:</label>
+                        <input type="date" id="fechaEvaluacion" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Altura (cm):</label>
+                        <input type="number" id="altura" step="0.1" min="80" max="220" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Peso (kg):</label>
+                        <input type="number" id="peso" step="0.1" min="8" max="200" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Perímetro de Cintura (cm):</label>
+                        <input type="number" id="cintura" step="0.1" min="40" max="130" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Test de 20m (etapas):</label>
+                        <input type="number" id="shuttle20m" step="0.5" min="0" max="21" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Salto Horizontal (cm):</label>
+                        <input type="number" id="salto" min="15" max="330" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fuerza de Presión Manual (kg):</label>
+                        <input type="number" id="fuerza" step="0.1" min="0" max="80" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Guardar Evaluación</button>
+                </form>
+            </div>
+
+            <!-- Pestaña de Resultados -->
+            <div id="resultados" class="tab-content">
+                <h2>Resultados de Evaluación</h2>
+                <div id="resultadosIndividuales" class="result-card">
+                    <h3>Evaluación Individual</h3>
+                    <div id="resultadoDetallado"></div>
+                </div>
+            </div>
+
+            <!-- Pestaña de Estadísticas -->
+            <div id="estadisticas" class="tab-content">
+                <h2>Estadísticas Generales</h2>
+                <button class="btn btn-warning" onclick="exportToCSV()">Exportar a CSV</button>
+                <div class="stats-grid" id="statsGrid"></div>
+                <div class="chart-container">
+                    <canvas id="distribucionEdadChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="rendimientoChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pestaña de Análisis -->
+            <div id="analisis" class="tab-content">
+                <h2>Análisis Detallado</h2>
+                <div class="form-group">
+                    <label>Filtrar por Género:</label>
+                    <select id="filtroGenero" onchange="actualizarAnalisis()">
+                        <option value="todos">Todos</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="femenino">Femenino</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="analisisEdadChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="comparacionGeneroChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7_2xZ9nkbXLftOoXoLoOsHMc2nikjBU8",
+            authDomain: "alphatest-3ca83.firebaseapp.com",
+            projectId: "alphatest-3ca83",
+            storageBucket: "alphatest-3ca83.firebasestorage.app",
+            messagingSenderId: "679232754727",
+            appId: "1:679232754727:web:6c2a6f8ab9ad188814aa02",
+            measurementId: "G-B2BC0HZ5HY"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        let evaluaciones = [];
+        let distribucionEdadChart, rendimientoChart, analisisEdadChart, comparacionGeneroChart;
+        let isAdmin = false;
+
+        // Función de login
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            // Contraseña de ejemplo - en producción usar autenticación segura
+            if (password === 'admin123') {
+                isAdmin = true;
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('mainContent').classList.remove('hidden');
+                cargarEvaluaciones();
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        }
+
+        // Generar ID único si el nombre está vacío
+        function generarID() {
+            const idsExistentes = evaluaciones.map(e => e.nombre).filter(n => n && n.startsWith('0000'));
+            const ultimoID = idsExistentes
+                .map(id => parseInt(id.replace('0000', '')))
+                .sort((a, b) => b - a)[0] || 0;
+            const nuevoNumero = ultimoID + 1;
+            return `0000${nuevoNumero}`.slice(-5);
+        }
+
+        // Cálculo del IMC
+        function calcularIMC(peso, altura) {
+            const alturaM = altura / 100;
+            return peso / (alturaM * alturaM);
+        }
+
+        // Cálculo de la clasificación de IMC según el documento
+        function getClasificacionIMC(imc, genero, edad) {
+            const clasificaciones = {
+                'masculino': {
+                    13: { 'muy_bajo': 16.7, 'bajo': 18.0, 'promedio': 22.2, 'alto': 25.7 },
+                    14: { 'muy_bajo': 17.5, 'bajo': 19.0, 'promedio': 23.3, 'alto': 26.5 },
+                    15: { 'muy_bajo': 17.9, 'bajo': 19.5, 'promedio': 23.8, 'alto': 26.7 },
+                    16: { 'muy_bajo': 18.0, 'bajo': 19.6, 'promedio': 23.7, 'alto': 26.4 },
+                    17: { 'muy_bajo': 19.0, 'bajo': 20.5, 'promedio': 24.6, 'alto': 27.5 }
+                },
+                'femenino': {
+                    13: { 'muy_bajo': 17.5, 'bajo': 19.0, 'promedio': 23.2, 'alto': 26.4 },
+                    14: { 'muy_bajo': 17.6, 'bajo': 18.9, 'promedio': 22.8, 'alto': 25.6 },
+                    15: { 'muy_bajo': 18.1, 'bajo': 19.4, 'promedio': 23.0, 'alto': 25.6 },
+                    16: { 'muy_bajo': 18.3, 'bajo': 19.6, 'promedio': 23.1, 'alto': 25.8 },
+                    17: { 'muy_bajo': 18.2, 'bajo': 19.5, 'promedio': 23.2, 'alto': 25.8 }
+                }
+            };
+
+            if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
+                return 'No clasificado';
+            }
+
+            const lim = clasificaciones[genero][edad];
+            
+            if (imc <= lim.muy_bajo) return 'Muy Bajo';
+            if (imc <= lim.bajo) return 'Bajo';
+            if (imc <= lim.promedio) return 'Promedio';
+            if (imc <= lim.alto) return 'Alto';
+            return 'Muy Alto';
+        }
+
+        // Cálculo de la clasificación del test de cardio
+        function getClasificacionCardio(valor, genero, edad) {
+            const clasificaciones = {
+                'masculino': {
+                    13: { 'muy_bajo': 3.0, 'bajo': 4.5, 'promedio': 6.0, 'alto': 7.5 },
+                    14: { 'muy_bajo': 3.5, 'bajo': 5.5, 'promedio': 6.5, 'alto': 8.5 },
+                    15: { 'muy_bajo': 4.0, 'bajo': 5.5, 'promedio': 7.0, 'alto': 8.5 },
+                    16: { 'muy_bajo': 4.0, 'bajo': 5.5, 'promedio': 7.0, 'alto': 8.5 },
+                    17: { 'muy_bajo': 4.5, 'bajo': 6.0, 'promedio': 7.5, 'alto': 9.0 }
+                },
+                'femenino': {
+                    13: { 'muy_bajo': 2.0, 'bajo': 2.5, 'promedio': 3.5, 'alto': 4.5 },
+                    14: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
+                    15: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
+                    16: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
+                    17: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 }
+                }
+            };
+
+            if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
+                return 'No clasificado';
+            }
+
+            const lim = clasificaciones[genero][edad];
+            
+            if (valor <= lim.muy_bajo) return 'Muy Bajo';
+            if (valor <= lim.bajo) return 'Bajo';
+            if (valor <= lim.promedio) return 'Promedio';
+            if (valor <= lim.alto) return 'Alto';
+            return 'Muy Alto';
+        }
+
+        // Cálculo de la clasificación del salto
+        function getClasificacionSalto(valor, genero, edad) {
+            const clasificaciones = {
+                'masculino': {
+                    13: { 'muy_bajo': 135, 'bajo': 152, 'promedio': 167, 'alto': 184 },
+                    14: { 'muy_bajo': 151, 'bajo': 169, 'promedio': 183, 'alto': 200 },
+                    15: { 'muy_bajo': 165, 'bajo': 182, 'promedio': 196, 'alto': 212 },
+                    16: { 'muy_bajo': 175, 'bajo': 192, 'promedio': 206, 'alto': 221 },
+                    17: { 'muy_bajo': 184, 'bajo': 201, 'promedio': 215, 'alto': 229 }
+                },
+                'femenino': {
+                    13: { 'muy_bajo': 118, 'bajo': 133, 'promedio': 147, 'alto': 163 },
+                    14: { 'muy_bajo': 121, 'bajo': 137, 'promedio': 151, 'alto': 167 },
+                    15: { 'muy_bajo': 123, 'bajo': 138, 'promedio': 151, 'alto': 167 },
+                    16: { 'muy_bajo': 126, 'bajo': 141, 'promedio': 154, 'alto': 169 },
+                    17: { 'muy_bajo': 129, 'bajo': 144, 'promedio': 157, 'alto': 172 }
+                }
+            };
+
+            if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
+                return 'No clasificado';
+            }
+
+            const lim = clasificaciones[genero][edad];
+            
+            if (valor <= lim.muy_bajo) return 'Muy Bajo';
+            if (valor <= lim.bajo) return 'Bajo';
+            if (valor <= lim.promedio) return 'Promedio';
+            if (valor <= lim.alto) return 'Alto';
+            return 'Muy Alto';
+        }
+
+        // Cálculo de la clasificación de fuerza manual
+        function getClasificacionFuerza(valor, genero, edad) {
+            const clasificaciones = {
+                'masculino': {
+                    13: { 'muy_bajo': 21.4, 'bajo': 24.7, 'promedio': 27.8, 'alto': 31.8 },
+                    14: { 'muy_bajo': 26.3, 'bajo': 30.4, 'promedio': 34.0, 'alto': 38.5 },
+                    15: { 'muy_bajo': 31.3, 'bajo': 35.7, 'promedio': 39.7, 'alto': 44.3 },
+                    16: { 'muy_bajo': 35.9, 'bajo': 40.0, 'promedio': 43.7, 'alto': 48.1 },
+                    17: { 'muy_bajo': 39.9, 'bajo': 43.5, 'promedio': 46.7, 'alto': 50.6 }
+                },
+                'femenino': {
+                    13: { 'muy_bajo': 19.9, 'bajo': 22.5, 'promedio': 24.8, 'alto': 27.6 },
+                    14: { 'muy_bajo': 21.5, 'bajo': 24.1, 'promedio': 26.4, 'alto': 29.2 },
+                    15: { 'muy_bajo': 22.5, 'bajo': 25.1, 'promedio': 27.4, 'alto': 30.3 },
+                    16: { 'muy_bajo': 22.9, 'bajo': 25.4, 'promedio': 27.8, 'alto': 30.8 },
+                    17: { 'muy_bajo': 23.9, 'bajo': 26.4, 'promedio': 28.9, 'alto': 32.1 }
+                }
+            };
+
+            if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
+                return 'No clasificado';
+            }
+
+            const lim = clasificaciones[genero][edad];
+            
+            if (valor <= lim.muy_bajo) return 'Muy Bajo';
+            if (valor <= lim.bajo) return 'Bajo';
+            if (valor <= lim.promedio) return 'Promedio';
+            if (valor <= lim.alto) return 'Alto';
+            return 'Muy Alto';
+        }
+
+        // Obtener edad a partir de fecha de nacimiento
+        function getEdad(fechaNacimiento) {
+            const nacimiento = new Date(fechaNacimiento);
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - nacimiento.getFullYear();
+            const mes = hoy.getMonth() - nacimiento.getMonth();
+            if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+                edad--;
+            }
+            return edad;
+        }
+
+        // Procesar y mostrar resultados
+        function procesarResultados(datos) {
+            const edad = getEdad(datos.fechaNacimiento);
+            const imc = calcularIMC(datos.peso, datos.altura);
+            const clasificacionIMC = getClasificacionIMC(imc, datos.genero, edad);
+            const clasificacionCardio = getClasificacionCardio(datos.shuttle20m, datos.genero, edad);
+            const clasificacionSalto = getClasificacionSalto(datos.salto, datos.genero, edad);
+            const clasificacionFuerza = getClasificacionFuerza(datos.fuerza, datos.genero, edad);
+
+            const resultado = `
+                <h4>Evaluación de: ${datos.nombre}</h4>
+                <p><strong>Edad:</strong> ${edad} años</p>
+                <p><strong>Género:</strong> ${datos.genero}</p>
+                <p><strong>IMC:</strong> ${imc.toFixed(2)} - Categoría: ${clasificacionIMC}</p>
+                <p><strong>Cardiorespiratorio:</strong> ${datos.shuttle20m} etapas - Categoría: ${clasificacionCardio}</p>
+                <p><strong>Salto Horizontal:</strong> ${datos.salto} cm - Categoría: ${clasificacionSalto}</p>
+                <p><strong>Fuerza Manual:</strong> ${datos.fuerza} kg - Categoría: ${clasificacionFuerza}</p>
+                <p><strong>Perímetro de Cintura:</strong> ${datos.cintura} cm</p>
+                
+                <h4>Valoración General:</h4>
+                <p>El estado físico general del usuario se clasifica como: <strong>${evaluarEstadoFisico(clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC)}</strong></p>
+            `;
+
+            document.getElementById('resultadoDetallado').innerHTML = resultado;
+        }
+
+        // Evaluar estado físico general
+        function evaluarEstadoFisico(cardio, salto, fuerza, imc) {
+            const clasificaciones = [cardio, salto, fuerza, imc];
+            let muyBajo = 0, bajo = 0, promedio = 0, alto = 0, muyAlto = 0;
+            
+            clasificaciones.forEach(cat => {
+                if (cat.includes('Muy Bajo')) muyBajo++;
+                else if (cat.includes('Bajo')) bajo++;
+                else if (cat.includes('Promedio')) promedio++;
+                else if (cat.includes('Alto')) alto++;
+                else if (cat.includes('Muy Alto')) muyAlto++;
+            });
+            
+            if (muyBajo >= 2) return 'Muy Deficiente';
+            if (muyBajo + bajo >= 3) return 'Deficiente';
+            if (muyAlto + alto >= 3) return 'Excelente';
+            if (muyAlto + alto >= 2) return 'Bueno';
+            return 'Adecuado';
+        }
+
+        // Cargar evaluaciones desde Firestore
+        async function cargarEvaluaciones() {
+            try {
+                const snapshot = await db.collection('evaluaciones').get();
+                evaluaciones = [];
+                snapshot.forEach(doc => {
+                    evaluaciones.push({ id: doc.id, ...doc.data() });
+                });
+            } catch (error) {
+                console.error("Error al cargar evaluaciones: ", error);
+            }
+        }
+
+        // Guardar evaluación en Firestore
+        document.getElementById('fitnessForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Obtener el nombre o generar ID
+            let nombre = document.getElementById('nombre').value.trim();
+            if (!nombre) {
+                nombre = generarID();
+            }
+            
+            const datos = {
+                nombre: nombre,
+                fechaNacimiento: document.getElementById('fechaNacimiento').value,
+                genero: document.getElementById('genero').value,
+                fechaEvaluacion: document.getElementById('fechaEvaluacion').value,
+                altura: parseFloat(document.getElementById('altura').value),
+                peso: parseFloat(document.getElementById('peso').value),
+                cintura: parseFloat(document.getElementById('cintura').value),
+                shuttle20m: parseFloat(document.getElementById('shuttle20m').value),
+                salto: parseInt(document.getElementById('salto').value),
+                fuerza: parseFloat(document.getElementById('fuerza').value)
+            };
+
+            try {
+                const docRef = await db.collection('evaluaciones').add(datos);
+                datos.id = docRef.id;
+                evaluaciones.push(datos);
+                procesarResultados(datos);
+                alert(`Evaluación registrada exitosamente! ID: ${nombre}`);
+            } catch (error) {
+                console.error("Error al guardar evaluación: ", error);
+                alert('Error al guardar la evaluación');
+            }
+        });
+
+        // Mostrar pestañas
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabId === 'estadisticas') {
+                actualizarEstadisticas();
+            }
+            if (tabId === 'analisis') {
+                actualizarAnalisis();
+            }
+        }
+
+        // Actualizar estadísticas
+        function actualizarEstadisticas() {
+            if (evaluaciones.length === 0) return;
+
+            // Calcular estadísticas
+            const total = evaluaciones.length;
+            const masculino = evaluaciones.filter(e => e.genero === 'masculino').length;
+            const femenino = evaluaciones.filter(e => e.genero === 'femenino').length;
+            
+            const promedioEdad = evaluaciones.reduce((sum, e) => sum + getEdad(e.fechaNacimiento), 0) / total;
+            const promedioIMC = evaluaciones.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / total;
+            const promedioCardio = evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / total;
+            const promedioSalto = evaluaciones.reduce((sum, e) => sum + e.salto, 0) / total;
+            const promedioFuerza = evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / total;
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <h3>Total Evaluaciones</h3>
+                    <p>${total}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Hombres</h3>
+                    <p>${masculino}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Mujeres</h3>
+                    <p>${femenino}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Edad Promedio</h3>
+                    <p>${promedioEdad.toFixed(1)} años</p>
+                </div>
+                <div class="stat-card">
+                    <h3>IMC Promedio</h3>
+                    <p>${promedioIMC.toFixed(2)}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Cardio Promedio</h3>
+                    <p>${promedioCardio.toFixed(1)} etapas</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Salto Promedio</h3>
+                    <p>${promedioSalto.toFixed(1)} cm</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Fuerza Promedio</h3>
+                    <p>${promedioFuerza.toFixed(1)} kg</p>
+                </div>
+            `;
+
+            // Actualizar gráficos
+            actualizarGraficos();
+        }
+
+        // Actualizar gráficos
+        function actualizarGraficos() {
+            // Gráfico de distribución por edad
+            const edades = evaluaciones.map(e => getEdad(e.fechaNacimiento));
+            const edadCount = {};
+            edades.forEach(edad => {
+                edadCount[edad] = (edadCount[edad] || 0) + 1;
+            });
+
+            const ctx1 = document.getElementById('distribucionEdadChart').getContext('2d');
+            if (distribucionEdadChart) distribucionEdadChart.destroy();
+            distribucionEdadChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(edadCount),
+                    datasets: [{
+                        label: 'Número de Evaluaciones',
+                        data: Object.values(edadCount),
+                        backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribución por Edad'
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de rendimiento promedio
+            const ctx2 = document.getElementById('rendimientoChart').getContext('2d');
+            if (rendimientoChart) rendimientoChart.destroy();
+            rendimientoChart = new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC'],
+                    datasets: [{
+                        label: 'Promedio General',
+                        data: [
+                            evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / evaluaciones.length,
+                            evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / evaluaciones.length,
+                            evaluaciones.reduce((sum, e) => sum + e.salto, 0) / evaluaciones.length,
+                            evaluaciones.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / evaluaciones.length
+                        ],
+                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Rendimiento Promedio'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Actualizar análisis detallado
+        function actualizarAnalisis() {
+            const filtroGenero = document.getElementById('filtroGenero').value;
+            const datosFiltrados = filtroGenero === 'todos' ? 
+                evaluaciones : 
+                evaluaciones.filter(e => e.genero === filtroGenero);
+
+            if (datosFiltrados.length === 0) return;
+
+            // Gráfico por edad
+            const edades = [...new Set(datosFiltrados.map(e => getEdad(e.fechaNacimiento)))].sort();
+            const cardioPorEdad = edades.map(edad => {
+                const datosEdad = datosFiltrados.filter(e => getEdad(e.fechaNacimiento) === edad);
+                return datosEdad.reduce((sum, e) => sum + e.shuttle20m, 0) / datosEdad.length;
+            });
+
+            const ctx3 = document.getElementById('analisisEdadChart').getContext('2d');
+            if (analisisEdadChart) analisisEdadChart.destroy();
+            analisisEdadChart = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: edades,
+                    datasets: [{
+                        label: 'Rendimiento Cardiorespiratorio',
+                        data: cardioPorEdad,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Rendimiento Cardiorespiratorio por Edad'
+                        }
+                    }
+                }
+            });
+
+            // Comparación por género
+            const hombres = evaluaciones.filter(e => e.genero === 'masculino');
+            const mujeres = evaluaciones.filter(e => e.genero === 'femenino');
+
+            const ctx4 = document.getElementById('comparacionGeneroChart').getContext('2d');
+            if (comparacionGeneroChart) comparacionGeneroChart.destroy();
+            comparacionGeneroChart = new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: ['Cardio', 'Fuerza', 'Salto', 'IMC'],
+                    datasets: [
+                        {
+                            label: 'Hombres',
+                            data: [
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle20m, 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.fuerza, 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.salto, 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / hombres.length : 0
+                            ],
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                        },
+                        {
+                            label: 'Mujeres',
+                            data: [
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle20m, 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.fuerza, 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.salto, 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / mujeres.length : 0
+                            ],
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comparación por Género'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Exportar a CSV
+        function exportToCSV() {
+            if (evaluaciones.length === 0) {
+                alert('No hay datos para exportar');
+                return;
+            }
+
+            const headers = ['ID', 'Nombre', 'Fecha Nacimiento', 'Género', 'Fecha Evaluación', 
+                           'Altura', 'Peso', 'Cintura', 'Shuttle 20m', 'Salto', 'Fuerza', 'IMC', 'Edad'];
+            
+            const csvContent = [
+                headers.join(','),
+                ...evaluaciones.map(e => [
+                    e.id,
+                    e.nombre,
+                    e.fechaNacimiento,
+                    e.genero,
+                    e.fechaEvaluacion,
+                    e.altura,
+                    e.peso,
+                    e.cintura,
+                    e.shuttle20m,
+                    e.salto,
+                    e.fuerza,
+                    calcularIMC(e.peso, e.altura).toFixed(2),
+                    getEdad(e.fechaNacimiento)
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'evaluaciones_fitness.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Inicializar
+        actualizarGraficos();
+    </script>
+</body>
+</html>
