@@ -151,6 +151,20 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+        .recommendations {
+            background: #e8f5e8;
+            border: 1px solid #27ae60;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .health-info {
+            background: #f0f8ff;
+            border: 1px solid #3498db;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
@@ -222,6 +236,10 @@
                         <label>Fuerza de Presión Manual (kg):</label>
                         <input type="number" id="fuerza" step="0.1" min="0" max="80" required>
                     </div>
+                    <div class="form-group">
+                        <label>4x10m Shuttle Run (seg):</label>
+                        <input type="number" id="shuttle4x10m" step="0.1" min="10" max="30" required>
+                    </div>
                     <button type="submit" class="btn btn-success">Guardar Evaluación</button>
                 </form>
             </div>
@@ -232,6 +250,8 @@
                 <div id="resultadosIndividuales" class="result-card">
                     <h3>Evaluación Individual</h3>
                     <div id="resultadoDetallado"></div>
+                    <div id="recomendaciones" class="recommendations"></div>
+                    <div id="infoSalud" class="health-info"></div>
                 </div>
             </div>
 
@@ -350,22 +370,22 @@
             return 'Muy Alto';
         }
 
-        // Cálculo de la clasificación del test de cardio
-        function getClasificacionCardio(valor, genero, edad) {
+        // Cálculo de la clasificación del perímetro de cintura
+        function getClasificacionCintura(valor, genero, edad) {
             const clasificaciones = {
                 'masculino': {
-                    13: { 'muy_bajo': 3.0, 'bajo': 4.5, 'promedio': 6.0, 'alto': 7.5 },
-                    14: { 'muy_bajo': 3.5, 'bajo': 5.5, 'promedio': 6.5, 'alto': 8.5 },
-                    15: { 'muy_bajo': 4.0, 'bajo': 5.5, 'promedio': 7.0, 'alto': 8.5 },
-                    16: { 'muy_bajo': 4.0, 'bajo': 5.5, 'promedio': 7.0, 'alto': 8.5 },
-                    17: { 'muy_bajo': 4.5, 'bajo': 6.0, 'promedio': 7.5, 'alto': 9.0 }
+                    13: { 'muy_bajo': 62, 'bajo': 66, 'promedio': 78, 'alto': 87 },
+                    14: { 'muy_bajo': 65, 'bajo': 69, 'promedio': 80, 'alto': 88 },
+                    15: { 'muy_bajo': 67, 'bajo': 71, 'promedio': 81, 'alto': 89 },
+                    16: { 'muy_bajo': 67, 'bajo': 71, 'promedio': 81, 'alto': 88 },
+                    17: { 'muy_bajo': 70, 'bajo': 73, 'promedio': 83, 'alto': 91 }
                 },
                 'femenino': {
-                    13: { 'muy_bajo': 2.0, 'bajo': 2.5, 'promedio': 3.5, 'alto': 4.5 },
-                    14: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
-                    15: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
-                    16: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
-                    17: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 }
+                    13: { 'muy_bajo': 61, 'bajo': 65, 'promedio': 75, 'alto': 83 },
+                    14: { 'muy_bajo': 61, 'bajo': 64, 'promedio': 73, 'alto': 80 },
+                    15: { 'muy_bajo': 63, 'bajo': 66, 'promedio': 75, 'alto': 81 },
+                    16: { 'muy_bajo': 63, 'bajo': 66, 'promedio': 75, 'alto': 81 },
+                    17: { 'muy_bajo': 62, 'bajo': 65, 'promedio': 74, 'alto': 80 }
                 }
             };
 
@@ -382,22 +402,22 @@
             return 'Muy Alto';
         }
 
-        // Cálculo de la clasificación del salto
-        function getClasificacionSalto(valor, genero, edad) {
+        // Cálculo de la clasificación del test de cardio
+        function getClasificacionCardio(valor, genero, edad) {
             const clasificaciones = {
                 'masculino': {
-                    13: { 'muy_bajo': 135, 'bajo': 152, 'promedio': 167, 'alto': 184 },
-                    14: { 'muy_bajo': 151, 'bajo': 169, 'promedio': 183, 'alto': 200 },
-                    15: { 'muy_bajo': 165, 'bajo': 182, 'promedio': 196, 'alto': 212 },
-                    16: { 'muy_bajo': 175, 'bajo': 192, 'promedio': 206, 'alto': 221 },
-                    17: { 'muy_bajo': 184, 'bajo': 201, 'promedio': 215, 'alto': 229 }
+                    13: { 'muy_bajo': 3.0, 'bajo': 4.5, 'promedio': 6.0, 'alto': 7.5 },
+                    14: { 'muy_bajo': 3.5, 'bajo': 5.5, 'promedio': 6.5, 'alto': 8.5 },
+                    15: { 'muy_bajo': 4.0, 'bajo': 5.5, 'promedio': 7.0, 'alto': 8.5 },
+                    16: { 'muy_bajo': 4.0, 'bajo': 5.5, 'promedio': 7.0, 'alto': 8.5 },
+                    17: { 'muy_bajo': 4.5, 'bajo': 6.0, 'promedio': 7.5, 'alto': 9.0 }
                 },
                 'femenino': {
-                    13: { 'muy_bajo': 118, 'bajo': 133, 'promedio': 147, 'alto': 163 },
-                    14: { 'muy_bajo': 121, 'bajo': 137, 'promedio': 151, 'alto': 167 },
-                    15: { 'muy_bajo': 123, 'bajo': 138, 'promedio': 151, 'alto': 167 },
-                    16: { 'muy_bajo': 126, 'bajo': 141, 'promedio': 154, 'alto': 169 },
-                    17: { 'muy_bajo': 129, 'bajo': 144, 'promedio': 157, 'alto': 172 }
+                    13: { 'muy_bajo': 2.0, 'bajo': 2.5, 'promedio': 3.5, 'alto': 4.5 },
+                    14: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
+                    15: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
+                    16: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 },
+                    17: { 'muy_bajo': 2.0, 'bajo': 3.0, 'promedio': 4.0, 'alto': 5.0 }
                 }
             };
 
@@ -446,6 +466,70 @@
             return 'Muy Alto';
         }
 
+        // Cálculo de la clasificación del salto
+        function getClasificacionSalto(valor, genero, edad) {
+            const clasificaciones = {
+                'masculino': {
+                    13: { 'muy_bajo': 135, 'bajo': 152, 'promedio': 167, 'alto': 184 },
+                    14: { 'muy_bajo': 151, 'bajo': 169, 'promedio': 183, 'alto': 200 },
+                    15: { 'muy_bajo': 165, 'bajo': 182, 'promedio': 196, 'alto': 212 },
+                    16: { 'muy_bajo': 175, 'bajo': 192, 'promedio': 206, 'alto': 221 },
+                    17: { 'muy_bajo': 184, 'bajo': 201, 'promedio': 215, 'alto': 229 }
+                },
+                'femenino': {
+                    13: { 'muy_bajo': 118, 'bajo': 133, 'promedio': 147, 'alto': 163 },
+                    14: { 'muy_bajo': 121, 'bajo': 137, 'promedio': 151, 'alto': 167 },
+                    15: { 'muy_bajo': 123, 'bajo': 138, 'promedio': 151, 'alto': 167 },
+                    16: { 'muy_bajo': 126, 'bajo': 141, 'promedio': 154, 'alto': 169 },
+                    17: { 'muy_bajo': 129, 'bajo': 144, 'promedio': 157, 'alto': 172 }
+                }
+            };
+
+            if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
+                return 'No clasificado';
+            }
+
+            const lim = clasificaciones[genero][edad];
+            
+            if (valor <= lim.muy_bajo) return 'Muy Bajo';
+            if (valor <= lim.bajo) return 'Bajo';
+            if (valor <= lim.promedio) return 'Promedio';
+            if (valor <= lim.alto) return 'Alto';
+            return 'Muy Alto';
+        }
+
+        // Cálculo de la clasificación del shuttle 4x10m (menores tiempos son mejores)
+        function getClasificacionShuttle4x10(valor, genero, edad) {
+            const clasificaciones = {
+                'masculino': {
+                    13: { 'muy_bajo': 13.0, 'bajo': 12.2, 'promedio': 11.8, 'alto': 11.1 },
+                    14: { 'muy_bajo': 12.6, 'bajo': 11.8, 'promedio': 11.4, 'alto': 10.8 },
+                    15: { 'muy_bajo': 12.1, 'bajo': 12.0, 'promedio': 11.4, 'alto': 10.4 },
+                    16: { 'muy_bajo': 11.8, 'bajo': 11.7, 'promedio': 11.0, 'alto': 10.1 },
+                    17: { 'muy_bajo': 11.8, 'bajo': 11.7, 'promedio': 11.0, 'alto': 10.1 }
+                },
+                'femenino': {
+                    13: { 'muy_bajo': 13.9, 'bajo': 13.0, 'promedio': 12.5, 'alto': 11.8 },
+                    14: { 'muy_bajo': 13.8, 'bajo': 12.9, 'promedio': 12.4, 'alto': 11.7 },
+                    15: { 'muy_bajo': 13.7, 'bajo': 12.9, 'promedio': 12.4, 'alto': 11.7 },
+                    16: { 'muy_bajo': 13.6, 'bajo': 12.8, 'promedio': 12.3, 'alto': 11.6 },
+                    17: { 'muy_bajo': 13.5, 'bajo': 12.8, 'promedio': 12.3, 'alto': 11.7 }
+                }
+            };
+
+            if (!clasificaciones[genero] || !clasificaciones[genero][edad]) {
+                return 'No clasificado';
+            }
+
+            const lim = clasificaciones[genero][edad];
+            
+            if (valor >= lim.muy_bajo) return 'Muy Bajo';
+            if (valor >= lim.bajo) return 'Bajo';
+            if (valor >= lim.promedio) return 'Promedio';
+            if (valor >= lim.alto) return 'Alto';
+            return 'Muy Alto';
+        }
+
         // Obtener edad a partir de fecha de nacimiento
         function getEdad(fechaNacimiento) {
             const nacimiento = new Date(fechaNacimiento);
@@ -463,25 +547,75 @@
             const edad = getEdad(datos.fechaNacimiento);
             const imc = calcularIMC(datos.peso, datos.altura);
             const clasificacionIMC = getClasificacionIMC(imc, datos.genero, edad);
+            const clasificacionCintura = getClasificacionCintura(datos.cintura, datos.genero, edad);
             const clasificacionCardio = getClasificacionCardio(datos.shuttle20m, datos.genero, edad);
             const clasificacionSalto = getClasificacionSalto(datos.salto, datos.genero, edad);
             const clasificacionFuerza = getClasificacionFuerza(datos.fuerza, datos.genero, edad);
+            const clasificacionShuttle4x10 = getClasificacionShuttle4x10(datos.shuttle4x10m, datos.genero, edad);
 
             const resultado = `
                 <h4>Evaluación de: ${datos.nombre}</h4>
                 <p><strong>Edad:</strong> ${edad} años</p>
                 <p><strong>Género:</strong> ${datos.genero}</p>
+                
+                <h4>Resultados y Clasificaciones:</h4>
                 <p><strong>IMC:</strong> ${imc.toFixed(2)} - Categoría: ${clasificacionIMC}</p>
+                <p><strong>Perímetro de Cintura:</strong> ${datos.cintura} cm - Categoría: ${clasificacionCintura}</p>
                 <p><strong>Cardiorespiratorio:</strong> ${datos.shuttle20m} etapas - Categoría: ${clasificacionCardio}</p>
                 <p><strong>Salto Horizontal:</strong> ${datos.salto} cm - Categoría: ${clasificacionSalto}</p>
                 <p><strong>Fuerza Manual:</strong> ${datos.fuerza} kg - Categoría: ${clasificacionFuerza}</p>
-                <p><strong>Perímetro de Cintura:</strong> ${datos.cintura} cm</p>
+                <p><strong>Shuttle 4x10m:</strong> ${datos.shuttle4x10m} seg - Categoría: ${clasificacionShuttle4x10}</p>
                 
                 <h4>Valoración General:</h4>
                 <p>El estado físico general del usuario se clasifica como: <strong>${evaluarEstadoFisico(clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC)}</strong></p>
             `;
 
             document.getElementById('resultadoDetallado').innerHTML = resultado;
+            mostrarRecomendaciones(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC);
+            mostrarInfoSalud(datos, clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC);
+        }
+
+        // Mostrar recomendaciones
+        function mostrarRecomendaciones(datos, cardio, salto, fuerza, imc) {
+            let recomendaciones = '<h4>Recomendaciones:</h4><ul>';
+            
+            if (cardio.includes('Muy Bajo') || cardio.includes('Bajo')) {
+                recomendaciones += '<li>Realizar actividades aeróbicas como correr, nadar o andar en bicicleta 3-4 veces por semana para mejorar la resistencia cardiovascular.</li>';
+            }
+            
+            if (salto.includes('Muy Bajo') || salto.includes('Bajo')) {
+                recomendaciones += '<li>Practicar ejercicios de salto y plyometría para mejorar la fuerza explosiva de las piernas.</li>';
+            }
+            
+            if (fuerza.includes('Muy Bajo') || fuerza.includes('Bajo')) {
+                recomendaciones += '<li>Incluir ejercicios de fuerza con peso corporal como flexiones, dominadas y agarres para mejorar la fuerza de brazos y manos.</li>';
+            }
+            
+            if (imc.includes('Muy Alto') || imc.includes('Alto')) {
+                recomendaciones += '<li>Mantener una dieta equilibrada y aumentar la actividad física para lograr un peso saludable.</li>';
+            }
+            
+            if (imc.includes('Muy Bajo') || imc.includes('Bajo')) {
+                recomendaciones += '<li>Consultar con un nutricionista para asegurar una nutrición adecuada y un crecimiento saludable.</li>';
+            }
+            
+            recomendaciones += '</ul>';
+            
+            document.getElementById('recomendaciones').innerHTML = recomendaciones;
+        }
+
+        // Mostrar información sobre salud
+        function mostrarInfoSalud(datos, cardio, salto, fuerza, imc) {
+            const info = `
+                <h4>Importancia de los Tests para la Salud:</h4>
+                <p><strong>Test de Resistencia Cardiorespiratoria:</strong> La capacidad aeróbica está fuertemente asociada con una mejor salud cardiovascular actual y futura. Niveles bajos se relacionan con riesgo aumentado de enfermedades cardiovasculares.</p>
+                <p><strong>Test de Salto Horizontal:</strong> Mide la fuerza explosiva de las piernas, importante para la salud ósea y muscular. Niveles bajos pueden indicar deficiencias en el desarrollo físico.</p>
+                <p><strong>Test de Fuerza de Prehensión Manual:</strong> Indicador de la fuerza general y salud muscular. Se ha relacionado con mejores resultados en salud cardiovascular y metabólica.</p>
+                <p><strong>Índice de Masa Corporal (IMC):</strong> Indicador de composición corporal. Valores extremos (muy bajo o muy alto) pueden indicar problemas de salud.</p>
+                <p><strong>Test de Shuttle 4x10m:</strong> Evalúa velocidad, agilidad y coordinación, aspectos importantes para la salud esquelética y el desarrollo motor.</p>
+            `;
+            
+            document.getElementById('infoSalud').innerHTML = info;
         }
 
         // Evaluar estado físico general
@@ -537,7 +671,8 @@
                 cintura: parseFloat(document.getElementById('cintura').value),
                 shuttle20m: parseFloat(document.getElementById('shuttle20m').value),
                 salto: parseInt(document.getElementById('salto').value),
-                fuerza: parseFloat(document.getElementById('fuerza').value)
+                fuerza: parseFloat(document.getElementById('fuerza').value),
+                shuttle4x10m: parseFloat(document.getElementById('shuttle4x10m').value)
             };
 
             try {
@@ -582,6 +717,7 @@
             const promedioCardio = evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / total;
             const promedioSalto = evaluaciones.reduce((sum, e) => sum + e.salto, 0) / total;
             const promedioFuerza = evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / total;
+            const promedioShuttle4x10 = evaluaciones.reduce((sum, e) => sum + e.shuttle4x10m, 0) / total;
 
             document.getElementById('statsGrid').innerHTML = `
                 <div class="stat-card">
@@ -616,6 +752,10 @@
                     <h3>Fuerza Promedio</h3>
                     <p>${promedioFuerza.toFixed(1)} kg</p>
                 </div>
+                <div class="stat-card">
+                    <h3>Shuttle 4x10m Promedio</h3>
+                    <p>${promedioShuttle4x10.toFixed(1)} seg</p>
+                </div>
             `;
 
             // Actualizar gráficos
@@ -635,7 +775,7 @@
             if (distribucionEdadChart) distribucionEdadChart.destroy();
             distribucionEdadChart = new Chart(ctx1, {
                 type: 'bar',
-                data: {
+                 {
                     labels: Object.keys(edadCount),
                     datasets: [{
                         label: 'Número de Evaluaciones',
@@ -656,24 +796,29 @@
                 }
             });
 
-            // Gráfico de rendimiento promedio
+            // Gráfico de rendimiento promedio (radar)
             const ctx2 = document.getElementById('rendimientoChart').getContext('2d');
             if (rendimientoChart) rendimientoChart.destroy();
             rendimientoChart = new Chart(ctx2, {
                 type: 'radar',
-                data: {
-                    labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC'],
+                 {
+                    labels: ['Cardiorespiratorio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
                     datasets: [{
                         label: 'Promedio General',
-                        data: [
+                         [
                             evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / evaluaciones.length,
                             evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / evaluaciones.length,
                             evaluaciones.reduce((sum, e) => sum + e.salto, 0) / evaluaciones.length,
-                            evaluaciones.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / evaluaciones.length
+                            evaluaciones.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / evaluaciones.length,
+                            evaluaciones.reduce((sum, e) => sum + e.shuttle4x10m, 0) / evaluaciones.length
                         ],
                         backgroundColor: 'rgba(46, 204, 113, 0.2)',
                         borderColor: 'rgba(46, 204, 113, 1)',
-                        borderWidth: 2
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(46, 204, 113, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(46, 204, 113, 1)'
                     }]
                 },
                 options: {
@@ -682,6 +827,22 @@
                         title: {
                             display: true,
                             text: 'Rendimiento Promedio'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
                         }
                     }
                 }
@@ -697,32 +858,62 @@
 
             if (datosFiltrados.length === 0) return;
 
-            // Gráfico por edad
+            // Gráfico por edad para todas las pruebas
             const edades = [...new Set(datosFiltrados.map(e => getEdad(e.fechaNacimiento)))].sort();
             const cardioPorEdad = edades.map(edad => {
                 const datosEdad = datosFiltrados.filter(e => getEdad(e.fechaNacimiento) === edad);
                 return datosEdad.reduce((sum, e) => sum + e.shuttle20m, 0) / datosEdad.length;
+            });
+            const saltoPorEdad = edades.map(edad => {
+                const datosEdad = datosFiltrados.filter(e => getEdad(e.fechaNacimiento) === edad);
+                return datosEdad.reduce((sum, e) => sum + e.salto, 0) / datosEdad.length;
+            });
+            const fuerzaPorEdad = edades.map(edad => {
+                const datosEdad = datosFiltrados.filter(e => getEdad(e.fechaNacimiento) === edad);
+                return datosEdad.reduce((sum, e) => sum + e.fuerza, 0) / datosEdad.length;
             });
 
             const ctx3 = document.getElementById('analisisEdadChart').getContext('2d');
             if (analisisEdadChart) analisisEdadChart.destroy();
             analisisEdadChart = new Chart(ctx3, {
                 type: 'line',
-                data: {
+                 {
                     labels: edades,
-                    datasets: [{
-                        label: 'Rendimiento Cardiorespiratorio',
-                        data: cardioPorEdad,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Rendimiento Cardiorespiratorio',
+                             cardioPorEdad,
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Salto Horizontal',
+                             saltoPorEdad,
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Fuerza Manual',
+                             fuerzaPorEdad,
+                            borderColor: 'rgb(54, 162, 235)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            tension: 0.1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Rendimiento Cardiorespiratorio por Edad'
+                            text: 'Rendimiento por Edad y Prueba'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
                         }
                     }
                 }
@@ -736,26 +927,28 @@
             if (comparacionGeneroChart) comparacionGeneroChart.destroy();
             comparacionGeneroChart = new Chart(ctx4, {
                 type: 'bar',
-                data: {
-                    labels: ['Cardio', 'Fuerza', 'Salto', 'IMC'],
+                 {
+                    labels: ['Cardio', 'Fuerza', 'Salto', 'IMC', 'Shuttle 4x10m'],
                     datasets: [
                         {
                             label: 'Hombres',
-                            data: [
+                             [
                                 hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle20m, 0) / hombres.length : 0,
                                 hombres.length ? hombres.reduce((sum, e) => sum + e.fuerza, 0) / hombres.length : 0,
                                 hombres.length ? hombres.reduce((sum, e) => sum + e.salto, 0) / hombres.length : 0,
-                                hombres.length ? hombres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / hombres.length : 0
+                                hombres.length ? hombres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / hombres.length : 0,
+                                hombres.length ? hombres.reduce((sum, e) => sum + e.shuttle4x10m, 0) / hombres.length : 0
                             ],
                             backgroundColor: 'rgba(54, 162, 235, 0.6)'
                         },
                         {
                             label: 'Mujeres',
-                            data: [
+                             [
                                 mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle20m, 0) / mujeres.length : 0,
                                 mujeres.length ? mujeres.reduce((sum, e) => sum + e.fuerza, 0) / mujeres.length : 0,
                                 mujeres.length ? mujeres.reduce((sum, e) => sum + e.salto, 0) / mujeres.length : 0,
-                                mujeres.length ? mujeres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / mujeres.length : 0
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / mujeres.length : 0,
+                                mujeres.length ? mujeres.reduce((sum, e) => sum + e.shuttle4x10m, 0) / mujeres.length : 0
                             ],
                             backgroundColor: 'rgba(255, 99, 132, 0.6)'
                         }
@@ -781,25 +974,39 @@
             }
 
             const headers = ['ID', 'Nombre', 'Fecha Nacimiento', 'Género', 'Fecha Evaluación', 
-                           'Altura', 'Peso', 'Cintura', 'Shuttle 20m', 'Salto', 'Fuerza', 'IMC', 'Edad'];
+                           'Altura', 'Peso', 'Cintura', 'Shuttle 20m', 'Salto', 'Fuerza', 'Shuttle 4x10m', 
+                           'IMC', 'Edad', 'Clasificación IMC', 'Clasificación Cintura', 
+                           'Clasificación Cardiorespiratorio', 'Clasificación Salto', 
+                           'Clasificación Fuerza', 'Clasificación Shuttle 4x10m'];
             
             const csvContent = [
                 headers.join(','),
-                ...evaluaciones.map(e => [
-                    e.id,
-                    e.nombre,
-                    e.fechaNacimiento,
-                    e.genero,
-                    e.fechaEvaluacion,
-                    e.altura,
-                    e.peso,
-                    e.cintura,
-                    e.shuttle20m,
-                    e.salto,
-                    e.fuerza,
-                    calcularIMC(e.peso, e.altura).toFixed(2),
-                    getEdad(e.fechaNacimiento)
-                ].join(','))
+                ...evaluaciones.map(e => {
+                    const edad = getEdad(e.fechaNacimiento);
+                    const imc = calcularIMC(e.peso, e.altura);
+                    return [
+                        e.id,
+                        e.nombre,
+                        e.fechaNacimiento,
+                        e.genero,
+                        e.fechaEvaluacion,
+                        e.altura,
+                        e.peso,
+                        e.cintura,
+                        e.shuttle20m,
+                        e.salto,
+                        e.fuerza,
+                        e.shuttle4x10m,
+                        imc.toFixed(2),
+                        edad,
+                        getClasificacionIMC(imc, e.genero, edad),
+                        getClasificacionCintura(e.cintura, e.genero, edad),
+                        getClasificacionCardio(e.shuttle20m, e.genero, edad),
+                        getClasificacionSalto(e.salto, e.genero, edad),
+                        getClasificacionFuerza(e.fuerza, e.genero, edad),
+                        getClasificacionShuttle4x10(e.shuttle4x10m, e.genero, edad)
+                    ].join(',');
+                })
             ].join('\n');
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
