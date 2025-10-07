@@ -168,7 +168,7 @@
         height: 300px;
         margin: 20px 0;
     }
-   /* === Estilos base === */
+/* === Estilos base === */
 .test-result {
     display: flex;
     align-items: center;
@@ -200,10 +200,10 @@
     flex: 2;
     position: relative;
     height: 24px;
-    border-radius: 12px;
+    border-radius: 12px; /* Bordes redondeados */
     overflow: hidden;
-    background: #e9ecef;
-    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.08);
+    background: #e9ecef; /* Fondo base gris muy claro */
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.08); /* Sombra sutil para relieve */
 }
 .test-scale-inner {
     height: 100%;
@@ -215,36 +215,28 @@
     height: 100%;
     position: relative;
     transition: background 0.3s ease;
+    border-right: 1px solid rgba(255, 255, 255, 0.4); /* Borde blanco fino entre segmentos */
 }
-.scale-segment::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: rgba(255, 255, 255, 0.4);
-    right: 0;
+.scale-segment:last-child {
+    border-right: none; /* Quitar borde del último segmento */
 }
-.scale-segment:last-child::after {
-    display: none;
-}
-/* === Paleta de colores refinada === */
+/* === Paleta de colores refinada (semáforo) === */
 .segment-very-low {
-    background: linear-gradient(90deg, #e74c3c, #c0392b);
+    background: linear-gradient(90deg, #e74c3c, #c0392b); /* Rojo - bajo/insuficiente */
 }
 .segment-low {
-    background: linear-gradient(90deg, #f39c12, #e67e22);
+    background: linear-gradient(90deg, #f39c12, #e67e22); /* Naranja - intermedio/promedio */
 }
 .segment-average {
-    background: linear-gradient(90deg, #8bc34a, #b3ff66);
+    background: linear-gradient(90deg, #8bc34a, #b3ff66); /* Verde - óptimo/alto rendimiento */
 }
 .segment-high {
-    background: linear-gradient(90deg, #81d4fa, #03a9f4);
+    background: linear-gradient(90deg, #81d4fa, #03a9f4); /* Azul claro - alto */
 }
 .segment-very-high {
-    background: linear-gradient(90deg, #1e88e5, #1565c0);
+    background: linear-gradient(90deg, #1e88e5, #1565c0); /* Azul fuerte - muy alto */
 }
-/* === Marcador === */
+/* === Marcador (puntero) === */
 .test-pointer {
     position: absolute;
     top: -3px;
@@ -268,6 +260,7 @@
     font-size: 14px;
     font-weight: bold;
     pointer-events: none; /* Evita que la flecha interfiera con clics */
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); /* Sombra sutil para resaltar */
 }
 /* === Etiquetas === */
 .test-labels {
@@ -293,6 +286,8 @@
 .zone-promedio { background: #8bc34a; }     /* verde */
 .zone-alto { background: #81d4fa; }         /* azul claro */
 .zone-muy-alto { background: #1e88e5; }     /* azul fuerte */
+
+       
     .advice-box {
         background: #fff;
         border-left: 4px solid #3498db;
@@ -949,7 +944,9 @@ function crearResultadoTest(nombre, descripcion, valor, unidad, genero, edad, ti
 // Badge y zone-indicator con lógica ajustada
 // ...
 // Badge y zone-indicator con lógica ajustada
-// CORRECCIÓN: Incluir 'shuttle4x10' en la lógica de "menos es mejor"
+// ... (dentro de crearResultadoTest, después de obtener limites y clasificacion)
+
+// Badge y zone-indicator con lógica ajustada
 const isMenorEsMejor = (tipo === 'cintura' || tipo === 'shuttle4x10'); // <-- Añadido 'shuttle4x10'
 const isIMC = (tipo === 'imc'); // <-- Identificar IMC por separado
 
@@ -999,7 +996,6 @@ badge.className = `category-badge category-${claseBadge}`;
 badge.textContent = clasificacion;
 infoDiv.appendChild(badge);
 div.appendChild(infoDiv);
-
 
 // === Escala visual con segmentos de ancho real ===
 const scaleDiv = document.createElement('div');
@@ -1101,6 +1097,7 @@ zonaDiv.appendChild(zonaText);
 zonaDiv.appendChild(scoreSpan);
 div.appendChild(zonaDiv);
 
+// ... (resto del código para consejos sigue igual)
 // ... (resto del código para consejos sigue igual)
 
     // Consejo
@@ -1652,6 +1649,7 @@ div.appendChild(zonaDiv);
     </script>
 </body>
 </html>
+
 
 
 
