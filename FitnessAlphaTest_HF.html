@@ -9,6 +9,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    <style>
    
    :root {
@@ -1148,7 +1153,34 @@
     background: linear-gradient(90deg, rgba(37, 100, 130, 1) 0%, rgba(7, 83, 97, 1) 91%, rgba(0, 180, 215, 1) 100%);
     color: white;
 }
+/* Botón "Imprimir Informe" - con el mismo gradiente que "Nuevo Test" */
+#btnGenerarPDF {
+    background: linear-gradient(90deg, rgba(47, 125, 163, 1) 0%, rgba(9, 104, 121, 1) 91%, rgba(0, 212, 255, 1) 100%);
+    color: white;
+    border: none;
+}
+#btnGenerarPDF:hover {
+    background: linear-gradient(90deg, rgba(37, 100, 130, 1) 0%, rgba(7, 83, 97, 1) 91%, rgba(0, 180, 215, 1) 100%);
+    color: white;
+}
 
+#btnGenerarPDF2 {
+    background: linear-gradient(90deg, rgba(47, 125, 163, 1) 0%, rgba(9, 104, 121, 1) 91%, rgba(0, 212, 255, 1) 100%);
+    color: white;
+    border: none;
+}
+#btnGenerarPDF2:hover {
+    background: linear-gradient(90deg, rgba(37, 100, 130, 1) 0%, rgba(7, 83, 97, 1) 91%, rgba(0, 180, 215, 1) 100%);
+    color: white;
+}
+
+/* Botón "Exportar CSV" - con el mismo gradiente que "Nuevo Test" */
+#btnexportcsv{
+    
+background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1) 100%, rgba(245, 235, 235, 1) 100%);
+    color: white;
+    border: none;
+}
 
 /* Estilos para la lista de autocompletado */
 .autocomplete-items {
@@ -1542,6 +1574,8 @@
 .stat-card.shuttle-promedio p { color: #34495e; } /* Gris azulado para Shuttle 4x10m Promedio */
 
 
+
+
 /* CHART ESTADISTICAS */
 /* --- Estilo específico para el contenedor del gráfico de distribución por edad y sexo --- */
 /* Selecciona el div con id="EdadChart" que contiene el canvas con id="distribucionEdadChart" */
@@ -1646,7 +1680,233 @@
     height: 16px; /* Alto del color */
     border-radius: 4px; /* Bordes redondeados */
 }
+/* Estilo para alinear los botones en la sección de Estadísticas */
+    .estadisticas-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .estadisticas-buttons {
+        display: flex;
+        gap: 10px; /* Espacio entre botones */
+        margin-left: auto; /* Empuja los botones hacia la derecha */
+    }
+	
+	
+	    /* ... (otros estilos) ... */
 
+    /* Estilos para el Spinner */
+    .spinner-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* Asegura que esté por encima de otros elementos */
+    }
+
+    .spinner {
+        border: 8px solid #f3f3f3; /* Color del borde (fondo) */
+        border-top: 8px solid #3498db; /* Color del borde superior (activo) */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite; /* Animación de giro */
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .spinner-container p {
+        color: white;
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+
+
+    /* Estilos para la vista de impresión de estadísticas */
+    @media print {
+        body {
+            margin: 0;
+            padding: 20px;
+            background: white; /* Fondo blanco para impresión */
+            color: black; /* Texto negro para impresión */
+        }
+        /* Ocultar todos los elementos excepto el contenedor de impresión */
+        .container, .header, .nav-tabs, .tab-content:not(#estadisticas-imprimir-temp) {
+            display: none !important;
+        }
+        /* Mostrar solo el contenedor temporal */
+        #estadisticas-imprimir-temp {
+            display: block !important;
+            width: 100%;
+            max-width: none; /* Eliminar restricciones de ancho */
+            margin: 0;
+            padding: 20px;
+            box-shadow: none; /* Quitar sombras para impresión */
+            border: none; /* Quitar bordes para impresión */
+            background: white; /* Asegurar fondo blanco */
+        }
+        /* Ajustar estilos dentro del contenedor temporal para impresión */
+        #estadisticas-imprimir-temp .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajustar ancho de tarjetas */
+            gap: 15px; /* Reducir espacio */
+            margin: 15px 0;
+        }
+        #estadisticas-imprimir-temp .stat-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px; /* Reducir bordes */
+            padding: 10px; /* Reducir padding */
+            page-break-inside: avoid; /* Evitar cortar tarjetas entre páginas */
+        }
+        #estadisticas-imprimir-temp .chart-container {
+            margin: 20px 0;
+            text-align: center;
+            page-break-inside: avoid; /* Evitar cortar gráficos entre páginas */
+        }
+        #estadisticas-imprimir-temp .chart-container img {
+            width: 100%;
+            max-width: 600px; /* Limitar ancho máximo */
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #estadisticas-imprimir-temp .additional-sections {
+            margin: 20px 0;
+            padding: 10px; /* Reducir padding */
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            page-break-inside: avoid; /* Evitar cortar secciones entre páginas */
+        }
+        #estadisticas-imprimir-temp h2, #estadisticas-imprimir-temp h3, #estadisticas-imprimir-temp h4 {
+            color: #2c3e50;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        #estadisticas-imprimir-temp ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        #estadisticas-imprimir-temp li {
+            margin: 5px 0;
+        }
+    }
+
+
+<style>
+    /* ... tus estilos existentes ... */
+
+    /* Estilos para la vista de impresión de estadísticas */
+    @media print {
+        body {
+            margin: 0;
+            padding: 20px;
+            background: white; /* Fondo blanco para impresión */
+            color: black; /* Texto negro para impresión */
+        }
+        /* Ocultar todos los elementos excepto el contenedor de impresión */
+        .container, .header, .nav-tabs, .tab-content:not(#analisis-imprimir-temp) {
+            display: none !important;
+        }
+        /* Mostrar solo el contenedor temporal */
+        #analisis-imprimir-temp {
+            display: block !important;
+            width: 100%;
+            max-width: none; /* Eliminar restricciones de ancho */
+            margin: 0;
+            padding: 20px;
+            box-shadow: none; /* Quitar sombras para impresión */
+            border: none; /* Quitar bordes para impresión */
+            background: white; /* Asegurar fondo blanco */
+        }
+        /* Ajustar estilos dentro del contenedor temporal para impresión */
+        #analisis-imprimir-temp .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajustar ancho de tarjetas */
+            gap: 15px; /* Reducir espacio */
+            margin: 15px 0;
+        }
+        #analisis-imprimir-temp .stat-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px; /* Reducir bordes */
+            padding: 10px; /* Reducir padding */
+            page-break-inside: avoid; /* Evitar cortar tarjetas entre páginas */
+        }
+        #analisis-imprimir-temp .chart-container {
+            margin: 20px 0;
+            text-align: center;
+            page-break-inside: avoid; /* Evitar cortar gráficos entre páginas */
+        }
+        #analisis-imprimir-temp .chart-container img {
+            width: 100%;
+            max-width: 600px; /* Limitar ancho máximo */
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #analisis-imprimir-temp .additional-sections {
+            margin: 20px 0;
+            padding: 10px; /* Reducir padding */
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            page-break-inside: avoid; /* Evitar cortar secciones entre páginas */
+        }
+        #analisis-imprimir-temp h2, #analisis-imprimir-temp h3, #analisis-imprimir-temp h4 {
+            color: #2c3e50;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        #analisis-imprimir-temp ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        #analisis-imprimir-temp li {
+            margin: 5px 0;
+        }
+    }
+
+    /* Estilos para la vista de impresión de análisis (nuevo) */
+    @media print {
+        /* Asegurar que el contenedor de análisis temporal también se muestre */
+        #analisis-imprimir-temp {
+            display: block !important;
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 20px;
+            box-shadow: none;
+            border: none;
+            background: white;
+        }
+        /* Ocultar otros contenedores de impresión si existen */
+        #estadisticas-imprimir-temp {
+            display: none !important;
+        }
+        /* Ajustes específicos para análisis */
+        #analisis-imprimir-temp .form-group {
+            margin-bottom: 10px;
+        }
+        #analisis-imprimir-temp select {
+            width: auto; /* Permitir que el select se ajuste al contenido */
+        }
+    }
+</style>
 </style>
 </head>
 <body>
@@ -1740,7 +2000,7 @@
                 <div id="resultados" class="tab-content">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
 						<h2>Resultados de Evaluación</h2>
-						<button id="btnImprimirInforme" class="btn btn-info" onclick="imprimirInforme()">Imprimir Informe</button>
+						<button id="btnImprimirInforme" class="btn btn-info" onclick="generarPDFInforme()">Imprimir Informe</button>
 					</div>
                     <div id="resultadosIndividuales" class="result-card">
                         <h3>Evaluación Individual</h3>
@@ -1784,10 +2044,18 @@
                 </div>
             <!-- Pestaña de Estadísticas -->
             <div id="estadisticas" class="tab-content">
+			<div style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Estadísticas Generales</h2>
-                <button class="btn btn-warning" onclick="exportToCSV()">Exportar a CSV</button>
+				<div style="display: flex; justify-content: space-between; align-items: center;">
+				 <button id="btnGenerarPDF" class="btn btn-info" onclick="generarPDFEstadisticasV2()">Generar PDF Estadisticas</button>
+                <button id="btnexportcsv" class="btn btn-warning" onclick="exportToCSV()">Exportar a CSV</button>
+				</div>
+				</div>
+				
                 <div class="stats-grid" id="statsGrid"></div>
 				
+				
+				 
 					
 				<div style="display: flex; justify-content: left; align-items: center; padding: 0.3rem;">
 					<header style="text-align: left; max-width: 800px; width: 100%;">
@@ -1929,7 +2197,15 @@
             </div>
             <!-- Pestaña de Análisis -->
             <div id="analisis" class="tab-content">
+			<div style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Análisis Detallado</h2>
+				<div style="display: flex; justify-content: space-between; align-items: center;">
+				<button id="btnGenerarPDF2" class="btn btn-info" onclick="generarPDFAnalisisV3()">Generar PDF Analisis</button>
+			</div>
+			</div>
+				
+				
+				
                 <div class="form-group">
                     <label>Filtrar por Género:</label>
                     <select id="filtroGenero" onchange="actualizarAnalisis()">
@@ -4153,72 +4429,50 @@ function actualizarAnalisis() {
 			actualizarContadorSiguienteID();
 		}
 		
-		
-// Función para imprimir el informe
-function imprimirInforme() {
-    const resultadoDetallado = document.getElementById('resultadoDetallado').innerHTML;
-    const testResultsContainer = document.getElementById('testResultsContainer').innerHTML;
-    const comparacionChartCanvas = document.getElementById('comparacionResultadosChart');
-    let chartDataURL = null;
+// Asegúrate de que jsPDF esté disponible globalmente
+const { jsPDF } = window.jspdf;
 
-    // Intentar obtener la imagen del gráfico si está renderizado
-    if (comparacionChartCanvas && comparacionChartCanvas.getContext('2d')) {
-        chartDataURL = comparacionChartCanvas.toDataURL('image/png');
-    }
+// Función para generar el PDF del informe individual (Mejorada con estilos CSS)
+async function generarPDFInforme() {
+    // Mostrar el spinner (opcional, si tienes el contenedor de spinner)
+    // document.getElementById('pdf-spinner-container').style.display = 'flex';
+ // Mostrar el spinner INMEDIATAMENTE
+    document.getElementById('pdf-spinner-container').style.display = 'flex';
+	
+    try {
+        const resultadoDetalladoElement = document.getElementById('resultadoDetallado');
+        const testResultsContainerElement = document.getElementById('testResultsContainer');
+        const comparacionChartCanvas = document.getElementById('comparacionResultadosChart');
 
-    // Verificar si hay contenido en al menos el informe detallado
-    if (!resultadoDetallado.trim()) {
-        alert('No hay informe para imprimir. Por favor, registre una evaluación primero.');
-        return; // Salir de la función si no hay contenido en el informe
-    }
+        // Verificar si hay contenido en al menos el informe detallado
+        if (!resultadoDetalladoElement || !resultadoDetalladoElement.innerHTML.trim()) {
+            alert('No hay informe para generar PDF. Por favor, registre una evaluación primero.');
+            return; // Salir de la función si no hay contenido en el informe
+        }
 
-    // Guardar el contenido ORIGINAL de la pestaña de Resultados
-    const contenidoOriginalResultados = document.getElementById('resultadosIndividuales').innerHTML;
+        // Capturar la imagen del gráfico si está renderizado
+        let chartDataURL = null;
+        if (comparacionChartCanvas && comparacionChartCanvas.getContext('2d')) {
+            // Asegurar que el gráfico haya terminado de renderizar (puede necesitar un pequeño delay)
+            await new Promise(resolve => setTimeout(resolve, 500)); // Espera 500ms
+            try {
+                chartDataURL = comparacionChartCanvas.toDataURL('image/png');
+            } catch (e) {
+                console.error("Error capturando imagen del gráfico de comparación:", e);
+            }
+        }
 
-    // Construir el contenido a imprimir, incluyendo título, informe, gráfico e info detallada
-    let contenidoImprimir = `
-        <h2>Resultados de Evaluación</h2>
-        <h3>Evaluación Individual</h3>
-        <div id="resultadoDetallado">
-            ${resultadoDetallado}
-        </div>
-    `;
-
-    // Añadir el gráfico de comparación si existe una imagen capturada
-    if (chartDataURL) {
-        contenidoImprimir += `
-            <div class="container">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div>
-                            <h2 class="chart-title">Comparación de Resultados ALPHA-Fitness</h2>
-                            <p class="chart-subtitle">Resultados del usuario vs. valores de referencia según el manual ALPHA-Fitness</p>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <img src="${chartDataURL}" alt="Gráfico de Comparación de Resultados" style="width: 100%; height: auto;">
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // Añadir los resultados visuales detallados si existen
-    if (testResultsContainer.trim() !== "") {
-         contenidoImprimir += `<div id="testResultsContainer">${testResultsContainer}</div>`;
-    }
-
-    // Reemplazar el contenido de la pestaña de resultados con solo el contenido a imprimir
-    document.getElementById('resultadosIndividuales').innerHTML = `
-        <html>
+        // Construir el contenido HTML para el PDF, incluyendo estilos CSS
+        let contenidoHTML = `
+            <html>
             <head>
                 <title>Informe de Evaluación - ALPHA Fitness</title>
                 <style>
-                    /* Estilos básicos para la impresión */
-                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    /* Estilos básicos para la impresión y el PDF */
+                    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
                     h2 { color: #2c3e50; }
                     h3 { color: #34495e; }
-                    /* Incluye estilos específicos para #resultadoDetallado y .categoria-badge */
+                    /* Estilos específicos para el contenedor principal del informe */
                     #resultadoDetallado {
                         max-width: 850px;
                         margin: 2rem auto;
@@ -4357,14 +4611,14 @@ function imprimirInforme() {
                     .container { max-width: 100%; margin: 2rem auto; }
                     .chart-card {
                         background: white;
-                        border-radius: var(--border-radius, 12px);
-                        box-shadow: var(--shadow, 0 4px 12px rgba(0,0,0,0.1));
+                        border-radius: 12px; /* var(--border-radius, 12px); */
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* var(--shadow, 0 4px 12px rgba(0,0,0,0.1)); */
                         padding: 24px;
                         margin-bottom: 30px;
                     }
                     .chart-header { margin-bottom: 20px; }
-                    .chart-title { font-size: 1.5rem; font-weight: 600; color: var(--text-primary, #1e293b); }
-                    .chart-subtitle { font-size: 0.9rem; color: var(--text-secondary, #64748b); }
+                    .chart-title { font-size: 1.5rem; font-weight: 600; color: #1e293b; } /* var(--text-primary, #1e293b); */
+                    .chart-subtitle { font-size: 0.9rem; color: #64748b; } /* var(--text-secondary, #64748b); */
                     .chart-container { height: 400px; display: flex; align-items: center; justify-content: center; }
                     /* Estilos para resultados detallados (si se incluyen) */
                     .test-result {
@@ -4397,27 +4651,733 @@ function imprimirInforme() {
                 </style>
             </head>
             <body>
-                ${contenidoImprimir}
+                <h2>Resultados de Evaluación</h2>
+                <h3>Evaluación Individual</h3>
+                <div id="resultadoDetallado">
+                    ${resultadoDetalladoElement.innerHTML}
+                </div>
+        `;
+
+        // Añadir el gráfico de comparación si existe una imagen capturada
+        if (chartDataURL) {
+            contenidoHTML += `
+                <div class="container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h2 class="chart-title">Comparación de Resultados ALPHA-Fitness</h2>
+                                <p class="chart-subtitle">Resultados del usuario vs. valores de referencia según el manual ALPHA-Fitness</p>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <img src="${chartDataURL}" alt="Gráfico de Comparación de Resultados" style="width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            contenidoHTML += `<p style="text-align: center; color: red;">(Gráfico de Comparación no disponible)</p>`;
+        }
+
+        // Añadir los resultados visuales detallados si existen
+        if (testResultsContainerElement && testResultsContainerElement.innerHTML.trim() !== "") {
+             contenidoHTML += `<div id="testResultsContainer">${testResultsContainerElement.innerHTML}</div>`;
+        }
+
+        // Cerrar las etiquetas de body y html
+        contenidoHTML += `
             </body>
-        </html>
-    `;
+            </html>
+        `;
 
-    window.print();
+        // Crear un contenedor temporal para html2canvas
+        const tempContainer = document.createElement('div');
+        tempContainer.id = 'temp-pdf-content';
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px'; // Ocultar fuera de la vista
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '210mm'; // Ancho A4
+        tempContainer.style.backgroundColor = 'white';
+        tempContainer.style.padding = '20px';
+        tempContainer.style.boxSizing = 'border-box';
+        // Importante: innerHTML no interpreta las etiquetas <style> y <html> de la misma manera que un navegador.
+        // Lo que necesitamos es *solo* el contenido que va dentro del <body>, pero con los estilos <style> aplicados.
+        // Por lo tanto, construiremos el tempContainer de forma diferente.
+        // Añadimos la etiqueta <style> directamente al contenedor temporal.
+        const styleTag = document.createElement('style');
+        styleTag.textContent = `
+                    /* Estilos básicos para la impresión y el PDF */
+                    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+                    h2 { color: #2c3e50; }
+                    h3 { color: #34495e; }
+                    /* Estilos específicos para el contenedor principal del informe */
+                    #resultadoDetallado {
+                        max-width: 850px;
+                        margin: 2rem auto;
+                        padding: 2.2rem;
+                        background: white;
+                        border-radius: 18px;
+                        line-height: 1.65;
+                        color: #2c3e50;
+                        border: 1px solid #e2e8f0;
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    #resultadoDetallado::before {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        height: 6px;
+                        background: linear-gradient(90deg, #5a92b8, #096879, #00d4ff);
+                        z-index: 2;
+                    }
+                    #resultadoDetallado h4 {
+                        font-weight: 700;
+                        font-size: 1.35rem;
+                        color: #1a365d;
+                        margin: 1.8rem 0 1.1rem 0;
+                        padding-bottom: 0.6rem;
+                        border-bottom: 2px solid #e2e8f0;
+                    }
+                    #resultadoDetallado h4:first-child {
+                        background: linear-gradient(2deg, rgba(90, 146, 184, 1) 0%, rgba(9, 104, 121, 1) 85%, rgba(0, 212, 255, 1) 100%);
+                        -webkit-background-clip: text;
+                        background-clip: text;
+                        color: transparent;
+                        margin-top: 0;
+                        padding: 0.8rem 0 0.8rem 0;
+                        border: none;
+                        font-size: 1.6rem;
+                        text-align: center;
+                        letter-spacing: -0.02em;
+                    }
+                    #resultadoDetallado h4:nth-of-type(2) {
+                        background: linear-gradient(2deg, rgba(90, 146, 184, 1) 0%, rgba(9, 104, 121, 1) 85%, rgba(0, 212, 255, 1) 100%);
+                        -webkit-background-clip: text;
+                        background-clip: text;
+                        color: transparent;
+                        font-size: 1.5rem;
+                        text-align: center;
+                        margin-top: 2.2rem;
+                        padding-bottom: 0.8rem;
+                        border: none;
+                    }
+                    #resultadoDetallado h4:nth-of-type(2) ~ p {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 1.1rem 1.3rem;
+                        margin: 0.6rem 0;
+                        background: #f8fbff;
+                        border-radius: 14px;
+                        border: 1px solid #e6f0f7;
+                        box-shadow: 0 2px 6px rgba(90, 146, 184, 0.04);
+                    }
+                    #resultadoDetallado h4:nth-of-type(2) ~ p:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 10px rgba(90, 146, 184, 0.08);
+                        border-color: #cbd5e1;
+                    }
+                    #resultadoDetallado h4:nth-of-type(2) ~ p strong:first-child {
+                        color: #2d5a7a;
+                        font-weight: 600;
+                        font-size: 1.05rem;
+                        margin-right: 1rem;
+                        flex-shrink: 0;
+                    }
+                    #resultadoDetallado h4:nth-of-type(2) ~ p strong:last-child {
+                        color: #1e293b;
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                        margin-right: auto;
+                        padding-right: 1rem;
+                    }
+                    #resultadoDetallado h4:contains("Valoración General") {
+                        background: linear-gradient(135deg, #1e40af, #096879);
+                        color: white;
+                        margin-top: 2.5rem;
+                        padding: 1.4rem;
+                        border-radius: 16px;
+                        text-align: center;
+                        border: none;
+                        font-size: 1.5rem;
+                        box-shadow: 0 4px 15px rgba(9, 104, 121, 0.15);
+                    }
+                    #resultadoDetallado h4:contains("Valoración General") + p {
+                        background: linear-gradient(135deg, #dbeafe, #f0f9ff);
+                        color: #1e3a8a;
+                        padding: 1.8rem !important;
+                        border-radius: 16px;
+                        margin-top: 0;
+                        border: 1px solid #bfdbfe;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 1rem;
+                        font-size: 1.25rem;
+                        font-weight: 600;
+                        box-shadow: inset 0 0 0 1px rgba(90, 146, 184, 0.2);
+                    }
+                    #resultadoDetallado h4:contains("Valoración General") + p strong {
+                        color: #1e3a8a;
+                        background: none !important;
+                        padding: 0 !important;
+                        font-size: 1.35rem;
+                        font-weight: 700;
+                        text-align: center;
+                    }
+                    .categoria-badge {
+                        display: inline-block;
+                        padding: 0.4rem 0.9rem;
+                        border-radius: 18px;
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                        color: white;
+                        text-align: center;
+                        min-width: 90px;
+                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+                        background: linear-gradient(135deg, var(--badge-start), var(--badge-end));
+                    }
+                    .categoria-badge.muy-bajo { --badge-start: #c0392b; --badge-end: #e74c3c; }
+                    .categoria-badge.bajo { --badge-start: #d35400; --badge-end: #f39c12; }
+                    .categoria-badge.promedio { --badge-start: #27ae60; --badge-end: #8bc34a; }
+                    .categoria-badge.alto { --badge-start: #0288d1; --badge-end: #81d4fa; }
+                    .categoria-badge.muy-alto { --badge-start: #1565c0; --badge-end: #1e88e5; }
+                    /* Estilos para el gráfico */
+                    .container { max-width: 100%; margin: 2rem auto; }
+                    .chart-card {
+                        background: white;
+                        border-radius: 12px; /* var(--border-radius, 12px); */
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* var(--shadow, 0 4px 12px rgba(0,0,0,0.1)); */
+                        padding: 24px;
+                        margin-bottom: 30px;
+                    }
+                    .chart-header { margin-bottom: 20px; }
+                    .chart-title { font-size: 1.5rem; font-weight: 600; color: #1e293b; } /* var(--text-primary, #1e293b); */
+                    .chart-subtitle { font-size: 0.9rem; color: #64748b; } /* var(--text-secondary, #64748b); */
+                    .chart-container { height: 400px; display: flex; align-items: center; justify-content: center; }
+                    /* Estilos para resultados detallados (si se incluyen) */
+                    .test-result {
+                        display: flex;
+                        align-items: center;
+                        margin: 15px 0;
+                        padding: 18px 20px;
+                        border-radius: 14px;
+                        background: linear-gradient(145deg, #ffffff, #f6f6f6);
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+                        flex-wrap: wrap;
+                    }
+                    .test-info { flex: 1; min-width: 250px; padding-right: 25px; }
+                    .test-value { font-size: 26px; font-weight: 700; color: #222; }
+                    .test-scale { flex: 2; height: 30px; background-color: rgba(255, 255, 255, 0.2); border-radius: 5px; overflow: visible; margin-bottom: 5px; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); }
+                    .progress-segments { display: flex; height: 100%; border-radius: 5px; overflow: hidden; }
+                    .segment { height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; transition: all 0.3s ease; position: relative; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); }
+                    .segment-labels { display: flex; justify-content: space-between; margin-top: 3px; margin-bottom: 5px; font-size: 0.9rem; }
+                    .segment-label { text-align: center; font-weight: bold; flex: 1; color: #333; }
+                    .arrow-indicator { position: absolute; top: -20px; width: 100%; height: 50px; pointer-events: none; color: black; z-index: 10; }
+                    .arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid #080808; position: absolute; top: 0; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); z-index: 10; }
+                    .arrow-value { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background-color: #ffffff; color: #333; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; white-space: nowrap; z-index: 11; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+                    .zone-indicator { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); }
+                    .category-badge { display: inline-block; padding: 3px 8px; border-radius: 15px; font-size: 12px; font-weight: bold; margin-left: 8px; color: white; min-width: 80px; text-align: center; }
+                    .category-muy-bajo  { background: #e74c3c; }
+                    .category-bajo      { background: #f39c12; }
+                    .category-promedio  { background: #8bc34a; }
+                    .category-alto      { background: #81d4fa; }
+                    .category-muy-alto  { background: #1e88e5; }
+        `;
+        tempContainer.appendChild(styleTag);
 
-    // --- CAMBIO PRINCIPAL AQUÍ ---
-    // Restaurar SOLO el contenido original de la pestaña de resultados
-    document.getElementById('resultadosIndividuales').innerHTML = contenidoOriginalResultados;
+        // Ahora, el contenido del body (sin las etiquetas <html>, <head>, <body>)
+        tempContainer.innerHTML += `
+                <h2>Resultados de Evaluación</h2>
+                <h3>Evaluación Individual</h3>
+                <div id="resultadoDetallado">
+                    ${resultadoDetalladoElement.innerHTML}
+                </div>
+        `;
 
-    // --- AÑADIR ESTO ---
-    // Volver a generar el gráfico si existen los datos guardados
-    if (window.datosParaImpresion && window.edadRefParaImpresion) {
-        // Pequeño retraso para asegurar que el canvas esté listo en el DOM restaurado
-        setTimeout(() => {
-            mostrarGraficoComparacion(window.datosParaImpresion, window.edadRefParaImpresion);
-        }, 100); // 100ms debería ser suficiente
+        // Añadir el gráfico de comparación si existe una imagen capturada
+        if (chartDataURL) {
+            tempContainer.innerHTML += `
+                <div class="container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h2 class="chart-title">Comparación de Resultados ALPHA-Fitness</h2>
+                                <p class="chart-subtitle">Resultados del usuario vs. valores de referencia según el manual ALPHA-Fitness</p>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <img src="${chartDataURL}" alt="Gráfico de Comparación de Resultados" style="width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            tempContainer.innerHTML += `<p style="text-align: center; color: red;">(Gráfico de Comparación no disponible)</p>`;
+        }
+
+        // Añadir los resultados visuales detallados si existen
+        if (testResultsContainerElement && testResultsContainerElement.innerHTML.trim() !== "") {
+             tempContainer.innerHTML += `<div id="testResultsContainer">${testResultsContainerElement.innerHTML}</div>`;
+        }
+
+
+        // Añadir el contenedor temporal al body
+        document.body.appendChild(tempContainer);
+
+        // Capturar el contenedor con html2canvas
+        // Usar una escala adecuada para la calidad del PDF
+        const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true }); // Aumentar escala para mejor calidad
+        const imgData = canvas.toDataURL('image/jpeg', 0.95); // Convertir a JPEG con calidad 95%
+
+        // Calcular dimensiones para el PDF
+        const pdf = new jsPDF('p', 'mm', 'a4'); // Orientación vertical, unidades milímetros, tamaño A4
+        const imgWidth = 210; // Ancho A4 en mm
+        const pageHeight = 295; // Alto A4 en mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcular altura proporcional
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Añadir la primera página
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Si la imagen es más larga que una página, agregar nuevas páginas
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // Guardar el PDF
+        pdf.save('informe_evaluacion_individual.pdf');
+
+    } catch (error) {
+        console.error("Error generando el PDF del informe:", error);
+        alert("Hubo un error al generar el PDF del informe. Por favor, inténtalo de nuevo. Detalles: " + error.message);
+    } finally {
+        // Ocultar el spinner (opcional)
+         document.getElementById('pdf-spinner-container').style.display = 'none';
+
+        // Eliminar el contenedor temporal del DOM
+        const tempContainer = document.getElementById('temp-pdf-content');
+        if (tempContainer && tempContainer.parentNode) {
+            tempContainer.parentNode.removeChild(tempContainer);
+        }
     }
-    // -----------------
 }
+
+
+
+// Función para generar el PDF de Estadísticas (Corregida)
+async function generarPDFEstadisticasV2() {
+    // Mostrar el spinner INMEDIATAMENTE
+    document.getElementById('pdf-spinner-container').style.display = 'flex';
+
+    try {
+        const statsGridElement = document.getElementById('statsGrid');
+        const distribucionChartElement = document.getElementById('distribucionEdadChart');
+        const rendimientoChartElement = document.getElementById('rendimientoChart');
+        const comparacionGeneroChartElement = document.getElementById('comparacionGeneroChart');
+
+        if (!statsGridElement) {
+            alert('No se encontró el contenedor de estadísticas.');
+            return; // Importante: salir si no hay statsGrid
+        }
+
+        // Forzar actualización de gráficos si es necesario
+        // Esto asegura que los canvas estén disponibles y dibujados
+        actualizarAnalisis(); // Asegura que comparacionGeneroChart esté generado
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Aumentar el tiempo de espera a 1.5 segundos
+
+        // Crear un contenedor temporal para el contenido a capturar
+        const tempContainer = document.createElement('div');
+        tempContainer.id = 'temp-pdf-content';
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px'; // Ocultar fuera de la vista
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '210mm'; // A4 width
+        tempContainer.style.backgroundColor = 'white';
+        tempContainer.style.padding = '20px';
+        tempContainer.style.boxSizing = 'border-box';
+        tempContainer.style.display = 'flex'; // Usar flexbox para organizar elementos
+        tempContainer.style.flexDirection = 'column'; // Apilar elementos verticalmente
+        tempContainer.style.alignItems = 'center'; // Centrar elementos horizontalmente
+
+        // Copiar el contenido de statsGrid
+        const statsDiv = document.createElement('div');
+        statsDiv.style.width = '100%'; // Ocupar ancho completo del contenedor
+        statsDiv.style.marginBottom = '20px';
+        statsDiv.innerHTML = `
+            <h2 style="text-align: center; color: #2c3e50;">Estadísticas Generales - ALPHA Fitness</h2>
+            ${statsGridElement.innerHTML}
+        `;
+        tempContainer.appendChild(statsDiv);
+
+        // --- CAPTURAR Y AÑADIR GRÁFICOS INDIVIDUALMENTE (CORREGIDO) ---
+        const chartElements = [
+            { element: distribucionChartElement, title: 'Distribución por Edad' },
+            { element: rendimientoChartElement, title: 'Rendimiento Promedio' },
+            { element: comparacionGeneroChartElement, title: 'Comparación por Género' }
+        ];
+
+        for (const chart of chartElements) {
+            // Añadir verificación de existencia y contexto del canvas
+            if (chart.element && chart.element.getContext && chart.element.getContext('2d')) {
+                try {
+                    // Esperar un poco más para asegurar renderizado después de llamar a actualizarAnalisis
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    // Capturar directamente el canvas del gráfico con escala
+                    const chartCanvas = await html2canvas(chart.element, { scale: 2, useCORS: true }); // Escala 2
+                    const chartImgData = chartCanvas.toDataURL('image/jpeg', 0.95);
+
+                    // Verificar si la imagen generada no está vacía
+                    if (chartImgData && chartImgData !== 'data:,') {
+                        // Crear un div para insertar la imagen capturada en el contenedor principal
+                        const imgDiv = document.createElement('div');
+                        imgDiv.style.textAlign = 'center';
+                        imgDiv.style.width = '100%';
+                        imgDiv.style.marginBottom = '20px';
+                        imgDiv.innerHTML = `<h3 style="color: #34495e; margin-bottom: 10px;">${chart.title}</h3><img src="${chartImgData}" style="width: 100%; max-width: 600px; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" />`;
+                        tempContainer.appendChild(imgDiv);
+                    } else {
+                        console.warn(`La imagen capturada para ${chart.title} está vacía.`);
+                        const errorDiv = document.createElement('div');
+                        errorDiv.style.textAlign = 'center';
+                        errorDiv.style.width = '100%';
+                        errorDiv.style.marginBottom = '20px';
+                        errorDiv.innerHTML = `<h3 style="color: #34495e;">${chart.title}</h3><p style="color: red;">(Imagen no disponible)</p>`;
+                        tempContainer.appendChild(errorDiv);
+                    }
+
+                } catch (e) {
+                    console.error(`Error capturando imagen de ${chart.title}:`, e);
+                    const errorDiv = document.createElement('div');
+                    errorDiv.style.textAlign = 'center';
+                    errorDiv.style.width = '100%';
+                    errorDiv.style.marginBottom = '20px';
+                    errorDiv.innerHTML = `<h3 style="color: #34495e;">${chart.title}</h3><p style="color: red;">Error al capturar imagen</p>`;
+                    tempContainer.appendChild(errorDiv);
+                }
+            } else {
+                 console.warn(`El canvas para ${chart.title} no se encontró o no es válido.`);
+                 const errorDiv = document.createElement('div');
+                 errorDiv.style.textAlign = 'center';
+                 errorDiv.style.width = '100%';
+                 errorDiv.style.marginBottom = '20px';
+                 errorDiv.innerHTML = `<h3 style="color: #34495e;">${chart.title}</h3><p style="color: red;">Canvas no encontrado o inválido</p>`;
+                 tempContainer.appendChild(errorDiv);
+            }
+        }
+
+
+        // --- GENERACIÓN DE DATOS Y INSIGHTS ADICIONALES ---
+        // CORRECCIÓN: Verificar el cálculo de promedioEdad
+        console.log("Evaluaciones.length:", evaluaciones.length); // Debug
+        if (evaluaciones.length === 0) {
+            alert('No hay datos de evaluación para calcular estadísticas.');
+            return; // Importante: salir si no hay evaluaciones
+        }
+        let edadSum = 0;
+        let edadCountValid = 0;
+        for (const e of evaluaciones) {
+            const edad = getEdad(e.fechaNacimiento);
+            console.log("Fecha Nacimiento:", e.fechaNacimiento, "Edad Calculada:", edad); // Debug
+            if (!isNaN(edad) && edad > 0) { // Asegurar que la edad sea un número válido y positivo
+                 edadSum += edad;
+                 edadCountValid++;
+            } else {
+                 console.warn("Edad inválida encontrada:", e.fechaNacimiento, edad);
+            }
+        }
+        const promedioEdad = edadCountValid > 0 ? edadSum / edadCountValid : 0; // Cálculo corregido
+        console.log("Promedio Edad Calculado:", promedioEdad); // Debug
+
+        const total = evaluaciones.length;
+        const masculino = evaluaciones.filter(e => e.genero === 'masculino').length;
+        const femenino = evaluaciones.filter(e => e.genero === 'femenino').length;
+        const promedioIMC = evaluaciones.reduce((sum, e) => sum + calcularIMC(e.peso, e.altura), 0) / total;
+        const promedioCardio = evaluaciones.reduce((sum, e) => sum + e.shuttle20m, 0) / total;
+        const promedioSalto = evaluaciones.reduce((sum, e) => sum + e.salto, 0) / total;
+        const promedioFuerza = evaluaciones.reduce((sum, e) => sum + e.fuerza, 0) / total;
+        const promedioShuttle4x10 = evaluaciones.reduce((sum, e) => sum + e.shuttle4x10m, 0) / total;
+
+        // Distribución por categorías
+        let estadoFisicoCount = { 'Muy Deficiente': 0, 'Deficiente': 0, 'Adecuado': 0, 'Bueno': 0, 'Excelente': 0 };
+        evaluaciones.forEach(e => {
+            const edad = getEdad(e.fechaNacimiento);
+            const edadRef = Math.max(edad, 13);
+            const clasificacionCardio = getClasificacionCardio(e.shuttle20m, e.genero, edadRef);
+            const clasificacionSalto = getClasificacionSalto(e.salto, e.genero, edadRef);
+            const clasificacionFuerza = getClasificacionFuerza(e.fuerza, e.genero, edadRef);
+            const clasificacionIMC = getClasificacionIMC(calcularIMC(e.peso, e.altura), e.genero, edadRef);
+            const estado = evaluarEstadoFisico(clasificacionCardio, clasificacionSalto, clasificacionFuerza, clasificacionIMC);
+            estadoFisicoCount[estado] = (estadoFisicoCount[estado] || 0) + 1;
+        });
+        const totalEvaluaciones = evaluaciones.length;
+        let distribucionCategoriasHTML = '<h4 style="color: #3d566e;">Distribución por Categorías</h4><ul style="padding-left: 20px;">';
+        for (const [categoria, count] of Object.entries(estadoFisicoCount)) {
+             const porcentaje = totalEvaluaciones > 0 ? ((count / totalEvaluaciones) * 100).toFixed(1) : 0;
+             distribucionCategoriasHTML += `<li>${categoria}: ${count} (${porcentaje}%)</li>`;
+        }
+        distribucionCategoriasHTML += '</ul>';
+
+        // Área más desarrollada y área a mejorar (basado en promedios generales)
+        const areasComparables = {
+            'Cardio': promedioCardio,
+            'Fuerza': promedioFuerza,
+            'Salto': promedioSalto,
+            'Shuttle 4x10m': promedioShuttle4x10 // "Menos es mejor", se invierte la lógica para interpretar fortaleza
+        };
+        const puntosAreas = {
+            'Cardio': promedioCardio,
+            'Fuerza': promedioFuerza,
+            'Salto': promedioSalto,
+            'Agilidad 4x10m': 30 - promedioShuttle4x10 // Renombrado para claridad
+        };
+        const areaMasDesarrollada = Object.keys(puntosAreas).reduce((a, b) => puntosAreas[a] > puntosAreas[b] ? a : b);
+        const areaMejorar = Object.keys(puntosAreas).reduce((a, b) => puntosAreas[a] < puntosAreas[b] ? a : b);
+
+        // Puntuación General Promedio (simplificada)
+        const puntuacionCardio = (promedioCardio / 9) * 100;
+        const puntuacionFuerza = (promedioFuerza / 50) * 100;
+        const puntuacionSalto = (promedioSalto / 200) * 100;
+        const puntuacionAgilidad = ((30 - promedioShuttle4x10) / 20) * 100;
+        const puntuacionGeneralPromedio = (puntuacionCardio + puntuacionFuerza + puntuacionSalto + puntuacionAgilidad) / 4;
+
+        // Insights y Recomendaciones (más específicos)
+        let insightsHTML = '<h4 style="color: #3d566e;">Insights y Recomendaciones</h4><ul style="padding-left: 20px;">';
+        insightsHTML += `<li><strong>Fortaleza Principal:</strong> El grupo muestra un rendimiento destacado en <em>${areaMasDesarrollada}</em>, lo cual es positivo para su desarrollo físico.</li>`;
+        insightsHTML += `<li><strong>Oportunidad de Mejora:</strong> El rendimiento en <em>${areaMejorar}</em> presenta una oportunidad de mejora. Se recomienda enfocar intervenciones específicas en esta área.</li>`;
+        const mejorCategoria = Object.keys(estadoFisicoCount).reduce((a, b) => estadoFisicoCount[a] > estadoFisicoCount[b] ? a : b);
+        const porcentajeMejorCategoria = ((estadoFisicoCount[mejorCategoria] / totalEvaluaciones) * 100).toFixed(1);
+        insightsHTML += `<li><strong>Mayor Nivel General:</strong> El ${porcentajeMejorCategoria}% del grupo alcanza la categoría de condición física "${mejorCategoria}".</li>`;
+        const peorCategoria = Object.keys(estadoFisicoCount).reduce((a, b) => estadoFisicoCount[a] < estadoFisicoCount[b] ? a : b);
+        const porcentajePeorCategoria = ((estadoFisicoCount[peorCategoria] / totalEvaluaciones) * 100).toFixed(1);
+        insightsHTML += `<li><strong>Área General a Reforzar:</strong> Un ${porcentajePeorCategoria}% del grupo se encuentra en la categoría "${peorCategoria}". Es fundamental trabajar para mejorar este porcentaje.</li>`;
+        insightsHTML += '</ul>';
+
+        // --- FIN DE GENERACIÓN DE DATOS Y INSIGHTS ---
+
+        const insightsDiv = document.createElement('div');
+        insightsDiv.style.width = '100%'; // Ocupar ancho completo del contenedor
+        insightsDiv.style.marginTop = '25px';
+        insightsDiv.style.padding = '15px';
+        insightsDiv.style.background = '#f9f9f9';
+        insightsDiv.style.borderRadius = '8px';
+        insightsDiv.style.borderLeft = '4px solid #3498db';
+        insightsDiv.innerHTML = `
+            <div style="margin-bottom: 25px; padding: 15px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #3498db;">
+                <h3 style="color: #34495e;">Resultados Generales por Edad y Sexo</h3>
+                <ul style="padding-left: 20px;">
+                    <li><strong>Edad Promedio:</strong> ${promedioEdad.toFixed(1)} años</li>
+                    <li><strong>Hombres:</strong> ${masculino} (${((masculino/total)*100).toFixed(1)}%)</li>
+                    <li><strong>Mujeres:</strong> ${femenino} (${((femenino/total)*100).toFixed(1)}%)</li>
+                </ul>
+            </div>
+            <div style="margin-bottom: 25px; padding: 15px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #3498db;">
+                <h3 style="color: #34495e;">Panel de Rendimiento Físico</h3>
+                <ul style="padding-left: 20px;">
+                    <li><strong>Área más desarrollada:</strong> ${areaMasDesarrollada}</li>
+                    <li><strong>Área a mejorar:</strong> ${areaMejorar}</li>
+                    <li><strong>Puntuación General Promedio (sobre 100):</strong> ${puntuacionGeneralPromedio.toFixed(1)} </li>
+                </ul>
+            </div>
+            ${distribucionCategoriasHTML}
+            ${insightsHTML}
+        `;
+        tempContainer.appendChild(insightsDiv);
+
+        // Añadir el contenedor temporal al body
+        document.body.appendChild(tempContainer);
+
+        // Usar html2canvas para capturar el contenedor temporal con escala
+        // Asegurar que el contenedor esté completamente renderizado antes de capturar
+        await new Promise(resolve => setTimeout(resolve, 500)); // Pequeña espera adicional
+        const canvas = await html2canvas(tempContainer, { scale: 1.5, useCORS: true }); // Escala 1.5
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+        // Crear el PDF con jsPDF en orientación VERTICAL ('p')
+        const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' para portrait
+        const imgWidth = 210; // Ancho A4 en mm
+        const pageHeight = 295; // Alto A4 en mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura proporcional
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Si la imagen es más larga que una página, agregar nuevas páginas
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // Guardar el PDF
+        pdf.save('estadisticas_alpha_fitness.pdf');
+
+    } catch (error) {
+        console.error("Error generando el PDF:", error);
+        alert("Hubo un error al generar el PDF. Por favor, inténtalo de nuevo. Detalles: " + error.message);
+    } finally {
+        // Ocultar el spinner SIEMPRE, ocurra o no un error
+        document.getElementById('pdf-spinner-container').style.display = 'none';
+        // Eliminar el contenedor temporal del DOM (dentro del finally para asegurar limpieza)
+        const tempContainer = document.getElementById('temp-pdf-content');
+        if (tempContainer && tempContainer.parentNode) {
+            tempContainer.parentNode.removeChild(tempContainer);
+        }
+    }
+}
+
+// ... (otras funciones) ...
+
+// Función para generar una vista temporal del Análisis y usar window.print() (Corregida)
+async function generarPDFAnalisisV3() {
+    // Mostrar el spinner INMEDIATAMENTE (usamos el mismo contenedor de spinner si es aceptable)
+    document.getElementById('pdf-spinner-container').style.display = 'flex';
+
+    try {
+        // Forzar actualización de gráficos de análisis si es necesario
+        // Usamos el filtro actual del select
+        const filtroGeneroActual = document.getElementById('filtroGenero').value;
+        actualizarAnalisis(); // Esto actualiza ambos gráficos en la pestaña de análisis
+
+        // Esperar un tiempo para que se rendericen los gráficos
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Aumentar espera a 2 segundos
+
+        // Capturar imágenes de los gráficos de análisis
+        const analisisEdadChartCanvas = document.getElementById('analisisEdadChart');
+        const comparacionGeneroChartCanvas = document.getElementById('comparacionGeneroChart');
+
+        let analisisEdadDataURL = null;
+        let comparacionGeneroDataURL = null;
+
+        // Función auxiliar para esperar a que un gráfico de Chart.js termine de renderizar
+        // Chart.js no tiene un evento "onrender" global, pero podemos esperar a que el contexto 2d tenga datos dibujados
+        // o usar técnicas más avanzadas si es necesario. Por ahora, la espera + verificación de imagen vacía es un enfoque razonable.
+        // Otra opción es usar Chart.js plugins o promesas personalizadas si se vuelve complejo.
+
+        if (analisisEdadChartCanvas && analisisEdadChartCanvas.getContext('2d')) {
+            try {
+                // Espera adicional específica para este canvas
+                await new Promise(resolve => setTimeout(resolve, 800));
+                analisisEdadDataURL = analisisEdadChartCanvas.toDataURL('image/png');
+                // Verificar si la imagen generada no está vacía
+                if (!analisisEdadDataURL || analisisEdadDataURL === 'data:,') {
+                    console.warn("La imagen de analisisEdadChart está vacía.");
+                    analisisEdadDataURL = null; // Marcar como no disponible
+                }
+            } catch (e) {
+                console.error("Error capturando imagen de analisisEdadChart:", e);
+                analisisEdadDataURL = null; // Marcar como no disponible
+            }
+        } else {
+             console.warn("analisisEdadChart no encontrado o no es un canvas.");
+        }
+
+        if (comparacionGeneroChartCanvas && comparacionGeneroChartCanvas.getContext('2d')) {
+            try {
+                await new Promise(resolve => setTimeout(resolve, 800)); // Espera adicional específica
+                comparacionGeneroDataURL = comparacionGeneroChartCanvas.toDataURL('image/png');
+                if (!comparacionGeneroDataURL || comparacionGeneroDataURL === 'data:,') {
+                    console.warn("La imagen de comparacionGeneroChart está vacía.");
+                    comparacionGeneroDataURL = null; // Marcar como no disponible
+                }
+            } catch (e) {
+                console.error("Error capturando imagen de comparacionGeneroChart:", e);
+                comparacionGeneroDataURL = null; // Marcar como no disponible
+            }
+        } else {
+             console.warn("comparacionGeneroChart no encontrado o no es un canvas.");
+        }
+
+        // Verificar si hay imágenes para imprimir (opcional: si no hay imágenes, se puede continuar o detener)
+        if (!analisisEdadDataURL && !comparacionGeneroDataURL) {
+            console.warn("No se pudieron capturar las imágenes de los gráficos de análisis.");
+            // Podrías mostrar un mensaje al usuario aquí si es crítico
+            // alert("No se pudieron capturar los gráficos de análisis para la impresión.");
+            // return; // O continuar sin gráficos si es aceptable
+        }
+
+        // Crear el contenedor temporal para la vista de impresión de análisis
+        const tempPrintContainer = document.createElement('div');
+        tempPrintContainer.id = 'analisis-imprimir-temp';
+        tempPrintContainer.className = 'container';
+        tempPrintContainer.style.display = 'none'; // Inicialmente oculto
+
+        // Construir el HTML para impresión de análisis
+        let htmlParaImpresion = `
+            <h2>Análisis Detallado - ALPHA Fitness</h2>
+            <div class="form-group">
+                <label>Filtrado por Género:</label>
+                <select disabled> <!-- Deshabilitar para la impresión -->
+                    <option value="${filtroGeneroActual}" selected>${filtroGeneroActual.charAt(0).toUpperCase() + filtroGeneroActual.slice(1)}</option>
+                </select>
+            </div>
+        `;
+
+        // Añadir los gráficos de análisis si se capturaron imágenes
+        if (analisisEdadDataURL) {
+            htmlParaImpresion += `
+                <div class="chart-container">
+                    <h3>Rendimiento por Edad y Prueba (Filtrado: ${filtroGeneroActual})</h3>
+                    <img src="${analisisEdadDataURL}" alt="Gráfico de Rendimiento por Edad y Prueba" />
+                </div>
+            `;
+        } else {
+            htmlParaImpresion += `<div class="chart-container"><h3>Rendimiento por Edad y Prueba (Filtrado: ${filtroGeneroActual})</h3><p>(Gráfico no disponible)</p></div>`;
+        }
+
+        if (comparacionGeneroDataURL) {
+            htmlParaImpresion += `
+                <div class="chart-container">
+                    <h3>Comparación por Género (Filtrado: ${filtroGeneroActual})</h3>
+                    <img src="${comparacionGeneroDataURL}" alt="Gráfico de Comparación por Género" />
+                </div>
+            `;
+        } else {
+            htmlParaImpresion += `<div class="chart-container"><h3>Comparación por Género (Filtrado: ${filtroGeneroActual})</h3><p>(Gráfico no disponible)</p></div>`;
+        }
+
+        tempPrintContainer.innerHTML = htmlParaImpresion;
+
+        // Añadir el contenedor temporal al body
+        document.body.appendChild(tempPrintContainer);
+
+        // Ocultar el spinner ANTES de llamar a window.print()
+        document.getElementById('pdf-spinner-container').style.display = 'none';
+
+        // Llamar a window.print()
+        window.print();
+
+    } catch (error) {
+        console.error("Error generando la vista de impresión para Análisis:", error);
+        // Ocultar el spinner en caso de error
+        document.getElementById('pdf-spinner-container').style.display = 'none';
+        alert("Hubo un error al preparar la vista de impresión para Análisis. Por favor, inténtalo de nuevo. Detalles: " + error.message);
+    } finally {
+        // Remover el contenedor temporal después de la impresión (esperar un poco)
+        // Importante: Esto ocurre DESPUÉS de window.print(), pero el diálogo de impresión puede estar abierto
+        // La limpieza se hará de todas formas
+        setTimeout(() => {
+            const tempPrintContainer = document.getElementById('analisis-imprimir-temp');
+            if (tempPrintContainer && tempPrintContainer.parentNode) {
+                tempPrintContainer.parentNode.removeChild(tempPrintContainer);
+            }
+        }, 1000); // 1 segundo debería ser suficiente
+    }
+}
+
+	
 
 
 // Función para calcular y mostrar el siguiente ID disponible
@@ -4589,8 +5549,12 @@ document.addEventListener('DOMContentLoaded', iniciarAutocompletado);
             </div>
         </div>
     </div>
-</body>
-</body>
+
+<!-- Contenedor del Spinner -->
+    <div id="pdf-spinner-container" class="spinner-container" style="display: none;">
+        <div class="spinner"></div>
+        <p>Generando PDF, por favor espere...</p>
+    </div>
 </body>
 </html>
 
