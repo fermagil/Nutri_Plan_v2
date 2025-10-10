@@ -197,7 +197,14 @@
         .selection-container #exercise-btn:hover {
             background-color: rgba(245, 124, 0, 0.1);
         }
+    .selection-container #school-health-btn {
+    border: 1px solid #7b1fa2;
+    color: #7b1fa2;
+}
 
+.selection-container #school-health-btn:hover {
+    background-color: rgba(123, 31, 162, 0.1);
+}
         footer {
             background-color: #e9ecef;
             text-align: center;
@@ -235,6 +242,7 @@
         <button id="nutrition-btn" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/Inicio_NutriPlan_v2.html'">Valoración Antropométrica y Nutrición</button>
         <button id="fitness-btn">Valoración de la Condición Física</button>
         <button id="exercise-btn">Planificación del Ejercicio</button>
+        <button id="school-health-btn" onclick="window.location.href='salud-escolar.html'">Programa Salud Escolar</button>
     </div>
     <footer>
         © 2025 NutriPlan v2. Todos los derechos reservados.
@@ -242,6 +250,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        
 
         const firebaseConfig = {
             apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
@@ -255,6 +265,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app); // 🔥 Inicializa Firestore
         const provider = new GoogleAuthProvider();
 
         async function signInWithGoogle() {
@@ -402,11 +413,9 @@
             const dropdown = document.getElementById('dropdown');
             if (user) {
                 console.log('Auth state: User signed in', user.displayName, user.email);
-                if (window.location.pathname.includes('index.html')) {
-                    loginContainer.style.display = 'none';
-                    selectionContainer.style.display = 'block';
-                    dropdown.style.display = 'block';
-                }
+                    // 🔥 Verificar el rol del usuario en Firestore
+                    checkUserRole(user.uid);
+                
             } else {
                 console.log('Auth state: No user signed in');
                 if (!window.location.pathname.includes('index.html')) {
@@ -419,6 +428,37 @@
                 }
             }
         });
+
+        // 🔥 Nueva función para verificar rol
+async function checkUserRole(userId) {
+    try {
+        const userDocRef = doc(db, "usuarios", userId);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const rol = userData.rol || 'registrado'; // Por defecto, asume registrado
+
+            if (rol === 'salud_escolar') {
+                // 🔥 Redirigir directamente a salud escolar
+                window.location.href = 'salud-escolar.html';
+            } else {
+                // Mostrar menú de selección
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('selection-container').style.display = 'block';
+            }
+        } else {
+            // Si no existe el documento, asume rol "registrado"
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('selection-container').style.display = 'block';
+        }
+    } catch (error) {
+        console.error("Error obteniendo rol del usuario:", error);
+        // En caso de error, mostrar menú de selección
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('selection-container').style.display = 'block';
+    }
+}
 
         document.addEventListener('DOMContentLoaded', initializeUI);
     </script>
