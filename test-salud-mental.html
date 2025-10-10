@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Salud Mental para Adolescentes</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #6b8cbc;
+            --light: #f5f7fa;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --border-radius: 8px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .page {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .question-group {
+            margin-bottom: 25px;
+        }
+        
+        .question {
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background-color: #f0f4ff;
+        }
+        
+        .option.selected {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-top: 5px;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #dde2e6;
+        }
+        
+        .result-container {
+            text-align: center;
+        }
+        
+        .result-level {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .adequate {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .moderate {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+        
+        .urgent {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .recommendations {
+            text-align: left;
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+        }
+        
+        .demographic-data {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+        }
+        
+        .stats-container {
+            margin-top: 30px;
+        }
+        
+        .stats-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .chart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .disclaimer {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .stats-info {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        @media (max-width: 600px) {
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .stats-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CUESTIONARIO SOBRE TU ESTADO EMOCIONAL Y SALUD MENTAL</h1>
+            <p>Confidencial y anónimo - Este cuestionario tiene como objetivo conocer cómo te sientes últimamente. No hay respuestas buenas o malas. Sé sincero/a contigo mismo/a.</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <!-- Página de bienvenida -->
+        <div class="page active" id="page-welcome">
+            <h2>Bienvenido/a al test de salud mental</h2>
+            <p>Este cuestionario te ayudará a evaluar tu estado emocional actual. Responde con sinceridad para obtener un resultado más preciso.</p>
+            <p>El test consta de 15 preguntas divididas en 4 páginas. Tu información será confidencial y anónima.</p>
+            <div class="navigation">
+                <div></div>
+                <button class="btn-primary" onclick="nextPage('page-welcome', 'page-1')">Comenzar test</button>
+            </div>
+        </div>
+        
+        <!-- Página 1: Preguntas 1-4 -->
+        <div class="page" id="page-1">
+            <div class="question-group">
+                <div class="question">1. ¿Cómo te sientes en general últimamente? (Puedes marcar más de una si lo necesitas)</div>
+                <div class="checkbox-group" id="q1-options">
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Feliz"> Feliz</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Triste"> Triste</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Cansado/a"> Cansado/a</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Nervioso/a"> Nervioso/a</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Relajado/a"> Relajado/a</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Enfadado/a"> Enfadado/a</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Ansioso/a"> Ansioso/a</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Motivado/a"> Motivado/a</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q1" value="Desmotivado/a"> Desmotivado/a</label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="q1" value="Otro" id="q1-otro-check"> Otro: 
+                        <input type="text" id="q1-otro-text" class="text-input" placeholder="Especificar" style="display: none;">
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">2. ¿Con qué frecuencia te sientes triste o decaído/a sin saber bien por qué?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q2')">Nunca</div>
+                    <div class="option" onclick="selectOption(this, 'q2')">A veces</div>
+                    <div class="option" onclick="selectOption(this, 'q2')">A menudo</div>
+                    <div class="option" onclick="selectOption(this, 'q2')">Casi todos los días</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">3. ¿Te cuesta concentrarte en clase o al estudiar?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q3')">No</div>
+                    <div class="option" onclick="selectOption(this, 'q3')">A veces</div>
+                    <div class="option" onclick="selectOption(this, 'q3')">Sí, bastante</div>
+                    <div class="option" onclick="selectOption(this, 'q3')">Sí, casi siempre</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">4. ¿Cómo describirías tu nivel de estrés en las últimas semanas?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q4')">Bajo</div>
+                    <div class="option" onclick="selectOption(this, 'q4')">Moderado</div>
+                    <div class="option" onclick="selectOption(this, 'q4')">Alto</div>
+                    <div class="option" onclick="selectOption(this, 'q4')">Muy alto</div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn-secondary" onclick="prevPage('page-1', 'page-welcome')">Anterior</button>
+                <button class="btn-primary" onclick="nextPage('page-1', 'page-2')">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Página 2: Preguntas 5-8 -->
+        <div class="page" id="page-2">
+            <div class="question-group">
+                <div class="question">5. ¿Sientes que tienes a alguien con quien hablar cuando estás mal?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q5')">Sí, siempre</div>
+                    <div class="option" onclick="selectOption(this, 'q5')">A veces</div>
+                    <div class="option" onclick="selectOption(this, 'q5')">Rara vez</div>
+                    <div class="option" onclick="selectOption(this, 'q5')">No, nunca</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">6. ¿Te resulta fácil hablar de cómo te sientes?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q6')">Sí, sin problema</div>
+                    <div class="option" onclick="selectOption(this, 'q6')">Depende de la persona</div>
+                    <div class="option" onclick="selectOption(this, 'q6')">Me cuesta un poco</div>
+                    <div class="option" onclick="selectOption(this, 'q6')">Me resulta muy difícil</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">7. ¿Duermes bien por las noches?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q7')">Sí, duermo bien y me despierto descansado/a</div>
+                    <div class="option" onclick="selectOption(this, 'q7')">Duermo, pero me despierto cansado/a</div>
+                    <div class="option" onclick="selectOption(this, 'q7')">Me cuesta dormir</div>
+                    <div class="option" onclick="selectOption(this, 'q7')">Duermo muy poco o mal casi siempre</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">8. ¿Cómo te sientes contigo mismo/a (autoestima)?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q8')">Me gusto como soy</div>
+                    <div class="option" onclick="selectOption(this, 'q8')">A veces dudo de mí</div>
+                    <div class="option" onclick="selectOption(this, 'q8')">Me cuesta aceptarme</div>
+                    <div class="option" onclick="selectOption(this, 'q8')">No me siento bien conmigo mismo/a</div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn-secondary" onclick="prevPage('page-2', 'page-1')">Anterior</button>
+                <button class="btn-primary" onclick="nextPage('page-2', 'page-3')">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Página 3: Preguntas 9-12 -->
+        <div class="page" id="page-3">
+            <div class="question-group">
+                <div class="question">9. ¿Cómo son tus relaciones con tus compañeros/as de clase?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q9')">Muy buenas</div>
+                    <div class="option" onclick="selectOption(this, 'q9')">Normales</div>
+                    <div class="option" onclick="selectOption(this, 'q9')">Tengo algunos problemas</div>
+                    <div class="option" onclick="selectOption(this, 'q9')">Me siento solo/a o excluido/a</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">10. ¿Alguna vez has sentido que no puedes más o que nada tiene sentido?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q10')">Nunca</div>
+                    <div class="option" onclick="selectOption(this, 'q10')">Alguna vez</div>
+                    <div class="option" onclick="selectOption(this, 'q10')">A menudo</div>
+                    <div class="option" onclick="selectOption(this, 'q10')">Prefiero no responder</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">11. ¿Has pensado en hacerte daño alguna vez? (Recuerda que puedes pedir ayuda, no estás solo/a)</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q11')">No</div>
+                    <div class="option" onclick="selectOption(this, 'q11')">Sí, alguna vez</div>
+                    <div class="option" onclick="selectOption(this, 'q11')">Sí, varias veces</div>
+                    <div class="option" onclick="selectOption(this, 'q11')">Prefiero no responder</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">12. ¿Qué cosas te hacen sentir mejor cuando estás mal?</div>
+                <textarea class="text-input" id="q12" rows="3" placeholder="Escribe tu respuesta aquí..."></textarea>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn-secondary" onclick="prevPage('page-3', 'page-2')">Anterior</button>
+                <button class="btn-primary" onclick="nextPage('page-3', 'page-4')">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Página 4: Preguntas 13-15 y datos demográficos -->
+        <div class="page" id="page-4">
+            <div class="question-group">
+                <div class="question">13. ¿Qué te gustaría que mejorara en el colegio o en tu entorno para sentirte mejor emocionalmente?</div>
+                <textarea class="text-input" id="q13" rows="3" placeholder="Escribe tu respuesta aquí..."></textarea>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">14. ¿Te gustaría que hubiera más espacios para hablar sobre emociones y salud mental en clase?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'q14')">Sí</div>
+                    <div class="option" onclick="selectOption(this, 'q14')">No</div>
+                    <div class="option" onclick="selectOption(this, 'q14')">No lo sé</div>
+                </div>
+            </div>
+            
+            <div class="question-group">
+                <div class="question">15. ¿Quieres dejar algún mensaje o compartir algo más sobre cómo te sientes? (Respuesta abierta y opcional)</div>
+                <textarea class="text-input" id="q15" rows="3" placeholder="Escribe tu respuesta aquí..."></textarea>
+            </div>
+            
+            <div class="demographic-data">
+                <h3>Datos demográficos (opcionales)</h3>
+                <div class="form-group">
+                    <label for="gender">Género:</label>
+                    <select id="gender">
+                        <option value="">Seleccionar</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="No binario">No binario</option>
+                        <option value="Prefiero no responder">Prefiero no responder</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="age">Rango de edad:</label>
+                    <select id="age">
+                        <option value="">Seleccionar</option>
+                        <option value="11-12">11-12 años</option>
+                        <option value="13-14">13-14 años</option>
+                        <option value="15-16">15-16 años</option>
+                        <option value="17-18">17-18 años</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn-secondary" onclick="prevPage('page-4', 'page-3')">Anterior</button>
+                <button class="btn-primary" onclick="calculateResults()">Calcular Resultado</button>
+            </div>
+        </div>
+        
+        <!-- Página de resultados -->
+        <div class="page" id="page-results">
+            <div class="result-container">
+                <h2>Resultados de tu evaluación</h2>
+                <div id="result-level" class="result-level"></div>
+                <div id="result-description"></div>
+                
+                <div class="recommendations">
+                    <h3>Recomendaciones</h3>
+                    <div id="recommendations-content"></div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn-secondary" onclick="prevPage('page-results', 'page-4')">Volver al test</button>
+                    <button class="btn-primary" onclick="showStats()">Ver Estadísticas</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Página de estadísticas -->
+        <div class="page" id="page-stats">
+            <h2>Estadísticas por género y edad</h2>
+            <div class="stats-controls">
+                <select id="stats-filter">
+                    <option value="all">Todos los resultados</option>
+                    <option value="gender">Filtrar por género</option>
+                    <option value="age">Filtrar por edad</option>
+                </select>
+                <select id="gender-filter" style="display: none;">
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="No binario">No binario</option>
+                </select>
+                <select id="age-filter" style="display: none;">
+                    <option value="11-12">11-12 años</option>
+                    <option value="13-14">13-14 años</option>
+                    <option value="15-16">15-16 años</option>
+                    <option value="17-18">17-18 años</option>
+                </select>
+                <button class="btn-primary" onclick="loadStatistics()">Cargar estadísticas</button>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Distribución de resultados</h3>
+                <canvas id="results-chart" width="400" height="200"></canvas>
+                <div class="stats-info" id="chart-info"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Porcentajes por categoría</h3>
+                <canvas id="percentage-chart" width="400" height="200"></canvas>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn-secondary" onclick="prevPage('page-stats', 'page-results')">Volver a resultados</button>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>Recuerda:</strong> Si estás pasando por un momento difícil, hablar con alguien puede ayudarte. Puedes acudir a tu tutor/a, a la orientadora del centro, a tus padres, o a alguien en quien confíes. No estás solo/a.</p>
+            <p>Este test es una herramienta de autoevaluación y no sustituye el diagnóstico profesional.</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+            authDomain: "nutriplanv2.firebaseapp.com",
+            databaseURL: "https://nutriplanv2-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "nutriplanv2",
+            storageBucket: "nutriplanv2.firebasestorage.app",
+            messagingSenderId: "653707489758",
+            appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+            measurementId: "G-NWER69E8B6"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Variables globales
+        let currentPage = 'page-welcome';
+        let answers = {};
+        let statistics = {
+            adequate: 0,
+            moderate: 0,
+            urgent: 0,
+            total: 0
+        };
+        
+        // Funciones de navegación
+        function nextPage(current, next) {
+            document.getElementById(current).classList.remove('active');
+            document.getElementById(next).classList.add('active');
+            currentPage = next;
+            updateProgress();
+        }
+        
+        function prevPage(current, prev) {
+            document.getElementById(current).classList.remove('active');
+            document.getElementById(prev).classList.add('active');
+            currentPage = prev;
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            let width = 0;
+            
+            switch(currentPage) {
+                case 'page-welcome': width = 0; break;
+                case 'page-1': width = 25; break;
+                case 'page-2': width = 50; break;
+                case 'page-3': width = 75; break;
+                case 'page-4': width = 100; break;
+                case 'page-results': width = 100; break;
+                case 'page-stats': width = 100; break;
+            }
+            
+            progress.style.width = width + '%';
+        }
+        
+        // Funciones para selección de opciones
+        function selectOption(element, questionId) {
+            // Deseleccionar todas las opciones del mismo grupo
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Seleccionar la opción clickeada
+            element.classList.add('selected');
+            
+            // Guardar la respuesta
+            answers[questionId] = element.textContent;
+        }
+        
+        // Manejo del campo "Otro" en la pregunta 1
+        document.getElementById('q1-otro-check').addEventListener('change', function() {
+            const otroText = document.getElementById('q1-otro-text');
+            if (this.checked) {
+                otroText.style.display = 'block';
+            } else {
+                otroText.style.display = 'none';
+                otroText.value = '';
+            }
+        });
+        
+        // Cálculo de resultados
+        function calculateResults() {
+            // Recoger respuestas de la página 4
+            answers.q12 = document.getElementById('q12').value;
+            answers.q13 = document.getElementById('q13').value;
+            answers.q14 = answers.q14 || '';
+            answers.q15 = document.getElementById('q15').value;
+            
+            // Recoger datos demográficos
+            answers.gender = document.getElementById('gender').value;
+            answers.age = document.getElementById('age').value;
+            
+            // Calcular puntuación basada en evidencia científica
+            let score = 0;
+            
+            // Pregunta 2: Frecuencia de tristeza
+            if (answers.q2 === 'A veces') score += 1;
+            else if (answers.q2 === 'A menudo') score += 2;
+            else if (answers.q2 === 'Casi todos los días') score += 3;
+            
+            // Pregunta 3: Dificultad de concentración
+            if (answers.q3 === 'A veces') score += 1;
+            else if (answers.q3 === 'Sí, bastante') score += 2;
+            else if (answers.q3 === 'Sí, casi siempre') score += 3;
+            
+            // Pregunta 4: Nivel de estrés
+            if (answers.q4 === 'Moderado') score += 1;
+            else if (answers.q4 === 'Alto') score += 2;
+            else if (answers.q4 === 'Muy alto') score += 3;
+            
+            // Pregunta 5: Apoyo social
+            if (answers.q5 === 'A veces') score += 1;
+            else if (answers.q5 === 'Rara vez') score += 2;
+            else if (answers.q5 === 'No, nunca') score += 3;
+            
+            // Pregunta 6: Dificultad para expresar emociones
+            if (answers.q6 === 'Depende de la persona') score += 1;
+            else if (answers.q6 === 'Me cuesta un poco') score += 2;
+            else if (answers.q6 === 'Me resulta muy difícil') score += 3;
+            
+            // Pregunta 7: Problemas de sueño
+            if (answers.q7 === 'Duermo, pero me despierto cansado/a') score += 1;
+            else if (answers.q7 === 'Me cuesta dormir') score += 2;
+            else if (answers.q7 === 'Duermo muy poco o mal casi siempre') score += 3;
+            
+            // Pregunta 8: Autoestima
+            if (answers.q8 === 'A veces dudo de mí') score += 1;
+            else if (answers.q8 === 'Me cuesta aceptarme') score += 2;
+            else if (answers.q8 === 'No me siento bien conmigo mismo/a') score += 3;
+            
+            // Pregunta 9: Relaciones sociales
+            if (answers.q9 === 'Normales') score += 1;
+            else if (answers.q9 === 'Tengo algunos problemas') score += 2;
+            else if (answers.q9 === 'Me siento solo/a o excluido/a') score += 3;
+            
+            // Pregunta 10: Sentimientos de desesperanza
+            if (answers.q10 === 'Alguna vez') score += 1;
+            else if (answers.q10 === 'A menudo') score += 3;
+            else if (answers.q10 === 'Prefiero no responder') score += 2;
+            
+            // Pregunta 11: Pensamientos de autolesión (respuesta clave)
+            if (answers.q11 === 'Sí, alguna vez') score += 5;
+            else if (answers.q11 === 'Sí, varias veces') score += 10;
+            else if (answers.q11 === 'Prefiero no responder') score += 3;
+            
+            // Determinar nivel de riesgo basado en evidencia científica
+            let resultLevel, resultDescription, recommendations, resultLevelClass;
+            
+            // Evaluación de riesgo inminente (respuestas clave)
+            const imminentRisk = 
+                answers.q11 === 'Sí, alguna vez' || 
+                answers.q11 === 'Sí, varias veces' ||
+                (answers.q10 === 'A menudo' && answers.q2 === 'Casi todos los días');
+            
+            if (imminentRisk) {
+                resultLevel = 'URGENTE - Necesita atención psicológica inmediata';
+                resultLevelClass = 'urgent';
+                resultDescription = 'Tus respuestas indican posibles pensamientos o riesgos de autolesión. Es importante que busques ayuda profesional inmediatamente.';
+                recommendations = `
+                    <p><strong>Acciones inmediatas recomendadas:</strong></p>
+                    <ul>
+                        <li>Contacta con un adulto de confianza (padres, tutor, orientador) inmediatamente</li>
+                        <li>Llama a una línea de ayuda como el Teléfono de la Esperanza (717 003 717) o el Teléfono ANAR de Ayuda a Niños y Adolescentes (900 20 20 10)</li>
+                        <li>Si estás en peligro inminente, acude al servicio de urgencias más cercano</li>
+                        <li>No te quedes solo/a en este momento</li>
+                    </ul>
+                `;
+            } else if (score >= 15) {
+                resultLevel = 'Poco adecuado - Necesita atención psicológica';
+                resultLevelClass = 'moderate';
+                resultDescription = 'Tus respuestas indican un estado emocional que podría beneficiarse de apoyo psicológico profesional.';
+                recommendations = `
+                    <p><strong>Recomendaciones:</strong></p>
+                    <ul>
+                        <li>Considera hablar con el orientador/a de tu centro educativo</li>
+                        <li>Comparte tus sentimientos con personas de confianza</li>
+                        <li>Practica técnicas de relajación y mindfulness</li>
+                        <li>Mantén una rutina de sueño y alimentación saludable</li>
+                        <li>Si persisten estos sentimientos, consulta con un profesional de salud mental</li>
+                    </ul>
+                `;
+            } else if (score >= 8) {
+                resultLevel = 'Moderado - Estado emocional a vigilar';
+                resultLevelClass = 'moderate';
+                resultDescription = 'Presentas algunos signos de malestar emocional que merecen atención.';
+                recommendations = `
+                    <p><strong>Recomendaciones:</strong></p>
+                    <ul>
+                        <li>Habla con alguien de confianza sobre cómo te sientes</li>
+                        <li>Practica actividades que te hagan sentir bien</li>
+                        <li>Mantén contacto regular con amigos y familiares</li>
+                        <li>Considera participar en actividades grupales o talleres de bienestar emocional</li>
+                        <li>Si los síntomas persisten o empeoran, busca orientación profesional</li>
+                    </ul>
+                `;
+            } else {
+                resultLevel = 'Adecuado - Buena salud mental';
+                resultLevelClass = 'adequate';
+                resultDescription = 'Tus respuestas reflejan un estado emocional generalmente positivo.';
+                recommendations = `
+                    <p><strong>Recomendaciones para mantener tu bienestar:</strong></p>
+                    <ul>
+                        <li>Continúa con tus hábitos saludables</li>
+                        <li>Mantén una red de apoyo social</li>
+                        <li>Practica el autocuidado regularmente</li>
+                        <li>No dudes en buscar ayuda si en algún momento te sientes sobrepasado/a</li>
+                    </ul>
+                `;
+            }
+            
+            // Mostrar resultados
+            const resultLevelElement = document.getElementById('result-level');
+            resultLevelElement.textContent = resultLevel;
+            resultLevelElement.className = 'result-level ' + resultLevelClass;
+            
+            document.getElementById('result-description').textContent = resultDescription;
+            document.getElementById('recommendations-content').innerHTML = recommendations;
+            
+            // Guardar resultados en Firestore
+            saveResults(score, resultLevel);
+            
+            // Navegar a la página de resultados
+            nextPage('page-4', 'page-results');
+        }
+        
+        // Guardar resultados en Firestore
+        function saveResults(score, classification) {
+            const resultData = {
+                answers: answers,
+                score: score,
+                classification: classification,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                gender: answers.gender,
+                age: answers.age
+            };
+            
+            db.collection("resultadosSaludMental").add(resultData)
+            .then((docRef) => {
+                console.log("Resultado guardado con ID: ", docRef.id);
+            })
+            .catch((error) => {
+                console.error("Error al guardar resultado: ", error);
+            });
+        }
+        
+        // Mostrar estadísticas
+        function showStats() {
+            nextPage('page-results', 'page-stats');
+            loadStatistics();
+        }
+        
+        // Cargar estadísticas desde Firestore
+        function loadStatistics() {
+            let query = db.collection("resultadosSaludMental");
+            
+            const filterType = document.getElementById('stats-filter').value;
+            
+            if (filterType === 'gender') {
+                const gender = document.getElementById('gender-filter').value;
+                query = query.where('gender', '==', gender);
+            } else if (filterType === 'age') {
+                const age = document.getElementById('age-filter').value;
+                query = query.where('age', '==', age);
+            }
+            
+            query.get().then((querySnapshot) => {
+                // Reiniciar estadísticas
+                statistics = {
+                    adequate: 0,
+                    moderate: 0,
+                    urgent: 0,
+                    total: 0
+                };
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.classification.includes('Adecuado')) {
+                        statistics.adequate++;
+                    } else if (data.classification.includes('URGENTE')) {
+                        statistics.urgent++;
+                    } else {
+                        statistics.moderate++;
+                    }
+                    statistics.total++;
+                });
+                
+                // Mostrar estadísticas en los gráficos
+                displayCharts();
+            }).catch((error) => {
+                console.error("Error al cargar estadísticas: ", error);
+            });
+        }
+        
+        // Mostrar gráficos de estadísticas con escalado automático
+        function displayCharts() {
+            // Gráfico de barras con números absolutos
+            const ctx = document.getElementById('results-chart').getContext('2d');
+            
+            // Si ya existe un gráfico, destruirlo
+            if (window.resultsChart) {
+                window.resultsChart.destroy();
+            }
+            
+            // Calcular el máximo valor para establecer un límite razonable en el eje Y
+            const maxValue = Math.max(statistics.adequate, statistics.moderate, statistics.urgent);
+            
+            // Si el número de usuarios es muy grande, escalamos el eje Y
+            let suggestedMax;
+            if (maxValue <= 10) {
+                suggestedMax = 10;
+            } else if (maxValue <= 50) {
+                suggestedMax = Math.ceil(maxValue / 10) * 10; // Redondear a la decena más cercana
+            } else if (maxValue <= 100) {
+                suggestedMax = Math.ceil(maxValue / 25) * 25; // Redondear a 25 más cercano
+            } else {
+                suggestedMax = Math.ceil(maxValue / 100) * 100; // Redondear a la centena más cercana
+            }
+            
+            window.resultsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Salud Adecuada', 'Necesita Atención', 'Urgente'],
+                    datasets: [{
+                        label: 'Número de Personas',
+                        data: [statistics.adequate, statistics.moderate, statistics.urgent],
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
+                        ],
+                        borderColor: [
+                            '#218838',
+                            '#e0a800',
+                            '#c82333'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Número de Personas'
+                            },
+                            suggestedMax: suggestedMax,
+                            ticks: {
+                                stepSize: suggestedMax <= 50 ? 5 : Math.ceil(suggestedMax / 10)
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Nivel de Salud Mental'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribución de Resultados (Números Absolutos)'
+                        }
+                    }
+                }
+            });
+            
+            // Actualizar información del gráfico
+            document.getElementById('chart-info').textContent = 
+                `Total de respuestas: ${statistics.total} `;
+            
+            // Gráfico de porcentajes
+            const ctx2 = document.getElementById('percentage-chart').getContext('2d');
+            
+            // Si ya existe un gráfico, destruirlo
+            if (window.percentageChart) {
+                window.percentageChart.destroy();
+            }
+            
+            // Calcular porcentajes
+            const percentages = {
+                adequate: statistics.total > 0 ? (statistics.adequate / statistics.total * 100).toFixed(1) : 0,
+                moderate: statistics.total > 0 ? (statistics.moderate / statistics.total * 100).toFixed(1) : 0,
+                urgent: statistics.total > 0 ? (statistics.urgent / statistics.total * 100).toFixed(1) : 0
+            };
+            
+            window.percentageChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Salud Adecuada', 'Necesita Atención', 'Urgente'],
+                    datasets: [{
+                        data: [percentages.adequate, percentages.moderate, percentages.urgent],
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
+                        ],
+                        borderColor: [
+                            '#218838',
+                            '#e0a800',
+                            '#c82333'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribución Porcentual'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Manejo de filtros de estadísticas
+        document.getElementById('stats-filter').addEventListener('change', function() {
+            const genderFilter = document.getElementById('gender-filter');
+            const ageFilter = document.getElementById('age-filter');
+            
+            genderFilter.style.display = 'none';
+            ageFilter.style.display = 'none';
+            
+            if (this.value === 'gender') {
+                genderFilter.style.display = 'inline-block';
+            } else if (this.value === 'age') {
+                ageFilter.style.display = 'inline-block';
+            }
+        });
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
