@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Hábitos de Vida Saludable</title>
+    
+    <!-- Importar Firebase -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+            authDomain: "nutriplanv2.firebaseapp.com",
+            databaseURL: "https://nutriplanv2-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "nutriplanv2",
+            storageBucket: "nutriplanv2.firebasestorage.app",
+            messagingSenderId: "653707489758",
+            appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+            measurementId: "G-NWER69E8B6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+        
+        // Hacer las funciones disponibles globalmente
+        window.firebaseApp = app;
+        window.firebaseFirestore = db;
+        window.firebaseCollection = collection;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseGetDocs = getDocs;
+        window.firebaseQuery = query;
+        window.firebaseOrderBy = orderBy;
+    </script>
+    
+    <style>
+        :root {
+            --primary: #2c7fb8;
+            --secondary: #7fcdbb;
+            --accent: #edf8b1;
+            --dark: #253494;
+            --light: #f0f8ff;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 5px;
+        }
+        
+        .instructions {
+            background-color: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+        }
+        
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .option input {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--dark);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        #calculate-btn {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        #calculate-btn:hover {
+            background-color: #219653;
+        }
+        
+        #stats-btn {
+            background-color: var(--secondary);
+            color: #333;
+        }
+        
+        #stats-btn:hover {
+            background-color: #5abf9d;
+        }
+        
+        #reset-btn {
+            background-color: #ddd;
+            color: #333;
+        }
+        
+        #reset-btn:hover {
+            background-color: #bbb;
+        }
+        
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .result-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .classification {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            white-space: pre-line;
+        }
+        
+        .level-3 {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .level-2 {
+            background-color: var(--secondary);
+        }
+        
+        .level-1 {
+            background-color: var(--accent);
+        }
+        
+        .level--1 {
+            background-color: var(--warning);
+        }
+        
+        .level--2 {
+            background-color: #e67e22;
+            color: white;
+        }
+        
+        .level--3 {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .stats-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .stats-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        select, input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--light);
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .firebase-status {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .firebase-connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .firebase-disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .options {
+                flex-direction: column;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Test de Hábitos de Estilo de Vida Saludable</h1>
+            <p>Evalúa tus hábitos y descubre cómo mejorar tu calidad de vida</p>
+        </header>
+        
+        <div class="firebase-status" id="firebase-status">
+            Conectando a la base de datos...
+        </div>
+        
+        <div class="instructions">
+            <p>Responde a todas las preguntas seleccionando la opción que mejor describa tus hábitos actuales. Usa los botones para navegar entre las páginas. Al finalizar, haz clic en "Calcular Resultado" para obtener tu puntuación y clasificación.</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Página 1 de 4</div>
+        </div>
+        
+        <div class="form-container">
+            <form id="test-form">
+                <!-- Página 1 -->
+                <div class="page active" id="page-1">
+                    <!-- Pregunta 1 -->
+                    <div class="question">
+                        <div class="question-text">1. ¿Cuántas comidas realizas al día?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q1" value="A" required>
+                                <span>Comida y/o cena.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="B">
+                                <span>Desayuno o media mañana, comida y cena (3 al día).</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="C">
+                                <span>Desayuno, comida, cena, media mañana y/o merienda (4-5 al día).</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 2 -->
+                    <div class="question">
+                        <div class="question-text">2. ¿Qué desayunas normalmente?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q2" value="A" required>
+                                <span>Nada.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="B">
+                                <span>Un vaso de leche/café, o zumo, o tostada, o fruta (1 sola cosa).</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="C">
+                                <span>Leche/café con cereales integrales (galletas o tostadas) y fruta o zumo (2-3 cosas).</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 3 -->
+                    <div class="question">
+                        <div class="question-text">3. ¿Con qué frecuencia comes fruta y verduras?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q3" value="A" required>
+                                <span>1 ó ninguna pieza/ración al día.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="B">
+                                <span>Entre 2 y 4 piezas/raciones al día.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="C">
+                                <span>5 ó más piezas/raciones al día.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 5 -->
+                    <div class="question">
+                        <div class="question-text">5. ¿Consumes a menudo golosinas, bollería, gusanitos, patatas de bolsa, etc.?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q5" value="A" required>
+                                <span>Todos los días.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="B">
+                                <span>2 ó más veces a la semana.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="C">
+                                <span>Nunca o de vez en cuando.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation">
+                        <button type="button" class="nav-btn" id="prev-btn-1" disabled>Anterior</button>
+                        <button type="button" class="nav-btn" id="next-btn-1">Siguiente</button>
+                    </div>
+                </div>
+                
+                <!-- Página 2 -->
+                <div class="page" id="page-2">
+                    <!-- Pregunta 6 -->
+                    <div class="question">
+                        <div class="question-text">6. ¿Cuánta agua sueles beber diariamente?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q6" value="A" required>
+                                <span>Menos de 2 vasos.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6" value="B">
+                                <span>Entre 2 y 5 vasos.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6" value="C">
+                                <span>6 ó más.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 7 -->
+                    <div class="question">
+                        <div class="question-text">7. ¿Con qué frecuencia consumes "comida rápida" (pizza, hamburguesas, "perritos", sándwiches) o platos preparados (comida lista para consumir previo calentamiento o fritura)?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q7" value="A" required>
+                                <span>Todos los días.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7" value="B">
+                                <span>Varias veces por semana.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7" value="C">
+                                <span>Casi nunca (2 veces máximo al mes).</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 8 -->
+                    <div class="question">
+                        <div class="question-text">8. ¿Tomas refrescos azucarados (Coca-Cola, Fanta,…)?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q8" value="A" required>
+                                <span>Todos los días.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8" value="B">
+                                <span>2 ó más vasos a la semana.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8" value="C">
+                                <span>Menos de 1 vaso a la semana.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 14 -->
+                    <div class="question">
+                        <div class="question-text">14. ¿Con qué frecuencia sueles tomar alcohol de alta graduación?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q14" value="A" required>
+                                <span>2-3 veces a la semana.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q14" value="B">
+                                <span>1 vez a la semana.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q14" value="C">
+                                <span>Casi nunca.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation">
+                        <button type="button" class="nav-btn" id="prev-btn-2">Anterior</button>
+                        <button type="button" class="nav-btn" id="next-btn-2">Siguiente</button>
+                    </div>
+                </div>
+                
+                <!-- Página 3 -->
+                <div class="page" id="page-3">
+                    <!-- Pregunta 13 -->
+                    <div class="question">
+                        <div class="question-text">13. ¿Fumas?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q13" value="A" required>
+                                <span>Sí, más de 10 cigarrillos diarios.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q13" value="B">
+                                <span>Sí, menos de 10 cigarrillos diarios.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q13" value="C">
+                                <span>No.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 15 -->
+                    <div class="question">
+                        <div class="question-text">15. ¿Consideras de calidad tus horas de sueño, es decir, tu sueño es reparador?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q15" value="A" required>
+                                <span>Nunca o casi nunca.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q15" value="B">
+                                <span>De vez en cuando.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q15" value="C">
+                                <span>Siempre o casi siempre.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 18 -->
+                    <div class="question">
+                        <div class="question-text">18. ¿Cuántas horas pasas viendo la tv y/o jugando con la videoconsola (a juegos que no implican ejercicio físico)?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q18" value="A" required>
+                                <span>Más de 3 horas al día.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q18" value="B">
+                                <span>De 1 a 3 horas diarias.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q18" value="C">
+                                <span>Menos de 1 hora al día.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 19 -->
+                    <div class="question">
+                        <div class="question-text">19. ¿Llevas una vida activa? (desplazarte por la ciudad, o ir a la facultad, andando o en bici, subir escaleras en lugar de coger el ascensor, etc.)</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q19" value="A" required>
+                                <span>Nunca o casi nunca.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q19" value="B">
+                                <span>Menos de 5 días a la semana.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q19" value="C">
+                                <span>5 ó más días a la semana.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation">
+                        <button type="button" class="nav-btn" id="prev-btn-3">Anterior</button>
+                        <button type="button" class="nav-btn" id="next-btn-3">Siguiente</button>
+                    </div>
+                </div>
+                
+                <!-- Página 4 -->
+                <div class="page" id="page-4">
+                    <!-- Pregunta 20 -->
+                    <div class="question">
+                        <div class="question-text">20. Sin tener en cuenta la asignatura de Educación física ¿Practicas actualmente algún ejercicio físico-deportivo fuera del horario escolar?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q20" value="A" required>
+                                <span>No practico ejercicio físico-deportivo.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q20" value="B">
+                                <span>Sí, al menos 3 veces por semana.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q20" value="C">
+                                <span>Sí, 5 ó más días por semana.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 21 -->
+                    <div class="question">
+                        <div class="question-text">21. Antes de hacer ejercicio físico-deportivo, ¿realizas un calentamiento adecuado?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q21" value="A" required>
+                                <span>Nunca o casi nunca.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q21" value="B">
+                                <span>Solamente de vez en cuando.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q21" value="C">
+                                <span>Sí.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregunta 22 -->
+                    <div class="question">
+                        <div class="question-text">22. Después de una sesión de ejercicio físico-deportivo, ¿realizas siempre estiramientos?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q22" value="A" required>
+                                <span>Nunca o casi nunca.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q22" value="B">
+                                <span>Solamente de vez en cuando.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q22" value="C">
+                                <span>Sí.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation">
+                        <button type="button" class="nav-btn" id="prev-btn-4">Anterior</button>
+                        <button type="button" id="calculate-btn">Calcular Resultado</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h2>Resultado del Test</h2>
+            <div class="score-display" id="score-display"></div>
+            <div class="classification" id="classification"></div>
+            
+            <div class="buttons" style="justify-content: center; margin-top: 20px;">
+                <button type="button" id="stats-btn">Estadísticas por Sexo y Edad</button>
+                <button type="button" id="reset-btn">Reiniciar Test</button>
+            </div>
+        </div>
+        
+        <div class="stats-container" id="stats-container">
+            <h2>Estadísticas por Sexo y Edad</h2>
+            <div class="stats-filters">
+                <div class="filter-group">
+                    <label for="sex-filter">Filtrar por sexo:</label>
+                    <select id="sex-filter">
+                        <option value="all">Todos</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="age-filter">Filtrar por edad:</label>
+                    <select id="age-filter">
+                        <option value="all">Todas las edades</option>
+                        <option value="11-12">11-12 años</option>
+                        <option value="13-14">13-14 años</option>
+                        <option value="15-16">15-16 años</option>
+                        <option value="17-18">17-18 años</option>
+                        <option value="19-25">19-25 años</option>
+                        <option value="26-30">26-30 años</option>
+                        <option value="31-35">31-35 años</option>
+                        <option value="36-40">36-40 años</option>
+                        <option value="41-45">41-45 años</option>
+                        <option value="46-50">46-50 años</option>
+                        <option value="51-55">51-55 años</option>
+                        <option value="56-60">56-60 años</option>
+                        <option value="61-65">61-65 años</option>
+                        <option value=">65">Más de 65 años</option>
+                    </select>
+                </div>
+            </div>
+            <table id="stats-table">
+                <thead>
+                    <tr>
+                        <th>Rango</th>
+                        <th>Puntuación Promedio</th>
+                        <th>Clasificación Más Común</th>
+                        <th>Número de Personas</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-body">
+                    <!-- Los datos se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Puntuaciones por pregunta y opción
+        const scores = {
+            q1: { A: -3, B: 1, C: 3 },
+            q2: { A: -3, B: 1, C: 3 },
+            q3: { A: -2, B: 1, C: 3 },
+            q5: { A: -1, B: 0, C: 1 },
+            q6: { A: -3, B: 1, C: 3 },
+            q7: { A: -1, B: 0, C: 1 },
+            q8: { A: -1, B: 0, C: 1 },
+            q14: { A: -3, B: -1, C: 3 },
+            q13: { A: -5, B: -3, C: 5 },
+            q15: { A: -3, B: 1, C: 3 },
+            q18: { A: -5, B: -1, C: 0 },
+            q19: { A: -3, B: 0, C: 3 },
+            q20: { A: -5, B: 1, C: 5 },
+            q21: { A: -1, B: 0, C: 1 },
+            q22: { A: -1, B: 0, C: 1 }
+        };
+
+        // Clasificaciones por puntuación
+        const classifications = [
+            { min: 41, max: 50, level: 3, 
+              text: "¡IMPRESIONANTES!:\nEnhorabuena, tus hábitos de vida no es que sean sanos sino lo siguiente. ¡Eres un crack! Y todo un ejemplo a seguir. Por tanto, ha llegado el momento de que mantener un estilo de vida tan saludable pase de ser un valor personal a una responsabilidad social, convirtiéndote en promotor de hábitos de vida saludable de todos aquellos que aprecias." },
+            { min: 21, max: 40, level: 2, 
+              text: "A un paso del éxito:\nEs evidente que tienes clara la importancia que unos hábitos saludables poseen en tu vida. Y, además, eres consecuente con ello. Sin embargo, hay pequeños detalles que podrías mejorar. Si ya has probado el placer y beneficio de un estilo de vida eminentemente saludable, ¿Por qué no das el paso definitivo y te ganas la matrícula de honor en salud? Yes, you can!" },
+            { min: 0, max: 20, level: 1, 
+              text: "Ni chicha ni limoná:\nO dicho de otro modo, no son malos pero tampoco suficientes como para reportarle un beneficio real a tu salud. Es hora de que te comprometas, decididamente, con tu bienestar. Un pequeño esfuerzo para ti será un gran salto para tu calidad de vida." },
+            { min: -20, max: -1, level: -1, 
+              text: "Camino a la perdición:\nDebes ser consciente de que tu mayor problema no es que no tengas unos hábitos saludables de vida sino que éstos empiezan a ser muy desaconsejados para ella. Has superado la delgada línea que separa lo poco sano de lo que atenta contra ella. La parte positiva es que invertir dicha situación solo depende de ti. Be healthy my friend." },
+            { min: -40, max: -21, level: -2, 
+              text: "El lado oscuro de la salud:\nNo cabe duda de que eres presa de la insalubridad, una fuerte tentación que usa el placer de lo inmediato para atraparte en sus redes, pero que daña duramente tu salud. Pero no te des por vencido. Afortunadamente, aún estás a tiempo de apostar por la salud o, lo que es lo mismo, por una larga vida, y de calidad." },
+            { min: -50, max: -41, level: -3, 
+              text: "Sin paños calientes: te quedan 2 telediarios:\nComo sabrás, estás en las antípodas de unos hábitos de vida saludables. De hecho, eres una auténtica bomba de relojería. O te planteas seriamente YA un cambio radical en tu estilo de vida o el daño sobre tu salud puede ser irreversible y doloroso." }
+        ];
+
+        // Variables de control de navegación
+        let currentPage = 1;
+        const totalPages = 4;
+        
+        // Elementos DOM
+        const form = document.getElementById('test-form');
+        const pages = document.querySelectorAll('.page');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const statsBtn = document.getElementById('stats-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const resultContainer = document.getElementById('result-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const classificationElement = document.getElementById('classification');
+        const statsContainer = document.getElementById('stats-container');
+        const statsBody = document.getElementById('stats-body');
+        const sexFilter = document.getElementById('sex-filter');
+        const ageFilter = document.getElementById('age-filter');
+        const firebaseStatus = document.getElementById('firebase-status');
+        
+        // Botones de navegación
+        const nextButtons = [
+            document.getElementById('next-btn-1'),
+            document.getElementById('next-btn-2'),
+            document.getElementById('next-btn-3')
+        ];
+        
+        const prevButtons = [
+            document.getElementById('prev-btn-1'),
+            document.getElementById('prev-btn-2'),
+            document.getElementById('prev-btn-3'),
+            document.getElementById('prev-btn-4')
+        ];
+        
+        // Variables para Firebase
+        let db;
+        let userData = [];
+        
+        // Inicializar Firebase
+        function initFirebase() {
+            try {
+                // Verificar que Firebase esté disponible
+                if (window.firebaseFirestore) {
+                    db = window.firebaseFirestore;
+                    
+                    // Cargar datos iniciales
+                    loadDataFromFirestore();
+                    
+                    // Actualizar estado de Firebase
+                    firebaseStatus.textContent = "Conectado a Firestore. Cargando datos...";
+                    firebaseStatus.className = "firebase-status firebase-connected";
+                } else {
+                    throw new Error("Firebase no está disponible");
+                }
+            } catch (error) {
+                console.error("Error inicializando Firebase:", error);
+                firebaseStatus.textContent = "Firebase no disponible. Usando datos locales.";
+                firebaseStatus.className = "firebase-status firebase-disconnected";
+                
+                // Cargar datos de ejemplo desde localStorage
+                const localData = localStorage.getItem('userData');
+                if (localData) {
+                    userData = JSON.parse(localData);
+                }
+            }
+        }
+        
+        // Cargar datos desde Firestore
+        async function loadDataFromFirestore() {
+            try {
+                const querySnapshot = await window.firebaseGetDocs(
+                    window.firebaseQuery(
+                        window.firebaseCollection(db, "habitosSaludablesTest"), 
+                        window.firebaseOrderBy("date", "desc")
+                    )
+                );
+                
+                userData = [];
+                querySnapshot.forEach((doc) => {
+                    userData.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                firebaseStatus.textContent = `Conectado. ${userData.length} resultados obtenidos.`;
+                firebaseStatus.className = "firebase-status firebase-connected";
+            } catch (error) {
+                console.error("Error cargando datos de Firestore:", error);
+                firebaseStatus.textContent = "Error al cargar datos de Firestore. Usando datos locales.";
+                firebaseStatus.className = "firebase-status firebase-disconnected";
+                
+                // Cargar datos de ejemplo desde localStorage
+                const localData = localStorage.getItem('userData');
+                if (localData) {
+                    userData = JSON.parse(localData);
+                }
+            }
+        }
+        
+        // Guardar resultado en Firestore
+        async function saveResultToFirestore(sex, age, score, classification) {
+            const resultData = {
+                sex: sex,
+                age: age,
+                score: score,
+                classification: classification,
+                date: new Date().toISOString()
+            };
+            
+            try {
+                if (window.firebaseAddDoc && db) {
+                    await window.firebaseAddDoc(
+                        window.firebaseCollection(db, "habitosSaludablesTest"), 
+                        resultData
+                    );
+                    console.log("Resultado guardado en Firestore");
+                    
+                    // Recargar datos después de guardar
+                    await loadDataFromFirestore();
+                } else {
+                    throw new Error("Firestore no disponible");
+                }
+            } catch (error) {
+                console.error("Error guardando en Firestore:", error);
+                // Guardar en localStorage como respaldo
+                userData.push(resultData);
+                localStorage.setItem('userData', JSON.stringify(userData));
+            }
+        }
+        
+        // Inicializar navegación
+        function initNavigation() {
+            // Configurar botones de siguiente
+            nextButtons.forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    if (validatePage(currentPage)) {
+                        goToPage(currentPage + 1);
+                    } else {
+                        alert('Por favor responde todas las preguntas de esta página antes de continuar.');
+                    }
+                });
+            });
+            
+            // Configurar botones de anterior
+            prevButtons.forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    goToPage(currentPage - 1);
+                });
+            });
+            
+            // Actualizar la visualización inicial
+            updateProgress();
+        }
+        
+        // Ir a una página específica
+        function goToPage(pageNumber) {
+            if (pageNumber < 1 || pageNumber > totalPages) return;
+            
+            // Ocultar página actual
+            pages[currentPage - 1].classList.remove('active');
+            
+            // Mostrar nueva página
+            pages[pageNumber - 1].classList.add('active');
+            
+            // Actualizar página actual
+            currentPage = pageNumber;
+            
+            // Actualizar barra de progreso
+            updateProgress();
+        }
+        
+        // Actualizar barra de progreso
+        function updateProgress() {
+            const progressPercentage = ((currentPage - 1) / (totalPages - 1)) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Página ${currentPage} de ${totalPages}`;
+        }
+        
+        // Validar que todas las preguntas de una página estén respondidas
+        function validatePage(pageNumber) {
+            const page = document.getElementById(`page-${pageNumber}`);
+            const questions = page.querySelectorAll('input[type="radio"]');
+            const questionGroups = {};
+            
+            // Agrupar opciones por pregunta
+            questions.forEach(question => {
+                const name = question.getAttribute('name');
+                if (!questionGroups[name]) {
+                    questionGroups[name] = [];
+                }
+                questionGroups[name].push(question);
+            });
+            
+            // Verificar que cada grupo tenga al menos una opción seleccionada
+            for (const group in questionGroups) {
+                const hasSelection = questionGroups[group].some(option => option.checked);
+                if (!hasSelection) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        // Calcular resultado
+        calculateBtn.addEventListener('click', function() {
+            let totalScore = 0;
+            let allAnswered = true;
+            
+            // Verificar que todas las preguntas estén respondidas
+            for (let i = 1; i <= 22; i++) {
+                if (i === 4 || i === 9 || i === 10 || i === 11 || i === 12 || i === 16 || i === 17) continue;
+                
+                const questionName = 'q' + i;
+                const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                
+                if (!selectedOption) {
+                    allAnswered = false;
+                    alert(`Por favor responde la pregunta ${i}`);
+                    break;
+                }
+                
+                totalScore += scores[questionName][selectedOption.value];
+            }
+            
+            if (allAnswered) {
+                // Mostrar resultado
+                scoreDisplay.textContent = `Tu puntuación total es: ${totalScore}`;
+                
+                // Encontrar clasificación
+                let classification = classifications.find(c => totalScore >= c.min && totalScore <= c.max);
+                
+                if (classification) {
+                    classificationElement.textContent = classification.text;
+                    classificationElement.className = `classification level-${classification.level}`;
+                }
+                
+                resultContainer.style.display = 'block';
+                
+                // Guardar datos para estadísticas
+                const sex = prompt("Para mejorar nuestras estadísticas, por favor indica tu sexo (M/F/O):") || "N/A";
+                const age = parseInt(prompt("¿Cuál es tu edad?")) || 0;
+                
+                saveResultToFirestore(sex, age, totalScore, classification ? classification.level : 0);
+            }
+        });
+
+        // Mostrar estadísticas
+        statsBtn.addEventListener('click', function() {
+            statsContainer.style.display = 'block';
+            updateStats();
+        });
+
+        // Filtrar estadísticas
+        sexFilter.addEventListener('change', updateStats);
+        ageFilter.addEventListener('change', updateStats);
+
+        // Reiniciar test
+        resetBtn.addEventListener('click', function() {
+            form.reset();
+            resultContainer.style.display = 'none';
+            statsContainer.style.display = 'none';
+            goToPage(1);
+        });
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const sex = sexFilter.value;
+            const ageRange = ageFilter.value;
+            
+            // Filtrar datos
+            let filteredData = userData;
+            
+            if (sex !== 'all') {
+                filteredData = filteredData.filter(user => user.sex === sex);
+            }
+            
+            if (ageRange !== 'all') {
+                filteredData = filteredData.filter(user => {
+                    if (ageRange === '11-12') return user.age >= 11 && user.age <= 12;
+                    if (ageRange === '13-14') return user.age >= 13 && user.age <= 14;
+                    if (ageRange === '15-16') return user.age >= 15 && user.age <= 16;
+                    if (ageRange === '17-18') return user.age >= 17 && user.age <= 18;
+                    if (ageRange === '19-25') return user.age >= 19 && user.age <= 25;
+                    if (ageRange === '26-30') return user.age >= 26 && user.age <= 30;
+                    if (ageRange === '31-35') return user.age >= 31 && user.age <= 35;
+                    if (ageRange === '36-40') return user.age >= 36 && user.age <= 40;
+                    if (ageRange === '41-45') return user.age >= 41 && user.age <= 45;
+                    if (ageRange === '46-50') return user.age >= 46 && user.age <= 50;
+                    if (ageRange === '51-55') return user.age >= 51 && user.age <= 55;
+                    if (ageRange === '56-60') return user.age >= 56 && user.age <= 60;
+                    if (ageRange === '61-65') return user.age >= 61 && user.age <= 65;
+                    if (ageRange === '>65') return user.age > 65;
+                    return true;
+                });
+            }
+            
+            // Calcular estadísticas por sexo
+            const statsBySex = {};
+            ['M', 'F', 'O'].forEach(s => {
+                const users = filteredData.filter(user => user.sex === s);
+                if (users.length > 0) {
+                    const avgScore = users.reduce((sum, user) => sum + user.score, 0) / users.length;
+                    
+                    // Encontrar clasificación más común
+                    const classCounts = {};
+                    users.forEach(user => {
+                        classCounts[user.classification] = (classCounts[user.classification] || 0) + 1;
+                    });
+                    
+                    let mostCommonClass = Object.keys(classCounts).reduce((a, b) => 
+                        classCounts[a] > classCounts[b] ? a : b, 0);
+                    
+                    statsBySex[s] = {
+                        avgScore: avgScore.toFixed(2),
+                        mostCommonClass: mostCommonClass,
+                        count: users.length
+                    };
+                }
+            });
+            
+            // Calcular estadísticas por edad
+            const statsByAge = {};
+            const ageRanges = [
+                '11-12', '13-14', '15-16', '17-18', '19-25', 
+                '26-30', '31-35', '36-40', '41-45', '46-50', 
+                '51-55', '56-60', '61-65', '>65'
+            ];
+            
+            ageRanges.forEach(range => {
+                const users = filteredData.filter(user => {
+                    if (range === '11-12') return user.age >= 11 && user.age <= 12;
+                    if (range === '13-14') return user.age >= 13 && user.age <= 14;
+                    if (range === '15-16') return user.age >= 15 && user.age <= 16;
+                    if (range === '17-18') return user.age >= 17 && user.age <= 18;
+                    if (range === '19-25') return user.age >= 19 && user.age <= 25;
+                    if (range === '26-30') return user.age >= 26 && user.age <= 30;
+                    if (range === '31-35') return user.age >= 31 && user.age <= 35;
+                    if (range === '36-40') return user.age >= 36 && user.age <= 40;
+                    if (range === '41-45') return user.age >= 41 && user.age <= 45;
+                    if (range === '46-50') return user.age >= 46 && user.age <= 50;
+                    if (range === '51-55') return user.age >= 51 && user.age <= 55;
+                    if (range === '56-60') return user.age >= 56 && user.age <= 60;
+                    if (range === '61-65') return user.age >= 61 && user.age <= 65;
+                    if (range === '>65') return user.age > 65;
+                    return false;
+                });
+                
+                if (users.length > 0) {
+                    const avgScore = users.reduce((sum, user) => sum + user.score, 0) / users.length;
+                    
+                    // Encontrar clasificación más común
+                    const classCounts = {};
+                    users.forEach(user => {
+                        classCounts[user.classification] = (classCounts[user.classification] || 0) + 1;
+                    });
+                    
+                    let mostCommonClass = Object.keys(classCounts).reduce((a, b) => 
+                        classCounts[a] > classCounts[b] ? a : b, 0);
+                    
+                    statsByAge[range] = {
+                        avgScore: avgScore.toFixed(2),
+                        mostCommonClass: mostCommonClass,
+                        count: users.length
+                    };
+                }
+            });
+            
+            // Actualizar tabla
+            statsBody.innerHTML = '';
+            
+            // Agregar filas por sexo
+            Object.keys(statsBySex).forEach(sex => {
+                const stat = statsBySex[sex];
+                const sexName = sex === 'M' ? 'Masculino' : sex === 'F' ? 'Femenino' : 'Otro';
+                const classText = getClassificationText(stat.mostCommonClass);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sexName}</td>
+                    <td>${stat.avgScore}</td>
+                    <td>${classText}</td>
+                    <td>${stat.count}</td>
+                `;
+                statsBody.appendChild(row);
+            });
+            
+            // Agregar filas por edad
+            ageRanges.forEach(range => {
+                if (statsByAge[range]) {
+                    const stat = statsByAge[range];
+                    const classText = getClassificationText(stat.mostCommonClass);
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${range} años</td>
+                        <td>${stat.avgScore}</td>
+                        <td>${classText}</td>
+                        <td>${stat.count}</td>
+                    `;
+                    statsBody.appendChild(row);
+                }
+            });
+            
+            // Si no hay datos
+            if (Object.keys(statsBySex).length === 0 && Object.keys(statsByAge).length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="4" style="text-align: center;">No hay datos disponibles para los filtros seleccionados</td>`;
+                statsBody.appendChild(row);
+            }
+        }
+
+        // Obtener texto de clasificación
+        function getClassificationText(level) {
+            const classification = classifications.find(c => c.level === parseInt(level));
+            if (classification) {
+                const title = classification.text.split(':')[0];
+                return title;
+            }
+            return 'N/A';
+        }
+
+        // Inicializar la aplicación
+        function initApp() {
+            initFirebase();
+            initNavigation();
+        }
+        
+        // Esperar a que Firebase se cargue antes de inicializar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+    </script>
+</body>
+</html>
