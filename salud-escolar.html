@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa Salud Escolar</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+            font-size: 16px;
+            padding-bottom: 80px;
+            padding-top: 80px;
+        }
+
+        header {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #dee2e6;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 1.75em;
+            font-weight: 600;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #388E3C;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #a5d6a7;
+            padding-bottom: 8px;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 30px;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            z-index: 1000;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #343a40;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .dropdown a:hover {
+            background-color: #e9f5e9;
+            color: #388e3c;
+        }
+
+        .secciones-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 25px 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+        }
+
+        .secciones-container h2 {
+            margin-bottom: 20px;
+            color: #212529;
+            text-align: center;
+        }
+
+        .secciones-container button {
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            border: 1px solid #ccc;
+            background-color: #f8f9fa; /* Color neutro */
+            color: #333;
+        }
+
+        .secciones-container button:hover {
+            background-color: #e9ecef; /* Color hover */
+        }
+
+        .secciones-container #ipaq-btn {
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .secciones-container #ipaq-btn:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .secciones-container #kidmed-btn {
+            border-color: #2196F3;
+            color: #2196F3;
+        }
+
+        .secciones-container #kidmed-btn:hover {
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+
+        .secciones-container #alpha-btn {
+            border-color: #FF9800;
+            color: #FF9800;
+        }
+
+        .secciones-container #alpha-btn:hover {
+            background-color: rgba(255, 152, 0, 0.1);
+        }
+
+        .secciones-container #test-salud-btn {
+            border-color: #9C27B0;
+            color: #9C27B0;
+        }
+
+        .secciones-container #test-salud-btn:hover {
+            background-color: rgba(156, 39, 176, 0.1);
+        }
+
+        .secciones-container #test-mental-btn {
+            border-color: #E91E63;
+            color: #E91E63;
+        }
+
+        .secciones-container #test-mental-btn:hover {
+            background-color: rgba(233, 30, 99, 0.1);
+        }
+
+        footer {
+            background-color: #e9ecef;
+            text-align: center;
+            padding: 25px 20px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html" id="logo">Programa Salud Escolar</a>
+        </div>
+        <div class="dropdown" id="dropdown">
+            <a href="#" onclick="logout()">Cerrar Sesión</a>
+        </div>
+    </header>
+    <h1 style="text-align: center;">Programa Salud Escolar</h1>
+    <div class="secciones-container" id="secciones-container">
+        <h2>Selecciona una Evaluación</h2>
+        <button id="ipaq-btn" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/ipaq.html'">Cuestionario Internacional de Actividad Física (IPAQ)</button>
+        <button id="kidmed-btn" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/kidmed.html'">Cuestionario de Salud Alimentaria para Adolescentes (KIDMED)</button>
+        <button id="alpha-btn" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/alpha.html'">Fitness AlphaFit</button>
+        <button id="test-salud-btn" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/test-salud.html'">Test de salud</button>
+        <button id="test-mental-btn" onclick="window.location.href='https://fermagil.github.io/Nutri_Plan_v2/test-salud-mental.html'">Test de Salud Mental</button>
+    </div>
+    <footer>
+        © 2025 NutriPlan v2 - Programa Salud Escolar. Todos los derechos reservados.
+    </footer>
+    <script type="module">
+        // Si necesitas funcionalidad de autenticación o cierre de sesión,
+        // debes copiarla desde index.html o Inicio_NutriPlan_v2.html
+        // y adaptarla aquí. Por ahora, solo se define la función logout como placeholder.
+        window.logout = function() {
+            // Redirigir al login principal
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        };
+
+        // Lógica del dropdown del header (copiado de index.html)
+        document.getElementById('logo').addEventListener('click', function(event) {
+            event.preventDefault();
+            const dropdown = document.getElementById('dropdown');
+            // Asumiendo que hay un usuario autenticado para mostrar el dropdown
+            // En una implementación real, verificarías el estado de autenticación
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdown');
+            const logo = document.getElementById('logo');
+            if (!logo.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+    </script>
+</body>
+</html>
