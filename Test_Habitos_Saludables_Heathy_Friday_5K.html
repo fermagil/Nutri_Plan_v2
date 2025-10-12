@@ -794,11 +794,56 @@ h3 {
         }
 
         const win = window.open('', '_blank');
-        win.document.write(`
-          <html><head><title>Informe Global</title>
-          <style>body{font-family:Arial;padding:20px;} h2{color:#2c3e50;} ul{line-height:1.6;}</style>
-          </head><body>${html}</body></html>
-        `);
+        const win = window.open('', '_blank');
+			win.document.write(`
+			  <html>
+			  <head>
+			    <title>Informe Global Healthy Friday</title>
+			    <style>${
+					.informe-global {
+					  font-family: var(--font-main);
+					  padding: 20px;
+					  background: var(--color-bg);
+					  color: var(--color-text);
+					}
+					
+					.informe-global h2 {
+					  text-align: center;
+					  color: var(--color-primary);
+					  margin-bottom: 20px;
+					}
+					
+					.informe-global h3 {
+					  background: var(--color-surface);
+					  padding: 12px;
+					  border-radius: 8px;
+					  margin: 20px 0 12px;
+					  box-shadow: var(--shadow);
+					  .informe-global ul {
+					  padding-left: 20px;
+					}
+					
+					.informe-global li {
+					  margin-bottom: 12px;
+					  line-height: 1.6;
+					}
+					
+					.informe-global .alerta {
+					  color: var(--color-danger);
+					  font-weight: 600;
+					}
+					
+					.informe-global .positivo {
+					  color: var(--color-success);
+					  font-weight: 600;
+					}
+					}/* pega aquí el contenido del CSS */
+				
+				}</style>
+			  </head>
+			  <body class="informe-global">${html}</body>
+			  </html>
+			`);
         win.document.close();
 
       } catch (error) {
