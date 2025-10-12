@@ -1182,6 +1182,14 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
     border: none;
 }
 
+/* Botón "Exportar CSV" - con el mismo gradiente que "Nuevo Test" */
+#btnImportar{
+    
+background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1) 100%, rgba(245, 235, 235, 1) 100%);
+    color: white;
+    border: none;
+}
+
 /* Estilos para la lista de autocompletado */
 .autocomplete-items {
   position: absolute;
@@ -1932,6 +1940,7 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
 				<div style="display: flex; justify-content: space-between; align-items: center;">
 					<h2>Registro de Evaluación Física</h2>
 					<div>
+						<button id="btnImportar" class="btn btn-warning" onclick="importardata()">Importar CSV</button>
 						<button id="btnNuevoTest" class="btn btn-warning" onclick="resetFormularioYResultados()">Nuevo Test</button>
 						<button id="btnLimpiarTodo" class="btn btn-danger" onclick="resetFormularioYResultados()">Limpiar Todo</button>
 					</div>
@@ -5531,6 +5540,149 @@ function rellenarFormularioConDatos(datos) {
 
 // Iniciar la funcionalidad de autocompletado cuando se haya cargado todo
 document.addEventListener('DOMContentLoaded', iniciarAutocompletado);
+
+async function importardata() {
+    // Crear input de archivo si no existe
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.csv';
+    fileInput.style.display = 'none';
+    document.body.appendChild(fileInput);
+
+    fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) {
+            document.body.removeChild(fileInput);
+            return;
+        }
+
+        // Mostrar spinner
+        const spinnerContainer = document.getElementById('pdf-spinner-container');
+        if (spinnerContainer) {
+            spinnerContainer.querySelector('p').textContent = 'Procesando datos del CSV...';
+            spinnerContainer.style.display = 'flex';
+        }
+
+        try {
+            const text = await file.text();
+            const lines = text.trim().split('\n');
+            if (lines.length < 2) {
+                alert('El archivo CSV está vacío o no tiene datos válidos.');
+                return;
+            }
+
+            const headers = lines[0].split(',').map(h => h.trim());
+            const requiredFields = ['fechaNacimiento', 'genero', 'fechaEvaluacion', 'altura', 'peso', 'cintura', 'shuttle20m', 'salto', 'fuerza', 'shuttle4x10m'];
+            const missingFields = requiredFields.filter(field => !headers.includes(field));
+            if (missingFields.length > 0) {
+                alert(`El CSV no contiene los campos obligatorios: ${missingFields.join(', ')}`);
+                return;
+            }
+
+            // Obtener IDs numéricos existentes para determinar el próximo ID
+            const idsNumericos = evaluaciones
+                .map(e => e.nombre)
+                .filter(n => n && /^\d{5}$/.test(n))
+                .map(n => parseInt(n, 10))
+                .filter(n => !isNaN(n));
+            let nextID = idsNumericos.length > 0 ? Math.max(...idsNumericos) + 1 : 1;
+
+            const nuevosRegistros = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim());
+                if (values.length !== headers.length) continue;
+
+				const row = {};
+				headers.forEach((header, idx) => {
+					let value = values[idx];
+					if (header === 'fechaNacimiento' || header === 'fechaEvaluacion') {
+						value = parseDDMMYYYY(value);
+					}
+					row[header] = value;
+				});
+
+                // Validar campos obligatorios
+                if (requiredFields.some(field => !row[field])) continue;
+
+                // Generar nombre/ID si no existe o está vacío
+                let nombre = row['nombre'] || '';
+                if (!nombre || !/^\d{5}$/.test(nombre)) {
+                    nombre = String(nextID).padStart(5, '0');
+                    nextID++;
+                }
+
+                const datos = {
+                    nombre: nombre,
+                    fechaNacimiento: row['fechaNacimiento'],
+                    genero: row['genero'],
+                    fechaEvaluacion: row['fechaEvaluacion'],
+                    altura: parseFloat(row['altura']),
+                    peso: parseFloat(row['peso']),
+                    cintura: parseFloat(row['cintura']),
+                    shuttle20m: parseFloat(row['shuttle20m']),
+                    salto: parseInt(row['salto']),
+                    fuerza: parseFloat(row['fuerza']),
+                    shuttle4x10m: parseFloat(row['shuttle4x10m'])
+                };
+
+                // Validar tipos numéricos
+                if (
+                    isNaN(datos.altura) || isNaN(datos.peso) || isNaN(datos.cintura) ||
+                    isNaN(datos.shuttle20m) || isNaN(datos.salto) || isNaN(datos.fuerza) || isNaN(datos.shuttle4x10m)
+                ) {
+                    console.warn(`Fila ${i + 1} omitida por datos numéricos inválidos.`);
+                    continue;
+                }
+
+                nuevosRegistros.push(datos);
+            }
+
+            if (nuevosRegistros.length === 0) {
+                alert('No se encontraron registros válidos para importar.');
+                return;
+            }
+
+            // Guardar en Firestore
+            for (const datos of nuevosRegistros) {
+                try {
+                    const docRef = await db.collection('evaluaciones').add(datos);
+                    datos.id = docRef.id;
+                    evaluaciones.push(datos);
+                } catch (err) {
+                    console.error('Error al guardar registro:', datos, err);
+                }
+            }
+
+            // Actualizar contador de ID
+            actualizarContadorSiguienteID();
+
+            alert(`Se importaron ${nuevosRegistros.length} registros correctamente.`);
+        } catch (error) {
+            console.error('Error al procesar el archivo CSV:', error);
+            alert('Ocurrió un error al procesar el archivo CSV. Revisa el formato.');
+        } finally {
+            // Ocultar spinner
+            if (spinnerContainer) spinnerContainer.style.display = 'none';
+            document.body.removeChild(fileInput);
+        }
+    };
+
+    fileInput.click();
+}
+
+function parseDDMMYYYY(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+        const [day, month, year] = parts.map(Number);
+        // Validar rango básico
+        if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900 && year <= 2100) {
+            return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+    }
+    return dateStr; // devolver tal cual si no coincide
+}
     </script>
 	
 	
