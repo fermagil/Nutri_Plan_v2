@@ -459,11 +459,21 @@
         </div>
         
         <!-- Página 4: Preguntas 13-15 y datos demográficos -->
-        <div class="page" id="page-4">
-            <div class="question-group">
-                <div class="question">13. ¿Qué te gustaría que mejorara en el colegio o en tu entorno para sentirte mejor emocionalmente?</div>
-                <textarea class="text-input" id="q13" rows="3" placeholder="Escribe tu respuesta aquí..."></textarea>
+        <div class="question-group">
+            <div class="question">13. ¿Qué te gustaría que mejorara en tu colegio o entorno para sentirte mejor emocionalmente? (Puedes marcar varias opciones)</div>
+            <div class="checkbox-group" id="q13-options">
+                <label class="checkbox-option"><input type="checkbox" name="q13" value="Mas apoyo de profesores"> Más apoyo y comprensión de los profesores.</label>
+                <label class="checkbox-option"><input type="checkbox" name="q13" value="Menos presion academica"> Menos presión con los exámenes y deberes.</label>
+                <label class="checkbox-option"><input type="checkbox" name="q13" value="Mas actividades relajantes"> Más actividades relajantes o creativas (deporte, arte, música).</label>
+                <label class="checkbox-option"><input type="checkbox" name="q13" value="Mejor ambiente entre companeros"> Un mejor ambiente y menos conflictos entre compañeros.</label>
+                <label class="checkbox-option"><input type="checkbox" name="q13" value="Espacios para hablar"> Más espacios seguros para hablar de emociones (con orientadores, etc.).</label>
+                <label class="checkbox-option"><input type="checkbox" name="q13" value="Zonas de descanso"> Zonas de descanso o tranquilas para usar en los recreos.</label>
+                <label class="checkbox-option">
+                    <input type="checkbox" name="q13" value="Otro" id="q13-otro-check"> Otro:
+                    <input type="text" id="q13-otro-text" class="text-input" placeholder="Especificar" style="display: none;">
+                </label>
             </div>
+        </div>
             
             <div class="question-group">
                 <div class="question">14. ¿Te gustaría que hubiera más espacios para hablar sobre emociones y salud mental en clase?</div>
@@ -666,6 +676,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             setupOtroCheckbox('q1-otro-check', 'q1-otro-text');
             setupOtroCheckbox('q12-otro-check', 'q12-otro-text');
+            setupOtroCheckbox('q13-otro-check', 'q13-otro-text'); 
         });
  
         // Cálculo de resultados
@@ -684,8 +695,24 @@
             });
             answers.q12 = q12Values.join(', ');
             // Recoger respuestas de la página 4
-            //answers.q12 = document.getElementById('q12').value;
-            answers.q13 = document.getElementById('q13').value;
+           
+          // Recoger respuestas de checkboxes (Pregunta 13) - ¡NUEVO!
+            const q13Checkboxes = document.querySelectorAll('input[name="q13"]:checked');
+            let q13Values = [];
+            q13Checkboxes.forEach(checkbox => {
+                if (checkbox.value === 'Otro') {
+                    const otroText = document.getElementById('q13-otro-text').value;
+                    if (otroText) q13Values.push(`Otro: ${otroText}`);
+                } else {
+                    q13Values.push(checkbox.value);
+                }
+            });
+            answers.q13 = q13Values.join(', ');
+
+
+
+
+            
             answers.q14 = answers.q14 || '';
             answers.q15 = document.getElementById('q15').value;
             
