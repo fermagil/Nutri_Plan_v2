@@ -337,6 +337,33 @@ h3 {
     padding: 14px;
   }
 }
+
+.btn-volver{
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  background: #0d9488; /* Verde esmeralda suave - asociado a salud */
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-top: 20px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.btn-volver:hover,
+.btn-volver:focus {
+color : white;
+  background: #30baaf; /* Verde más oscuro al pasar el ratón */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.12);
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
   </style>
 
   <!-- Firebase SDK (versión 8) -->
@@ -346,6 +373,8 @@ h3 {
 <body>
 
   <!-- Menú principal -->
+  <!-- 🔗 Botón de navegación añadido -->
+
   <div id="menu" class="menu">
     <header><h1>Healthy Friday - Estaciones</h1></header>
     <main>
@@ -363,6 +392,9 @@ h3 {
         <li><a href="#" onclick="cargarTest('relajacion')">Estación 10: Relajación</a></li>
       </ul>
       <button class="btn" onclick="generarInformeAnalitico()" style="width:100%; margin-top:20px;">📊 Informe Global por Curso y Sexo</button>
+	      <a href="https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html" target="_blank" class="btn-volver" style="display: block; text-align: center; margin-top: 20px; text-decoration: none; width: 100%;">
+      🏫 Ir a Programa Salud Escolar
+    </a>
     </main>
   </div>
 
