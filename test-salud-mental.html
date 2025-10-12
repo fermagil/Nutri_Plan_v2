@@ -436,8 +436,20 @@
             </div>
             
             <div class="question-group">
-                <div class="question">12. ¿Qué cosas te hacen sentir mejor cuando estás mal?</div>
-                <textarea class="text-input" id="q12" rows="3" placeholder="Escribe tu respuesta aquí..."></textarea>
+                <div class="question">12. ¿Qué cosas te ayudan a sentirte mejor cuando estás mal? (Puedes marcar todas las que apliquen)</div>
+                <div class="checkbox-group" id="q12-options">
+                    <label class="checkbox-option"><input type="checkbox" name="q12" value="Hablar"> Hablar con amigos o familia</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q12" value="Musica"> Escuchar música</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q12" value="Peliculas/Series"> Ver películas o series</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q12" value="Ejercicio"> Hacer ejercicio o salir a caminar</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q12" value="Videojuegos"> Jugar videojuegos</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q12" value="Descansar"> Estar solo/a y descansar</label>
+                    <label class="checkbox-option"><input type="checkbox" name="q12" value="Hobbies"> Leer, dibujar u otro hobby</label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="q12" value="Otro" id="q12-otro-check"> Otro: 
+                        <input type="text" id="q12-otro-text" class="text-input" placeholder="Especificar" style="display: none;">
+                    </label>
+                </div>
             </div>
             
             <div class="navigation">
@@ -634,21 +646,45 @@
             answers[questionId] = element.textContent;
         }
         
-        // Manejo del campo "Otro" en la pregunta 1
-        document.getElementById('q1-otro-check').addEventListener('change', function() {
-            const otroText = document.getElementById('q1-otro-text');
-            if (this.checked) {
-                otroText.style.display = 'block';
-            } else {
-                otroText.style.display = 'none';
-                otroText.value = '';
-            }
+        // --- MANEJO DE CAMPOS "OTRO" ---
+    // Se añade un listener genérico para cualquier checkbox "otro" que creemos.
+    function setupOtroCheckbox(checkId, textId) {
+        const otroCheck = document.getElementById(checkId);
+        const otroText = document.getElementById(textId);
+        if (otroCheck) {
+            otroCheck.addEventListener('change', function() {
+                if (this.checked) {
+                    otroText.style.display = 'block';
+                } else {
+                    otroText.style.display = 'none';
+                    otroText.value = '';
+                }
+            });
+        }
+    }
+       // Se ejecuta cuando el DOM está cargado para configurar los listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            setupOtroCheckbox('q1-otro-check', 'q1-otro-text');
+            setupOtroCheckbox('q12-otro-check', 'q12-otro-text');
         });
-        
+ 
         // Cálculo de resultados
         function calculateResults() {
+
+            // Recoger respuestas de checkboxes (Pregunta 12) - ¡CORREGIDO!
+            const q12Checkboxes = document.querySelectorAll('input[name="q12"]:checked');
+            let q12Values = [];
+            q12Checkboxes.forEach(checkbox => {
+                if (checkbox.value === 'Otro') {
+                    const otroText = document.getElementById('q12-otro-text').value;
+                    if (otroText) q12Values.push(`Otro: ${otroText}`);
+                } else {
+                    q12Values.push(checkbox.value);
+                }
+            });
+            answers.q12 = q12Values.join(', ');
             // Recoger respuestas de la página 4
-            answers.q12 = document.getElementById('q12').value;
+            //answers.q12 = document.getElementById('q12').value;
             answers.q13 = document.getElementById('q13').value;
             answers.q14 = answers.q14 || '';
             answers.q15 = document.getElementById('q15').value;
@@ -658,57 +694,27 @@
             answers.age = document.getElementById('age').value;
             
             // Calcular puntuación basada en evidencia científica
-            let score = 0;
-            
-            // Pregunta 2: Frecuencia de tristeza
-            if (answers.q2 === 'A veces') score += 1;
-            else if (answers.q2 === 'A menudo') score += 2;
-            else if (answers.q2 === 'Casi todos los días') score += 3;
-            
-            // Pregunta 3: Dificultad de concentración
-            if (answers.q3 === 'A veces') score += 1;
-            else if (answers.q3 === 'Sí, bastante') score += 2;
-            else if (answers.q3 === 'Sí, casi siempre') score += 3;
-            
-            // Pregunta 4: Nivel de estrés
-            if (answers.q4 === 'Moderado') score += 1;
-            else if (answers.q4 === 'Alto') score += 2;
-            else if (answers.q4 === 'Muy alto') score += 3;
-            
-            // Pregunta 5: Apoyo social
-            if (answers.q5 === 'A veces') score += 1;
-            else if (answers.q5 === 'Rara vez') score += 2;
-            else if (answers.q5 === 'No, nunca') score += 3;
-            
-            // Pregunta 6: Dificultad para expresar emociones
-            if (answers.q6 === 'Depende de la persona') score += 1;
-            else if (answers.q6 === 'Me cuesta un poco') score += 2;
-            else if (answers.q6 === 'Me resulta muy difícil') score += 3;
-            
-            // Pregunta 7: Problemas de sueño
-            if (answers.q7 === 'Duermo, pero me despierto cansado/a') score += 1;
-            else if (answers.q7 === 'Me cuesta dormir') score += 2;
-            else if (answers.q7 === 'Duermo muy poco o mal casi siempre') score += 3;
-            
-            // Pregunta 8: Autoestima
-            if (answers.q8 === 'A veces dudo de mí') score += 1;
-            else if (answers.q8 === 'Me cuesta aceptarme') score += 2;
-            else if (answers.q8 === 'No me siento bien conmigo mismo/a') score += 3;
-            
-            // Pregunta 9: Relaciones sociales
-            if (answers.q9 === 'Normales') score += 1;
-            else if (answers.q9 === 'Tengo algunos problemas') score += 2;
-            else if (answers.q9 === 'Me siento solo/a o excluido/a') score += 3;
-            
-            // Pregunta 10: Sentimientos de desesperanza
-            if (answers.q10 === 'Alguna vez') score += 1;
-            else if (answers.q10 === 'A menudo') score += 3;
-            else if (answers.q10 === 'Prefiero no responder') score += 2;
-            
-            // Pregunta 11: Pensamientos de autolesión (respuesta clave)
-            if (answers.q11 === 'Sí, alguna vez') score += 5;
-            else if (answers.q11 === 'Sí, varias veces') score += 10;
-            else if (answers.q11 === 'Prefiero no responder') score += 3;
+            // Calcular puntuación
+        let score = 0;
+        const scoreMap = {
+            q2: {'A veces': 1, 'A menudo': 2, 'Casi todos los días': 3},
+            q3: {'A veces': 1, 'Sí, bastante': 2, 'Sí, casi siempre': 3},
+            q4: {'Moderado': 1, 'Alto': 2, 'Muy alto': 3},
+            q5: {'A veces': 1, 'Rara vez': 2, 'No, nunca': 3},
+            q6: {'Depende de la persona': 1, 'Me cuesta un poco': 2, 'Me resulta muy difícil': 3},
+            q7: {'Duermo, pero me despierto cansado/a': 1, 'Me cuesta dormir': 2, 'Duermo muy poco o mal casi siempre': 3},
+            q8: {'A veces dudo de mí': 1, 'Me cuesta aceptarme': 2, 'No me siento bien conmigo mismo/a': 3},
+            q9: {'Normales': 0, 'Tengo algunos problemas': 2, 'Me siento solo/a o excluido/a': 3}, // Ajustado score
+            q10: {'Alguna vez': 2, 'A menudo': 4, 'Prefiero no responder': 2}, // Ajustado score
+            q11: {'Sí, alguna vez': 5, 'Sí, varias veces': 10, 'Prefiero no responder': 3} // Puntuación alta para indicar riesgo
+        };
+        
+        for (const qId in scoreMap) {
+            if (answers[qId] && scoreMap[qId][answers[qId]]) {
+                score += scoreMap[qId][answers[qId]];
+            }
+        }
+
             
             // Determinar nivel de riesgo basado en evidencia científica
             let resultLevel, resultDescription, recommendations, resultLevelClass;
@@ -719,61 +725,41 @@
                 answers.q11 === 'Sí, varias veces' ||
                 (answers.q10 === 'A menudo' && answers.q2 === 'Casi todos los días');
             
-            if (imminentRisk) {
-                resultLevel = 'URGENTE - Necesita atención psicológica inmediata';
-                resultLevelClass = 'urgent';
-                resultDescription = 'Tus respuestas indican posibles pensamientos o riesgos de autolesión. Es importante que busques ayuda profesional inmediatamente.';
-                recommendations = `
-                    <p><strong>Acciones inmediatas recomendadas:</strong></p>
-                    <ul>
-                        <li>Contacta con un adulto de confianza (padres, tutor, orientador) inmediatamente</li>
-                        <li>Llama a una línea de ayuda como el Teléfono de la Esperanza (717 003 717) o el Teléfono ANAR de Ayuda a Niños y Adolescentes (900 20 20 10)</li>
-                        <li>Si estás en peligro inminente, acude al servicio de urgencias más cercano</li>
-                        <li>No te quedes solo/a en este momento</li>
-                    </ul>
-                `;
-            } else if (score >= 15) {
-                resultLevel = 'Poco adecuado - Necesita atención psicológica';
-                resultLevelClass = 'moderate';
-                resultDescription = 'Tus respuestas indican un estado emocional que podría beneficiarse de apoyo psicológico profesional.';
-                recommendations = `
-                    <p><strong>Recomendaciones:</strong></p>
-                    <ul>
-                        <li>Considera hablar con el orientador/a de tu centro educativo</li>
-                        <li>Comparte tus sentimientos con personas de confianza</li>
-                        <li>Practica técnicas de relajación y mindfulness</li>
-                        <li>Mantén una rutina de sueño y alimentación saludable</li>
-                        <li>Si persisten estos sentimientos, consulta con un profesional de salud mental</li>
-                    </ul>
-                `;
-            } else if (score >= 8) {
-                resultLevel = 'Moderado - Estado emocional a vigilar';
-                resultLevelClass = 'moderate';
-                resultDescription = 'Presentas algunos signos de malestar emocional que merecen atención.';
-                recommendations = `
-                    <p><strong>Recomendaciones:</strong></p>
-                    <ul>
-                        <li>Habla con alguien de confianza sobre cómo te sientes</li>
-                        <li>Practica actividades que te hagan sentir bien</li>
-                        <li>Mantén contacto regular con amigos y familiares</li>
-                        <li>Considera participar en actividades grupales o talleres de bienestar emocional</li>
-                        <li>Si los síntomas persisten o empeoran, busca orientación profesional</li>
-                    </ul>
-                `;
-            } else {
-                resultLevel = 'Adecuado - Buena salud mental';
-                resultLevelClass = 'adequate';
-                resultDescription = 'Tus respuestas reflejan un estado emocional generalmente positivo.';
-                recommendations = `
-                    <p><strong>Recomendaciones para mantener tu bienestar:</strong></p>
-                    <ul>
-                        <li>Continúa con tus hábitos saludables</li>
-                        <li>Mantén una red de apoyo social</li>
-                        <li>Practica el autocuidado regularmente</li>
-                        <li>No dudes en buscar ayuda si en algún momento te sientes sobrepasado/a</li>
-                    </ul>
-                `;
-            }
+           if (imminentRisk || score >= 22) {
+            resultLevel = 'Atención Prioritaria';
+            resultLevelClass = 'urgent';
+            resultDescription = 'Tus respuestas sugieren que podrías estar pasando por un momento muy difícil. Es muy importante que hables con alguien de confianza o un profesional lo antes posible.';
+            recommendations = `<p><strong>No estás solo/a. Por favor, considera estas acciones:</strong></p>
+                               <ul>
+                                   <li>Habla inmediatamente con tus padres, un tutor/a, o la orientadora del centro.</li>
+                                   <li>Si sientes que no puedes hablar con nadie cercano, existen líneas de ayuda anónimas y gratuitas.</li>
+                                   <li>Recuerda que pedir ayuda es un acto de valentía y el primer paso para sentirte mejor.</li>
+                               </ul>`;
+            answers.resultLevel = 'Urgente';
+        } else if (score >= 12) {
+            resultLevel = 'Atención Moderada';
+            resultLevelClass = 'moderate';
+            resultDescription = 'Algunas de tus respuestas indican que podrías estar enfrentando algunos desafíos emocionales. Prestar atención a cómo te sientes es importante.';
+            recommendations = `<p><strong>Aquí tienes algunas sugerencias que podrían ayudarte:</strong></p>
+                               <ul>
+                                   <li>Intenta identificar qué situaciones te generan más estrés o tristeza y piensa en pequeños cambios que podrías hacer.</li>
+                                   <li>Asegúrate de dedicar tiempo a actividades que disfrutas y te relajan.</li>
+                                   <li>Considera hablar sobre cómo te sientes con amigos cercanos, familiares o el orientador/a del centro. A veces, compartirlo alivia mucho.</li>
+                               </ul>`;
+            answers.resultLevel = 'Moderado';
+        } else {
+            resultLevel = 'Bienestar Adecuado';
+            resultLevelClass = 'adequate';
+            resultDescription = 'Tus respuestas sugieren que, en general, tienes un buen manejo de tu bienestar emocional. ¡Sigue así!';
+            recommendations = `<p><strong>Para mantener tu bienestar, te recomendamos:</strong></p>
+                               <ul>
+                                   <li>Sigue practicando hábitos saludables como dormir lo suficiente, comer bien y hacer ejercicio.</li>
+                                   <li>Continúa apoyándote en tus amigos y familia. Las relaciones sociales son un pilar fundamental.</li>
+                                   <li>No dejes de dedicar tiempo a tus hobbies y a las cosas que te hacen feliz.</li>
+                               </ul>`;
+            answers.resultLevel = 'Adecuado';
+        }
+
             
             // Mostrar resultados
             const resultLevelElement = document.getElementById('result-level');
