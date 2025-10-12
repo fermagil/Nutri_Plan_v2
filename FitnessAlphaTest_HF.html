@@ -1190,6 +1190,17 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
     border: none;
 }
 
+/* Botón "Descargar Modelo CSV" - con el mismo gradiente que "Nuevo Test" */
+#btndescargar{
+    
+background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1) 100%, rgba(245, 235, 235, 1) 100%);
+    color: white;
+    border: none;
+}
+
+
+
+
 /* Estilos para la lista de autocompletado */
 .autocomplete-items {
   position: absolute;
@@ -1940,6 +1951,7 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
 				<div style="display: flex; justify-content: space-between; align-items: center;">
 					<h2>Registro de Evaluación Física</h2>
 					<div>
+						<button id="btndescargar" class="btn btn-warning" onclick="descargarModeloCSV()">Descargar Modelo CSV</button>
 						<button id="btnImportar" class="btn btn-warning" onclick="importardata()">Importar CSV</button>
 						<button id="btnNuevoTest" class="btn btn-warning" onclick="resetFormularioYResultados()">Nuevo Test</button>
 						<button id="btnLimpiarTodo" class="btn btn-danger" onclick="resetFormularioYResultados()">Limpiar Todo</button>
@@ -5682,6 +5694,23 @@ function parseDDMMYYYY(dateStr) {
         }
     }
     return dateStr; // devolver tal cual si no coincide
+}
+
+function descargarModeloCSV() {
+    const modelo = `nombre,fechaNacimiento,genero,fechaEvaluacion,altura,peso,cintura,shuttle20m,salto,fuerza,shuttle4x10m
+,15/05/2010,masculino,06/10/2025,150.5,45.2,70,6,175,40,12
+,22/08/2011,femenino,06/10/2025,145,40,65.5,4.5,130,25.5,13.2
+,03/12/2009,masculino,06/10/2025,160,55,80,8,200,45,11.5`;
+
+    const blob = new Blob([modelo], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'modelo_importar_alpha_fitness.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
     </script>
 	
