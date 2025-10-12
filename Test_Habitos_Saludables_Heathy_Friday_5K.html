@@ -362,7 +362,7 @@ h3 {
         <li><a href="#" onclick="cargarTest('sueno')">Hábitos de Sueño (Padres)</a></li>
         <li><a href="#" onclick="cargarTest('relajacion')">Relajación</a></li>
       </ul>
-      <button class="btn" onclick="generarInformeGlobal()" style="width:100%; margin-top:20px;">📊 Informe Global por Curso y Sexo</button>
+      <button class="btn" onclick="generarInformeAnalitico()" style="width:100%; margin-top:20px;">📊 Informe Global por Curso y Sexo</button>
     </main>
   </div>
 
@@ -741,116 +741,192 @@ h3 {
       document.getElementById('resultado').style.display = 'block';
     }
 
-    async function generarInformeGlobal() {
-      try {
-        const snapshot = await db.collection('resultadosHealthyFriday').get();
-        if (snapshot.empty) {
-          alert("No hay resultados aún.");
-          return;
-        }
+    async function generarInformeAnalitico() {
+  try {
+    const snapshot = await db.collection('resultadosHealthyFriday').get();
+    if (snapshot.empty) {
+      alert("No hay resultados aún.");
+      return;
+    }
 
-        const datos = [];
-        snapshot.forEach(doc => datos.push(doc.data()));
+    // Recopilar todos los resultados
+    const todos = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      // Normalizar puntaje a escala 0-100 para comparabilidad
+      let puntajeNormalizado;
+      if (data.testId === 'sueno') {
+        // Test binario: max 5 puntos → escala a 100
+        puntajeNormalizado = (data.puntaje / 5) * 100;
+      } else {
+        // Tests de 5 preguntas: max 25 puntos → escala a 100
+        puntajeNormalizado = (data.puntaje / 25) * 100;
+      }
+      todos.push({ ...data, puntaje100: puntajeNormalizado });
+    });
 
-        const agrupado = {};
-        datos.forEach(d => {
-          const clave = `${d.curso}-${d.sexo}`;
-          if (!agrupado[clave]) agrupado[clave] = [];
-          agrupado[clave].push(d);
-        });
+    // === 1. Agrupar por alumno para obtener promedio global por alumno ===
+    const alumnos = {};
+    todos.forEach(r => {
+      if (!alumnos[r.codigoAlumno]) {
+        alumnos[r.codigoAlumno] = {
+          codigo: r.codigoAlumno,
+          curso: r.curso,
+          sexo: r.sexo,
+          puntajes: [],
+          tests: new Set()
+        };
+      }
+      // Evitar duplicados si un alumno repite un test
+      if (!alumnos[r.codigoAlumno].tests.has(r.testId)) {
+        alumnos[r.codigoAlumno].puntajes.push(r.puntaje100);
+        alumnos[r.codigoAlumno].tests.add(r.testId);
+      }
+    });
 
-        let html = `<h2>Informe Global Healthy Friday</h2><p><em>Generado: ${new Date().toLocaleString()}</em></p><hr>`;
+    // Calcular promedio por alumno
+    const alumnosConPromedio = Object.values(alumnos).map(a => {
+      const promedio = a.puntajes.reduce((sum, p) => sum + p, 0) / a.puntajes.length;
+      return {
+        codigo: a.codigo,
+        curso: a.curso,
+        sexo: a.sexo,
+        promedio,
+        completados: a.puntajes.length
+      };
+    }).filter(a => a.completados >= 5); // Solo alumnos con al menos 5 tests
 
-        for (const [clave, resultados] of Object.entries(agrupado)) {
-          const [curso, sexo] = clave.split('-');
-          const total = resultados.length;
-          const areas = {};
+    if (alumnosConPromedio.length === 0) {
+      alert("No hay alumnos con suficientes tests completados.");
+      return;
+    }
 
-          resultados.forEach(r => {
-            if (!areas[r.testId]) areas[r.testId] = { malo: 0, total: 0 };
-            areas[r.testId].total++;
-            if (["Mal hábito", "A mejorar", "Regular"].includes(r.nivel)) {
-              areas[r.testId].malo++;
-            }
-          });
+    // === 2. Mejores y peores cursos (por promedio de alumnos en ese curso) ===
+    const cursos = {};
+    alumnosConPromedio.forEach(a => {
+      if (!cursos[a.curso]) cursos[a.curso] = [];
+      cursos[a.curso].push(a.promedio);
+    });
 
-          html += `<h3>📊 ${curso} - ${sexo} (${total} participantes)</h3><ul>`;
-          let hayProblemas = false;
+    const promedioCurso = {};
+    for (const [curso, promedios] of Object.entries(cursos)) {
+      promedioCurso[curso] = promedios.reduce((sum, p) => sum + p, 0) / promedios.length;
+    }
 
-          for (const [testId, stats] of Object.entries(areas)) {
-            const porc = (stats.malo / stats.total) * 100;
-            if (porc >= 30) {
-              hayProblemas = true;
-              const titulo = tests[testId]?.titulo || testId;
-              const rec = tests[testId]?.recomendaciones[0] || "Mejorar hábitos en esta área.";
-              html += `<li>⚠️ <strong>${titulo}</strong>: ${porc.toFixed(1)}% con hábitos insuficientes.<br><small>→ ${rec}</small></li>`;
-            }
-          }
+    const cursosOrdenados = Object.entries(promedioCurso)
+      .sort((a, b) => b[1] - a[1]);
+    const mejorCurso = cursosOrdenados[0];
+    const peorCurso = cursosOrdenados[cursosOrdenados.length - 1];
 
-          if (!hayProblemas) {
-            html += `<li>✅ Todos los hábitos están en niveles aceptables.</li>`;
-          }
-          html += `</ul><hr>`;
-        }
+    // === 3. Comparativa global por género ===
+    const genero = { masculino: [], femenino: [], nobinario: [] };
+    alumnosConPromedio.forEach(a => {
+      if (genero[a.sexo]) genero[a.sexo].push(a.promedio);
+    });
 
-        const win = window.open('', '_blank');
-        
-			win.document.write(`
-			  <html>
-			  <head>
-			    <title>Informe Global Healthy Friday</title>
-			    <style>${
-					.informe-global {
-					  font-family: var(--font-main);
-					  padding: 20px;
-					  background: var(--color-bg);
-					  color: var(--color-text);
-					}
-					
-					.informe-global h2 {
-					  text-align: center;
-					  color: var(--color-primary);
-					  margin-bottom: 20px;
-					}
-					
-					.informe-global h3 {
-					  background: var(--color-surface);
-					  padding: 12px;
-					  border-radius: 8px;
-					  margin: 20px 0 12px;
-					  box-shadow: var(--shadow);
-					  .informe-global ul {
-					  padding-left: 20px;
-					}
-					
-					.informe-global li {
-					  margin-bottom: 12px;
-					  line-height: 1.6;
-					}
-					
-					.informe-global .alerta {
-					  color: var(--color-danger);
-					  font-weight: 600;
-					}
-					
-					.informe-global .positivo {
-					  color: var(--color-success);
-					  font-weight: 600;
-					}
-					}/* pega aquí el contenido del CSS */
-				
-				}</style>
-			  </head>
-			  <body class="informe-global">${html}</body>
-			  </html>
-			`);
-        win.document.close();
-
-      } catch (error) {
-        console.error("Error en informe:", error);
-        alert("No se pudo generar el informe. ¿Hay conexión?");
+    const promedioGenero = {};
+    for (const [g, promedios] of Object.entries(genero)) {
+      if (promedios.length > 0) {
+        promedioGenero[g] = promedios.reduce((sum, p) => sum + p, 0) / promedios.length;
       }
     }
+
+    // Determinar género con mejor promedio
+    let mejorGenero = null;
+    let mejorPromedio = -1;
+    for (const [g, prom] of Object.entries(promedioGenero)) {
+      if (prom > mejorPromedio) {
+        mejorPromedio = prom;
+        mejorGenero = g;
+      }
+    }
+
+    // === 4. Diferencias por género dentro de cada curso ===
+    const comparativaPorCurso = {};
+    for (const curso of Object.keys(cursos)) {
+      const datos = alumnosConPromedio.filter(a => a.curso === curso);
+      const generosEnCurso = { masculino: [], femenino: [], nobinario: [] };
+      datos.forEach(a => {
+        if (generosEnCurso[a.sexo]) generosEnCurso[a.sexo].push(a.promedio);
+      });
+
+      comparativaPorCurso[curso] = {};
+      for (const [g, promedios] of Object.entries(generosEnCurso)) {
+        if (promedios.length > 0) {
+          comparativaPorCurso[curso][g] = (promedios.reduce((sum, p) => sum + p, 0) / promedios.length).toFixed(1);
+        }
+      }
+    }
+
+    // === 5. Top 3 alumnos con mejor promedio ===
+    const top3 = alumnosConPromedio
+      .sort((a, b) => b.promedio - a.promedio)
+      .slice(0, 3);
+
+    // === 6. Generar HTML del informe ===
+    let html = `<h2>📊 Informe Analítico Healthy Friday</h2>`;
+    html += `<p><em>Generado: ${new Date().toLocaleString()}</em></p><hr>`;
+
+    // Mejor y peor curso
+    html += `<h3>🏆 Mejor y Peor Curso</h3>`;
+    html += `<p><strong>Mejor curso:</strong> ${mejorCurso[0]} (${mejorCurso[1].toFixed(1)}%)</p>`;
+    html += `<p><strong>Peor curso:</strong> ${peorCurso[0]} (${peorCurso[1].toFixed(1)}%)</p><hr>`;
+
+    // Comparativa por género
+    html += `<h3>👥 Comparativa por Género (Global)</h3>`;
+    for (const [g, prom] of Object.entries(promedioGenero)) {
+      const nombre = g === 'masculino' ? 'Chicos' : g === 'femenino' ? 'Chicas' : 'No binario';
+      html += `<p><strong>${nombre}:</strong> ${prom.toFixed(1)}%</p>`;
+    }
+    const nombreMejorGenero = mejorGenero === 'masculino' ? 'Chicos' : mejorGenero === 'femenino' ? 'Chicas' : 'No binario';
+    html += `<p><strong>✅ Grupo con mejor desempeño:</strong> ${nombreMejorGenero}</p><hr>`;
+
+    // Diferencias por curso y género
+    html += `<h3>🔍 Comparativa por Curso y Género</h3>`;
+    for (const [curso, generos] of Object.entries(comparativaPorCurso)) {
+      html += `<h4>${curso}</h4><ul>`;
+      for (const [g, prom] of Object.entries(generos)) {
+        const nombre = g === 'masculino' ? 'Chicos' : g === 'femenino' ? 'Chicas' : 'No binario';
+        html += `<li>${nombre}: ${prom}%</li>`;
+      }
+      html += `</ul>`;
+    }
+    html += `<hr>`;
+
+    // Top 3 alumnos
+    html += `<h3>🥇 Top 3 Alumnos Destacados</h3>`;
+    top3.forEach((alumno, i) => {
+      const posicion = ['1º', '2º', '3º'][i];
+      const generoTexto = alumno.sexo === 'masculino' ? 'Chico' : alumno.sexo === 'femenino' ? 'Chica' : 'No binario';
+      html += `<p><strong>${posicion}:</strong> ${alumno.codigo} (${generoTexto}, ${alumno.curso}) – ${alumno.promedio.toFixed(1)}%</p>`;
+    });
+
+    // Abrir en nueva ventana
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <html>
+      <head>
+        <title>Informe Analítico Healthy Friday</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+          h2 { color: #2563eb; text-align: center; }
+          h3 { color: #1e293b; margin-top: 24px; }
+          h4 { color: #475569; margin-top: 16px; }
+          ul { padding-left: 20px; }
+          li { margin-bottom: 8px; }
+          hr { margin: 24px 0; border: 0; border-top: 1px solid #e2e8f0; }
+        </style>
+      </head>
+      <body>${html}</body>
+      </html>
+    `);
+    win.document.close();
+
+  } catch (error) {
+    console.error("Error en informe analítico:", error);
+    alert("No se pudo generar el informe analítico.");
+  }
+}
   </script>
 </body>
 </html>
