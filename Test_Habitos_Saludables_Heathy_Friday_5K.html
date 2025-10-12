@@ -16,7 +16,7 @@
   --color-surface: #ffffff;
   --color-text: #1e293b;
   --color-text-secondary: #475569;
-  --border-radius: 12px;
+  --border-radius: 18px;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
@@ -81,7 +81,7 @@ h3 {
   text-align: center;
   box-shadow: var(--shadow);
   transition: all 0.2s ease;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
 }
 
 .menu a:hover,
@@ -351,16 +351,16 @@ h3 {
     <main>
       <h2>Selecciona el test de esta estación:</h2>
       <ul>
-        <li><a href="#" onclick="cargarTest('postura')">Higiene Postural</a></li>
-        <li><a href="#" onclick="cargarTest('actividad')">Actividad Física</a></li>
-        <li><a href="#" onclick="cargarTest('azucar')">Azúcar y Alimentación</a></li>
-        <li><a href="#" onclick="cargarTest('alimentacion')">Hábitos Alimenticios</a></li>
-        <li><a href="#" onclick="cargarTest('composicion')">Composición Corporal</a></li>
-        <li><a href="#" onclick="cargarTest('medioambiente')">Cuidado Medioambiental</a></li>
-        <li><a href="#" onclick="cargarTest('espalda')">Higiene de la Espalda</a></li>
-        <li><a href="#" onclick="cargarTest('fuerza')">Deporte y Fuerza</a></li>
-        <li><a href="#" onclick="cargarTest('sueno')">Hábitos de Sueño (Padres)</a></li>
-        <li><a href="#" onclick="cargarTest('relajacion')">Relajación</a></li>
+        <li><a href="#" onclick="cargarTest('postura')">Estacion 1: Higiene Postural</a></li>
+        <li><a href="#" onclick="cargarTest('actividad')">Estacion 2: Actividad Física</a></li>
+        <li><a href="#" onclick="cargarTest('azucar')">Estacion 3: Azúcar y Alimentación</a></li>
+        <li><a href="#" onclick="cargarTest('alimentacion')">Estacion 4: Hábitos Alimenticios</a></li>
+        <li><a href="#" onclick="cargarTest('composicion')">Estación 5: Composición Corporal</a></li>
+        <li><a href="#" onclick="cargarTest('medioambiente')">Estacion 6: Cuidado Medioambiental</a></li>
+        <li><a href="#" onclick="cargarTest('espalda')">Estación 7: Higiene de la Espalda</a></li>
+        <li><a href="#" onclick="cargarTest('fuerza')">Estación 8: Deporte y Fuerza</a></li>
+        <li><a href="#" onclick="cargarTest('sueno')">Estación 9: Hábitos de Sueño (Padres)</a></li>
+        <li><a href="#" onclick="cargarTest('relajacion')">Estación 10: Relajación</a></li>
       </ul>
       <button class="btn" onclick="generarInformeAnalitico()" style="width:100%; margin-top:20px;">📊 Informe Global por Curso y Sexo</button>
     </main>
@@ -410,6 +410,20 @@ h3 {
   </div>
 
   <script>
+   window.addEventListener('DOMContentLoaded', () => {
+    const bases = `🏆 BASES DEL CONCURSO HEALTHY FRIDAY 🏆
+
+• Cada alumno debe completar los 10 tests (uno por estación).
+• Para participar en el ranking, se requiere haber completado al menos 5 tests.
+• Los 3 alumnos con el promedio más alto (de 0 a 100) recibirán un premio.
+• El código de alumno es personal e intransferible.
+• Los resultados se basan en respuestas honestas y responsables.
+• El jurado (equipo docente) se reserva el derecho de verificar la validez de los datos.
+
+¡Participa con compromiso y gana reconociendo tus hábitos saludables!`;
+
+    alert(bases);
+  });
     // === Configuración de Firebase ===
     const firebaseConfig = {
       apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
