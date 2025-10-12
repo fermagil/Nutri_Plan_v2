@@ -423,182 +423,142 @@ h3 {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // === Tests completos (10 preguntas cada uno) ===
+     // === DATOS DE LOS TESTS (5 preguntas clave cada uno) ===
     const tests = {
       postura: {
         titulo: "Higiene Postural",
         preguntas: [
           "¿Mantienes una postura erguida en clase, con espalda apoyada y pies en el suelo?",
-          "¿Duermes en una posición que respete la curvatura natural de la espalda (ej. de lado con rodillas flexionadas)?",
-          "¿Usas ordenadores o teléfonos con la pantalla a la altura de los ojos, evitando encorvarte?",
           "¿Llevas la mochila correctamente, con ambas correas y ajustada a la espalda, sin exceder el 10% de tu peso?",
-          "¿Realizas transferencias de peso seguras al levantar objetos, flexionando rodillas en lugar de la espalda?",
+          "¿Usas ordenadores o teléfonos con la pantalla a la altura de los ojos, evitando encorvarte?",
           "¿Haces pausas para estirarte durante sesiones prolongadas en clase o frente a pantallas?",
-          "¿Monitoreas el peso de tu mochila regularmente para no sobrecargar tu espalda?",
-          "¿Consultas carteles o panfletos sobre higiene postural para corregir hábitos?",
-          "¿Incorporas ejercicios de fortalecimiento postural en tu rutina semanal?",
           "¿Evitas posturas asimétricas, como cruzar piernas o inclinarte al usar dispositivos?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Pesa tu mochila y asegúrate de no exceder el 10% de tu peso; ajusta correas para distribución pareja. Corrige postura en clase sentándote recto y eleva pantallas. Consulta panfletos para tips en dormir y transferencias de peso.",
-          "Enfócate en rutina: Practica transferencias seguras (flexiona rodillas al levantar). Usa ordenadores con soportes para evitar encorvamiento. Reparte carteles en tu entorno para recordatorios visuales.",
-          "Avanza con hábitos avanzados: Incorpora estiramientos posturales diarios. Explica a amigos cómo llevar mochilas correctamente. Monitorea posturas al dormir con almohadas de apoyo.",
-          "Refina: Organiza sesiones de asesoramiento postural. Experimenta con dípticos para educar sobre higiene en teléfonos. Enseña sobre el 10% de peso máximo en mochilas.",
-          "Mantén y expande: Lidera talleres de higiene postural. Explora variaciones como ejercicios para transferencias de peso. Comparte en comunidades sobre prevención de lesiones espinales."
+          "Comienza con lo básico: Pesa tu mochila y asegúrate de no exceder el 10% de tu peso; ajusta correas. Corrige postura en clase y eleva pantallas.",
+          "Enfócate en rutina: Usa soportes para evitar encorvamiento. Haz pausas activas cada hora.",
+          "Avanza: Incorpora estiramientos diarios y corrige posturas asimétricas. Monitorea tu mochila semanalmente.",
+          "Refina: Enseña a otros sobre higiene postural. Usa recordatorios visuales.",
+          "Excelente: Lidera talleres y comparte buenos hábitos."
         ]
       },
       actividad: {
         titulo: "Actividad Física",
         preguntas: [
           "¿Realizas al menos 60 minutos de actividad física diaria (caminar, bailar, etc.)?",
-          "¿Incorporas AF en tu rutina sin necesidad de deportes formales (ej. subir escaleras, jugar videojuegos activos)?",
-          "¿Practicas actividades que benefician el cerebro, como AF aeróbica para mejorar la concentración?",
           "¿Evitas periodos prolongados de sedentarismo, levantándote cada hora?",
           "¿Participas en juegos divertidos como Just Dance u otros para hacer AF?",
-          "¿Monitoreas tu tiempo de AF diaria para alcanzar los 60 minutos recomendados?",
           "¿Incluyes variedad: fuerza, flexibilidad y cardio en tu AF semanal?",
-          "¿Motivas a otros a unirse a AF regular para un estilo de vida saludable?",
-          "¿Usas tecnología (apps, videojuegos) para hacer AF más entretenida?",
           "¿Priorizas AF para mantener un cuerpo en forma y una mente calmada?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Camina 30 minutos diarios y agrega 30 más con actividades simples. Prueba Just Dance para diversión. Monitorea para llegar a 60 minutos.",
-          "Enfócate en rutina: Incorpora AF no deportiva como bailar o videojuegos activos. Apunta a 60 minutos diarios para un cerebro sano.",
-          "Avanza con hábitos avanzados: Varía con fuerza (pesas) y flexibilidad. Únete a grupos para AF regular y motivación.",
-          "Refina: Integra tecnología como apps de tracking. Enseña a otros sobre beneficios de AF sin deportes.",
-          "Mantén y expande: Lidera sesiones de AF divertida. Explora opciones como yoga o ciclismo para variedad."
+          "Comienza: Camina 30 min + juega 30 min. Usa Just Dance para motivarte.",
+          "Enfócate: Rompe el sedentarismo cada hora. Apunta a 60 min diarios.",
+          "Avanza: Varía con fuerza y flexibilidad. Únete a grupos.",
+          "Refina: Usa apps para tracking. Enseña a otros.",
+          "Excelente: Lidera sesiones y explora yoga o ciclismo."
         ]
       },
       azucar: {
         titulo: "Azúcar y Alimentación",
         preguntas: [
-          "¿Evitas bebidas azucaradas como refrescos, energéticas o jugos procesados, optando por agua o infusiones?",
-          "¿Controlas tu ingesta diaria de azúcar total para no exceder las recomendaciones de la OMS (menos de 50g/día)?",
-          "¿Reemplazas golosinas o bebidas dulces por opciones naturales como fruta o agua con limón?",
+          "¿Evitas bebidas azucaradas como refrescos, energéticas o jugos procesados?",
+          "¿Reemplazas golosinas o bebidas dulces por opciones naturales como fruta?",
           "¿Lees etiquetas de productos para verificar el contenido de azúcares añadidos?",
           "¿Consumes menos de una bebida azucarada por semana?",
-          "¿Equilibras tu dieta con comidas reales bajas en azúcar procesado?",
-          "¿Monitoreas síntomas como fatiga o antojos que podrían indicar exceso de azúcar?",
-          "¿Promueves entre familiares o amigos la reducción de bebidas azucaradas?",
-          "¿Incorporas alternativas saludables como té sin azúcar o agua infundida en tu rutina?",
-          "¿Sigues guías como las de la OMS para limitar azúcares libres en tu alimentación?"
+          "¿Sigues guías como las de la OMS para limitar azúcares libres?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Elimina una bebida azucarada diaria y reemplázala por agua. Calcula tu ingesta de azúcar semanal y apunta a menos de 50g/día según OMS. Usa apps para rastrear y visualiza equivalentes (ej. una Coca-Cola = 9 cucharaditas de azúcar).",
-          "Enfócate en rutina: Limita bebidas azucaradas a una por semana. Incorpora frutas enteras en lugar de jugos. Lee sobre impactos del azúcar (diabetes, obesidad) para motivarte.",
-          "Avanza con hábitos avanzados: Compara etiquetas de bebidas y elige opciones con 0g azúcar añadido. Monitorea tu consumo para staying below 25g/día (recomendación ideal OMS).",
-          "Refina: Experimenta con infusiones caseras sin azúcar. Organiza chequeos de salud para verificar impactos del azúcar. Enseña a otros sobre equivalentes visuales en bebidas comunes.",
-          "Mantén y expande: Lidera campañas contra bebidas azucaradas. Explora variaciones como agua con hierbas. Comparte en comunidades sobre adherencia a OMS para una vida saludable."
+          "Comienza: Elimina una bebida azucarada diaria. Reemplaza por agua o fruta.",
+          "Enfócate: Limita a 1 bebida azucarada/semana. Lee etiquetas.",
+          "Avanza: Elige productos con 0g azúcar añadido. Monitorea tu consumo.",
+          "Refina: Organiza chequeos de salud. Enseña sobre equivalentes de azúcar.",
+          "Excelente: Lidera campañas contra bebidas azucaradas."
         ]
       },
       alimentacion: {
         titulo: "Hábitos Alimenticios",
         preguntas: [
-          "¿Consumes al menos cinco piezas de fruta o raciones de verdura/ensalada al día?",
+          "¿Consumes al menos cinco piezas de fruta o raciones de verdura al día?",
           "¿Reemplazas golosinas o snacks procesados por opciones naturales como fruta?",
-          "¿Eliges comida real (frutas, verduras, granos integrales, proteínas frescas) sobre sustancias comestibles (bollería, refrescos, frituras)?",
-          "¿Sigues el Plato de Harvard: mitad vegetales/frutas, cuarto granos integrales, cuarto proteínas, con aceites saludables?",
-          "¿Lees etiquetas para evitar productos altos en azúcar añadido y grasas trans?",
-          "¿Cocinas comidas caseras con ingredientes reales en lugar de procesados?",
-          "¿Bebes agua o infusiones en vez de bebidas azucaradas o sustancias bebibles procesadas?",
-          "¿Equilibras tu dieta comiendo de todo, pero priorizando lo natural y bien cocinado?",
-          "¿Evitas el exceso de azúcar y grasa para prevenir síntomas como fatiga, obesidad o problemas digestivos?",
+          "¿Eliges comida real (frutas, verduras, proteínas frescas) sobre sustancias comestibles?",
+          "¿Sigues el Plato de Harvard: mitad vegetales, cuarto granos, cuarto proteínas?",
           "¿Incorporas frutas como postre o snack saludable en tu rutina diaria?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Cambia una golosina diaria por una pieza de fruta. Aprende sobre síntomas del azúcar y grasa (fatiga, inflamación, riesgo de diabetes) en panfletos. Incorpora una ensalada al día y sigue el Plato de Harvard para comidas equilibradas.",
-          "Enfócate en rutina: Prepara snacks de fruta en lugar de procesados. Diferencia comida real (manzanas frescas) de sustancias comestibles (chocolatinas). Agrega verduras a cada comida principal.",
-          "Avanza con hábitos avanzados: Monitorea tu ingesta de cinco frutas/verduras diarias. Cocina platos reales bien cocinados (al vapor o asados). Evita bebidas azucaradas por completo.",
-          "Refina: Experimenta con recetas basadas en el Plato de Harvard. Enseña a otros sobre comida real vs. procesados. Organiza 'días de fruta' donde solo consumes naturales.",
-          "Mantén y expande: Lidera grupos de alimentación saludable. Explora variaciones como smoothies de fruta real. Comparte en comunidades sobre los beneficios de evitar golosinas."
+          "Comienza: Cambia una golosina por fruta. Añade una ensalada diaria.",
+          "Enfócate: Prepara snacks de fruta. Agrega verduras a cada comida.",
+          "Avanza: Cocina platos reales. Evita bebidas azucaradas.",
+          "Refina: Experimenta con recetas del Plato de Harvard.",
+          "Excelente: Lidera grupos de alimentación saludable."
         ]
       },
       composicion: {
         titulo: "Composición Corporal",
         preguntas: [
           "¿Consumes una dieta equilibrada con al menos 5 porciones de frutas y verduras al día?",
-          "¿Controlas las porciones de comida y evitas comer en exceso o por aburrimiento?",
-          "¿Realizas actividad física regular (al menos 150 minutos semanales de ejercicio moderado)?",
-          "¿Mides tu peso y IMC periódicamente para monitorear cambios?",
-          "¿Evitas alimentos procesados altos en azúcares, grasas saturadas y sal?",
+          "¿Controlas las porciones de comida y evitas comer en exceso?",
+          "¿Realizas actividad física regular (al menos 150 minutos semanales)?",
           "¿Bebes suficiente agua (al menos 2 litros al día) y limitas bebidas azucaradas?",
-          "¿Incluyes proteínas magras, granos integrales y grasas saludables en tus comidas?",
-          "¿Duermes entre 7-9 horas por noche, ya que el sueño afecta la composición corporal?",
-          "¿Gestionas el estrés para evitar comer emocionalmente?",
-          "¿Consultas a un nutricionista o médico si notas cambios en tu peso o salud?"
+          "¿Duermes entre 7-9 horas por noche?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Calcula tu IMC hoy y establece metas realistas (pérdida de 0.5-1 kg/semana si es necesario). Incorpora caminatas diarias de 30 minutos y reduce porciones. Consulta un médico para un plan personalizado, considerando el alto índice de sobrepeso en España.",
-          "Enfócate en rutina: Registra tu ingesta diaria con una app. Agrega ejercicios de fuerza 2-3 veces/semana. Limita snacks procesados y prioriza comidas caseras.",
-          "Avanza con hábitos avanzados: Mide circunferencias corporales (cintura, caderas) mensualmente. Integra una dieta mediterránea, común en España pero subutilizada. Monitorea progreso con tablas de IMC por edad.",
-          "Refina: Experimenta con seguimiento de macros (proteínas, carbohidratos, grasas). Organiza chequeos anuales de salud. Enseña a otros sobre el impacto del sobrepeso en la población española.",
-          "Mantén y expande: Lidera grupos de nutrición. Explora variaciones como ayuno intermitente (con supervisión). Comparte en comunidades sobre prevención de obesidad en la UE."
+          "Comienza: Calcula tu IMC. Camina 30 min diarios. Reduce porciones.",
+          "Enfócate: Registra tu ingesta. Agrega fuerza 2-3 veces/semana.",
+          "Avanza: Mide circunferencias. Integra dieta mediterránea.",
+          "Refina: Haz chequeos anuales. Enseña sobre sobrepeso en España.",
+          "Excelente: Lidera grupos de nutrición."
         ]
       },
       medioambiente: {
         titulo: "Cuidado Medioambiental",
         preguntas: [
-          "¿Recoges papeles o basura del suelo y los tiras a la papelera en el patio o espacios comunes?",
+          "¿Recoges papeles o basura del suelo y los tiras a la papelera?",
+          "¿Evitas tirar basura en el suelo, incluso si no hay papelera cerca?",
           "¿Separas residuos reciclables (papel, plástico) antes de desecharlos?",
-          "¿Evitas tirar basura en el suelo, incluso si no hay una papelera cerca (llevándola contigo hasta encontrar una)?",
-          "¿Participas en actividades de limpieza o brigadas verdes en tu escuela o comunidad?",
-          "¿Recuerdas apagar luces y ahorrar agua para reducir el impacto ambiental?",
-          "¿Usas productos reutilizables (como botellas de agua o bolsas) en lugar de desechables?",
-          "¿Promueves entre amigos y familia el cuidado del medio ambiente, como no littering?",
-          "¿Monitoreas y reduces tu generación de residuos diarios, especialmente en el patio?",
-          "¿Incorporas hábitos como plantar árboles o cuidar zonas verdes en tu rutina?",
-          "¿Sigues normas ambientales, como no pisar áreas verdes o respetar papeleras?"
+          "¿Usas productos reutilizables (botellas, bolsas) en lugar de desechables?",
+          "¿Participas en actividades de limpieza o brigadas verdes?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Siempre lleva basura a la papelera más cercana. Únete a una Brigada Verde escolar. Recoge al menos 5 papeles del patio diariamente y motiva a un amigo a hacerlo.",
-          "Enfócate en rutina: Separa reciclables en casa y escuela. Organiza limpiezas semanales en el patio. Usa recordatorios para no tirar nada al suelo.",
-          "Avanza con hábitos avanzados: Crea carteles de normas ambientales para el patio. Participa en campañas de reducción de plásticos. Monitorea el uso de papeleras y reporta si están llenas.",
-          "Refina: Lidera actividades de plantación en zonas verdes. Experimenta con compostaje simple. Enseña a otros sobre el impacto del littering en la biodiversidad.",
-          "Mantén y expande: Organiza eventos de Brigada Verde mensuales. Explora voluntariados ambientales locales. Comparte en redes sobre sostenibilidad escolar."
+          "Comienza: Lleva siempre la basura a la papelera. Recoge 5 papeles diarios.",
+          "Enfócate: Separa reciclables. Organiza limpiezas semanales.",
+          "Avanza: Crea carteles ambientales. Reporta papeleras llenas.",
+          "Refina: Lidera plantaciones. Enseña sobre impacto del littering.",
+          "Excelente: Organiza eventos de Brigada Verde mensuales."
         ]
       },
       espalda: {
         titulo: "Higiene de la Espalda",
         preguntas: [
           "¿Realizas estiramientos diarios para los isquiotibiales y la espalda?",
-          "¿Mantienes una postura correcta al sentarte o estar de pie, evitando encorvarte?",
-          "¿Practicas ejercicios de fortalecimiento muscular para la zona lumbar y abdominal al menos 3 veces por semana?",
+          "¿Mantienes una postura correcta al sentarte o estar de pie?",
           "¿Evitas cargar mochilas pesadas o distribuir el peso de manera desigual?",
-          "¿Realizas pausas para estirarte durante periodos largos sentado (como en clases o frente a pantallas)?",
-          "¿Duermes en una posición que apoye la curvatura natural de la espalda (ej. de lado con rodillas flexionadas)?",
-          "¿Monitoreas tu flexibilidad, como midiendo el alcance de los isquiotibiales regularmente?",
-          "¿Consultas a un profesional si sientes dolor o rigidez en la espalda?",
-          "¿Incorporas actividades como natación o yoga que benefician la higiene postural?",
-          "¿Sigues recomendaciones para estiramientos saludables, evitando rebotes o forzamientos?"
+          "¿Realizas pausas para estirarte durante periodos largos sentado?",
+          "¿Duermes en una posición que apoye la curvatura natural de la espalda?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Realiza estiramientos simples de isquios diarios (sentado, alcanza los pies sin forzar). Usa un cajón de flexibilidad para medir progresos. Consulta un médico para descartar escoliosis. Evita posturas prolongadas encorvadas.",
-          "Enfócate en rutina: Incorpora 10 minutos de estiramientos matutinos. Fortalece el core con planks. Monitorea tu postura con recordatorios en el teléfono y ajusta según normogramas de flexibilidad (como del estudio AVENA).",
-          "Avanza con hábitos avanzados: Mide tus isquios semanalmente y compara con tablas estándar. Integra yoga o pilates. Corrige hiperlordosis con ejercicios de alineación espinal.",
-          "Refina: Experimenta con estiramientos guiados y usa esterillas para sesiones cómodas. Organiza chequeos posturales mensuales. Enseña a otros sobre el impacto del acortamiento de isquios en la adolescencia.",
-          "Mantén y expande: Lidera grupos de higiene postural. Explora variaciones como estiramientos dinámicos. Comparte en comunidades sobre prevención de escoliosis y hiperlordosis."
+          "Comienza: Estira isquios diarios. Evita mochilas pesadas.",
+          "Enfócate: Corrige postura con recordatorios. Haz pausas activas.",
+          "Avanza: Mide flexibilidad semanal. Usa almohadas de apoyo al dormir.",
+          "Refina: Organiza chequeos posturales. Enseña sobre acortamiento de isquios.",
+          "Excelente: Lidera grupos de higiene postural."
         ]
       },
       fuerza: {
         titulo: "Deporte y Fuerza",
         preguntas: [
-          "¿Practicas ejercicios de fuerza (como flexiones, sentadillas o pesas) al menos 2-3 veces por semana?",
-          "¿Incorporas deporte en tu rutina diaria para mejorar la fuerza y la salud cardiovascular?",
-          "¿Mides tu fuerza periódicamente (ej. con cinta métrica para circunferencias musculares o tests de resistencia)?",
-          "¿Evitas el sedentarismo prolongado, optando por actividades que fortalezcan el cuerpo y la mente?",
-          "¿Sigues una dieta que apoye el desarrollo de fuerza, con proteínas y nutrientes adecuados?",
-          "¿Participas en deportes o actividades físicas que reduzcan el riesgo de enfermedades mentales, como el estrés?",
-          "¿Comparas tu nivel de fuerza con normogramas o tablas estándar para motivarte?",
-          "¿Consultas a profesionales si notas debilidad o riesgos cardiovasculares?",
-          "¿Integra ejercicios de fuerza en tu vida cotidiana, como llevar cargas o subir escaleras?",
-          "¿Promueves el deporte entre amigos para fomentar una mejor salud física y mental?"
+          "¿Practicas ejercicios de fuerza (flexiones, sentadillas) al menos 2-3 veces por semana?",
+          "¿Incorporas deporte en tu rutina diaria para mejorar la fuerza?",
+          "¿Evitas el sedentarismo prolongado?",
+          "¿Sigues una dieta que apoye el desarrollo de fuerza, con proteínas adecuadas?",
+          "¿Participas en actividades que reduzcan el estrés, como el deporte?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Realiza ejercicios simples de fuerza 2 veces/semana (ej. 10 flexiones diarias). Mide tu fuerza con cinta métrica y compara con tablas AVENA. Incorpora caminatas para base cardiovascular.",
-          "Enfócate en rutina: Agrega sesiones de fuerza de 20 minutos, 3 veces/semana. Monitorea progresos para motivarte y reducir riesgos mentales como ansiedad.",
-          "Avanza con hábitos avanzados: Usa normogramas del estudio AVENA para metas personalizadas. Integra deporte variado para fuerza y salud cardiovascular.",
-          "Refina: Experimenta con mediciones avanzadas y ajusta dieta para óptima recuperación. Enseña a otros sobre la relación fuerza-salud mental.",
-          "Mantén y expande: Lidera grupos de deporte. Explora variaciones como entrenamiento funcional para prevención de enfermedades."
+          "Comienza: Haz 10 flexiones diarias. Camina 30 min.",
+          "Enfócate: Agrega 20 min de fuerza, 3 veces/semana.",
+          "Avanza: Usa normogramas AVENA. Varía con cardio y fuerza.",
+          "Refina: Ajusta dieta. Enseña sobre fuerza y salud mental.",
+          "Excelente: Lidera grupos de deporte."
         ]
       },
       sueno: {
@@ -606,44 +566,34 @@ h3 {
         preguntas: [
           "¿Se acuesta más o menos a la misma hora todas las noches?",
           "¿Le cuesta mucho dormirse (más de 30 min)?",
-          "¿Tiene una rutina tranquila antes de dormir?",
-          "¿Su habitación está oscura, silenciosa y fresca?",
           "¿Duerme entre 9 y 12 horas por noche?",
-          "¿Hace ejercicio o juega al aire libre durante el día?",
-          "¿Evita bebidas con cafeína (refrescos, té fuerte)?",
           "¿Se despierta varias veces sin razón?",
-          "¿Se siente descansado/a al despertar?",
-          "¿Usa pantallas (TV, tablet, celular, videojuegos) menos de 1 hora antes de dormir?"
+          "¿Usa pantallas menos de 1 hora antes de dormir?"
         ],
         recomendaciones: [
-          "Es urgente mejorar los hábitos. Establece horario fijo, elimina pantallas 1 h antes de dormir y crea una rutina relajante. Si no mejora en 2 semanas, consulta al pediatra.",
-          "Vas por buen camino, pero hay áreas clave: reduce pantallas nocturnas, asegura 9–12 h de sueño y evita cenas pesadas o cafeína.",
-          "¡Muy bien! Solo ajusta detalles: refuerza la rutina sin pantallas y mantén el horario incluso los fines de semana.",
-          "Tu hijo/a tiene hábitos ejemplares. ¡Sigue así! Comparte estos buenos hábitos con otros en casa."
+          "Es urgente mejorar: Establece horario fijo, elimina pantallas 1h antes. Consulta al pediatra si no mejora.",
+          "Vas por buen camino: Reduce pantallas, asegura 9–12 h de sueño.",
+          "¡Muy bien! Solo ajusta detalles: mantén rutina sin pantallas.",
+          "Tu hijo/a tiene hábitos ejemplares. ¡Sigue así!"
         ],
         tipo: "binario",
-        invertidas: [1, 7, 9]
+        invertidas: [1, 3, 4] // índices base 0: preguntas 2, 4, 5 → favorables = "No"
       },
       relajacion: {
         titulo: "Relajación",
         preguntas: [
+          "¿Dedicas al menos 30 minutos al día a actividades sin pantallas?",
+          "¿Evitas el uso de dispositivos electrónicos al menos 1 hora antes de dormir?",
           "¿Practicas técnicas de respiración profunda o meditación diaria?",
-          "¿Dedicas al menos 30 minutos al día a actividades sin pantallas (como leer un libro físico o caminar)?",
-          "¿Evitas el uso de dispositivos electrónicos (celular, computadora, TV) al menos 1 hora antes de dormir?",
-          "¿Realizas pausas activas durante el día para estirarte o desconectar mentalmente?",
-          "¿Mantienes un horario fijo para dormir y despertar, independientemente de las notificaciones en pantalla?",
-          "¿Participas en hobbies relajantes como yoga, jardinería o escuchar música sin interrupciones digitales?",
-          "¿Limita el tiempo en redes sociales o apps para evitar el estrés por sobrecarga de información?",
-          "¿Practicas el 'escaneo corporal' o mindfulness para identificar tensiones físicas?",
-          "¿Buscas entornos naturales o tranquilos para recargar energías, lejos de pantallas?",
-          "¿Incorporas rutinas de gratitud o reflexión positiva al final del día, sin dispositivos?"
+          "¿Limitas el tiempo en redes sociales para evitar el estrés?",
+          "¿Buscas entornos naturales o tranquilos, lejos de pantallas?"
         ],
         recomendaciones: [
-          "Comienza con lo básico: Establece un 'detox digital' diario de 30 minutos sin pantallas. Prueba apps de bloqueo como Freedom o Screen Time para limitar el uso. Incorpora caminatas al aire libre y técnicas simples de respiración (inhala 4 seg, exhala 6 seg). Busca apoyo profesional si el estrés es abrumador.",
-          "Enfócate en pantallas: Configura notificaciones silenciosas después de las 8 PM. Agrega una rutina matutina de 10 minutos de mindfulness sin teléfono. Prueba journaling para reflexionar sobre tu día, reduciendo el scroll infinito en redes.",
-          "Avanza con hábitos avanzados: Crea 'zonas sin pantallas' en casa (ej. dormitorio). Integra yoga o tai chi semanal. Monitorea tu tiempo en pantalla con herramientas integradas en tu dispositivo y apunta a menos de 2 horas recreativas al día.",
-          "Refina: Experimenta con meditaciones guiadas apps como Calm, pero úsalas con moderación para no depender de pantallas. Organiza 'días offline' mensuales. Enseña a otros sobre el impacto de las pantallas en el sueño (luz azul interfiere con la melatonina).",
-          "Mantén y expande: Lidera grupos de relajación. Explora variaciones como mindfulness en movimiento (caminar consciente). Comparte en comunidades sobre cómo las pantallas afectan la concentración y promueve alternativas analógicas."
+          "Comienza: Establece 30 min diarios sin pantallas. Prueba respiración 4-6 seg.",
+          "Enfócate: Silencia notificaciones después de las 8 PM. Usa journaling.",
+          "Avanza: Crea zonas sin pantallas en casa. Apunta a <2h recreativas/día.",
+          "Refina: Organiza 'días offline'. Enseña sobre luz azul y melatonina.",
+          "Excelente: Lidera grupos de relajación. Promueve alternativas analógicas."
         ]
       }
     };
@@ -725,11 +675,11 @@ h3 {
           }
         });
         let nivel, recIndex;
-        if (total <= 4) { nivel = "Mal hábito"; recIndex = 0; }
-        else if (total <= 6) { nivel = "A mejorar"; recIndex = 1; }
-        else if (total <= 8) { nivel = "Bueno"; recIndex = 2; }
+        if (total <= 2) { nivel = "Mal hábito"; recIndex = 0; }
+        else if (total <= 3) { nivel = "A mejorar"; recIndex = 1; }
+        else if (total <= 4) { nivel = "Bueno"; recIndex = 2; }
         else { nivel = "Excelente"; recIndex = 3; }
-        document.getElementById('puntaje').textContent = `${total} / 10`;
+        document.getElementById('puntaje').textContent = `${total} / 5`;
         document.getElementById('nivel').textContent = nivel;
         document.getElementById('recomendaciones').innerHTML = `<h3>Recomendaciones:</h3><p>${test.recomendaciones[recIndex]}</p>`;
       } else {
@@ -743,13 +693,14 @@ h3 {
           respuestas[`q${i + 1}`] = valor;
           total += valor;
         });
+		   // Escala ajustada a 5 preguntas → máximo 25
         let nivel, recIndex;
-        if (total <= 15) { nivel = "Mal hábito"; recIndex = 0; }
-        else if (total <= 25) { nivel = "Regular"; recIndex = 1; }
-        else if (total <= 35) { nivel = "Bueno"; recIndex = 2; }
-        else if (total <= 45) { nivel = "Muy bueno"; recIndex = 3; }
+        if (total <= 7) { nivel = "Mal hábito"; recIndex = 0; }
+        else if (total <= 12) { nivel = "Regular"; recIndex = 1; }
+        else if (total <= 17) { nivel = "Bueno"; recIndex = 2; }
+        else if (total <= 22) { nivel = "Muy bueno"; recIndex = 3; }
         else { nivel = "Excelente"; recIndex = 4; }
-        document.getElementById('puntaje').textContent = `${total} / 50`;
+        document.getElementById('puntaje').textContent = `${total} / 25`;
         document.getElementById('nivel').textContent = nivel;
         document.getElementById('recomendaciones').innerHTML = `<h3>Recomendaciones:</h3><p>${test.recomendaciones[recIndex]}</p>`;
       }
