@@ -1,22 +1,46 @@
-<button onclick="verificar()">Verificar rol</button>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Verificar Rol</title>
+</head>
+<body>
+  <button onclick="verificar()">Verificar rol</button>
 
-  const config = {
-    apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-    authDomain: "nutriplanv2.firebaseapp.com",
-    projectId: "nutriplanv2",
-    appId: "1:653707489758:web:9133d1d1620825c385ed4f"
-  };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  const app = initializeApp(config);
-  const auth = getAuth(app);
+    const config = {
+      apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+      authDomain: "nutriplanv2.firebaseapp.com",
+      projectId: "nutriplanv2",
+      appId: "1:653707489758:web:9133d1d1620825c385ed4f"
+    };
 
-  async function verificar() {
-   await signInWithEmailAndPassword(auth, "fernandojose.martinez@murciaeduca.es", "JuegosOlimpicos2025!!");
-    const token = await auth.currentUser.getIdTokenResult();
-    console.log("Claims:", token.claims);
-    alert(token.claims.rol ? "✅ Rol asignado" : "❌ Sin rol");
-  }
-</script>
+    const app = initializeApp(config);
+    const auth = getAuth(app);
+
+    // ✅ Función que verifica el rol
+    async function verificar() {
+      try {
+        // 👇 Usa TU email y contraseña real
+        await signInWithEmailAndPassword(auth, "fernandojose.martinez@murciaeduca.es", JuegosOlimpicos2025!!");
+        const token = await auth.currentUser.getIdTokenResult();
+        console.log("Claims:", token.claims);
+        if (token.claims.rol === "salud_escolar") {
+          alert("✅ Rol asignado correctamente.");
+        } else {
+          alert("❌ No tienes el rol 'salud_escolar'.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error al verificar: " + error.message);
+      }
+    }
+
+    // ✅ Exponer la función globalmente para onclick
+    window.verificar = verificar;
+  </script>
+</body>
+</html>
