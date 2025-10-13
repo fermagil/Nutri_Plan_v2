@@ -1319,7 +1319,41 @@ color: #4bbf54;
       alert("Error de permisos: no tienes acceso a los datos.");
     }
   }
+function initializePage() {
+  // Asegurarse de que el DOM está listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', generateAgeOptions);
+  } else {
+    generateAgeOptions();
+  }
 
+  function generateAgeOptions() {
+    const edadSelect = document.getElementById('edad');
+    if (edadSelect && edadSelect.options.length === 0) {
+      for (let i = 10; i <= 18; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + ' años';
+        edadSelect.appendChild(option);
+      }
+    }
+
+    // También para el filtro de admin
+    const filterEdadSelect = document.getElementById('filterEdad');
+    if (filterEdadSelect && filterEdadSelect.options.length === 0) {
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Todas';
+      filterEdadSelect.appendChild(defaultOption);
+      for (let i = 10; i <= 18; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + ' años';
+        filterEdadSelect.appendChild(option);
+      }
+    }
+  }
+}
   // 5. Funciones principales (tu lógica original)
   function startTest() {
     const edad = document.getElementById('edad').value;
@@ -2311,6 +2345,7 @@ color: #4bbf54;
 
 </body>
 </html>
+
 
 
 
