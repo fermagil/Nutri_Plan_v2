@@ -1352,7 +1352,46 @@ color: #4bbf54;
       alert("Error de permisos: no tienes acceso a los datos.");
     }
   }
-
+ // 6. Protección principal: verificar autenticación y rol
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const token = await user.getIdTokenResult();
+      if (token.claims.rol === "salud_escolar") {
+        // ✅ Acceso permitido
+        loadCounters();
+		 initializePage();
+        // Exponer funciones globales para onclick en HTML
+        window.startTest = startTest;
+        window.nextPage = nextPage;
+        window.prevPage = prevPage;
+        window.calculateScore = calculateScore;
+        window.exportData = exportData;
+        window.exportAllData = exportAllData;
+        window.generateReport = generateReport;
+        window.resetTest = resetTest;
+        window.showAdminLogin = showAdminLogin;
+        window.logout = () => {
+          signOut(auth).then(() => {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+          });
+        };
+        window.applyFilter = applyFilter;
+        window.exportFilteredData = exportFilteredData;
+        window.printReport = printReport;
+        window.backToFront = backToFront;
+        window.viewIndividualReport = viewIndividualReport;
+      } else {
+        // ❌ Sin rol
+        alert("Acceso denegado: solo profesores autorizados.");
+        signOut(auth).then(() => {
+          window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        });
+      }
+    } else {
+      // ❌ No autenticado
+      window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+    }
+  });
   // 5. Funciones principales (tu lógica original)
   function startTest() {
     const edad = document.getElementById('edad').value;
@@ -2301,50 +2340,12 @@ color: #4bbf54;
     });
   }
 
-  // 6. Protección principal: verificar autenticación y rol
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const token = await user.getIdTokenResult();
-      if (token.claims.rol === "salud_escolar") {
-        // ✅ Acceso permitido
-        loadCounters();
-		 initializePage();
-        // Exponer funciones globales para onclick en HTML
-        window.startTest = startTest;
-        window.nextPage = nextPage;
-        window.prevPage = prevPage;
-        window.calculateScore = calculateScore;
-        window.exportData = exportData;
-        window.exportAllData = exportAllData;
-        window.generateReport = generateReport;
-        window.resetTest = resetTest;
-        window.showAdminLogin = showAdminLogin;
-        window.logout = () => {
-          signOut(auth).then(() => {
-            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-          });
-        };
-        window.applyFilter = applyFilter;
-        window.exportFilteredData = exportFilteredData;
-        window.printReport = printReport;
-        window.backToFront = backToFront;
-        window.viewIndividualReport = viewIndividualReport;
-      } else {
-        // ❌ Sin rol
-        alert("Acceso denegado: solo profesores autorizados.");
-        signOut(auth).then(() => {
-          window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-        });
-      }
-    } else {
-      // ❌ No autenticado
-      window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-    }
-  });
+ 
 </script>
 
 </body>
 </html>
+
 
 
 
