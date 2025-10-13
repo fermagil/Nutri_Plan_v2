@@ -1289,17 +1289,36 @@ color: #4bbf54;
  // 4. Función para generar opciones de edad
  function initializePage() {
   // Función que genera las opciones de edad
+  function initializePage() {
+  console.log("🔍 initializePage() ha sido llamado.");
+
   function generateAgeOptions() {
+    console.log("🕒 Ejecutando generateAgeOptions()...");
+    
     const edadSelect = document.getElementById('edad');
-    if (edadSelect && edadSelect.options.length === 0) {
-      for (let i = 10; i <= 18; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = i + ' años';
-        edadSelect.appendChild(option);
-      }
+    console.log("📄 Elemento #edad encontrado:", edadSelect);
+
+    if (!edadSelect) {
+      console.error("❌ ERROR: No se encontró el elemento <select id='edad'> en el DOM.");
+      return;
     }
 
+    if (edadSelect.options.length > 0) {
+      console.warn("⚠️ Las opciones de edad ya existen. No se volverán a generar.");
+      return;
+    }
+
+    console.log("✅ Generando opciones de edad (10 a 18 años)...");
+    for (let i = 10; i <= 18; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = i + ' años';
+      edadSelect.appendChild(option);
+      console.log(`  ➕ Añadida opción: ${i} años`);
+    }
+    console.log("✅ Opciones de edad generadas correctamente.");
+
+    // También para el filtro de admin
     const filterEdadSelect = document.getElementById('filterEdad');
     if (filterEdadSelect && filterEdadSelect.options.length === 0) {
       const defaultOption = document.createElement('option');
@@ -1312,13 +1331,21 @@ color: #4bbf54;
         option.textContent = i + ' años';
         filterEdadSelect.appendChild(option);
       }
+      console.log("✅ Opciones de edad generadas para el filtro de administrador.");
     }
   }
 
-  // Ejecutar inmediatamente si el DOM ya está listo, o esperar si no
+  // Verificar estado del DOM
+  console.log("📊 Estado actual del DOM:", document.readyState);
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', generateAgeOptions);
+    console.log("⏳ El DOM aún no está listo. Esperando a DOMContentLoaded...");
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log("✅ DOMContentLoaded: el DOM ya está listo.");
+      generateAgeOptions();
+    });
   } else {
+    console.log("✅ El DOM ya está cargado. Generando opciones inmediatamente.");
     generateAgeOptions();
   }
 }
@@ -2347,6 +2374,7 @@ color: #4bbf54;
 
 </body>
 </html>
+
 
 
 
