@@ -1287,39 +1287,41 @@ color: #4bbf54;
 	  fechaInput.value = today;
 	}	
  // 4. Función para generar opciones de edad
-  function initializePage() {
-    function generateAgeOptions() {
-      const edadSelect = document.getElementById('edad');
-      if (edadSelect && edadSelect.options.length === 0) {
-        for (let i = 10; i <= 18; i++) {
-          const option = document.createElement('option');
-          option.value = i;
-          option.textContent = i + ' años';
-          edadSelect.appendChild(option);
-        }
-      }
-
-      const filterEdadSelect = document.getElementById('filterEdad');
-      if (filterEdadSelect && filterEdadSelect.options.length === 0) {
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'Todas';
-        filterEdadSelect.appendChild(defaultOption);
-        for (let i = 10; i <= 18; i++) {
-          const option = document.createElement('option');
-          option.value = i;
-          option.textContent = i + ' años';
-          filterEdadSelect.appendChild(option);
-        }
+ function initializePage() {
+  // Función que genera las opciones de edad
+  function generateAgeOptions() {
+    const edadSelect = document.getElementById('edad');
+    if (edadSelect && edadSelect.options.length === 0) {
+      for (let i = 10; i <= 18; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + ' años';
+        edadSelect.appendChild(option);
       }
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', generateAgeOptions);
-    } else {
-      generateAgeOptions();
+    const filterEdadSelect = document.getElementById('filterEdad');
+    if (filterEdadSelect && filterEdadSelect.options.length === 0) {
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Todas';
+      filterEdadSelect.appendChild(defaultOption);
+      for (let i = 10; i <= 18; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + ' años';
+        filterEdadSelect.appendChild(option);
+      }
     }
   }
+
+  // Ejecutar inmediatamente si el DOM ya está listo, o esperar si no
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', generateAgeOptions);
+  } else {
+    generateAgeOptions();
+  }
+}
   // 4. Función de carga de contadores
   async function loadCounters() {
     try {
@@ -2345,6 +2347,7 @@ color: #4bbf54;
 
 </body>
 </html>
+
 
 
 
