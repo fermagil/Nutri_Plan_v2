@@ -9,13 +9,14 @@
   <button id="btnAsignar">Asignarme el rol ahora</button>
   <p id="status"></p>
 
+  <!-- Contenedor invisible para reCAPTCHA -->
+  <div id="recaptcha-container"></div>
+
   <script type="module">
-    // Importar Firebase desde CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
-    // Tu configuración
     const firebaseConfig = {
       apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
       authDomain: "nutriplanv2.firebaseapp.com",
@@ -27,7 +28,11 @@
     const auth = getAuth(app);
     const functions = getFunctions(app);
 
-    // ✅ Asignar el evento desde JavaScript (no desde HTML)
+    // ✅ Inicializar reCAPTCHA invisible (obligatorio para signInWithEmailAndPassword)
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible'
+    });
+
     document.getElementById('btnAsignar').addEventListener('click', async () => {
       const status = document.getElementById('status');
       try {
@@ -38,11 +43,10 @@
         const asignar = httpsCallable(functions, "asignarRolSaludEscolar");
         await asignar({ uid: auth.currentUser.uid });
         
-        status.textContent = "✅ ¡Rol asignado correctamente! Recarga la página para ver cambios.";
-        console.log("Rol asignado");
+        status.textContent = "✅ ¡Rol asignado correctamente!";
       } catch (error) {
         status.textContent = "❌ Error: " + error.message;
-        console.error(error);
+        console.error("Error completo:", error);
       }
     });
   </script>
