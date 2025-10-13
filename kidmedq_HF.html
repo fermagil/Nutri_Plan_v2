@@ -1282,7 +1282,10 @@ color: #4bbf54;
   let allResults = JSON.parse(localStorage.getItem('allKIDMEDResults')) || [];
   let filteredResults = [];
   const today = new Date().toISOString().split('T')[0];
-  document.getElementById('fecha')?.value = today;
+ const fechaInput = document.getElementById('fecha');
+	if (fechaInput) {
+	  fechaInput.value = today;
+	}	
 
   // 4. Función de carga de contadores
   async function loadCounters() {
@@ -2308,6 +2311,7 @@ color: #4bbf54;
 
 </body>
 </html>
+
 
 
 
