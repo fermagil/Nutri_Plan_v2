@@ -1257,1376 +1257,1058 @@ color: #4bbf54;
     </div>
 </div>
 
-<script>
-    // Generar opciones de edad (10 a 18 años) - Debe ejecutarse después de que el DOM esté cargado
-    document.addEventListener('DOMContentLoaded', function() {
-        const edadSelect = document.getElementById('edad');
-        if (edadSelect) { // Verificar si el elemento existe
-            for (let i = 10; i <= 18; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
-                edadSelect.appendChild(option);
-            }
-        } else {
-            console.error("No se encontró el elemento con id='edad'");
-        }
+<script type="module">
+  // 1. Importar Firebase desde CDN (módulos)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, query, where, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Generar opciones de edad para el filtro de admin
-        const edadFilterSelect = document.getElementById('filterEdad');
-        if (edadFilterSelect) {
-            for (let i = 10; i <= 18; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
-                edadFilterSelect.appendChild(option);
-            }
-        }
-    });
+  // 2. Configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+    authDomain: "nutriplanv2.firebaseapp.com",
+    projectId: "nutriplanv2",
+    storageBucket: "nutriplanv2.firebasestorage.app",
+    messagingSenderId: "653707489758",
+    appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+    measurementId: "G-NWER69E8B6"
+  };
 
-    // Establecer fecha actual por defecto
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('fecha').value = today;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // Almacenamiento en memoria de los resultados
-    let allResults = JSON.parse(localStorage.getItem('allKIDMEDResults')) || [];
-    let filteredResults = []; // Para almacenar resultados filtrados
+  // 3. Variables globales
+  let allResults = JSON.parse(localStorage.getItem('allKIDMEDResults')) || [];
+  let filteredResults = [];
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fecha')?.value = today;
 
-    // Inicializar Firebase
-    
-
-const firebaseConfig = {
-  apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-  authDomain: "nutriplanv2.firebaseapp.com",
-  projectId: "nutriplanv2",
-  storageBucket: "nutriplanv2.firebasestorage.app",
-  messagingSenderId: "653707489758",
-  appId: "1:653707489758:web:9133d1d1620825c385ed4f",
-  measurementId: "G-NWER69E8B6"
-};
-    // Inicializar la aplicación de Firebase
-    firebase.initializeApp(firebaseConfig);
-    const analytics = firebase.analytics();
-    const db = firebase.firestore(); // Obtener la instancia de Firestore
-
-    // Cargar contadores en la página principal
-    loadCounters();
-
-    async function loadCounters() {
-        try {
-            const querySnapshot = await db.collection("kidmedResults").get();
-            const results = [];
-            querySnapshot.forEach((doc) => {
-                results.push({ id: doc.id, ...doc.data() });
-            });
-
-            // Contadores
-            let total = 0;
-            let male = 0;
-            let female = 0;
-            let other = 0;
-            const cursoCounts = {};
-
-            results.forEach(r => {
-                total++;
-                if (r.genero === 'Masculino') male++;
-                else if (r.genero === 'Femenino') female++;
-                else other++;
-
-                if (!cursoCounts[r.curso]) {
-                    cursoCounts[r.curso] = 0;
-                }
-                cursoCounts[r.curso]++;
-            });
-
-            // Actualizar elementos HTML
-            document.getElementById('totalUsers').textContent = total;
-            document.getElementById('maleUsers').textContent = male;
-            document.getElementById('femaleUsers').textContent = female;
-            document.getElementById('otherUsers').textContent = other;
-
-            // Actualizar contadores por curso (solo los 4 primeros ESO)
-            for (let i = 1; i <= 4; i++) {
-                const cursoId = `curso${i}ESOUsers`;
-                const cursoKey = `${i}º ESO`;
-                document.getElementById(cursoId).textContent = cursoCounts[cursoKey] || 0;
-            }
-
-        } catch (error) {
-            console.error("Error al cargar contadores: ", error);
-        }
-    }
-
-    function startTest() {
-        const edad = document.getElementById('edad').value;
-        const genero = document.getElementById('genero').value;
-        const curso = document.getElementById('curso').value;
-        const fecha = document.getElementById('fecha').value;
-
-        if (!edad || !genero || !curso || !fecha) {
-            alert('Por favor, completa todos los datos personales.');
-            return;
-        }
-
-        document.getElementById('introPage').classList.remove('active');
-        document.getElementById('page1').classList.add('active');
-        updateProgress(1);
-    }
-
-    function nextPage(currentPage) {
-        if (!validatePage(currentPage)) {
-            alert('Por favor, responde todas las preguntas de esta página.');
-            return;
-        }
-
-        document.getElementById(`page${currentPage}`).classList.remove('active');
-        document.getElementById(`page${currentPage + 1}`).classList.add('active');
-        updateProgress(currentPage + 1);
-    }
-
-    function prevPage(currentPage) {
-        document.getElementById(`page${currentPage}`).classList.remove('active');
-        document.getElementById(`page${currentPage - 1}`).classList.add('active');
-        updateProgress(currentPage - 1);
-    }
-
-    function validatePage(pageNum) {
-        const page = document.getElementById(`page${pageNum}`);
-        const questions = page.querySelectorAll('.question');
-        let allAnswered = true;
-        
-        questions.forEach(question => {
-            const radios = question.querySelectorAll('input[type="radio"]');
-            const checked = Array.from(radios).some(radio => radio.checked);
-            if (!checked) {
-                allAnswered = false;
-            }
-        });
-        
-        return allAnswered;
-    }
-
-    function updateProgress(pageNum) {
-        const progressPercent = (pageNum / 4) * 100;
-        document.getElementById(`progress${pageNum}`).style.width = `${progressPercent}%`;
-    }
-
-    async function calculateScore() {
-        // Validar última página
-        if (!validatePage(4)) {
-            alert('Por favor, responde todas las preguntas de esta página.');
-            return;
-        }
-
-        // --- Captura de respuestas individuales ---
-        const respuestas = {};
-        for (let i = 1; i <= 16; i++) {
-            const selectedRadio = document.querySelector(`input[name="q${i}"]:checked`);
-            if (selectedRadio) {
-                respuestas[`q${i}`] = selectedRadio.value; // Guardamos el valor: "1", "0", "-1"
-            }
-        }
-        // --- Fin de captura ---
-
-        // Cálculo de la puntuación (como antes)
-        let score = 0;
-        for (let i = 1; i <= 16; i++) {
-            score += parseInt(respuestas[`q${i}`]); // Usamos las respuestas capturadas
-        }
-
-        // Limitar puntuación a 0 si es negativa
-        if (score < 0) score = 0;
-
-        let interpretation = "";
-        let recommendations = [];
-        let resultClass = "";
-
-        if (score >= 8) {
-            interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
-            recommendations = [
-                "Sigue manteniendo estos hábitos saludables.",
-                "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
-                "¡Eres un gran ejemplo de alimentación saludable!"
-            ];
-            resultClass = "result-high";
-        } else if (score >= 4 && score <= 7) {
-            interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
-            recommendations = [
-                "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
-                "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
-                "Incorpora pescado al menos 2 veces por semana.",
-                "Evita la comida rápida y los dulces industriales con frecuencia.",
-                "Cocina con aceite de oliva en lugar de mantequilla o margarina."
-            ];
-            resultClass = "result-medium";
-        } else if (score <= 3) {
-            interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
-            recommendations = [
-                "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
-                "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
-                "Reduce la ingesta de dulces, bollería y comida rápida.",
-                "Bebe mucha agua en lugar de refrescos azucarados.",
-                "Incluye pescado y legumbres en la dieta semanalmente.",
-                "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
-            ];
-            resultClass = "result-low";
-        }
-
-        const resultDiv = document.getElementById('result');
-        let recHTML = "<div class='recommendation'><h4>Recomendaciones:</h4><ul>";
-        recommendations.forEach(rec => {
-            recHTML += `<li>${rec}</li>`;
-        });
-        recHTML += "</ul></div>";
-
-        resultDiv.innerHTML = `<div class="result-content"><h3>Resultado</h3><p><strong>Puntuación Total: ${score}</strong></p><p>${interpretation}</p>${recHTML}</div>`;
-        resultDiv.className = resultClass;
-        resultDiv.style.display = "block";
-
-        // Guardar datos para exportar
-        const edad = document.getElementById('edad').value;
-        const genero = document.getElementById('genero').value;
-        const curso = document.getElementById('curso').value;
-        const fecha = document.getElementById('fecha').value;
-
-        // --- Incluir respuestas en el objeto a guardar ---
-        const currentResult = {
-            edad: edad,
-            genero: genero,
-            curso: curso,
-            fecha: fecha,
-            score: score, // Puntuación total calculada
-            respuestas: respuestas, // <-- Nuevo: Incluimos las respuestas individuales
-            interpretation: interpretation,
-            recommendations: recommendations
-        };
-        // --- Fin de inclusión ---
-
-        // Almacenar en memoria y localStorage
-        allResults.push(currentResult);
-        localStorage.setItem('allKIDMEDResults', JSON.stringify(allResults));
-
-        // Almacenar en Firebase usando la instancia `db` obtenida previamente
-        try {
-            await db.collection("kidmedResults").add(currentResult); // Usar `db.collection`
-            console.log("Documento guardado en Firebase con éxito, incluyendo respuestas detalladas");
-            // Recargar contadores
-            loadCounters();
-        } catch (error) {
-            console.error("Error al guardar en Firebase: ", error);
-            alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
-        }
-
-        // Mostrar botones de exportar y reset
-        document.getElementById('exportBtn').classList.remove('hidden');
-        document.getElementById('exportAllBtn').classList.remove('hidden');
-        document.getElementById('reportBtn').classList.remove('hidden');
-        document.getElementById('resetBtn').classList.remove('hidden');
-    }
-
-    function exportData() {
-        if (allResults.length === 0) {
-            alert('No hay resultados para exportar.');
-            return;
-        }
-
-        const latestResult = allResults[allResults.length - 1];
-        const dataStr = JSON.stringify(latestResult, null, 2);
-        const dataUri = 'application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-
-        const exportFileDefaultName = `KIDMED_Resultado_${latestResult.fecha}.json`;
-
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
-    }
-
-    function exportAllData() {
-        if (allResults.length === 0) {
-            alert('No hay resultados para exportar.');
-            return;
-        }
-
-        // Convertir a CSV
-        const csvContent = convertToCSV(allResults);
-        const dataUri = 'text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
-
-        const exportFileDefaultName = `KIDMED_Todos_Resultados_${new Date().toISOString().split('T')[0]}.csv`;
-
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
-    }
-
-    function convertToCSV(data) {
-        if (!data.length) return '';
-        
-        const headers = Object.keys(data[0]);
-        const csvRows = [headers.join(',')];
-
-        data.forEach(row => {
-            const values = headers.map(header => {
-                const value = row[header];
-                return `"${value}"`;
-            });
-            csvRows.push(values.join(','));
-        });
-
-        return csvRows.join('\n');
-    }
-
-    async function generateReport() {
-        // Cargar datos desde Firebase
-        try {
-            // Usar la instancia `db` para obtener los documentos
-            const querySnapshot = await db.collection("kidmedResults").orderBy("fecha").get(); // Usar `db.collection`
-            
-            allResults = [];
-            querySnapshot.forEach((doc) => {
-                allResults.push({ id: doc.id, ...doc.data() });
-            });
-            
-            console.log("Datos cargados desde Firebase para el informe");
-        } catch (error) {
-            console.error("Error al cargar datos desde Firebase: ", error);
-            alert("Hubo un error al cargar los datos para el informe. Se usarán los datos locales.");
-        }
-
-        if (allResults.length === 0) {
-            alert('No hay resultados para generar el informe.');
-            return;
-        }
-
-        // Calcular estadísticas generales
-        const totalResults = allResults.length;
-        const scores = allResults.map(r => r.score);
-        
-        // Contar resultados por categoría
-        const highQuality = scores.filter(s => s >= 8).length;
-        const mediumQuality = scores.filter(s => s >= 4 && s <= 7).length;
-        const lowQuality = scores.filter(s => s <= 3).length;
-        
-        // Calcular porcentajes
-        const highPercent = ((highQuality / totalResults) * 100).toFixed(1);
-        const mediumPercent = ((mediumQuality / totalResults) * 100).toFixed(1);
-        const lowPercent = ((lowQuality / totalResults) * 100).toFixed(1);
-        
-        // Contar por género
-        const genderCounts = {};
-        allResults.forEach(r => {
-            if (!genderCounts[r.genero]) {
-                genderCounts[r.genero] = 0;
-            }
-            genderCounts[r.genero]++;
-        });
-        
-        // Contar por curso
-        const courseCounts = {};
-        allResults.forEach(r => {
-            if (!courseCounts[r.curso]) {
-                courseCounts[r.curso] = 0;
-            }
-            courseCounts[r.curso]++;
-        });
-
-        // --- Análisis detallado de respuestas ---
-        // Contadores para cada pregunta
-        const contadoresSi = {};
-        const contadoresNo = {};
-
-        for (let i = 1; i <= 16; i++) {
-            contadoresSi[i] = 0;
-            contadoresNo[i] = 0;
-        }
-
-        // Recorremos todos los resultados
-        allResults.forEach(resultado => {
-            // Verificar si 'respuestas' existe y es un objeto antes de usarlo
-            if (resultado.respuestas && typeof resultado.respuestas === 'object') {
-                const respuestas = resultado.respuestas;
-                for (let i = 1; i <= 16; i++) {
-                    // Verificar si la clave específica existe en 'respuestas'
-                    if (respuestas.hasOwnProperty(`q${i}`)) {
-                        const valor = respuestas[`q${i}`];
-                        if (valor === "1") {
-                            contadoresSi[i]++;
-                        } else {
-                            contadoresNo[i]++; // Incluye tanto "0" como "-1"
-                        }
-                    } else {
-                        // Opcional: Si una pregunta específica no existe, puedes tratarla como "No respondida"
-                        // Por ejemplo, considerarla como "No" (contadoresNo[i]++)
-                        // console.warn(`La pregunta q${i} no existe en el resultado ${resultado.id || 'desconocido'}`);
-                        contadoresNo[i]++; // Opcional: Contar como "No" si no está presente
-                    }
-                }
-            } else {
-                // Opcional: Si 'respuestas' no existe, se podrían considerar todas las preguntas como "No respondidas"
-                // console.warn(`El resultado ${resultado.id || 'desconocido'} no tiene la propiedad 'respuestas'`);
-                // Por ejemplo, incrementar contadoresNo para las 16 preguntas
-                for (let i = 1; i <= 16; i++) {
-                    contadoresNo[i]++;
-                }
-            }
-        });
-        // --- Fin del análisis detallado ---
-
-        // Crear contenido del informe
-        const reportContent = document.getElementById('reportContent');
-        
-        reportContent.innerHTML = `
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">${totalResults}</div>
-                    <div class="stat-label">Total de Encuestados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${highQuality} (${highPercent}%)</div>
-                    <div class="stat-label">Calidad Óptima</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${mediumQuality} (${mediumPercent}%)</div>
-                    <div class="stat-label">Calidad Intermedia</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${lowQuality} (${lowPercent}%)</div>
-                    <div class="stat-label">Calidad Baja</div>
-                </div>
-            </div>
-            
-            <h3>Resultados por Categoría</h3>
-            <div class="chart-container">
-                <canvas id="categoryChart"></canvas>
-            </div>
-            
-            <h3>Resultados por Género</h3>
-            <div class="chart-container">
-                <canvas id="genderChart"></canvas>
-            </div>
-            
-            <h3>Resultados por Curso</h3>
-            <div class="chart-container">
-                <canvas id="courseChart"></canvas>
-            </div>
-
-            <h3>Detalles de Respuestas por Pregunta</h3>
-            <div class="chart-container">
-                <canvas id="detallePreguntasChart"></canvas>
-            </div>
-            <p>Este gráfico muestra cuántas veces se respondió "Sí" o "No" a cada pregunta del cuestionario. Las preguntas con más respuestas "No" pueden indicar áreas donde se necesitan mejorar los hábitos alimenticios.</p>
-        `;
-        
-        // Mostrar sección de informe
-        document.getElementById('reportSection').classList.remove('hidden');
-        document.getElementById('introPage').classList.remove('active');
-        document.getElementById('adminSection').classList.add('hidden');
-        document.getElementById('result').style.display = 'none';
-        document.getElementById('exportBtn').classList.add('hidden');
-        document.getElementById('exportAllBtn').classList.add('hidden');
-        document.getElementById('reportBtn').classList.add('hidden');
-        document.getElementById('resetBtn').classList.add('hidden');
-        
-        // Crear gráficos
-        createCategoryChart(highQuality, mediumQuality, lowQuality);
-        createGenderChart(genderCounts);
-        createCourseChart(courseCounts);
-        createDetallePreguntasChart(contadoresSi, contadoresNo); // Nuevo gráfico
-    }
-
-    function createCategoryChart(high, medium, low) {
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: { // <-- Añadido ''
-                labels: [
-                    `Calidad Óptima (≥8): ${high} (${((high / (high + medium + low)) * 100).toFixed(1)}%)`,
-                    `Calidad Intermedia (4-7): ${medium} (${((medium / (high + medium + low)) * 100).toFixed(1)}%)`,
-                    `Calidad Baja (≤3): ${low} (${((low / (high + medium + low)) * 100).toFixed(1)}%)`
-                ],
-                datasets: [{
-                     data:[high, medium, low], // <-- Añadido 'data:'
-                    backgroundColor: [
-                        '#27ae60',
-                        '#f39c12',
-                        '#e74c3c'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: { // <-- Añadido 'options:'
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Distribución de Calidad Dietética'
-                    }
-                }
-            }
-        });
-    }
-
-    function createGenderChart(genderCounts) {
-        const ctx = document.getElementById('genderChart').getContext('2d');
-        const labels = Object.keys(genderCounts);
-        const data = Object.values(genderCounts);
-        
-        const percentageData = data.map(count => ((count / data.reduce((a, b) => a + b, 0)) * 100).toFixed(1));
-        
-        new Chart(ctx, {
-            type: 'pie',
-            data: { // <-- Añadido ''
-                labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
-                datasets: [{
-                     data, // <-- Añadido ''
-                    backgroundColor: [
-                        '#3498db',
-                        '#e91e63',
-                        '#9b59b6',
-                        '#34495e'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: { // <-- Añadido 'options:'
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Distribución por Género'
-                    }
-                }
-            }
-        });
-    }
-
-    function createCourseChart(courseCounts) {
-        const ctx = document.getElementById('courseChart').getContext('2d');
-        const labels = Object.keys(courseCounts);
-        const data = Object.values(courseCounts);
-        
-        const total = data.reduce((a, b) => a + b, 0);
-        const percentageData = data.map(count => ((count / total) * 100).toFixed(1));
-        
-        new Chart(ctx, {
-            type: 'bar',
-            data: { // <-- Añadido ''
-                labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
-                datasets: [{
-                    label: 'Número de Encuestados',
-                     data, // <-- Añadido ''
-                    backgroundColor: '#27ae60',
-                    borderWidth: 1
-                }]
-            },
-            options: { // <-- Añadido 'options:'
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Distribución por Curso'
-                    },
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-    // Función para crear el gráfico de detalle de preguntas
-    function createDetallePreguntasChart(contadoresSi, contadoresNo) {
-        const ctx = document.getElementById('detallePreguntasChart').getContext('2d');
-        
-        // Etiquetas para las preguntas
-        const labels = [
-            "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8",
-            "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16"
-        ];
-
-        // Datos para "Sí" y "No"
-        const dataSi = Object.values(contadoresSi);
-        const dataNo = Object.values(contadoresNo);
-
-        new Chart(ctx, {
-            type: 'bar',
-             data: { // <-- Añadido ''
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Respuestas "Sí"',
-                         dataSi, // <-- Añadido ''
-                        backgroundColor: '#27ae60',
-                    },
-                    {
-                        label: 'Respuestas "No"',
-                         dataNo, // <-- Añadido ''
-                        backgroundColor: '#e74c3c',
-                    }
-                ]
-            },
-            options: { // <-- Añadido 'options:'
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Distribución de Respuestas por Pregunta'
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            maxRotation: 45, // Rotar etiquetas si es necesario
-                            minRotation: 0
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Número de Respuestas'
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    function resetTest() {
-        document.getElementById('edad').value = '';
-        document.getElementById('genero').value = '';
-        document.getElementById('curso').value = '';
-        document.getElementById('fecha').value = today;
-        
-        // Resetear todas las páginas
-        for (let i = 1; i <= 4; i++) {
-            document.getElementById(`page${i}`).classList.remove('active');
-            document.getElementById(`page${i}`).querySelectorAll('input[type="radio"]').forEach(radio => {
-                radio.checked = false;
-            });
-        }
-        
-        document.getElementById('introPage').classList.add('active');
-        document.getElementById('result').style.display = 'none';
-        document.getElementById('reportSection').classList.add('hidden');
-        document.getElementById('adminSection').classList.add('hidden');
-        document.getElementById('exportBtn').classList.add('hidden');
-        document.getElementById('exportAllBtn').classList.add('hidden');
-        document.getElementById('reportBtn').classList.add('hidden');
-        document.getElementById('resetBtn').classList.add('hidden');
-        
-        // Resetear barras de progreso
-        for (let i = 1; i <= 4; i++) {
-            document.getElementById(`progress${i}`).style.width = '0%';
-        }
-    }
-
-    // Funciones de administración
-    function showAdminLogin(action) {
-        const password = prompt("Introduzca la contraseña de administrador:");
-        if (password === "healthy_Friday_2025") {
-            if (action === 'report') {
-                generateGlobalReport();
-            } else if (action === 'control') {
-                document.getElementById('adminSection').classList.remove('hidden');
-                document.getElementById('introPage').classList.remove('active');
-                document.getElementById('reportSection').classList.add('hidden');
-                document.getElementById('result').style.display = 'none';
-                document.getElementById('exportBtn').classList.add('hidden');
-                document.getElementById('exportAllBtn').classList.add('hidden');
-                document.getElementById('reportBtn').classList.add('hidden');
-                document.getElementById('resetBtn').classList.add('hidden');
-            }
-        } else {
-            alert("Contraseña incorrecta.");
-        }
-    }
-
-    async function generateGlobalReport() {
+  // 4. Función de carga de contadores
+  async function loadCounters() {
     try {
-        const querySnapshot = await db.collection("kidmedResults").get();
-        const results = [];
-        querySnapshot.forEach((doc) => {
-            results.push({ id: doc.id, ...doc.data() });
-        });
+      const querySnapshot = await getDocs(collection(db, "kidmedResults"));
+      const results = [];
+      querySnapshot.forEach((doc) => {
+        results.push({ id: doc.id, ...doc.data() });
+      });
+      let total = 0, male = 0, female = 0, other = 0;
+      const cursoCounts = {};
+      results.forEach(r => {
+        total++;
+        if (r.genero === 'Masculino') male++;
+        else if (r.genero === 'Femenino') female++;
+        else other++;
+        if (!cursoCounts[r.curso]) cursoCounts[r.curso] = 0;
+        cursoCounts[r.curso]++;
+      });
+      document.getElementById('totalUsers').textContent = total;
+      document.getElementById('maleUsers').textContent = male;
+      document.getElementById('femaleUsers').textContent = female;
+      document.getElementById('otherUsers').textContent = other;
+      for (let i = 1; i <= 4; i++) {
+        const cursoId = `curso${i}ESOUsers`;
+        const cursoKey = `${i}º ESO`;
+        document.getElementById(cursoId).textContent = cursoCounts[cursoKey] || 0;
+      }
+    } catch (error) {
+      console.error("Error al cargar contadores: ", error);
+      alert("Error de permisos: no tienes acceso a los datos.");
+    }
+  }
 
-        if (results.length === 0) {
-            alert('No hay resultados para generar el informe global.');
-            return;
+  // 5. Funciones principales (tu lógica original)
+  function startTest() {
+    const edad = document.getElementById('edad').value;
+    const genero = document.getElementById('genero').value;
+    const curso = document.getElementById('curso').value;
+    const fecha = document.getElementById('fecha').value;
+    if (!edad || !genero || !curso || !fecha) {
+      alert('Por favor, completa todos los datos personales.');
+      return;
+    }
+    document.getElementById('introPage').classList.remove('active');
+    document.getElementById('page1').classList.add('active');
+    updateProgress(1);
+  }
+  function nextPage(currentPage) {
+    if (!validatePage(currentPage)) {
+      alert('Por favor, responde todas las preguntas de esta página.');
+      return;
+    }
+    document.getElementById(`page${currentPage}`).classList.remove('active');
+    document.getElementById(`page${currentPage + 1}`).classList.add('active');
+    updateProgress(currentPage + 1);
+  }
+  function prevPage(currentPage) {
+    document.getElementById(`page${currentPage}`).classList.remove('active');
+    document.getElementById(`page${currentPage - 1}`).classList.add('active');
+    updateProgress(currentPage - 1);
+  }
+  function validatePage(pageNum) {
+    const page = document.getElementById(`page${pageNum}`);
+    const questions = page.querySelectorAll('.question');
+    let allAnswered = true;
+    questions.forEach(question => {
+      const radios = question.querySelectorAll('input[type="radio"]');
+      const checked = Array.from(radios).some(radio => radio.checked);
+      if (!checked) {
+        allAnswered = false;
+      }
+    });
+    return allAnswered;
+  }
+  function updateProgress(pageNum) {
+    const progressPercent = (pageNum / 4) * 100;
+    document.getElementById(`progress${pageNum}`).style.width = `${progressPercent}%`;
+  }
+  async function calculateScore() {
+    if (!validatePage(4)) {
+      alert('Por favor, responde todas las preguntas de esta página.');
+      return;
+    }
+    const respuestas = {};
+    for (let i = 1; i <= 16; i++) {
+      const selectedRadio = document.querySelector(`input[name="q${i}"]:checked`);
+      if (selectedRadio) {
+        respuestas[`q${i}`] = selectedRadio.value;
+      }
+    }
+    let score = 0;
+    for (let i = 1; i <= 16; i++) {
+      score += parseInt(respuestas[`q${i}`]);
+    }
+    if (score < 0) score = 0;
+    let interpretation = "";
+    let recommendations = [];
+    let resultClass = "";
+    if (score >= 8) {
+      interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
+      recommendations = [
+        "Sigue manteniendo estos hábitos saludables.",
+        "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
+        "¡Eres un gran ejemplo de alimentación saludable!"
+      ];
+      resultClass = "result-high";
+    } else if (score >= 4 && score <= 7) {
+      interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
+      recommendations = [
+        "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
+        "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
+        "Incorpora pescado al menos 2 veces por semana.",
+        "Evita la comida rápida y los dulces industriales con frecuencia.",
+        "Cocina con aceite de oliva en lugar de mantequilla o margarina."
+      ];
+      resultClass = "result-medium";
+    } else if (score <= 3) {
+      interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
+      recommendations = [
+        "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
+        "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
+        "Reduce la ingesta de dulces, bollería y comida rápida.",
+        "Bebe mucha agua en lugar de refrescos azucarados.",
+        "Incluye pescado y legumbres en la dieta semanalmente.",
+        "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
+      ];
+      resultClass = "result-low";
+    }
+    const resultDiv = document.getElementById('result');
+    let recHTML = "<div class='recommendation'><h4>Recomendaciones:</h4><ul>";
+    recommendations.forEach(rec => {
+      recHTML += `<li>${rec}</li>`;
+    });
+    recHTML += "</ul></div>";
+    resultDiv.innerHTML = `<div class="result-content"><h3>Resultado</h3><p><strong>Puntuación Total: ${score}</strong></p><p>${interpretation}</p>${recHTML}</div>`;
+    resultDiv.className = resultClass;
+    resultDiv.style.display = "block";
+    const edad = document.getElementById('edad').value;
+    const genero = document.getElementById('genero').value;
+    const curso = document.getElementById('curso').value;
+    const fecha = document.getElementById('fecha').value;
+    const currentResult = {
+      edad: edad,
+      genero: genero,
+      curso: curso,
+      fecha: fecha,
+      score: score,
+      respuestas: respuestas,
+      interpretation: interpretation,
+      recommendations: recommendations
+    };
+    allResults.push(currentResult);
+    localStorage.setItem('allKIDMEDResults', JSON.stringify(allResults));
+    try {
+      await addDoc(collection(db, "kidmedResults"), currentResult);
+      console.log("Documento guardado en Firebase con éxito, incluyendo respuestas detalladas");
+      loadCounters();
+    } catch (error) {
+      console.error("Error al guardar en Firebase: ", error);
+      alert("Hubo un error al guardar los datos en la base de datos. Los resultados se han almacenado localmente.");
+    }
+    document.getElementById('exportBtn').classList.remove('hidden');
+    document.getElementById('exportAllBtn').classList.remove('hidden');
+    document.getElementById('reportBtn').classList.remove('hidden');
+    document.getElementById('resetBtn').classList.remove('hidden');
+  }
+  function exportData() {
+    if (allResults.length === 0) {
+      alert('No hay resultados para exportar.');
+      return;
+    }
+    const latestResult = allResults[allResults.length - 1];
+    const dataStr = JSON.stringify(latestResult, null, 2);
+    const dataUri = 'application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const exportFileDefaultName = `KIDMED_Resultado_${latestResult.fecha}.json`;
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  }
+  function exportAllData() {
+    if (allResults.length === 0) {
+      alert('No hay resultados para exportar.');
+      return;
+    }
+    const csvContent = convertToCSV(allResults);
+    const dataUri = 'text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+    const exportFileDefaultName = `KIDMED_Todos_Resultados_${new Date().toISOString().split('T')[0]}.csv`;
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  }
+  function convertToCSV(data) {
+    if (!data.length) return '';
+    const headers = Object.keys(data[0]);
+    const csvRows = [headers.join(',')];
+    data.forEach(row => {
+      const values = headers.map(header => {
+        const value = row[header];
+        return `"${value}"`;
+      });
+      csvRows.push(values.join(','));
+    });
+    return csvRows.join('\n');
+  }
+  async function generateReport() {
+    try {
+      const querySnapshot = await getDocs(query(collection(db, "kidmedResults"), orderBy("fecha")));
+      allResults = [];
+      querySnapshot.forEach((doc) => {
+        allResults.push({ id: doc.id, ...doc.data() });
+      });
+      console.log("Datos cargados desde Firebase para el informe");
+    } catch (error) {
+      console.error("Error al cargar datos desde Firebase: ", error);
+      alert("Hubo un error al cargar los datos para el informe. Se usarán los datos locales.");
+    }
+    if (allResults.length === 0) {
+      alert('No hay resultados para generar el informe.');
+      return;
+    }
+    const totalResults = allResults.length;
+    const scores = allResults.map(r => r.score);
+    const highQuality = scores.filter(s => s >= 8).length;
+    const mediumQuality = scores.filter(s => s >= 4 && s <= 7).length;
+    const lowQuality = scores.filter(s => s <= 3).length;
+    const highPercent = ((highQuality / totalResults) * 100).toFixed(1);
+    const mediumPercent = ((mediumQuality / totalResults) * 100).toFixed(1);
+    const lowPercent = ((lowQuality / totalResults) * 100).toFixed(1);
+    const genderCounts = {};
+    allResults.forEach(r => {
+      if (!genderCounts[r.genero]) {
+        genderCounts[r.genero] = 0;
+      }
+      genderCounts[r.genero]++;
+    });
+    const courseCounts = {};
+    allResults.forEach(r => {
+      if (!courseCounts[r.curso]) {
+        courseCounts[r.curso] = 0;
+      }
+      courseCounts[r.curso]++;
+    });
+    const contadoresSi = {};
+    const contadoresNo = {};
+    for (let i = 1; i <= 16; i++) {
+      contadoresSi[i] = 0;
+      contadoresNo[i] = 0;
+    }
+    allResults.forEach(resultado => {
+      if (resultado.respuestas && typeof resultado.respuestas === 'object') {
+        const respuestas = resultado.respuestas;
+        for (let i = 1; i <= 16; i++) {
+          if (respuestas.hasOwnProperty(`q${i}`)) {
+            const valor = respuestas[`q${i}`];
+            if (valor === "1") {
+              contadoresSi[i]++;
+            } else {
+              contadoresNo[i]++;
+            }
+          } else {
+            contadoresNo[i]++;
+          }
         }
-
-        // Contar por nivel, edad, género y curso
-        const levelCounts = { Alto: 0, Moderado: 0, Bajo: 0 };
-        const ageCounts = {};
-        const genderLevelCounts = {};
-        const courseLevelCounts = {};
-
-        results.forEach(r => {
-            let level = r.score >= 8 ? 'Alto' : r.score >= 4 ? 'Moderado' : 'Bajo';
-            levelCounts[level]++;
-
-            ageCounts[r.edad] = (ageCounts[r.edad] || 0) + 1;
-
-            if (!genderLevelCounts[r.genero]) genderLevelCounts[r.genero] = { Alto: 0, Moderado: 0, Bajo: 0 };
-            genderLevelCounts[r.genero][level]++;
-
-            if (!courseLevelCounts[r.curso]) courseLevelCounts[r.curso] = { Alto: 0, Moderado: 0, Bajo: 0 };
-            courseLevelCounts[r.curso][level]++;
-        });
-
-        // ✅ Construir HTML con gráficos Y listas (sin sobrescribir)
-        let reportHTML = `
-    <h3>Informe Global de Niveles</h3>
-    <div class="stats-grid">
+      } else {
+        for (let i = 1; i <= 16; i++) {
+          contadoresNo[i]++;
+        }
+      }
+    });
+    const reportContent = document.getElementById('reportContent');
+    reportContent.innerHTML = `
+      <div class="stats-grid">
         <div class="stat-card">
+          <div class="stat-value">${totalResults}</div>
+          <div class="stat-label">Total de Encuestados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${highQuality} (${highPercent}%)</div>
+          <div class="stat-label">Calidad Óptima</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${mediumQuality} (${mediumPercent}%)</div>
+          <div class="stat-label">Calidad Intermedia</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${lowQuality} (${lowPercent}%)</div>
+          <div class="stat-label">Calidad Baja</div>
+        </div>
+      </div>
+      <h3>Resultados por Categoría</h3>
+      <div class="chart-container">
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <h3>Resultados por Género</h3>
+      <div class="chart-container">
+        <canvas id="genderChart"></canvas>
+      </div>
+      <h3>Resultados por Curso</h3>
+      <div class="chart-container">
+        <canvas id="courseChart"></canvas>
+      </div>
+      <h3>Detalles de Respuestas por Pregunta</h3>
+      <div class="chart-container">
+        <canvas id="detallePreguntasChart"></canvas>
+      </div>
+      <p>Este gráfico muestra cuántas veces se respondió "Sí" o "No" a cada pregunta del cuestionario. Las preguntas con más respuestas "No" pueden indicar áreas donde se necesitan mejorar los hábitos alimenticios.</p>
+    `;
+    document.getElementById('reportSection').classList.remove('hidden');
+    document.getElementById('introPage').classList.remove('active');
+    document.getElementById('adminSection').classList.add('hidden');
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('exportBtn').classList.add('hidden');
+    document.getElementById('exportAllBtn').classList.add('hidden');
+    document.getElementById('reportBtn').classList.add('hidden');
+    document.getElementById('resetBtn').classList.add('hidden');
+    createCategoryChart(highQuality, mediumQuality, lowQuality);
+    createGenderChart(genderCounts);
+    createCourseChart(courseCounts);
+    createDetallePreguntasChart(contadoresSi, contadoresNo);
+  }
+  function createCategoryChart(high, medium, low) {
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: [
+          `Calidad Óptima (≥8): ${high} (${((high / (high + medium + low)) * 100).toFixed(1)}%)`,
+          `Calidad Intermedia (4-7): ${medium} (${((medium / (high + medium + low)) * 100).toFixed(1)}%)`,
+          `Calidad Baja (≤3): ${low} (${((low / (high + medium + low)) * 100).toFixed(1)}%)`
+        ],
+        datasets: [{
+          data: [high, medium, low],
+          backgroundColor: ['#27ae60', '#f39c12', '#e74c3c'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Distribución de Calidad Dietética'
+          }
+        }
+      }
+    });
+  }
+  function createGenderChart(genderCounts) {
+    const ctx = document.getElementById('genderChart').getContext('2d');
+    const labels = Object.keys(genderCounts);
+    const data = Object.values(genderCounts);
+    const percentageData = data.map(count => ((count / data.reduce((a, b) => a + b, 0)) * 100).toFixed(1));
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels.map((label, i) => `${label}: ${data[i]} (${percentageData[i]}%)`),
+        datasets: [{
+          data: data,
+          backgroundColor: ['#3498db', '#e91e63', '#9b59b6', '#34495e'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Distribución por Género'
+          }
+        }
+      }
+    });
+  }
+  function createCourseChart(courseCounts) {
+    const ctx = document.getElementById('courseChart').getContext('2d');
+    const labels = Object.keys(courseCounts);
+    const data = Object.values(courseCounts);
+    const total = data.reduce((a, b) => a + b, 0);
+    const percentageData = data.map(count => ((count / total) * 100).toFixed(1));
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels.map((label, i) => `${label}\n(${data[i]} - ${percentageData[i]}%)`),
+        datasets: [{
+          label: 'Número de Encuestados',
+          data: data,
+          backgroundColor: '#27ae60',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Distribución por Curso'
+          },
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+  function createDetallePreguntasChart(contadoresSi, contadoresNo) {
+    const ctx = document.getElementById('detallePreguntasChart').getContext('2d');
+    const labels = ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16"];
+    const dataSi = Object.values(contadoresSi);
+    const dataNo = Object.values(contadoresNo);
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: 'Respuestas "Sí"', data: dataSi, backgroundColor: '#27ae60' },
+          { label: 'Respuestas "No"', data: dataNo, backgroundColor: '#e74c3c' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Distribución de Respuestas por Pregunta'
+          }
+        },
+        scales: {
+          x: {
+            ticks: { maxRotation: 45, minRotation: 0 }
+          },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Número de Respuestas' }
+          }
+        }
+      }
+    });
+  }
+  function resetTest() {
+    document.getElementById('edad').value = '';
+    document.getElementById('genero').value = '';
+    document.getElementById('curso').value = '';
+    document.getElementById('fecha').value = today;
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`page${i}`).classList.remove('active');
+      document.getElementById(`page${i}`).querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+      });
+    }
+    document.getElementById('introPage').classList.add('active');
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('reportSection').classList.add('hidden');
+    document.getElementById('adminSection').classList.add('hidden');
+    document.getElementById('exportBtn').classList.add('hidden');
+    document.getElementById('exportAllBtn').classList.add('hidden');
+    document.getElementById('reportBtn').classList.add('hidden');
+    document.getElementById('resetBtn').classList.add('hidden');
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`progress${i}`).style.width = '0%';
+    }
+  }
+  function showAdminLogin(action) {
+    const password = prompt("Introduzca la contraseña de administrador:");
+    if (password === "healthy_Friday_2025") {
+      if (action === 'report') {
+        generateGlobalReport();
+      } else if (action === 'control') {
+        document.getElementById('adminSection').classList.remove('hidden');
+        document.getElementById('introPage').classList.remove('active');
+        document.getElementById('reportSection').classList.add('hidden');
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('exportBtn').classList.add('hidden');
+        document.getElementById('exportAllBtn').classList.add('hidden');
+        document.getElementById('reportBtn').classList.add('hidden');
+        document.getElementById('resetBtn').classList.add('hidden');
+      }
+    } else {
+      alert("Contraseña incorrecta.");
+    }
+  }
+  async function generateGlobalReport() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "kidmedResults"));
+      const results = [];
+      querySnapshot.forEach((doc) => {
+        results.push({ id: doc.id, ...doc.data() });
+      });
+      if (results.length === 0) {
+        alert('No hay resultados para generar el informe global.');
+        return;
+      }
+      const levelCounts = { Alto: 0, Moderado: 0, Bajo: 0 };
+      const ageCounts = {};
+      const genderLevelCounts = {};
+      const courseLevelCounts = {};
+      results.forEach(r => {
+        let level = r.score >= 8 ? 'Alto' : r.score >= 4 ? 'Moderado' : 'Bajo';
+        levelCounts[level]++;
+        ageCounts[r.edad] = (ageCounts[r.edad] || 0) + 1;
+        if (!genderLevelCounts[r.genero]) genderLevelCounts[r.genero] = { Alto: 0, Moderado: 0, Bajo: 0 };
+        genderLevelCounts[r.genero][level]++;
+        if (!courseLevelCounts[r.curso]) courseLevelCounts[r.curso] = { Alto: 0, Moderado: 0, Bajo: 0 };
+        courseLevelCounts[r.curso][level]++;
+      });
+      let reportHTML = `
+        <h3>Informe Global de Niveles</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
             <div class="stat-value">${levelCounts.Alto}</div>
             <div class="stat-label">Nivel Alto (≥8)</div>
-        </div>
-        <div class="stat-card">
+          </div>
+          <div class="stat-card">
             <div class="stat-value">${levelCounts.Moderado}</div>
             <div class="stat-label">Nivel Moderado (4–7)</div>
-        </div>
-        <div class="stat-card">
+          </div>
+          <div class="stat-card">
             <div class="stat-value">${levelCounts.Bajo}</div>
             <div class="stat-label">Nivel Bajo (≤3)</div>
-        </div>
-        <div class="stat-card">
+          </div>
+          <div class="stat-card">
             <div class="stat-value">${results.length}</div>
             <div class="stat-label">Total de Usuarios</div>
+          </div>
         </div>
-    </div>
-
-    <!-- Gráficos aquí si los usas -->
-
-    <div class="detail-section">
-        <h4>Desglose Detallado (Texto)</h4>
-
-        <div class="detail-block">
+        <div class="detail-section">
+          <h4>Desglose Detallado (Texto)</h4>
+          <div class="detail-block">
             <h5>Por Edad</h5>
             <div class="detail-grid">
-                ${Object.entries(ageCounts).map(([age, count]) => 
-                    `<div class="detail-item"><span class="detail-key">${age} años:</span> <span class="detail-value">${count}</span></div>`
-                ).join('')}
+              ${Object.entries(ageCounts).map(([age, count]) => 
+                `<div class="detail-item"><span class="detail-key">${age} años:</span> <span class="detail-value">${count}</span></div>`
+              ).join('')}
             </div>
-        </div>
-
-        <div class="detail-block">
+          </div>
+          <div class="detail-block">
             <h5>Por Género y Nivel</h5>
             ${Object.entries(genderLevelCounts).map(([gender, levels]) => `
-                <div class="nested-block">
-                    <h6>${gender}</h6>
-                    <div class="detail-grid">
-                        ${Object.entries(levels).map(([level, count]) => 
-                            `<div class="detail-item level-${level.toLowerCase()}">
-                                <span class="detail-key">${level}:</span> 
-                                <span class="detail-value">${count}</span>
-                            </div>`
-                        ).join('')}
-                    </div>
+              <div class="nested-block">
+                <h6>${gender}</h6>
+                <div class="detail-grid">
+                  ${Object.entries(levels).map(([level, count]) => 
+                    `<div class="detail-item level-${level.toLowerCase()}">
+                      <span class="detail-key">${level}:</span> 
+                      <span class="detail-value">${count}</span>
+                    </div>`
+                  ).join('')}
                 </div>
+              </div>
             `).join('')}
-        </div>
-
-        <div class="detail-block">
+          </div>
+          <div class="detail-block">
             <h5>Por Curso y Nivel</h5>
             ${Object.entries(courseLevelCounts).map(([course, levels]) => `
-                <div class="nested-block">
-                    <h6>${course}</h6>
-                    <div class="detail-grid">
-                        ${Object.entries(levels).map(([level, count]) => 
-                            `<div class="detail-item level-${level.toLowerCase()}">
-                                <span class="detail-key">${level}:</span> 
-                                <span class="detail-value">${count}</span>
-                            </div>`
-                        ).join('')}
-                    </div>
+              <div class="nested-block">
+                <h6>${course}</h6>
+                <div class="detail-grid">
+                  ${Object.entries(levels).map(([level, count]) => 
+                    `<div class="detail-item level-${level.toLowerCase()}">
+                      <span class="detail-key">${level}:</span> 
+                      <span class="detail-value">${count}</span>
+                    </div>`
+                  ).join('')}
                 </div>
+              </div>
             `).join('')}
+          </div>
         </div>
-    </div>
-	<!-- Gráficos -->
-            <h4>Distribución por Edad</h4>
-            <div class="chart-container">
-                <canvas id="globalAgeChart"></canvas>
-            </div>
-
-            <h4>Calidad Dietética por Género</h4>
-            <div class="chart-container">
-                <canvas id="globalGenderLevelChart"></canvas>
-            </div>
-
-            <h4>Calidad Dietética por Curso</h4>
-            <div class="chart-container">
-                <canvas id="globalCourseLevelChart"></canvas>
-            </div>
-`;
-
-        document.getElementById('reportContent').innerHTML = reportHTML;
-        document.getElementById('reportSection').classList.remove('hidden');
-        document.getElementById('introPage').classList.remove('active');
-        document.getElementById('adminSection').classList.add('hidden');
-
-        // ✅ Generar gráficos (si fallan, las listas siguen visibles)
-        createGlobalAgeChart(ageCounts);
-        createGlobalGenderLevelChart(genderLevelCounts);
-        createGlobalCourseLevelChart(courseLevelCounts);
-
+        <h4>Distribución por Edad</h4>
+        <div class="chart-container">
+          <canvas id="globalAgeChart"></canvas>
+        </div>
+        <h4>Calidad Dietética por Género</h4>
+        <div class="chart-container">
+          <canvas id="globalGenderLevelChart"></canvas>
+        </div>
+        <h4>Calidad Dietética por Curso</h4>
+        <div class="chart-container">
+          <canvas id="globalCourseLevelChart"></canvas>
+        </div>
+      `;
+      document.getElementById('reportContent').innerHTML = reportHTML;
+      document.getElementById('reportSection').classList.remove('hidden');
+      document.getElementById('introPage').classList.remove('active');
+      document.getElementById('adminSection').classList.add('hidden');
+      createGlobalAgeChart(ageCounts);
+      createGlobalGenderLevelChart(genderLevelCounts);
+      createGlobalCourseLevelChart(courseLevelCounts);
     } catch (error) {
-        console.error("Error al generar informe global: ", error);
-        alert("Hubo un error al generar el informe global.");
+      console.error("Error al generar informe global: ", error);
+      alert("Hubo un error al generar el informe global.");
     }
-}
-
-    async function applyFilter(type) {
+  }
+  async function applyFilter(type) {
     const edadFilter = document.getElementById('filterEdad').value;
     const nivelFilter = document.getElementById('filterNivel').value;
     const cursoFilter = document.getElementById('filterCurso').value;
     const generoFilter = document.getElementById('filterGenero').value;
-
     try {
-        let querySnapshot = db.collection("kidmedResults");
-        if (edadFilter) querySnapshot = querySnapshot.where("edad", "==", parseInt(edadFilter));
-        if (nivelFilter) {
-            if (nivelFilter === "Alto") querySnapshot = querySnapshot.where("score", ">=", 8);
-            else if (nivelFilter === "Moderado") querySnapshot = querySnapshot.where("score", ">=", 4).where("score", "<=", 7);
-            else if (nivelFilter === "Bajo") querySnapshot = querySnapshot.where("score", "<=", 3);
+      let q = collection(db, "kidmedResults");
+      if (edadFilter) q = query(q, where("edad", "==", parseInt(edadFilter)));
+      if (nivelFilter) {
+        if (nivelFilter === "Alto") q = query(q, where("score", ">=", 8));
+        else if (nivelFilter === "Moderado") q = query(q, where("score", ">=", 4), where("score", "<=", 7));
+        else if (nivelFilter === "Bajo") q = query(q, where("score", "<=", 3));
+      }
+      if (cursoFilter) q = query(q, where("curso", "==", cursoFilter));
+      if (generoFilter) q = query(q, where("genero", "==", generoFilter));
+      const querySnapshotResult = await getDocs(q);
+      filteredResults = [];
+      querySnapshotResult.forEach((doc) => {
+        filteredResults.push({ id: doc.id, ...doc.data() });
+      });
+      if (filteredResults.length === 0) {
+        document.getElementById('analysisResults').innerHTML = '<p>No se encontraron resultados con los filtros aplicados.</p>';
+        document.getElementById('interpretationPanel').innerHTML = '<h4>Interpretación del Análisis</h4><p>No hay datos suficientes para generar una interpretación con los filtros actuales.</p>';
+        document.getElementById('recommendationsPanel').innerHTML = '<h4>Recomendaciones</h4><p>No hay datos suficientes para generar recomendaciones con los filtros actuales.</p>';
+        document.getElementById('resultsTableContainer').innerHTML = '';
+        document.getElementById('exportFilteredBtn').classList.add('hidden');
+        const ctx = document.getElementById('analysisChart').getContext('2d');
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        return;
+      }
+      let analysisHTML = `<h4>Resultados del Análisis (${filteredResults.length} usuarios encontrados)</h4>`;
+      analysisHTML += `<ul>
+                          <li><strong>Edad Filtro:</strong> ${edadFilter || 'Todas'}</li>
+                          <li><strong>Nivel Filtro:</strong> ${nivelFilter || 'Todos'}</li>
+                          <li><strong>Curso Filtro:</strong> ${cursoFilter || 'Todos'}</li>
+                          <li><strong>Género Filtro:</strong> ${generoFilter || 'Todos'}</li>
+                       </ul>`;
+      document.getElementById('analysisResults').innerHTML = analysisHTML;
+      const contadoresSi = {};
+      const contadoresNo = {};
+      for (let i = 1; i <= 16; i++) {
+        contadoresSi[i] = 0;
+        contadoresNo[i] = 0;
+      }
+      filteredResults.forEach(resultado => {
+        if (resultado.respuestas && typeof resultado.respuestas === 'object') {
+          const respuestas = resultado.respuestas;
+          for (let i = 1; i <= 16; i++) {
+            if (respuestas.hasOwnProperty(`q${i}`)) {
+              const valor = respuestas[`q${i}`];
+              if (valor === "1") {
+                contadoresSi[i]++;
+              } else {
+                contadoresNo[i]++;
+              }
+            }
+          }
+        } else {
+          for (let i = 1; i <= 16; i++) {
+            contadoresNo[i]++;
+          }
         }
-        if (cursoFilter) querySnapshot = querySnapshot.where("curso", "==", cursoFilter);
-        if (generoFilter) querySnapshot = querySnapshot.where("genero", "==", generoFilter);
-
-        const querySnapshotResult = await querySnapshot.get();
-        filteredResults = []; // Limpiar array anterior
-        querySnapshotResult.forEach((doc) => {
-            filteredResults.push({ id: doc.id, ...doc.data() });
+      });
+      const scores = filteredResults.map(r => r.score);
+      const avgScore = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
+      let interpretationText = '';
+      if (avgScore >= 8) {
+        interpretationText = `El grupo analizado (${type}) tiene una calidad dietética promedio <strong>Óptima</strong> (${avgScore}).`;
+      } else if (avgScore >= 4) {
+        interpretationText = `El grupo analizado (${type}) tiene una calidad dietética promedio <strong>Intermedia</strong> (${avgScore}). Se recomienda mejorar ciertos hábitos.`;
+      } else {
+        interpretationText = `El grupo analizado (${type}) tiene una calidad dietética promedio <strong>Muy Baja</strong> (${avgScore}). Es necesario implementar cambios importantes.`;
+      }
+      const questionDetails = {
+        1: { text: 'Toma una fruta todos los días', importance: 'La fruta es una fuente clave de vitaminas, minerales y fibra. Es recomendable consumir al menos 2 piezas al día.' },
+        2: { text: 'Toma una segunda fruta todos los días', importance: 'Consumir más fruta aporta mayor variedad de nutrientes y energía natural.' },
+        3: { text: 'Toma verduras frescas o cocinadas regularmente todos los días', importance: 'Las verduras son esenciales para aportar vitaminas, minerales y fibra que ayudan al crecimiento y al sistema inmunológico.' },
+        4: { text: 'Toma verduras frescas o cocinadas más de una vez al día', importance: 'Más verduras significan más nutrientes y una mejor salud digestiva.' },
+        5: { text: 'Toma pescado regularmente (al menos 2-3 veces/semana)', importance: 'El pescado, especialmente el azul, es rico en ácidos grasos omega-3, esenciales para el cerebro y el corazón.' },
+        6: { text: 'Acude a un restaurante de comida rápida (por ejemplo, hamburguesería) una o más veces a la semana', importance: 'La comida rápida suele contener mucha grasa, sal y azúcar, lo que puede afectar negativamente la salud si se consume con frecuencia.' },
+        7: { text: 'Toma legumbres más de una vez a la semana', importance: 'Las legumbres son una gran fuente de proteínas vegetales, fibra y minerales, y forman parte fundamental de la dieta mediterránea.' },
+        8: { text: 'Toma pasta integral o arroz integral casi a diario (5 o más veces a la semana)', importance: 'Los cereales integrales aportan fibra y nutrientes que ayudan a mantener la energía y la saciedad.' },
+        9: { text: 'Desayuna un cereal integral o derivado integral (por ejemplo, pan integral)', importance: 'Un desayuno integral proporciona energía sostenible para comenzar el día y mejora la concentración.' },
+        10: { text: 'Toma frutos secos regularmente (al menos 2-3 veces/semana)', importance: 'Los frutos secos contienen grasas saludables, proteínas y vitaminas que son buenos para el corazón y el cerebro.' },
+        11: { text: 'En casa se utiliza aceite de oliva', importance: 'El aceite de oliva virgen extra es un pilar de la dieta mediterránea, rico en grasas saludables y antioxidantes.' },
+        12: { text: 'No desayuna a diario', importance: 'Saltarse el desayuno puede afectar el rendimiento escolar y el estado de ánimo. Es la comida más importante del día.' },
+        13: { text: 'Desayuna un lácteo (yogur, leche...)', importance: 'Los lácteos aportan calcio y proteínas necesarios para el crecimiento y la salud ósea.' },
+        14: { text: 'Desayuna bollería industrial (galletas, pasteles, cruasanes...)', importance: 'La bollería industrial contiene mucha azúcar y grasas saturadas, poco recomendables para el desayuno.' },
+        15: { text: 'Toma 2 yogures y/o queso (40g) todos los días', importance: 'Los productos lácteos aportan calcio, proteínas y probióticos que fortalecen huesos y sistema digestivo.' },
+        16: { text: 'Toma dulces y golosinas varias veces al día', importance: 'El exceso de azúcar puede causar caries, sobrepeso y afectar la energía y el estado de ánimo.' }
+      };
+      const totalNoCount = Object.values(contadoresNo).reduce((sum, count) => sum + count, 0);
+      const topLimit = totalNoCount >= 4 ? 3 : 2;
+      const sortedNoQuestions = Object.entries(contadoresNo)
+        .map(([qNum, count]) => [parseInt(qNum), count])
+        .sort((a, b) => b[1] - a[1]);
+      const topCriticalQuestions = sortedNoQuestions
+        .filter(([qNum, count]) => count > 0)
+        .slice(0, topLimit);
+      if (topCriticalQuestions.length > 0) {
+        interpretationText += `<br><br><strong>Hábitos críticos identificados (con más respuestas "No"):</strong><br>`;
+        topCriticalQuestions.forEach(([qNum, count]) => {
+          const detail = questionDetails[qNum];
+          if (detail) {
+            interpretationText += `- <strong>Pregunta ${qNum}:</strong> "${detail.text}" (No contestado por <strong>${count}</strong> usuarios en este grupo).<br><em>Importancia:</em> ${detail.importance}<br>`;
+          }
         });
-
-        if (filteredResults.length === 0) {
-            document.getElementById('analysisResults').innerHTML = '<p>No se encontraron resultados con los filtros aplicados.</p>';
-            document.getElementById('interpretationPanel').innerHTML = '<h4>Interpretación del Análisis</h4><p>No hay datos suficientes para generar una interpretación con los filtros actuales.</p>';
-            document.getElementById('recommendationsPanel').innerHTML = '<h4>Recomendaciones</h4><p>No hay datos suficientes para generar recomendaciones con los filtros actuales.</p>';
-            document.getElementById('resultsTableContainer').innerHTML = ''; // Limpiar tabla
-            document.getElementById('exportFilteredBtn').classList.add('hidden');
-            // Limpiar gráfico si no hay resultados
-            const ctx = document.getElementById('analysisChart').getContext('2d');
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            return;
-        }
-
-        // Mostrar resultados del análisis
-        let analysisHTML = `<h4>Resultados del Análisis (${filteredResults.length} usuarios encontrados)</h4>`;
-        analysisHTML += `<ul>
-                            <li><strong>Edad Filtro:</strong> ${edadFilter || 'Todas'}</li>
-                            <li><strong>Nivel Filtro:</strong> ${nivelFilter || 'Todos'}</li>
-                            <li><strong>Curso Filtro:</strong> ${cursoFilter || 'Todos'}</li>
-                            <li><strong>Género Filtro:</strong> ${generoFilter || 'Todos'}</li>
-                         </ul>`;
-
-        document.getElementById('analysisResults').innerHTML = analysisHTML;
-
-        // --- Análisis detallado de respuestas para los resultados filtrados ---
-        // Contadores para cada pregunta
-        const contadoresSi = {};
-        const contadoresNo = {};
-
+      } else {
+        interpretationText += `<br><br><em>No se identificaron hábitos negativos predominantes en este grupo con los filtros aplicados.</em>`;
+      }
+      let recommendationsHTML = '<ul>';
+      if (topCriticalQuestions.length > 0) {
+        const problemas = [];
         for (let i = 1; i <= 16; i++) {
-            contadoresSi[i] = 0;
-            contadoresNo[i] = 0;
+          if ([6, 12, 14, 16].includes(i)) {
+            problemas.push({ num: i, tipo: 'mal_habito', count: contadoresSi[i] });
+          } else {
+            problemas.push({ num: i, tipo: 'buen_habito_no_cumplido', count: contadoresNo[i] });
+          }
         }
-
-        // Recorremos los resultados filtrados
-        filteredResults.forEach(resultado => {
-            if (resultado.respuestas && typeof resultado.respuestas === 'object') {
-                const respuestas = resultado.respuestas;
-                for (let i = 1; i <= 16; i++) {
-                    if (respuestas.hasOwnProperty(`q${i}`)) {
-                        const valor = respuestas[`q${i}`];
-                        if (valor === "1") {
-                            contadoresSi[i]++;
-                        } else {
-                            contadoresNo[i]++;
-                        }
-                    }
-                }
+        const sortedProblemas = problemas.sort((a, b) => b.count - a.count);
+        const totalProblemas = sortedProblemas.reduce((sum, p) => sum + p.count, 0);
+        const topLimitProblemas = totalProblemas >= 4 ? 3 : 2;
+        const topCriticalProblems = sortedProblemas
+          .filter(p => p.count > 0)
+          .slice(0, topLimitProblemas);
+        topCriticalProblems.forEach(problem => {
+          const { num: qNum, tipo, count } = problem;
+          const detail = questionDetails[qNum];
+          if (detail) {
+            if (tipo === 'mal_habito') {
+              recommendationsHTML += `<li><strong>Reducir o eliminar:</strong> El hábito identificado como problemático: "${detail.text}". Se observó que ${count} usuarios en este grupo lo practican frecuentemente. Se recomienda fomentar alternativas saludables. Según la OMS, reducir este tipo de hábitos es crucial para prevenir enfermedades no transmisibles.`;
             } else {
-                for (let i = 1; i <= 16; i++) {
-                    contadoresNo[i]++;
-                }
+              recommendationsHTML += `<li><strong>Promover hábito:</strong> Fortalecer el hábito: "${detail.text}". Actualmente, ${count} usuarios en este grupo no lo cumplen. Incluir este alimento o práctica en la dieta diaria mejora la ingesta de nutrientes clave y se alinea con las recomendaciones de la OMS para una alimentación equilibrada y saludable.`;
             }
+          }
         });
-
-        // Calcular promedio de puntuación
-        const scores = filteredResults.map(r => r.score);
-        const avgScore = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
-
-        // Interpretación general
-        let interpretationText = '';
-        if (avgScore >= 8) {
-            interpretationText = `El grupo analizado (${type}) tiene una calidad dietética promedio <strong>Óptima</strong> (${avgScore}).`;
-        } else if (avgScore >= 4) {
-            interpretationText = `El grupo analizado (${type}) tiene una calidad dietética promedio <strong>Intermedia</strong> (${avgScore}). Se recomienda mejorar ciertos hábitos.`;
-        } else {
-            interpretationText = `El grupo analizado (${type}) tiene una calidad dietética promedio <strong>Muy Baja</strong> (${avgScore}). Es necesario implementar cambios importantes.`;
-        }
-
-        // --- PARTE DE INTERPRETACIÓN: Identificar hábitos críticos (ya está correcta) ---
-        const questionDetails = {
-            1: { text: 'Toma una fruta todos los días', importance: 'La fruta es una fuente clave de vitaminas, minerales y fibra. Es recomendable consumir al menos 2 piezas al día.' },
-            2: { text: 'Toma una segunda fruta todos los días', importance: 'Consumir más fruta aporta mayor variedad de nutrientes y energía natural.' },
-            3: { text: 'Toma verduras frescas o cocinadas regularmente todos los días', importance: 'Las verduras son esenciales para aportar vitaminas, minerales y fibra que ayudan al crecimiento y al sistema inmunológico.' },
-            4: { text: 'Toma verduras frescas o cocinadas más de una vez al día', importance: 'Más verduras significan más nutrientes y una mejor salud digestiva.' },
-            5: { text: 'Toma pescado regularmente (al menos 2-3 veces/semana)', importance: 'El pescado, especialmente el azul, es rico en ácidos grasos omega-3, esenciales para el cerebro y el corazón.' },
-            6: { text: 'Acude a un restaurante de comida rápida (por ejemplo, hamburguesería) una o más veces a la semana', importance: 'La comida rápida suele contener mucha grasa, sal y azúcar, lo que puede afectar negativamente la salud si se consume con frecuencia.' },
-            7: { text: 'Toma legumbres más de una vez a la semana', importance: 'Las legumbres son una gran fuente de proteínas vegetales, fibra y minerales, y forman parte fundamental de la dieta mediterránea.' },
-            8: { text: 'Toma pasta integral o arroz integral casi a diario (5 o más veces a la semana)', importance: 'Los cereales integrales aportan fibra y nutrientes que ayudan a mantener la energía y la saciedad.' },
-            9: { text: 'Desayuna un cereal integral o derivado integral (por ejemplo, pan integral)', importance: 'Un desayuno integral proporciona energía sostenible para comenzar el día y mejora la concentración.' },
-            10: { text: 'Toma frutos secos regularmente (al menos 2-3 veces/semana)', importance: 'Los frutos secos contienen grasas saludables, proteínas y vitaminas que son buenos para el corazón y el cerebro.' },
-            11: { text: 'En casa se utiliza aceite de oliva', importance: 'El aceite de oliva virgen extra es un pilar de la dieta mediterránea, rico en grasas saludables y antioxidantes.' },
-            12: { text: 'No desayuna a diario', importance: 'Saltarse el desayuno puede afectar el rendimiento escolar y el estado de ánimo. Es la comida más importante del día.' },
-            13: { text: 'Desayuna un lácteo (yogur, leche...)', importance: 'Los lácteos aportan calcio y proteínas necesarios para el crecimiento y la salud ósea.' },
-            14: { text: 'Desayuna bollería industrial (galletas, pasteles, cruasanes...)', importance: 'La bollería industrial contiene mucha azúcar y grasas saturadas, poco recomendables para el desayuno.' },
-            15: { text: 'Toma 2 yogures y/o queso (40g) todos los días', importance: 'Los productos lácteos aportan calcio, proteínas y probióticos que fortalecen huesos y sistema digestivo.' },
-            16: { text: 'Toma dulces y golosinas varias veces al día', importance: 'El exceso de azúcar puede causar caries, sobrepeso y afectar la energía y el estado de ánimo.' }
-        };
-
-        // Calcular el total de respuestas "No" en este grupo filtrado
-        const totalNoCount = Object.values(contadoresNo).reduce((sum, count) => sum + count, 0);
-
-        // Determinar cuántas de las preguntas con más "No" mostrar
-        const topLimit = totalNoCount >= 4 ? 3 : 2;
-
-        // Crear un array de [numero_pregunta, count_No] y ordenarlo por count_No descendente
-        const sortedNoQuestions = Object.entries(contadoresNo)
-            .map(([qNum, count]) => [parseInt(qNum), count])
-            .sort((a, b) => b[1] - a[1]); // Ordenar de mayor a menor
-
-        // Filtrar solo las que tienen al menos una respuesta "No" y tomar las top N
-        const topCriticalQuestions = sortedNoQuestions
-            .filter(([qNum, count]) => count > 0) // Solo preguntas con al menos un "No"
-            .slice(0, topLimit); // Tomar solo las N primeras
-
-        if (topCriticalQuestions.length > 0) {
-            interpretationText += `<br><br><strong>Hábitos críticos identificados (con más respuestas "No"):</strong><br>`;
-
-            topCriticalQuestions.forEach(([qNum, count]) => {
-                const detail = questionDetails[qNum];
-                if (detail) {
-                    interpretationText += `- <strong>Pregunta ${qNum}:</strong> "${detail.text}" (No contestado por <strong>${count}</strong> usuarios en este grupo).<br><em>Importancia:</em> ${detail.importance}<br>`;
-                }
-            });
-        } else {
-            interpretationText += `<br><br><em>No se identificaron hábitos negativos predominantes en este grupo con los filtros aplicados.</em>`;
-        }
-        // --- FIN PARTE DE INTERPRETACIÓN ---
-
-        // --- PARTE DE RECOMENDACIONES: Ahora se basa en los hábitos críticos ---
-               // --- PARTE DE RECOMENDACIONES: Ahora se basa en los hábitos críticos ---
-               // --- PARTE DE RECOMENDACIONES: Ahora se basa en los hábitos críticos ---
-        let recommendationsHTML = '<ul>';
-
-        if (topCriticalQuestions.length > 0) { // Usamos topCriticalQuestions para la interpretación
-            // Crear el array de problemas para las recomendaciones
-            const problemas = [];
-            for (let i = 1; i <= 16; i++) {
-                if ([6, 12, 14, 16].includes(i)) {
-                    // Malos hábitos: el problema es cuando se responde "Sí"
-                    problemas.push({ num: i, tipo: 'mal_habito', count: contadoresSi[i] });
-                } else {
-                    // Buenos hábitos: el problema es cuando se responde "No"
-                    problemas.push({ num: i, tipo: 'buen_habito_no_cumplido', count: contadoresNo[i] });
-                }
-            }
-            // Ahora, `problemas` contiene la magnitud del problema para cada pregunta.
-            // Ordenar por `count` descendente para encontrar los más críticos.
-            const sortedProblemas = problemas.sort((a, b) => b.count - a.count);
-            // Aplicar la lógica de totalNoCount para determinar cuántos mostrar (usando la suma de problemas)
-            const totalProblemas = sortedProblemas.reduce((sum, p) => sum + p.count, 0);
-            const topLimitProblemas = totalProblemas >= 4 ? 3 : 2;
-            // Filtrar solo los que tengan al menos un "problema" y tomar los top N
-            const topCriticalProblems = sortedProblemas
-                .filter(p => p.count > 0) // Solo preguntas con al menos un problema
-                .slice(0, topLimitProblemas); // Tomar solo las N primeras
-
-            // Ahora, generar las recomendaciones basadas en `topCriticalProblems`
-            topCriticalProblems.forEach(problem => {
-                const { num: qNum, tipo, count } = problem;
-                const detail = questionDetails[qNum];
-                if (detail) {
-                    if (tipo === 'mal_habito') {
-                        // Se responde "Sí" a un mal hábito -> Recomendar dejar de hacerlo
-                        recommendationsHTML += `<li><strong>Reducir o eliminar:</strong> El hábito identificado como problemático: "${detail.text}". Se observó que ${count} usuarios en este grupo lo practican frecuentemente. Se recomienda fomentar alternativas saludables. Según la OMS, reducir este tipo de hábitos es crucial para prevenir enfermedades no transmisibles.`;
-                    } else { // tipo === 'buen_habito_no_cumplido'
-                        // Se responde "No" a un buen hábito -> Recomendar adoptarlo
-                        recommendationsHTML += `<li><strong>Promover hábito:</strong> Fortalecer el hábito: "${detail.text}". Actualmente, ${count} usuarios en este grupo no lo cumplen. Incluir este alimento o práctica en la dieta diaria mejora la ingesta de nutrientes clave y se alinea con las recomendaciones de la OMS para una alimentación equilibrada y saludable.`;
-                    }
-                }
-            });
-            // Recomendación general al final
-            recommendationsHTML += `<li><strong>Acción general:</strong> Implementar programas de educación nutricional específicos para este grupo demográfico (${type}), enfocándose en los hábitos mencionados anteriormente. Se recomienda promover una dieta equilibrada, rica en frutas, verduras, legumbres, cereales integrales y pescado, y limitar el consumo de alimentos ultraprocesados, azúcares libres y grasas saturadas, en línea con las pautas de la Organización Mundial de la Salud (OMS). Considerar talleres prácticos o charlas sobre cocina saludable.`;
-        } else {
-            recommendationsHTML += `<li>No se identificaron hábitos problemáticos específicos con los datos filtrados. Se recomienda mantener los hábitos saludables actuales y seguir promoviendo la dieta mediterránea en general, en concordancia con las recomendaciones de la OMS para una vida saludable.`;
-        }
-
-        recommendationsHTML += '</ul>';
-        // --- FIN PARTE DE RECOMENDACIONES ---
-        
-
-      
-
-        // Insertar en los paneles correspondientes
-        document.getElementById('interpretationPanel').innerHTML = `<h4>Interpretación del Análisis</h4><div class="interpretation-content"><p>${interpretationText}</p></div>`;
-        document.getElementById('recommendationsPanel').innerHTML = `<h4>Recomendaciones</h4>${recommendationsHTML}`;
-
-        // Mostrar botón de exportar
-        document.getElementById('exportFilteredBtn').classList.remove('hidden');
-
-        // Crear gráfico de análisis
-        createAnalysisChart(contadoresSi, contadoresNo, type);
-
-        // Crear tabla de resultados
-        createResultsTable(filteredResults);
-
+        recommendationsHTML += `<li><strong>Acción general:</strong> Implementar programas de educación nutricional específicos para este grupo demográfico (${type}), enfocándose en los hábitos mencionados anteriormente. Se recomienda promover una dieta equilibrada, rica en frutas, verduras, legumbres, cereales integrales y pescado, y limitar el consumo de alimentos ultraprocesados, azúcares libres y grasas saturadas, en línea con las pautas de la Organización Mundial de la Salud (OMS). Considerar talleres prácticos o charlas sobre cocina saludable.`;
+      } else {
+        recommendationsHTML += `<li>No se identificaron hábitos problemáticos específicos con los datos filtrados. Se recomienda mantener los hábitos saludables actuales y seguir promoviendo la dieta mediterránea en general, en concordancia con las recomendaciones de la OMS para una vida saludable.`;
+      }
+      recommendationsHTML += '</ul>';
+      document.getElementById('interpretationPanel').innerHTML = `<h4>Interpretación del Análisis</h4><div class="interpretation-content"><p>${interpretationText}</p></div>`;
+      document.getElementById('recommendationsPanel').innerHTML = `<h4>Recomendaciones</h4>${recommendationsHTML}`;
+      document.getElementById('exportFilteredBtn').classList.remove('hidden');
+      createAnalysisChart(contadoresSi, contadoresNo, type);
+      createResultsTable(filteredResults);
     } catch (error) {
-        console.error("Error al aplicar filtro: ", error);
-        alert("Hubo un error al aplicar el filtro.");
+      console.error("Error al aplicar filtro: ", error);
+      alert("Hubo un error al aplicar el filtro.");
     }
-}
-
-
-function createAnalysisChart(contadoresSi, contadoresNo, type) {
+  }
+  function createAnalysisChart(contadoresSi, contadoresNo, type) {
     const ctx = document.getElementById('analysisChart').getContext('2d');
-    // Etiquetas para las preguntas
-    const labels = [
-        "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8",
-        "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16"
-    ];
-    // Datos para "Sí" y "No"
+    const labels = ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16"];
     const dataSi = Object.values(contadoresSi);
     const dataNo = Object.values(contadoresNo);
-
-    // Destruir el gráfico anterior si existe
     if (window.analysisChartInstance) {
-        window.analysisChartInstance.destroy();
+      window.analysisChartInstance.destroy();
     }
-
-
-	// --- Cálculo dinámico del valor máximo para el eje Y ---
     const maxDataValue = Math.max(...dataSi, ...dataNo);
-    const yAxisMax = Math.ceil(maxDataValue * 1.1); // `Math.ceil` redondea hacia arriba para un valor "limpio"
-    // -------------------------------------------------------
-	
-
+    const yAxisMax = Math.ceil(maxDataValue * 1.1);
     window.analysisChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Respuestas "Sí"',
-                    data: dataSi,
-                    backgroundColor: '#27ae60',
-                },
-                {
-                    label: 'Respuestas "No"',
-                    data: dataNo,
-                    backgroundColor: '#e74c3c',
-                }
-            ]
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: 'Respuestas "Sí"', data: dataSi, backgroundColor: '#27ae60' },
+          { label: 'Respuestas "No"', data: dataNo, backgroundColor: '#e74c3c' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: `Análisis de Preguntas - Filtro: ${type}` },
+          legend: { position: 'bottom' }
         },
-        options: {
-            responsive: true,
-            plugins: {
-                title: {
-                    display: true,
-                    text: `Análisis de Preguntas - Filtro: ${type}`
-                },
-                legend: {
-                    position: 'bottom',
-                },
-                // --- NUEVO: Plugin datalabels ---
-                datalabels: {
-                    anchor: 'end',
-                    align: 'top',
-                    color: 'black',
-                    font: {
-                        weight: 'bold',
-                        size: 10
-                    },
-                    formatter: Math.round // Muestra el número entero
-                }
-                // --- FIN NUEVO ---
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 0
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Número de Respuestas'
-                    },
-					min: 0,          // Valor mínimo del eje Y
-                    max: yAxisMax       // Valor máximo dinamico del eje Y
-					
-                }
-            }
-        },
-        // --- NUEVO: Registrar el plugin ---
-        plugins: [ChartDataLabels] // Asegúrate de que 'ChartDataLabels' sea el nombre exacto del plugin
-        // --- FIN NUEVO ---
+        scales: {
+          x: { ticks: { maxRotation: 45, minRotation: 0 } },
+          y: { beginAtZero: true, title: { display: true, text: 'Número de Respuestas' }, min: 0, max: yAxisMax }
+        }
+      }
     });
-}
-
-
-    function createResultsTable(results) {
-        const tableContainer = document.getElementById('resultsTableContainer');
-        if (results.length === 0) {
-            tableContainer.innerHTML = '<p>No hay datos para mostrar en la tabla.</p>';
-            return;
-        }
-
-        let tableHTML = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Edad</th>
-                        <th>Curso</th>
-                        <th>Sexo</th>
-                        <th>Nivel</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        results.forEach(result => {
-            let level = '';
-            if (result.score >= 8) level = 'Alto';
-            else if (result.score >= 4) level = 'Moderado';
-            else level = 'Bajo';
-
-            // Generar enlace para ver informe individual
-            const viewReportLink = `<a href="#" onclick="viewIndividualReport('${result.id}', ${result.score}, '${result.edad}', '${result.genero}', '${result.curso}', '${result.fecha}', ${JSON.stringify(result.respuestas).replace(/"/g, '&quot;')})">Ver Informe</a>`;
-
-            tableHTML += `
-                <tr>
-                    <td>${result.id}</td>
-                    <td>${result.edad}</td>
-                    <td>${result.curso}</td>
-                    <td>${result.genero}</td>
-                    <td>${level}</td>
-                    <td>${viewReportLink}</td>
-                </tr>
-            `;
-        });
-
-        tableHTML += `
-                </tbody>
-            </table>
-        `;
-
-        tableContainer.innerHTML = tableHTML;
+  }
+  function createResultsTable(results) {
+    const tableContainer = document.getElementById('resultsTableContainer');
+    if (results.length === 0) {
+      tableContainer.innerHTML = '<p>No hay datos para mostrar en la tabla.</p>';
+      return;
     }
-
-    // Función para ver el informe individual (simplificada)
-    function viewIndividualReport(id, score, edad, genero, curso, fecha, respuestas) {
-        // Aquí puedes implementar la lógica para mostrar el informe individual
-        // Por ahora, simplemente mostramos una alerta con los datos
-        let interpretation = "";
-        let recommendations = [];
-        let resultClass = "";
-
-        if (score >= 8) {
-            interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
-            recommendations = [
-                "Sigue manteniendo estos hábitos saludables.",
-                "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
-                "¡Eres un gran ejemplo de alimentación saludable!"
-            ];
-            resultClass = "result-high";
-        } else if (score >= 4 && score <= 7) {
-            interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
-            recommendations = [
-                "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
-                "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
-                "Incorpora pescado al menos 2 veces por semana.",
-                "Evita la comida rápida y los dulces industriales con frecuencia.",
-                "Cocina con aceite de oliva en lugar de mantequilla o margarina."
-            ];
-            resultClass = "result-medium";
-        } else if (score <= 3) {
-            interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
-            recommendations = [
-                "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
-                "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
-                "Reduce la ingesta de dulces, bollería y comida rápida.",
-                "Bebe mucha agua en lugar de refrescos azucarados.",
-                "Incluye pescado y legumbres en la dieta semanalmente.",
-                "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
-            ];
-            resultClass = "result-low";
-        }
-
-        let recHTML = "<ul>";
-        recommendations.forEach(rec => {
-            recHTML += `<li>${rec}</li>`;
-        });
-        recHTML += "</ul>";
-
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = `
-            <div class="result-content">
-                <h3>Informe Individual - ID: ${id}</h3>
-                <p><strong>Edad:</strong> ${edad}</p>
-                <p><strong>Curso:</strong> ${curso}</p>
-                <p><strong>Sexo:</strong> ${genero}</p>
-                <p><strong>Fecha:</strong> ${fecha}</p>
-                <p><strong>Puntuación Total:</strong> ${score}</p>
-                <p><strong>Interpretación:</strong> ${interpretation}</p>
-                <p><strong>Recomendaciones:</strong></p>
-                ${recHTML}
-            </div>
-        `;
-        resultDiv.className = resultClass;
-        resultDiv.style.display = "block";
-
-        // Mostrar sección de resultados y ocultar otras
-        document.getElementById('introPage').classList.remove('active');
-        document.getElementById('adminSection').classList.add('hidden');
-        document.getElementById('reportSection').classList.add('hidden');
-        document.getElementById('exportBtn').classList.add('hidden');
-        document.getElementById('exportAllBtn').classList.add('hidden');
-        document.getElementById('reportBtn').classList.add('hidden');
-        document.getElementById('resetBtn').classList.add('hidden');
-        document.getElementById('exportFilteredBtn').classList.add('hidden');
+    let tableHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Edad</th>
+            <th>Curso</th>
+            <th>Sexo</th>
+            <th>Nivel</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    results.forEach(result => {
+      let level = '';
+      if (result.score >= 8) level = 'Alto';
+      else if (result.score >= 4) level = 'Moderado';
+      else level = 'Bajo';
+      const viewReportLink = `<a href="#" onclick="viewIndividualReport('${result.id}', ${result.score}, '${result.edad}', '${result.genero}', '${result.curso}', '${result.fecha}', ${JSON.stringify(result.respuestas).replace(/"/g, '&quot;')})">Ver Informe</a>`;
+      tableHTML += `
+        <tr>
+          <td>${result.id}</td>
+          <td>${result.edad}</td>
+          <td>${result.curso}</td>
+          <td>${result.genero}</td>
+          <td>${level}</td>
+          <td>${viewReportLink}</td>
+        </tr>
+      `;
+    });
+    tableHTML += `
+        </tbody>
+      </table>
+    `;
+    tableContainer.innerHTML = tableHTML;
+  }
+  function viewIndividualReport(id, score, edad, genero, curso, fecha, respuestas) {
+    let interpretation = "";
+    let recommendations = [];
+    let resultClass = "";
+    if (score >= 8) {
+      interpretation = "¡Felicidades! Tu dieta tiene una calidad muy buena y se ajusta bien a los principios de la dieta mediterránea.";
+      recommendations = [
+        "Sigue manteniendo estos hábitos saludables.",
+        "Continúa consumiendo frutas, verduras, pescado y cereales integrales.",
+        "¡Eres un gran ejemplo de alimentación saludable!"
+      ];
+      resultClass = "result-high";
+    } else if (score >= 4 && score <= 7) {
+      interpretation = "Tu dieta tiene una calidad intermedia. Hay aspectos positivos, pero puedes mejorar para acercarte más a la dieta mediterránea.";
+      recommendations = [
+        "Intenta incluir una fruta más en tu dieta diaria si solo consumes una.",
+        "Aumenta la ingesta de verduras, especialmente en la comida y la cena.",
+        "Incorpora pescado al menos 2 veces por semana.",
+        "Evita la comida rápida y los dulces industriales con frecuencia.",
+        "Cocina con aceite de oliva en lugar de mantequilla o margarina."
+      ];
+      resultClass = "result-medium";
+    } else if (score <= 3) {
+      interpretation = "Tu dieta tiene una calidad baja. Es importante hacer cambios para mejorar tu salud y bienestar.";
+      recommendations = [
+        "Haz del desayuno una comida obligatoria y nutritiva (lácteo, fruta, cereal integral).",
+        "Come fruta y verdura todos los días. Empieza con una porción al día y aumenta gradualmente.",
+        "Reduce la ingesta de dulces, bollería y comida rápida.",
+        "Bebe mucha agua en lugar de refrescos azucarados.",
+        "Incluye pescado y legumbres en la dieta semanalmente.",
+        "Consulta con un nutricionista si necesitas ayuda para planificar comidas saludables."
+      ];
+      resultClass = "result-low";
     }
-
-
-    function exportFilteredData() {
-        if (filteredResults.length === 0) {
-            alert('No hay datos filtrados para exportar.');
-            return;
-        }
-
-        const csvContent = convertToCSV(filteredResults);
-        const dataUri = 'text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
-
-        const exportFileDefaultName = `KIDMED_Datos_Filtrados_${new Date().toISOString().split('T')[0]}.csv`;
-
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
+    let recHTML = "<ul>";
+    recommendations.forEach(rec => {
+      recHTML += `<li>${rec}</li>`;
+    });
+    recHTML += "</ul>";
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
+      <div class="result-content">
+        <h3>Informe Individual - ID: ${id}</h3>
+        <p><strong>Edad:</strong> ${edad}</p>
+        <p><strong>Curso:</strong> ${curso}</p>
+        <p><strong>Sexo:</strong> ${genero}</p>
+        <p><strong>Fecha:</strong> ${fecha}</p>
+        <p><strong>Puntuación Total:</strong> ${score}</p>
+        <p><strong>Interpretación:</strong> ${interpretation}</p>
+        <p><strong>Recomendaciones:</strong></p>
+        ${recHTML}
+      </div>
+    `;
+    resultDiv.className = resultClass;
+    resultDiv.style.display = "block";
+    document.getElementById('introPage').classList.remove('active');
+    document.getElementById('adminSection').classList.add('hidden');
+    document.getElementById('reportSection').classList.add('hidden');
+    document.getElementById('exportBtn').classList.add('hidden');
+    document.getElementById('exportAllBtn').classList.add('hidden');
+    document.getElementById('reportBtn').classList.add('hidden');
+    document.getElementById('resetBtn').classList.add('hidden');
+    document.getElementById('exportFilteredBtn').classList.add('hidden');
+  }
+  function exportFilteredData() {
+    if (filteredResults.length === 0) {
+      alert('No hay datos filtrados para exportar.');
+      return;
     }
-
-function printReport() {
+    const csvContent = convertToCSV(filteredResults);
+    const dataUri = 'text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+    const exportFileDefaultName = `KIDMED_Datos_Filtrados_${new Date().toISOString().split('T')[0]}.csv`;
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  }
+  function printReport() {
     window.print();
-}
-
-
-    function backToFront() {
-        document.getElementById('introPage').classList.add('active');
-        document.getElementById('reportSection').classList.add('hidden');
-        document.getElementById('adminSection').classList.add('hidden');
-        document.getElementById('result').style.display = 'none';
-        document.getElementById('exportBtn').classList.add('hidden');
-        document.getElementById('exportAllBtn').classList.add('hidden');
-        document.getElementById('reportBtn').classList.add('hidden');
-        document.getElementById('resetBtn').classList.add('hidden');
-        document.getElementById('exportFilteredBtn').classList.add('hidden');
-    }
-function createGlobalAgeChart(ageCounts) {
+  }
+  function backToFront() {
+    document.getElementById('introPage').classList.add('active');
+    document.getElementById('reportSection').classList.add('hidden');
+    document.getElementById('adminSection').classList.add('hidden');
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('exportBtn').classList.add('hidden');
+    document.getElementById('exportAllBtn').classList.add('hidden');
+    document.getElementById('reportBtn').classList.add('hidden');
+    document.getElementById('resetBtn').classList.add('hidden');
+    document.getElementById('exportFilteredBtn').classList.add('hidden');
+  }
+  function createGlobalAgeChart(ageCounts) {
     const ctx = document.getElementById('globalAgeChart').getContext('2d');
     const labels = Object.keys(ageCounts).sort((a, b) => a - b);
     const data = labels.map(age => ageCounts[age]);
-
     new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels.map(age => `${age} años`),
-            datasets: [{
-                label: 'Número de Usuarios',
-                data: data,
-                backgroundColor: '#3498db'
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { title: { display: true, text: 'Distribución por Edad' } },
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-        }
+      type: 'bar',
+      data: {
+        labels: labels.map(age => `${age} años`),
+        datasets: [{ label: 'Número de Usuarios', data: data, backgroundColor: '#3498db' }]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Distribución por Edad' } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+      }
     });
-}
-
-function createGlobalGenderLevelChart(genderLevelCounts) {
+  }
+  function createGlobalGenderLevelChart(genderLevelCounts) {
     const ctx = document.getElementById('globalGenderLevelChart').getContext('2d');
     const genders = Object.keys(genderLevelCounts);
     const alto = genders.map(g => genderLevelCounts[g].Alto);
     const moderado = genders.map(g => genderLevelCounts[g].Moderado);
     const bajo = genders.map(g => genderLevelCounts[g].Bajo);
-
     new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: genders,
-            datasets: [
-                { label: 'Alto', data: alto, backgroundColor: '#27ae60' },
-                { label: 'Moderado', data: moderado, backgroundColor: '#f39c12' },
-                { label: 'Bajo', data: bajo, backgroundColor: '#e74c3c' }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { title: { display: true, text: 'Calidad Dietética por Género' } },
-            scales: {
-                x: { stacked: true },
-                y: { stacked: true, beginAtZero: true }
-            }
-        }
+      type: 'bar',
+      data: {
+        labels: genders,
+        datasets: [
+          { label: 'Alto', data: alto, backgroundColor: '#27ae60' },
+          { label: 'Moderado', data: moderado, backgroundColor: '#f39c12' },
+          { label: 'Bajo', data: bajo, backgroundColor: '#e74c3c' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Calidad Dietética por Género' } },
+        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+      }
     });
-}
-
-function createGlobalCourseLevelChart(courseLevelCounts) {
+  }
+  function createGlobalCourseLevelChart(courseLevelCounts) {
     const ctx = document.getElementById('globalCourseLevelChart').getContext('2d');
     const courses = Object.keys(courseLevelCounts);
     const alto = courses.map(c => courseLevelCounts[c].Alto);
     const moderado = courses.map(c => courseLevelCounts[c].Moderado);
     const bajo = courses.map(c => courseLevelCounts[c].Bajo);
-
     new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: courses,
-            datasets: [
-                { label: 'Alto', data: alto, backgroundColor: '#27ae60' },
-                { label: 'Moderado', data: moderado, backgroundColor: '#f39c12' },
-                { label: 'Bajo', data: bajo, backgroundColor: '#e74c3c' }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { title: { display: true, text: 'Calidad Dietética por Curso' } },
-            scales: {
-                x: { stacked: true },
-                y: { stacked: true, beginAtZero: true }
-            }
-        }
+      type: 'bar',
+      data: {
+        labels: courses,
+        datasets: [
+          { label: 'Alto', data: alto, backgroundColor: '#27ae60' },
+          { label: 'Moderado', data: moderado, backgroundColor: '#f39c12' },
+          { label: 'Bajo', data: bajo, backgroundColor: '#e74c3c' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Calidad Dietética por Curso' } },
+        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+      }
     });
-}
+  }
+
+  // 6. Protección principal: verificar autenticación y rol
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const token = await user.getIdTokenResult();
+      if (token.claims.rol === "salud_escolar") {
+        // ✅ Acceso permitido
+        loadCounters();
+        // Exponer funciones globales para onclick en HTML
+        window.startTest = startTest;
+        window.nextPage = nextPage;
+        window.prevPage = prevPage;
+        window.calculateScore = calculateScore;
+        window.exportData = exportData;
+        window.exportAllData = exportAllData;
+        window.generateReport = generateReport;
+        window.resetTest = resetTest;
+        window.showAdminLogin = showAdminLogin;
+        window.logout = () => {
+          signOut(auth).then(() => {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+          });
+        };
+        window.applyFilter = applyFilter;
+        window.exportFilteredData = exportFilteredData;
+        window.printReport = printReport;
+        window.backToFront = backToFront;
+        window.viewIndividualReport = viewIndividualReport;
+      } else {
+        // ❌ Sin rol
+        alert("Acceso denegado: solo profesores autorizados.");
+        signOut(auth).then(() => {
+          window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        });
+      }
+    } else {
+      // ❌ No autenticado
+      window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+    }
+  });
 </script>
 
 </body>
 </html>
+
 
 
 
