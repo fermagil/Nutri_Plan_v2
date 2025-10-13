@@ -6,7 +6,7 @@
 </head>
 <body>
   <h2>Asignar rol "salud_escolar"</h2>
-  <button onclick="asignarRol()">Asignarme el rol ahora</button>
+  <button id="btnAsignar">Asignarme el rol ahora</button>
   <p id="status"></p>
 
   <script type="module">
@@ -27,11 +27,11 @@
     const auth = getAuth(app);
     const functions = getFunctions(app);
 
-    async function asignarRol() {
+    // ✅ Asignar el evento desde JavaScript (no desde HTML)
+    document.getElementById('btnAsignar').addEventListener('click', async () => {
       const status = document.getElementById('status');
       try {
         status.textContent = "Iniciando sesión...";
-        // Iniciar sesión con tu cuenta de admin
         await signInWithEmailAndPassword(auth, "salud.escolar.1@programasaludhf.com", "Salud2025!");
         
         status.textContent = "Llamando a la función...";
@@ -44,7 +44,7 @@
         status.textContent = "❌ Error: " + error.message;
         console.error(error);
       }
-    }
+    });
   </script>
 </body>
 </html>
