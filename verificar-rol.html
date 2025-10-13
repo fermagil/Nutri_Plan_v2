@@ -5,36 +5,36 @@
   <title>Verificar Rol</title>
 </head>
 <body>
-  <button id="btn">Verificar mi rol</button>
-  <p id="status"></p>
+  <button id="btn">Verificar token</button>
+  <pre id="out"></pre>
+
+  <div id="recaptcha-container"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const firebaseConfig = {
+    const config = {
       apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
       authDomain: "nutriplanv2.firebaseapp.com",
       projectId: "nutriplanv2",
       appId: "1:653707489758:web:9133d1d1620825c385ed4f"
     };
 
-    const app = initializeApp(firebaseConfig);
+    const app = initializeApp(config);
     const auth = getAuth(app);
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
 
     document.getElementById('btn').addEventListener('click', async () => {
-      const status = document.getElementById('status');
+      const out = document.getElementById('out');
       try {
         await signInWithEmailAndPassword(auth, "salud.escolar.1@programasaludhf.com", "Salud2025!");
         const token = await auth.currentUser.getIdTokenResult();
-        const rol = token.claims.rol;
-        status.innerHTML = `UID: ${auth.currentUser.uid}<br>Rol: <strong>${rol || "❌ no asignado"}</strong>`;
+        out.textContent = JSON.stringify(token.claims, null, 2);
       } catch (error) {
-        status.textContent = "Error: " + error.message;
+        out.textContent = "Error: " + error.message;
       }
     });
   </script>
-  <div id="recaptcha-container"></div>
 </body>
 </html>
