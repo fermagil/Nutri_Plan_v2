@@ -26,9 +26,9 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const functions = getFunctions(app);
+    const functions = getFunctions(app, 'us-central1'); // 👈 Especificar región
 
-    // ✅ Inicializar reCAPTCHA invisible (obligatorio para signInWithEmailAndPassword)
+    // Inicializar reCAPTCHA
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       size: 'invisible'
     });
