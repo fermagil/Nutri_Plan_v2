@@ -1,0 +1,22 @@
+<button onclick="verificar()">Verificar rol</button>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const config = {
+    apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+    authDomain: "nutriplanv2.firebaseapp.com",
+    projectId: "nutriplanv2",
+    appId: "1:653707489758:web:9133d1d1620825c385ed4f"
+  };
+
+  const app = initializeApp(config);
+  const auth = getAuth(app);
+
+  async function verificar() {
+    await signInWithEmailAndPassword(auth, "fernandojose.martinez@murciaeduca.es", "TU_CONTRASEÑA");
+    const token = await auth.currentUser.getIdTokenResult();
+    console.log("Claims:", token.claims);
+    alert(token.claims.rol ? "✅ Rol asignado" : "❌ Sin rol");
+  }
+</script>
