@@ -6,10 +6,9 @@
 </head>
 <body>
   <h2>Asignar rol "salud_escolar"</h2>
-  <button id="btnAsignar">Asignarme el rol ahora</button>
+  <button id="btn">Asignarme el rol ahora</button>
   <p id="status"></p>
 
-  <!-- Contenedor invisible para reCAPTCHA -->
   <div id="recaptcha-container"></div>
 
   <script type="module">
@@ -26,26 +25,25 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const functions = getFunctions(app, 'us-central1'); // 👈 Especificar región
+    const functions = getFunctions(app, 'us-central1'); // región explícita
 
-    // Inicializar reCAPTCHA
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       size: 'invisible'
     });
 
-    document.getElementById('btnAsignar').addEventListener('click', async () => {
+    document.getElementById('btn').addEventListener('click', async () => {
       const status = document.getElementById('status');
       try {
-        status.textContent = "Iniciando sesión...";
+        status.textContent = "1. Iniciando sesión...";
         await signInWithEmailAndPassword(auth, "salud.escolar.1@programasaludhf.com", "Salud2025!");
-        
-        status.textContent = "Llamando a la función...";
-        const asignar = httpsCallable(functions, "asignarRolSaludEscolar");
-        await asignar({ uid: auth.currentUser.uid });
-        
-        status.textContent = "✅ ¡Rol asignado correctamente!";
+
+        status.textContent = "2. Llamando a la función...";
+        const callable = httpsCallable(functions, 'asignarRolSaludEscolar');
+        await callable({ uid: auth.currentUser.uid }); // ← tu UID
+
+        status.textContent = "✅ ¡Éxito! Rol asignado. Recarga la página y verifica.";
       } catch (error) {
-        status.textContent = "❌ Error: " + error.message;
+        status.innerHTML = `❌ Error: <code>${error.message}</code>`;
         console.error("Error completo:", error);
       }
     });
