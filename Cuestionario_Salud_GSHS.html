@@ -824,7 +824,175 @@
     #survey > .container .section .question li { font-size: 0.95em; }
     #survey > .container .section.active canvas#radarChart { max-width: 100%; height: 400px !important; } /* Ajustar altura en móvil si es necesario */
 }
+/* Contadores de respuestas */
+.counters-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: var(--light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-mid);
+  text-align: center;
+  transition: var(--transition);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.5s ease-out forwards;
+}
 
+/* Mostrar cuando está activo */
+.counters-container[style*="display: block"] {
+  opacity: 1;
+}
+
+/* Título */
+.counters-container h3 {
+  color: var(--primary);
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-bottom: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* Párrafos */
+.counters-container p {
+  font-size: 1.1em;
+  color: var(--dark);
+  margin: 10px 0;
+}
+
+/* Resaltar total y etiquetas */
+.counters-container strong {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+/* Contadores individuales */
+.counters-container span[id="total-responses"],
+.counters-container span[id="chicos-count"],
+.counters-container span[id="chicas-count"],
+.counters-container span[id="otro-count"] {
+  display: inline-block;
+  background: var(--gray-light);
+  color: var(--primary-dark);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1.2em;
+  transition: var(--transition);
+}
+
+/* Efecto hover en contadores */
+.counters-container span[id="total-responses"]:hover,
+.counters-container span[id="chicos-count"]:hover,
+.counters-container span[id="chicas-count"]:hover,
+.counters-container span[id="otro-count"]:hover {
+  background: var(--primary);
+  color: var(--light);
+  transform: scale(1.05);
+}
+
+/* Lista de contadores por sexo */
+.counters-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Elementos de la lista */
+.counters-container li {
+  flex: 1 1 100px;
+  padding: 10px;
+  background: var(--gray-light);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-mid);
+  font-size: 1em;
+  color: var(--dark);
+  transition: var(--transition);
+}
+
+/* Efecto hover en elementos de lista */
+.counters-container li:hover {
+  background: var(--secondary);
+  color: var(--light);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* Estilos de accesibilidad */
+.counters-container:focus-within {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Soporte para prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .counters-container {
+    animation: none;
+    transition: none;
+  }
+  .counters-container span[id="total-responses"],
+  .counters-container span[id="chicos-count"],
+  .counters-container span[id="chicas-count"],
+  .counters-container span[id="otro-count"],
+  .counters-container li {
+    transition: none;
+  }
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .counters-container {
+    padding: 15px;
+    margin: 10px;
+  }
+  .counters-container h3 {
+    font-size: 1.3em;
+  }
+  .counters-container p {
+    font-size: 1em;
+  }
+  .counters-container li {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+}
+
+/* Alto contraste para accesibilidad */
+@media (prefers-contrast: high) {
+  .counters-container {
+    background: var(--light);
+    border: 2px solid var(--dark);
+  }
+  .counters-container h3,
+  .counters-container p,
+  .counters-container li {
+    color: var(--dark);
+  }
+  .counters-container span[id="total-responses"],
+  .counters-container span[id="chicos-count"],
+  .counters-container span[id="chicas-count"],
+  .counters-container span[id="otro-count"] {
+    background: var(--primary-dark);
+    color: var(--light);
+  }
+}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -838,8 +1006,8 @@
       No es necesario que escribas tu nombre ni datos personales.
     </p>
 <!-- Contador de respuestas totales y por sexo -->
-<div class="counters-container" id="counters-container" style="display: none; text-align: center; margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
-  <h3>Usuarios entrevistados</h3>
+<div class="counters-container" id="counters-container" style="display: none;">
+  <h3>Respuestas Almacenadas en Firebase</h3>
   <p><strong>Total de Usuarios:</strong> <span id="total-responses">0</span></p>
   <p><strong>Por Sexo:</strong></p>
   <ul style="list-style: none; padding: 0;">
@@ -3861,7 +4029,7 @@
   let current = 0;
   const totalSections = 13;
   let allResponses = []; // Variable para almacenar todas las respuestas de Firestore
-
+  let sexo, curso, edad;
  // 4. Función para cargar contadores (si aplica)
   async function loadCounters() {
     try {
@@ -4543,7 +4711,44 @@ function prevSection() {
     }
     return age;
   }
-
+// Función para cargar contadores de respuestas
+async function loadResponseCounters() {
+  try {
+    const q = query(collection(db, "respuestasGSHS"));
+    const querySnapshot = await getDocs(q);
+    
+    let total = 0;
+    let chicos = 0;
+    let chicas = 0;
+    let otro = 0;
+    
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const sexoValue = data.sexo || '';
+      total++;
+      
+      if (sexoValue.toLowerCase() === 'chico') {
+        chicos++;
+      } else if (sexoValue.toLowerCase() === 'chica') {
+        chicas++;
+      } else {
+        otro++;
+      }
+    });
+    
+    document.getElementById('total-responses').textContent = total;
+    document.getElementById('chicos-count').textContent = chicos;
+    document.getElementById('chicas-count').textContent = chicas;
+    document.getElementById('otro-count').textContent = otro;
+    
+    document.getElementById('counters-container').style.display = 'block';
+    
+    console.log("Contadores cargados:", { total, chicos, chicas, otro });
+  } catch (error) {
+    console.error("Error al cargar contadores:", error);
+    alert("No se pudieron cargar los contadores. Intenta de nuevo.");
+  }
+}
 // Función para generar el informe estadístico
 function generateReport(answers) {
   // --- Datos básicos ---
@@ -5178,6 +5383,8 @@ function getAreasQueNecesitanAtencion(scores, maxScores) {
     return areas;
 }
 
+
+	 
   async function submitSurvey() {
     if (!validateCurrentSection()) {
         console.log("Validación de sección fallida.");
