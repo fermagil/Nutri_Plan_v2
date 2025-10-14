@@ -510,9 +510,11 @@ color : white;
 
 <script type="module">
   // 1. Importar Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+ 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs, addDoc, query, where, orderBy, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Asegúrate de que 'doc', 'getDoc', 'setDoc' estén aquí
+
 
   // 2. Configuración de Firebase
   const firebaseConfig = {
@@ -1090,6 +1092,7 @@ function importarCSV() {
     return;
   }
 
+	// Crear input de tipo file y abrir diálogo
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.csv';
@@ -1103,11 +1106,12 @@ function importarCSV() {
 
       // --- GUARDAR EN FIRESTORE ---
       // Suponiendo que 'db' es tu instancia de Firestore obtenida con getFirestore(app)
-      await setDoc(doc(db, "configuracion", "global"), { alumnosCSV: alumnos }, { merge: true });
+      await setDoc(doc(db, "resultadosHealthyFriday", "global"), { alumnosCSV: alumnos }, { merge: true });
       console.log(`✅ ${alumnos.length} alumnos guardados en Firestore.`);
       // --------------------------
 
       // Actualizar el select de códigos inmediatamente después de guardar
+	  listaDeAlumnos = alumnos; // Actualizar la lista en memoria
       actualizarSelectCodigos(alumnos);
       alert(`Importados y guardados ${alumnos.length} alumnos correctamente.`);
     } catch (error) {
@@ -1123,7 +1127,7 @@ let listaDeAlumnos = []; // Variable global (o de módulo) para almacenar la lis
 // --- FUNCIÓN PARA CARGAR DESDE FIRESTORE (una sola vez) ---
 async function cargarAlumnosDesdeFirestore() {
   try {
-    const docRef = doc(db, "configuracion", "global");
+    const docRef = doc(db, "resultadosHealthyFriday", "global");
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
