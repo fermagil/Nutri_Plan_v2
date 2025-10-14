@@ -834,10 +834,15 @@
   }
 
   // Estadísticas
-  function showStats() {
+function showStats() {
+  let pass = prompt("Introduce la contraseña para ver estadísticas:");
+  if (pass === "healthy_Friday_2025") {
     nextPage('page-results', 'page-stats');
     loadStatistics();
+  } else {
+    alert("Contraseña incorrecta");
   }
+}
   async function loadStatistics() {
     let q = collection(db, "resultadosSaludMental");
     const filterType = document.getElementById('stats-filter').value;
