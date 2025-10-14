@@ -4420,38 +4420,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return answers;
   }
 
-  // Función para validar la sección actual (todas las preguntas obligatorias deben estar respondidas)
-function validateCurrentSection() {
-  const currentSection = document.querySelector('.section.active');
-  if (!currentSection) return true;
 
-  const requiredElements = currentSection.querySelectorAll('[required]');
-  let isValid = true;
-
-  requiredElements.forEach(el => {
-    if (el.type === 'radio') {
-      const groupName = el.name;
-      const radios = currentSection.querySelectorAll(`input[name="${groupName}"]:checked`);
-      if (radios.length === 0) {
-        isValid = false;
-        // Opcional: resaltar el grupo de radio sin selección
-        // console.log("Radio group", groupName, "not selected");
-      }
-    } else if (el.type === 'checkbox') {
-      if (!el.checked) {
-        isValid = false;
-        // console.log("Checkbox", el.name, "not checked");
-      }
-    } else {
-      if (el.value.trim() === "") {
-        isValid = false;
-        // console.log("Input", el.name, "empty");
-      }
-    }
-  });
-
-  return isValid;
-}
 
 // Modificar las funciones nextSection y prevSection para usar la validación
 function nextSection() {
