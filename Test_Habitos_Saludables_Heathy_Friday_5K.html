@@ -714,7 +714,34 @@ import { getFirestore, collection, getDocs, addDoc, query, where, orderBy, doc, 
 
   // 4. Variables globales
   let testActual = null;
+let listaDeAlumnos = [];
+// --- FUNCIÓN parseCSV DEFINIDA DENTRO DEL MÓDULO ---
+  function parseCSV(csvText) {
+    // Asumiendo estructura fija: NRE, nº, curso, ap1, ap2, name
+    const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length < 2) {
+      throw new Error("El archivo CSV está vacío o no tiene encabezados.");
+    }
+    const headers = lines[0].split(',').map(h => h.trim());
 
+    // Opcional: Validar encabezados
+    const expectedHeaders = ['NRE', 'nº', 'curso', 'ap1', 'ap2', 'name'];
+    // if (!expectedHeaders.every(h => headers.includes(h))) {
+    //    throw new Error("El archivo CSV no tiene las columnas esperadas: " + expectedHeaders.join(', '));
+    // }
+
+    const alumnos = [];
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(',').map(v => v.trim());
+      const alumno = {};
+      headers.forEach((header, index) => {
+        alumno[header] = values[index] || '';
+      });
+      alumnos.push(alumno);
+    }
+    return alumnos;
+  }
+	
   // 5. Función para cargar contadores (solo si el usuario tiene rol)
   async function loadCounters() {
     // Verificar rol antes de leer
@@ -1137,7 +1164,7 @@ async function procesarArchivoCSVSeleccionado(event) {
 
 
 	
-let listaDeAlumnos = []; // Variable global (o de módulo) para almacenar la lista cargada
+//let listaDeAlumnos = []; // Variable global (o de módulo) para almacenar la lista cargada
 // 2. Función para cargar alumnos desde Firestore (en lugar de localStorage)
 // --- FUNCIÓN PARA CARGAR DESDE FIRESTORE (una sola vez) ---
 async function cargarAlumnosDesdeFirestore() {
