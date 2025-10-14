@@ -5163,31 +5163,43 @@ function getAreasQueNecesitanAtencion(scores, maxScores) {
 	
     // Generar el informe
     
-	// --- NUEVO: Guardar en Firestore ---
-    try {
-        // Crear un objeto con los datos a guardar
-        const dataToSave = {
-            sexo: sexo,
-            curso: curso,
-            edad: edad,
-            fecha_registro: firebase.firestore.FieldValue.serverTimestamp(), // Opcional: guardar la fecha de envío
-            answers: answers, // Guardar el objeto completo de respuestas
-            // Opcional: también puedes guardar solo el reporte si no necesitas todas las respuestas crudas
-            // report: report
-        };
+// --- NUEVO: Guardar en Firestore ---
+try {
+    // Crear una copia del objeto answers para limpiar valores no soportados
+    const cleanedAnswers = { ...answers };
 
-        // Guardar en la colección 'respuestasGSHS'
-        //await db.collection('respuestasGSHS').add(dataToSave);
-		await addDoc(collection(db, "respuestasGSHS"), dataToSave);
-        console.log("Respuestas guardadas en Firestore con éxito.");
-		 alert("✅ ¡Cuestionario enviado con éxito!");
-		
-    } catch (error) {
-        console.error("Error al guardar las respuestas en Firestore: ", error);
-        alert("Hubo un problema al guardar tus respuestas. Por favor, inténtalo de nuevo.");
-        return; // Detener la ejecución si falla el guardado
-    }
-    // --- FIN NUEVO ---
+    // Limpiar cualquier valor undefined, null o no serializable en answers
+    Object.keys(cleanedAnswers).forEach(key => {
+        if (cleanedAnswers[key] === undefined || cleanedAnswers[key] === null || typeof cleanedAnswers[key] === 'function') {
+            delete cleanedAnswers[key]; // Eliminar campos inválidos
+        } else if (cleanedAnswers[key] instanceof Date) {
+            // Convertir objetos Date a string ISO
+            cleanedAnswers[key] = cleanedAnswers[key].toISOString();
+        }
+    });
+
+    // Crear un objeto con los datos a guardar
+    const dataToSave = {
+        sexo: sexo,
+        curso: curso,
+        edad: edad,
+        fecha_registro: serverTimestamp(), // Usar serverTimestamp del Modular SDK
+        answers: cleanedAnswers, // Guardar el objeto limpio de respuestas
+        // Opcional: también puedes guardar solo el reporte si no necesitas todas las respuestas crudas
+        // report: report
+    };
+
+    // Guardar en la colección 'respuestasGSHS'
+    await addDoc(collection(db, "respuestasGSHS"), dataToSave);
+    console.log("Respuestas guardadas en Firestore con éxito.");
+    alert("✅ ¡Cuestionario enviado con éxito!");
+
+} catch (error) {
+    console.error("Error al guardar las respuestas en Firestore: ", error);
+    alert("Hubo un problema al guardar tus respuestas. Por favor, inténtalo de nuevo.");
+    return; // Detener la ejecución si falla el guardado
+}
+// --- FIN NUEVO ---
 
     // Mostrar el informe en pantalla
 	try {
