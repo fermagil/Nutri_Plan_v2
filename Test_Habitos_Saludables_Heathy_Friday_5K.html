@@ -487,6 +487,362 @@ h3 {
     font-size: var(--font-size-base); /* Asegura legibilidad */
   }
 }
+
+/* ===== PREGUNTAS (Modernas, Visuales e Inclusivas) ===== */
+
+/* Contenedor de cada pregunta */
+.pregunta-item {
+  background: var(--color-surface);
+  padding: var(--spacing-lg); /* Más espacio interno */
+  border-radius: var(--border-radius); /* Bordes redondeados consistentes */
+  margin: var(--spacing-lg) 0; /* Espacio superior/inferior más generoso */
+  /* Sombra más pronunciada para destacar la tarjeta */
+  box-shadow: var(--shadow-md);
+  /* Borde sutil en lugar de solo una línea lateral */
+  border: var(--border);
+  /* Transición suave para efectos de hover si se agregan */
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.pregunta-item:hover {
+  /* Opcional: efecto sutil al pasar el ratón por toda la tarjeta */
+  box-shadow: var(--shadow-hover);
+  /* transform: translateY(-1px); */ /* Ligeramente elevada (opcional) */
+}
+
+/* Título de la pregunta */
+.pregunta-item > p {
+  margin: 0 0 var(--spacing-md) 0; /* Espacio solo debajo del título */
+  font-weight: var(--font-weight-semibold); /* Peso de fuente medio-fuerte */
+  font-size: var(--font-size-lg); /* Tamaño ligeramente mayor */
+  color: var(--color-text); /* Color de texto principal */
+  line-height: 1.4; /* Línea más ajustada para mejor lectura */
+  /* Opcional: Añadir un ícono o número de pregunta aquí */
+  /* padding-left: var(--spacing-sm); */
+  /* border-left: 3px solid var(--color-primary); */
+}
+
+/* Contenedor de cada opción de respuesta (radio o checkbox) */
+.opcion {
+  display: flex; /* Disposición horizontal */
+  align-items: center; /* Centrado vertical */
+  margin: var(--spacing-sm) 0; /* Espaciado vertical entre opciones */
+  padding: var(--spacing-xs); /* Espacio interno pequeño para el área de click */
+  border-radius: var(--border-radius-sm); /* Bordes ligeramente redondeados para la opción */
+  /* Transición suave para efectos de hover/focus */
+  transition: background-color 0.15s ease, outline 0.15s ease;
+  /* Asegura que el cursor indique que es clickable */
+  cursor: pointer;
+}
+
+/* Efecto hover en la opción completa (label) */
+.opcion:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); /* Fondo muy sutil al hacer hover */
+}
+
+/* Estado de foco en la opción completa (label) - MUY IMPORTANTE para a11y */
+.opcion:focus-within {
+  /* Borde de enfoque claro alrededor de la opción completa */
+  outline: 2px solid var(--color-outline-focus);
+  outline-offset: 2px;
+  /* Asegura visibilidad del estado de enfoque */
+  z-index: 1;
+  position: relative; /* Asegura que z-index funcione si hay otros elementos */
+}
+
+/* Input (radio o checkbox) dentro de la opción */
+.opcion input[type="radio"],
+.opcion input[type="checkbox"] {
+  /* Tamaño ligeramente mayor para mejor usabilidad */
+  width: 1.25em; /* 20px si font-size base es 16px */
+  height: 1.25em;
+  margin-right: var(--spacing-sm); /* Espacio entre input y label */
+  /* Color de énfasis para el input seleccionado */
+  accent-color: var(--color-primary);
+  /* Asegura que el input sea parte del área de click del label */
+  cursor: pointer;
+  flex-shrink: 0; /* No se encoge si el texto es largo */
+}
+
+/* Estado de foco en el input (radio/checkbox) */
+.opcion input[type="radio"]:focus,
+.opcion input[type="checkbox"]:focus {
+  /* No necesitas outline aquí si .opcion:focus-within lo maneja todo */
+  /* outline: 2px solid var(--color-outline-focus); */
+  /* outline-offset: 2px; */
+  /* Es mejor depender del focus en el label padre (.opcion:focus-within) */
+}
+
+/* Label de la opción (el texto descriptivo) */
+.opcion label {
+  font-weight: var(--font-weight-normal); /* Peso de fuente normal */
+  color: var(--color-text-secondary); /* Color secundario */
+  cursor: pointer; /* Muestra que es clickable */
+  /* Permite que el texto ocupe el resto del espacio disponible */
+  flex-grow: 1;
+  line-height: 1.5; /* Línea más cómoda para lectura */
+  user-select: none; /* Evita seleccionar texto accidentalmente al hacer click */
+}
+
+/* Opcional: Efecto visual en el label cuando el input asociado está seleccionado */
+.opcion input[type="radio"]:checked + label,
+.opcion input[type="checkbox"]:checked + label {
+  color: var(--color-primary); /* Cambia el color del texto al seleccionar */
+  font-weight: var(--font-weight-medium); /* Opcional: Ponerlo en negrita */
+}
+
+
+
+	  /* ===== RESULTADOS (Modernos, Visuales e Inclusivos) ===== */
+
+/* Contenedor principal de los resultados */
+#resultado {
+  display: none; /* Se mostrará con JS */
+  background: var(--color-surface); /* Fondo blanco para contraste */
+  padding: var(--spacing-xl); /* Espacio interno generoso */
+  border-radius: var(--border-radius); /* Bordes redondeados consistentes */
+  margin: var(--spacing-xl) 0; /* Espacio superior/inferior */
+  /* Sombra para destacar la tarjeta */
+  box-shadow: var(--shadow-md);
+  /* Borde sutil con color de énfasis */
+  border: var(--border);
+  /* Transición suave si se anima al aparecer */
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  /* Opcional: Agregar una animación de aparición */
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Animación para la aparición del resultado */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Título de la sección de resultados */
+#resultado > h2 {
+  margin-top: 0; /* Elimina margen superior predeterminado */
+  margin-bottom: var(--spacing-md); /* Espacio inferior */
+  color: var(--color-primary); /* Color de énfasis */
+  font-weight: var(--font-weight-bold); /* Fuente más fuerte */
+  font-size: var(--font-size-xl); /* Tamaño mayor */
+  text-align: center; /* Centrado */
+  border-bottom: 2px solid var(--color-primary); /* Línea decorativa */
+  padding-bottom: var(--spacing-xs); /* Espacio bajo el título */
+}
+
+/* Contenedor específico para las recomendaciones */
+#recomendaciones {
+  margin-top: var(--spacing-lg); /* Espacio superior */
+}
+
+/* Subtítulo dentro de recomendaciones */
+#recomendaciones h3 {
+  margin-top: 0; /* No hay margen superior si es el primer elemento */
+  margin-bottom: var(--spacing-sm); /* Espacio inferior */
+  color: var(--color-text); /* Color de texto principal */
+  font-weight: var(--font-weight-semibold); /* Fuente medio-fuerte */
+  font-size: var(--font-size-lg); /* Tamaño mayor */
+  padding-bottom: var(--spacing-xs); /* Espacio bajo el subtítulo */
+  border-bottom: 1px dashed var(--color-border); /* Línea divisoria sutil */
+}
+
+/* Párrafo de recomendación individual */
+#recomendaciones p {
+  background-color: color-mix(in srgb, var(--color-warning) 10%, transparent); /* Fondo muy sutil con tono de advertencia */
+  color: var(--color-text); /* Color de texto principal */
+  padding: var(--spacing-md); /* Espacio interno */
+  border-radius: var(--border-radius-sm); /* Bordes ligeramente redondeados */
+  /* Borde izquierdo con color de advertencia para destacar */
+  border-left: 4px solid var(--color-warning);
+  font-style: normal; /* Elimina la cursiva */
+  line-height: 1.6; /* Altura de línea cómoda */
+  margin-bottom: var(--spacing-sm); /* Espacio inferior entre párrafos */
+  /* Opcional: Icono al inicio */
+  /* padding-left: calc(var(--spacing-md) + 1.5em); */
+  /* position: relative; */
+  /* &::before { content: "💡"; position: absolute; left: var(--spacing-md); top: var(--spacing-md); } */
+}
+
+/* Opcional: Estilo específico si la recomendación es positiva */
+#recomendaciones p.positiva {
+  background-color: color-mix(in srgb, var(--color-success) 10%, transparent);
+  border-left-color: var(--color-success);
+}
+
+/* Opcional: Estilo específico si la recomendación es crítica */
+#recomendaciones p.critica {
+  background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  border-left-color: var(--color-danger);
+  color: var(--color-danger);
+  font-weight: var(--font-weight-medium);
+}
+
+
+/* ===== INFORME GLOBAL (en nueva ventana - Estilo consistente con Healthy Friday) ===== */
+/* Este CSS se aplica a la ventana emergente generada por JS */
+.informe-global {
+  font-family: var(--font-main); /* Tipografía consistente */
+  padding: var(--spacing-lg); /* Espacio interno */
+  background: var(--color-bg); /* Fondo consistente */
+  color: var(--color-text); /* Color de texto consistente */
+  /* Opcional: Ancho máximo para mejor lectura en pantallas grandes */
+  max-width: var(--max-width-content);
+  margin: 0 auto;
+  /* Asegura que el fondo se extienda */
+  min-height: 100vh;
+}
+
+.informe-global h2 {
+  text-align: center; /* Centrado */
+  color: var(--color-primary); /* Color de énfasis */
+  margin-bottom: var(--spacing-lg); /* Espacio inferior */
+  font-weight: var(--font-weight-bold); /* Fuente más fuerte */
+  font-size: var(--font-size-2xl); /* Tamaño mayor */
+  padding-bottom: var(--spacing-xs); /* Espacio bajo el título */
+  border-bottom: 3px solid var(--color-primary); /* Línea decorativa */
+}
+
+.informe-global h3 {
+  background: var(--color-surface); /* Fondo blanco para el encabezado de sección */
+  color: var(--color-text); /* Color de texto */
+  padding: var(--spacing-sm) var(--spacing-md); /* Espacio interno */
+  border-radius: var(--border-radius-sm); /* Bordes ligeramente redondeados */
+  margin: var(--spacing-lg) 0 var(--spacing-md) 0; /* Espacio alrededor */
+  /* Sombra sutil para destacar */
+  box-shadow: var(--shadow-sm);
+  font-weight: var(--font-weight-semibold); /* Fuente medio-fuerte */
+  font-size: var(--font-size-lg); /* Tamaño mayor */
+  border-left: 3px solid var(--color-primary); /* Línea de énfasis */
+}
+
+.informe-global ul {
+  padding-left: var(--spacing-lg); /* Sangría para la lista */
+  margin: var(--spacing-md) 0; /* Espacio arriba y abajo */
+}
+
+.informe-global li {
+  margin-bottom: var(--spacing-sm); /* Espacio entre elementos de la lista */
+  line-height: 1.6; /* Altura de línea cómoda */
+  padding: var(--spacing-xs) 0; /* Espacio vertical pequeño */
+}
+
+/* Estilo para elementos de alerta dentro del informe */
+.informe-global .alerta {
+  color: var(--color-danger); /* Color rojo para alertas */
+  font-weight: var(--font-weight-semibold); /* Fuente medio-fuerte */
+  display: inline-block; /* Opcional: para que el color no ocupe toda la línea */
+  margin-top: var(--spacing-xs); /* Espacio superior si es necesario */
+}
+
+/* Estilo para elementos positivos dentro del informe */
+.informe-global .positivo {
+  color: var(--color-success); /* Color verde para positivos */
+  font-weight: var(--font-weight-semibold); /* Fuente medio-fuerte */
+  display: inline-block; /* Opcional: para que el color no ocupe toda la línea */
+  margin-top: var(--spacing-xs); /* Espacio superior si es necesario */
+}
+
+/* ===== ACCESIBILIDAD Y ENFOQUE ===== */
+@media (prefers-reduced-motion: reduce) {
+  #resultado,
+  #resultado * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .informe-global,
+  .informe-global * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== IMPRESIÓN ===== */
+@media print {
+  .btn,
+  .btn-volver,
+  .menu a,
+  .btn-informe-global, /* Asegura ocultar también el botón de informe global */
+  #btn-importar-csv /* Y el botón de importar CSV */
+  {
+    display: none !important;
+  }
+
+  body,
+  .test-container,
+  #resultado,
+  .informe-global /* Aplica a la ventana de informe también */
+  {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: 1px solid #000 !important; /* Opcional: borde nítido en impresión */
+  }
+
+  #resultado,
+  .informe-global {
+    padding: var(--spacing-md); /* Ajustar padding para impresión */
+    margin: var(--spacing-sm) 0; /* Ajustar margen para impresión */
+    /* Romper página antes de cada sección de resultado (opcional) */
+    /* page-break-before: always; */
+  }
+
+  /* Opcional: Evitar que se corte una sección en medio al imprimir */
+  .informe-global h3 {
+    page-break-after: avoid;
+  }
+  .informe-global ul,
+  .informe-global p {
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  /* Ajustes para la sección de resultados */
+  #resultado {
+    padding: var(--spacing-lg); /* Menos padding en móvil */
+    margin: var(--spacing-lg) var(--spacing-sm); /* Margen lateral */
+  }
+
+  #resultado > h2 {
+    font-size: var(--font-size-xl); /* Título ligeramente más pequeño */
+  }
+
+  #recomendaciones h3 {
+    font-size: var(--font-size-base); /* Subtítulo más pequeño */
+  }
+
+  #recomendaciones p {
+    padding: var(--spacing-sm); /* Menos padding */
+    font-size: var(--font-size-sm); /* Texto ligeramente más pequeño */
+  }
+
+  /* Ajustes para el informe global */
+  .informe-global {
+    padding: var(--spacing-md); /* Menos padding */
+  }
+
+  .informe-global h2 {
+    font-size: var(--font-size-xl); /* Título más pequeño */
+  }
+
+  .informe-global h3 {
+    font-size: var(--font-size-lg); /* Subtítulo más pequeño */
+    padding: var(--spacing-xs) var(--spacing-sm); /* Menos padding */
+  }
+
+  .informe-global ul {
+    padding-left: var(--spacing-md); /* Menos sangría */
+  }
+}
   </style>
 
   <!-- Firebase SDK (versión 8) -->
