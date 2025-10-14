@@ -441,8 +441,9 @@ color : white;
 		<!-- Dentro del <form id="form-datos"> -->
 		<!-- Antes del resto de campos -->
 		<div id="import-csv-section" style="display: none;"> <!-- Oculto por defecto -->
-		 <input type="file" id="filePickerCSV" accept=".csv" style="display: none;">
-			<button type="button" id="btn-importar-csv" onclick="importarCSV()">🔐 Importar Lista de Alumnos (CSV)</button>
+		<!-- Dentro del <form id="form-datos">, antes del resto de campos o justo después del botón de importar si ya lo tienes -->
+		<input type="file" id="filePickerCSV" accept=".csv" style="display: none;">
+		<button type="button" id="btn-importar-csv" onclick="solicitarContraseñaYImportar()">🔐 Importar Lista de Alumnos (CSV)</button>
 		</div>
 <!-- ... resto de campos (curso, edad, sexo) ... -->
       <h2>Selecciona el test de esta estación:</h2>
