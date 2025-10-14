@@ -440,9 +440,9 @@
           <p><strong>Total de Estudiantes:</strong> <span id="total-responses">0</span></p>
           
           <ul style="list-style: none; padding: 0;">
-            <li>Chicos: <span id="chicos-count">0</span></li>
-            <li>Chicas: <span id="chicas-count">0</span></li>
-            <li>Otro/No especificado: <span id="otro-count">0</span></li>
+            <li><srong>Chicos:></srong> <span id="chicos-count">0</span></li>
+            <li>><srong>Chicas:></srong> <span id="chicas-count">0</span></li>
+            <li>><srong>No binario:></srong> <span id="otro-count">0</span></li>
           </ul>
         </div>        
         <div class="progress-bar">
@@ -804,9 +804,9 @@ async function loadCounters() {
     results.forEach(r => {
       total++;
       // Ajusta los valores según los que uses en tu formulario (p. ej. "Masculino", "Femenino", etc.)
-      if (r.genero && r.genero.toLowerCase().includes('hico')) { // "Masculino", "Chico", etc.
+      if (r.genero && r.genero.toLowerCase().includes('Masculino')) { // "Masculino", "Chico", etc.
         chicos++;
-      } else if (r.genero && r.genero.toLowerCase().includes('mujer') || r.genero.toLowerCase().includes('hica')) { // "Femenino", "Chica", etc.
+      } else if (r.genero && r.genero.toLowerCase().includes('Femenino') || r.genero.toLowerCase().includes('hica')) { // "Femenino", "Chica", etc.
         chicas++;
       } else {
         otro++;
