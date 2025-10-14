@@ -3826,25 +3826,46 @@
 		  
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script>
+ <script type="module">
+  // 1. Importar Firebase desde CDN (módulos)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Configuración de Firebase (opcional)
+  // 2. Configuración de Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
     authDomain: "nutriplanv2.firebaseapp.com",
-    databaseURL: "https://nutriplanv2-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "nutriplanv2",
     storageBucket: "nutriplanv2.firebasestorage.app",
     messagingSenderId: "653707489758",
-    appId: "1:653707489758:web:9133d1d1620825c385ed4f"
+    appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+    measurementId: "G-NWER69E8B6"
   };
-  // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
 
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // 3. Variables globales (del script original)
   let current = 0;
   const totalSections = 13;
+  let allResponses = []; // Variable para almacenar todas las respuestas de Firestore
 
+ // 4. Función para cargar contadores (si aplica)
+  async function loadCounters() {
+    try {
+      const snapshot = await getDocs(collection(db, "respuestasGSHS"));
+      const count = snapshot.size;
+      if (document.getElementById('totalGSHS')) {
+        document.getElementById('totalGSHS').textContent = count;
+      }
+    } catch (error) {
+      console.error("Error al cargar contadores GSHS:", error);
+    }
+  }
+
+	 // 5. Funciones del cuestionario (adaptadas del script original)
   function showSection(index) {
   // Ocultar todas las secciones
   document.querySelectorAll('.section').forEach((el, i) => {
@@ -5187,10 +5208,11 @@ function getAreasQueNecesitanAtencion(scores, maxScores) {
         };
 
         // Guardar en la colección 'respuestasGSHS'
-        await db.collection('respuestasGSHS').add(dataToSave);
-
+        //await db.collection('respuestasGSHS').add(dataToSave);
+		await addDoc(collection(db, "respuestasGSHS"), dataToSave);
         console.log("Respuestas guardadas en Firestore con éxito.");
-
+		 alert("✅ ¡Cuestionario enviado con éxito!");
+		
     } catch (error) {
         console.error("Error al guardar las respuestas en Firestore: ", error);
         alert("Hubo un problema al guardar tus respuestas. Por favor, inténtalo de nuevo.");
@@ -5863,6 +5885,52 @@ function getAreasQueNecesitanAtencion(scores, maxScores) {
         showSection(0);
     }
 
+	 // 6. Protección principal: verificar autenticación y rol
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const token = await user.getIdTokenResult();
+      if (token.claims.rol === "salud_escolar") {
+        // ✅ Acceso permitido
+        loadCounters();
+
+        // Inicializar lógica condicional del formulario
+        document.addEventListener('DOMContentLoaded', function() {
+          const sexoSelect = document.querySelector('select[name="sexo"]');
+          const cursoSelect = document.querySelector('select[name="curso"]');
+          const birthDateInput = document.querySelector('input[name="fecha_nacimiento"]');
+
+          if (sexoSelect) sexoSelect.addEventListener('change', updateSectionVisibility);
+          if (cursoSelect) cursoSelect.addEventListener('change', updateSectionVisibility);
+          if (birthDateInput) birthDateInput.addEventListener('change', updateSectionVisibility);
+          updateSectionVisibility(); // Inicializar estado
+        });
+
+		    // Exponer funciones globales para onclick en HTML
+        window.nextSection = nextSection;
+        window.prevSection = prevSection;
+        window.submitSurvey = submitSurvey;
+        window.loadGlobalAnalysis = loadGlobalAnalysis;
+        window.applyFilter = applyFilter;
+        window.printReport = printReport;
+        window.printAnalysis = printAnalysis;
+        window.showSurvey = showSurvey;
+        window.logout = () => {
+          signOut(auth).then(() => {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+          });
+        };
+      } else {
+        // ❌ Sin rol
+        alert("Acceso denegado: solo profesores autorizados.");
+        signOut(auth).then(() => {
+          window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        });
+      }
+    } else {
+      // ❌ No autenticado
+      window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+    }
+  });
    
 </script>
 </body>
