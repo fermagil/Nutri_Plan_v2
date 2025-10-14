@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test de Salud Mental para Adolescentes</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <style>
         :root {
             --primary: #4a6fa5;
@@ -516,7 +514,7 @@
             
             <div class="navigation">
                 <button class="btn-secondary" onclick="prevPage('page-4', 'page-3')">Anterior</button>
-                <button class="btn-primary" onclick="calculateResults()">Calcular Resultado</button>
+                <button class="btn-primary" onclick="calculateMentalScore()">Calcular Resultado</button>
             </div>
         </div>
         
@@ -672,6 +670,18 @@
 
   // Cálculo de resultados
   function calculateMentalScore() {
+    const q1Checkboxes = document.querySelectorAll('input[name="q1"]:checked');
+    let q1Values = [];
+    q1Checkboxes.forEach(checkbox => {
+      if (checkbox.value === 'Otro') {
+        const otroText = document.getElementById('q1-otro-text').value;
+        if (otroText) q1Values.push(`Otro: ${otroText}`);
+      } else {
+        q1Values.push(checkbox.value);
+      }
+    });
+    answers.q1 = q1Values.join(', ');
+
     const q12Checkboxes = document.querySelectorAll('input[name="q12"]:checked');
     let q12Values = [];
     q12Checkboxes.forEach(checkbox => {
@@ -986,6 +996,8 @@
         window.exportMentalData = exportMentalData;
         window.resetMentalTest = resetMentalTest;
         window.showStats = showStats;
+        window.loadStatistics = loadStatistics;
+        window.selectOption = selectOption;
         window.logout = () => {
           signOut(auth).then(() => {
             window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
