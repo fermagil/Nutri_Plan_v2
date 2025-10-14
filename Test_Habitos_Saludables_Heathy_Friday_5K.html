@@ -364,6 +364,63 @@ color : white;
   outline: 2px solid white;
   outline-offset: 2px;
 }
+
+/* Añadir después de las variables :root o al final del bloque <style> */
+
+/* Estilo específico para el botón de importar CSV */
+#form-datos button[type="button"] { /* Selecciona el botón dentro del form-datos */
+  background: #0d9488; /* Verde esmeralda suave */
+  color: white;
+  border: none;
+  border-radius: var(--border-radius); /* Usa la variable definida */
+  padding: 12px 16px; /* Un poco más relleno */
+  font-size: 1rem; /* Tamaño de fuente consistente */
+  font-weight: 600; /* Fuente en negrita */
+  cursor: pointer;
+  margin-top: 10px; /* Espacio encima */
+  margin-bottom: 15px; /* Espacio debajo */
+  box-shadow: var(--shadow); /* Usa la variable de sombra */
+  transition: all 0.2s ease; /* Transición suave para hover */
+  width: 100%; /* Opcional: para que ocupe todo el ancho del contenedor */
+  max-width: 300px; /* Opcional: para limitar el ancho máximo */
+  display: block; /* Opcional: para que el margin auto funcione si se centra */
+  margin-left: auto; /* Opcional: para centrar el botón */
+  margin-right: auto; /* Opcional: para centrar el botón */
+}
+
+#form-datos button[type="button"]:hover,
+#form-datos button[type="button"]:focus {
+  background: #30baaf; /* Verde más oscuro al pasar el ratón */
+  transform: translateY(-2px); /* Pequeño efecto de elevación */
+  box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.12); /* Sombra más pronunciada al hacer hover */
+  outline: 2px solid white; /* Borde blanco al hacer foco */
+  outline-offset: 2px; /* Espacio entre el borde y el botón */
+}
+
+/* Opcional: Si prefieres un estilo más similar al botón .btn existente */
+/*
+#form-datos button[type="button"] {
+  background: #16a34a; // Verde éxito
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  box-shadow: var(--shadow);
+  transition: background 0.2s;
+  width: 100%;
+}
+
+#form-datos button[type="button"]:hover,
+#form-datos button[type="button"]:focus {
+  background: #15803d; // Verde más oscuro
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+*/
   </style>
 
   <!-- Firebase SDK (versión 8) -->
