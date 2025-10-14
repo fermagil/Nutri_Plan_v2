@@ -4711,44 +4711,7 @@ function prevSection() {
     }
     return age;
   }
-// Función para cargar contadores de respuestas
-async function loadResponseCounters() {
-  try {
-    const q = query(collection(db, "respuestasGSHS"));
-    const querySnapshot = await getDocs(q);
-    
-    let total = 0;
-    let chicos = 0;
-    let chicas = 0;
-    let otro = 0;
-    
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const sexoValue = data.sexo || '';
-      total++;
-      
-      if (sexoValue.toLowerCase() === 'chico') {
-        chicos++;
-      } else if (sexoValue.toLowerCase() === 'chica') {
-        chicas++;
-      } else {
-        otro++;
-      }
-    });
-    
-    document.getElementById('total-responses').textContent = total;
-    document.getElementById('chicos-count').textContent = chicos;
-    document.getElementById('chicas-count').textContent = chicas;
-    document.getElementById('otro-count').textContent = otro;
-    
-    document.getElementById('counters-container').style.display = 'block';
-    
-    console.log("Contadores cargados:", { total, chicos, chicas, otro });
-  } catch (error) {
-    console.error("Error al cargar contadores:", error);
-    alert("No se pudieron cargar los contadores. Intenta de nuevo.");
-  }
-}
+
 // Función para generar el informe estadístico
 function generateReport(answers) {
   // --- Datos básicos ---
