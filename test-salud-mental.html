@@ -584,450 +584,426 @@
         </div>
     </div>
 
-    <script>
-        // Configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-            authDomain: "nutriplanv2.firebaseapp.com",
-            databaseURL: "https://nutriplanv2-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "nutriplanv2",
-            storageBucket: "nutriplanv2.firebasestorage.app",
-            messagingSenderId: "653707489758",
-            appId: "1:653707489758:web:9133d1d1620825c385ed4f",
-            measurementId: "G-NWER69E8B6"
-        };
-        
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
-        // Variables globales
-        let currentPage = 'page-welcome';
-        let answers = {};
-        let statistics = {
-            adequate: 0,
-            moderate: 0,
-            urgent: 0,
-            total: 0
-        };
-        
-        // Funciones de navegación
-        function nextPage(current, next) {
-            document.getElementById(current).classList.remove('active');
-            document.getElementById(next).classList.add('active');
-            currentPage = next;
-            updateProgress();
-        }
-        
-        function prevPage(current, prev) {
-            document.getElementById(current).classList.remove('active');
-            document.getElementById(prev).classList.add('active');
-            currentPage = prev;
-            updateProgress();
-        }
-        
-        function updateProgress() {
-            const progress = document.getElementById('progress');
-            let width = 0;
-            
-            switch(currentPage) {
-                case 'page-welcome': width = 0; break;
-                case 'page-1': width = 25; break;
-                case 'page-2': width = 50; break;
-                case 'page-3': width = 75; break;
-                case 'page-4': width = 100; break;
-                case 'page-results': width = 100; break;
-                case 'page-stats': width = 100; break;
-            }
-            
-            progress.style.width = width + '%';
-        }
-        
-        // Funciones para selección de opciones
-        function selectOption(element, questionId) {
-            // Deseleccionar todas las opciones del mismo grupo
-            const parent = element.parentElement;
-            const options = parent.querySelectorAll('.option');
-            options.forEach(opt => opt.classList.remove('selected'));
-            
-            // Seleccionar la opción clickeada
-            element.classList.add('selected');
-            
-            // Guardar la respuesta
-            answers[questionId] = element.textContent;
-        }
-        
-        // --- MANEJO DE CAMPOS "OTRO" ---
-    // Se añade un listener genérico para cualquier checkbox "otro" que creemos.
-    function setupOtroCheckbox(checkId, textId) {
-        const otroCheck = document.getElementById(checkId);
-        const otroText = document.getElementById(textId);
-        if (otroCheck) {
-            otroCheck.addEventListener('change', function() {
-                if (this.checked) {
-                    otroText.style.display = 'block';
-                } else {
-                    otroText.style.display = 'none';
-                    otroText.value = '';
-                }
-            });
-        }
+    <script type="module">
+  // 1. Importar Firebase desde CDN (módulos)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, getIdTokenResult } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // 2. Configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+    authDomain: "nutriplanv2.firebaseapp.com",
+    projectId: "nutriplanv2",
+    storageBucket: "nutriplanv2.firebasestorage.app",
+    messagingSenderId: "653707489758",
+    appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+    measurementId: "G-NWER69E8B6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // 3. Variables globales
+  let currentPage = 'page-welcome';
+  let answers = {};
+  let statistics = {
+    adequate: 0,
+    moderate: 0,
+    urgent: 0,
+    total: 0
+  };
+
+  // 4. Funciones de navegación y lógica
+  function nextPage(current, next) {
+    document.getElementById(current).classList.remove('active');
+    document.getElementById(next).classList.add('active');
+    currentPage = next;
+    updateProgress();
+  }
+  function prevPage(current, prev) {
+    document.getElementById(current).classList.remove('active');
+    document.getElementById(prev).classList.add('active');
+    currentPage = prev;
+    updateProgress();
+  }
+  function updateProgress() {
+    const progress = document.getElementById('progress');
+    let width = 0;
+    switch(currentPage) {
+      case 'page-welcome': width = 0; break;
+      case 'page-1': width = 25; break;
+      case 'page-2': width = 50; break;
+      case 'page-3': width = 75; break;
+      case 'page-4': width = 100; break;
+      case 'page-results': width = 100; break;
+      case 'page-stats': width = 100; break;
     }
-       // Se ejecuta cuando el DOM está cargado para configurar los listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            setupOtroCheckbox('q1-otro-check', 'q1-otro-text');
-            setupOtroCheckbox('q12-otro-check', 'q12-otro-text');
-            setupOtroCheckbox('q13-otro-check', 'q13-otro-text'); 
-        });
- 
-        // Cálculo de resultados
-        function calculateResults() {
-
-            // Recoger respuestas de checkboxes (Pregunta 12) - ¡CORREGIDO!
-            const q12Checkboxes = document.querySelectorAll('input[name="q12"]:checked');
-            let q12Values = [];
-            q12Checkboxes.forEach(checkbox => {
-                if (checkbox.value === 'Otro') {
-                    const otroText = document.getElementById('q12-otro-text').value;
-                    if (otroText) q12Values.push(`Otro: ${otroText}`);
-                } else {
-                    q12Values.push(checkbox.value);
-                }
-            });
-            answers.q12 = q12Values.join(', ');
-            // Recoger respuestas de la página 4
-           
-          // Recoger respuestas de checkboxes (Pregunta 13) - ¡NUEVO!
-            const q13Checkboxes = document.querySelectorAll('input[name="q13"]:checked');
-            let q13Values = [];
-            q13Checkboxes.forEach(checkbox => {
-                if (checkbox.value === 'Otro') {
-                    const otroText = document.getElementById('q13-otro-text').value;
-                    if (otroText) q13Values.push(`Otro: ${otroText}`);
-                } else {
-                    q13Values.push(checkbox.value);
-                }
-            });
-            answers.q13 = q13Values.join(', ');
-
-
-
-
-            
-            answers.q14 = answers.q14 || '';
-            answers.q15 = document.getElementById('q15').value;
-            
-            // Recoger datos demográficos
-            answers.gender = document.getElementById('gender').value;
-            answers.age = document.getElementById('age').value;
-            
-            // Calcular puntuación basada en evidencia científica
-            // Calcular puntuación
-        let score = 0;
-        const scoreMap = {
-            q2: {'A veces': 1, 'A menudo': 2, 'Casi todos los días': 3},
-            q3: {'A veces': 1, 'Sí, bastante': 2, 'Sí, casi siempre': 3},
-            q4: {'Moderado': 1, 'Alto': 2, 'Muy alto': 3},
-            q5: {'A veces': 1, 'Rara vez': 2, 'No, nunca': 3},
-            q6: {'Depende de la persona': 1, 'Me cuesta un poco': 2, 'Me resulta muy difícil': 3},
-            q7: {'Duermo, pero me despierto cansado/a': 1, 'Me cuesta dormir': 2, 'Duermo muy poco o mal casi siempre': 3},
-            q8: {'A veces dudo de mí': 1, 'Me cuesta aceptarme': 2, 'No me siento bien conmigo mismo/a': 3},
-            q9: {'Normales': 0, 'Tengo algunos problemas': 2, 'Me siento solo/a o excluido/a': 3}, // Ajustado score
-            q10: {'Alguna vez': 2, 'A menudo': 4, 'Prefiero no responder': 2}, // Ajustado score
-            q11: {'Sí, alguna vez': 5, 'Sí, varias veces': 10, 'Prefiero no responder': 3} // Puntuación alta para indicar riesgo
-        };
-        
-        for (const qId in scoreMap) {
-            if (answers[qId] && scoreMap[qId][answers[qId]]) {
-                score += scoreMap[qId][answers[qId]];
-            }
-        }
-
-            
-            // Determinar nivel de riesgo basado en evidencia científica
-            let resultLevel, resultDescription, recommendations, resultLevelClass;
-            
-            // Evaluación de riesgo inminente (respuestas clave)
-            const imminentRisk = 
-                answers.q11 === 'Sí, alguna vez' || 
-                answers.q11 === 'Sí, varias veces' ||
-                (answers.q10 === 'A menudo' && answers.q2 === 'Casi todos los días');
-            
-           if (imminentRisk || score >= 22) {
-            resultLevel = 'Atención Prioritaria';
-            resultLevelClass = 'urgent';
-            resultDescription = 'Tus respuestas sugieren que podrías estar pasando por un momento muy difícil. Es muy importante que hables con alguien de confianza o un profesional lo antes posible.';
-            recommendations = `<p><strong>No estás solo/a. Por favor, considera estas acciones:</strong></p>
-                               <ul>
-                                   <li>Habla inmediatamente con tus padres, un tutor/a, o la orientadora del centro.</li>
-                                   <li>Si sientes que no puedes hablar con nadie cercano, existen líneas de ayuda anónimas y gratuitas.</li>
-                                   <li>Recuerda que pedir ayuda es un acto de valentía y el primer paso para sentirte mejor.</li>
-                               </ul>`;
-            answers.resultLevel = 'Urgente';
-        } else if (score >= 12) {
-            resultLevel = 'Atención Moderada';
-            resultLevelClass = 'moderate';
-            resultDescription = 'Algunas de tus respuestas indican que podrías estar enfrentando algunos desafíos emocionales. Prestar atención a cómo te sientes es importante.';
-            recommendations = `<p><strong>Aquí tienes algunas sugerencias que podrían ayudarte:</strong></p>
-                               <ul>
-                                   <li>Intenta identificar qué situaciones te generan más estrés o tristeza y piensa en pequeños cambios que podrías hacer.</li>
-                                   <li>Asegúrate de dedicar tiempo a actividades que disfrutas y te relajan.</li>
-                                   <li>Considera hablar sobre cómo te sientes con amigos cercanos, familiares o el orientador/a del centro. A veces, compartirlo alivia mucho.</li>
-                               </ul>`;
-            answers.resultLevel = 'Moderado';
+    progress.style.width = width + '%';
+  }
+  function selectOption(element, questionId) {
+    const parent = element.parentElement;
+    const options = parent.querySelectorAll('.option');
+    options.forEach(opt => opt.classList.remove('selected'));
+    element.classList.add('selected');
+    answers[questionId] = element.textContent;
+  }
+  function setupOtroCheckbox(checkId, textId) {
+    const otroCheck = document.getElementById(checkId);
+    const otroText = document.getElementById(textId);
+    if (otroCheck) {
+      otroCheck.addEventListener('change', function() {
+        if (this.checked) {
+          otroText.style.display = 'block';
         } else {
-            resultLevel = 'Bienestar Adecuado';
-            resultLevelClass = 'adequate';
-            resultDescription = 'Tus respuestas sugieren que, en general, tienes un buen manejo de tu bienestar emocional. ¡Sigue así!';
-            recommendations = `<p><strong>Para mantener tu bienestar, te recomendamos:</strong></p>
-                               <ul>
-                                   <li>Sigue practicando hábitos saludables como dormir lo suficiente, comer bien y hacer ejercicio.</li>
-                                   <li>Continúa apoyándote en tus amigos y familia. Las relaciones sociales son un pilar fundamental.</li>
-                                   <li>No dejes de dedicar tiempo a tus hobbies y a las cosas que te hacen feliz.</li>
-                               </ul>`;
-            answers.resultLevel = 'Adecuado';
+          otroText.style.display = 'none';
+          otroText.value = '';
         }
+      });
+    }
+  }
 
-            
-            // Mostrar resultados
-            const resultLevelElement = document.getElementById('result-level');
-            resultLevelElement.textContent = resultLevel;
-            resultLevelElement.className = 'result-level ' + resultLevelClass;
-            
-            document.getElementById('result-description').textContent = resultDescription;
-            document.getElementById('recommendations-content').innerHTML = recommendations;
-            
-            // Guardar resultados en Firestore
-            saveResults(score, resultLevel);
-            
-            // Navegar a la página de resultados
-            nextPage('page-4', 'page-results');
+  // Función para iniciar el test
+  function startTestMental() {
+    answers = {};
+    nextPage('page-welcome', 'page-1');
+  }
+
+  // Cálculo de resultados
+  function calculateMentalScore() {
+    const q12Checkboxes = document.querySelectorAll('input[name="q12"]:checked');
+    let q12Values = [];
+    q12Checkboxes.forEach(checkbox => {
+      if (checkbox.value === 'Otro') {
+        const otroText = document.getElementById('q12-otro-text').value;
+        if (otroText) q12Values.push(`Otro: ${otroText}`);
+      } else {
+        q12Values.push(checkbox.value);
+      }
+    });
+    answers.q12 = q12Values.join(', ');
+
+    const q13Checkboxes = document.querySelectorAll('input[name="q13"]:checked');
+    let q13Values = [];
+    q13Checkboxes.forEach(checkbox => {
+      if (checkbox.value === 'Otro') {
+        const otroText = document.getElementById('q13-otro-text').value;
+        if (otroText) q13Values.push(`Otro: ${otroText}`);
+      } else {
+        q13Values.push(checkbox.value);
+      }
+    });
+    answers.q13 = q13Values.join(', ');
+    answers.q14 = answers.q14 || '';
+    answers.q15 = document.getElementById('q15').value;
+    answers.gender = document.getElementById('gender').value;
+    answers.age = document.getElementById('age').value;
+
+    let score = 0;
+    const scoreMap = {
+      q2: {'A veces': 1, 'A menudo': 2, 'Casi todos los días': 3},
+      q3: {'A veces': 1, 'Sí, bastante': 2, 'Sí, casi siempre': 3},
+      q4: {'Moderado': 1, 'Alto': 2, 'Muy alto': 3},
+      q5: {'A veces': 1, 'Rara vez': 2, 'No, nunca': 3},
+      q6: {'Depende de la persona': 1, 'Me cuesta un poco': 2, 'Me resulta muy difícil': 3},
+      q7: {'Duermo, pero me despierto cansado/a': 1, 'Me cuesta dormir': 2, 'Duermo muy poco o mal casi siempre': 3},
+      q8: {'A veces dudo de mí': 1, 'Me cuesta aceptarme': 2, 'No me siento bien conmigo mismo/a': 3},
+      q9: {'Normales': 0, 'Tengo algunos problemas': 2, 'Me siento solo/a o excluido/a': 3},
+      q10: {'Alguna vez': 2, 'A menudo': 4, 'Prefiero no responder': 2},
+      q11: {'Sí, alguna vez': 5, 'Sí, varias veces': 10, 'Prefiero no responder': 3}
+    };
+    for (const qId in scoreMap) {
+      if (answers[qId] && scoreMap[qId][answers[qId]]) {
+        score += scoreMap[qId][answers[qId]];
+      }
+    }
+
+    let resultLevel, resultDescription, recommendations, resultLevelClass;
+    const imminentRisk = 
+      answers.q11 === 'Sí, alguna vez' || 
+      answers.q11 === 'Sí, varias veces' ||
+      (answers.q10 === 'A menudo' && answers.q2 === 'Casi todos los días');
+
+    if (imminentRisk || score >= 22) {
+      resultLevel = 'Atención Prioritaria';
+      resultLevelClass = 'urgent';
+      resultDescription = 'Tus respuestas sugieren que podrías estar pasando por un momento muy difícil. Es muy importante que hables con alguien de confianza o un profesional lo antes posible.';
+      recommendations = `<p><strong>No estás solo/a. Por favor, considera estas acciones:</strong></p>
+                         <ul>
+                             <li>Habla inmediatamente con tus padres, un tutor/a, o la orientadora del centro.</li>
+                             <li>Si sientes que no puedes hablar con nadie cercano, existen líneas de ayuda anónimas y gratuitas.</li>
+                             <li>Recuerda que pedir ayuda es un acto de valentía y el primer paso para sentirte mejor.</li>
+                         </ul>`;
+      answers.resultLevel = 'Urgente';
+    } else if (score >= 12) {
+      resultLevel = 'Atención Moderada';
+      resultLevelClass = 'moderate';
+      resultDescription = 'Algunas de tus respuestas indican que podrías estar enfrentando algunos desafíos emocionales. Prestar atención a cómo te sientes es importante.';
+      recommendations = `<p><strong>Aquí tienes algunas sugerencias que podrían ayudarte:</strong></p>
+                         <ul>
+                             <li>Intenta identificar qué situaciones te generan más estrés o tristeza y piensa en pequeños cambios que podrías hacer.</li>
+                             <li>Asegúrate de dedicar tiempo a actividades que disfrutas y te relajan.</li>
+                             <li>Considera hablar sobre cómo te sientes con amigos cercanos, familiares o el orientador/a del centro. A veces, compartirlo alivia mucho.</li>
+                         </ul>`;
+      answers.resultLevel = 'Moderado';
+    } else {
+      resultLevel = 'Bienestar Adecuado';
+      resultLevelClass = 'adequate';
+      resultDescription = 'Tus respuestas sugieren que, en general, tienes un buen manejo de tu bienestar emocional. ¡Sigue así!';
+      recommendations = `<p><strong>Para mantener tu bienestar, te recomendamos:</strong></p>
+                         <ul>
+                             <li>Sigue practicando hábitos saludables como dormir lo suficiente, comer bien y hacer ejercicio.</li>
+                             <li>Continúa apoyándote en tus amigos y familia. Las relaciones sociales son un pilar fundamental.</li>
+                             <li>No dejes de dedicar tiempo a tus hobbies y a las cosas que te hacen feliz.</li>
+                         </ul>`;
+      answers.resultLevel = 'Adecuado';
+    }
+
+    const resultLevelElement = document.getElementById('result-level');
+    resultLevelElement.textContent = resultLevel;
+    resultLevelElement.className = 'result-level ' + resultLevelClass;
+    document.getElementById('result-description').textContent = resultDescription;
+    document.getElementById('recommendations-content').innerHTML = recommendations;
+    saveResults(score, resultLevel);
+    nextPage('page-4', 'page-results');
+  }
+
+  // Guardar resultados en Firestore
+  async function saveResults(score, classification) {
+    const resultData = {
+      answers: answers,
+      score: score,
+      classification: classification,
+      timestamp: serverTimestamp(),
+      gender: answers.gender,
+      age: answers.age
+    };
+    try {
+      await addDoc(collection(db, "resultadosSaludMental"), resultData);
+      console.log("Resultado guardado");
+    } catch (error) {
+      console.error("Error al guardar resultado: ", error);
+    }
+  }
+
+  // Resetear el test
+  function resetMentalTest() {
+    answers = {};
+    currentPage = 'page-welcome';
+    updateProgress();
+    // Resetear selecciones en UI
+    const options = document.querySelectorAll('.option.selected');
+    options.forEach(opt => opt.classList.remove('selected'));
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    checkboxes.forEach(cb => cb.checked = false);
+    const inputs = document.querySelectorAll('input[type="text"], select');
+    inputs.forEach(input => input.value = '');
+    nextPage(currentPage, 'page-welcome');
+  }
+
+  // Exportar datos a CSV
+  async function exportMentalData() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "resultadosSaludMental"));
+      let csv = 'Gender,Age,Score,Classification,Timestamp,ResultLevel\n';
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        csv += `${data.gender},${data.age},${data.score},${data.classification},${data.timestamp?.toDate()?.toISOString() || ''},${data.answers.resultLevel}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mental_health_data.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error al exportar datos: ", error);
+    }
+  }
+
+  // Estadísticas
+  function showStats() {
+    nextPage('page-results', 'page-stats');
+    loadStatistics();
+  }
+  async function loadStatistics() {
+    let q = collection(db, "resultadosSaludMental");
+    const filterType = document.getElementById('stats-filter').value;
+    if (filterType === 'gender') {
+      const gender = document.getElementById('gender-filter').value;
+      if (gender) q = query(q, where('gender', '==', gender));
+    } else if (filterType === 'age') {
+      const age = document.getElementById('age-filter').value;
+      if (age) q = query(q, where('age', '==', age));
+    }
+    try {
+      const querySnapshot = await getDocs(q);
+      statistics = { adequate: 0, moderate: 0, urgent: 0, total: 0 };
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.answers.resultLevel === 'Adecuado') statistics.adequate++;
+        else if (data.answers.resultLevel === 'Moderado') statistics.moderate++;
+        else if (data.answers.resultLevel === 'Urgente') statistics.urgent++;
+        statistics.total++;
+      });
+      displayCharts();
+    } catch (error) {
+      console.error("Error al cargar estadísticas: ", error);
+    }
+  }
+
+  // Cargar contadores (preload de estadísticas generales)
+  async function loadCounters() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "resultadosSaludMental"));
+      statistics = { adequate: 0, moderate: 0, urgent: 0, total: 0 };
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.answers.resultLevel === 'Adecuado') statistics.adequate++;
+        else if (data.answers.resultLevel === 'Moderado') statistics.moderate++;
+        else if (data.answers.resultLevel === 'Urgente') statistics.urgent++;
+        statistics.total++;
+      });
+      // Aquí podrías actualizar algún elemento UI con los contadores si es necesario
+      console.log("Contadores cargados:", statistics);
+    } catch (error) {
+      console.error("Error al cargar contadores: ", error);
+    }
+  }
+
+  // Gráficos
+  function displayCharts() {
+    const ctx = document.getElementById('results-chart').getContext('2d');
+    if (window.resultsChart) window.resultsChart.destroy();
+    const maxValue = Math.max(statistics.adequate, statistics.moderate, statistics.urgent);
+    let suggestedMax = maxValue <= 10 ? 10 : 
+                       maxValue <= 50 ? Math.ceil(maxValue / 10) * 10 :
+                       maxValue <= 100 ? Math.ceil(maxValue / 25) * 25 :
+                       Math.ceil(maxValue / 100) * 100;
+
+    window.resultsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Salud Adecuada', 'Necesita Atención', 'Urgente'],
+        datasets: [{
+          label: 'Número de Personas',
+          data: [statistics.adequate, statistics.moderate, statistics.urgent],
+          backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+          borderColor: ['#218838', '#e0a800', '#c82333'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Número de Personas' },
+            suggestedMax: suggestedMax,
+            ticks: { stepSize: suggestedMax <= 50 ? 5 : Math.ceil(suggestedMax / 10) }
+          },
+          x: {
+            title: { display: true, text: 'Nivel de Salud Mental' }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Distribución de Resultados (Números Absolutos)' }
         }
-        
-        // Guardar resultados en Firestore
-        function saveResults(score, classification) {
-            const resultData = {
-                answers: answers,
-                score: score,
-                classification: classification,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                gender: answers.gender,
-                age: answers.age
-            };
-            
-            db.collection("resultadosSaludMental").add(resultData)
-            .then((docRef) => {
-                console.log("Resultado guardado con ID: ", docRef.id);
-            })
-            .catch((error) => {
-                console.error("Error al guardar resultado: ", error);
-            });
+      }
+    });
+
+    document.getElementById('chart-info').textContent = `Total de respuestas: ${statistics.total} `;
+
+    const ctx2 = document.getElementById('percentage-chart').getContext('2d');
+    if (window.percentageChart) window.percentageChart.destroy();
+    const percentages = {
+      adequate: statistics.total > 0 ? (statistics.adequate / statistics.total * 100).toFixed(1) : 0,
+      moderate: statistics.total > 0 ? (statistics.moderate / statistics.total * 100).toFixed(1) : 0,
+      urgent: statistics.total > 0 ? (statistics.urgent / statistics.total * 100).toFixed(1) : 0
+    };
+    window.percentageChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: ['Salud Adecuada', 'Necesita Atención', 'Urgente'],
+        datasets: [{
+          data: [percentages.adequate, percentages.moderate, percentages.urgent],
+          backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+          borderColor: ['#218838', '#e0a800', '#c82333'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'bottom' },
+          title: { display: true, text: 'Distribución Porcentual' },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.label}: ${context.raw}%`;
+              }
+            }
+          }
         }
-        
-        // Mostrar estadísticas
-        function showStats() {
-            nextPage('page-results', 'page-stats');
-            loadStatistics();
-        }
-        
-        // Cargar estadísticas desde Firestore
-        function loadStatistics() {
-            let query = db.collection("resultadosSaludMental");
-            
-            const filterType = document.getElementById('stats-filter').value;
-            
-            if (filterType === 'gender') {
-                const gender = document.getElementById('gender-filter').value;
-                query = query.where('gender', '==', gender);
-            } else if (filterType === 'age') {
-                const age = document.getElementById('age-filter').value;
-                query = query.where('age', '==', age);
-            }
-            
-            query.get().then((querySnapshot) => {
-                // Reiniciar estadísticas
-                statistics = {
-                    adequate: 0,
-                    moderate: 0,
-                    urgent: 0,
-                    total: 0
-                };
-                
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.classification.includes('Adecuado')) {
-                        statistics.adequate++;
-                    } else if (data.classification.includes('URGENTE')) {
-                        statistics.urgent++;
-                    } else {
-                        statistics.moderate++;
-                    }
-                    statistics.total++;
-                });
-                
-                // Mostrar estadísticas en los gráficos
-                displayCharts();
-            }).catch((error) => {
-                console.error("Error al cargar estadísticas: ", error);
-            });
-        }
-        
-        // Mostrar gráficos de estadísticas con escalado automático
-        function displayCharts() {
-            // Gráfico de barras con números absolutos
-            const ctx = document.getElementById('results-chart').getContext('2d');
-            
-            // Si ya existe un gráfico, destruirlo
-            if (window.resultsChart) {
-                window.resultsChart.destroy();
-            }
-            
-            // Calcular el máximo valor para establecer un límite razonable en el eje Y
-            const maxValue = Math.max(statistics.adequate, statistics.moderate, statistics.urgent);
-            
-            // Si el número de usuarios es muy grande, escalamos el eje Y
-            let suggestedMax;
-            if (maxValue <= 10) {
-                suggestedMax = 10;
-            } else if (maxValue <= 50) {
-                suggestedMax = Math.ceil(maxValue / 10) * 10; // Redondear a la decena más cercana
-            } else if (maxValue <= 100) {
-                suggestedMax = Math.ceil(maxValue / 25) * 25; // Redondear a 25 más cercano
-            } else {
-                suggestedMax = Math.ceil(maxValue / 100) * 100; // Redondear a la centena más cercana
-            }
-            
-            window.resultsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Salud Adecuada', 'Necesita Atención', 'Urgente'],
-                    datasets: [{
-                        label: 'Número de Personas',
-                        data: [statistics.adequate, statistics.moderate, statistics.urgent],
-                        backgroundColor: [
-                            '#28a745',
-                            '#ffc107',
-                            '#dc3545'
-                        ],
-                        borderColor: [
-                            '#218838',
-                            '#e0a800',
-                            '#c82333'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Número de Personas'
-                            },
-                            suggestedMax: suggestedMax,
-                            ticks: {
-                                stepSize: suggestedMax <= 50 ? 5 : Math.ceil(suggestedMax / 10)
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Nivel de Salud Mental'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: true,
-                            text: 'Distribución de Resultados (Números Absolutos)'
-                        }
-                    }
-                }
-            });
-            
-            // Actualizar información del gráfico
-            document.getElementById('chart-info').textContent = 
-                `Total de respuestas: ${statistics.total} `;
-            
-            // Gráfico de porcentajes
-            const ctx2 = document.getElementById('percentage-chart').getContext('2d');
-            
-            // Si ya existe un gráfico, destruirlo
-            if (window.percentageChart) {
-                window.percentageChart.destroy();
-            }
-            
-            // Calcular porcentajes
-            const percentages = {
-                adequate: statistics.total > 0 ? (statistics.adequate / statistics.total * 100).toFixed(1) : 0,
-                moderate: statistics.total > 0 ? (statistics.moderate / statistics.total * 100).toFixed(1) : 0,
-                urgent: statistics.total > 0 ? (statistics.urgent / statistics.total * 100).toFixed(1) : 0
-            };
-            
-            window.percentageChart = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Salud Adecuada', 'Necesita Atención', 'Urgente'],
-                    datasets: [{
-                        data: [percentages.adequate, percentages.moderate, percentages.urgent],
-                        backgroundColor: [
-                            '#28a745',
-                            '#ffc107',
-                            '#dc3545'
-                        ],
-                        borderColor: [
-                            '#218838',
-                            '#e0a800',
-                            '#c82333'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Distribución Porcentual'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${context.raw}%`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Manejo de filtros de estadísticas
-        document.getElementById('stats-filter').addEventListener('change', function() {
-            const genderFilter = document.getElementById('gender-filter');
-            const ageFilter = document.getElementById('age-filter');
-            
-            genderFilter.style.display = 'none';
-            ageFilter.style.display = 'none';
-            
-            if (this.value === 'gender') {
-                genderFilter.style.display = 'inline-block';
-            } else if (this.value === 'age') {
-                ageFilter.style.display = 'inline-block';
-            }
+      }
+    });
+  }
+
+  // Manejo de filtros de estadísticas
+  document.getElementById('stats-filter').addEventListener('change', function() {
+    const genderFilter = document.getElementById('gender-filter');
+    const ageFilter = document.getElementById('age-filter');
+    genderFilter.style.display = 'none';
+    ageFilter.style.display = 'none';
+    if (this.value === 'gender') {
+      genderFilter.style.display = 'inline-block';
+    } else if (this.value === 'age') {
+      ageFilter.style.display = 'inline-block';
+    }
+  });
+
+  // Inicialización
+  document.addEventListener('DOMContentLoaded', function() {
+    updateProgress();
+    setupOtroCheckbox('q1-otro-check', 'q1-otro-text');
+    setupOtroCheckbox('q12-otro-check', 'q12-otro-text');
+    setupOtroCheckbox('q13-otro-check', 'q13-otro-text');
+  });
+
+  // 6. Protección y arranque
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const token = await user.getIdTokenResult();
+      if (token.claims.rol === "salud_escolar") {
+        // ✅ Acceso permitido
+        await loadCounters();
+        // Exponer funciones globales
+        window.startTestMental = startTestMental;
+        window.nextPage = nextPage;
+        window.prevPage = prevPage;
+        window.calculateMentalScore = calculateMentalScore;
+        window.exportMentalData = exportMentalData;
+        window.resetMentalTest = resetMentalTest;
+        window.showStats = showStats;
+        window.logout = () => {
+          signOut(auth).then(() => {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+          }).catch((error) => {
+            console.error("Error al cerrar sesión: ", error);
+          });
+        };
+      } else {
+        alert("Acceso denegado: solo profesores autorizados.");
+        signOut(auth).then(() => {
+          window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
         });
-        
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            updateProgress();
-        });
-    </script>
+      }
+    } else {
+      window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+    }
+  });
+</script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
