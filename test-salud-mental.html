@@ -669,40 +669,42 @@
   }
 
   // Cálculo de resultados
-  function calculateMentalScore() {
+ function calculateMentalScore() {
+    // Recopilar respuestas de checkboxes para q1
     const q1Checkboxes = document.querySelectorAll('input[name="q1"]:checked');
     let q1Values = [];
     q1Checkboxes.forEach(checkbox => {
-      if (checkbox.value === 'Otro') {
-        const otroText = document.getElementById('q1-otro-text').value;
-        if (otroText) q1Values.push(`Otro: ${otroText}`);
-      } else {
-        q1Values.push(checkbox.value);
-      }
+        if (checkbox.value === 'Otro') {
+            const otroText = document.getElementById('q1-otro-text').value;
+            if (otroText) q1Values.push(`Otro: ${otroText}`);
+        } else {
+            q1Values.push(checkbox.value);
+        }
     });
     answers.q1 = q1Values.join(', ');
 
+    // Recopilar otras respuestas de checkboxes
     const q12Checkboxes = document.querySelectorAll('input[name="q12"]:checked');
     let q12Values = [];
     q12Checkboxes.forEach(checkbox => {
-      if (checkbox.value === 'Otro') {
-        const otroText = document.getElementById('q12-otro-text').value;
-        if (otroText) q12Values.push(`Otro: ${otroText}`);
-      } else {
-        q12Values.push(checkbox.value);
-      }
+        if (checkbox.value === 'Otro') {
+            const otroText = document.getElementById('q12-otro-text').value;
+            if (otroText) q12Values.push(`Otro: ${otroText}`);
+        } else {
+            q12Values.push(checkbox.value);
+        }
     });
     answers.q12 = q12Values.join(', ');
 
     const q13Checkboxes = document.querySelectorAll('input[name="q13"]:checked');
     let q13Values = [];
     q13Checkboxes.forEach(checkbox => {
-      if (checkbox.value === 'Otro') {
-        const otroText = document.getElementById('q13-otro-text').value;
-        if (otroText) q13Values.push(`Otro: ${otroText}`);
-      } else {
-        q13Values.push(checkbox.value);
-      }
+        if (checkbox.value === 'Otro') {
+            const otroText = document.getElementById('q13-otro-text').value;
+            if (otroText) q13Values.push(`Otro: ${otroText}`);
+        } else {
+            q13Values.push(checkbox.value);
+        }
     });
     answers.q13 = q13Values.join(', ');
     answers.q14 = answers.q14 || '';
@@ -710,6 +712,21 @@
     answers.gender = document.getElementById('gender').value;
     answers.age = document.getElementById('age').value;
 
+    // Validación de campos requeridos
+    let missing = [];
+    if (!answers.gender) missing.push("Género");
+    if (!answers.age) missing.push("Rango de Edad");
+    for (let i = 2; i <= 11; i++) {
+        const qId = 'q' + i;
+        if (!answers[qId]) missing.push(qId.toUpperCase());
+    }
+
+    if (missing.length > 0) {
+        alert("Por favor, responde a todas las preguntas requeridas: " + missing.join(", "));
+        return;
+    }
+
+    // Proceder con el cálculo si pasa la validación
     let score = 0;
     const scoreMap = {
       q2: {'A veces': 1, 'A menudo': 2, 'Casi todos los días': 3},
@@ -777,7 +794,7 @@
     document.getElementById('recommendations-content').innerHTML = recommendations;
     saveResults(score, resultLevel);
     nextPage('page-4', 'page-results');
-  }
+}
 
   // Guardar resultados en Firestore
   async function saveResults(score, classification) {
