@@ -3830,7 +3830,7 @@
   // 1. Importar Firebase desde CDN (módulos)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // 2. Configuración de Firebase
   const firebaseConfig = {
@@ -5184,6 +5184,7 @@ try {
         curso: curso,
         edad: edad,
         fecha_registro: serverTimestamp(), // Usar serverTimestamp del Modular SDK
+		//fecha_registro: new Date().toISOString(),
         answers: cleanedAnswers, // Guardar el objeto limpio de respuestas
         // Opcional: también puedes guardar solo el reporte si no necesitas todas las respuestas crudas
         // report: report
