@@ -2015,6 +2015,16 @@ function resetTest() {
   // if (reportBtn) reportBtn.classList.add('hidden');
   // if (resetBtn) resetBtn.classList.add('hidden');
 
+	// 3. LIMPIAR PREGUNTAS: Deseleccionar todos los radios y checkboxes
+  // Selecciona todos los inputs de tipo radio y checkbox dentro del formulario de preguntas
+  // Asumiendo que el contenedor de preguntas tiene el ID 'form-preguntas'
+  const formPreguntas = document.getElementById('form-preguntas');
+  if (formPreguntas) {
+    const allRadiosAndCheckboxes = formPreguntas.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+    allRadiosAndCheckboxes.forEach(input => {
+      input.checked = false; // Deseleccionar cada radio/checkbox
+    });
+  }
   // 4. Volver a la sección de datos personales (o al menú si prefieres)
   // Asumiendo que el contenedor principal del test es #test y el formulario de datos es #form-datos
   // Y que el menú principal es #menu
