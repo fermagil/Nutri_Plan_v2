@@ -214,9 +214,26 @@
             margin-top: 40px;
             font-size: 0.9em;
         }
+        /* Estilos para el spinner */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3; /* Gris claro */
+  border-top: 5px solid #3498db; /* Azul */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
     </style>
 </head>
 <body>
+    <!-- Contenedor principal de la UI -->
+  <div id="main-ui-container" style="display: none;"> <!-- Oculto por defecto -->
+      
     <header>
         <div class="logo">
             <a href="#" id="logo">ValoracionCF_v2</a>
@@ -247,6 +264,15 @@
     <footer>
         © 2025 NutriPlan v2. Todos los derechos reservados.
     </footer>
+</div>
+
+    <!-- Contenedor de Carga (spinner/indicador) - Oculto por defecto -->
+  <div id="loading-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); z-index: 9999; flex-direction: column; justify-content: center; align-items: center;">
+    <div class="spinner"></div>
+    <p style="margin-top: 20px; font-size: 18px; color: #333;">Cargando...</p>
+  </div>
+
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
@@ -268,6 +294,24 @@
         const db = getFirestore(app); // 🔥 Inicializa Firestore
         const provider = new GoogleAuthProvider();
 
+        // --- NUEVAS FUNCIONES PARA MANEJAR CARGA ---
+        function showLoading() {
+            document.getElementById('loading-container').style.display = 'flex';
+            document.getElementById('main-ui-container').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-container').style.display = 'none';
+            // No mostrar main-ui-container aquí, déjalo como está. Se mostrará después si es necesario.
+        }
+
+        // Función que simula una espera visual (no bloquea el hilo principal)
+        function wait(seconds) {
+            return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+        }
+        // --- FIN NUEVAS FUNCIONES ---
+
+        
         async function signInWithGoogle() {
             try {
                 console.log('Initiating signInWithPopup');
@@ -348,10 +392,16 @@
             try {
                 await signOut(auth);
                 console.log('Sesión cerrada');
+                // Mostrar indicador de carga antes de redirigir
+                showLoading();
+                // Esperar 3 segundos visualmente
+                await wait(3);
                 window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
             } catch (error) {
                 console.error('Error al cerrar sesión:', error.code, error.message, error);
                 showError('Error al cerrar sesión: ' + error.message);
+                // Opcional: ocultar loading si hay error
+                hideLoading();
             }
         }
 
@@ -383,6 +433,10 @@
             document.getElementById('selection-container').style.display = 'block';
         }
 
+
+
+
+        
         function initializeUI() {
             document.getElementById('logo').addEventListener('click', function(event) {
                 event.preventDefault();
@@ -414,17 +468,30 @@
             if (user) {
                 console.log('Auth state: User signed in', user.displayName, user.email);
                     // 🔥 Verificar el rol del usuario en Firestore
+                 // Mostrar indicador de carga mientras se verifica el rol
+                showLoading();
+                // Esperar 3 segundos visualmente antes de verificar el rol
+                await wait(3);
                     checkUserRole(user.uid);
                 
             } else {
                 console.log('Auth state: No user signed in');
                 if (!window.location.pathname.includes('index.html')) {
+                    // Si no estás en index.html y no hay usuario, redirige
+                   // Si no estás en index.html y no hay usuario, redirige
+                    showLoading(); // Mostrar carga antes de redirigir
+                    await wait(3); // Espera visual de 3 segundos
                     window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
 
                 } else {
+                    // Estás en index.html y no hay usuario -> mostrar login
+                     // Ocultar loading y mostrar UI principal
+                    hideLoading();
                     loginContainer.style.display = 'block';
                     selectionContainer.style.display = 'none';
                     dropdown.style.display = 'none';
+                   // Asegurarse de que la UI principal esté visible
+                    document.getElementById('main-ui-container').style.display = 'block';
                 }
             }
         });
@@ -441,22 +508,38 @@ async function checkUserRole(userId) {
 
             if (rol === 'salud_escolar') {
                 // 🔥 Redirigir directamente a salud escolar
+                // Esperar 3 segundos visualmente antes de redirigir
+                await wait(3);
                 window.location.href = 'salud-escolar.html';
+                return;
             } else {
                 // Mostrar menú de selección
+                // Ocultar loading
+                hideLoading();
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('selection-container').style.display = 'block';
+                // Asegurarse de que la UI principal esté visible
+                document.getElementById('main-ui-container').style.display = 'block';
             }
         } else {
             // Si no existe el documento, asume rol "registrado"
+            // Ocultar loading
+                    hideLoading();
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('selection-container').style.display = 'block';
+            // Asegurarse de que la UI principal esté visible
+             document.getElementById('main-ui-container').style.display = 'block';
         }
+
     } catch (error) {
         console.error("Error obteniendo rol del usuario:", error);
+        // Ocultar loading
+                hideLoading();
         // En caso de error, mostrar menú de selección
         document.getElementById('login-container').style.display = 'none';
         document.getElementById('selection-container').style.display = 'block';
+       // Asegurarse de que la UI principal esté visible
+                document.getElementById('main-ui-container').style.display = 'block';
     }
 }
 
