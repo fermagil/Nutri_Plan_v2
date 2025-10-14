@@ -715,6 +715,98 @@ h3 {
   transform: none; /* Sin elevación */
   box-shadow: var(--shadow-sm); /* Sombra más suave o ninguna */
 }
+
+	  /* ===== ESTILO PARA BOTONES DE ACCIÓN (Calcular y Reset) ===== */
+
+/* Contenedor flexible para los botones */
+.test-container [style*="display: flex; gap: 10px;"] { /* Selector genérico para el contenedor que creamos */
+  display: flex !important; /* Asegura el layout flexible */
+  gap: var(--spacing-sm); /* Espacio entre botones usando variable */
+  margin-top: var(--spacing-md); /* Espacio superior */
+  justify-content: center; /* Centrado horizontal */
+  flex-wrap: wrap; /* Permite que se envuelvan en pantallas pequeñas */
+  align-items: center; /* Alineación vertical centrada */
+}
+
+/* Estilo base para botones de acción */
+.btn-calcular,
+.btn-reset {
+  /* Utiliza variables CSS definidas en :root */
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-btn); /* Bordes redondeados */
+  padding: var(--spacing-sm) var(--spacing-md); /* Espaciado interno */
+  font-size: var(--font-size-base); /* Tamaño de fuente */
+  font-weight: var(--font-weight-semibold); /* Peso de fuente */
+  cursor: pointer;
+  box-shadow: var(--shadow-md); /* Sombra sutil */
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Transición suave */
+  display: flex; /* Centrado interno */
+  align-items: center;
+  justify-content: center;
+  min-width: 140px; /* Ancho mínimo para consistencia */
+  text-align: center; /* Asegura texto centrado */
+  flex: 1; /* Opcional: para que ocupen el mismo ancho si hay espacio */
+  max-width: 200px; /* Ancho máximo opcional */
+}
+
+/* Botón "Calcular Resultado" - Color principal */
+.btn-calcular {
+  background-color: var(--color-success); /* Verde para acción principal */
+}
+
+/* Botón "Nuevo Test" - Color secundario (puedes cambiarlo) */
+.btn-reset {
+  background-color: #64748b; /* Gris azulado, puedes usar var(--color-surface) con borde si prefieres */
+}
+
+/* Efectos hover */
+.btn-calcular:hover,
+.btn-reset:hover {
+  transform: translateY(-2px); /* Efecto de elevación */
+  box-shadow: var(--shadow-hover); /* Sombra más pronunciada al hacer hover */
+}
+
+.btn-calcular:hover {
+  background-color: var(--color-success-hover); /* Hover del verde */
+}
+
+.btn-reset:hover {
+  background-color: #475569; /* Hover del gris azulado */
+}
+
+/* Estado de foco (importante para accesibilidad) */
+.btn-calcular:focus,
+.btn-reset:focus {
+  /* Borde de enfoque accesible */
+  outline: 2px solid var(--color-outline-focus);
+  outline-offset: 2px;
+  /* Asegura visibilidad del estado de enfoque */
+  z-index: 1;
+  /* Mantiene el estilo de hover o el color base */
+  box-shadow: var(--shadow-hover);
+}
+
+/* Opcional: Estado activo (cuando se mantiene presionado) */
+.btn-calcular:active,
+.btn-reset:active {
+  transform: translateY(0); /* Elimina la elevación */
+  box-shadow: var(--shadow-md); /* Vuelve a la sombra base */
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+  .btn-calcular,
+  .btn-reset {
+    width: 100%; /* Ancho completo en móvil */
+    max-width: none; /* Elimina el ancho máximo */
+    padding: var(--spacing-sm) var(--spacing-md); /* Ajusta padding */
+  }
+  .test-container [style*="display: flex; gap: 10px;"] {
+    flex-direction: column; /* Apila botones verticalmente en móvil */
+    align-items: stretch; /* Estira botones al ancho del contenedor */
+  }
+}
 	  /* ===== RESULTADOS (Modernos, Visuales e Inclusivos) ===== */
 
 /* Contenedor principal de los resultados */
@@ -965,6 +1057,88 @@ h3 {
     padding-left: var(--spacing-md); /* Menos sangría */
   }
 }
+	  /* ===== CONTENEDOR DE ACCIONES DEL TEST ===== */
+.acciones-test-container {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ===== ESTILO PARA BOTONES DE ACCIÓN (Calcular y Reset) ===== */
+.btn-calcular,
+.btn-reset {
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-btn);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  text-align: center;
+  flex: 1;
+  max-width: 200px;
+}
+
+/* Botón "Calcular Resultado" */
+.btn-calcular {
+  background-color: var(--color-success);
+}
+
+/* Botón "Nuevo Test" */
+.btn-reset {
+  background-color: #64748b; /* Gris azulado */
+}
+
+/* Efectos hover */
+.btn-calcular:hover {
+  background-color: var(--color-success-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-reset:hover {
+  background-color: #475569; /* Hover del gris azulado */
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Estado de foco (importante para accesibilidad) */
+.btn-calcular:focus,
+.btn-reset:focus {
+  outline: 2px solid var(--color-outline-focus);
+  outline-offset: 2px;
+  z-index: 1;
+  box-shadow: var(--shadow-hover);
+}
+
+/* Estado activo */
+.btn-calcular:active,
+.btn-reset:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-md);
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+  .btn-calcular,
+  .btn-reset {
+    width: 100%;
+    max-width: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  .acciones-test-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
   </style>
 
   <!-- Firebase SDK (versión 8) -->
@@ -1045,7 +1219,10 @@ h3 {
 
     <form id="form-preguntas"></form>
 
-    <button class="btn" onclick="calcularResultado()">Calcular Resultado</button>
+   <div class="acciones-test-container">
+    <button class="btn btn-calcular" onclick="calcularResultado()">Calcular Resultado</button>
+    <button class="btn btn-reset" onclick="resetTest()">Nuevo Test</button>
+  </div>
     <a href="#" class="btn-volver" onclick="mostrarMenu()">← Volver al menú</a>
 
     <div id="resultado">
@@ -1794,6 +1971,65 @@ function onCodigoAlumnoChange() {
   }
 }
 
+// --- FUNCIÓN PARA REINICIAR EL TEST ---
+function resetTest() {
+  console.log("Iniciando reinicio del test...");
+
+  // 1. Limpiar formulario de datos personales
+  // El select de alumnos se deja en la opción por defecto (la primera)
+  const codigoAlumnoSelect = document.getElementById('codigoAlumno');
+  if (codigoAlumnoSelect) {
+    codigoAlumnoSelect.selectedIndex = 0; // Selecciona la primera opción ("-- Importa la lista de alumnos --" o "-- Selecciona un alumno --")
+    // Opcional: Si quieres limpiarlo por completo y dejar solo la opción por defecto:
+    // codigoAlumnoSelect.innerHTML = '<option value="">-- Importa la lista de alumnos --</option>';
+  }
+  const cursoSelect = document.getElementById('curso');
+  if (cursoSelect) {
+    cursoSelect.value = ''; // Selecciona la opción vacía o por defecto
+  }
+  const edadInput = document.getElementById('edad');
+  if (edadInput) {
+    edadInput.value = ''; // Limpia el campo de edad
+  }
+  const sexoSelect = document.getElementById('sexo');
+  if (sexoSelect) {
+    sexoSelect.value = 'masculino'; // O el valor por defecto que desees
+  }
+
+  // 2. Limpiar y ocultar la sección de resultados
+  const resultadoDiv = document.getElementById('resultado');
+  if (resultadoDiv) {
+    resultadoDiv.style.display = 'none';
+    // Opcional: Limpiar el contenido interno por si acaso
+    // resultadoDiv.innerHTML = '<h2>Resultados</h2><p><strong>Puntuación total:</strong> <span id="puntaje"></span></p>... (resto del HTML original del resultado)';
+  }
+
+  // 3. Ocultar botones que aparecen tras calcular (si los tienes con IDs específicos)
+  // Ajusta estos IDs si en tu HTML original usas otros nombres
+  const exportBtn = document.getElementById('exportBtn');
+  const exportAllBtn = document.getElementById('exportAllBtn');
+  const reportBtn = document.getElementById('reportBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  // if (exportBtn) exportBtn.classList.add('hidden'); // Asume que tienes una clase .hidden { display: none; }
+  // if (exportAllBtn) exportAllBtn.classList.add('hidden');
+  // if (reportBtn) reportBtn.classList.add('hidden');
+  // if (resetBtn) resetBtn.classList.add('hidden');
+
+  // 4. Volver a la sección de datos personales (o al menú si prefieres)
+  // Asumiendo que el contenedor principal del test es #test y el formulario de datos es #form-datos
+  // Y que el menú principal es #menu
+  // document.getElementById('menu').style.display = 'none'; // Ocultar menú si estaba visible
+  document.getElementById('test').style.display = 'block'; // Asegurar que el contenedor del test esté visible
+  // Si hay otras secciones del test activas (como las preguntas), hay que ocultarlas.
+  // Por ejemplo, si tienes un div para las preguntas:
+  // document.getElementById('form-preguntas').style.display = 'none'; // Ocultar preguntas si están visibles
+
+  // 5. Opcional: Reiniciar variables internas si las tienes
+  testActual = null; // Reiniciar la variable global que indica el test actual
+
+  console.log("Test reiniciado correctamente.");
+}
+// --- FIN FUNCIÓN resetTest ---
 // --- FIN NUEVAS FUNCIONES ---
   // 9. Protección principal: verificar autenticación y rol
   onAuthStateChanged(auth, async (user) => {
