@@ -368,7 +368,7 @@ color : white;
 /* Añadir después de las variables :root o al final del bloque <style> */
 
 /* Estilo específico para el botón de importar CSV */
-#main button[type="button"] { /* Selecciona el botón dentro del form-datos */
+#btn-import button[type="button"] { /* Selecciona el botón dentro del form-datos */
   background: #0d9488; /* Verde esmeralda suave */
   color: white;
   border: none;
@@ -388,8 +388,8 @@ color : white;
   margin-right: auto; /* Opcional: para centrar el botón */
 }
 
-#main button[type="button"]:hover,
-#main button[type="button"]:focus {
+#btn-import button[type="button"]:hover,
+#btn-import button[type="button"]:focus {
   background: #30baaf; /* Verde más oscuro al pasar el ratón */
   transform: translateY(-2px); /* Pequeño efecto de elevación */
   box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.12); /* Sombra más pronunciada al hacer hover */
@@ -437,7 +437,9 @@ color : white;
 	  
     <main>
 		 <!-- Botón para importar CSV -->
-	  <button type="button" onclick="importarCSV()">Importar Lista de Alumnos (CSV)</button>
+		<div id= "btn-import" class= button>
+	  		<button type="button" onclick="importarCSV()">Importar Lista de Alumnos (CSV)</button>
+		</div>
       <h2>Selecciona el test de esta estación:</h2>
       <ul>
         <li><a href="#" onclick="cargarTest('postura')">Estacion 1: Higiene Postural</a></li>
