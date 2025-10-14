@@ -2038,6 +2038,19 @@ function resetTest() {
   testActual = null; // Reiniciar la variable global que indica el test actual
 
   console.log("Test reiniciado correctamente.");
+	// 6. DESPLAZARSE AL TOP DE LA PÁGINA
+  window.scrollTo({ top: 0, behavior: 'smooth' }); // Desplazamiento suave al inicio
+
+  // 7. PONER FOCO EN EL SELECT DE CÓDIGO DE ALUMNO
+  if (codigoAlumnoSelect) {
+    // Opcional: Añadir un pequeño delay para asegurar que el scroll se complete antes de enfocar
+    // Esto puede mejorar la experiencia en navegadores más lentos
+    setTimeout(() => {
+      codigoAlumnoSelect.focus();
+      // Opcional: Si también quieres seleccionar el texto (aunque aquí no hay texto para seleccionar, solo cambia el índice)
+      // codigoAlumnoSelect.select(); // Esto no aplica a 'select', pero sí a 'input'
+    }, 100); // 100 milisegundos de delay pueden ser suficientes
+}
 }
 // --- FIN FUNCIÓN resetTest ---
 // --- FIN NUEVAS FUNCIONES ---
