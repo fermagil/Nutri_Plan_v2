@@ -280,7 +280,16 @@
             <h1>CUESTIONARIO SOBRE TU ESTADO EMOCIONAL Y SALUD MENTAL</h1>
             <p>Confidencial y anónimo - Este cuestionario tiene como objetivo conocer cómo te sientes últimamente. No hay respuestas buenas o malas. Sé sincero/a contigo mismo/a.</p>
         </header>
-        
+        <div class="counters-container" id="counters-container" style="display: none;">
+          <h3>Respuestas Almacenadas en Firebase</h3>
+          <p><strong>Total de Usuarios:</strong> <span id="total-responses">0</span></p>
+          <p><strong>Por Sexo:</strong></p>
+          <ul style="list-style: none; padding: 0;">
+            <li>Chicos: <span id="chicos-count">0</span></li>
+            <li>Chicas: <span id="chicas-count">0</span></li>
+            <li>Otro/No especificado: <span id="otro-count">0</span></li>
+          </ul>
+        </div>        
         <div class="progress-bar">
             <div class="progress" id="progress"></div>
         </div>
