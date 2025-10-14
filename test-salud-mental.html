@@ -806,21 +806,27 @@ async function loadCounters() {
           total++;
         
           // Asegurarse de que 'genero' exista y sea una cadena
-          const genero = r.genero;
-          if (genero && typeof genero === 'string') {
-            const generoLower = genero.toLowerCase();
-            // Ajusta los valores según los que uses en tu formulario (p. ej. "Masculino", "Femenino", etc.)
-            if (generoLower.includes('Masculino')) { // "Masculino", "Chico", etc.
-              chicos++;
-            } else if (generoLower.includes('Femenino')) { // "Femenino", "Chica", etc.
-              chicas++;
+        
+            const genero = r.genero;
+            if (genero && typeof genero === 'string') {
+              const generoLower = genero.toLowerCase(); // Convertir a minúsculas para comparar
+              // Ajusta los valores según los que uses en tu formulario (p. ej. "Masculino", "Femenino", etc.)
+              if (generoLower.includes('masculino')) { // Comparar con 'masculino' en minúsculas
+                chicos++;
+              } else if (generoLower.includes('femenino')) { // Comparar con 'femenino' en minúsculas
+                chicas++;
+              } else if (generoLower.includes('no binario')) { // Añadir esta condición
+                otro++; // Contar "No binario" como "Otro" según tu HTML
+              } else if (generoLower.includes('prefiero no responder')) { // Opcional: manejar explícitamente esta opción
+                otro++; // También se puede contar como "Otro"
+              } else {
+                // Cualquier otro valor que no sea 'masculino' o 'femenino' (y no sea uno de los anteriores)
+                otro++;
+              }
             } else {
+              // Si 'genero' no es una cadena, se cuenta como "Otro"
               otro++;
             }
-          } else {
-            // Si 'genero' no es una cadena, se cuenta como "Otro"
-            otro++;
-          }
         });
 
     // Actualizar los elementos HTML con los valores obtenidos
