@@ -795,23 +795,32 @@ async function loadCounters() {
       results.push({ id: doc.id, ...doc.data() });
     });
 
-    // Contar totales por género
-    let total = 0;
-    let chicos = 0;
-    let chicas = 0;
-    let otro = 0;
-
-    results.forEach(r => {
-      total++;
-      // Ajusta los valores según los que uses en tu formulario (p. ej. "Masculino", "Femenino", etc.)
-      if (r.genero && r.genero.toLowerCase().includes('Masculino')) { // "Masculino", "Chico", etc.
-        chicos++;
-      } else if (r.genero && r.genero.toLowerCase().includes('Femenino') || r.genero.toLowerCase().includes('hica')) { // "Femenino", "Chica", etc.
-        chicas++;
-      } else {
-        otro++;
-      }
-    });
+   // Contar totales por género
+        let total = 0;
+        let chicos = 0;
+        let chicas = 0;
+        let otro = 0;
+        
+        results.forEach(r => {
+          total++;
+        
+          // Asegurarse de que 'genero' exista y sea una cadena
+          const genero = r.genero;
+          if (genero && typeof genero === 'string') {
+            const generoLower = genero.toLowerCase();
+            // Ajusta los valores según los que uses en tu formulario (p. ej. "Masculino", "Femenino", etc.)
+            if (generoLower.includes('Masculino')) { // "Masculino", "Chico", etc.
+              chicos++;
+            } else if (generoLower.includes('Femenino')) { // "Femenino", "Chica", etc.
+              chicas++;
+            } else {
+              otro++;
+            }
+          } else {
+            // Si 'genero' no es una cadena, se cuenta como "Otro"
+            otro++;
+          }
+        });
 
     // Actualizar los elementos HTML con los valores obtenidos
     document.getElementById('total-responses').textContent = total;
