@@ -471,8 +471,10 @@
                  // Mostrar indicador de carga mientras se verifica el rol
                 showLoading();
                 // Esperar 3 segundos visualmente antes de verificar el rol
+                (async () => {
                 await wait(3);
-                    checkUserRole(user.uid);
+                checkUserRole(user.uid); // Llama a la función que maneja la lógica de rol y redirección
+            })();
                 
             } else {
                 console.log('Auth state: No user signed in');
