@@ -443,7 +443,7 @@ color : white;
 		<div id="import-csv-section" style="display: none;"> <!-- Oculto por defecto -->
 		<!-- Dentro del <form id="form-datos">, antes del resto de campos o justo después del botón de importar si ya lo tienes -->
 		<input type="file" id="filePickerCSV" accept=".csv" style="display: none;">
-		<button type="button" id="btn-importar-csv" onclick="solicitarContraseñaYImportar()">🔐 Importar Lista de Alumnos (CSV)</button>
+		<button type="button" id="btn-importar-csv" onclick="abrirSelectorYVerificarContraseña()">🔐 Importar Lista de Alumnos (CSV)</button>
 		</div>
 <!-- ... resto de campos (curso, edad, sexo) ... -->
       <h2>Selecciona el test de esta estación:</h2>
@@ -1089,26 +1089,32 @@ import { getFirestore, collection, getDocs, addDoc, query, where, orderBy, doc, 
 // --- FUNCIONES MODIFICADAS PARA USAR FIRESTORE ---
 
 // 1. Función para importar CSV (con contraseña y guardado en Firestore)
-function solicitarContraseñaYImportar() {
-  const CONTRASENA_CSV = "healthy_Friday_2025";
+let archivoPendiente = null;
 
-  const pass = prompt("Introduzca la contraseña para importar la lista de alumnos:");
-  if (pass !== CONTRASENA_CSV) {
-    alert("Contraseña incorrecta. Importación cancelada.");
-    return;
-  }
-document.getElementById('filePickerCSV').click();
+// --- FUNCIÓN PARA ABRIR EL SELECTOR DE ARCHIVOS INMEDIATAMENTE ---
+function abrirSelectorYVerificarContraseña() {
+  // Al hacer clic en el botón, inmediatamente se abre el selector de archivos
+  // Esto garantiza "user activation".
+  const input = document.getElementById('filePickerCSV');
+  input.click(); // <-- Este click ocurre inmediatamente tras el click del usuario
 }
-// --- FUNCIÓN PARA PROCESAR EL ARCHIVO SELECCIONADO ---
+// --- FUNCIÓN PARA PROCESAR EL ARCHIVO SELECCIONADO (ahora con verificación de contraseña) ---
 // Esta función se define una sola vez y se asigna al onchange del input oculto
 // Idealmente, esto debería suceder una vez al inicializar la página, si el rol es correcto.
 async function procesarArchivoCSVSeleccionado(event) {
   const file = event.target.files[0];
   if (!file) {
-      console.log("No se seleccionó ningún archivo.");
+      console.log("No se seleccionó ningún archivo (posiblemente cancelado por el usuario).");
       return; // El usuario canceló la selección
   }
-
+// Verificar la contraseña *después* de que se haya seleccionado un archivo
+  const CONTRASENA_CSV = "healthy_Friday_2025";
+  const pass = prompt("Introduzca la contraseña para importar la lista de alumnos:");
+  if (pass !== CONTRASENA_CSV) {
+    alert("Contraseña incorrecta. Importación cancelada.");
+    return; // Detener la ejecución si la contraseña no es válida
+  }
+	
   try {
     const csvText = await file.text();
     const alumnos = parseCSV(csvText); // Asumiendo que parseCSV está definida como antes
@@ -1239,9 +1245,10 @@ function onCodigoAlumnoChange() {
         window.calcularResultado = calcularResultado;
         window.generarInformeAnalitico = generarInformeAnalitico;
         window.mostrarMenu = mostrarMenu;
-		  window.solicitarContraseñaYImportar = solicitarContraseñaYImportar; 
+		 window.abrirSelectorYVerificarContraseña = abrirSelectorYVerificarContraseña; 
 		document.getElementById('filePickerCSV').onchange = procesarArchivoCSVSeleccionado;
-		
+		document.getElementById('filePickerCSV').onchange = procesarArchivoCSVSeleccionado;
+		  
         window.logout = () => {
           signOut(auth).then(() => {
             window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
