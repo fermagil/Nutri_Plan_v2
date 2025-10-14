@@ -441,7 +441,7 @@ color : white;
 		<!-- Dentro del <form id="form-datos"> -->
 		<!-- Antes del resto de campos -->
 		<div id="import-csv-section" style="display: none;"> <!-- Oculto por defecto -->
-		 
+		 <input type="file" id="filePickerCSV" accept=".csv" style="display: none;">
 			<button type="button" id="btn-importar-csv" onclick="importarCSV()">🔐 Importar Lista de Alumnos (CSV)</button>
 		</div>
 <!-- ... resto de campos (curso, edad, sexo) ... -->
@@ -1088,45 +1088,48 @@ import { getFirestore, collection, getDocs, addDoc, query, where, orderBy, doc, 
 // --- FUNCIONES MODIFICADAS PARA USAR FIRESTORE ---
 
 // 1. Función para importar CSV (con contraseña y guardado en Firestore)
-function importarCSV() {
-  const CONTRASENA_CSV = "healthy_Friday_2025"; // Tu contraseña
+function solicitarContraseñaYImportar() {
+  const CONTRASENA_CSV = "healthy_Friday_2025";
 
   const pass = prompt("Introduzca la contraseña para importar la lista de alumnos:");
   if (pass !== CONTRASENA_CSV) {
     alert("Contraseña incorrecta. Importación cancelada.");
     return;
   }
+document.getElementById('filePickerCSV').click();
+}
+// --- FUNCIÓN PARA PROCESAR EL ARCHIVO SELECCIONADO ---
+// Esta función se define una sola vez y se asigna al onchange del input oculto
+// Idealmente, esto debería suceder una vez al inicializar la página, si el rol es correcto.
+async function procesarArchivoCSVSeleccionado(event) {
+  const file = event.target.files[0];
+  if (!file) {
+      console.log("No se seleccionó ningún archivo.");
+      return; // El usuario canceló la selección
+  }
 
-	// Crear input de tipo file y abrir diálogo
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.csv';
-  input.onchange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  try {
+    const csvText = await file.text();
+    const alumnos = parseCSV(csvText); // Asumiendo que parseCSV está definida como antes
 
-    try {
-      const csvText = await file.text();
-      const alumnos = parseCSV(csvText); // Asumiendo que parseCSV está definida como antes
+    // --- GUARDAR EN FIRESTORE ---
+    // Usar 'db' y 'doc' que deben estar importados en el scope del módulo
+    // Asegúrate de que 'db' sea accesible aquí (debe estar definido en el scope superior del módulo)
+    await setDoc(doc(db, "resultadosHealthyFriday", "global"), { alumnosCSV: alumnos }, { merge: true });
+    console.log(`✅ ${alumnos.length} alumnos guardados en Firestore.`);
 
-      // --- GUARDAR EN FIRESTORE ---
-      // Suponiendo que 'db' es tu instancia de Firestore obtenida con getFirestore(app)
-      await setDoc(doc(db, "resultadosHealthyFriday", "global"), { alumnosCSV: alumnos }, { merge: true });
-      console.log(`✅ ${alumnos.length} alumnos guardados en Firestore.`);
-      // --------------------------
-
-      // Actualizar el select de códigos inmediatamente después de guardar
-	  listaDeAlumnos = alumnos; // Actualizar la lista en memoria
-      actualizarSelectCodigos(alumnos);
-      alert(`Importados y guardados ${alumnos.length} alumnos correctamente.`);
-    } catch (error) {
-      console.error("Error al importar o guardar CSV:", error);
-      alert("Error al leer, procesar o guardar el archivo CSV.");
-    }
-  };
-  input.click();
+    // Actualizar la variable local y el select inmediatamente después de guardar
+    listaDeAlumnos = alumnos; // Actualizar la lista en memoria
+    actualizarSelectCodigos(alumnos);
+    alert(`Importados y guardados ${alumnos.length} alumnos correctamente.`);
+  } catch (error) {
+    console.error("Error al importar o guardar CSV:", error);
+    alert(`Error al leer, procesar o guardar el archivo CSV: ${error.message}`);
+  }
 }
 
+
+	
 let listaDeAlumnos = []; // Variable global (o de módulo) para almacenar la lista cargada
 // 2. Función para cargar alumnos desde Firestore (en lugar de localStorage)
 // --- FUNCIÓN PARA CARGAR DESDE FIRESTORE (una sola vez) ---
@@ -1235,7 +1238,7 @@ function onCodigoAlumnoChange() {
         window.calcularResultado = calcularResultado;
         window.generarInformeAnalitico = generarInformeAnalitico;
         window.mostrarMenu = mostrarMenu;
-		window.importarCSV = importarCSV;
+		document.getElementById('filePickerCSV').onchange = procesarArchivoCSVSeleccionado;
 		
         window.logout = () => {
           signOut(auth).then(() => {
