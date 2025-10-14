@@ -767,6 +767,68 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+        // Función para cargar contadores desde Firestore
+async function loadCounters() {
+  // Verificar si el usuario tiene el rol antes de intentar leer
+  const user = auth.currentUser;
+  if (!user) {
+    console.error("Usuario no autenticado para cargar contadores.");
+    return;
+  }
+  const token = await user.getIdTokenResult();
+  if (token.claims.rol !== "salud_escolar") {
+    console.error("Usuario no autorizado para ver contadores.");
+    return;
+  }
+
+  // Mostrar contenedor de contadores
+  const countersContainer = document.getElementById('counters-container');
+  if (countersContainer) {
+    countersContainer.style.display = 'block';
+  }
+
+  try {
+    // Obtener todas las respuestas de la colección resultadosSaludMental
+    const querySnapshot = await getDocs(collection(db, "resultadosSaludMental"));
+    const results = [];
+    querySnapshot.forEach((doc) => {
+      results.push({ id: doc.id, ...doc.data() });
+    });
+
+    // Contar totales por género
+    let total = 0;
+    let chicos = 0;
+    let chicas = 0;
+    let otro = 0;
+
+    results.forEach(r => {
+      total++;
+      // Ajusta los valores según los que uses en tu formulario (p. ej. "Masculino", "Femenino", etc.)
+      if (r.genero && r.genero.toLowerCase().includes('hico')) { // "Masculino", "Chico", etc.
+        chicos++;
+      } else if (r.genero && r.genero.toLowerCase().includes('mujer') || r.genero.toLowerCase().includes('hica')) { // "Femenino", "Chica", etc.
+        chicas++;
+      } else {
+        otro++;
+      }
+    });
+
+    // Actualizar los elementos HTML con los valores obtenidos
+    document.getElementById('total-responses').textContent = total;
+    document.getElementById('chicos-count').textContent = chicos;
+    document.getElementById('chicas-count').textContent = chicas;
+    document.getElementById('otro-count').textContent = otro;
+
+  } catch (error) {
+    console.error("Error al cargar contadores de salud mental: ", error);
+    // Opcional: Mostrar un mensaje de error en la UI
+    document.getElementById('total-responses').textContent = "Error";
+    document.getElementById('chicos-count').textContent = "Error";
+    document.getElementById('chicas-count').textContent = "Error";
+    document.getElementById('otro-count').textContent = "Error";
+  }
+}
+
   // 3. Variables globales
   let currentPage = 'page-welcome';
   let answers = {};
