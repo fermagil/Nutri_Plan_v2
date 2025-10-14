@@ -2040,13 +2040,13 @@ function resetTest() {
         document.getElementById('menu').style.display = 'block'; // Mostrar menú inicial
 		 
 		  document.getElementById('import-csv-section').style.display = 'block'; // Mostrar el botón de importar
-        await loadCounters(); // Cargar contadores al inicio
-		  // --- Añadir nuevas funcionalidades ---
+       		 await loadCounters(); // Cargar contadores al inicio
+		  	// --- Añadir nuevas funcionalidades ---
 			await cargarAlumnosDesdeFirestore(); // Cargar lista desde Firestore
 			// Añadir listener al select de código de alumno
 			document.getElementById('codigoAlumno').addEventListener('change', onCodigoAlumnoChange);
 			// --- Fin nuevas funcionalidades ---
-        // Exponer funciones globales para onclick en HTML
+        	// Exponer funciones globales para onclick en HTML
 		
         window.cargarTest = cargarTest;
         window.calcularResultado = calcularResultado;
@@ -2061,6 +2061,8 @@ function resetTest() {
             window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
           });
         };
+		  	// --- Añadir esta línea para exponer resetTest ---
+			window.resetTest = resetTest; // <-- ESTO PERMITE onclick="resetTest()"
       } else {
         // ❌ Sin rol
 		document.getElementById('import-csv-section').style.display = 'none'; // Asegurar que esté oculto
