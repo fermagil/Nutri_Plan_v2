@@ -1112,25 +1112,7 @@ function showStats() {
     }
   }
 
-  // Cargar contadores (preload de estadísticas generales)
-  async function loadCounters() {
-    try {
-      const querySnapshot = await getDocs(collection(db, "resultadosSaludMental"));
-      statistics = { adequate: 0, moderate: 0, urgent: 0, total: 0 };
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.answers.resultLevel === 'Adecuado') statistics.adequate++;
-        else if (data.answers.resultLevel === 'Moderado') statistics.moderate++;
-        else if (data.answers.resultLevel === 'Urgente') statistics.urgent++;
-        statistics.total++;
-      });
-      // Aquí podrías actualizar algún elemento UI con los contadores si es necesario
-      console.log("Contadores cargados:", statistics);
-    } catch (error) {
-      console.error("Error al cargar contadores: ", error);
-    }
-  }
-
+ 
   // Gráficos
   function displayCharts() {
     const ctx = document.getElementById('results-chart').getContext('2d');
