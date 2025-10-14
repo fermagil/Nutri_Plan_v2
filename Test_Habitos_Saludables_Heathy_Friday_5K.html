@@ -1171,7 +1171,7 @@ function onCodigoAlumnoChange() {
   // después de cargarla una vez, y úsala aquí.
   // Buscar el alumno en la lista almacenada en memoria, NO en Firestore
   const alumno = listaDeAlumnos.find(a => a.NRE === codigoSeleccionado);
-     const alumno = alumnos.find(a => a.NRE === codigoSeleccionado);
+     
      if (alumno) {
      document.getElementById('curso').value = alumno.curso;
      let edadCalculada = '';
