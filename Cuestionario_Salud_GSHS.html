@@ -837,7 +837,17 @@
       Tus respuestas ayudarán a mejorar la salud de adolescentes en nuestro centro. 
       No es necesario que escribas tu nombre ni datos personales.
     </p>
-
+<!-- Contador de respuestas totales y por sexo -->
+<div class="counters-container" id="counters-container" style="display: none; text-align: center; margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+  <h3>Usuarios entrevistados</h3>
+  <p><strong>Total de Usuarios:</strong> <span id="total-responses">0</span></p>
+  <p><strong>Por Sexo:</strong></p>
+  <ul style="list-style: none; padding: 0;">
+    <li>Chicos: <span id="chicos-count">0</span></li>
+    <li>Chicas: <span id="chicas-count">0</span></li>
+    <li>Otro/No especificado: <span id="otro-count">0</span></li>
+  </ul>
+</div>
     <div id="survey">
       <!-- Sección 0: Información básica -->
       <div class="section active" data-section="0">
@@ -3865,6 +3875,47 @@
     }
   }
 
+// Función para cargar contadores de respuestas
+async function loadResponseCounters() {
+  try {
+    const q = query(collection(db, "respuestasGSHS"));
+    const querySnapshot = await getDocs(q);
+    
+    let total = 0;
+    let chicos = 0;
+    let chicas = 0;
+    let otro = 0;
+    
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const sexoValue = data.sexo || ''; // Asumiendo que 'sexo' está en el documento raíz
+      total++;
+      
+      if (sexoValue.toLowerCase() === 'chico' || sexoValue.toLowerCase() === 'masculino') {
+        chicos++;
+      } else if (sexoValue.toLowerCase() === 'chica' || sexoValue.toLowerCase() === 'femenino') {
+        chicas++;
+      } else {
+        otro++;
+      }
+    });
+    
+    // Actualizar elementos HTML
+    document.getElementById('total-responses').textContent = total;
+    document.getElementById('chicos-count').textContent = chicos;
+    document.getElementById('chicas-count').textContent = chicas;
+    document.getElementById('otro-count').textContent = otro;
+    
+    // Mostrar el contenedor
+    document.getElementById('counters-container').style.display = 'block';
+    
+    console.log("Contadores cargados:", { total, chicos, chicas, otro });
+  } catch (error) {
+    console.error("Error al cargar contadores:", error);
+  }
+}
+
+
 	 // 5. Funciones del cuestionario (adaptadas del script original)
   function showSection(index) {
   // Ocultar todas las secciones
@@ -5873,7 +5924,7 @@ try {
       const token = await user.getIdTokenResult();
       if (token.claims.rol === "salud_escolar") {
         // ✅ Acceso permitido
-        loadCounters();
+        await loadResponseCounters(); // Añadir esta línea aquí();
 
         // Inicializar lógica condicional del formulario
         document.addEventListener('DOMContentLoaded', function() {
