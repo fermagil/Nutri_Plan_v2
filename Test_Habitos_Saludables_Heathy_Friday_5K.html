@@ -653,7 +653,68 @@ h3 {
   cursor: pointer;
 }
 
+/* ===== ESTILO ESPECÍFICO PARA EL BOTÓN "CALCULAR RESULTADO" ===== */
 
+/* Selecciona el botón con clase 'btn' que esté dentro del contenedor de test */
+.test-container .btn[type="button"]:not(.btn-volver):not(.btn-informe-global),
+/* O también si solo se basa en la clase 'btn' y la función onclick (menos recomendado si hay otros .btn) */
+/* .btn[onclick^="calcularResultado"] { */
+.test-container button.btn {
+  /* Utiliza variables CSS definidas en :root */
+  background-color: var(--color-success); /* Verde como indicador de acción positiva/continuar */
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-btn); /* Usa la variable de borde redondeado de botones */
+  padding: var(--spacing-sm) var(--spacing-lg); /* Espaciado consistente */
+  font-size: var(--font-size-lg); /* Tamaño de fuente legible */
+  font-weight: var(--font-weight-semibold); /* Peso de fuente medio-fuerte */
+  cursor: pointer;
+  width: 100%; /* Ancho completo por defecto */
+  max-width: 320px; /* Ancho máximo */
+  margin: var(--spacing-lg) auto 0; /* Margen superior, centrado horizontal, sin margen inferior */
+  box-shadow: var(--shadow-md); /* Sombra sutil */
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Transición suave */
+  display: flex; /* Centrado interno de ícono y texto (si se añade) */
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs); /* Espacio entre ícono y texto (si aplica) */
+  text-decoration: none; /* Por si acaso se convierte en enlace en el futuro */
+}
+
+/* Estado de hover */
+.test-container button.btn:hover {
+  background-color: var(--color-success-hover); /* Verde más oscuro al hacer hover */
+  transform: translateY(-2px); /* Ligero efecto de elevación */
+  box-shadow: var(--shadow-hover); /* Sombra más pronunciada al hacer hover */
+}
+
+/* Estado de foco (importante para accesibilidad) */
+.test-container button.btn:focus {
+  /* Borde de enfoque accesible */
+  outline: 2px solid var(--color-outline-focus);
+  outline-offset: 2px;
+  /* Asegura que el botón esté por encima de otros elementos si tiene sombra */
+  z-index: 1;
+  /* Opcional: Mantener el estilo de hover también en foco */
+  background-color: var(--color-success-hover);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Opcional: Estado activo (cuando se mantiene presionado) */
+.test-container button.btn:active {
+  transform: translateY(0); /* Elimina la elevación */
+  box-shadow: var(--shadow-md); /* Vuelve a la sombra base */
+  background-color: var(--color-success-active); /* Verde aún más oscuro al hacer click */
+}
+
+/* Opcional: Estado deshabilitado (si se añade el atributo disabled dinámicamente) */
+.test-container button.btn:disabled {
+  background-color: var(--color-text-tertiary); /* Gris */
+  cursor: not-allowed; /* Cursor de no permitido */
+  opacity: 0.6; /* Ligeramente transparente */
+  transform: none; /* Sin elevación */
+  box-shadow: var(--shadow-sm); /* Sombra más suave o ninguna */
+}
 	  /* ===== RESULTADOS (Modernos, Visuales e Inclusivos) ===== */
 
 /* Contenedor principal de los resultados */
