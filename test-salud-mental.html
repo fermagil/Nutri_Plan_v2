@@ -1045,6 +1045,8 @@ async function loadCounters() {
     try {
       await addDoc(collection(db, "resultadosSaludMental"), resultData);
       console.log("Resultado guardado");
+   
+  await loadCounters(); // <- Esto actualiza los contadores inmediatamente
     } catch (error) {
       console.error("Error al guardar resultado: ", error);
     }
