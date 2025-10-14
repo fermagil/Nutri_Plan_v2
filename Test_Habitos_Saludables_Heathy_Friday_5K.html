@@ -377,6 +377,8 @@ color : white;
 
   <div id="menu" class="menu">
     <header><h1>Healthy Friday - Estaciones</h1></header>
+	   <!-- Botón para importar CSV -->
+	  <button type="button" onclick="importarCSV()">Importar Lista de Alumnos (CSV)</button>
     <main>
       <h2>Selecciona el test de esta estación:</h2>
       <ul>
@@ -402,29 +404,34 @@ color : white;
   <div id="test" style="display:none;" class="test-container">
     <header><h1 id="titulo-test">Test</h1></header>
     
-    <form id="form-datos">
-      <label>Código de alumno: <input type="text" id="codigoAlumno" required placeholder="Ej: ALU-2025-001" autocomplete="off"></label>
-      <label>
-		  Curso:
-		  <select id="curso" required>
-			<option value="">-- Selecciona --</option>
-			<option value="1º ESO">1º ESO</option>
-			<option value="2º ESO">2º ESO</option>
-			<option value="3º ESO">3º ESO</option>
-			<option value="4º ESO">4º ESO</option>
-			<option value="1º BACHILLER">1º BACHILLER</option>
-		  </select>
-		</label>
-      <label>Edad: <input type="number" id="edad" min="10" max="18" required></label>
-      <label>
-        Sexo:
-        <select id="sexo" required>
-          <option value="masculino">Masculino</option>
-          <option value="femenino">Femenino</option>
-		  <option value="nobinario">No binario</option>
-        </select>
-      </label>
-    </form>
+   <form id="form-datos">
+	  <label for="codigoAlumno">Código de alumno:</label>
+	  <select id="codigoAlumno" required>
+	    <option value="">-- Importa la lista de alumnos --</option>
+	    <!-- Las opciones se llenarán dinámicamente -->
+	  </select>
+	 
+	
+	  <label for="curso">Curso:</label>
+	  <select id="curso" required>
+	    <option value="">-- Selecciona --</option>
+	    <option value="1º ESO">1º ESO</option>
+	    <option value="2º ESO">2º ESO</option>
+	    <option value="3º ESO">3º ESO</option>
+	    <option value="4º ESO">4º ESO</option>
+	    <option value="1º BACHILLER">1º BACHILLER</option> <!-- Puede mantenerse si es necesario -->
+	  </select>
+	
+	  <label for="edad">Edad:</label>
+	  <input type="number" id="edad" min="10" max="18" required>
+	
+	  <label for="sexo">Sexo:</label>
+	  <select id="sexo" required>
+	    <option value="masculino">Masculino</option>
+	    <option value="femenino">Femenino</option>
+	    <option value="nobinario">No binario</option>
+	  </select>
+</form>
 
     <form id="form-preguntas"></form>
 
@@ -1009,7 +1016,135 @@ color : white;
       alert("No se pudo generar el informe analítico.");
     }
   }
+// --- NUEVAS FUNCIONES PARA GESTIÓN DE ALUMNOS ---
 
+// --- FUNCIONES MODIFICADAS PARA USAR FIRESTORE ---
+
+// 1. Función para importar CSV (con contraseña y guardado en Firestore)
+function importarCSV() {
+  const CONTRASENA_CSV = "healthy_Friday_2025"; // Tu contraseña
+
+  const pass = prompt("Introduzca la contraseña para importar la lista de alumnos:");
+  if (pass !== CONTRASENA_CSV) {
+    alert("Contraseña incorrecta. Importación cancelada.");
+    return;
+  }
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv';
+  input.onchange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const csvText = await file.text();
+      const alumnos = parseCSV(csvText); // Asumiendo que parseCSV está definida como antes
+
+      // --- GUARDAR EN FIRESTORE ---
+      // Suponiendo que 'db' es tu instancia de Firestore obtenida con getFirestore(app)
+      await setDoc(doc(db, "configuracion", "global"), { alumnosCSV: alumnos }, { merge: true });
+      console.log(`✅ ${alumnos.length} alumnos guardados en Firestore.`);
+      // --------------------------
+
+      // Actualizar el select de códigos inmediatamente después de guardar
+      actualizarSelectCodigos(alumnos);
+      alert(`Importados y guardados ${alumnos.length} alumnos correctamente.`);
+    } catch (error) {
+      console.error("Error al importar o guardar CSV:", error);
+      alert("Error al leer, procesar o guardar el archivo CSV.");
+    }
+  };
+  input.click();
+}
+
+let listaDeAlumnos = []; // Variable global (o de módulo) para almacenar la lista cargada
+// 2. Función para cargar alumnos desde Firestore (en lugar de localStorage)
+// --- FUNCIÓN PARA CARGAR DESDE FIRESTORE (una sola vez) ---
+async function cargarAlumnosDesdeFirestore() {
+  try {
+    const docRef = doc(db, "configuracion", "global");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      // Actualizar la variable global con los datos obtenidos
+      listaDeAlumnos = data.alumnosCSV || [];
+      console.log(`✅ ${listaDeAlumnos.length} alumnos cargados en memoria desde Firestore.`);
+      actualizarSelectCodigos(listaDeAlumnos);
+      return listaDeAlumnos;
+    } else {
+      console.log("_firestore: No se encontró el documento de configuración global._");
+      const select = document.getElementById('codigoAlumno');
+      select.innerHTML = '<option value="">-- No hay alumnos disponibles --</option>';
+      listaDeAlumnos = []; // Asegurar que la lista local también esté vacía
+      return listaDeAlumnos;
+    }
+  } catch (error) {
+    console.error("Error al cargar alumnos desde Firestore:", error);
+    const select = document.getElementById('codigoAlumno');
+    select.innerHTML = '<option value="">-- Error al cargar alumnos --</option>';
+    listaDeAlumnos = []; // Asegurar que la lista local también esté vacía
+    return listaDeAlumnos;
+  }
+}
+
+// 3. Función para actualizar el select de códigos (sin cambios)
+function actualizarSelectCodigos(alumnos) {
+  const select = document.getElementById('codigoAlumno');
+  select.innerHTML = '<option value="">-- Selecciona un alumno --</option>'; // Limpiar
+  alumnos.forEach(alumno => {
+    const option = document.createElement('option');
+    option.value = alumno.NRE;
+    option.textContent = `${alumno.NRE} - ${alumno.name || ''} ${alumno.ap1 || ''} ${alumno.ap2 || ''} (${alumno.curso || 'Curso no especificado'})`;
+    select.appendChild(option);
+  });
+}
+
+// 4. Función para manejar el cambio de selección de alumno (sin cambios)
+function onCodigoAlumnoChange() {
+  const codigoSeleccionado = document.getElementById('codigoAlumno').value;
+  if (!codigoSeleccionado) {
+    document.getElementById('curso').value = '';
+    document.getElementById('edad').value = '';
+    return;
+  }
+  // Cargar alumnos para encontrar el seleccionado
+  // Para mejorar eficiencia, guarda la lista de alumnos en una variable global o en el scope del módulo
+  // después de cargarla una vez, y úsala aquí.
+  // Buscar el alumno en la lista almacenada en memoria, NO en Firestore
+  const alumno = listaDeAlumnos.find(a => a.NRE === codigoSeleccionado);
+     const alumno = alumnos.find(a => a.NRE === codigoSeleccionado);
+     if (alumno) {
+     document.getElementById('curso').value = alumno.curso;
+     let edadCalculada = '';
+     switch(alumno.curso) {
+       case '1º ESO':
+         edadCalculada = 11;
+         break;
+       case '2º ESO':
+         edadCalculada = 12;
+         break;
+       case '3º ESO':
+         edadCalculada = 13;
+         break;
+       case '4º ESO':
+         edadCalculada = 15;
+         break;
+       default:
+         break;
+     }
+     if (edadCalculada) {
+         document.getElementById('edad').value = edadCalculada;
+     }
+  } else {
+     // Opcional: Limpiar si no se encuentra (aunque debería existir si está en el select)
+     document.getElementById('curso').value = '';
+     document.getElementById('edad').value = '';
+  }
+}
+
+// --- FIN NUEVAS FUNCIONES ---
   // 9. Protección principal: verificar autenticación y rol
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -1018,11 +1153,17 @@ color : white;
         // ✅ Acceso permitido: mostrar menú y cargar contadores
         document.getElementById('menu').style.display = 'block'; // Mostrar menú inicial
         await loadCounters(); // Cargar contadores al inicio
+		  // --- Añadir nuevas funcionalidades ---
+			await cargarAlumnosDesdeFirestore(); // Cargar lista desde Firestore
+			// Añadir listener al select de código de alumno
+			document.getElementById('codigoAlumno').addEventListener('change', onCodigoAlumnoChange);
+			// --- Fin nuevas funcionalidades ---
         // Exponer funciones globales para onclick en HTML
         window.cargarTest = cargarTest;
         window.calcularResultado = calcularResultado;
         window.generarInformeAnalitico = generarInformeAnalitico;
         window.mostrarMenu = mostrarMenu;
+		window.importarCSV = importarCSV;
         window.logout = () => {
           signOut(auth).then(() => {
             window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
