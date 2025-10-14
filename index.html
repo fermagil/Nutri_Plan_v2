@@ -395,8 +395,10 @@
                 // Mostrar indicador de carga antes de redirigir
                 showLoading();
                 // Esperar 3 segundos visualmente
+               (async () => {
                 await wait(3);
                 window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+            })();
             } catch (error) {
                 console.error('Error al cerrar sesión:', error.code, error.message, error);
                 showError('Error al cerrar sesión: ' + error.message);
@@ -482,9 +484,11 @@
                     // Si no estás en index.html y no hay usuario, redirige
                    // Si no estás en index.html y no hay usuario, redirige
                     showLoading(); // Mostrar carga antes de redirigir
-                    await wait(3); // Espera visual de 3 segundos
-                    window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-
+                    (async () => {
+                        await wait(3); // Espera visual de 3 segundos
+                        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+                    })();
+                        return; 
                 } else {
                     // Estás en index.html y no hay usuario -> mostrar login
                      // Ocultar loading y mostrar UI principal
@@ -511,8 +515,12 @@ async function checkUserRole(userId) {
             if (rol === 'salud_escolar') {
                 // 🔥 Redirigir directamente a salud escolar
                 // Esperar 3 segundos visualmente antes de redirigir
-                await wait(3);
-                window.location.href = 'salud-escolar.html';
+               (async () => {
+                    await wait(3);
+                    window.location.href = 'salud-escolar.html';
+                    // No es necesario llamar a hideLoading aquí, la página se va
+                    return;
+                })();
                 return;
             } else {
                 // Mostrar menú de selección
