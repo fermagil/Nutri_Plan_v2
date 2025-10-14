@@ -1223,11 +1223,12 @@ function onCodigoAlumnoChange() {
 			document.getElementById('codigoAlumno').addEventListener('change', onCodigoAlumnoChange);
 			// --- Fin nuevas funcionalidades ---
         // Exponer funciones globales para onclick en HTML
+		 window.importarCSV = importarCSV;
         window.cargarTest = cargarTest;
         window.calcularResultado = calcularResultado;
         window.generarInformeAnalitico = generarInformeAnalitico;
         window.mostrarMenu = mostrarMenu;
-		window.importarCSV = importarCSV;
+		
         window.logout = () => {
           signOut(auth).then(() => {
             window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
