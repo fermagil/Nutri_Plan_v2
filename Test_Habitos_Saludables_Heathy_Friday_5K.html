@@ -1184,21 +1184,7 @@ h3 {
 
 
 
-/* ===== ESTILOS PARA TRANSICIÓN DE PÁGINA (Fade Out) ===== */
 
-/* Definir la transición de opacidad para el body */
-body {
-  /* Asegura que la transición se aplique suavemente */
-  transition: opacity 0.5s ease-in-out;
-}
-
-/* Clase para aplicar el fade-out */
-body.fade-out {
-  opacity: 0;
-  /* Opcional: También puedes añadir un transform para un efecto más dramático */
-  /* transform: scale(0.95); */
-  /* transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; */
-}
 	/* Añadir al final de tu bloque <style> */
 
 /* ===== ESTILO PARA PÁGINA DURANTE CARGA ===== */
@@ -1226,6 +1212,21 @@ body.loading-active {
   justify-content: center;
   align-items: center;
   z-index: 10000; /* Un z-index muy alto para asegurar que esté encima de todo */
+}
+	  /* ===== ESTILOS PARA TRANSICIÓN DE PÁGINA (Fade Out) ===== */
+
+/* Definir la transición de opacidad para el body */
+body {
+  /* Asegura que la transición se aplique suavemente */
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Clase para aplicar el fade-out */
+body.fade-out {
+  opacity: 0;
+  /* Opcional: También puedes añadir un transform para un efecto más dramático */
+  /* transform: scale(0.95); */
+  /* transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; */
 }
   </style>
 
