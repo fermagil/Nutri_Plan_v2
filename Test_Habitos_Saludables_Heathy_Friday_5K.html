@@ -2094,7 +2094,38 @@ function resetTest() {
     }, 100); // 100 milisegundos de delay pueden ser suficientes
 }
 }
-// --- FIN FUNCIÓN resetTest ---
+
+	// --- FUNCIÓN PARA REDIRIGIR CON SPINNER ---
+function redirigirASaludEscolarConCarga() {
+  // 1. Crear el contenedor de overlay y contenido
+  const overlay = document.createElement('div');
+  overlay.id = 'loading-overlay';
+
+  const content = document.createElement('div');
+  content.id = 'loading-content';
+
+  const spinner = document.createElement('div');
+  spinner.className = 'spinner';
+
+  const message = document.createElement('p');
+  message.textContent = 'Cargando Programa Salud Escolar...';
+
+  content.appendChild(spinner);
+  content.appendChild(message);
+  overlay.appendChild(content);
+  document.body.appendChild(overlay);
+
+  // 2. Esperar 3 segundos y luego redirigir
+  setTimeout(() => {
+    // Eliminar el overlay antes de redirigir (opcional, mejora UX)
+    if (overlay.parentNode) {
+      document.body.removeChild(overlay);
+    }
+    // Abrir la URL en una nueva pestaña
+    window.open('https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html', '_blank');
+  }, 3000); // 3000 milisegundos = 3 segundos
+}
+// --- FIN FUNCIÓN ---
 // --- FIN NUEVAS FUNCIONES ---
   // 9. Protección principal: verificar autenticación y rol
   onAuthStateChanged(auth, async (user) => {
@@ -2128,6 +2159,7 @@ function resetTest() {
         };
 		  	// --- Añadir esta línea para exponer resetTest ---
 			window.resetTest = resetTest; // <-- ESTO PERMITE onclick="resetTest()"
+		  window.redirigirASaludEscolarConCarga = redirigirASaludEscolarConCarga; 
       } else {
         // ❌ Sin rol
 		document.getElementById('import-csv-section').style.display = 'none'; // Asegurar que esté oculto
@@ -2143,37 +2175,7 @@ function resetTest() {
     }
   });
 
-// --- FUNCIÓN PARA REDIRIGIR CON SPINNER ---
-function redirigirASaludEscolarConCarga() {
-  // 1. Crear el contenedor de overlay y contenido
-  const overlay = document.createElement('div');
-  overlay.id = 'loading-overlay';
 
-  const content = document.createElement('div');
-  content.id = 'loading-content';
-
-  const spinner = document.createElement('div');
-  spinner.className = 'spinner';
-
-  const message = document.createElement('p');
-  message.textContent = 'Cargando Programa Salud Escolar...';
-
-  content.appendChild(spinner);
-  content.appendChild(message);
-  overlay.appendChild(content);
-  document.body.appendChild(overlay);
-
-  // 2. Esperar 3 segundos y luego redirigir
-  setTimeout(() => {
-    // Eliminar el overlay antes de redirigir (opcional, mejora UX)
-    if (overlay.parentNode) {
-      document.body.removeChild(overlay);
-    }
-    // Abrir la URL en una nueva pestaña
-    window.open('https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html', '_blank');
-  }, 3000); // 3000 milisegundos = 3 segundos
-}
-// --- FIN FUNCIÓN ---
   // 10. Alerta de bases (sin cambios)
   window.addEventListener('DOMContentLoaded', () => {
     const bases = `🏆 BASES DEL CONCURSO HEALTHY FRIDAY 🏆
