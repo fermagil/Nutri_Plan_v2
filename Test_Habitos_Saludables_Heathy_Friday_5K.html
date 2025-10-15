@@ -1181,6 +1181,24 @@ h3 {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+
+/* ===== ESTILOS PARA TRANSICIÓN DE PÁGINA (Fade Out) ===== */
+
+/* Definir la transición de opacidad para el body */
+body {
+  /* Asegura que la transición se aplique suavemente */
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Clase para aplicar el fade-out */
+body.fade-out {
+  opacity: 0;
+  /* Opcional: También puedes añadir un transform para un efecto más dramático */
+  /* transform: scale(0.95); */
+  /* transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; */
+}
   </style>
 
   <!-- Firebase SDK (versión 8) -->
@@ -2116,17 +2134,28 @@ function redirigirASaludEscolarConCarga() {
   document.body.appendChild(overlay);
 
   // 2. Esperar 3 segundos y luego redirigir
-  setTimeout(() => {
-    // Eliminar el overlay antes de redirigir (opcional, mejora UX)
-    if (overlay.parentNode) {
-      document.body.removeChild(overlay);
-    }
-   // Redirigir la pestaña actual a salud-escolar.html
-    window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html';
-  }, 3000); // 3000 milisegundos = 3 segundos
+  
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  // 3. Eliminar el overlay
+  if (overlay.parentNode) {
+    document.body.removeChild(overlay);
+  }
+
+  // 4. Añadir clase de fade-out al body (o a un contenedor principal si lo prefieres)
+  document.body.classList.add('fade-out');
+
+  // 5. Esperar a que termine la transición de fade-out antes de redirigir
+  // La duración debe coincidir con la definida en el CSS (ej. 0.5s)
+  await new Promise(resolve => setTimeout(resolve, 500)); // 500 ms
+
+  // 6. Redirigir la pestaña actual a salud-escolar.html
+  window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html';
 }
-// --- FIN FUNCIÓN ---
+
 // --- FIN NUEVAS FUNCIONES ---
+
+	
   // 9. Protección principal: verificar autenticación y rol
   onAuthStateChanged(auth, async (user) => {
     if (user) {
