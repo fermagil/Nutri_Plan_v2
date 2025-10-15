@@ -2133,24 +2133,15 @@ function redirigirASaludEscolarConCarga() {
   overlay.appendChild(content);
   document.body.appendChild(overlay);
 
-  // 2. Esperar 3 segundos y luego redirigir
-  
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
-  // 3. Eliminar el overlay
-  if (overlay.parentNode) {
-    document.body.removeChild(overlay);
-  }
-
-  // 4. Añadir clase de fade-out al body (o a un contenedor principal si lo prefieres)
-  document.body.classList.add('fade-out');
-
-  // 5. Esperar a que termine la transición de fade-out antes de redirigir
-  // La duración debe coincidir con la definida en el CSS (ej. 0.5s)
-  await new Promise(resolve => setTimeout(resolve, 500)); // 500 ms
-
-  // 6. Redirigir la pestaña actual a salud-escolar.html
-  window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html';
+ // 2. Esperar 3 segundos y luego REDIRIGIR la pestaña actual
+  setTimeout(() => {
+    // Eliminar el overlay antes de redirigir (opcional, mejora UX)
+    if (overlay.parentNode) {
+      document.body.removeChild(overlay);
+    }
+    // Redirigir la pestaña actual a salud-escolar.html
+    window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html';
+  }, 3000); // 3000 milisegundos = 3 segundos
 }
 
 // --- FIN NUEVAS FUNCIONES ---
