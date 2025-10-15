@@ -1199,6 +1199,34 @@ body.fade-out {
   /* transform: scale(0.95); */
   /* transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; */
 }
+	/* Añadir al final de tu bloque <style> */
+
+/* ===== ESTILO PARA PÁGINA DURANTE CARGA ===== */
+
+/* Clase para aplicar un fondo oscuro al body durante la carga */
+body.loading-active {
+  /* Opcional: Oscurece el fondo */
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo negro semitransparente */
+  /* Opcional: Agrega un filtro para desenfocar el contenido de fondo */
+  /* filter: blur(2px); */ /* Desenfoca el contenido (puede ser costoso) */
+  /* Asegura que el spinner esté por encima de cualquier cosa */
+  overflow: hidden; /* Evita scroll mientras carga */
+}
+
+/* Asegura que el overlay esté por encima de todo, incluso con loading-active */
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-color ya está definido, no se repite aquí a menos que quieras otro color */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000; /* Un z-index muy alto para asegurar que esté encima de todo */
+}
   </style>
 
   <!-- Firebase SDK (versión 8) -->
@@ -2113,9 +2141,19 @@ function resetTest() {
 }
 }
 
-	// --- FUNCIÓN PARA REDIRIGIR CON SPINNER ---
+	// --- FUNCIÓN PARA REDIRIGIR CON SPINNER (Oculta todo menos el spinner) ---
 function redirigirASaludEscolarConCarga() {
-  // 1. Crear el contenedor de overlay y contenido
+  // 1. Ocultar TODO el contenido de la página (excepto el spinner que se creará)
+  // Seleccionar un contenedor general que contenga toda la UI principal
+  // Si no tienes un contenedor general, puedes ocultar el body (menos recomendable aquí)
+  // Asumiendo que tu estructura principal está dentro del <body> y no tiene un id específico,
+  // podemos ocultar todos los hermanos del overlay que se va a crear.
+  // Una forma robusta es aplicar un filtro/efecto al body y superponer el spinner.
+
+  // Añadir una clase al body para oscurecerlo o desenfocarlo (opcional, mejora UX)
+  document.body.classList.add('loading-active');
+
+  // 2. Crear el contenedor de overlay y contenido (spinner)
   const overlay = document.createElement('div');
   overlay.id = 'loading-overlay';
 
@@ -2131,11 +2169,14 @@ function redirigirASaludEscolarConCarga() {
   content.appendChild(spinner);
   content.appendChild(message);
   overlay.appendChild(content);
+  // Añadir el overlay al body (debe estar al final del body para estar encima de todo)
   document.body.appendChild(overlay);
 
- // 2. Esperar 3 segundos y luego REDIRIGIR la pestaña actual
+  // 3. Esperar 3 segundos y luego REDIRIGIR la pestaña actual
   setTimeout(() => {
-    // Eliminar el overlay antes de redirigir (opcional, mejora UX)
+    // Opcional: Quitar la clase de loading del body antes de redirigir
+    document.body.classList.remove('loading-active');
+    // Eliminar el overlay antes de redirigir (aunque la redirección lo haría de todas formas)
     if (overlay.parentNode) {
       document.body.removeChild(overlay);
     }
@@ -2143,6 +2184,7 @@ function redirigirASaludEscolarConCarga() {
     window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/salud-escolar.html';
   }, 3000); // 3000 milisegundos = 3 segundos
 }
+// --- FIN FUNCIÓN ---
 
 // --- FIN NUEVAS FUNCIONES ---
 
