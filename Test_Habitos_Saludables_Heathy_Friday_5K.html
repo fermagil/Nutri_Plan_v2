@@ -2354,18 +2354,18 @@ window.addEventListener('DOMContentLoaded', () => {
         basesDiv.parentNode.removeChild(basesDiv);
         document.head.removeChild(style); // Limpiar el estilo también
       }
-    }, 500); // Esperar a que termine la transición de fade-out (0.5s)
+    }, 800); // Esperar a que termine la transición de fade-out (0.5s)
   };
 
   // Configurar el botón de cierre para que llame a ocultarBases
   document.getElementById('cerrar-bases').addEventListener('click', ocultarBases);
 
   // Mostrar el mensaje después de 3 segundos
-  setTimeout(mostrarBases, 1000); // 3000 ms = 3 segundos
+  setTimeout(mostrarBases, 500); // 3000 ms = 3 segundos
 
   // Cerrar el mensaje automáticamente 3 segundos *después* de haber aparecido
   // Es decir, a los 3s (mostrar) + 3s (cerrar automático) = 6s desde la carga
-  setTimeout(ocultarBases, 8000); // 6000 ms = 6 segundos
+  setTimeout(ocultarBases, 10000); // 6000 ms = 6 segundos
 });
 
 </script>
