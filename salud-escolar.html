@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Programa Salud Escolar</title>
     <style>
+     
+        body {
+          opacity: 0; /* Inicialmente invisible */
+          transition: opacity 0.5s ease-in-out;
+        }
+        body.fade-in {
+          opacity: 1; /* Visible */
+        }    
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             margin: 0;
@@ -279,6 +287,13 @@
       dropdown.style.display = 'none';
     }
   });
+       // En salud-escolar.html
+document.addEventListener('DOMContentLoaded', function() {
+  // Opcional: Pequeño delay para asegurar que el CSS se haya aplicado
+  setTimeout(() => {
+    document.body.classList.add('fade-in');
+  }, 10); // 10ms es suficiente
+});
 </script>
 </body>
 </html>
