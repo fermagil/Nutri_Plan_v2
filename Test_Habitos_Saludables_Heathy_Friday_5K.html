@@ -2252,8 +2252,7 @@ function redirigirASaludEscolarConCarga() {
 
 // 10. Mostrar bases del concurso con retraso y cierre automático (modificado)
 window.addEventListener('DOMContentLoaded', () => {
-  const bases = `
-• Cada alumno debe completar los 10 tests (uno por estación).
+  const bases = ` • Cada alumno debe completar los 10 tests (uno por estación).
 • Para participar en el ranking, se requiere haber completado al menos 5 tests.
 • Los 3 alumnos con el promedio más alto (de 0 a 100) recibirán un premio.
 • El código de alumno es personal e intransferible.
@@ -2358,6 +2357,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Configurar el botón de cierre para que llame a ocultarBases
   document.getElementById('cerrar-bases').addEventListener('click', ocultarBases);
+
+  // Configurar el fondo superpuesto para que cierre el mensaje al hacer clic
+  basesDiv.addEventListener('click', (event) => {
+    // Verificar si el clic ocurrió directamente en el fondo superpuesto (no en .bases-content ni #cerrar-bases)
+    // event.target es el elemento donde ocurrió el clic
+    // basesDiv es el contenedor principal
+    if (event.target === basesDiv) {
+      ocultarBases(); // Cerrar si se hace clic en el fondo
+    }
+  });
 
   // Mostrar el mensaje después de 3 segundos
   setTimeout(mostrarBases, 500); // 3000 ms = 3 segundos
