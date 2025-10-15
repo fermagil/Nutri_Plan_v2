@@ -1228,6 +1228,25 @@ body.fade-out {
   /* transform: scale(0.95); */
   /* transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; */
 }
+/* ===== TRANSICIÓN DE ENTRADA (Fade-in) ===== */
+
+/* Contenedor principal que se va a animar (ajusta el ID o clase si es diferente) */
+/* Puede ser el body o un div contenedor general */
+body,
+#menu, /* Ajusta este ID al contenedor real de tu contenido */
+.main-content,
+
+{
+  /* Estado inicial: invisible */
+  opacity: 0;
+  /* Transición de opacidad con una duración y función de temporización suaves */
+  transition: opacity 0.1s ease-in-out; /* Puedes ajustar la duración (0.5s) y la función (ease-in-out) */
+}
+
+/* Clase que se aplicará para iniciar la animación */
+.transicion-fade-in {
+  opacity: 1; /* Cambia a visible */
+}	  
   </style>
 
   <!-- Firebase SDK (versión 8) -->
@@ -2206,6 +2225,13 @@ function redirigirASaludEscolarConCarga() {
             window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
           });
         };
+		  // --- Añadir la clase para el fade-in ---
+			const contenedorPrincipal = document.querySelector('body'); // O el contenedor real
+			if (contenedorPrincipal) {
+			  contenedorPrincipal.classList.add('transicion-fade-in');
+			} else {
+			  document.body.classList.add('transicion-fade-in'); // Fallback
+			}
 		  	// --- Añadir esta línea para exponer resetTest ---
 			window.resetTest = resetTest; // <-- ESTO PERMITE onclick="resetTest()"
 		  window.redirigirASaludEscolarConCarga = redirigirASaludEscolarConCarga; 
