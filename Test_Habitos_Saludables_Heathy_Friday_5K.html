@@ -2251,9 +2251,9 @@ function redirigirASaludEscolarConCarga() {
   });
 
 
-  // 10. Alerta de bases (sin cambios)
-  window.addEventListener('DOMContentLoaded', () => {
-    const bases = `🏆 BASES DEL CONCURSO HEALTHY FRIDAY 🏆
+ // 10. Alerta de bases (modificado para usar un div superpuesto con fade-in y fade-out)
+window.addEventListener('DOMContentLoaded', () => {
+  const bases = `🏆 BASES DEL CONCURSO HEALTHY FRIDAY 🏆
 
 • Cada alumno debe completar los 10 tests (uno por estación).
 • Para participar en el ranking, se requiere haber completado al menos 5 tests.
@@ -2264,8 +2264,106 @@ function redirigirASaludEscolarConCarga() {
 
 ¡Participa con compromiso y gana reconociendo tus hábitos saludables!`;
 
-    alert(bases);
-  });
+  // Crear el contenedor del mensaje
+  const basesDiv = document.createElement('div');
+  basesDiv.id = 'bases-concurso';
+  basesDiv.innerHTML = `
+    <div class="bases-content">
+      <h3>🏆 BASES DEL CONCURSO HEALTHY FRIDAY 🏆</h3>
+      <p>${bases.split('\n').map(line => `<span>${line}</span>`).join('<br/>')}</p>
+      <button id="cerrar-bases" type="button">&times;</button>
+    </div>
+  `;
+  document.body.appendChild(basesDiv);
+
+  // Estilos para el contenedor superpuesto (deben aplicarse antes de mostrarlo)
+  const style = document.createElement('style');
+  style.textContent = `
+    #bases-concurso {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000; /* Asegura que esté por encima de todo */
+      opacity: 0; /* Inicialmente invisible */
+      transition: opacity 0.5s ease-in-out; /* Transición suave para fade */
+    }
+
+    #bases-concurso.show {
+      opacity: 1; /* Visible */
+    }
+
+    .bases-content {
+      background-color: white;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 80%;
+      max-height: 80%;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      position: relative; /* Para posicionar el botón de cierre */
+      text-align: left;
+    }
+
+    .bases-content h3 {
+      margin-top: 0;
+      color: #2563eb; /* Color primario */
+      text-align: center;
+    }
+
+    .bases-content p {
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+
+    #cerrar-bases {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    #cerrar-bases:hover {
+      color: #000;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Función para mostrar el mensaje
+  const mostrarBases = () => {
+    basesDiv.classList.add('show');
+  };
+
+  // Función para ocultar el mensaje
+  const ocultarBases = () => {
+    basesDiv.classList.remove('show');
+    // Opcional: eliminar el div del DOM después de la transición de salida
+    setTimeout(() => {
+      if (basesDiv.parentNode) {
+        basesDiv.parentNode.removeChild(basesDiv);
+        document.head.removeChild(style); // Limpiar el estilo también
+      }
+    }, 500); // Esperar a que termine la transición de fade-out (0.5s)
+  };
+
+  // Configurar el botón de cierre
+  document.getElementById('cerrar-bases').addEventListener('click', ocultarBases);
+
+  // Mostrar el mensaje después de 3 segundos
+  setTimeout(mostrarBases, 3000); // 3000 ms = 3 segundos
+
+  // Ocultar el mensaje después de 6 segundos (3 segundos después de aparecer)
+  setTimeout(ocultarBases, 6000); // 6000 ms = 6 segundos
+});
 </script>
 </body>
 </html>
