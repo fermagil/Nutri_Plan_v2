@@ -1233,19 +1233,19 @@ body.fade-out {
 /* Contenedor principal que se va a animar (ajusta el ID o clase si es diferente) */
 /* Puede ser el body o un div contenedor general */
 
-#menu, /* Ajusta este ID al contenedor real de tu contenido */
-.main,
+ /* Ajusta este ID al contenedor real de tu contenido */
 
-{
+
+body {
   /* Estado inicial: invisible */
   opacity: 0;
   /* Transición de opacidad con una duración y función de temporización suaves */
-  transition: opacity 3s ease-in-out; /* Puedes ajustar la duración (0.5s) y la función (ease-in-out) */
+  transition: opacity 2s ease-in-out; /* Puedes ajustar la duración (2s) y la función (ease-in-out) */
 }
 
 /* Clase que se aplicará para iniciar la animación */
 .transicion-fade-in {
-  opacity: 2s; /* Cambia a visible */
+  opacity: 1; /* ✅ CORRECTO: Cambia a visible (opaco) */
 }	  
   </style>
 
