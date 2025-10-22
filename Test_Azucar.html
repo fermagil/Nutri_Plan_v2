@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Adicción al Azúcar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B8B;
+            --secondary: #6A67CE;
+            --accent: #FFD166;
+            --light: #F7F9FC;
+            --dark: #2D3047;
+            --success: #06D6A0;
+            --warning: #FF9E64;
+            --danger: #EF476F;
+            --radius: 16px;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: var(--radius);
+            background: white;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        h1 {
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            color: var(--secondary);
+            font-size: 1.8rem;
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--accent);
+        }
+
+        .intro {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FFD166" opacity="0.2"><path d="M21 9l-9-7-9 7v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9z"/></svg>') no-repeat;
+            background-size: contain;
+        }
+
+        .intro p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .question-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .question {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .question::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .question p {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #eef2ff;
+            transform: translateX(5px);
+        }
+
+        .option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .option.selected {
+            background: rgba(106, 103, 206, 0.1);
+            border-color: var(--secondary);
+        }
+
+        button {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 40px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(106, 103, 206, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 103, 206, 0.6);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+        }
+
+        button:hover::after {
+            transform: translateX(100%);
+            transition: transform 0.6s ease;
+        }
+
+        #result, #answers {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .low-risk { background: var(--success); }
+        .moderate-risk { background: var(--warning); }
+        .high-risk { background: var(--danger); }
+
+        .answer-feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .answer-feedback:hover {
+            background: #eef2ff;
+        }
+
+        .correct { 
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .incorrect { 
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .knowledge-score .score-value { color: var(--secondary); }
+        .habits-score .score-value { color: var(--primary); }
+        .total-score .score-value { color: var(--dark); }
+
+        .emoji {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-tag { background: rgba(106, 103, 206, 0.2); color: var(--secondary); }
+        .habits-tag { background: rgba(255, 107, 139, 0.2); color: var(--primary); }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .question-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .score-display {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-candy-cane"></i> Test de Adicción al Azúcar</h1>
+            <p>Descubre tu relación con el azúcar de forma divertida</p>
+        </header>
+
+        <div class="intro">
+            <p>¿Eres team azúcar o team salud? Este test te ayudará a evaluar tu conocimiento sobre el azúcar, su impacto en la salud y tus hábitos de consumo. Responde con honestidad a las 20 preguntas. ¡No te preocupes, no juzgamos! 😉</p>
+            <p><strong>Nota:</strong> Este test es solo para orientación y no sustituye un diagnóstico profesional.</p>
+        </div>
+
+        <form id="sugarTest">
+            <h2><i class="fas fa-brain"></i> Conocimiento sobre el azúcar</h2>
+            
+            <div class="question-container">
+                <div class="question">
+                    <p>1. ¿De cuál de estos alimentos deberías limitar el consumo por su alto contenido de azúcar añadido?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q1" value="3" required> Frutas y verduras</label>
+                        <label class="option"><input type="radio" name="q1" value="0"> Cereales y galletas de soda</label>
+                        <label class="option"><input type="radio" name="q1" value="2"> Leche y yogur natural</label>
+                        <label class="option"><input type="radio" name="q1" value="4"> Todas las opciones anteriores</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>2. El verdadero problema con comer muchos alimentos azucarados para controlar el peso es:</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q2" value="2" required> El azúcar contiene calorías vacías sin nutrientes</label>
+                        <label class="option"><input type="radio" name="q2" value="3"> Promueve el almacenamiento de grasa corporal</label>
+                        <label class="option"><input type="radio" name="q2" value="1"> Estimula el apetito y anula la saciedad</label>
+                        <label class="option"><input type="radio" name="q2" value="0"> Todas las anteriores</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>3. ¿Cuánto azúcar consume aproximadamente el adulto promedio en España por día?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q3" value="4" required> 5 cucharaditas</label>
+                        <label class="option"><input type="radio" name="q3" value="3"> 10 cucharaditas</label>
+                        <label class="option"><input type="radio" name="q3" value="0"> 22 cucharaditas</label>
+                        <label class="option"><input type="radio" name="q3" value="2"> 30 cucharaditas</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>4. Además de obesidad y diabetes, el exceso de azúcar puede contribuir a:</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q4" value="2" required> Hipertensión</label>
+                        <label class="option"><input type="radio" name="q4" value="3"> Problemas de colesterol</label>
+                        <label class="option"><input type="radio" name="q4" value="1"> Inflamación crónica</label>
+                        <label class="option"><input type="radio" name="q4" value="0"> Todas las anteriores</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>5. La OMS recomienda limitar el consumo de azúcares añadidos a:</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q5" value="3" required> Menos del 20% de tus calorías diarias</label>
+                        <label class="option"><input type="radio" name="q5" value="2"> Menos del 15% de tus calorías diarias</label>
+                        <label class="option"><input type="radio" name="q5" value="0"> Menos del 10% de tus calorías diarias</label>
+                    </div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-user-check"></i> Hábitos personales</h2>
+            
+            <div class="question-container">
+                <div class="question">
+                    <p>6. ¿Sientes antojos intensos de dulces cuando estás estresado/a o con emociones negativas?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q6" value="0" required> Nunca</label>
+                        <label class="option"><input type="radio" name="q6" value="1"> Raramente</label>
+                        <label class="option"><input type="radio" name="q6" value="2"> A veces</label>
+                        <label class="option"><input type="radio" name="q6" value="3"> A menudo</label>
+                        <label class="option"><input type="radio" name="q6" value="4"> Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>7. ¿Te resulta difícil parar de comer dulces una vez que empiezas?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q7" value="0" required> Nunca</label>
+                        <label class="option"><input type="radio" name="q7" value="1"> Raramente</label>
+                        <label class="option"><input type="radio" name="q7" value="2"> A veces</label>
+                        <label class="option"><input type="radio" name="q7" value="3"> A menudo</label>
+                        <label class="option"><input type="radio" name="q7" value="4"> Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>8. ¿Sientes irritabilidad o cansancio si no consumes azúcar durante un tiempo?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q8" value="0" required> Nunca</label>
+                        <label class="option"><input type="radio" name="q8" value="1"> Raramente</label>
+                        <label class="option"><input type="radio" name="q8" value="2"> A veces</label>
+                        <label class="option"><input type="radio" name="q8" value="3"> A menudo</label>
+                        <label class="option"><input type="radio" name="q8" value="4"> Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>9. ¿Dependes del azúcar para sentirte con energía durante el día?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q9" value="0" required> Nunca</label>
+                        <label class="option"><input type="radio" name="q9" value="1"> Raramente</label>
+                        <label class="option"><input type="radio" name="q9" value="2"> A veces</label>
+                        <label class="option"><input type="radio" name="q9" value="3"> A menudo</label>
+                        <label class="option"><input type="radio" name="q9" value="4"> Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>10. ¿Consumes azúcar a pesar de saber que tiene un impacto negativo en tu salud?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q10" value="0" required> Nunca</label>
+                        <label class="option"><input type="radio" name="q10" value="1"> Raramente</label>
+                        <label class="option"><input type="radio" name="q10" value="2"> A veces</label>
+                        <label class="option"><input type="radio" name="q10" value="3"> A menudo</label>
+                        <label class="option"><input type="radio" name="q10" value="4"> Siempre</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">
+                <i class="fas fa-calculator"></i> Ver mi resultado
+            </button>
+        </form>
+
+        <div id="result"></div>
+        <button id="showAnswers" style="display: none;">
+            <i class="fas fa-list-alt"></i> Ver respuestas detalladas
+        </button>
+        <div id="answers"></div>
+
+        <footer>
+            <p>© 2023 Test de Adicción al Azúcar | Diseñado para concienciar sobre el consumo saludable</p>
+        </footer>
+    </div>
+
+    <script>
+        // Añadir interacción a las opciones
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('input');
+                input.checked = true;
+                
+                // Remover clase selected de todas las opciones en esta pregunta
+                this.parentNode.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Añadir clase selected a la opción clickeada
+                this.classList.add('selected');
+            });
+        });
+
+        // Sistema de evaluación
+        const feedback = {
+            q1: {
+                correct: "Cereales y galletas de soda",
+                text: "¡Correcto! La mayoría de los cereales y galletas contienen azúcar añadido. Las frutas y lácteos naturales tienen azúcares intrínsecos que vienen con nutrientes beneficiosos."
+            },
+            q2: {
+                correct: "Todas las anteriores",
+                text: "¡Exacto! El azúcar añadido tiene calorías vacías, promueve almacenamiento de grasa y afecta las señales de saciedad. Además, activa los centros de placer en el cerebro."
+            },
+            q3: {
+                correct: "22 cucharaditas",
+                text: "¡Así es! El español promedio consume 22 cucharaditas diarias de azúcar añadido. ¡Eso suma 352 calorías vacías al día!"
+            },
+            q4: {
+                correct: "Todas las anteriores",
+                text: "¡Correcto! El exceso de azúcar contribuye a hipertensión, problemas de colesterol e inflamación crónica, todos factores de riesgo cardíaco."
+            },
+            q5: {
+                correct: "Menos del 10% de tus calorías diarias",
+                text: "¡Perfecto! La OMS recomienda menos del 10% de calorías provenientes de azúcares añadidos. Idealmente, debería ser menos del 5%."
+            },
+            q6: {
+                correct: "Nunca",
+                text: "Los antojos emocionales por dulces pueden indicar dependencia. Si esto te pasa a menudo, busca alternativas como fruta o actividades que te distraigan."
+            },
+            q7: {
+                correct: "Nunca",
+                text: "La dificultad para parar puede ser señal de comportamiento adictivo. Intenta establecer límites claros con los dulces."
+            },
+            q8: {
+                correct: "Nunca",
+                text: "Los síntomas de abstinencia como irritabilidad sugieren dependencia física. Reducir gradualmente el azúcar puede ayudar."
+            },
+            q9: {
+                correct: "Nunca",
+                text: "Depender del azúcar para energía crea un ciclo de altibajos. Mejor obtener energía de alimentos nutritivos y comidas balanceadas."
+            },
+            q10: {
+                correct: "Nunca",
+                text: "Consumir algo sabiendo que es perjudicial es un patrón típico en conductas adictivas. Si esto te pasa, considera buscar apoyo."
+            }
+        };
+
+        document.getElementById('sugarTest').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let knowledgeScore = 0;
+            let habitScore = 0;
+            const userAnswers = {};
+            const totalQuestions = 10;
+            
+            // Calcular puntuaciones
+            for (let i = 1; i <= totalQuestions; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                
+                if (selected) {
+                    userAnswers[q] = selected.parentNode.textContent.trim();
+                    const value = parseInt(selected.value);
+                    
+                    // Separar conocimiento (preguntas 1-5) y hábitos (6-10)
+                    if (i <= 5) {
+                        knowledgeScore += value;
+                    } else {
+                        habitScore += value;
+                    }
+                }
+            }
+
+            const totalScore = knowledgeScore + habitScore;
+            const maxScore = 20; // 10 preguntas * 2 puntos máximo por pregunta en promedio
+
+            // Mostrar resultados
+            const resultDiv = document.getElementById('result');
+            const showAnswersBtn = document.getElementById('showAnswers');
+            
+            resultDiv.style.display = 'block';
+            showAnswersBtn.style.display = 'block';
+            
+            // Determinar nivel de riesgo
+            let riskLevel, riskClass, riskIcon, riskDescription;
+            
+            if (totalScore <= 8) {
+                riskLevel = "Riesgo Bajo";
+                riskClass = "low-risk";
+                riskIcon = "fa-smile";
+                riskDescription = "¡Eres un crack! Tu conocimiento sobre el azúcar y tus hábitos de consumo están en el camino correcto. Sigue así y mantén ese consumo moderado de azúcares añadidos.";
+            } else if (totalScore <= 16) {
+                riskLevel = "Riesgo Moderado";
+                riskClass = "moderate-risk";
+                riskIcon = "fa-meh";
+                riskDescription = "Tienes algunas áreas de oportunidad. Reflexiona sobre tus hábitos y considera aprender más sobre las recomendaciones de la OMS. Pequeños cambios pueden hacer una gran diferencia.";
+            } else {
+                riskLevel = "Riesgo Alto";
+                riskClass = "high-risk";
+                riskIcon = "fa-frown";
+                riskDescription = "Tu relación con el azúcar podría estar afectando tu bienestar. Te recomendamos reducir el consumo de azúcares añadidos y considerar buscar apoyo si necesitas ayuda para cambiar tus hábitos.";
+            }
+
+            // Crear HTML de resultados
+            resultDiv.innerHTML = `
+                <div class="result-header">
+                    <div class="result-icon ${riskClass}">
+                        <i class="fas ${riskIcon}"></i>
+                    </div>
+                    <div>
+                        <h2>${riskLevel}</h2>
+                        <p>Puntuación total: ${totalScore} / ${maxScore}</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <p>Tu progreso hacia hábitos más saludables:</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${((maxScore - totalScore) / maxScore) * 100}%"></div>
+                    </div>
+                    <p>${Math.round(((maxScore - totalScore) / maxScore) * 100)}% de respuestas saludables</p>
+                </div>
+                
+                <div class="score-display">
+                    <div class="score-item knowledge-score">
+                        <div class="emoji">🧠</div>
+                        <div class="score-value">${knowledgeScore}</div>
+                        <p>Conocimiento</p>
+                    </div>
+                    <div class="score-item habits-score">
+                        <div class="emoji">💪</div>
+                        <div class="score-value">${habitScore}</div>
+                        <p>Hábitos</p>
+                    </div>
+                    <div class="score-item total-score">
+                        <div class="emoji">📊</div>
+                        <div class="score-value">${totalScore}</div>
+                        <p>Total</p>
+                    </div>
+                </div>
+                
+                <p>${riskDescription}</p>
+            `;
+
+            // Configurar botón para ver respuestas detalladas
+            document.getElementById('showAnswers').onclick = function() {
+                const answersDiv = document.getElementById('answers');
+                answersDiv.style.display = 'block';
+                let answersHTML = '<h2><i class="fas fa-list-ol"></i> Respuestas Detalladas</h2>';
+                
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const q = `q${i}`;
+                    const userAnswer = userAnswers[q] || "No respondida";
+                    const correctAnswer = feedback[q].correct;
+                    const isCorrect = userAnswer === correctAnswer;
+                    
+                    answersHTML += `
+                        <div class="answer-feedback">
+                            <span class="category-tag ${i <= 5 ? 'knowledge-tag' : 'habits-tag'}">${i <= 5 ? 'Conocimiento' : 'Hábitos'}</span>
+                            <p><strong>Pregunta ${i}</strong></p>
+                            <p>Tu respuesta: <span class="${isCorrect ? 'correct' : 'incorrect'}">${userAnswer}</span></p>
+                            <p>Respuesta recomendada: ${correctAnswer}</p>
+                            <p>${feedback[q].text}</p>
+                        </div>
+                    `;
+                }
+                
+                answersDiv.innerHTML = answersHTML;
+                
+                // Desplazar hacia las respuestas
+                answersDiv.scrollIntoView({ behavior: 'smooth' });
+            };
+        });
+    </script>
+</body>
+</html>
