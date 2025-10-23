@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Higiene Postural para Adolescentes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4A6FA5;
+            --secondary: #6B8E23;
+            --accent: #FF914D;
+            --light: #F0F7FF;
+            --dark: #2C3E50;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --radius: 16px;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f0ff 0%, #c2d9ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: var(--radius);
+            background: white;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--accent);
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 15px 0;
+        }
+
+        .intro {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234A6FA5" opacity="0.1"><path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5V7H9V5.5L3 7V9L9 8.5V10L5 11V13L9 12.5V22H11V13.5L13 14V22H15V14L19 13.5V11.5L15 11V8.5L21 9Z"/></svg>') no-repeat;
+            background-size: contain;
+        }
+
+        .intro p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .scale-info {
+            background: var(--light);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .scale-items {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .scale-item {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            margin: 5px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .scale-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .question-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .question-block {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-block.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .block-title {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        .block-progress {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .question:hover {
+            background: #e6f0ff;
+        }
+
+        .question p {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .option.selected {
+            background: rgba(74, 111, 165, 0.1);
+            border-color: var(--primary);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-btn.next {
+            background: var(--secondary);
+        }
+
+        .nav-btn.submit {
+            background: var(--accent);
+        }
+
+        #result, #answers {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .excellent { background: var(--success); }
+        .regular { background: var(--warning); }
+        .moderate { background: var(--accent); }
+        .alert { background: var(--danger); }
+
+        .answer-feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .answer-feedback:hover {
+            background: #e6f0ff;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .total-score .score-value { color: var(--dark); }
+
+        .emoji {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .recommendations {
+            margin-top: 25px;
+        }
+
+        .recommendation-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--secondary);
+            background: var(--light);
+            border-radius: 0 8px 8px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .question-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .score-display {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .scale-items {
+                flex-direction: column;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-user-md"></i> Test de Higiene Postural</h1>
+            <p>¿Qué tan saludables son tus hábitos posturales?</p>
+        </header>
+
+        <div class="intro">
+            <p>¡Hola! Este test te ayudará a conocer qué tan saludables son tus hábitos posturales. Responde con honestidad a las 15 preguntas pensando en tu comportamiento durante la última semana. No te preocupes, es solo para que tomes conciencia y mejores si es necesario. 😊</p>
+            <p><strong>Instrucciones:</strong> Lee cada afirmación y marca la opción que mejor describa tu comportamiento habitual.</p>
+        </div>
+
+        <div class="scale-info">
+            <h3>Escala de frecuencia:</h3>
+            <div class="scale-items">
+                <div class="scale-item">
+                    <div class="scale-value">0 puntos</div>
+                    <div>Nunca</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-value">1 punto</div>
+                    <div>Rara vez (1 vez/semana)</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-value">2 puntos</div>
+                    <div>Algunas veces (2-3 veces/semana)</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-value">3 puntos</div>
+                    <div>Frecuentemente (4-6 veces/semana)</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-value">4 puntos</div>
+                    <div>Muy frecuente (todos los días)</div>
+                </div>
+            </div>
+        </div>
+
+        <form id="postureTest">
+            <!-- Bloque 1: Hábitos de Sedestación -->
+            <div class="question-block active" id="block1">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-chair"></i> Hábitos de Sedestación</h2>
+                    <div class="block-progress">1 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran tus hábitos al sentarte, una de las actividades que más tiempo ocupa en tu día.</p>
+                
+                <div class="question">
+                    <p>1. Paso más de 2 horas seguidas sentado/a sin levantarme (en clase, en casa, con el móvil, etc.).</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q1" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q1" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q1" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q1" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q1" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>2. Al sentarme, me encorvo, apoyo la cabeza en la mano o me inclino demasiado hacia el escritorio.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q2" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q2" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q2" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q2" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q2" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>3. Mi silla o escritorio en casa no me permite apoyar bien los pies o mantener la espalda recta al estudiar.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q3" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q3" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q3" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q3" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q3" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev" disabled>
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 2: Uso de Tecnología -->
+            <div class="question-block" id="block2">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-mobile-alt"></i> Uso de Tecnología</h2>
+                    <div class="block-progress">2 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran cómo utilizas dispositivos tecnológicos, que pueden afectar tu postura si no los usas correctamente.</p>
+                
+                <div class="question">
+                    <p>4. Uso el celular, tablet o computadora con el cuello inclinado hacia abajo por más de 30 minutos seguidos.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q4" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q4" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q4" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q4" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q4" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>5. La pantalla de mi computadora o tablet está por debajo de la altura de mis ojos cuando estudio.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q5" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q5" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q5" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q5" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q5" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>6. Me siento en el suelo en posiciones torcidas o apoyado/a en una pared por más de 20 minutos seguidos.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q6" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q6" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q6" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q6" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q6" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 3: Mochila y Carga -->
+            <div class="question-block" id="block3">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-briefcase"></i> Mochila y Carga</h2>
+                    <div class="block-progress">3 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran cómo transportas tus útiles escolares, un factor importante para la salud de tu espalda.</p>
+                
+                <div class="question">
+                    <p>7. Llevo una mochila que me resulta pesada o incómoda (me deja marcas en los hombros, me duele al cargarla).</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q7" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q7" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q7" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q7" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q7" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>8. Cargo la mochila en un solo hombro o la llevo colgada del brazo.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q8" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q8" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q8" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q8" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q8" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>9. Levanto objetos del suelo (mochila, libros, etc.) doblando la espalda en vez de flexionar las rodillas.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q9" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q9" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q9" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q9" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q9" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 4: Sueño y Actividad Física -->
+            <div class="question-block" id="block4">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-bed"></i> Sueño y Actividad Física</h2>
+                    <div class="block-progress">4 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran tus hábitos de sueño y actividad física, que son fundamentales para una buena salud postural.</p>
+                
+                <div class="question">
+                    <p>10. Duermo con una almohada muy alta o duermo boca abajo.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q10" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q10" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q10" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q10" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q10" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>11. No hago al menos 60 minutos de actividad física moderada (caminar rápido, jugar, bailar, deporte) casi todos los días.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q11" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q11" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q11" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q11" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q11" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>12. Siento dolor o molestias en el cuello, hombros o espalda baja al menos una vez por semana.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q12" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q12" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q12" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q12" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q12" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 5: Conciencia Postural -->
+            <div class="question-block" id="block5">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-brain"></i> Conciencia Postural</h2>
+                    <div class="block-progress">5 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran tu conocimiento y conciencia sobre la importancia de una buena postura.</p>
+                
+                <div class="question">
+                    <p>13. Ignoro el dolor de espalda o cuello pensando que "ya se me pasará".</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q13" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q13" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q13" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q13" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q13" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>14. No sé cómo ajustar mi silla, escritorio o mochila para estar cómodo/a.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q14" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q14" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q14" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q14" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q14" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>15. Nadie me ha enseñado cómo cuidar mi postura en la escuela, en casa o en actividades deportivas.</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q15" value="4" required> Muy frecuente</label>
+                        <label class="option"><input type="radio" name="q15" value="3"> Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q15" value="2"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q15" value="1"> Rara vez</label>
+                        <label class="option"><input type="radio" name="q15" value="0"> Nunca</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn submit">
+                        Ver Resultados <i class="fas fa-chart-bar"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="result"></div>
+        <button id="showAnswers" style="display: none;">
+            <i class="fas fa-list-alt"></i> Ver recomendaciones detalladas
+        </button>
+        <div id="answers"></div>
+
+        <footer>
+            <p>© 2023 Test de Higiene Postural | Diseñado para concienciar sobre la importancia de una buena postura</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sistema de navegación entre bloques
+        const blocks = document.querySelectorAll('.question-block');
+        const nextButtons = document.querySelectorAll('.next');
+        const prevButtons = document.querySelectorAll('.prev');
+        const submitButton = document.querySelector('.submit');
+        let currentBlock = 0;
+
+        // Mostrar el primer bloque
+        showBlock(currentBlock);
+
+        // Configurar botones de siguiente
+        nextButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (validateBlock(currentBlock)) {
+                    currentBlock++;
+                    showBlock(currentBlock);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    alert('Por favor, responde todas las preguntas de este bloque antes de continuar.');
+                }
+            });
+        });
+
+        // Configurar botones de anterior
+        prevButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentBlock--;
+                showBlock(currentBlock);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Configurar botón de enviar
+        submitButton.addEventListener('click', () => {
+            if (validateBlock(currentBlock)) {
+                calculateResults();
+            } else {
+                alert('Por favor, responde todas las preguntas de este bloque antes de ver los resultados.');
+            }
+        });
+
+        // Función para mostrar un bloque específico
+        function showBlock(index) {
+            blocks.forEach((block, i) => {
+                if (i === index) {
+                    block.classList.add('active');
+                } else {
+                    block.classList.remove('active');
+                }
+            });
+
+            // Actualizar estado de los botones de navegación
+            updateNavigationButtons();
+        }
+
+        // Función para validar que se han respondido todas las preguntas del bloque actual
+        function validateBlock(blockIndex) {
+            const currentBlock = blocks[blockIndex];
+            const questions = currentBlock.querySelectorAll('.question');
+            
+            for (let question of questions) {
+                const options = question.querySelectorAll('input[type="radio"]');
+                let answered = false;
+                
+                for (let option of options) {
+                    if (option.checked) {
+                        answered = true;
+                        break;
+                    }
+                }
+                
+                if (!answered) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // Función para actualizar el estado de los botones de navegación
+        function updateNavigationButtons() {
+            const prevButtons = document.querySelectorAll('.prev');
+            const nextButtons = document.querySelectorAll('.next');
+            
+            // Actualizar botones de anterior
+            prevButtons.forEach(button => {
+                if (currentBlock === 0) {
+                    button.disabled = true;
+                } else {
+                    button.disabled = false;
+                }
+            });
+            
+            // Actualizar botones de siguiente
+            nextButtons.forEach(button => {
+                if (currentBlock === blocks.length - 1) {
+                    button.style.display = 'none';
+                } else {
+                    button.style.display = 'flex';
+                }
+            });
+            
+            // Actualizar botón de enviar
+            if (currentBlock === blocks.length - 1) {
+                submitButton.style.display = 'flex';
+            } else {
+                submitButton.style.display = 'none';
+            }
+        }
+
+        // Añadir interacción a las opciones
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('input');
+                input.checked = true;
+                
+                // Remover clase selected de todas las opciones en esta pregunta
+                this.parentNode.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Añadir clase selected a la opción clickeada
+                this.classList.add('selected');
+            });
+        });
+
+        // Sistema de evaluación
+        const feedback = {
+            q1: {
+                text: "Permanecer sentado más de 2 horas seguidas aumenta la presión en los discos vertebrales. Intenta levantarte cada 45-60 minutos y da un pequeño paseo."
+            },
+            q2: {
+                text: "Sentarse encorvado aumenta la presión en la columna vertebral. Mantén la espalda recta y los hombros relajados."
+            },
+            q3: {
+                text: "Un mobiliario inadecuado dificulta mantener una postura correcta. Asegúrate de que tus pies toquen el suelo y tu espalda tenga apoyo."
+            },
+            q4: {
+                text: "Inclinar el cuello hacia adelante para mirar pantallas aumenta enormemente la presión cervical. Eleva la pantalla a la altura de los ojos."
+            },
+            q5: {
+                text: "La pantalla por debajo de la línea visual fuerza al cuello a flexionarse. Colócala de modo que el borde superior quede a la altura de tus ojos."
+            },
+            q6: {
+                text: "Sentarse en el suelo en posiciones inadecuadas puede causar tensión muscular. Usa una silla o cojín de apoyo cuando sea posible."
+            },
+            q7: {
+                text: "Una mochila pesada o incómoda puede causar dolor de espalda y hombros. Asegúrate de que no pese más del 10% de tu peso corporal."
+            },
+            q8: {
+                text: "Llevar la mochila en un solo hombro crea desequilibrios musculares. Siempre usa ambas correas para distribuir el peso uniformemente."
+            },
+            q9: {
+                text: "Doblar la espalda para levantar objetos puede causar lesiones. Flexiona siempre las rodillas y mantén la espalda recta."
+            },
+            q10: {
+                text: "Dormir boca abajo o con almohada muy alta fuerza el cuello a permanecer en mala posición. Lo ideal es dormir de lado con almohada que mantenga la columna alineada."
+            },
+            q11: {
+                text: "La actividad física fortalece los músculos que sostienen tu columna. Intenta moverte al menos 1 hora al día."
+            },
+            q12: {
+                text: "El dolor recurrente es señal de que algo no está bien. No ignores estas señales de tu cuerpo."
+            },
+            q13: {
+                text: "Ignorar el dolor puede agravar problemas posturales. Escucha a tu cuerpo y busca soluciones cuando sientas molestias."
+            },
+            q14: {
+                text: "Aprender a ajustar tu entorno es clave para una buena postura. Pide ayuda para configurar tu espacio de estudio de forma ergonómica."
+            },
+            q15: {
+                text: "La educación postural es fundamental para prevenir problemas. Busca información sobre cómo mantener una postura correcta en diferentes actividades."
+            }
+        };
+
+        // Función para calcular y mostrar resultados
+        function calculateResults() {
+            let totalScore = 0;
+            const userAnswers = {};
+            const totalQuestions = 15;
+            
+            // Calcular puntuaciones
+            for (let i = 1; i <= totalQuestions; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                
+                if (selected) {
+                    userAnswers[q] = selected.parentNode.textContent.trim();
+                    const value = parseInt(selected.value);
+                    totalScore += value;
+                }
+            }
+
+            const maxScore = 60; // 15 preguntas * 4 puntos máximo por pregunta
+
+            // Mostrar resultados
+            const resultDiv = document.getElementById('result');
+            const showAnswersBtn = document.getElementById('showAnswers');
+            
+            resultDiv.style.display = 'block';
+            showAnswersBtn.style.display = 'block';
+            
+            // Determinar nivel de riesgo
+            let riskLevel, riskClass, riskIcon, riskDescription, recommendations;
+            
+            if (totalScore <= 15) {
+                riskLevel = "¡Excelente postura!";
+                riskClass = "excellent";
+                riskIcon = "fa-smile";
+                riskDescription = "Tus hábitos son muy saludables. Estás protegiendo tu columna y reduciendo riesgos futuros.";
+                recommendations = [
+                    "Sigue así: mantén tu rutina activa y tu entorno ergonómico.",
+                    "Sé un ejemplo para tus compañeros/as.",
+                    "Revisa tu postura cada mes para no caer en malos hábitos."
+                ];
+            } else if (totalScore <= 30) {
+                riskLevel = "Hábitos regulares: ¡hay margen de mejora!";
+                riskClass = "regular";
+                riskIcon = "fa-meh";
+                riskDescription = "Algunos comportamientos pueden generar molestias si se mantienen en el tiempo.";
+                recommendations = [
+                    "Usa un temporizador: levántate y estira cada 45 minutos.",
+                    "Ajusta tu espacio de estudio: pies apoyados, espalda recta, pantalla a la altura de los ojos.",
+                    "Lleva la mochila con ambas correas y no sobrepases el 10% de tu peso.",
+                    "Haz 5-10 minutos diarios de estiramientos suaves (cuello, hombros, espalda)."
+                ];
+            } else if (totalScore <= 45) {
+                riskLevel = "Riesgo moderado-alto";
+                riskClass = "moderate";
+                riskIcon = "fa-frown";
+                riskDescription = "Varios hábitos están poniendo en peligro tu salud postural. Podrías desarrollar dolor crónico si no actúas.";
+                recommendations = [
+                    "Habla con un adulto: pide ayuda para ajustar tu mochila, silla o escritorio.",
+                    "Reduce el tiempo frente a pantallas: aplica la regla 20-20-20 (cada 20 min, mira a 6 m durante 20 seg).",
+                    "Incorpora movimiento: camina, juega, baila… ¡al menos 1 hora al día!",
+                    "Aprende 3 ejercicios posturales simples (ej: rodar hombros, estirar brazos, caminar erguido)."
+                ];
+            } else {
+                riskLevel = "¡Alerta postural! Necesitas cambios urgentes.";
+                riskClass = "alert";
+                riskIcon = "fa-exclamation-triangle";
+                riskDescription = "Estás en alto riesgo de sufrir dolores musculares crónicos en cuello, espalda o hombros.";
+                recommendations = [
+                    "Habla con tus padres o tutores: comenta tus dolores o molestias.",
+                    "Consulta a un profesional: fisioterapeuta, médico escolar o enfermero/a.",
+                    "Haz una 'revisión postural' en casa: Peso de mochila <10% de tu peso, silla con respaldo y pies apoyados, pantalla a la altura de los ojos.",
+                    "Empieza HOY con 5 minutos diarios de conciencia corporal: '¿Estoy encorvado/a? ¿Tengo los hombros tensos? ¿Respiro con el pecho o con la panza?'"
+                ];
+            }
+
+            // Crear HTML de resultados
+            resultDiv.innerHTML = `
+                <div class="result-header">
+                    <div class="result-icon ${riskClass}">
+                        <i class="fas ${riskIcon}"></i>
+                    </div>
+                    <div>
+                        <h2>${riskLevel}</h2>
+                        <p>Puntuación total: ${totalScore} / ${maxScore}</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <p>Tu nivel de riesgo postural:</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${(totalScore / maxScore) * 100}%"></div>
+                    </div>
+                    <p>${Math.round((totalScore / maxScore) * 100)}% de comportamientos de riesgo</p>
+                </div>
+                
+                <div class="score-display">
+                    <div class="score-item total-score">
+                        <div class="emoji">📊</div>
+                        <div class="score-value">${totalScore}</div>
+                        <p>Puntuación Total</p>
+                    </div>
+                </div>
+                
+                <p>${riskDescription}</p>
+                
+                <div class="recommendations">
+                    <h3>Recomendaciones para ti:</h3>
+                    ${recommendations.map(rec => `
+                        <div class="recommendation-item">
+                            <i class="fas fa-check-circle" style="color: var(--secondary); margin-right: 10px;"></i>${rec}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Configurar botón para ver recomendaciones detalladas
+            document.getElementById('showAnswers').onclick = function() {
+                const answersDiv = document.getElementById('answers');
+                answersDiv.style.display = 'block';
+                let answersHTML = '<h2><i class="fas fa-list-ol"></i> Recomendaciones Detalladas</h2>';
+                
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const q = `q${i}`;
+                    const userAnswer = userAnswers[q] || "No respondida";
+                    
+                    answersHTML += `
+                        <div class="answer-feedback">
+                            <p><strong>Pregunta ${i}</strong></p>
+                            <p>Tu respuesta: ${userAnswer}</p>
+                            <p>${feedback[q].text}</p>
+                        </div>
+                    `;
+                }
+                
+                answersDiv.innerHTML = answersHTML;
+                
+                // Desplazar hacia las respuestas
+                answersDiv.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            // Desplazar hacia los resultados
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
