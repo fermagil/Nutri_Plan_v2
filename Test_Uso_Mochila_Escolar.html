@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Uso de Mochila Escolar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4A6FA5;
+            --secondary: #6B8E23;
+            --accent: #FF914D;
+            --light: #F0F7FF;
+            --dark: #2C3E50;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --radius: 16px;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f0ff 0%, #c2d9ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: var(--radius);
+            background: white;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--accent);
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 15px 0;
+        }
+
+        .intro {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234A6FA5" opacity="0.1"><path d="M21 6h-4V5a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v1H3a1 1 0 0 0 0 2h1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8h1a1 1 0 0 0 0-2zM9 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9V5zm9 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V8h12v11z"/></svg>') no-repeat;
+            background-size: contain;
+        }
+
+        .intro p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .question-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .question-block {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-block.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .block-title {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        .block-progress {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .question:hover {
+            background: #e6f0ff;
+        }
+
+        .question p {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .option.selected {
+            background: rgba(74, 111, 165, 0.1);
+            border-color: var(--primary);
+        }
+
+        .info-box {
+            background: #e8f4ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-btn.next {
+            background: var(--secondary);
+        }
+
+        .nav-btn.submit {
+            background: var(--accent);
+        }
+
+        #result, #answers {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .excellent { background: var(--success); }
+        .regular { background: var(--warning); }
+        .alert { background: var(--danger); }
+
+        .answer-feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .answer-feedback:hover {
+            background: #e6f0ff;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .total-score .score-value { color: var(--dark); }
+
+        .emoji {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .recommendations {
+            margin-top: 25px;
+        }
+
+        .recommendation-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--secondary);
+            background: var(--light);
+            border-radius: 0 8px 8px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .question-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .score-display {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-backpack"></i> Test de Uso de Mochila Escolar</h1>
+            <p>¿Cómo afecta tu mochila a tu salud postural?</p>
+        </header>
+
+        <div class="intro">
+            <p>¡Hola! Este test te ayudará a evaluar cómo el uso de tu mochila escolar afecta tu postura y salud. Responde con honestidad a todas las preguntas. Al final, recibirás recomendaciones personalizadas para mejorar tus hábitos. 😊</p>
+            <p><strong>Importante:</strong> El peso ideal de tu mochila no debe superar el 10% de tu peso corporal.</p>
+        </div>
+
+        <form id="backpackTest">
+            <!-- Bloque 1: Datos Generales -->
+            <div class="question-block active" id="block1">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-user"></i> Datos Generales</h2>
+                    <div class="block-progress">1 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas nos ayudarán a entender mejor tu contexto personal y escolar.</p>
+                
+                <div class="question">
+                    <p>1. ¿Cuál es tu sexo?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q1" value="0" required> Masculino</label>
+                        <label class="option"><input type="radio" name="q1" value="0"> Femenino</label>
+                        <label class="option"><input type="radio" name="q1" value="0"> Prefiero no decirlo</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>2. ¿Cuál es tu tipo de jornada escolar?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q2" value="0" required> Completa (mañana y tarde)</label>
+                        <label class="option"><input type="radio" name="q2" value="0"> Parcial (solo mañana o tarde)</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>3. ¿Cuál es aproximadamente el peso de tu mochila?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q3" value="0" required> Menos de 3 kg</label>
+                        <label class="option"><input type="radio" name="q3" value="1"> 3-5 kg</label>
+                        <label class="option"><input type="radio" name="q3" value="2"> 5-7 kg</label>
+                        <label class="option"><input type="radio" name="q3" value="3"> Más de 7 kg</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev" disabled>
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 2: Desplazamiento al Colegio -->
+            <div class="question-block" id="block2">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-walking"></i> Desplazamiento al Colegio</h2>
+                    <div class="block-progress">2 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran cómo te desplazas al colegio y cómo transportas tu mochila.</p>
+                
+                <div class="question">
+                    <p>4. ¿Cómo vas normalmente al colegio?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q4" value="0" required> Coche</label>
+                        <label class="option"><input type="radio" name="q4" value="1"> Autobús</label>
+                        <label class="option"><input type="radio" name="q4" value="0"> Bicicleta</label>
+                        <label class="option"><input type="radio" name="q4" value="2"> Andando</label>
+                        <label class="option"><input type="radio" name="q4" value="3"> Otro</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>5. ¿Cuánto tiempo tardas en llegar de casa al colegio?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q5" value="0" required> Menos de 5 min</label>
+                        <label class="option"><input type="radio" name="q5" value="1"> 5-10 min</label>
+                        <label class="option"><input type="radio" name="q5" value="2"> 10-15 min</label>
+                        <label class="option"><input type="radio" name="q5" value="3"> 15-20 min</label>
+                        <label class="option"><input type="radio" name="q5" value="4"> Más de 20 min</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>6. ¿Cuánto tiempo (en minutos) llevas personalmente tu mochila?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q6" value="0" required> Menos de 5 min</label>
+                        <label class="option"><input type="radio" name="q6" value="1"> 5-10 min</label>
+                        <label class="option"><input type="radio" name="q6" value="2"> 10-15 min</label>
+                        <label class="option"><input type="radio" name="q6" value="3"> 15-20 min</label>
+                        <label class="option"><input type="radio" name="q6" value="4"> Más de 20 min</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 3: Uso de la Mochila -->
+            <div class="question-block" id="block3">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-briefcase"></i> Uso de la Mochila</h2>
+                    <div class="block-progress">3 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran cómo utilizas tu mochila y si te causa molestias.</p>
+                
+                <div class="question">
+                    <p>7. ¿Cómo llevas normalmente la mochila?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q7" value="0" required> En ambos hombros</label>
+                        <label class="option"><input type="radio" name="q7" value="3"> En un solo hombro</label>
+                        <label class="option"><input type="radio" name="q7" value="2"> Con la mano</label>
+                        <label class="option"><input type="radio" name="q7" value="1"> Con ruedas</label>
+                        <label class="option"><input type="radio" name="q7" value="2"> Otro</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>8. ¿Te sientes cansado/a al llevar la mochila?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q8" value="0" required> Nunca</label>
+                        <label class="option"><input type="radio" name="q8" value="1"> Casi nunca</label>
+                        <label class="option"><input type="radio" name="q8" value="2"> A menudo</label>
+                        <label class="option"><input type="radio" name="q8" value="3"> Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>9. ¿Piensas que tu mochila es demasiado pesada?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q9" value="0" required> No</label>
+                        <label class="option"><input type="radio" name="q9" value="3"> Sí</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 4: Dolor y Molestias -->
+            <div class="question-block" id="block4">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-stethoscope"></i> Dolor y Molestias</h2>
+                    <div class="block-progress">4 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran si experimentas dolor o molestias relacionadas con el uso de tu mochila.</p>
+                
+                <div class="question">
+                    <p>10. ¿Alguna vez te duele la espalda por llevar la mochila?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q10" value="0" required> No</label>
+                        <label class="option"><input type="radio" name="q10" value="3"> Sí</label>
+                    </div>
+                </div>
+
+                <div class="question" id="pain-frequency" style="display: none;">
+                    <p>11. ¿Con qué frecuencia te duele?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q11" value="1" required> Una o dos veces</label>
+                        <label class="option"><input type="radio" name="q11" value="2"> Al menos una vez al mes</label>
+                        <label class="option"><input type="radio" name="q11" value="3"> Al menos una vez a la semana</label>
+                        <label class="option"><input type="radio" name="q11" value="4"> Todos los días</label>
+                    </div>
+                </div>
+
+                <div class="question" id="pain-duration" style="display: none;">
+                    <p>12. ¿Desde cuándo te duele?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q12" value="1" required> Menos de 1 mes</label>
+                        <label class="option"><input type="radio" name="q12" value="2"> 1-3 meses</label>
+                        <label class="option"><input type="radio" name="q12" value="3"> 3-6 meses</label>
+                        <label class="option"><input type="radio" name="q12" value="4"> 6 meses o más</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn next">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque 5: Actividad Física y Salud General -->
+            <div class="question-block" id="block5">
+                <div class="block-header">
+                    <h2 class="block-title"><i class="fas fa-running"></i> Actividad Física y Salud</h2>
+                    <div class="block-progress">5 de 5</div>
+                </div>
+                <p class="block-description">Estas preguntas exploran tus hábitos de actividad física y síntomas generales de salud.</p>
+                
+                <div class="question">
+                    <p>13. ¿Cuántas horas ves la televisión o juegas con videojuegos al día?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q13" value="0" required> 0 horas</label>
+                        <label class="option"><input type="radio" name="q13" value="1"> 1 hora</label>
+                        <label class="option"><input type="radio" name="q13" value="2"> 2 horas</label>
+                        <label class="option"><input type="radio" name="q13" value="3"> 3 horas</label>
+                        <label class="option"><input type="radio" name="q13" value="4"> 4+ horas</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>14. ¿Cuántas horas dedicas a actividades deportivas extracurriculares semanalmente?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q14" value="0" required> 0 horas</label>
+                        <label class="option"><input type="radio" name="q14" value="1"> 1 hora</label>
+                        <label class="option"><input type="radio" name="q14" value="2"> 2 horas</label>
+                        <label class="option"><input type="radio" name="q14" value="3"> 3 horas</label>
+                        <label class="option"><input type="radio" name="q14" value="4"> 4+ horas</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>15. ¿Te sientes cansado/a sin saber exactamente por qué?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q15" value="0" required> Nunca</label>
+                        <label class="option"><input type="radio" name="q15" value="1"> Algunas veces</label>
+                        <label class="option"><input type="radio" name="q15" value="2"> Con frecuencia</label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button type="button" class="nav-btn prev">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="nav-btn submit">
+                        Ver Resultados <i class="fas fa-chart-bar"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="result"></div>
+        <button id="showAnswers" style="display: none;">
+            <i class="fas fa-list-alt"></i> Ver recomendaciones detalladas
+        </button>
+        <div id="answers"></div>
+
+        <footer>
+            <p>© 2023 Test de Uso de Mochila Escolar | Diseñado para promover hábitos posturales saludables</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sistema de navegación entre bloques
+        const blocks = document.querySelectorAll('.question-block');
+        const nextButtons = document.querySelectorAll('.next');
+        const prevButtons = document.querySelectorAll('.prev');
+        const submitButton = document.querySelector('.submit');
+        let currentBlock = 0;
+
+        // Mostrar el primer bloque
+        showBlock(currentBlock);
+
+        // Configurar botones de siguiente
+        nextButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (validateBlock(currentBlock)) {
+                    currentBlock++;
+                    showBlock(currentBlock);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    alert('Por favor, responde todas las preguntas de este bloque antes de continuar.');
+                }
+            });
+        });
+
+        // Configurar botones de anterior
+        prevButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentBlock--;
+                showBlock(currentBlock);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Configurar botón de enviar
+        submitButton.addEventListener('click', () => {
+            if (validateBlock(currentBlock)) {
+                calculateResults();
+            } else {
+                alert('Por favor, responde todas las preguntas de este bloque antes de ver los resultados.');
+            }
+        });
+
+        // Función para mostrar un bloque específico
+        function showBlock(index) {
+            blocks.forEach((block, i) => {
+                if (i === index) {
+                    block.classList.add('active');
+                } else {
+                    block.classList.remove('active');
+                }
+            });
+
+            // Actualizar estado de los botones de navegación
+            updateNavigationButtons();
+        }
+
+        // Función para validar que se han respondido todas las preguntas del bloque actual
+        function validateBlock(blockIndex) {
+            const currentBlock = blocks[blockIndex];
+            const questions = currentBlock.querySelectorAll('.question');
+            
+            for (let question of questions) {
+                // Solo validar preguntas visibles
+                if (question.style.display === 'none') continue;
+                
+                const options = question.querySelectorAll('input[type="radio"]');
+                let answered = false;
+                
+                for (let option of options) {
+                    if (option.checked) {
+                        answered = true;
+                        break;
+                    }
+                }
+                
+                if (!answered) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // Función para actualizar el estado de los botones de navegación
+        function updateNavigationButtons() {
+            const prevButtons = document.querySelectorAll('.prev');
+            const nextButtons = document.querySelectorAll('.next');
+            
+            // Actualizar botones de anterior
+            prevButtons.forEach(button => {
+                if (currentBlock === 0) {
+                    button.disabled = true;
+                } else {
+                    button.disabled = false;
+                }
+            });
+            
+            // Actualizar botones de siguiente
+            nextButtons.forEach(button => {
+                if (currentBlock === blocks.length - 1) {
+                    button.style.display = 'none';
+                } else {
+                    button.style.display = 'flex';
+                }
+            });
+            
+            // Actualizar botón de enviar
+            if (currentBlock === blocks.length - 1) {
+                submitButton.style.display = 'flex';
+            } else {
+                submitButton.style.display = 'none';
+            }
+        }
+
+        // Añadir interacción a las opciones
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('input');
+                input.checked = true;
+                
+                // Remover clase selected de todas las opciones en esta pregunta
+                this.parentNode.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Añadir clase selected a la opción clickeada
+                this.classList.add('selected');
+                
+                // Lógica condicional para mostrar/ocultar preguntas
+                handleConditionalQuestions();
+            });
+        });
+
+        // Manejo de preguntas condicionales
+        function handleConditionalQuestions() {
+            // Si en la pregunta 10 se responde "Sí", mostrar preguntas 11 y 12
+            const q10Yes = document.querySelector('input[name="q10"]:checked');
+            const painFrequency = document.getElementById('pain-frequency');
+            const painDuration = document.getElementById('pain-duration');
+            
+            if (q10Yes && q10Yes.value === '3') {
+                painFrequency.style.display = 'block';
+                painDuration.style.display = 'block';
+            } else {
+                painFrequency.style.display = 'none';
+                painDuration.style.display = 'none';
+                
+                // Limpiar respuestas de preguntas ocultas
+                document.querySelectorAll('#pain-frequency input, #pain-duration input').forEach(input => {
+                    input.checked = false;
+                });
+                
+                document.querySelectorAll('#pain-frequency .option, #pain-duration .option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+            }
+        }
+
+        // Sistema de evaluación
+        const feedback = {
+            q1: {
+                text: "Tu sexo no afecta directamente la salud postural, pero puede influir en la percepción del dolor y en los hábitos de carga."
+            },
+            q2: {
+                text: "La jornada escolar puede influir en el tiempo que llevas la mochila. Las jornadas completas suelen requerir llevar más material."
+            },
+            q3: {
+                text: "El peso de la mochila es un factor crucial. Recuerda que no debe superar el 10% de tu peso corporal para evitar problemas de espalda."
+            },
+            q4: {
+                text: "La forma en que te desplazas al colegio afecta el tiempo que llevas la mochila. Si caminas, es importante llevar la mochila correctamente."
+            },
+            q5: {
+                text: "El tiempo de desplazamiento influye en cuánto tiempo cargas con tu mochila. Si es más de 15 minutos, asegúrate de que esté bien ajustada."
+            },
+            q6: {
+                text: "El tiempo que llevas personalmente la mochila es importante. Si es más de 15 minutos, considera reducir el peso o usar una mochila con ruedas."
+            },
+            q7: {
+                text: "Llevar la mochila en ambos hombros es la forma más saludable, ya que distribuye el peso uniformemente."
+            },
+            q8: {
+                text: "Sentirse cansado al llevar la mochila puede indicar que es demasiado pesada o que no está bien ajustada."
+            },
+            q9: {
+                text: "Si percibes tu mochila como demasiado pesada, probablemente lo sea. Intenta reducir el peso o reorganizar el contenido."
+            },
+            q10: {
+                text: "El dolor de espalda relacionado con la mochila es una señal de alerta importante que no debe ignorarse."
+            },
+            q11: {
+                text: "La frecuencia del dolor indica la gravedad del problema. El dolor frecuente requiere atención inmediata."
+            },
+            q12: {
+                text: "El dolor persistente durante meses puede indicar un problema postural crónico que necesita intervención."
+            },
+            q13: {
+                text: "El tiempo frente a pantallas puede contribuir al sedentarismo, que a su vez afecta la salud postural."
+            },
+            q14: {
+                text: "La actividad física fortalece los músculos que sostienen la columna, ayudando a prevenir problemas posturales."
+            },
+            q15: {
+                text: "El cansancio inexplicable puede estar relacionado con una mala postura o con el esfuerzo de cargar una mochila pesada."
+            }
+        };
+
+        // Función para calcular y mostrar resultados
+        function calculateResults() {
+            let totalScore = 0;
+            const userAnswers = {};
+            const totalQuestions = 15;
+            
+            // Calcular puntuaciones
+            for (let i = 1; i <= totalQuestions; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                
+                if (selected) {
+                    userAnswers[q] = selected.parentNode.textContent.trim();
+                    const value = parseInt(selected.value);
+                    totalScore += value;
+                }
+            }
+
+            const maxScore = 40; // Puntuación máxima aproximada
+
+            // Mostrar resultados
+            const resultDiv = document.getElementById('result');
+            const showAnswersBtn = document.getElementById('showAnswers');
+            
+            resultDiv.style.display = 'block';
+            showAnswersBtn.style.display = 'block';
+            
+            // Determinar nivel de riesgo
+            let riskLevel, riskClass, riskIcon, riskDescription, recommendations;
+            
+            if (totalScore <= 10) {
+                riskLevel = "¡Excelente!";
+                riskClass = "excellent";
+                riskIcon = "fa-smile";
+                riskDescription = "Tus hábitos con la mochila son muy saludables. Estás protegiendo tu espalda y reduciendo riesgos futuros.";
+                recommendations = [
+                    "Mantén tus buenos hábitos de uso de mochila.",
+                    "Comparte lo que sabes con tus compañeros.",
+                    "Revisa periódicamente el peso de tu mochila para asegurarte de que no supera el 10% de tu peso corporal."
+                ];
+            } else if (totalScore <= 20) {
+                riskLevel = "Regular";
+                riskClass = "regular";
+                riskIcon = "fa-meh";
+                riskDescription = "Hay áreas de mejora importante en tus hábitos con la mochila. Algunos comportamientos pueden generar molestias si se mantienen.";
+                recommendations = [
+                    "Reduce el peso de tu mochila reorganizando el contenido.",
+                    "Usa siempre ambas correas de la mochila para distribuir el peso uniformemente.",
+                    "Haz 5 minutos de estiramientos para espalda y hombros al día.",
+                    "Considera usar una mochila con ruedas si necesitas llevar mucho peso."
+                ];
+            } else {
+                riskLevel = "¡Alerta!";
+                riskClass = "alert";
+                riskIcon = "fa-exclamation-triangle";
+                riskDescription = "Necesitas cambios urgentes en tus hábitos con la mochila. Estás en riesgo de desarrollar problemas posturales serios.";
+                recommendations = [
+                    "Habla con tus padres y profesores sobre el peso de tu mochila.",
+                    "Consulta a un fisioterapeuta si experimentas dolor frecuente.",
+                    "Reorganiza tu mochila para llevar solo lo esencial.",
+                    "Usa una mochila con ruedas o pide un casillero en la escuela.",
+                    "Realiza ejercicios de fortalecimiento para la espalda y hombros."
+                ];
+            }
+
+            // Crear HTML de resultados
+            resultDiv.innerHTML = `
+                <div class="result-header">
+                    <div class="result-icon ${riskClass}">
+                        <i class="fas ${riskIcon}"></i>
+                    </div>
+                    <div>
+                        <h2>${riskLevel}</h2>
+                        <p>Puntuación total: ${totalScore} / ${maxScore}</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <p>Tu nivel de riesgo:</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${(totalScore / maxScore) * 100}%"></div>
+                    </div>
+                    <p>${Math.round((totalScore / maxScore) * 100)}% de comportamientos de riesgo</p>
+                </div>
+                
+                <div class="score-display">
+                    <div class="score-item total-score">
+                        <div class="emoji">📊</div>
+                        <div class="score-value">${totalScore}</div>
+                        <p>Puntuación Total</p>
+                    </div>
+                </div>
+                
+                <p>${riskDescription}</p>
+                
+                <div class="recommendations">
+                    <h3>Recomendaciones para ti:</h3>
+                    ${recommendations.map(rec => `
+                        <div class="recommendation-item">
+                            <i class="fas fa-check-circle" style="color: var(--secondary); margin-right: 10px;"></i>${rec}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>¿Sabías que?</strong> El peso ideal de tu mochila no debe superar el 10% de tu peso corporal. Por ejemplo, si pesas 50 kg, tu mochila no debería pesar más de 5 kg.</p>
+                </div>
+            `;
+
+            // Configurar botón para ver recomendaciones detalladas
+            document.getElementById('showAnswers').onclick = function() {
+                const answersDiv = document.getElementById('answers');
+                answersDiv.style.display = 'block';
+                let answersHTML = '<h2><i class="fas fa-list-ol"></i> Recomendaciones Detalladas</h2>';
+                
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const q = `q${i}`;
+                    const userAnswer = userAnswers[q] || "No respondida";
+                    
+                    answersHTML += `
+                        <div class="answer-feedback">
+                            <p><strong>Pregunta ${i}</strong></p>
+                            <p>Tu respuesta: ${userAnswer}</p>
+                            <p>${feedback[q].text}</p>
+                        </div>
+                    `;
+                }
+                
+                answersDiv.innerHTML = answersHTML;
+                
+                // Desplazar hacia las respuestas
+                answersDiv.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            // Desplazar hacia los resultados
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
