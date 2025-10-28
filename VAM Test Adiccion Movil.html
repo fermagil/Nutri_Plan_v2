@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Relación con la Tecnología - Test para Estudiantes</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f94144;
+            --radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .info-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent);
+        }
+        .info-card h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .scale-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .scale-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--light);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .scale-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .progress-container {
+            margin: 2rem 0;
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: var(--transition);
+        }
+        .sections-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .section-title {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+        .questions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .questions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .question-card {
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+        .question-card:hover {
+            border-color: var(--primary-light);
+        }
+        .question-text {
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .option {
+            flex: 1;
+            text-align: center;
+        }
+        .option input {
+            display: none;
+        }
+        .option label {
+            display: block;
+            padding: 8px 5px;
+            background: var(--light);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+        .option input:checked + label {
+            background: var(--primary);
+            color: white;
+        }
+        .option label:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-secondary:hover {
+            background: var(--light);
+        }
+        .result-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+        }
+        .result-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+        .result-category {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        .category-low {
+            background: #e7f7ef;
+            color: #0a8754;
+        }
+        .category-medium {
+            background: #fff8e6;
+            color: #b3870a;
+        }
+        .category-high {
+            background: #ffe6e6;
+            color: #d63031;
+        }
+        .result-description {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+        .resources {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-top: 1.5rem;
+        }
+        .resources h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .resources-list {
+            list-style: none;
+        }
+        .resources-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .resources-list a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .resources-list a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        @media (prefers-contrast: high) {
+            :root {
+                --primary: #0000ff;
+                --primary-light: #3333ff;
+                --secondary: #0000cc;
+                --accent: #ff0000;
+                --light: #ffffff;
+                --dark: #000000;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+		
+	
+    /* Estilos específicos para mejorar la sección de recursos */
+    .resource-paragraph {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+        color: var(--dark);
+    }
+
+    .resource-subheading {
+        font-size: 1.15rem;
+        color: var(--primary);
+        margin: 1.5rem 0 0.75rem 0;
+        font-weight: 600;
+    }
+
+    .styled-list {
+        padding-left: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .styled-list li {
+        margin-bottom: 0.6rem;
+        position: relative;
+        padding-left: 0.5rem;
+    }
+
+    .decimal-list {
+        list-style-type: decimal;
+    }
+
+    .callout {
+        background-color: #f0f7ff;
+        border-left: 4px solid var(--primary);
+        padding: 1rem;
+        border-radius: 0 var(--radius) var(--radius) 0;
+        font-weight: 500;
+    }
+
+    /* Asegurar compatibilidad con modo oscuro/alto contraste si aplica */
+    @media (prefers-contrast: high) {
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: transparent;
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mi Relación con la Tecnología</h1>
+            <p class="subtitle">Un cuestionario de 37 ítems para reflexionar sobre tu uso del móvil</p>
+        </header>
+        <div class="info-card">
+            <h2><i>💡</i> Instrucciones</h2>
+            <p>Responde cada pregunta con sinceridad seleccionando la opción que mejor describa tu comportamiento. No hay respuestas correctas o incorrectas.</p>
+            <div class="scale-info">
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #e7f7ef;"></div>
+                    <span>0 = Nunca</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #c8e6c9;"></div>
+                    <span>1 = Rara vez</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #fff8e6;"></div>
+                    <span>2 = A veces</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #ffecb3;"></div>
+                    <span>3 = A menudo</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #ffe6e6;"></div>
+                    <span>4 = Siempre</span>
+                </div>
+            </div>
+        </div>
+        <div class="progress-container">
+            <p>Progreso del cuestionario: <span id="progress-text">0%</span></p>
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+        </div>
+        <form id="techForm">
+            <div class="sections-container">
+                <section class="section" id="attitudes">
+                    <div class="section-header">
+                        <div class="section-icon">1</div>
+                        <h2 class="section-title">Actitudes y percepción</h2>
+                    </div>
+                    <div class="questions-grid">
+                        <!-- 8 items -->
+                        <div class="question-card"><p class="question-text">Para mí, el teléfono móvil es el mejor avance tecnológico de la historia.</p><div class="options">
+                            <div class="option"><input type="radio" name="q1" value="0" id="q1-0"><label for="q1-0">0</label></div>
+                            <div class="option"><input type="radio" name="q1" value="1" id="q1-1"><label for="q1-1">1</label></div>
+                            <div class="option"><input type="radio" name="q1" value="2" id="q1-2"><label for="q1-2">2</label></div>
+                            <div class="option"><input type="radio" name="q1" value="3" id="q1-3"><label for="q1-3">3</label></div>
+                            <div class="option"><input type="radio" name="q1" value="4" id="q1-4"><label for="q1-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Las personas que hoy no tienen móvil están anticuadas.</p><div class="options">
+                            <div class="option"><input type="radio" name="q2" value="0" id="q2-0"><label for="q2-0">0</label></div>
+                            <div class="option"><input type="radio" name="q2" value="1" id="q2-1"><label for="q2-1">1</label></div>
+                            <div class="option"><input type="radio" name="q2" value="2" id="q2-2"><label for="q2-2">2</label></div>
+                            <div class="option"><input type="radio" name="q2" value="3" id="q2-3"><label for="q2-3">3</label></div>
+                            <div class="option"><input type="radio" name="q2" value="4" id="q2-4"><label for="q2-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">El móvil aumenta la posibilidad de estar en contacto con la gente.</p><div class="options">
+                            <div class="option"><input type="radio" name="q3" value="0" id="q3-0"><label for="q3-0">0</label></div>
+                            <div class="option"><input type="radio" name="q3" value="1" id="q3-1"><label for="q3-1">1</label></div>
+                            <div class="option"><input type="radio" name="q3" value="2" id="q3-2"><label for="q3-2">2</label></div>
+                            <div class="option"><input type="radio" name="q3" value="3" id="q3-3"><label for="q3-3">3</label></div>
+                            <div class="option"><input type="radio" name="q3" value="4" id="q3-4"><label for="q3-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Tener móvil es imprescindible en la actualidad.</p><div class="options">
+                            <div class="option"><input type="radio" name="q4" value="0" id="q4-0"><label for="q4-0">0</label></div>
+                            <div class="option"><input type="radio" name="q4" value="1" id="q4-1"><label for="q4-1">1</label></div>
+                            <div class="option"><input type="radio" name="q4" value="2" id="q4-2"><label for="q4-2">2</label></div>
+                            <div class="option"><input type="radio" name="q4" value="3" id="q4-3"><label for="q4-3">3</label></div>
+                            <div class="option"><input type="radio" name="q4" value="4" id="q4-4"><label for="q4-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Tener móvil es tan importante como vestir o comer.</p><div class="options">
+                            <div class="option"><input type="radio" name="q5" value="0" id="q5-0"><label for="q5-0">0</label></div>
+                            <div class="option"><input type="radio" name="q5" value="1" id="q5-1"><label for="q5-1">1</label></div>
+                            <div class="option"><input type="radio" name="q5" value="2" id="q5-2"><label for="q5-2">2</label></div>
+                            <div class="option"><input type="radio" name="q5" value="3" id="q5-3"><label for="q5-3">3</label></div>
+                            <div class="option"><input type="radio" name="q5" value="4" id="q5-4"><label for="q5-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">El uso del móvil es muy molesto para otros en lugares públicos.</p><div class="options">
+                            <div class="option"><input type="radio" name="q6" value="0" id="q6-0"><label for="q6-0">0</label></div>
+                            <div class="option"><input type="radio" name="q6" value="1" id="q6-1"><label for="q6-1">1</label></div>
+                            <div class="option"><input type="radio" name="q6" value="2" id="q6-2"><label for="q6-2">2</label></div>
+                            <div class="option"><input type="radio" name="q6" value="3" id="q6-3"><label for="q6-3">3</label></div>
+                            <div class="option"><input type="radio" name="q6" value="4" id="q6-4"><label for="q6-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">El móvil es un incordio al estar localizable en cualquier momento.</p><div class="options">
+                            <div class="option"><input type="radio" name="q7" value="0" id="q7-0"><label for="q7-0">0</label></div>
+                            <div class="option"><input type="radio" name="q7" value="1" id="q7-1"><label for="q7-1">1</label></div>
+                            <div class="option"><input type="radio" name="q7" value="2" id="q7-2"><label for="q7-2">2</label></div>
+                            <div class="option"><input type="radio" name="q7" value="3" id="q7-3"><label for="q7-3">3</label></div>
+                            <div class="option"><input type="radio" name="q7" value="4" id="q7-4"><label for="q7-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">El uso del móvil debería estar prohibido en clase o lugares públicos.</p><div class="options">
+                            <div class="option"><input type="radio" name="q8" value="0" id="q8-0"><label for="q8-0">0</label></div>
+                            <div class="option"><input type="radio" name="q8" value="1" id="q8-1"><label for="q8-1">1</label></div>
+                            <div class="option"><input type="radio" name="q8" value="2" id="q8-2"><label for="q8-2">2</label></div>
+                            <div class="option"><input type="radio" name="q8" value="3" id="q8-3"><label for="q8-3">3</label></div>
+                            <div class="option"><input type="radio" name="q8" value="4" id="q8-4"><label for="q8-4">4</label></div>
+                        </div></div>
+                    </div>
+                </section>
+
+                <section class="section" id="functions">
+                    <div class="section-header">
+                        <div class="section-icon">2</div>
+                        <h2 class="section-title">Funciones y usos del móvil</h2>
+                    </div>
+                    <div class="questions-grid">
+                        <!-- 12 items -->
+                        <div class="question-card"><p class="question-text">Realizar llamadas.</p><div class="options">
+                            <div class="option"><input type="radio" name="q9" value="0" id="q9-0"><label for="q9-0">0</label></div>
+                            <div class="option"><input type="radio" name="q9" value="1" id="q9-1"><label for="q9-1">1</label></div>
+                            <div class="option"><input type="radio" name="q9" value="2" id="q9-2"><label for="q9-2">2</label></div>
+                            <div class="option"><input type="radio" name="q9" value="3" id="q9-3"><label for="q9-3">3</label></div>
+                            <div class="option"><input type="radio" name="q9" value="4" id="q9-4"><label for="q9-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Enviar mensajes de texto.</p><div class="options">
+                            <div class="option"><input type="radio" name="q10" value="0" id="q10-0"><label for="q10-0">0</label></div>
+                            <div class="option"><input type="radio" name="q10" value="1" id="q10-1"><label for="q10-1">1</label></div>
+                            <div class="option"><input type="radio" name="q10" value="2" id="q10-2"><label for="q10-2">2</label></div>
+                            <div class="option"><input type="radio" name="q10" value="3" id="q10-3"><label for="q10-3">3</label></div>
+                            <div class="option"><input type="radio" name="q10" value="4" id="q10-4"><label for="q10-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Recibir mensajes de texto.</p><div class="options">
+                            <div class="option"><input type="radio" name="q11" value="0" id="q11-0"><label for="q11-0">0</label></div>
+                            <div class="option"><input type="radio" name="q11" value="1" id="q11-1"><label for="q11-1">1</label></div>
+                            <div class="option"><input type="radio" name="q11" value="2" id="q11-2"><label for="q11-2">2</label></div>
+                            <div class="option"><input type="radio" name="q11" value="3" id="q11-3"><label for="q11-3">3</label></div>
+                            <div class="option"><input type="radio" name="q11" value="4" id="q11-4"><label for="q11-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Usar Internet (redes, páginas web, correo...).</p><div class="options">
+                            <div class="option"><input type="radio" name="q12" value="0" id="q12-0"><label for="q12-0">0</label></div>
+                            <div class="option"><input type="radio" name="q12" value="1" id="q12-1"><label for="q12-1">1</label></div>
+                            <div class="option"><input type="radio" name="q12" value="2" id="q12-2"><label for="q12-2">2</label></div>
+                            <div class="option"><input type="radio" name="q12" value="3" id="q12-3"><label for="q12-3">3</label></div>
+                            <div class="option"><input type="radio" name="q12" value="4" id="q12-4"><label for="q12-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Enviar o recibir fotos, vídeos o audios.</p><div class="options">
+                            <div class="option"><input type="radio" name="q13" value="0" id="q13-0"><label for="q13-0">0</label></div>
+                            <div class="option"><input type="radio" name="q13" value="1" id="q13-1"><label for="q13-1">1</label></div>
+                            <div class="option"><input type="radio" name="q13" value="2" id="q13-2"><label for="q13-2">2</label></div>
+                            <div class="option"><input type="radio" name="q13" value="3" id="q13-3"><label for="q13-3">3</label></div>
+                            <div class="option"><input type="radio" name="q13" value="4" id="q13-4"><label for="q13-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Escuchar música, radio o ver vídeos.</p><div class="options">
+                            <div class="option"><input type="radio" name="q14" value="0" id="q14-0"><label for="q14-0">0</label></div>
+                            <div class="option"><input type="radio" name="q14" value="1" id="q14-1"><label for="q14-1">1</label></div>
+                            <div class="option"><input type="radio" name="q14" value="2" id="q14-2"><label for="q14-2">2</label></div>
+                            <div class="option"><input type="radio" name="q14" value="3" id="q14-3"><label for="q14-3">3</label></div>
+                            <div class="option"><input type="radio" name="q14" value="4" id="q14-4"><label for="q14-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Hacer fotografías.</p><div class="options">
+                            <div class="option"><input type="radio" name="q15" value="0" id="q15-0"><label for="q15-0">0</label></div>
+                            <div class="option"><input type="radio" name="q15" value="1" id="q15-1"><label for="q15-1">1</label></div>
+                            <div class="option"><input type="radio" name="q15" value="2" id="q15-2"><label for="q15-2">2</label></div>
+                            <div class="option"><input type="radio" name="q15" value="3" id="q15-3"><label for="q15-3">3</label></div>
+                            <div class="option"><input type="radio" name="q15" value="4" id="q15-4"><label for="q15-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Jugar en el móvil (solo o con otros).</p><div class="options">
+                            <div class="option"><input type="radio" name="q16" value="0" id="q16-0"><label for="q16-0">0</label></div>
+                            <div class="option"><input type="radio" name="q16" value="1" id="q16-1"><label for="q16-1">1</label></div>
+                            <div class="option"><input type="radio" name="q16" value="2" id="q16-2"><label for="q16-2">2</label></div>
+                            <div class="option"><input type="radio" name="q16" value="3" id="q16-3"><label for="q16-3">3</label></div>
+                            <div class="option"><input type="radio" name="q16" value="4" id="q16-4"><label for="q16-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Usar GPS o mapas.</p><div class="options">
+                            <div class="option"><input type="radio" name="q17" value="0" id="q17-0"><label for="q17-0">0</label></div>
+                            <div class="option"><input type="radio" name="q17" value="1" id="q17-1"><label for="q17-1">1</label></div>
+                            <div class="option"><input type="radio" name="q17" value="2" id="q17-2"><label for="q17-2">2</label></div>
+                            <div class="option"><input type="radio" name="q17" value="3" id="q17-3"><label for="q17-3">3</label></div>
+                            <div class="option"><input type="radio" name="q17" value="4" id="q17-4"><label for="q17-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Compartir archivos (Bluetooth, Wi-Fi, USB...).</p><div class="options">
+                            <div class="option"><input type="radio" name="q18" value="0" id="q18-0"><label for="q18-0">0</label></div>
+                            <div class="option"><input type="radio" name="q18" value="1" id="q18-1"><label for="q18-1">1</label></div>
+                            <div class="option"><input type="radio" name="q18" value="2" id="q18-2"><label for="q18-2">2</label></div>
+                            <div class="option"><input type="radio" name="q18" value="3" id="q18-3"><label for="q18-3">3</label></div>
+                            <div class="option"><input type="radio" name="q18" value="4" id="q18-4"><label for="q18-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Grabar vídeos o audios.</p><div class="options">
+                            <div class="option"><input type="radio" name="q19" value="0" id="q19-0"><label for="q19-0">0</label></div>
+                            <div class="option"><input type="radio" name="q19" value="1" id="q19-1"><label for="q19-1">1</label></div>
+                            <div class="option"><input type="radio" name="q19" value="2" id="q19-2"><label for="q19-2">2</label></div>
+                            <div class="option"><input type="radio" name="q19" value="3" id="q19-3"><label for="q19-3">3</label></div>
+                            <div class="option"><input type="radio" name="q19" value="4" id="q19-4"><label for="q19-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Usar apps de mensajería (WhatsApp, Telegram...).</p><div class="options">
+                            <div class="option"><input type="radio" name="q20" value="0" id="q20-0"><label for="q20-0">0</label></div>
+                            <div class="option"><input type="radio" name="q20" value="1" id="q20-1"><label for="q20-1">1</label></div>
+                            <div class="option"><input type="radio" name="q20" value="2" id="q20-2"><label for="q20-2">2</label></div>
+                            <div class="option"><input type="radio" name="q20" value="3" id="q20-3"><label for="q20-3">3</label></div>
+                            <div class="option"><input type="radio" name="q20" value="4" id="q20-4"><label for="q20-4">4</label></div>
+                        </div></div>
+                    </div>
+                </section>
+
+                <section class="section" id="dependence">
+                    <div class="section-header">
+                        <div class="section-icon">3</div>
+                        <h2 class="section-title">Dependencia y consecuencias</h2>
+                    </div>
+                    <div class="questions-grid">
+                        <!-- 17 items -->
+                        <div class="question-card"><p class="question-text">Me han llamado la atención por usar mucho el móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q21" value="0" id="q21-0"><label for="q21-0">0</label></div>
+                            <div class="option"><input type="radio" name="q21" value="1" id="q21-1"><label for="q21-1">1</label></div>
+                            <div class="option"><input type="radio" name="q21" value="2" id="q21-2"><label for="q21-2">2</label></div>
+                            <div class="option"><input type="radio" name="q21" value="3" id="q21-3"><label for="q21-3">3</label></div>
+                            <div class="option"><input type="radio" name="q21" value="4" id="q21-4"><label for="q21-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Me he puesto un límite de uso y no lo he cumplido.</p><div class="options">
+                            <div class="option"><input type="radio" name="q22" value="0" id="q22-0"><label for="q22-0">0</label></div>
+                            <div class="option"><input type="radio" name="q22" value="1" id="q22-1"><label for="q22-1">1</label></div>
+                            <div class="option"><input type="radio" name="q22" value="2" id="q22-2"><label for="q22-2">2</label></div>
+                            <div class="option"><input type="radio" name="q22" value="3" id="q22-3"><label for="q22-3">3</label></div>
+                            <div class="option"><input type="radio" name="q22" value="4" id="q22-4"><label for="q22-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">He discutido con mis padres por el uso del móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q23" value="0" id="q23-0"><label for="q23-0">0</label></div>
+                            <div class="option"><input type="radio" name="q23" value="1" id="q23-1"><label for="q23-1">1</label></div>
+                            <div class="option"><input type="radio" name="q23" value="2" id="q23-2"><label for="q23-2">2</label></div>
+                            <div class="option"><input type="radio" name="q23" value="3" id="q23-3"><label for="q23-3">3</label></div>
+                            <div class="option"><input type="radio" name="q23" value="4" id="q23-4"><label for="q23-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Dedico más tiempo del que quisiera al móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q24" value="0" id="q24-0"><label for="q24-0">0</label></div>
+                            <div class="option"><input type="radio" name="q24" value="1" id="q24-1"><label for="q24-1">1</label></div>
+                            <div class="option"><input type="radio" name="q24" value="2" id="q24-2"><label for="q24-2">2</label></div>
+                            <div class="option"><input type="radio" name="q24" value="3" id="q24-3"><label for="q24-3">3</label></div>
+                            <div class="option"><input type="radio" name="q24" value="4" id="q24-4"><label for="q24-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Me he acostado más tarde por usar el móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q25" value="0" id="q25-0"><label for="q25-0">0</label></div>
+                            <div class="option"><input type="radio" name="q25" value="1" id="q25-1"><label for="q25-1">1</label></div>
+                            <div class="option"><input type="radio" name="q25" value="2" id="q25-2"><label for="q25-2">2</label></div>
+                            <div class="option"><input type="radio" name="q25" value="3" id="q25-3"><label for="q25-3">3</label></div>
+                            <div class="option"><input type="radio" name="q25" value="4" id="q25-4"><label for="q25-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Gasto más tiempo (o dinero) del previsto en el móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q26" value="0" id="q26-0"><label for="q26-0">0</label></div>
+                            <div class="option"><input type="radio" name="q26" value="1" id="q26-1"><label for="q26-1">1</label></div>
+                            <div class="option"><input type="radio" name="q26" value="2" id="q26-2"><label for="q26-2">2</label></div>
+                            <div class="option"><input type="radio" name="q26" value="3" id="q26-3"><label for="q26-3">3</label></div>
+                            <div class="option"><input type="radio" name="q26" value="4" id="q26-4"><label for="q26-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Cuando me aburro, recurro al móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q27" value="0" id="q27-0"><label for="q27-0">0</label></div>
+                            <div class="option"><input type="radio" name="q27" value="1" id="q27-1"><label for="q27-1">1</label></div>
+                            <div class="option"><input type="radio" name="q27" value="2" id="q27-2"><label for="q27-2">2</label></div>
+                            <div class="option"><input type="radio" name="q27" value="3" id="q27-3"><label for="q27-3">3</label></div>
+                            <div class="option"><input type="radio" name="q27" value="4" id="q27-4"><label for="q27-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Uso el móvil en situaciones inapropiadas (en clase, comiendo...).</p><div class="options">
+                            <div class="option"><input type="radio" name="q28" value="0" id="q28-0"><label for="q28-0">0</label></div>
+                            <div class="option"><input type="radio" name="q28" value="1" id="q28-1"><label for="q28-1">1</label></div>
+                            <div class="option"><input type="radio" name="q28" value="2" id="q28-2"><label for="q28-2">2</label></div>
+                            <div class="option"><input type="radio" name="q28" value="3" id="q28-3"><label for="q28-3">3</label></div>
+                            <div class="option"><input type="radio" name="q28" value="4" id="q28-4"><label for="q28-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Me han reñido por mi uso del móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q29" value="0" id="q29-0"><label for="q29-0">0</label></div>
+                            <div class="option"><input type="radio" name="q29" value="1" id="q29-1"><label for="q29-1">1</label></div>
+                            <div class="option"><input type="radio" name="q29" value="2" id="q29-2"><label for="q29-2">2</label></div>
+                            <div class="option"><input type="radio" name="q29" value="3" id="q29-3"><label for="q29-3">3</label></div>
+                            <div class="option"><input type="radio" name="q29" value="4" id="q29-4"><label for="q29-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Cuando llevo tiempo sin usarlo, siento necesidad de revisarlo.</p><div class="options">
+                            <div class="option"><input type="radio" name="q30" value="0" id="q30-0"><label for="q30-0">0</label></div>
+                            <div class="option"><input type="radio" name="q30" value="1" id="q30-1"><label for="q30-1">1</label></div>
+                            <div class="option"><input type="radio" name="q30" value="2" id="q30-2"><label for="q30-2">2</label></div>
+                            <div class="option"><input type="radio" name="q30" value="3" id="q30-3"><label for="q30-3">3</label></div>
+                            <div class="option"><input type="radio" name="q30" value="4" id="q30-4"><label for="q30-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Si no tengo el móvil, me siento mal o incómodo/a.</p><div class="options">
+                            <div class="option"><input type="radio" name="q31" value="0" id="q31-0"><label for="q31-0">0</label></div>
+                            <div class="option"><input type="radio" name="q31" value="1" id="q31-1"><label for="q31-1">1</label></div>
+                            <div class="option"><input type="radio" name="q31" value="2" id="q31-2"><label for="q31-2">2</label></div>
+                            <div class="option"><input type="radio" name="q31" value="3" id="q31-3"><label for="q31-3">3</label></div>
+                            <div class="option"><input type="radio" name="q31" value="4" id="q31-4"><label for="q31-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Cuando tengo el móvil en la mano, no puedo dejar de usarlo.</p><div class="options">
+                            <div class="option"><input type="radio" name="q32" value="0" id="q32-0"><label for="q32-0">0</label></div>
+                            <div class="option"><input type="radio" name="q32" value="1" id="q32-1"><label for="q32-1">1</label></div>
+                            <div class="option"><input type="radio" name="q32" value="2" id="q32-2"><label for="q32-2">2</label></div>
+                            <div class="option"><input type="radio" name="q32" value="3" id="q32-3"><label for="q32-3">3</label></div>
+                            <div class="option"><input type="radio" name="q32" value="4" id="q32-4"><label for="q32-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Nada más levantarme, reviso si tengo notificaciones.</p><div class="options">
+                            <div class="option"><input type="radio" name="q33" value="0" id="q33-0"><label for="q33-0">0</label></div>
+                            <div class="option"><input type="radio" name="q33" value="1" id="q33-1"><label for="q33-1">1</label></div>
+                            <div class="option"><input type="radio" name="q33" value="2" id="q33-2"><label for="q33-2">2</label></div>
+                            <div class="option"><input type="radio" name="q33" value="3" id="q33-3"><label for="q33-3">3</label></div>
+                            <div class="option"><input type="radio" name="q33" value="4" id="q33-4"><label for="q33-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Desde que tengo móvil, uso más apps o redes que antes.</p><div class="options">
+                            <div class="option"><input type="radio" name="q34" value="0" id="q34-0"><label for="q34-0">0</label></div>
+                            <div class="option"><input type="radio" name="q34" value="1" id="q34-1"><label for="q34-1">1</label></div>
+                            <div class="option"><input type="radio" name="q34" value="2" id="q34-2"><label for="q34-2">2</label></div>
+                            <div class="option"><input type="radio" name="q34" value="3" id="q34-3"><label for="q34-3">3</label></div>
+                            <div class="option"><input type="radio" name="q34" value="4" id="q34-4"><label for="q34-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">No creo que pudiera pasar una semana sin móvil.</p><div class="options">
+                            <div class="option"><input type="radio" name="q35" value="0" id="q35-0"><label for="q35-0">0</label></div>
+                            <div class="option"><input type="radio" name="q35" value="1" id="q35-1"><label for="q35-1">1</label></div>
+                            <div class="option"><input type="radio" name="q35" value="2" id="q35-2"><label for="q35-2">2</label></div>
+                            <div class="option"><input type="radio" name="q35" value="3" id="q35-3"><label for="q35-3">3</label></div>
+                            <div class="option"><input type="radio" name="q35" value="4" id="q35-4"><label for="q35-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Cuando me siento solo/a, uso el móvil para contactar.</p><div class="options">
+                            <div class="option"><input type="radio" name="q36" value="0" id="q36-0"><label for="q36-0">0</label></div>
+                            <div class="option"><input type="radio" name="q36" value="1" id="q36-1"><label for="q36-1">1</label></div>
+                            <div class="option"><input type="radio" name="q36" value="2" id="q36-2"><label for="q36-2">2</label></div>
+                            <div class="option"><input type="radio" name="q36" value="3" id="q36-3"><label for="q36-3">3</label></div>
+                            <div class="option"><input type="radio" name="q36" value="4" id="q36-4"><label for="q36-4">4</label></div>
+                        </div></div>
+                        <div class="question-card"><p class="question-text">Ahora mismo, me entran ganas de coger el móvil y usarlo.</p><div class="options">
+                            <div class="option"><input type="radio" name="q37" value="0" id="q37-0"><label for="q37-0">0</label></div>
+                            <div class="option"><input type="radio" name="q37" value="1" id="q37-1"><label for="q37-1">1</label></div>
+                            <div class="option"><input type="radio" name="q37" value="2" id="q37-2"><label for="q37-2">2</label></div>
+                            <div class="option"><input type="radio" name="q37" value="3" id="q37-3"><label for="q37-3">3</label></div>
+                            <div class="option"><input type="radio" name="q37" value="4" id="q37-4"><label for="q37-4">4</label></div>
+                        </div></div>
+                    </div>
+                </section>
+            </div>
+            <div class="buttons">
+                <button type="button" class="btn btn-secondary" id="resetBtn">
+                    <i>↺</i> Reiniciar
+                </button>
+                <button type="button" class="btn btn-primary" id="calculateBtn">
+                    <i>📊</i> Ver mis resultados
+                </button>
+            </div>
+        </form>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Tu resultado</h2>
+            <div class="result-score" id="resultScore">0</div>
+            <div class="result-category category-low" id="resultCategory">Uso equilibrado</div>
+            <p class="result-description" id="resultDescription">
+                Mantienes una relación saludable con la tecnología.
+            </p>
+            <div class="resources">
+    <h3>Recursos para ti</h3>
+    <p class="resource-paragraph">
+        Cada vez hay más personas, sobre todo jóvenes, dependientes de una contestación inmediata, de ver las publicaciones ajenas en redes sociales, incluso de tener el dispositivo cerca o llevarlo encima allá donde vayan. Esta dependencia conlleva ansiedad y sufrimiento si se está lejos del dispositivo o sin conexión.
+    </p>
+
+    <h4 class="resource-subheading">Factores comunes tras la adicción al móvil</h4>
+    <ul class="resources-list styled-list">
+        <li>Personas con baja autoestima</li>
+        <li>Sentimiento de soledad o aislamiento forzado</li>
+        <li>Sentirse marginado/a</li>
+        <li>Trabajos que permiten estar todo el día pendiente del móvil</li>
+        <li>Hastío o falta de actividades significativas</li>
+    </ul>
+
+    <h4 class="resource-subheading">Señales de dependencia patológica</h4>
+
+		<ol class="resources-list styled-list decimal-list" style="text-align: left; padding-left: 1.5rem; margin-left: 0;">
+			<li><strong>Uso incontrolado:</strong> uso constante, incluso en momentos inapropiados (comiendo, estudiando, cruzando la calle).</li>
+			<li><strong>Síndrome de abstinencia:</strong> ansiedad, irritabilidad o tristeza al no tener acceso al móvil.</li>
+			<li><strong>Tolerancia:</strong> necesidad de usar el móvil cada vez más tiempo para sentir la misma satisfacción.</li>
+			<li><strong>Repercusiones negativas:</strong> descuido de responsabilidades, relaciones, salud o estudios.</li>
+		</ol>
+
+    <p class="resource-paragraph">
+        Aunque la adicción al móvil aún no está incluida en el DSM-IV-TR como diagnóstico oficial, estudios neurológicos y psicológicos confirman que activa el mismo circuito de recompensa cerebral (dopamina) que otras adicciones. Esto explica por qué puede generar dependencia, cambios de humor y pérdida de control.
+    </p>
+
+    <p class="resource-paragraph callout">
+        Si sientes que el móvil está afectando tu bienestar, no estás solo/a. Existen terapias especializadas, especialmente para adolescentes y jóvenes. Hablar con un adulto de confianza, un orientador escolar o un profesional de la salud mental puede ser el primer paso hacia un uso más equilibrado.
+    </p>
+</div>
+
+
+            <button type="button" class="btn btn-secondary" id="retakeBtn">
+                <i>🔄</i> Volver a hacer el test
+            </button>
+        </div>
+
+        <footer>
+            <p>Este cuestionario es una herramienta de reflexión, no un diagnóstico médico. Si tienes preocupaciones, consulta con un profesional.</p>
+            <p>© 2025 - Diseñado para estudiantes de secundaria</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const totalQuestions = 37;
+            const form = document.getElementById('techForm');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const retakeBtn = document.getElementById('retakeBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultScore = document.getElementById('resultScore');
+            const resultCategory = document.getElementById('resultCategory');
+            const resultDescription = document.getElementById('resultDescription');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+
+            function updateProgress() {
+                let answered = 0;
+                for (let i = 1; i <= totalQuestions; i++) {
+                    if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+                }
+                const percent = (answered / totalQuestions) * 100;
+                progressBar.style.width = percent + '%';
+                progressText.textContent = Math.round(percent) + '%';
+            }
+
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', updateProgress);
+            });
+
+            calculateBtn.addEventListener('click', function() {
+                let score = 0;
+                let allAnswered = true;
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const el = document.querySelector(`input[name="q${i}"]:checked`);
+                    if (el) {
+                        score += parseInt(el.value);
+                    } else {
+                        allAnswered = false;
+                    }
+                }
+                if (!allAnswered) {
+                    alert('Por favor, responde todas las preguntas.');
+                    return;
+                }
+
+                resultScore.textContent = score;
+                let category, desc;
+                if (score <= 40) {
+                    category = 'Uso equilibrado';
+                    desc = 'Mantienes una relación saludable con la tecnología. Continúa con estos buenos hábitos y aprovecha el tiempo que pasas desconectado/a para otras actividades que disfrutes.';
+                    resultCategory.className = 'result-category category-low';
+                } else if (score <= 85) {
+                    category = 'Uso moderado';
+                    desc = 'Tienes algunos hábitos que podrías mejorar. Considera establecer límites de tiempo para el uso del móvil y busca actividades alternativas para los momentos de aburrimiento.';
+                    resultCategory.className = 'result-category category-medium';
+                } else {
+                    category = 'Uso intensivo';
+                    desc = 'Tu relación con la tecnología podría estar afectando otros aspectos de tu vida. Te recomendamos establecer límites claros y buscar apoyo si sientes que no puedes controlar tu uso.';
+                    resultCategory.className = 'result-category category-high';
+                }
+                resultCategory.textContent = category;
+                resultDescription.textContent = desc;
+                resultContainer.style.display = 'block';
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            resetBtn.addEventListener('click', () => {
+                form.reset();
+                updateProgress();
+            });
+
+            retakeBtn.addEventListener('click', () => {
+                form.reset();
+                resultContainer.style.display = 'none';
+                updateProgress();
+                document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
+
