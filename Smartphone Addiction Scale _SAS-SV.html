@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Relación con el Móvil - Test para Estudiantes</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f94144;
+            --radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-card h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card h2 i {
+            color: var(--accent);
+        }
+
+        .scale-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .scale-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--light);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .scale-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .progress-container {
+            margin: 2rem 0;
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: var(--transition);
+        }
+
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        @media (min-width: 768px) {
+            .options-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .option {
+            text-align: center;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option label {
+            display: block;
+            padding: 12px 8px;
+            background: var(--light);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            border: 2px solid transparent;
+        }
+
+        .option input:checked + label {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .option label:hover {
+            background: var(--primary-light);
+            color: white;
+            border-color: var(--primary-light);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+        }
+
+        .result-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .result-category {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        .category-low {
+            background: #e7f7ef;
+            color: #0a8754;
+        }
+
+        .category-medium {
+            background: #fff8e6;
+            color: #b3870a;
+        }
+
+        .category-high {
+            background: #ffe6e6;
+            color: #d63031;
+        }
+
+        .result-description {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+
+        .score-bar {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: var(--transition);
+        }
+
+        .score-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .resources {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-top: 1.5rem;
+        }
+
+        .resources h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .resources-list {
+            list-style: none;
+        }
+
+        .resources-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resources-list a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .resources-list a:hover {
+            text-decoration: underline;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .info-section h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Accesibilidad */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Modo alto contraste */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary: #0000ff;
+                --primary-light: #3333ff;
+                --secondary: #0000cc;
+                --accent: #ff0000;
+                --light: #ffffff;
+                --dark: #000000;
+            }
+        }
+
+        /* Modo reducción de movimiento */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mi Relación con el Móvil</h1>
+            <p class="subtitle">Un cuestionario para reflexionar sobre tu uso del teléfono y su impacto en tu vida</p>
+        </header>
+
+        <div class="info-card">
+            <h2><i>💡</i> Instrucciones</h2>
+            <p>Responde cada pregunta con sinceridad seleccionando la opción que mejor describa tu experiencia. No hay respuestas correctas o incorrectas, solo oportunidades para reflexionar sobre tus hábitos digitales.</p>
+            
+            <div class="scale-info">
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #e7f7ef;"></div>
+                    <span>1 = Totalmente en desacuerdo</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #c8e6c9;"></div>
+                    <span>2 = En desacuerdo</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #fff8e6;"></div>
+                    <span>3 = Ligeramente en desacuerdo</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #ffecb3;"></div>
+                    <span>4 = Ligeramente de acuerdo</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #ffcdd2;"></div>
+                    <span>5 = De acuerdo</span>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-color" style="background-color: #ff8a80;"></div>
+                    <span>6 = Totalmente de acuerdo</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <p>Progreso del cuestionario: <span id="progress-text">0%</span></p>
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <form id="sasForm">
+            <div class="questions-container">
+                <!-- Pregunta 1 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">1</span>
+                        He descuidado responsabilidades o actividades por usar el móvil
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q1-1" name="q1" value="1">
+                            <label for="q1-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-2" name="q1" value="2">
+                            <label for="q1-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-3" name="q1" value="3">
+                            <label for="q1-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-4" name="q1" value="4">
+                            <label for="q1-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-5" name="q1" value="5">
+                            <label for="q1-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-6" name="q1" value="6">
+                            <label for="q1-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">2</span>
+                        Me cuesta concentrarme en clase o al hacer tareas por usar el móvil
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q2-1" name="q2" value="1">
+                            <label for="q2-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-2" name="q2" value="2">
+                            <label for="q2-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-3" name="q2" value="3">
+                            <label for="q2-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-4" name="q2" value="4">
+                            <label for="q2-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-5" name="q2" value="5">
+                            <label for="q2-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-6" name="q2" value="6">
+                            <label for="q2-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">3</span>
+                        He sentido molestias físicas (cuello, muñecas, ojos) por usar el móvil
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q3-1" name="q3" value="1">
+                            <label for="q3-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-2" name="q3" value="2">
+                            <label for="q3-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-3" name="q3" value="3">
+                            <label for="q3-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-4" name="q3" value="4">
+                            <label for="q3-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-5" name="q3" value="5">
+                            <label for="q3-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-6" name="q3" value="6">
+                            <label for="q3-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">4</span>
+                        Me siento incómodo/a cuando no tengo mi teléfono cerca
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q4-1" name="q4" value="1">
+                            <label for="q4-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-2" name="q4" value="2">
+                            <label for="q4-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-3" name="q4" value="3">
+                            <label for="q4-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-4" name="q4" value="4">
+                            <label for="q4-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-5" name="q4" value="5">
+                            <label for="q4-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-6" name="q4" value="6">
+                            <label for="q4-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 5 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">5</span>
+                        Me siento inquieto/a o impaciente cuando no puedo usar mi teléfono
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q5-1" name="q5" value="1">
+                            <label for="q5-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-2" name="q5" value="2">
+                            <label for="q5-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-3" name="q5" value="3">
+                            <label for="q5-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-4" name="q5" value="4">
+                            <label for="q5-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-5" name="q5" value="5">
+                            <label for="q5-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-6" name="q5" value="6">
+                            <label for="q5-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 6 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">6</span>
+                        Pienso en mi teléfono incluso cuando no lo estoy usando
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q6-1" name="q6" value="1">
+                            <label for="q6-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-2" name="q6" value="2">
+                            <label for="q6-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-3" name="q6" value="3">
+                            <label for="q6-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-4" name="q6" value="4">
+                            <label for="q6-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-5" name="q6" value="5">
+                            <label for="q6-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-6" name="q6" value="6">
+                            <label for="q6-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 7 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">7</span>
+                        Continuo usando el móvil aunque afecte negativamente mi vida diaria
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q7-1" name="q7" value="1">
+                            <label for="q7-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-2" name="q7" value="2">
+                            <label for="q7-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-3" name="q7" value="3">
+                            <label for="q7-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-4" name="q7" value="4">
+                            <label for="q7-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-5" name="q7" value="5">
+                            <label for="q7-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-6" name="q7" value="6">
+                            <label for="q7-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 8 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">8</span>
+                        Reviso constantemente mis redes sociales para no perderme nada
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q8-1" name="q8" value="1">
+                            <label for="q8-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-2" name="q8" value="2">
+                            <label for="q8-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-3" name="q8" value="3">
+                            <label for="q8-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-4" name="q8" value="4">
+                            <label for="q8-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-5" name="q8" value="5">
+                            <label for="q8-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-6" name="q8" value="6">
+                            <label for="q8-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 9 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">9</span>
+						Uso mi teléfono móvil más de lo que había previsto inicialmente.
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q9-1" name="q9" value="1">
+                            <label for="q9-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-2" name="q9" value="2">
+                            <label for="q9-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-3" name="q9" value="3">
+                            <label for="q9-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-4" name="q9" value="4">
+                            <label for="q9-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-5" name="q9" value="5">
+                            <label for="q9-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-6" name="q9" value="6">
+                            <label for="q9-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 10 -->
+                <div class="question-card">
+                    <p class="question-text">
+                        <span class="question-number">10</span>
+                        Personas cercanas me han dicho que uso demasiado el móvil
+                    </p>
+                    <div class="options-grid">
+                        <div class="option">
+                            <input type="radio" id="q10-1" name="q10" value="1">
+                            <label for="q10-1">Totalmente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q10-2" name="q10" value="2">
+                            <label for="q10-2">En desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q10-3" name="q10" value="3">
+                            <label for="q10-3">Ligeramente en desacuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q10-4" name="q10" value="4">
+                            <label for="q10-4">Ligeramente de acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q10-5" name="q10" value="5">
+                            <label for="q10-5">De acuerdo</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q10-6" name="q10" value="6">
+                            <label for="q10-6">Totalmente de acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-secondary" id="resetBtn">
+                    <i>↺</i> Reiniciar
+                </button>
+                <button type="button" class="btn btn-primary" id="calculateBtn">
+                    <i>📊</i> Ver mis resultados
+                </button>
+            </div>
+        </form>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Tu resultado</h2>
+            <div class="result-score" id="resultScore">0</div>
+            <div class="score-bar">
+                <div class="score-fill" id="scoreFill"></div>
+            </div>
+            <div class="score-labels">
+                <span>10</span>
+                <span>31</span>
+                <span>60</span>
+            </div>
+            <div class="result-category category-low" id="resultCategory">Uso equilibrado</div>
+            <p class="result-description" id="resultDescription">
+                Mantienes una relación saludable con tu teléfono móvil. Continúa con estos buenos hábitos.
+            </p>
+            
+            <div class="resources">
+                <h3>Recursos para ti</h3>
+                <ul class="resources-list">
+                    <li><i>📚</i> <a href="#" target="_blank">Guía para un uso responsable del móvil</a></li>
+                    <li><i>🧘</i> <a href="#" target="_blank">Técnicas de desconexión digital</a></li>
+                    <li><i>👥</i> <a href="#" target="_blank">Grupos de apoyo para jóvenes</a></li>
+                </ul>
+            </div>
+            
+            <button type="button" class="btn btn-secondary" id="retakeBtn">
+                <i>🔄</i> Volver a hacer el test
+            </button>
+        </div>
+
+        <div class="info-section">
+            <h2>Sobre este test</h2>
+            <p>Este cuestionario está basado en la "Smartphone Addiction Scale" (SAS-SV), una herramienta validada para evaluar el uso problemático de teléfonos móviles. El punto de corte es 31 puntos, lo que significa que puntuaciones superiores pueden indicar un uso problemático del móvil.</p>
+            <p>Recuerda que este test es una herramienta de reflexión, no un diagnóstico médico. Si tienes preocupaciones sobre tu uso de la tecnología, consulta con un profesional de la salud.</p>
+        </div>
+
+        <footer>
+            <p>Este cuestionario es una herramienta de reflexión, no un diagnóstico médico. Si tienes preocupaciones sobre tu uso de la tecnología, consulta con un profesional.</p>
+            <p>Basado en: Kwon M, Kim DJ, Cho H, Yang S. The smartphone addiction scale: development and validation of a short version for adolescents. PLoS One. 2013;8(12):e83558.</p>
+            <p>© 2023 - Diseñado para estudiantes de secundaria</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('sasForm');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const retakeBtn = document.getElementById('retakeBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultScore = document.getElementById('resultScore');
+            const resultCategory = document.getElementById('resultCategory');
+            const resultDescription = document.getElementById('resultDescription');
+            const scoreFill = document.getElementById('scoreFill');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            const totalQuestions = 10;
+            let answeredQuestions = 0;
+            
+            // Actualizar progreso
+            function updateProgress() {
+                answeredQuestions = 0;
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionName = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                    if (selectedOption) {
+                        answeredQuestions++;
+                    }
+                }
+                
+                const progress = (answeredQuestions / totalQuestions) * 100;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }
+            
+            // Escuchar cambios en las respuestas
+            const radioInputs = document.querySelectorAll('input[type="radio"]');
+            radioInputs.forEach(input => {
+                input.addEventListener('change', updateProgress);
+            });
+            
+            // Calcular resultados
+            calculateBtn.addEventListener('click', function() {
+                let totalScore = 0;
+                let allAnswered = true;
+                
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionName = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                    
+                    if (selectedOption) {
+                        totalScore += parseInt(selectedOption.value);
+                    } else {
+                        allAnswered = false;
+                    }
+                }
+                
+                if (!allAnswered) {
+                    alert('Por favor, responde todas las preguntas antes de ver tus resultados.');
+                    return;
+                }
+                
+                // Mostrar resultados
+                resultScore.textContent = totalScore;
+                
+                // Actualizar barra de puntuación
+                const scorePercentage = ((totalScore - 10) / 50) * 100;
+                scoreFill.style.width = scorePercentage + '%';
+                
+                let category, description;
+                if (totalScore <= 31) {
+                    category = 'Uso equilibrado';
+                    description = 'Mantienes una relación saludable con tu teléfono móvil. Continúa con estos buenos hábitos y aprovecha el tiempo que pasas desconectado/a para otras actividades que disfrutes.';
+                    resultCategory.className = 'result-category category-low';
+                } else if (totalScore <= 45) {
+                    category = 'Uso moderado';
+                    description = 'Tu uso del móvil podría estar comenzando a afectar algunos aspectos de tu vida. Considera establecer límites de tiempo y buscar actividades alternativas para los momentos de aburrimiento.';
+                    resultCategory.className = 'result-category category-medium';
+                } else {
+                    category = 'Uso intensivo';
+                    description = 'Tu relación con el móvil podría estar afectando significativamente tu vida diaria. Te recomendamos establecer límites claros y buscar apoyo si sientes que no puedes controlar tu uso.';
+                    resultCategory.className = 'result-category category-high';
+                }
+                
+                resultCategory.textContent = category;
+                resultDescription.textContent = description;
+                resultContainer.style.display = 'block';
+                
+                // Desplazarse a los resultados
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Reiniciar el formulario
+            resetBtn.addEventListener('click', function() {
+                form.reset();
+                updateProgress();
+            });
+            
+            // Volver a hacer el test
+            retakeBtn.addEventListener('click', function() {
+                form.reset();
+                resultContainer.style.display = 'none';
+                updateProgress();
+                document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Inicializar progreso
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
