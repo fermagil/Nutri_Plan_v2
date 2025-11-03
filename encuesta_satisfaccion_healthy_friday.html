@@ -376,7 +376,7 @@
 
 
            
-            <form id="encuesta-form" action="https://script.google.com/a/macros/murciaeduca.es/s/AKfycbwP5k5Kc7p2Ly1aviBoIcd5DaDuyvZt4_QMe9DxSy3E-n3kwdAbh19jMAszIyVfMtZr/exec" method="POST">
+            <form id="encuesta-form" action="https://script.google.com/macros/s/AKfycbxzdo5xUgeMB65qpZJiAR7uZDJtI9-kxlwnZrarfmXXN2ndG03JBqWJB_WlnSNMnduE/exec" method="POST">
                 <!-- CONSENTIMIENTO ÉTICO (Ética y Transparencia) -->
                 <div class="seccion">
                     <div class="seccion-titulo">
@@ -2294,7 +2294,7 @@
     btn.textContent = 'Enviando...';
 
     try {
-        const res = await fetch(form.action, { method: 'POST', body: data });
+        const res = await fetch(form.action, { method: 'POST', body: data }); 
         const json = await res.json();
         if (json.status === 'success') {
             modal.style.display = 'flex';
@@ -2320,6 +2320,7 @@
 </body>
 
 </html>
+
 
 
 
