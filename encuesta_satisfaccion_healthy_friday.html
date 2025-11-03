@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta Healthy Friday - IES Salvador Sandoval</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+       
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+       
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+       
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+       
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+       
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+       
+        .progress-bar {
+            background: white;
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+       
+        .progress-fill {
+            background: linear-gradient(to right, #10b981, #059669);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+       
+        .content {
+            padding: 40px;
+        }
+       
+        .seccion {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+       
+        .seccion-titulo {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+       
+        .seccion-descripcion {
+            color: #64748b;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+       
+        .pregunta {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+       
+        .pregunta-texto {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+       
+        .pregunta-requerida::after {
+            content: " *";
+            color: #ef4444;
+        }
+       
+        .opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+       
+        .opcion-radio,
+        .opcion-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+       
+        .opcion-radio:hover,
+        .opcion-checkbox:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+       
+        .opcion-radio input,
+        .opcion-checkbox input {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+       
+        .escala-likert {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+       
+        .escala-item {
+            text-align: center;
+        }
+       
+        .escala-boton {
+            width: 100%;
+            padding: 15px 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+       
+        .escala-boton:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+       
+        .escala-boton.seleccionado {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+       
+        .escala-label {
+            font-size: 0.85em;
+            color: #64748b;
+            margin-top: 8px;
+        }
+       
+        .textarea-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+       
+        .textarea-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+       
+        .input-text {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+       
+        .input-text:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+       
+        .tabla-valoracion {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+       
+        .tabla-valoracion th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+       
+        .tabla-valoracion td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+       
+        .tabla-valoracion tr:hover {
+            background: #f8fafc;
+        }
+       
+        .tabla-valoracion select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+       
+        .btn-enviar {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+       
+        .btn-enviar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+        }
+       
+        .nota-info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.95em;
+            color: #1e40af;
+        }
+       
+        .nota-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+       
+        .modal-exito {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+       
+        .modal-contenido {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: aparecer 0.3s ease;
+        }
+       
+        @keyframes aparecer {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+       
+        .modal-icono {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+       
+        .modal-titulo {
+            font-size: 1.8em;
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+       
+        .modal-texto {
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+       
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+           
+            .escala-likert {
+                grid-template-columns: 1fr;
+            }
+           
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        /* Nueva estilos para secciones dinámicas por tienda */
+        .tienda-seccion {
+            display: none;
+            margin-top: 20px;
+        }
+        .tienda-seccion.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍎 Encuesta de Satisfacción</h1>
+            <p><strong>Proyecto Healthy Friday</strong></p>
+            <p>IES Salvador Sandoval - Curso 2025/26</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+       
+        <div class="content">
+            <div class="nota-info">
+                <strong>📋 Instrucciones:</strong>
+                Esta encuesta es <strong>anónima</strong> y nos ayudará a mejorar futuras ediciones del Healthy Friday.
+                Responde con sinceridad, no hay respuestas correctas o incorrectas.
+                Tiempo estimado: <strong>5-8 minutos</strong>.
+            </div>
+           
+            <form id="encuesta-form" action="https://script.google.com/a/macros/murciaeduca.es/s/AKfycbyx4n2yiCgptC2E8oFAzDBCLe8Fvec3d_exB5rxy2HbYW0lxbQZ5ikFQMekjqEOQA/exec" method="POST">
+                <!-- CONSENTIMIENTO ÉTICO (Ética y Transparencia) -->
+                <div class="seccion">
+                    <div class="seccion-titulo">
+                        🔒 Consentimiento Informado
+                    </div>
+                    <div class="seccion-descripcion">
+                        Tus respuestas serán anónimas y se usarán únicamente para mejorar el programa "Creciendo en Salud". Acepta para continuar.
+                    </div>
+                    <div class="pregunta">
+                        <label class="opcion-checkbox">
+                            <input type="checkbox" name="consentimiento" required>
+                            <span>Acepto que mis respuestas anónimas se usen para análisis y mejora del programa, con protocolos éticos de confidencialidad.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 1: DATOS BÁSICOS -->
+                <div class="seccion">
+                    <div class="seccion-titulo">
+                        👤 Información Básica
+                    </div>
+                    <div class="seccion-descripcion">
+                        Ayúdanos a conocer tu perfil para analizar mejor los resultados.
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">1. Eres:</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="perfil" value="alumno" required>
+                                <span>Alumno/a</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="perfil" value="profesor">
+                                <span>Profesor/a</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="perfil" value="familia">
+                                <span>Familia (padre/madre)</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="perfil" value="otro">
+                                <span>Otro</span>
+                            </label>
+                        </div>
+                    </div>
+                   
+                    <div class="pregunta" id="pregunta-curso">
+                        <div class="pregunta-texto pregunta-requerida">2. Si eres alumno/a, ¿de qué curso?</div>
+                        <select class="input-text" name="curso">
+                            <option value="">- Selecciona tu curso -</option>
+                            <option value="1eso">1º ESO</option>
+                            <option value="2eso">2º ESO</option>
+                            <option value="3eso">3º ESO</option>
+                            <option value="4eso">4º ESO</option>
+                            <option value="1bach">1º Bachillerato</option>
+                            <option value="2bach">2º Bachillerato</option>
+                            <option value="fp">FP/TSEAS</option>
+                        </select>
+                    </div>
+                </div>
+               
+                <!-- SECCIÓN 2: PARTICIPACIÓN -->
+                <div class="seccion">
+                    <div class="seccion-titulo">
+                        🏪 Participación en las Tiendas
+                    </div>
+                    <div class="seccion-descripcion">
+                        Queremos saber qué tiendas visitaste y tu experiencia general.
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">3. ¿Cuántas tiendas visitaste aproximadamente?</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="num-tiendas" value="0" required>
+                                <span>Ninguna (no pude asistir)</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="num-tiendas" value="1-3">
+                                <span>1-3 tiendas</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="num-tiendas" value="4-6">
+                                <span>4-6 tiendas</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="num-tiendas" value="7-10">
+                                <span>7-10 tiendas (todas o casi todas)</span>
+                            </label>
+                        </div>
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">4. ¿Qué tiendas visitaste? (Marca todas las que correspondan)</div>
+                        <div class="opciones" id="tiendas-opciones">
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda1">
+                                <span>🎒 Tienda 1: Higiene Postural y Mochila Saludable</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda2">
+                                <span>💪 Tienda 2: Higiene de la Espalda y Flexibilidad Isquiosural</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda3">
+                                <span>⚖️ Tienda 3: IMC y Composición Corporal</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda4">
+                                <span>🏃 Tienda 4: Actividad Física 60' y Salud Cardiovascular</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda5">
+                                <span>🥗 Tienda 5: Alimentación Saludable y Plato Harvard</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda6">
+                                <span>🌍 Tienda 6: Salud Medioambiental</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda7">
+                                <span>😴 Tienda 7: Descanso y Desconexión Digital</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda8">
+                                <span>🌟 Tienda 8: Hábitos Saludables Integrales</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda9">
+                                <span>🧘 Tienda 9: Mindfulness y Salud Emocional</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="tiendas[]" value="tienda10">
+                                <span>🏋️ Tienda 10: Fuerza y Salud</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DINÁMICA POR TIENDA (Desarrollada con 5 preguntas por tienda para feedback, adaptadas a cada tema) -->
+                <div class="seccion" id="seccion-por-tienda">
+                    <div class="seccion-titulo">
+                        📊 Valoración Específica por Tienda
+                    </div>
+                    <div class="seccion-descripcion">
+                        Para cada tienda visitada, responde 5 preguntas específicas relacionadas con su tema para proporcionar feedback detallado sobre conocimiento, utilidad, cambios de hábitos, interactividad y sugerencias.
+                    </div>
+
+                    <!-- Tienda 1 -->
+                    <div class="tienda-seccion" id="tienda1-seccion">
+                        <h3>🎒 Tienda 1: Higiene Postural y Mochila Saludable</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre el peso recomendado de la mochila y su impacto en la espalda?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda1-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre higiene postural fue útil para prevenir lesiones en tu rutina diaria?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás tu forma de llevar la mochila o tu postura diaria basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda1-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., pesaje de mochila, test de flexibilidad)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda1-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda1-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda1-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 2 -->
+                    <div class="tienda-seccion" id="tienda2-seccion">
+                        <h3>💪 Tienda 2: Higiene de la Espalda y Flexibilidad Isquiosural</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre el acortamiento isquiosural y su relación con dolores de espalda?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda2-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre estiramientos fue útil para corregir desequilibrios posturales?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás tu forma de llevar la mochila o tu postura diaria basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda2-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., medición de flexibilidad, estiramientos guiados)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda2-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda2-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda2-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 3 -->
+                    <div class="tienda-seccion" id="tienda3-seccion">
+                        <h3>⚖️ Tienda 3: IMC y Composición Corporal</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre el IMC y su interpretación según edad y sexo?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda3-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre composición corporal fue útil para entender la diferencia entre peso y masa muscular/grasa?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás hábitos relacionados con el peso saludable basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda3-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., mediciones de IMC, asesoramiento personalizado)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda3-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda3-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda3-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 4 -->
+                    <div class="tienda-seccion" id="tienda4-seccion">
+                        <h3>🏃 Tienda 4: Actividad Física 60' y Salud Cardiovascular</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre los 60 minutos de actividad física diaria recomendados por la OMS?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda4-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre beneficios cardiovasculares fue útil para motivarte a moverte más?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás tus hábitos de actividad física (e.g., más baile o caminatas) basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda4-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., Just Dance, test de sedentarismo)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda4-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda4-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda4-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 5 -->
+                    <div class="tienda-seccion" id="tienda5-seccion">
+                        <h3>🥗 Tienda 5: Alimentación Saludable y Plato Harvard</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre el Plato Harvard y la diferencia entre comida real y ultraprocesados?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda5-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre hábitos alimenticios fue útil para reducir el consumo de azúcares y grasas?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás tus hábitos de alimentación (e.g., más frutas y verduras) basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda5-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., intercambio de golosinas por fruta)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda5-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda5-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda5-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 6 (Inferida del nombre) -->
+                    <div class="tienda-seccion" id="tienda6-seccion">
+                        <h3>🌍 Tienda 6: Salud Medioambiental</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre la relación entre medioambiente y salud (e.g., sostenibilidad en hábitos diarios)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda6-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre hábitos sostenibles fue útil para reducir el impacto ambiental en tu vida diaria?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás hábitos medioambientales (e.g., reciclaje, movilidad activa) basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda6-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., actividades sobre sostenibilidad)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda6-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda6-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda6-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 7 -->
+                    <div class="tienda-seccion" id="tienda7-seccion">
+                        <h3>😴 Tienda 7: Descanso y Desconexión Digital</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre la importancia del sueño y los efectos del uso de pantallas?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda7-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre desconexión digital fue útil para mejorar tus hábitos de sueño?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás tus hábitos de uso de pantallas antes de dormir basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda7-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., tests de hábitos de sueño)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda7-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda7-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda7-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 8 -->
+                    <div class="tienda-seccion" id="tienda8-seccion">
+                        <h3>🌟 Tienda 8: Hábitos Saludables Integrales</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre hábitos saludables integrales (e.g., combinación de alimentación, ejercicio y descanso)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda8-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información integral fue útil para equilibrar tus hábitos diarios?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás tus hábitos integrales (e.g., más equilibrio entre áreas) basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda8-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., diseño de cómics sobre hábitos)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda8-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda8-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda8-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 9 -->
+                    <div class="tienda-seccion" id="tienda9-seccion">
+                        <h3>🧘 Tienda 9: Mindfulness y Salud Emocional</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre técnicas de mindfulness para gestionar el estrés?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda9-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre salud emocional fue útil para mejorar tu bienestar diario?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás hábitos emocionales (e.g., prácticas de mindfulness) basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda9-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., ejercicios de mindfulness guiados)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda9-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda9-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda9-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tienda 10 -->
+                    <div class="tienda-seccion" id="tienda10-seccion">
+                        <h3>🏋️ Tienda 10: Fuerza y Salud</h3>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.1 ¿Mejoraste tu conocimiento sobre el entrenamiento de fuerza y sus beneficios para la salud?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q1" data-valor="1">1</button>
+                                    <div class="escala-label">Nada</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q1" data-valor="2">2</button>
+                                    <div class="escala-label">Poco</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q1" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q1" data-valor="4">4</button>
+                                    <div class="escala-label">Mucho</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q1" data-valor="5">5</button>
+                                    <div class="escala-label">Muchísimo</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda10-q1">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.2 ¿La información sobre ejercicios de fuerza fue útil para incorporar rutinas seguras?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q2" value="si">
+                                    <span>Sí, muy útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q2" value="parcial">
+                                    <span>Parcialmente útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q2" value="no">
+                                    <span>No útil</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q2" value="no_aplica">
+                                    <span>No aplica</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.3 ¿Cambiarás tus hábitos de entrenamiento de fuerza basándote en lo aprendido?</div>
+                            <div class="opciones">
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q3" value="si_definitivamente">
+                                    <span>Sí, definitivamente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q3" value="probablemente">
+                                    <span>Probablemente</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q3" value="no_se">
+                                    <span>No estoy seguro</span>
+                                </label>
+                                <label class="opcion-radio">
+                                    <input type="radio" name="tienda10-q3" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.4 ¿Cómo calificarías la interactividad de la tienda (e.g., demostraciones de ejercicios)?</div>
+                            <div class="escala-likert">
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q4" data-valor="1">1</button>
+                                    <div class="escala-label">Muy baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q4" data-valor="2">2</button>
+                                    <div class="escala-label">Baja</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q4" data-valor="3">3</button>
+                                    <div class="escala-label">Regular</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q4" data-valor="4">4</button>
+                                    <div class="escala-label">Alta</div>
+                                </div>
+                                <div class="escala-item">
+                                    <button type="button" class="escala-boton" data-pregunta="tienda10-q4" data-valor="5">5</button>
+                                    <div class="escala-label">Muy alta</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tienda10-q4">
+                        </div>
+                        <div class="pregunta">
+                            <div class="pregunta-texto">4.5 ¿Qué sugerencias tienes para mejorar esta tienda en futuras ediciones?</div>
+                            <textarea class="textarea-input" name="tienda10-q5" placeholder="Escribe tu feedback..."></textarea>
+                        </div>
+                    </div>
+
+                </div>
+               
+                <!-- SECCIÓN 3: VALORACIÓN GENERAL (Análisis Estadístico: Agregar 'No aplica' a escalas) -->
+                <div class="seccion">
+                    <div class="seccion-titulo">
+                        ⭐ Valoración General del Evento
+                    </div>
+                    <div class="seccion-descripcion">
+                        Valora diferentes aspectos del Healthy Friday en una escala del 1 al 5 (o 'No aplica').
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">5. Valoración global del evento</div>
+                        <div class="escala-likert">
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="valoracion-global" data-valor="1">1</button>
+                                <div class="escala-label">Muy malo</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="valoracion-global" data-valor="2">2</button>
+                                <div class="escala-label">Malo</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="valoracion-global" data-valor="3">3</button>
+                                <div class="escala-label">Regular</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="valoracion-global" data-valor="4">4</button>
+                                <div class="escala-label">Bueno</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="valoracion-global" data-valor="5">5</button>
+                                <div class="escala-label">Excelente</div>
+                            </div>
+                        </div>
+                        <div class="escala-item" style="margin-top: 10px;">
+                            <button type="button" class="escala-boton" data-pregunta="valoracion-global" data-valor="na">N/A</button>
+                            <div class="escala-label">No aplica</div>
+                        </div>
+                        <input type="hidden" name="valoracion-global" required>
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto">6. Valora los siguientes aspectos del evento:</div>
+                        <table class="tabla-valoracion">
+                            <thead>
+                                <tr>
+                                    <th>Aspecto</th>
+                                    <th style="width: 200px;">Valoración</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Organización y claridad de la información</td>
+                                    <td>
+                                        <select name="valoracion-organizacion">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Calidad de los materiales educativos</td>
+                                    <td>
+                                        <select name="valoracion-materiales">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Atención del personal en las tiendas</td>
+                                    <td>
+                                        <select name="valoracion-atencion">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Duración del evento (tiempo disponible)</td>
+                                    <td>
+                                        <select name="valoracion-duracion">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy corto</option>
+                                            <option value="2">2 - Corto</option>
+                                            <option value="3">3 - Adecuado</option>
+                                            <option value="4">4 - Largo</option>
+                                            <option value="5">5 - Muy largo</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Utilidad de la información recibida</td>
+                                    <td>
+                                        <select name="valoracion-utilidad">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Nada útil</option>
+                                            <option value="2">2 - Poco útil</option>
+                                            <option value="3">3 - Útil</option>
+                                            <option value="4">4 - Muy útil</option>
+                                            <option value="5">5 - Extremadamente útil</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!-- Añadidos 5 aspectos más a ser valorados -->
+                                <tr>
+                                    <td>Interactividad de las actividades en general</td>
+                                    <td>
+                                        <select name="valoracion-interactividad">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Relevancia con temas actuales de salud (e.g., obesidad, estrés)</td>
+                                    <td>
+                                        <select name="valoracion-relevancia">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Participación comunitaria (involucramiento de familias y profesores)</td>
+                                    <td>
+                                        <select name="valoracion-participacion">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Calidad de la promoción y difusión previa al evento</td>
+                                    <td>
+                                        <select name="valoracion-promocion">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Impacto en la convivencia y relaciones interpersonales durante el recreo</td>
+                                    <td>
+                                        <select name="valoracion-convivencia">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">1 - Muy malo</option>
+                                            <option value="2">2 - Malo</option>
+                                            <option value="3">3 - Regular</option>
+                                            <option value="4">4 - Bueno</option>
+                                            <option value="5">5 - Excelente</option>
+                                            <option value="na">No aplica</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+               
+                <!-- SECCIÓN 4: IMPACTO Y APRENDIZAJE (Integración con Test de Salud) -->
+                <div class="seccion">
+                    <div class="seccion-titulo">
+                        💡 Impacto y Aprendizaje
+                    </div>
+                    <div class="seccion-descripcion">
+                        Queremos saber si el evento tuvo un impacto real en tu vida, relacionado con hábitos del Test de Salud (alimentación, actividad física, etc.).
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">7. ¿Has aprendido algo nuevo sobre salud en el Healthy Friday?</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="aprendizaje" value="si-mucho" required>
+                                <span>Sí, he aprendido mucho</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="aprendizaje" value="si-algo">
+                                <span>Sí, he aprendido algo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="aprendizaje" value="poco">
+                                <span>He aprendido poco</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="aprendizaje" value="no">
+                                <span>No, ya conocía toda la información</span>
+                            </label>
+                        </div>
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">8. ¿Piensas cambiar algún hábito después de participar en el evento? (Ej: desayuno diario, más ejercicio)</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="cambio-habito" value="si-seguro" required>
+                                <span>Sí, definitivamente cambiaré algún hábito</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="cambio-habito" value="si-probablemente">
+                                <span>Probablemente cambiaré algún hábito</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="cambio-habito" value="no-se">
+                                <span>No estoy seguro/a</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="cambio-habito" value="no">
+                                <span>No, no cambiaré ningún hábito</span>
+                            </label>
+                        </div>
+                    </div>
+                   
+                    <div class="pregunta" id="pregunta-habitos">
+                        <div class="pregunta-texto">9. Si piensas cambiar algún hábito, ¿cuál/es? (Relacionado con Test de Salud: alimentación, actividad, sueño, etc.)</div>
+                        <textarea class="textarea-input" name="habitos-cambiar" placeholder="Por ejemplo: Desayunar todos los días, hacer más ejercicio, reducir el tiempo de pantallas antes de dormir, etc."></textarea>
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">10. ¿Recomendarías este evento a compañeros/as de otros centros?</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="recomendaria" value="si-seguro" required>
+                                <span>Sí, definitivamente</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="recomendaria" value="si-probablemente">
+                                <span>Probablemente sí</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="recomendaria" value="no-seguro">
+                                <span>Probablemente no</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="recomendaria" value="no">
+                                <span>Definitivamente no</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NUEVA SECCIÓN: INCLUSIÓN, EQUIDAD Y SOSTENIBILIDAD (Desarrollada con preguntas mejoradas y opciones de elección) -->
+                <div class="seccion">
+                    <div class="seccion-titulo">
+                        ♻️ Inclusión, Equidad y Sostenibilidad
+                    </div>
+                    <div class="seccion-descripcion">
+                        Evalúa si el evento fue inclusivo, equitativo y promovió hábitos sostenibles, con opciones para seleccionar tu nivel de acuerdo.
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">11. ¿La actividad fue accesible para estudiantes con diversidad (e.g., género, discapacidad, origen étnico), permitiendo participación igualitaria?</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="accesibilidad" value="totalmente_acuerdo" required>
+                                <span>Totalmente de acuerdo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="accesibilidad" value="acuerdo">
+                                <span>De acuerdo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="accesibilidad" value="neutral">
+                                <span>Neutral</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="accesibilidad" value="desacuerdo">
+                                <span>En desacuerdo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="accesibilidad" value="totalmente_desacuerdo">
+                                <span>Totalmente en desacuerdo</span>
+                            </label>
+                        </div>
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">12. ¿El evento promovió la equidad al atender necesidades específicas de grupos vulnerables (e.g., baja participación femenina en actividad física)?</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="equidad" value="totalmente_acuerdo" required>
+                                <span>Totalmente de acuerdo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="equidad" value="acuerdo">
+                                <span>De acuerdo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="equidad" value="neutral">
+                                <span>Neutral</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="equidad" value="desacuerdo">
+                                <span>En desacuerdo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="equidad" value="totalmente_desacuerdo">
+                                <span>Totalmente en desacuerdo</span>
+                            </label>
+                        </div>
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">13. ¿Cómo impactó el evento en hábitos sostenibles (e.g., reciclaje, movilidad activa, reducción de consumo no saludable)?</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="impacto-sostenibilidad" value="muy_positivo" required>
+                                <span>Muy positivo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="impacto-sostenibilidad" value="positivo">
+                                <span>Positivo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="impacto-sostenibilidad" value="neutral">
+                                <span>Neutral</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="impacto-sostenibilidad" value="negativo">
+                                <span>Negativo</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="impacto-sostenibilidad" value="muy_negativo">
+                                <span>Muy negativo</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- SECCIÓN 5: DESTACADOS Y MEJORAS (Desarrollada con todas las preguntas expandidas y opciones) -->
+                <div class="seccion">
+                    <div class="seccion-titulo">
+                        🌟 Destacados y Mejoras
+                    </div>
+                    <div class="seccion-descripcion">
+                        Comparte lo que más destacaste y cómo mejorar el evento, con opciones para seleccionar y explicar.
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">14. ¿Cuál fue tu tienda favorita? (Elige una y explica por qué)</div>
+                        <select class="input-text" name="tienda-favorita" required>
+                            <option value="">- Selecciona una tienda -</option>
+                            <option value="tienda1">🎒 Tienda 1: Higiene Postural y Mochila Saludable</option>
+                            <option value="tienda2">💪 Tienda 2: Higiene de la Espalda y Flexibilidad Isquiosural</option>
+                            <option value="tienda3">⚖️ Tienda 3: IMC y Composición Corporal</option>
+                            <option value="tienda4">🏃 Tienda 4: Actividad Física 60' y Salud Cardiovascular</option>
+                            <option value="tienda5">🥗 Tienda 5: Alimentación Saludable y Plato Harvard</option>
+                            <option value="tienda6">🌍 Tienda 6: Salud Medioambiental</option>
+                            <option value="tienda7">😴 Tienda 7: Descanso y Desconexión Digital</option>
+                            <option value="tienda8">🌟 Tienda 8: Hábitos Saludables Integrales</option>
+                            <option value="tienda9">🧘 Tienda 9: Mindfulness y Salud Emocional</option>
+                            <option value="tienda10">🏋️ Tienda 10: Fuerza y Salud</option>
+                        </select>
+                    </div>
+                   
+                    <div class="pregunta">
+                        <div class="pregunta-texto">15. ¿Por qué fue tu tienda favorita? (Puedes seleccionar varias opciones)</div>
+                        <div class="opciones">
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="informacion-util">
+                                <span>📚 La información fue muy útil para mi día a día</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="actividades-interesantes">
+                                <span>🎯 Las actividades eran interesantes y prácticas</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="personal-amable">
+                                <span>😊 El personal fue amable y resolvió mis dudas</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="aprendizaje-significativo">
+                                <span>🧠 Aprendí algo nuevo que no sabía antes</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="materiales-calidad">
+                                <span>🛠️ Los materiales y recursos eran de buena calidad</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="interactividad">
+                                <span>🎮 Me gustó la interactividad (juegos, pruebas, etc.)</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="aplicacion-inmediata">
+                                <span>💡 Puedo aplicar lo aprendido inmediatamente</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="razones-favorita[]" value="tematica-relevante">
+                                <span>⭐ El tema era especialmente relevante para mí</span>
+                            </label>
+                        </div>
+                       
+                        <div class="comentarios-adicionales">
+                            <div class="pregunta-texto">¿Algún otro motivo por el que fue tu tienda favorita?</div>
+                            <textarea class="textarea-input" name="razon-favorita-extra" placeholder="Si hay algo más que quieras comentar sobre tu tienda favorita, escríbelo aquí..."></textarea>
+                        </div>
+                    </div>
+                  
+                    <div class="pregunta">
+                        <div class="pregunta-texto">16. ¿Qué mejorarías del evento para la próxima edición? (Puedes seleccionar varias opciones)</div>
+                        <div class="opciones">
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="mas-tiempo">
+                                <span>⏰ Más tiempo para visitar todas las tiendas</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="mas-tiendas">
+                                <span>🏪 Mayor variedad de tiendas/temas</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="mejor-difusion">
+                                <span>📢 Mejor difusión e información previa sobre el evento</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="organizacion-espacios">
+                                <span>🗺️ Mejor organización de los espacios y menos aglomeraciones</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="mas-interactividad">
+                                <span>🎯 Más actividades interactivas y prácticas</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="materiales-mejorados">
+                                <span>📋 Materiales más atractivos y fáciles de entender</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="horarios-flexibles">
+                                <span>🕒 Horarios más flexibles para participar</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="seguimiento">
+                                <span>📈 Seguimiento después del evento para aplicar lo aprendido</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="participacion-familias">
+                                <span>👨‍👩‍👧‍👦 Mayor participación de familias y comunidad</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="mejoras[]" value="premios-incentivos">
+                                <span>🏆 Más premios o incentivos por participar</span>
+                            </label>
+                        </div>
+                       
+                        <div class="comentarios-adicionales">
+                            <div class="pregunta-texto">¿Alguna otra sugerencia de mejora?</div>
+                            <textarea class="textarea-input" name="mejoras-extra" placeholder="Si tienes alguna otra idea para mejorar el evento, escríbela aquí..."></textarea>
+                        </div>
+                    </div>
+                
+
+                    <!-- Nueva pregunta desarrollada -->
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">17. ¿Qué aspecto general destacas más del evento? (Elige uno)</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="destacado-general" value="interactividad" required>
+                                <span>Interactividad y actividades prácticas</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="destacado-general" value="aprendizaje">
+                                <span>Aprendizaje nuevo sobre salud</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="destacado-general" value="participacion">
+                                <span>Participación comunitaria</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="destacado-general" value="materiales">
+                                <span>Calidad de materiales y premios</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="destacado-general" value="otro">
+                                <span>Otro (especifica en comentarios)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Nueva pregunta desarrollada -->
+                    <div class="pregunta">
+                        <div class="pregunta-texto">18. ¿Cómo calificarías el impacto del evento en tu motivación para hábitos saludables?</div>
+                        <div class="escala-likert">
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="impacto-motivacion" data-valor="1">1</button>
+                                <div class="escala-label">Ningún impacto</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="impacto-motivacion" data-valor="2">2</button>
+                                <div class="escala-label">Poco impacto</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="impacto-motivacion" data-valor="3">3</button>
+                                <div class="escala-label">Impacto regular</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="impacto-motivacion" data-valor="4">4</button>
+                                <div class="escala-label">Buen impacto</div>
+                            </div>
+                            <div class="escala-item">
+                                <button type="button" class="escala-boton" data-pregunta="impacto-motivacion" data-valor="5">5</button>
+                                <div class="escala-label">Gran impacto</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="impacto-motivacion">
+                    </div>
+
+                    <!-- Nueva pregunta desarrollada -->
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">19. ¿El evento fomentó la convivencia entre alumnos de diferentes edades?</div>
+                        <div class="opciones">
+                            <label class="opcion-radio">
+                                <input type="radio" name="convivencia-edades" value="si_definitivamente" required>
+                                <span>Sí, definitivamente</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="convivencia-edades" value="si_parcial">
+                                <span>Sí, parcialmente</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="convivencia-edades" value="no">
+                                <span>No</span>
+                            </label>
+                            <label class="opcion-radio">
+                                <input type="radio" name="convivencia-edades" value="no_aplica">
+                                <span>No aplica</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Nueva pregunta desarrollada -->
+                    <div class="pregunta">
+                        <div class="pregunta-texto">20. ¿Qué otros temas o tiendas sugerirías agregar para futuras ediciones? (Puedes seleccionar varias opciones)</div>
+                        <div class="opciones">
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="primeros-auxilios">
+                                <span>🩹 Primeros auxilios y respuesta a emergencias</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="salud-bucodental">
+                                <span>🦷 Salud bucodental y cuidado dental</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="prevencion-adicciones">
+                                <span>🚭 Prevención de adicciones (tabaco, alcohol, drogas)</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="salud-sexual">
+                                <span>❤️ Educación afectivo-sexual y salud reproductiva</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="autocuidado-emocional">
+                                <span>🧠 Autocuidado emocional y gestión de emociones</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="nutricion-deportiva">
+                                <span>⚽ Nutrición deportiva y suplementación</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="seguridad-vial">
+                                <span>🚲 Seguridad vial y movilidad sostenible</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="cocina-saludable">
+                                <span>👨‍🍳 Taller de cocina saludable y recetas fáciles</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="autodefensa">
+                                <span>🥋 Autodefensa personal y seguridad</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="primeros-socorros-psicologicos">
+                                <span>💬 Primeros auxilios psicológicos</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="alergias-intolerancias">
+                                <span>🥜 Alergias e intolerancias alimentarias</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="sueno-calidad">
+                                <span>😴 Calidad del sueño y trastornos del sueño</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="prevencion-lesiones">
+                                <span>🩹 Prevención de lesiones deportivas</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="biomecanica-corporal">
+                                <span>⚙️ Biomecánica corporal y movimiento eficiente</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="temas-sugeridos[]" value="yoga-pilates">
+                                <span>🧘 Yoga, pilates o técnicas de relajación</span>
+                            </label>
+                        </div>
+                       
+                        <div class="comentarios-adicionales">
+                            <div class="pregunta-texto">¿Algún otro tema o tienda que te gustaría ver?</div>
+                            <textarea class="textarea-input" name="temas-sugeridos-extra" placeholder="Si tienes alguna otra idea para nuevas tiendas o temas, escríbela aquí..."></textarea>
+                        </div>
+                    </div>
+                
+
+                    <!-- Nueva pregunta desarrollada -->
+                    <div class="pregunta">
+                        <div class="pregunta-texto pregunta-requerida">21. ¿En qué línea de intervención del programa impactó más el evento? (Marca todas)</div>
+                        <div class="opciones">
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="alimentacion">
+                                <span>Alimentación saludable</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="actividad-fisica">
+                                <span>Actividad física</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="salud-mental">
+                                <span>Salud mental y emocional</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="prevencion-adicciones">
+                                <span>Prevención de adicciones</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="higiene">
+                                <span>Higiene y salud postural</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="medioambiente">
+                                <span>Medioambiente y sostenibilidad</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="educacion-vial">
+                                <span>Educación vial</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="ocio-saludable">
+                                <span>Ocio saludable</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="educacion-afectivo-sexual">
+                                <span>Educación afectivo-sexual</span>
+                            </label>
+                            <label class="opcion-checkbox">
+                                <input type="checkbox" name="lineas[]" value="otro">
+                                <span>Otro</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-enviar">Enviar Encuesta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de éxito (original) -->
+    <d	iv class="modal-exito" id="modal-exito">
+    <div class="modal-contenido">
+        <div class="modal-icono">Checkmark</div>
+        <div class="modal-titulo">¡Gracias!</div>
+        <div class="modal-texto">Tu respuesta ha sido enviada con éxito.</div>
+        <button onclick="document.getElementById('modal-exito').style.display='none'" 
+                style="margin-top:20px; padding:10px 20px; background:#667eea; color:white; border:none; border-radius:8px; cursor:pointer;">
+            Cerrar
+        </button>
+    </div>
+</div>
+
+   <script>
+    // === 1. Mostrar/ocultar secciones de tienda ===
+    document.querySelectorAll('input[name="tiendas[]"]').forEach(cb => {
+        cb.addEventListener('change', e => {
+            const id = e.target.value + '-seccion';
+            const sec = document.getElementById(id);
+            if (sec) sec.classList.toggle('active', e.target.checked);
+        });
+    });
+
+    // === 2. Botones Likert ===
+    document.querySelectorAll('.escala-boton').forEach(btn => {
+        btn.addEventListener('click', e => {
+            const q = e.target.dataset.pregunta;
+            document.querySelectorAll(`[data-pregunta="${q}"]`).forEach(b => b.classList.remove('seleccionado'));
+            e.target.classList.add('seleccionado');
+            const hiddenInput = document.querySelector(`input[name="${q}"]`);
+            if (hiddenInput) hiddenInput.value = e.target.dataset.valor;
+        });
+    });
+
+    // === 3. ENVÍO CON FETCH (sin recargar página) ===
+    document.getElementById('encuesta-form').addEventListener('submit', async function(e) {
+        e.preventDefault(); // ¡NO recargar!
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('.btn-enviar');
+        const modal = document.getElementById('modal-exito');
+
+        // Deshabilitar botón
+        submitButton.disabled = true;
+        submitButton.textContent = 'Enviando...';
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                modal.style.display = 'flex';
+                form.reset(); // Opcional: limpiar formulario
+            } else {
+                alert('Error: ' + (result.error || 'No se pudo enviar'));
+            }
+        } catch (error) {
+            alert('Error de conexión. Inténtalo más tarde.');
+            console.error(error);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Enviar Encuesta';
+        }
+    });
+
+    // === 4. Cerrar modal al hacer clic fuera ===
+    document.getElementById('modal-exito').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
