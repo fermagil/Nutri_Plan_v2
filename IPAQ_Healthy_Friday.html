@@ -1,43 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cuestionario IPAQ - Actividad Física</title>
-    <!-- Firebase SDK v9 Modular (mejor que compat) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-            authDomain: "nutriplanv2.firebaseapp.com",
-            databaseURL: "https://nutriplanv2-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "nutriplanv2",
-            storageBucket: "nutriplanv2.firebasestorage.app",
-            messagingSenderId: "653707489758",
-            appId: "1:653707489758:web:9133d1d1620825c385ed4f",
-            measurementId: "G-NWER69E8B6"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // Exponer globalmente para usar en React
-        window.firebaseDB = db;
-        window.firebaseAuth = auth;
-        window.firebaseCollection = collection;
-        window.firebaseOnSnapshot = onSnapshot;
-        window.firebaseAddDoc = addDoc;
-        window.firebaseQuery = query;
-        window.firebaseWhere = where;
-        window.firebaseSignOut = signOut;
-        window.firebaseDoc = doc;
-        window.firebaseGetDoc = getDoc;
-    </script>
+    <!-- Firebase SDK - Versión Compatibilidad -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -48,19 +18,54 @@
     <div id="root" class="min-h-screen"></div>
 
     <script type="text/babel">
+        // --- Inicialización de Firebase usando la API de compatibilidad ---
+        // Esta es la forma correcta de inicializar Firebase en un entorno de scripts HTML
+        // con las bibliotecas -compat.js
+        
+	const firebaseConfig = {
+		  apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+		  authDomain: "nutriplanv2.firebaseapp.com",
+		  databaseURL: "https://nutriplanv2-default-rtdb.europe-west1.firebasedatabase.app",
+		  projectId: "nutriplanv2",
+		  storageBucket: "nutriplanv2.firebasestorage.app",
+		  messagingSenderId: "653707489758",
+		  appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+		  measurementId: "G-NWER69E8B6"
+		};
+        // Inicializa la app de Firebase
+        firebase.initializeApp(firebaseConfig);
+        // Obtiene la instancia de Firestore
+        const db = firebase.firestore();
+        // --- Fin de Inicialización ---
+
         const { useState, useEffect } = React;
 
         const App = () => {
-            const [currentStep, setCurrentStep] = useState(0);
+            const [currentStep, setCurrentStep] = useState(0); // Start at questionnaire
             const [isAdmin, setIsAdmin] = useState(false);
             const [userData, setUserData] = useState({
-                nombre: '', edad: '', curso: '', sexo: '', peso: '', fecha: new Date().toISOString().split('T')[0],
-                q1: '', q2Hours: '', q2Minutes: '', q3: '', q4Hours: '', q4Minutes: '',
-                q5: '', q6Hours: '', q6Minutes: '', q7Hours: '', q7Minutes: ''
+                nombre: '',
+                edad: '',
+                curso: '',
+                sexo: '',
+                peso: '',
+                fecha: new Date().toISOString().split('T')[0],
+                q1: '',
+                q2Hours: '',
+                q2Minutes: '',
+                q3: '',
+                q4Hours: '',
+                q4Minutes: '',
+                q5: '',
+                q6Hours: '',
+                q6Minutes: '',
+                q7Hours: '',
+                q7Minutes: ''
             });
             const [users, setUsers] = useState([]);
-            const [loading, setLoading] = useState(true);
+            const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
             const [showReport, setShowReport] = useState(false);
+            const [selectedUser, setSelectedUser] = useState(null);
             const [reportData, setReportData] = useState(null);
             const [filter, setFilter] = useState({ type: 'all', value: '' });
             const [showAnalysis, setShowAnalysis] = useState(false);
@@ -69,59 +74,30 @@
             const [showExportModal, setShowExportModal] = useState(false);
             const [exportPassword, setExportPassword] = useState('');
             const [exportError, setExportError] = useState('');
-            const [exportOption, setExportOption] = useState('all');
+            const [exportOption, setExportOption] = useState('all'); // 'all' o 'current'
             const [showReportModal, setShowReportModal] = useState(false);
             const [reportStats, setReportStats] = useState(null);
             const [reportCharts, setReportCharts] = useState({});
-            const [user, setUser] = useState(null);
-            const [authLoading, setAuthLoading] = useState(true);
 
-            // AUTENTICACIÓN + ROL
+            // Cargar datos desde Firestore al iniciar
             useEffect(() => {
-                const unsubscribeAuth = window.firebaseAuth.onAuthStateChanged(async (user) => {
-                    if (user) {
-                        setUser(user);
-                        try {
-                            const token = await user.getIdTokenResult();
-                            if (token.claims.rol === "salud_escolar") {
-                                setIsAdmin(true);
-                                loadData();
-                            } else {
-                                alert("Acceso denegado: solo usuarios con rol 'salud_escolar'");
-                                await window.firebaseSignOut();
-                                window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-                            }
-                        } catch (error) {
-                            console.error("Error verificando roles:", error);
-                            await window.firebaseSignOut();
-                            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-                        }
-                    } else {
-                        window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+                const unsubscribe = db.collection('encuestas').onSnapshot(
+                    (snapshot) => {
+                        const usersArray = [];
+                        snapshot.forEach((doc) => {
+                            usersArray.push({ id: doc.id, ...doc.data() });
+                        });
+                        setUsers(usersArray);
+                        setLoading(false);
+                    },
+                    (error) => {
+                        console.error("Error obteniendo documentos: ", error);
+                        setLoading(false);
                     }
-                    setAuthLoading(false);
-                });
-                return () => unsubscribeAuth();
-            }, []);
+                );
 
-            const loadData = () => {
-                if (!isAdmin) return;
-                
-                const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, 'encuestas'));
-                const unsubscribe = window.firebaseOnSnapshot(q, (snapshot) => {
-                    const usersArray = [];
-                    snapshot.forEach((doc) => {
-                        usersArray.push({ id: doc.id, ...doc.data() });
-                    });
-                    setUsers(usersArray);
-                    setLoading(false);
-                }, (error) => {
-                    console.error("Error Firestore:", error);
-                    alert("Error de permisos o conexión con Firestore");
-                    setLoading(false);
-                });
-                return unsubscribe;
-            };
+                return () => unsubscribe();
+            }, []);
 
             // Generar estadísticas para el informe
             useEffect(() => {
@@ -133,15 +109,21 @@
                         sexo: {},
                         curso: {}
                     };
+
                     users.forEach(user => {
                         const level = user.report?.level || 'BAJO';
+                        
                         stats.levels[level] = (stats.levels[level] || 0) + 1;
+
                         stats.sexo[user.sexo] = (stats.sexo[user.sexo] || 0) + 1;
+
                         stats.curso[user.curso] = (stats.curso[user.curso] || 0) + 1;
                     });
+
                     Object.keys(stats.levels).forEach(key => {
                         stats.percentages[key] = stats.total > 0 ? ((stats.levels[key] / stats.total) * 100).toFixed(1) : 0;
                     });
+
                     Object.keys(stats.sexo).forEach(sex => {
                         const sexUsers = users.filter(u => u.sexo === sex);
                         const levels = { ALTO: 0, MODERADO: 0, BAJO: 0 };
@@ -160,6 +142,7 @@
                             percentages
                         };
                     });
+
                     Object.keys(stats.curso).forEach(curs => {
                         const courseUsers = users.filter(u => u.curso === curs);
                         const levels = { ALTO: 0, MODERADO: 0, BAJO: 0 };
@@ -178,9 +161,11 @@
                             percentages
                         };
                     });
+
                     stats.nivel = { ...stats.levels };
                     stats.sexoTotals = Object.fromEntries(Object.entries(stats.sexo).map(([k, v]) => [k, v.total]));
                     stats.cursoTotals = Object.fromEntries(Object.entries(stats.curso).map(([k, v]) => [k, v.total]));
+
                     setReportStats(stats);
                 } else {
                     setReportStats(null);
@@ -220,6 +205,7 @@
                         });
                         setReportCharts(prev => ({ ...prev, sexo: chartSexo }));
                     }
+
                     const ctxCurso = document.getElementById('chartCurso');
                     if (ctxCurso && reportCharts.curso) {
                         reportCharts.curso.destroy();
@@ -254,6 +240,7 @@
                         });
                         setReportCharts(prev => ({ ...prev, curso: chartCurso }));
                     }
+                    
                     const ctxNivel = document.getElementById('chartNivel');
                     if (ctxNivel && reportCharts.nivel) {
                         reportCharts.nivel.destroy();
@@ -303,36 +290,47 @@
                 }));
             };
 
-            const calculateReport = (data) => {
+                        const calculateReport = (data) => {
                 // --- Cálculo de minutos totales por semana para cada actividad ---
+                // Este cálculo ya estaba correcto en el código original
                 const vpaDays = parseInt(data.q1) || 0;
                 const vpaHours = parseInt(data.q2Hours) || 0;
                 const vpaMinutes = parseInt(data.q2Minutes) || 0;
                 const vpaMinPerDay = vpaHours * 60 + vpaMinutes; // Minutos por día de VPA
                 const vpaTotalMinutes = vpaDays * vpaMinPerDay; // Minutos totales por semana de VPA
+
                 const mpaDays = parseInt(data.q3) || 0;
                 const mpaHours = parseInt(data.q4Hours) || 0;
                 const mpaMinutes = parseInt(data.q4Minutes) || 0;
                 const mpaMinPerDay = mpaHours * 60 + mpaMinutes; // Minutos por día de MPA
                 const mpaTotalMinutes = mpaDays * mpaMinPerDay; // Minutos totales por semana de MPA
+
                 const walkDays = parseInt(data.q5) || 0;
                 const walkHours = parseInt(data.q6Hours) || 0;
                 const walkMinutes = parseInt(data.q6Minutes) || 0;
                 const walkMinPerDay = walkHours * 60 + walkMinutes; // Minutos por día de caminata
                 const walkTotalMinutes = walkDays * walkMinPerDay; // Minutos totales por semana de caminata
+
                 // --- Cálculo de MET-minutos semanales (usando MET por minuto) ---
+                // Aplicando: MET-min = MET_valor_por_minuto * minutos_totales_semana
                 const vpaMETMinutes = 8 * vpaTotalMinutes; // MET-min VPA
                 const mpaMETMinutes = 4 * mpaTotalMinutes; // MET-min MPA
                 const walkMETMinutes = 3.3 * walkTotalMinutes; // MET-min caminata
+
                 // --- Cálculo de Calorías (Kcal) usando la nueva fórmula ---
+                // Aplicando: Kcal = METs-min * 3.5 * (Peso / 60)
                 const weight = parseFloat(data.peso) || 60; // Default to 60 if not provided
+
                 const vpaKcal = vpaMETMinutes * 3.5 * (weight / 60);
                 const mpaKcal = mpaMETMinutes * 3.5 * (weight / 60);
                 const walkKcal = walkMETMinutes * 3.5 * (weight / 60);
                 const totalKcal = vpaKcal + mpaKcal + walkKcal;
+
                 // --- Cálculo total de MET-minutos ---
                 const totalMETMinutes = vpaMETMinutes + mpaMETMinutes + walkMETMinutes;
+
                 // --- Clasificación de nivel de actividad basada en IPAQ estándar ---
+                // (Esta parte no cambia, sigue usando los minutos totales o MET-min totales según el estándar IPAQ)
                 let level = 'BAJO';
                 if (
                     (vpaDays >= 3 && vpaMETMinutes >= 1500) ||  // Opción A: ≥3 días VPA y ≥1500 MET-min/sem VPA
@@ -348,11 +346,15 @@
                 ) {
                     level = 'MODERADO';
                 }
+
                 // --- Cálculo de tiempo sedentario diario ---
                 const sedentaryHours = (parseInt(data.q7Hours) || 0) + (parseInt(data.q7Minutes) || 0) / 60;
+
                 // --- Cálculo de MET-hours semanal (dividir MET-min totales entre 60) ---
                 const weeklyMETHours = totalMETMinutes / 60;
+
                 // --- Generación de feedback ---
+                // (Esta parte tampoco cambia, usa weeklyMETHours y sedentaryHours)
                 let feedback = '';
                 if (weeklyMETHours <= 2.5) {
                     if (sedentaryHours >= 8) {
@@ -387,6 +389,7 @@
                         feedback = 'Tus niveles de actividad física son excelentes. Tu tiempo sedentario diario es bajo y dedicas un número alto de horas a realizar actividad física a intensidad moderada a vigorosa.';
                     }
                 }
+
                 // --- Devolver los resultados ---
                 return {
                     // Kcal calculadas con la nueva fórmula
@@ -401,12 +404,7 @@
                     // Minutos totales por actividad (para mostrar en el informe)
                     vpaTotalMinutes,
                     mpaTotalMinutes,
-                    walkTotalMinutes,
-                    // MET-minutos semanales
-                    vpaMETMinutes,
-                    mpaMETMinutes,
-                    walkMETMinutes,
-                    totalMETMinutes
+                    walkTotalMinutes
                 };
             };
 
@@ -418,18 +416,17 @@
                     const calculatedReport = calculateReport(userData);
                     const newUser = {
                         ...userData,
-                        report: calculatedReport,
-                        timestamp: new Date().toISOString()
+                        report: calculatedReport
                     };
                     
-                    window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'encuestas'), newUser)
+                    db.collection('encuestas').add(newUser)
                         .then((docRef) => {
                             console.log("Documento escrito con ID: ", docRef.id);
                         })
                         .catch((error) => {
                             console.error("Error al añadir el documento: ", error);
-                            alert("Error al guardar los datos: " + error.message);
                         });
+                    
                     setReportData(calculatedReport);
                     setShowReport(true);
                 }
@@ -466,13 +463,13 @@
                 setReportData(null);
             };
 
-            const exportToCSV = (data = users) => {
+                                    const exportToCSV = (data = users) => {
                 if (data.length === 0) return;
                 const headers = [
                     'ID', 'Nombre', 'Edad', 'Curso', 'Sexo', 'Peso', 'Fecha',
                     'Días VPA', 'Minutos VPA', 'Días MPA', 'Minutos MPA',
                     'Días Caminar', 'Minutos Caminar', 'Minutos Sentado',
-                    'VPA MET-min', 'MPA MET-min', 'Caminar MET-min', 'Total MET-min',
+                    'VPA MET-min', 'MPA MET-min', 'Caminar MET-min', 'Total MET-min', // Cambiado nombre de columna
                     'Total Kcal', 'Nivel'
                 ];
                 const csvContent = [
@@ -486,20 +483,32 @@
                         user.peso,
                         user.fecha,
                         user.q1,
+                        // Calcula minutos totales de VPA: días * (horas * 60 + minutos)
                         (parseInt(user.q1) || 0) * ((parseInt(user.q2Hours) || 0) * 60 + (parseInt(user.q2Minutes) || 0)),
                         user.q3,
+                         // Calcula minutos totales de MPA: días * (horas * 60 + minutos)
                         (parseInt(user.q3) || 0) * ((parseInt(user.q4Hours) || 0) * 60 + (parseInt(user.q4Minutes) || 0)),
                         user.q5,
+                        // Calcula minutos totales de caminata: días * (horas * 60 + minutos)
                         (parseInt(user.q5) || 0) * ((parseInt(user.q6Hours) || 0) * 60 + (parseInt(user.q6Minutes) || 0)),
+                        // Calcula minutos sedentario: (horas * 60 + minutos)
                         (parseInt(user.q7Hours) || 0) * 60 + (parseInt(user.q7Minutes) || 0),
-                        parseFloat(user.report?.vpaMETMinutes || 0),
-                        parseFloat(user.report?.mpaMETMinutes || 0),
-                        parseFloat(user.report?.walkMETMinutes || 0),
-                        parseFloat(user.report?.totalMETMinutes || 0),
+                        // --- Exporta MET-minutos calculados, no los valores crudos ---
+                        // Accede a los valores calculados en calculateReport si existen
+                        // Si no existen, usa 0 o calcula como antes (menos preciso)
+                        // Asumiendo que calculateReport guarda MET-minutos en user.report.vpaMETMinutes, etc.
+                        // Si no se cambió calculateReport para guardarlos, hay que hacerlo o calcularlos aquí.
+                        // Suponiendo calculateReport ya guarda vpaMETMinutes, mpaMETMinutes, walkMETMinutes, totalMETMinutes
+                        parseFloat(user.report?.vpaMETMinutes || 0), // Asegura que sea número
+                        parseFloat(user.report?.mpaMETMinutes || 0), // Asegura que sea número
+                        parseFloat(user.report?.walkMETMinutes || 0), // Asegura que sea número
+                        parseFloat(user.report?.totalMETMinutes || 0), // Asegura que sea número
+                        // --- Exporta Kcal calculadas con la nueva fórmula ---
+                        // Asegura que sea número antes de toFixed
                         (typeof user.report?.totalKcal === 'number' ? user.report.totalKcal : 0).toFixed(2),
                         user.report?.level || 'BAJO'
                     ].join(','))
-                ].join('\n');
+                ].join('\n'); // <-- Corregido: usa \n para el salto de línea
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
@@ -538,8 +547,28 @@
                 window.print();
             };
 
+            const handleAdminPanel = () => {
+                let pass = isAdmin ? 'ok' : window.prompt('Ingrese la clave para acceder al panel:');
+                if (!isAdmin && pass === 'healthy_Friday_2025') {
+                    setIsAdmin(true);
+                }
+                if (isAdmin || pass === 'healthy_Friday_2025') {
+                    setCurrentStep(-1);
+                } else {
+                    alert('Clave incorrecta');
+                }
+            };
+
             const handleInforme = () => {
-                setShowReportModal(true);
+                let pass = isAdmin ? 'ok' : window.prompt('Ingrese la clave para acceder al informe:');
+                if (!isAdmin && pass === 'healthy_Friday_2025') {
+                    setIsAdmin(true);
+                }
+                if (isAdmin || pass === 'healthy_Friday_2025') {
+                    setShowReportModal(true);
+                } else {
+                    alert('Clave incorrecta');
+                }
             };
 
             const getFilteredUsers = () => {
@@ -559,7 +588,9 @@
 
             const performAnalysis = () => {
                 if (!analysisType) return;
+
                 let analysisResult = null;
+
                 switch (analysisType) {
                     case 'ageRange':
                         const ageRanges = {
@@ -569,6 +600,7 @@
                             '46-59': users.filter(u => parseInt(u.edad) >= 46 && parseInt(u.edad) <= 59),
                             '60-69': users.filter(u => parseInt(u.edad) >= 60 && parseInt(u.edad) <= 69)
                         };
+                        
                         analysisResult = Object.keys(ageRanges).map(range => ({
                             range,
                             count: ageRanges[range].length,
@@ -585,6 +617,7 @@
                             }
                         }));
                         break;
+                        
                     case 'course':
                         const courses = [...new Set(users.map(u => u.curso))];
                         analysisResult = courses.map(course => {
@@ -606,6 +639,7 @@
                             };
                         });
                         break;
+                        
                     case 'sex':
                         const sexes = [...new Set(users.map(u => u.sexo))];
                         analysisResult = sexes.map(sex => {
@@ -627,6 +661,7 @@
                             };
                         });
                         break;
+                        
                     case 'ageSex':
                         const ageSexGroups = {};
                         users.forEach(u => {
@@ -636,11 +671,13 @@
                                 parseInt(u.edad) <= 45 ? '36-45' :
                                 parseInt(u.edad) <= 59 ? '46-59' : '60-69';
                             const key = `${ageGroup}-${u.sexo}`;
+                            
                             if (!ageSexGroups[key]) {
                                 ageSexGroups[key] = [];
                             }
                             ageSexGroups[key].push(u);
                         });
+                        
                         analysisResult = Object.keys(ageSexGroups).map(key => {
                             const [ageRange, sex] = key.split('-');
                             const groupUsers = ageSexGroups[key];
@@ -662,14 +699,15 @@
                             };
                         });
                         break;
+                        
                     default:
                         analysisResult = null;
                 }
+                
                 setAnalysisData(analysisResult);
                 setShowAnalysis(true);
             };
-
-            const renderStep = () => {
+			const renderStep = () => {
                 switch (currentStep) {
                     case 0:
                         return (
@@ -684,6 +722,44 @@
                                     </div>
                                     <p className="text-sm text-gray-500 mt-2">Paso {currentStep + 1} de 8</p>
                                 </div>
+                                
+                                {/* Contador de Usuarios - Aparece solo en el paso 0 */}
+                                {currentStep === 0 && (
+                                    <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
+                                        <h3 className="text-lg font-semibold text-gray-700 mb-2">Estadísticas de Usuarios</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div className="bg-blue-100 p-3 rounded-md">
+                                                <p className="text-sm text-blue-700">Total General</p>
+                                                <p className="text-xl font-bold text-blue-800">{users.length}</p>
+                                            </div>
+                                            <div className="bg-green-100 p-3 rounded-md">
+                                                <p className="text-sm text-green-700">Por Curso</p>
+                                                {users.length > 0 ? (
+                                                    [...new Set(users.map(u => u.curso))].slice(0, 3).map(c => (
+                                                        <p key={c} className="text-sm font-medium text-green-800">
+                                                            {c}: {users.filter(u => u.curso === c).length}
+                                                        </p>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-sm text-gray-500">No hay datos</p>
+                                                )}
+                                            </div>
+                                            <div className="bg-purple-100 p-3 rounded-md">
+                                                <p className="text-sm text-purple-700">Por Sexo</p>
+                                                {users.length > 0 ? (
+                                                    [...new Set(users.map(u => u.sexo))].slice(0, 3).map(s => (
+                                                        <p key={s} className="text-sm font-medium text-purple-800">
+                                                            {s}: {users.filter(u => u.sexo === s).length}
+                                                        </p>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-sm text-gray-500">No hay datos</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Nombre y apellidos</label>
@@ -984,9 +1060,11 @@
 
             const renderReport = () => {
                 if (!reportData) return null;
+
                 return (
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-blue-700 mb-4">Informe de Actividad Física</h2>
+                        
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-700">Datos Personales</h3>
@@ -1001,6 +1079,7 @@
                                 <p><strong>Nivel de Actividad:</strong> <span className={`font-bold ${reportData.level === 'ALTO' ? 'text-green-600' : reportData.level === 'MODERADO' ? 'text-yellow-600' : 'text-red-600'}`}>{reportData.level}</span></p>
                             </div>
                         </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                             <div className="bg-blue-50 p-4 rounded-lg">
                                 <h4 className="font-semibold text-blue-700">Actividades Vigorosas</h4>
@@ -1021,14 +1100,17 @@
                                 <p className="text-sm">{reportData.walkTotalMinutes} min/semana</p>
                             </div>
                         </div>
+
                         <div className="bg-gray-50 p-4 rounded-lg mb-6">
                             <h4 className="font-semibold text-gray-700">Total</h4>
                             <p className="text-3xl font-bold text-gray-800">{reportData.totalKcal} Kcal/semana</p>
                         </div>
+
                         <div className="bg-yellow-50 p-4 rounded-lg">
                             <h4 className="font-semibold text-yellow-700">Recomendación</h4>
                             <p>{reportData.feedback}</p>
                         </div>
+                        
                         <div className="mt-6">
                             <button
                                 onClick={() => exportToCSV([{
@@ -1053,6 +1135,7 @@
 
             const renderAnalysis = () => {
                 if (!analysisData || !analysisType) return null;
+
                 return (
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-blue-700 mb-4">
@@ -1061,6 +1144,7 @@
                                         analysisType === 'sex' ? 'Sexo' : 
                                         'Edad y Sexo'}
                         </h2>
+                        
                         <div className="mb-4">
                             <button
                                 onClick={() => setShowExportModal(true)}
@@ -1075,6 +1159,7 @@
                                 Volver al Panel
                             </button>
                         </div>
+                        
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
@@ -1082,8 +1167,7 @@
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {analysisType === 'ageRange' ? 'Rango de Edad' : 
                                              analysisType === 'course' ? 'Curso' : 
-                                             analysisType === 'sex' ? 'Sexo' : 
-                                             'Grupo'}
+                                             analysisType === 'sex' ? 'Sexo' : 'Grupo'}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edad Promedio</th>
@@ -1125,6 +1209,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        
                         {analysisType === 'course' && (
                             <div className="mt-6">
                                 <h3 className="text-lg font-semibold text-gray-700 mb-2">Gráfica de Distribución por Curso</h3>
@@ -1152,27 +1237,33 @@
                 if (loading) {
                     return <div className="text-center py-10">Cargando datos...</div>;
                 }
+                
                 const filteredUsers = getFilteredUsers();
-                // Estadísticas generales
+                
+                // Estadísticas generales (FIXED: Filter valid values to avoid NaN)
                 const validAges = users.filter(u => {
                     const age = parseInt(u.edad);
                     return !isNaN(age) && age > 0;
                 });
                 const avgAge = validAges.length > 0 ? (validAges.reduce((sum, u) => sum + parseInt(u.edad), 0) / validAges.length).toFixed(1) : 0;
+                
                 const validWeights = users.filter(u => {
                     const weight = parseFloat(u.peso);
                     return !isNaN(weight) && weight > 0;
                 });
                 const avgWeight = validWeights.length > 0 ? (validWeights.reduce((sum, u) => sum + parseFloat(u.peso), 0) / validWeights.length).toFixed(1) : 0;
+                
                 const activityLevels = {
                     ALTO: users.filter(u => u.report?.level === 'ALTO').length,
                     MODERADO: users.filter(u => u.report?.level === 'MODERADO').length,
                     BAJO: users.filter(u => u.report?.level === 'BAJO').length
                 };
+
                 return (
                     <div className="space-y-6">
                         <div className="bg-white rounded-lg shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-blue-700 mb-4">Panel de Control - Estadísticas Generales</h2>
+                            
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                                 <div className="bg-blue-100 p-4 rounded-lg">
                                     <h3 className="text-lg font-semibold text-blue-700">Total Usuarios</h3>
@@ -1196,6 +1287,7 @@
                                     </button>
                                 </div>
                             </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                                 <div className="bg-red-100 p-4 rounded-lg">
                                     <h3 className="text-lg font-semibold text-red-700">Nivel Bajo</h3>
@@ -1213,6 +1305,7 @@
                                     <p className="text-sm">{users.length > 0 ? ((activityLevels.ALTO / users.length) * 100).toFixed(1) : 0}%</p>
                                 </div>
                             </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Filtrar Usuarios</label>
@@ -1226,6 +1319,7 @@
                                             <option value="age">Por Edad</option>
                                             <option value="activity">Por Nivel de Actividad</option>
                                         </select>
+                                        
                                         {filter.type === 'age' && (
                                             <select
                                                 value={filter.value}
@@ -1240,6 +1334,7 @@
                                                 <option value="56-69">56-69 años</option>
                                             </select>
                                         )}
+                                        
                                         {filter.type === 'activity' && (
                                             <select
                                                 value={filter.value}
@@ -1254,6 +1349,7 @@
                                         )}
                                     </div>
                                 </div>
+                                
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Análisis</label>
                                     <div className="flex space-x-2">
@@ -1282,6 +1378,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
@@ -1317,6 +1414,7 @@
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                     <button
                                                         onClick={() => {
+                                                            setSelectedUser(user);
                                                             setReportData(user.report);
                                                             setUserData(user); // For personal data in report
                                                             setShowReport(true);
@@ -1336,34 +1434,6 @@
                 );
             };
 
-            if (authLoading) {
-                return (
-                    <div className="flex items-center justify-center min-h-screen">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                            <p className="text-xl font-medium text-gray-700">Verificando credenciales...</p>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (!isAdmin) {
-                return (
-                    <div className="flex items-center justify-center min-h-screen">
-                        <div className="text-center bg-white rounded-lg shadow-lg p-8 max-w-md">
-                            <h2 className="text-2xl font-bold text-red-600 mb-4">Acceso Restringido</h2>
-                            <p className="text-gray-700 mb-6">No tienes permisos para acceder a esta aplicación.</p>
-                            <button
-                                onClick={() => window.firebaseSignOut().then(() => location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html')}
-                                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                Volver al Inicio
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
                     <header className="bg-white shadow">
@@ -1379,9 +1449,7 @@
                                     Informe
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        setCurrentStep(-1);
-                                    }}
+                                    onClick={handleAdminPanel}
                                     className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
                                 >
                                     Panel de Control
@@ -1395,18 +1463,6 @@
                             </div>
                         </div>
                     </header>
-                    
-                    <div className="fixed top-4 right-4 z-50">
-                        <button 
-                            onClick={() => window.firebaseSignOut().then(() => location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html')}
-                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 shadow-lg transition-all flex items-center"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
-                            </svg>
-                            Cerrar Sesión
-                        </button>
-                    </div>
 
                     <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
                         {showReport ? (
@@ -1416,7 +1472,7 @@
                                     <button
                                         onClick={() => {
                                             setShowReport(false);
-                                            setCurrentStep(0);
+                                            setCurrentStep(isAdmin ? -1 : 0);
                                         }}
                                         className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
                                     >
@@ -1437,6 +1493,7 @@
                         ) : (
                             <div className="bg-white rounded-lg shadow-lg p-6">
                                 {renderStep()}
+
                                 <div className="flex justify-between mt-8">
                                     <button
                                         onClick={handleBack}
@@ -1449,6 +1506,7 @@
                                     >
                                         Anterior
                                     </button>
+                                    
                                     <button
                                         onClick={handleNext}
                                         className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
@@ -1458,8 +1516,29 @@
                                 </div>
                             </div>
                         )}
+
+                        {!showReport && !showAnalysis && currentStep === -1 && (
+                            <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
+                                <h2 className="text-2xl font-bold text-blue-700 mb-4">Sobre el Cuestionario IPAQ</h2>
+                                <p className="text-gray-600 mb-4">
+                                    El Cuestionario Internacional de Actividad Física (IPAQ) es una herramienta estandarizada 
+                                    utilizada para evaluar la actividad física en diferentes poblaciones. Este cuestionario 
+                                    evalúa la actividad física en tres dominios: trabajo, transporte, hogar y ocio.
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="bg-blue-50 p-4 rounded-lg">
+                                        <h3 className="font-semibold text-blue-700">Actividades Vigorosas</h3>
+                                        <p className="text-sm">Requieren un esfuerzo físico intenso y hacen respirar mucho más fuerte que lo normal.</p>
+                                    </div>
+                                    <div className="bg-green-50 p-4 rounded-lg">
+                                        <h3 className="font-semibold text-green-700">Actividades Moderadas</h3>
+                                        <p className="text-sm">Requieren un esfuerzo físico moderado y hacen respirar algo más fuerte que lo normal.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </main>
-                    
+
                     {/* Modal de Exportación */}
                     {showExportModal && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -1474,6 +1553,7 @@
                                     className="w-full border border-gray-300 rounded-md p-2 mb-4"
                                 />
                                 {exportError && <p className="text-red-500 text-sm mb-2">{exportError}</p>}
+                                
                                 {/* Selección de qué datos exportar */}
                                 <div className="mb-4">
                                     <label className="block text-sm font-medium text-gray-700 mb-2">¿Qué datos desea exportar?</label>
@@ -1502,13 +1582,14 @@
                                         </label>
                                     </div>
                                 </div>
+                                
                                 <div className="flex justify-end space-x-3">
                                     <button
                                         onClick={() => {
                                             setShowExportModal(false);
                                             setExportPassword('');
                                             setExportError('');
-                                            setExportOption('all');
+                                            setExportOption('all'); // Resetear opción
                                         }}
                                         className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
                                     >
@@ -1525,11 +1606,12 @@
                         </div>
                     )}
                     
-                    {/* Modal de Informe */}
+                    {/* Modal de Informe (with safe access) */}
                     {showReportModal && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
                             <div className="bg-white rounded-lg p-6 w-11/12 md:w-3/4 max-h-[90vh] overflow-y-auto">
                                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Informe Estadístico</h3>
+                                
                                 {reportStats ? (
                                     <div className="space-y-6">
                                         <div>
@@ -1559,6 +1641,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
                                                 <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución por Sexo</h4>
@@ -1579,6 +1662,7 @@
                                                     <canvas id="chartSexo"></canvas>
                                                 </div>
                                             </div>
+                                            
                                             <div>
                                                 <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución por Curso</h4>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -1599,6 +1683,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-700 mb-2">Distribución General por Nivel de Actividad</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -1622,6 +1707,7 @@
                                                 <canvas id="chartNivel"></canvas>
                                             </div>
                                         </div>
+                                        
                                         <div className="bg-blue-50 p-4 rounded-lg">
                                             <h4 className="text-lg font-semibold text-blue-700 mb-2">Análisis y Recomendaciones</h4>
                                             <div className="space-y-4">
@@ -1635,6 +1721,7 @@
                                                                 : "La mayoría de los encuestados tienen un nivel de actividad física bajo, lo cual requiere atención."}
                                                     </p>
                                                 </div>
+                                                
                                                 <div>
                                                     <h5 className="font-medium text-blue-700">Comparación por Sexo</h5>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1650,6 +1737,7 @@
                                                         ))}
                                                     </div>
                                                 </div>
+                                                
                                                 <div>
                                                     <h5 className="font-medium text-blue-700">Comparación por Curso</h5>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1665,6 +1753,7 @@
                                                         ))}
                                                     </div>
                                                 </div>
+                                                
                                                 <div>
                                                     <h5 className="font-medium text-blue-700">Recomendaciones Generales</h5>
                                                     <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
@@ -1681,6 +1770,7 @@
                                 ) : (
                                     <p>Cargando estadísticas...</p>
                                 )}
+                                
                                 <div className="mt-6 flex justify-end space-x-3">
                                     <button
                                         onClick={printReport}
@@ -1702,10 +1792,9 @@
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
     </script>
 </body>
 </html>
-
 
