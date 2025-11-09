@@ -2275,6 +2275,16 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         </div>
     </div>
    <script>
+   // ESPERAR A QUE FIREBASE ESTÉ LISTO
+        function esperarFirebase() {
+            return new Promise((resolve) => {
+                if (window.firebaseReady) {
+                    resolve();
+                } else {
+                    window.addEventListener('firebase-loaded', resolve, { once: true });
+                }
+            });
+        }
    let evaluaciones = [];
         let analisisEdadChart = null;
 
@@ -2284,9 +2294,32 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
             return today.toISOString().split('T')[0];
         }
 
-        window.onload = () => {
+        // INICIAR APP
+        async function iniciarApp() {
+            await esperarFirebase();
+
             document.getElementById('fechaEvaluacion').value = getTodayDate();
-        };
+
+            window.firebaseAuth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const token = await user.getIdTokenResult();
+                        if (token.claims.rol === "salud_escolar") {
+                            document.getElementById('login-section').style.display = 'none';
+                            document.getElementById('app-container').style.display = 'block';
+                            cargarEvaluaciones();
+                        } else {
+                            alert("Acceso denegado: solo rol 'salud_escolar'");
+                            await window.firebaseSignOut();
+                        }
+                    } catch (err) {
+                        alert("Error de autenticación");
+                    }
+                } else {
+                    window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+                }
+            });
+        }
 
         // GENERAR ID
         function generarID() {
@@ -2298,30 +2331,9 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
             return String(max + 1).padStart(5, '0');
         }
 
-        // AUTENTICACIÓN
-        if (window.firebaseAuth) {
-            window.firebaseAuth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    const token = await user.getIdTokenResult();
-                    if (token.claims.rol === "salud_escolar") {
-                        document.getElementById('login-section').style.display = 'none';
-                        document.getElementById('app-container').style.display = 'block';
-                        cargarEvaluaciones();
-                    } else {
-                        alert("Acceso denegado");
-                        window.firebaseSignOut();
-                    }
-                } else {
-                    window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-                }
-            });
-        } else {
-            setTimeout(() => {
-                alert("Error: Firebase no cargó. Recarga la página.");
-            }, 5000);
-        }
+        
 
-        // CARGAR DATOS
+        // CARGAR EVALUACIONES
         function cargarEvaluaciones() {
             const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, 'evaluaciones'));
             window.firebaseOnSnapshot(q, (snapshot) => {
@@ -2329,13 +2341,37 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
                 snapshot.forEach(doc => {
                     evaluaciones.push({ id: doc.id, ...doc.data() });
                 });
-                document.getElementById('lista-evaluaciones').innerHTML = evaluaciones.map(e => `<p>${e.nombre} - ${e.genero}</p>`).join('');
-                if (document.getElementById('nombre').value === '') {
-                    document.getElementById('nombre').value = generarID();
-                }
+                actualizarLista();
+                actualizarID();
             });
         }
 
+		function actualizarLista() {
+            const lista = document.getElementById('lista-evaluaciones');
+            if (evaluaciones.length === 0) {
+                lista.innerHTML = "<p>No hay evaluaciones aún</p>";
+            } else {
+                lista.innerHTML = evaluaciones.map(e => 
+                    `<div style="border:1px solid #ddd;padding:10px;margin:10px 0;border-radius:8px;">
+                        <strong>${e.nombre}</strong> - ${e.genero} - ${e.fechaEvaluacion}
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function actualizarID() {
+            const input = document.getElementById('nombre');
+            if (!input.value || input.value.length !== 5) {
+                const ids = evaluaciones
+                    .map(e => e.nombre)
+                    .filter(n => /^\d{5}$/.test(n))
+                    .map(n => parseInt(n, 10));
+                const next = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+                input.value = String(next).padStart(5, '0');
+            }
+        }
+		
+		
         // GUARDAR
         async function guardarEvaluacion() {
             const datos = {
@@ -5804,7 +5840,8 @@ function descargarModeloCSV() {
             window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
         });
     }
-
+// INICIAR LA APP
+        iniciarApp();
     </script>
 	
 	
