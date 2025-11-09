@@ -3534,39 +3534,7 @@ div.appendChild(zonaDiv);
         console.error("Error al cargar evaluaciones: ", error);
     }
 }
-    // Guardar evaluación en Firestore
-    document.getElementById('fitnessForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        // Obtener el nombre o generar ID
-        let nombre = document.getElementById('nombre').value.trim();
-        if (!nombre) {
-            nombre = generarID();
-        }
-        const datos = {
-            nombre: nombre,
-            fechaNacimiento: document.getElementById('fechaNacimiento').value,
-            genero: document.getElementById('genero').value,
-            fechaEvaluacion: document.getElementById('fechaEvaluacion').value,
-            altura: parseFloat(document.getElementById('altura').value),
-            peso: parseFloat(document.getElementById('peso').value),
-            cintura: parseFloat(document.getElementById('cintura').value),
-            shuttle20m: parseFloat(document.getElementById('shuttle20m').value),
-            salto: parseInt(document.getElementById('salto').value),
-            fuerza: parseFloat(document.getElementById('fuerza').value),
-            shuttle4x10m: parseFloat(document.getElementById('shuttle4x10m').value)
-        };
-        try {
-            const docRef = await db.collection('evaluaciones').add(datos);
-            datos.id = docRef.id;
-            evaluaciones.push(datos);
-            procesarResultados(datos);
-            alert(`Evaluación registrada exitosamente! ID: ${nombre}`);
-			actualizarContadorSiguienteID();
-        } catch (error) {
-            console.error("Error al guardar evaluación: ", error);
-            alert('Error al guardar la evaluación');
-        }
-    });
+   
     function showTab(tabId) {
 			// Verificar si se intenta ir a la pestaña de resultados
 			if (tabId === 'resultados') {
@@ -5903,6 +5871,7 @@ function descargarModeloCSV() {
 </div>
 </body>
 </html>
+
 
 
 
