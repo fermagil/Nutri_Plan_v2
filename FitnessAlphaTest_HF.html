@@ -8,18 +8,19 @@
 
     <!-- Firebase v9 Modular (mejor que compat) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+		import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+		import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-            authDomain: "nutriplanv2.firebaseapp.com",
-            projectId: "nutriplanv2",
-            storageBucket: "nutriplanv2.firebasestorage.app",
-            messagingSenderId: "653707489758",
-            appId: "1:653707489758:web:9133d1d1620825c385ed4f"
-        };
+		const firebaseConfig = {
+			apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+			authDomain: "nutriplanv2.firebaseapp.com",
+			projectId: "nutriplanv2",
+			storageBucket: "nutriplanv2.firebasestorage.app",
+			messagingSenderId: "653707489758",
+			appId: "1:653707489758:web:9133d1d1620825c385ed4f",
+			measurementId: "G-NWER69E8B6"
+		};
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -1958,12 +1959,6 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
 </style>
 </head>
 <body>
-<div id="login-section" style="text-align: center; padding: 50px; background: white; min-height: 100vh;">
-        <h2>Verificando permisos de Salud Escolar...</h2>
-        <p>Redirigiendo al login si no tienes acceso.</p>
-    </div>
-	
-	<div id="app-container" style="display: none;">
     <div class="container">
         <div class="header">
             <h1>ALPHA Fitness Test Eurpeo- Valoracion CF Salud</h1>
@@ -2279,8 +2274,6 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
             </div>
         </div>
     </div>
-	</div>
-	
    <script>
     // Función para obtener la fecha actual en formato YYYY-MM-DD
         function getTodayDate() {
@@ -2298,58 +2291,79 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         };
 		
 		
-    // Inicializar Firebase
-    const firebaseConfig = {
-  apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
-  authDomain: "nutriplanv2.firebaseapp.com",
-  
-  projectId: "nutriplanv2",
-  storageBucket: "nutriplanv2.firebasestorage.app",
-  messagingSenderId: "653707489758",
-  appId: "1:653707489758:web:9133d1d1620825c385ed4f",
-  measurementId: "G-NWER69E8B6"
-};
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    let evaluaciones = [];
-    let distribucionEdadChart, rendimientoChart, analisisEdadChart, comparacionGeneroChart, comparacionResultadosChart;
-	let categoriasChart;
-    //let isAdmin = false;
-    // Función de login
-    //function loginAdmin() {
-        //const password = document.getElementById('adminPassword').value;
-        // Contraseña de ejemplo - en producción usar autenticación segura
-        //if (password === 'admin123') {
-            //isAdmin = true;
-            //document.getElementById('loginSection').style.display = 'none';
-//document.getElementById('mainContent').classList.remove('hidden');
-            cargarEvaluaciones();
-        //} else {
-            //alert('Contraseña incorrecta');
-        //}
-   // }
-        function generarID() {
-    const idsNumericos = evaluaciones
-        .map(e => e.nombre)
-        .filter(n => n && /^\d{5}$/.test(n))
-        .map(n => parseInt(n, 10))
-        .filter(n => !isNaN(n));
+// === GENERAR ID AUTOMÁTICO (5 dígitos) ===
+    function generarID() {
+        const idsNumericos = evaluaciones
+            .map(e => e.nombre)
+            .filter(n => n && /^\d{5}$/.test(n))
+            .map(n => parseInt(n, 10))
+            .filter(n => !isNaN(n));
 
-    const ultimoID = idsNumericos.length > 0 
-        ? Math.max(...idsNumericos) 
-        : 0;
+        const ultimoID = idsNumericos.length > 0 ? Math.max(...idsNumericos) : 0;
+        return String(ultimoID + 1).padStart(5, '0');
+    }
 
-    return String(ultimoID + 1).padStart(5, '0');
-}
+    function actualizarContadorSiguienteID() {
+        const nextID = generarID();
+        const input = document.getElementById('nombre');
+        if (input && !input.value) input.value = nextID;
+    }
+
+    // === AUTENTICACIÓN + CARGA DE DATOS ===
+    window.firebaseAuth.onAuthStateChanged(async (user) => {
+        if (user) {
+            try {
+                const token = await user.getIdTokenResult();
+                if (token.claims.rol === "salud_escolar") {
+                    document.getElementById('login-section')?.style.setProperty('display', 'none');
+                    document.getElementById('app-container')?.style.setProperty('display', 'block');
+                    
+                    cargarEvaluaciones();
+                    iniciarAutocompletado();
+                    console.log("Acceso concedido: salud_escolar");
+                } else {
+                    alert("Acceso denegado: solo usuarios con rol 'salud_escolar'");
+                    await window.firebaseSignOut();
+                }
+            } catch (err) {
+                console.error("Error verificando rol:", err);
+                alert("Error de autenticación");
+            }
+        } else {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        }
+    });
+
+    // === CARGAR EVALUACIONES ===
+    function cargarEvaluaciones() {
+        const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, 'evaluaciones'));
+        
+        window.firebaseOnSnapshot(q, (snapshot) => {
+            evaluaciones = [];
+            snapshot.forEach((doc) => {
+                evaluaciones.push({ id: doc.id, ...doc.data() });
+            });
+            
+            console.log("Evaluaciones cargadas:", evaluaciones.length);
+            actualizarContadorSiguienteID();
+            mostrarEstadisticasGlobales();
+            mostrarListaEvaluaciones();
+            actualizarGraficos();
+        }, (error) => {
+            console.error("Error cargando evaluaciones:", error);
+            alert("Error de conexión con Firestore: " + error.message);
+        });
+    }
 
 
    
-   
+   // === CÁLCULO IMC Y CLASIFICACIONES ===
    function calcularIMC(peso, altura) {
 		const alturaM = altura / 100;
 		const imc = peso / (alturaM * alturaM);
 		return parseFloat(imc.toFixed(1));
 	}
+	
     // Cálculo de la clasificación de IMC según el documento
     function getClasificacionIMC(imc, genero, edad) {
         // Si la edad es menor a 13, usar los valores de 13
@@ -2413,6 +2427,8 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         if (valor <= lim.alto_max) return 'Alto';
         return 'Muy Alto';
     }
+	
+	
     // Cálculo de la clasificación del test de cardio
     function getClasificacionCardio(valor, genero, edad) {
         // Si la edad es menor a 13, usar los valores de 13
@@ -2444,6 +2460,8 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         if (valor <= lim.alto_max) return 'Alto';
         return 'Muy Alto';
     }
+	
+	
     // Cálculo de la clasificación de fuerza manual
     function getClasificacionFuerza(valor, genero, edad) {
         // Si la edad es menor a 13, usar los valores de 13
@@ -2475,6 +2493,8 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         if (valor <= lim.alto_max) return 'Alto';
         return 'Muy Alto';
     }
+	
+	
     // Cálculo de la clasificación del salto
     function getClasificacionSalto(valor, genero, edad) {
         // Si la edad es menor a 13, usar los valores de 13
@@ -2506,6 +2526,8 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         if (valor <= lim.alto_max) return 'Alto';
         return 'Muy Alto';
     }
+	
+	
     // Cálculo de la clasificación del shuttle 4x10m (menores tiempos son mejores)
     function getClasificacionShuttle4x10(valor, genero, edad) {
         // Si la edad es menor a 13, usar los valores de 13
@@ -2537,6 +2559,8 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         if (valor >= lim.alto_min) return 'Alto';
         return 'Muy Alto';
     }
+	
+	
     // Obtener edad a partir de fecha de nacimiento
     function getEdad(fechaNacimiento) {
         const nacimiento = new Date(fechaNacimiento);
@@ -3438,7 +3462,7 @@ div.appendChild(zonaDiv);
     // Cargar evaluaciones desde Firestore
     async function cargarEvaluaciones() {
     try {
-        const snapshot = await window.firebaseCollection(window.firebaseDB, 'evaluaciones').get();
+        const snapshot = await db.collection('evaluaciones').get();
         evaluaciones = [];
         snapshot.forEach(doc => {
             evaluaciones.push({ id: doc.id, ...doc.data() });
@@ -3472,7 +3496,7 @@ div.appendChild(zonaDiv);
             shuttle4x10m: parseFloat(document.getElementById('shuttle4x10m').value)
         };
         try {
-            const docRef = await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'evaluaciones'),datos);
+            const docRef = await db.collection('evaluaciones').add(datos);
             datos.id = docRef.id;
             evaluaciones.push(datos);
             procesarResultados(datos);
@@ -5695,7 +5719,7 @@ async function importardata() {
             // Guardar en Firestore
             for (const datos of nuevosRegistros) {
                 try {
-                    const docRef = await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'evaluaciones'),datos);
+                    const docRef = await db.collection('evaluaciones').add(datos);
                     datos.id = docRef.id;
                     evaluaciones.push(datos);
                 } catch (err) {
