@@ -3826,23 +3826,48 @@ function calcularPuntuacionPrueba(valorPrueba, nombrePrueba, genero, edadRef) {
     // Asegurar que la puntuación esté entre 0 y 100
     return Math.max(0, Math.min(100, parseFloat(puntuacion.toFixed(1))));
 }
-		
+		// === VARIABLES GLOBALES DE GRÁFICOS (OBLIGATORIO: FUERA DE CUALQUIER FUNCIÓN) ===
+let distribucionEdadChart = null;
+let rendimientoChart = null;
+let analisisEdadChart = null;
+let comparacionGeneroChart = null;
+let comparacionResultadosChart = null;
+let categoriasChart = null;
+
+// === FUNCIÓN SEGURA PARA DESTRUIR GRÁFICOS ===
+function destruirGrafico(chart) {
+    if (chart && typeof chart.destroy === 'function') {
+        try {
+            chart.destroy();
+        } catch (e) {
+            console.warn("Error al destruir gráfico:", e);
+        }
+    }
+    return null; // Devuelve null para reasignar
+}
    // Actualizar gráficos y métricas
 // Actualizar gráficos y métricas del Dashboard de Estadísticas
 function actualizarGraficos() {
-    if (evaluaciones.length === 0) {
-        // Manejar caso sin datos: Limpiar gráficos y métricas
-        if (distribucionEdadChart) { distribucionEdadChart.destroy(); distribucionEdadChart = null; }
-        if (rendimientoChart) { rendimientoChart.destroy(); rendimientoChart = null; }
-        if (categoriasChart) { categoriasChart.destroy(); categoriasChart = null; }
+    if (!evaluaciones || evaluaciones.length === 0) {
+        // Limpiar todos los gráficos
+        distribucionEdadChart = destruirGrafico(distribucionEdadChart);
+        rendimientoChart = destruirGrafico(rendimientoChart);
+        categoriasChart = destruirGrafico(categoriasChart);
 
-        document.getElementById('puntuacionGeneral').textContent = 'N/A';
-        document.getElementById('fortalezaPrincipal').textContent = 'N/A';
-        document.getElementById('areaMejorar').textContent = 'N/A';
-        document.getElementById('mejorCategoria').textContent = 'N/A';
-        document.getElementById('categoriaCritica').textContent = 'N/A';
-        document.getElementById('totalEvaluaciones').textContent = '0';
-        document.getElementById('insightsContainer').innerHTML = '<p>No hay datos suficientes para generar insights.</p>';
+        // Limpiar métricas
+        const ids = ['puntuacionGeneral', 'fortalezaPrincipal', 'areaMejorar', 'mejorCategoria', 'categoriaCritica', 'totalEvaluaciones', 'insightsContainer'];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                if (id === 'insightsContainer') {
+                    el.innerHTML = '<p style="color:#999; font-style:italic;">No hay datos suficientes.</p>';
+                } else if (id === 'totalEvaluaciones') {
+                    el.textContent = '0';
+                } else {
+                    el.textContent = 'N/A';
+                }
+            }
+        });
         return;
     }
 
