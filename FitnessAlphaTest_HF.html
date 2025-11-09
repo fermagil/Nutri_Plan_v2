@@ -9,10 +9,10 @@
     <!-- Firebase v9 Modular (mejor que compat) -->
     <script type="module">
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-		import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-		import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-		const firebaseConfig = {
+        const firebaseConfig = {
 			apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
 			authDomain: "nutriplanv2.firebaseapp.com",
 			projectId: "nutriplanv2",
