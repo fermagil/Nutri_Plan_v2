@@ -5803,41 +5803,13 @@ function descargarModeloCSV() {
     let evaluaciones = [];
     let isAuthenticated = false;
 
-    window.firebaseAuth.onAuthStateChanged(async (user) => {
-        if (user) {
-            const token = await user.getIdTokenResult();
-            if (token.claims.rol === "salud_escolar") {
-                isAuthenticated = true;
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('app-container').style.display = 'block';
-                cargarEvaluaciones(); // ← TU FUNCIÓN ORIGINAL
-                iniciarAutocompletado(); // ← TU FUNCIÓN ORIGINAL
-            } else {
-                alert("Acceso denegado: solo usuarios con rol 'salud_escolar'");
-                window.firebaseSignOut();
-            }
-        } else {
-            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-        }
-    });
+    
 
     // === REEMPLAZA TODAS LAS LLAMADAS A db.collection POR window.firebaseCollection ===
     // Ejemplo: en lugar de db.collection('evaluaciones')
     // Usa: window.firebaseCollection(window.firebaseDB, 'evaluaciones')
 
-    // === MODIFICA TU FUNCIÓN cargarEvaluaciones() asÍ:
-    function cargarEvaluaciones() {
-        const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, 'evaluaciones'));
-        window.firebaseOnSnapshot(q, (snapshot) => {
-            evaluaciones = [];
-            snapshot.forEach((doc) => {
-                evaluaciones.push({ id: doc.id, ...doc.data() });
-            });
-            actualizarContadorSiguienteID();
-            mostrarEstadisticasGlobales();
-            // Tus otras funciones...
-        });
-    }
+    
 
     // === Botón de cerrar sesión ===
     function logout() {
