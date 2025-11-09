@@ -2275,87 +2275,111 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
         </div>
     </div>
    <script>
-    // Función para obtener la fecha actual en formato YYYY-MM-DD
+   let evaluaciones = [];
+        let analisisEdadChart = null;
+
+        // FECHA HOY
         function getTodayDate() {
             const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son base 0
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return today.toISOString().split('T')[0];
         }
 
-        // Establecer la fecha actual en el campo de fecha cuando la página se cargue
-        window.onload = function() {
-            const fechaEvaluacion = document.getElementById('fechaEvaluacion');
-            fechaEvaluacion.value = getTodayDate();
+        window.onload = () => {
+            document.getElementById('fechaEvaluacion').value = getTodayDate();
         };
-		
-		
-// === GENERAR ID AUTOMÁTICO (5 dígitos) ===
-    function generarID() {
-        const idsNumericos = evaluaciones
-            .map(e => e.nombre)
-            .filter(n => n && /^\d{5}$/.test(n))
-            .map(n => parseInt(n, 10))
-            .filter(n => !isNaN(n));
 
-        const ultimoID = idsNumericos.length > 0 ? Math.max(...idsNumericos) : 0;
-        return String(ultimoID + 1).padStart(5, '0');
-    }
-
-    function actualizarContadorSiguienteID() {
-        const nextID = generarID();
-        const input = document.getElementById('nombre');
-        if (input && !input.value) input.value = nextID;
-    }
-
-    // === AUTENTICACIÓN + CARGA DE DATOS ===
-    window.firebaseAuth.onAuthStateChanged(async (user) => {
-        if (user) {
-            try {
-                const token = await user.getIdTokenResult();
-                if (token.claims.rol === "salud_escolar") {
-                    document.getElementById('login-section')?.style.setProperty('display', 'none');
-                    document.getElementById('app-container')?.style.setProperty('display', 'block');
-                    
-                    cargarEvaluaciones();
-                    iniciarAutocompletado();
-                    console.log("Acceso concedido: salud_escolar");
-                } else {
-                    alert("Acceso denegado: solo usuarios con rol 'salud_escolar'");
-                    await window.firebaseSignOut();
-                }
-            } catch (err) {
-                console.error("Error verificando rol:", err);
-                alert("Error de autenticación");
-            }
-        } else {
-            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        // GENERAR ID
+        function generarID() {
+            const ids = evaluaciones
+                .map(e => e.nombre)
+                .filter(n => /^\d{5}$/.test(n))
+                .map(n => parseInt(n, 10));
+            const max = ids.length > 0 ? Math.max(...ids) : 0;
+            return String(max + 1).padStart(5, '0');
         }
-    });
 
-    // === CARGAR EVALUACIONES ===
-    function cargarEvaluaciones() {
-        const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, 'evaluaciones'));
-        
-        window.firebaseOnSnapshot(q, (snapshot) => {
-            evaluaciones = [];
-            snapshot.forEach((doc) => {
-                evaluaciones.push({ id: doc.id, ...doc.data() });
+        // AUTENTICACIÓN
+        if (window.firebaseAuth) {
+            window.firebaseAuth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const token = await user.getIdTokenResult();
+                    if (token.claims.rol === "salud_escolar") {
+                        document.getElementById('login-section').style.display = 'none';
+                        document.getElementById('app-container').style.display = 'block';
+                        cargarEvaluaciones();
+                    } else {
+                        alert("Acceso denegado");
+                        window.firebaseSignOut();
+                    }
+                } else {
+                    window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+                }
             });
-            
-            console.log("Evaluaciones cargadas:", evaluaciones.length);
-            actualizarContadorSiguienteID();
-            mostrarEstadisticasGlobales();
-            mostrarListaEvaluaciones();
-            actualizarGraficos();
-        }, (error) => {
-            console.error("Error cargando evaluaciones:", error);
-            alert("Error de conexión con Firestore: " + error.message);
-        });
-    }
+        } else {
+            setTimeout(() => {
+                alert("Error: Firebase no cargó. Recarga la página.");
+            }, 5000);
+        }
 
+        // CARGAR DATOS
+        function cargarEvaluaciones() {
+            const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, 'evaluaciones'));
+            window.firebaseOnSnapshot(q, (snapshot) => {
+                evaluaciones = [];
+                snapshot.forEach(doc => {
+                    evaluaciones.push({ id: doc.id, ...doc.data() });
+                });
+                document.getElementById('lista-evaluaciones').innerHTML = evaluaciones.map(e => `<p>${e.nombre} - ${e.genero}</p>`).join('');
+                if (document.getElementById('nombre').value === '') {
+                    document.getElementById('nombre').value = generarID();
+                }
+            });
+        }
 
+        // GUARDAR
+        async function guardarEvaluacion() {
+            const datos = {
+                nombre: document.getElementById('nombre').value,
+                fechaNacimiento: document.getElementById('fechaNacimiento').value,
+                genero: document.getElementById('genero').value,
+                fechaEvaluacion: document.getElementById('fechaEvaluacion').value,
+                altura: parseFloat(document.getElementById('altura').value),
+                peso: parseFloat(document.getElementById('peso').value),
+                cintura: parseFloat(document.getElementById('cintura').value),
+                shuttle20m: parseFloat(document.getElementById('shuttle20m').value),
+                salto: parseInt(document.getElementById('salto').value),
+                fuerza: parseFloat(document.getElementById('fuerza').value),
+                shuttle4x10m: parseFloat(document.getElementById('shuttle4x10m').value)
+            };
+
+            if (!datos.nombre || datos.nombre.length !== 5) {
+                alert("ID debe tener 5 dígitos");
+                return;
+            }
+
+            try {
+                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'evaluaciones'), datos);
+                alert("Guardado correctamente");
+                resetFormularioYResultados();
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        }
+
+		// LIMPIAR
+        function resetFormularioYResultados() {
+            document.querySelectorAll('#evaluacion input, #evaluacion select').forEach(el => {
+                if (el.id !== 'fechaEvaluacion') el.value = '';
+            });
+            document.getElementById('fechaEvaluacion').value = getTodayDate();
+            document.getElementById('nombre').value = generarID();
+
+            // PROTECCIÓN CONTRA ERROR DE CHART
+            if (analisisEdadChart && typeof analisisEdadChart.destroy === 'function') {
+                analisisEdadChart.destroy();
+                analisisEdadChart = null;
+            }
+        }
    
    // === CÁLCULO IMC Y CLASIFICACIONES ===
    function calcularIMC(peso, altura) {
@@ -5773,6 +5797,14 @@ function descargarModeloCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
+// === Botón de cerrar sesión ===
+    function logout() {
+        window.firebaseSignOut().then(() => {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        });
+    }
+
     </script>
 	
 	
@@ -5798,26 +5830,10 @@ function descargarModeloCSV() {
         <p>Generando PDF, por favor espere...</p>
     </div>
 
-	<script>
-    // === PROTECCIÓN DE ACCESO + CARGA DE DATOS ===
-    let evaluaciones = [];
-    let isAuthenticated = false;
-
+	
     
 
-    // === REEMPLAZA TODAS LAS LLAMADAS A db.collection POR window.firebaseCollection ===
-    // Ejemplo: en lugar de db.collection('evaluaciones')
-    // Usa: window.firebaseCollection(window.firebaseDB, 'evaluaciones')
-
     
-
-    // === Botón de cerrar sesión ===
-    function logout() {
-        window.firebaseSignOut().then(() => {
-            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
-        });
-    }
-</script>
 
 <!-- Botón de cerrar sesión (agrega en tu HTML) -->
 <div style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
