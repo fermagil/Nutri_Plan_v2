@@ -5,15 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ALPHA Fitness Test - Sistema de Evaluación</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase v9 Modular (mejor que compat) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChC7s5NN-z-dSjqeXDaks7gaNaVCJAu7Q",
+            authDomain: "nutriplanv2.firebaseapp.com",
+            projectId: "nutriplanv2",
+            storageBucket: "nutriplanv2.firebasestorage.app",
+            messagingSenderId: "653707489758",
+            appId: "1:653707489758:web:9133d1d1620825c385ed4f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        window.firebaseDB = db;
+        window.firebaseAuth = auth;
+        window.firebaseCollection = collection;
+        window.firebaseOnSnapshot = onSnapshot;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseDoc = doc;
+        window.firebaseUpdateDoc = updateDoc;
+        window.firebaseDeleteDoc = deleteDoc;
+        window.firebaseQuery = query;
+        window.firebaseWhere = where;
+        window.firebaseSignOut = signOut;
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tus estilos (mantengo todo igual) -->
    <style>
    
    :root {
@@ -1928,6 +1958,12 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
 </style>
 </head>
 <body>
+<div id="login-section" style="text-align: center; padding: 50px; background: white; min-height: 100vh;">
+        <h2>Verificando permisos de Salud Escolar...</h2>
+        <p>Redirigiendo al login si no tienes acceso.</p>
+    </div>
+	
+	<div id="app-container" style="display: none;">
     <div class="container">
         <div class="header">
             <h1>ALPHA Fitness Test Eurpeo- Valoracion CF Salud</h1>
@@ -2243,6 +2279,8 @@ background: linear-gradient(90deg, rgba(105, 23, 105, 1) 0%, rgba(98, 29, 117, 1
             </div>
         </div>
     </div>
+	</div>
+	
    <script>
     // Función para obtener la fecha actual en formato YYYY-MM-DD
         function getTodayDate() {
@@ -3400,7 +3438,7 @@ div.appendChild(zonaDiv);
     // Cargar evaluaciones desde Firestore
     async function cargarEvaluaciones() {
     try {
-        const snapshot = await db.collection('evaluaciones').get();
+        const snapshot = await window.firebaseCollection(window.firebaseDB, 'evaluaciones').get();
         evaluaciones = [];
         snapshot.forEach(doc => {
             evaluaciones.push({ id: doc.id, ...doc.data() });
@@ -3434,7 +3472,7 @@ div.appendChild(zonaDiv);
             shuttle4x10m: parseFloat(document.getElementById('shuttle4x10m').value)
         };
         try {
-            const docRef = await db.collection('evaluaciones').add(datos);
+            const docRef = await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'evaluaciones'),datos);
             datos.id = docRef.id;
             evaluaciones.push(datos);
             procesarResultados(datos);
@@ -5657,7 +5695,7 @@ async function importardata() {
             // Guardar en Firestore
             for (const datos of nuevosRegistros) {
                 try {
-                    const docRef = await db.collection('evaluaciones').add(datos);
+                    const docRef = await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'evaluaciones'),datos);
                     datos.id = docRef.id;
                     evaluaciones.push(datos);
                 } catch (err) {
@@ -5735,8 +5773,63 @@ function descargarModeloCSV() {
         <div class="spinner"></div>
         <p>Generando PDF, por favor espere...</p>
     </div>
+
+	<script>
+    // === PROTECCIÓN DE ACCESO + CARGA DE DATOS ===
+    let evaluaciones = [];
+    let isAuthenticated = false;
+
+    window.firebaseAuth.onAuthStateChanged(async (user) => {
+        if (user) {
+            const token = await user.getIdTokenResult();
+            if (token.claims.rol === "salud_escolar") {
+                isAuthenticated = true;
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+                cargarEvaluaciones(); // ← TU FUNCIÓN ORIGINAL
+                iniciarAutocompletado(); // ← TU FUNCIÓN ORIGINAL
+            } else {
+                alert("Acceso denegado: solo usuarios con rol 'salud_escolar'");
+                window.firebaseSignOut();
+            }
+        } else {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        }
+    });
+
+    // === REEMPLAZA TODAS LAS LLAMADAS A db.collection POR window.firebaseCollection ===
+    // Ejemplo: en lugar de db.collection('evaluaciones')
+    // Usa: window.firebaseCollection(window.firebaseDB, 'evaluaciones')
+
+    // === MODIFICA TU FUNCIÓN cargarEvaluaciones() asÍ:
+    function cargarEvaluaciones() {
+        const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, 'evaluaciones'));
+        window.firebaseOnSnapshot(q, (snapshot) => {
+            evaluaciones = [];
+            snapshot.forEach((doc) => {
+                evaluaciones.push({ id: doc.id, ...doc.data() });
+            });
+            actualizarContadorSiguienteID();
+            mostrarEstadisticasGlobales();
+            // Tus otras funciones...
+        });
+    }
+
+    // === Botón de cerrar sesión ===
+    function logout() {
+        window.firebaseSignOut().then(() => {
+            window.location.href = 'https://fermagil.github.io/Nutri_Plan_v2/index.html';
+        });
+    }
+</script>
+
+<!-- Botón de cerrar sesión (agrega en tu HTML) -->
+<div style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+    <button onclick="logout()" class="btn btn-danger">Cerrar Sesión</button>
+</div>
 </body>
 </html>
+
 
 
 
