@@ -1,6 +1,6 @@
 /**
  * Módulo de Gestión de Fotos Antropométricas
- * Encapsula toda la lógica del modal, carga y renderizado.
+ * Clase modular para encapsular la lógica del modal, carga y renderizado.
  */
 class PhotoManager {
     constructor() {
@@ -17,7 +17,7 @@ class PhotoManager {
         };
 
         // 2. Estado inicial
-        // Intentamos cargar fotos previas del localStorage
+        // Carga fotos previas de localStorage (simulación de persistencia)
         this.photos = JSON.parse(localStorage.getItem('nutriPlanPhotos')) || [];
         
         // Inicializar fecha actual por defecto
@@ -31,11 +31,16 @@ class PhotoManager {
     }
 
     initEventListeners() {
-        // Abrir/Cerrar Modal
-        this.elements.btnOpen.addEventListener('click', () => this.toggleModal(true));
+        // Abrir Modal con detención de propagación (EVITA PROBLEMAS CON OTROS MODALES)
+        this.elements.btnOpen.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            this.toggleModal(true);
+        });
+        
+        // Cerrar Modal
         this.elements.btnClose.addEventListener('click', () => this.toggleModal(false));
         
-        // Cerrar si clic fuera del contenido
+        // Cerrar si clic fuera del contenido del modal
         this.elements.modal.addEventListener('click', (e) => {
             if (e.target === this.elements.modal) this.toggleModal(false);
         });
@@ -43,7 +48,7 @@ class PhotoManager {
         // Manejo del Drag & Drop
         const dz = this.elements.dropZone;
         
-        // Prevenir comportamiento por defecto
+        // Prevenir comportamiento por defecto del navegador
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dz.addEventListener(eventName, preventDefaults, false);
         });
@@ -82,25 +87,26 @@ class PhotoManager {
     }
 
     handleFiles(files) {
-        // Procesar solo la primera imagen para este ejemplo
         const file = files[0];
         if (file && file.type.startsWith('image/')) {
+            if (!this.elements.dateInput.value) {
+                alert('Por favor, selecciona la fecha de la toma antes de subir la foto.');
+                return;
+            }
+            
             const reader = new FileReader();
             
             reader.onload = (e) => {
-                // Crear objeto de foto
                 const newPhoto = {
-                    id: Date.now(), // ID único simple
-                    image: e.target.result, // Base64 de la imagen
+                    id: Date.now(), 
+                    image: e.target.result, 
                     date: this.elements.dateInput.value,
                     type: this.elements.typeSelect.value
                 };
 
-                // Guardar en estado y localStorage
-                this.photos.unshift(newPhoto); // Añadir al principio
+                // Añadir al principio para mostrar la más reciente primero
+                this.photos.unshift(newPhoto); 
                 this.saveToStorage();
-                
-                // Re-renderizar
                 this.renderGallery();
             };
             
@@ -121,15 +127,13 @@ class PhotoManager {
 
     renderGallery() {
         const container = this.elements.gallery;
-        container.innerHTML = ''; // Limpiar
+        container.innerHTML = ''; 
 
         if (this.photos.length === 0) {
             container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1; text-align: center; color: #888; padding: 2rem;">No hay fotos registradas. ¡Sube la primera!</div>`;
             return;
         }
 
-        // Agrupar fotos por fecha (opcional, para mejor orden visual)
-        // Aquí renderizamos un grid simple
         this.photos.forEach(photo => {
             const card = document.createElement('div');
             card.className = 'photo-card';
@@ -139,7 +143,7 @@ class PhotoManager {
                 <img src="${photo.image}" alt="Foto ${photo.type}">
                 <div class="photo-info">
                     <strong>📅 ${photo.date}</strong>
-                    <button class="btn-delete" onclick="photoManager.deletePhoto(${photo.id})" style="float:right; color:red; border:none; background:none; cursor:pointer;">🗑️</button>
+                    <button class="btn-delete" onclick="photoManager.deletePhoto(${photo.id})" title="Eliminar foto">🗑️</button>
                 </div>
             `;
             container.appendChild(card);
@@ -147,7 +151,7 @@ class PhotoManager {
     }
 
     deletePhoto(id) {
-        if(confirm('¿Borrar esta foto?')) {
+        if(confirm('¿Estás seguro de que quieres eliminar esta foto del historial?')) {
             this.photos = this.photos.filter(p => p.id !== id);
             this.saveToStorage();
             this.renderGallery();
@@ -155,8 +159,8 @@ class PhotoManager {
     }
 }
 
-// Inicializar la clase cuando el DOM esté listo
-let photoManager; // Variable global expuesta para poder llamar a métodos desde HTML (ej. deletePhoto)
+// Inicializar la clase cuando el DOM esté completamente cargado
+let photoManager; 
 
 document.addEventListener('DOMContentLoaded', () => {
     photoManager = new PhotoManager();
