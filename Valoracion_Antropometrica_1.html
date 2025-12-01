@@ -3483,47 +3483,281 @@ body {
 	<!-- Modal Photos -->
 
 
-<aside class="dashboard-sidebar">
-    <div class="dashboard-card">
-        <h3 class="card-title">VALORACIÓN</h3>
-        <p class="card-subtitle">Vesfotas antropométricas</p>
-        
-        <div class="control-group">
-            <label for="photo-type" class="control-label">Tipo para Fotos</label>
-            <select id="photo-type" class="dashboard-select">
-                <option value="frontal_relajado">Frontal Relajado</option>
-                <option value="perfil_izquierdo">Perfil Izquierdo</option>
-                <option value="espalda">Espalda</option>
-            </select>
-        </div>
+<div id="photo-modal-overlay" class="modal-overlay hidden">
 
-        <div class="control-group">
-            <label for="photo-date" class="control-label">Fecha de Toma</label>
-            <input type="date" id="photo-date" class="dashboard-input">
-        </div>
+    <div class="modal-dashboard-container">
 
-        <button id="btn-trigger-upload" class="btn-primary-solid">
-            Subir Fotos
-        </button>
+        <header class="dashboard-header">
 
-        <input type="file" id="file-input" accept="image/*" hidden>
+            <div class="header-title">
 
-        <div class="drop-zone hidden" id="drop-zone">
+                <span class="icon">☰</span>
+
+                <h2>SEGUIMIENTO VISUAL COMPOSICIÓN CORPORAL</h2>
+
             </div>
+
+            <div class="header-actions">
+
+                <button class="icon-btn">⏱️</button>
+
+                <button class="icon-btn">👤</button>
+
+                <button id="btn-close-modal" class="icon-btn close-btn">&times;</button>
+
+            </div>
+
+        </header>
+
+
+
+        <div class="dashboard-body">
+
+            
+
+            <aside class="dashboard-sidebar">
+
+                <div class="dashboard-card">
+
+                    <h3 class="card-title">VALORACIÓN</h3>
+
+                    <p class="card-subtitle">Vesfotas antropométricas</p>
+
+                    
+
+                    <div class="control-group">
+
+                        <label for="photo-type" class="control-label">Tipo para Fotos</label>
+
+                        <select id="photo-type" class="dashboard-select">
+
+                            <option value="frontal_relajado">Frontal Relajado</option>
+
+                            <option value="perfil_izquierdo">Perfil Izquierdo</option>
+
+                            <option value="espalda">Espalda</option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <div class="control-group">
+
+                        <label for="photo-date" class="control-label">Fecha de Toma</label>
+
+                        <input type="date" id="photo-date" class="dashboard-input">
+
+                    </div>
+
+
+
+                    <button id="btn-trigger-upload" class="btn-primary-solid">
+
+                        Subir Fotos
+
+                    </button>
+
+
+
+                    <div class="drop-zone hidden" id="drop-zone">
+
+                        <input type="file" id="file-input" accept="image/*" hidden>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="dashboard-menu-card">
+
+                    <h3 class="card-title-sm">RESULTADOS</h3>
+
+                    <ul class="menu-list">
+
+                        <li class="menu-item active">
+
+                            <span class="icon">📄</span> Noticies Fotos <span class="arrow">></span>
+
+                        </li>
+
+                        <li class="menu-item">
+
+                            <span class="icon">📊</span> Sagrected <span class="arrow">></span>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </aside>
+
+
+
+            <main class="dashboard-content">
+
+                
+
+                <section class="dashboard-card photo-section">
+
+                    <div class="card-header-actions">
+
+                        <h3 class="card-title">FRONTAL RELAJADO (Última Toma)</h3>
+
+                        <span class="icon-star">★</span>
+
+                    </div>
+
+                    
+
+                    <div class="latest-photo-container" id="latest-photo-container">
+
+                        <div class="empty-placeholder">
+
+                            <img src="https://via.placeholder.com/400x300?text=Sin+Foto+Reciente" alt="Placeholder">
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <section class="dashboard-card">
+
+                    <div class="card-header-actions">
+
+                        <h3 class="card-title">HISTORIAL DE FOTOS</h3>
+
+                        <div class="header-icons">
+
+                            <button class="icon-btn-sm primary">+</button>
+
+                            <button class="icon-btn-sm">⬇️</button>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div class="gallery-grid" id="photo-gallery">
+
+                        <div class="empty-state-card">No hay fotos en el historial.</div>
+
+                    </div>
+
+                </section>
+
+
+
+                <section class="dashboard-card">
+
+                    <div class="card-header-actions">
+
+                        <h3 class="card-title">MÉTRICAS CLAVE (MOMANTICNTR)</h3>
+
+                        <span class="icon-star">★</span>
+
+                    </div>
+
+                    
+
+                    <table class="metrics-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Métrica</th>
+
+                                <th>Valor Inicial</th>
+
+                                <th>Fecha Anterior</th>
+
+                                <th>Valor Actual</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>Masa Grasa</td>
+
+                                <td>28 %</td>
+
+                                <td>12/01/2024</td>
+
+                                <td class="font-bold">24 %</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>Masa Muscular</td>
+
+                                <td>35 kg</td>
+
+                                <td>12/01/2024</td>
+
+                                <td class="font-bold">37 kg</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>Sumatorio Pliegues</td>
+
+                                <td>120 mm</td>
+
+                                <td>12/01/2024</td>
+
+                                <td class="font-bold">110 mm</td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </section>
+
+
+
+            </main>
+
+        </div>
+
+
+
+        <footer class="dashboard-footer">
+
+            <div class="footer-info">
+
+                <span class="icon">🔒</span>
+
+                <p>Los datos y fotos están encriptados y son confidenciales.</p>
+
+            </div>
+
+            <button class="btn-cta-large">
+
+                Deska Ginarta Comsuae (Guardar Análisis)
+
+            </button>
+
+        </footer>
+
     </div>
 
-    <div class="dashboard-menu-card">
-        <h3 class="card-title-sm">RESULTADOS</h3>
-        <ul class="menu-list">
-            <li class="menu-item active">
-                <span class="icon">📄</span> Noticies Fotos <span class="arrow">></span>
-            </li>
-            <li class="menu-item">
-                <span class="icon">📊</span> Sagrected <span class="arrow">></span>
-            </li>
-        </ul>
-    </div>
-</aside>
+</div>
 					
 		     <!-- Modal Commit Container -->
 	<!-- Modal Commit Container -->
@@ -7173,6 +7407,7 @@ function handleSectionTitleClick(event) {
 	<script src="photo-modal.js"></script>
 </body>
 </html>
+
 
 
 
