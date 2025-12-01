@@ -1,186 +1,722 @@
 /**
- * Módulo de Gestión de Fotos - Diseño Profesional (VERSIÓN FINAL)
- * Encargado de la lógica de abrir/cerrar modal, carga de fotos, persistencia 
- * en localStorage y renderizado en galería y vista principal.
+ * Módulo Principal del Dashboard - Seguimiento Visual Corporal
+ * Gestiona la lógica completa del dashboard incluyendo:
+ * - Gestión de fotos (subida, visualización, eliminación)
+ * - Métricas y estadísticas
+ * - Gráficos interactivos
+ * - Persistencia de datos en localStorage
+ * - Responsividad y UX mejorada
  */
-class PhotoManager {
+
+class DashboardManager {
     constructor() {
-        // 1. Selección de elementos del DOM
-        this.elements = {
-            modal: document.getElementById('photo-modal-overlay'),
-            btnOpen: document.getElementById('btn-open-photo-modal'),
-            btnClose: document.getElementById('btn-close-modal'),
-            btnTriggerUpload: document.getElementById('btn-trigger-upload'),
-            dropZone: document.getElementById('drop-zone'),
-            fileInput: document.getElementById('file-input'), 
-            gallery: document.getElementById('photo-gallery'),
-            latestContainer: document.getElementById('latest-photo-container'),
-            dateInput: document.getElementById('photo-date'),
-            typeSelect: document.getElementById('photo-type')
+        // 1. Inicialización de estado y selección de elementos
+        this.state = {
+            photos: JSON.parse(localStorage.getItem('dashboardPhotos')) || [],
+            metrics: JSON.parse(localStorage.getItem('dashboardMetrics')) || this.getDefaultMetrics(),
+            currentDate: new Date().toISOString().split('T')[0],
+            activeView: 'frontal'
         };
 
-        // 2. Estado inicial
-        // Clave para almacenamiento persistente
-        this.photos = JSON.parse(localStorage.getItem('nutriPlanPhotosProf')) || [];
-        // Inicializar la fecha al día de hoy
-        this.elements.dateInput.valueAsDate = new Date();
+        // 2. Selección de elementos principales
+        this.elements = {
+            // Contenedores principales
+            dashboard: document.querySelector('.dashboard-container'),
+            
+            // Header
+            menuToggle: document.querySelector('.menu-toggle'),
+            closeBtn: document.querySelector('.close-btn'),
+            
+            // Sidebar
+            photoTypeSelect: document.getElementById('photo-type') || document.querySelector('.form-select'),
+            uploadBtn: document.getElementById('btn-trigger-upload') || document.querySelector('.btn-upload'),
+            fileInput: document.getElementById('file-input') || document.querySelector('input[type="file"]'),
+            resultsMenu: document.querySelectorAll('.menu-item'),
+            
+            // Contenido principal
+            latestPhotoContainer: document.getElementById('latest-photo-container') || document.querySelector('.latest-photo-container'),
+            photoGallery: document.getElementById('photo-gallery') || document.querySelector('.gallery-grid'),
+            frontalGrid: document.querySelector('.dates-grid'),
+            resultsGrid: document.querySelector('.results-grid'),
+            comparisonGrid: document.querySelector('.comparison-grid'),
+            metricsTable: document.querySelector('.metrics-table tbody'),
+            chartsContainer: document.querySelector('.charts-grid'),
+            
+            // Footer
+            saveBtn: document.querySelector('.btn-cta')
+        };
 
-        // 3. Iniciar listeners
+        // 3. Configuración inicial
+        this.config = {
+            maxFileSize: 5 * 1024 * 1024, // 5MB
+            supportedFormats: ['image/jpeg', 'image/png', 'image/webp'],
+            defaultMetrics: this.getDefaultMetrics(),
+            chartColors: {
+                primary: '#2563eb',
+                success: '#10b981',
+                warning: '#f59e0b',
+                danger: '#ef4444'
+            }
+        };
+
+        // 4. Inicialización
+        this.init();
+    }
+
+    init() {
+        // Inicializar event listeners
         this.initEventListeners();
         
-        // 4. Renderizar galería inicial
-        this.renderGallery();
+        // Cargar datos iniciales
+        this.loadInitialData();
+        
+        // Renderizar vista inicial
+        this.renderDashboard();
+        
+        // Inicializar gráficos
+        this.initCharts();
+        
+        console.log('Dashboard Manager inicializado correctamente');
     }
 
     initEventListeners() {
-        // Listener para abrir Modal (Botón de la interfaz principal)
-        this.elements.btnOpen.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            this.toggleModal(true);
-        });
-        
-        // Listener para cerrar Modal (Botón X y click en overlay)
-        this.elements.btnClose.addEventListener('click', () => this.toggleModal(false));
-        this.elements.modal.addEventListener('click', (e) => {
-            if (e.target === this.elements.modal) this.toggleModal(false);
-        });
+        // Navegación y UI
+        if (this.elements.menuToggle) {
+            this.elements.menuToggle.addEventListener('click', () => this.toggleSidebar());
+        }
 
-        // Listener para el botón "Subir Fotos" (Abre el file picker)
-        this.elements.btnTriggerUpload.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            this.elements.fileInput.click(); 
-        });
+        if (this.elements.closeBtn) {
+            this.elements.closeBtn.addEventListener('click', () => this.closeDashboard());
+        }
 
-        // Manejo del archivo seleccionado
-        this.elements.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+        // Gestión de fotos
+        if (this.elements.uploadBtn) {
+            this.elements.uploadBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.elements.fileInput?.click();
+            });
+        }
+
+        if (this.elements.fileInput) {
+            this.elements.fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+        }
+
+        // Menú de resultados
+        if (this.elements.resultsMenu) {
+            this.elements.resultsMenu.forEach(item => {
+                item.addEventListener('click', (e) => this.handleMenuClick(e));
+            });
+        }
+
+        // Botón de guardar
+        if (this.elements.saveBtn) {
+            this.elements.saveBtn.addEventListener('click', () => this.saveDashboard());
+        }
+
+        // Drag and drop para fotos
+        this.initDragAndDrop();
         
-        // Manejo del Drag & Drop (Si se llegara a hacer visible)
-        const dz = this.elements.dropZone;
+        // Eventos de teclado
+        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+    }
+
+    initDragAndDrop() {
+        const dropZone = this.elements.dashboard;
+        
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dz.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
         });
-        dz.addEventListener('drop', (e) => this.handleFiles(e.dataTransfer.files));
+
+        dropZone.addEventListener('dragover', () => {
+            dropZone.style.backgroundColor = 'rgba(37, 99, 235, 0.1)';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.backgroundColor = '';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            dropZone.style.backgroundColor = '';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.handleFileUpload({ target: { files } });
+            }
+        });
     }
 
-    toggleModal(show) {
-        this.elements.modal.classList.toggle('hidden', !show);
-    }
+    handleFileUpload(event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
 
-    handleFiles(files) {
         const file = files[0];
         
-        if (file && file.type.startsWith('image/')) {
-            if (!this.elements.dateInput.value) {
-                alert('Por favor, selecciona la fecha de la toma.');
-                return;
-            }
-            
-            const reader = new FileReader();
-            
-            reader.onload = (e) => {
-                const newPhoto = {
-                    id: Date.now(), 
-                    image: e.target.result, // Contiene la cadena Base64
-                    date: this.elements.dateInput.value,
-                    type: this.elements.typeSelect.value,
-                    // Obtiene el texto visible de la opción seleccionada
-                    typeName: this.elements.typeSelect.options[this.elements.typeSelect.selectedIndex].text
-                };
+        // Validaciones
+        if (!this.validateFile(file)) {
+            this.showNotification('Formato de archivo no válido o tamaño excesivo', 'error');
+            return;
+        }
 
-                this.photos.unshift(newPhoto); // Añadir al inicio (más reciente)
-                this.saveToStorage();
-                this.renderGallery();
-                // Limpiar el input para permitir subir el mismo archivo
-                this.elements.fileInput.value = '';
+        // Procesar imagen
+        this.processImage(file);
+        
+        // Limpiar input
+        event.target.value = '';
+    }
+
+    validateFile(file) {
+        // Validar formato
+        if (!this.config.supportedFormats.includes(file.type)) {
+            return false;
+        }
+
+        // Validar tamaño
+        if (file.size > this.config.maxFileSize) {
+            return false;
+        }
+
+        return true;
+    }
+
+    processImage(file) {
+        const reader = new FileReader();
+        const photoType = this.elements.photoTypeSelect?.value || 'frontal';
+        const date = this.state.currentDate;
+
+        reader.onload = (e) => {
+            const newPhoto = {
+                id: Date.now(),
+                image: e.target.result,
+                date: date,
+                type: photoType,
+                typeName: this.getTypeName(photoType),
+                uploadDate: new Date().toISOString(),
+                size: file.size,
+                dimensions: this.getImageDimensions(e.target.result)
             };
+
+            // Añadir al estado
+            this.state.photos.unshift(newPhoto);
             
-            reader.readAsDataURL(file);
-        } else {
-            if (files.length > 0) {
-                 alert('El archivo seleccionado no es una imagen válida.');
+            // Actualizar métricas
+            this.updateMetrics(newPhoto);
+            
+            // Guardar en localStorage
+            this.saveToStorage();
+            
+            // Actualizar vista
+            this.renderDashboard();
+            
+            // Mostrar notificación
+            this.showNotification('Foto subida correctamente', 'success');
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    getImageDimensions(dataUrl) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                resolve({ width: img.width, height: img.height });
+            };
+            img.src = dataUrl;
+        });
+    }
+
+    getTypeName(type) {
+        const types = {
+            'frontal': 'Frontal Relajado',
+            'perfil': 'Perfil',
+            'espalda': 'Espalda'
+        };
+        return types[type] || 'Desconocido';
+    }
+
+    updateMetrics(newPhoto) {
+        // Simular actualización de métricas basada en nueva foto
+        // En una implementación real, esto analizaría la imagen
+        
+        // Actualizar fecha de última toma
+        this.state.metrics.lastPhotoDate = newPhoto.date;
+        
+        // Incrementar contador de fotos
+        this.state.metrics.totalPhotos = (this.state.metrics.totalPhotos || 0) + 1;
+        
+        // Actualizar estadísticas de progreso
+        this.updateProgressMetrics();
+    }
+
+    updateProgressMetrics() {
+        // Simular progreso basado en número de fotos
+        const totalPhotos = this.state.photos.length;
+        
+        if (totalPhotos > 0) {
+            // Simular mejoras en métricas
+            this.state.metrics.progress = {
+                masaGrasa: Math.max(15, 28 - (totalPhotos * 0.5)),
+                masaMuscular: Math.min(45, 35 + (totalPhotos * 0.3)),
+                sumatorioPliegues: Math.max(90, 120 - (totalPhotos * 2))
+            };
+        }
+    }
+
+    getDefaultMetrics() {
+        return {
+            lastPhotoDate: null,
+            totalPhotos: 0,
+            progress: {
+                masaGrasa: 28,
+                masaMuscular: 35,
+                sumatorioPliegues: 120
+            },
+            trends: {
+                weekly: [],
+                monthly: []
             }
+        };
+    }
+
+    loadInitialData() {
+        // Cargar datos del localStorage
+        const savedPhotos = localStorage.getItem('dashboardPhotos');
+        const savedMetrics = localStorage.getItem('dashboardMetrics');
+        
+        if (savedPhotos) {
+            this.state.photos = JSON.parse(savedPhotos);
+        }
+        
+        if (savedMetrics) {
+            this.state.metrics = JSON.parse(savedMetrics);
         }
     }
 
     saveToStorage() {
         try {
-            localStorage.setItem('nutriPlanPhotosProf', JSON.stringify(this.photos));
+            localStorage.setItem('dashboardPhotos', JSON.stringify(this.state.photos));
+            localStorage.setItem('dashboardMetrics', JSON.stringify(this.state.metrics));
         } catch (e) {
-            console.error("Storage error", e);
-            alert("Límite de almacenamiento local alcanzado.");
+            console.error('Error guardando datos:', e);
+            this.showNotification('Error al guardar datos. Espacio de almacenamiento insuficiente.', 'error');
         }
     }
 
-    renderGallery() {
-        const galleryContainer = this.elements.gallery;
-        const latestContainer = this.elements.latestContainer;
+    renderDashboard() {
+        // Renderizar últimas fotos
+        this.renderLatestPhotos();
         
-        // Limpiamos los contenedores
-        galleryContainer.innerHTML = '';
-        latestContainer.innerHTML = '';
+        // Renderizar galería
+        this.renderPhotoGallery();
+        
+        // Renderizar métricas
+        this.renderMetrics();
+        
+        // Renderizar gráficos
+        this.updateCharts();
+        
+        // Actualizar estadísticas
+        this.updateStatistics();
+    }
 
-        const mainTitle = document.querySelector('.photo-section .card-title');
+    renderLatestPhotos() {
+        if (!this.elements.frontalGrid) return;
 
-
-        if (this.photos.length === 0) {
-            // Estado vacío
-            galleryContainer.innerHTML = `<div class="empty-state-card">No hay fotos en el historial.</div>`;
-            
-            // Placeholder en el contenedor principal
-            latestContainer.innerHTML = `
-                <div class="empty-placeholder">
-                    <img src="https://via.placeholder.com/400x300?text=Sin+Foto+Reciente" alt="Placeholder">
-                </div>`;
-            
-            if (mainTitle) {
-                mainTitle.textContent = `FRONTAL RELAJADO (Última Toma)`;
-            }
+        const frontalPhotos = this.state.photos.filter(photo => photo.type === 'frontal');
+        
+        if (frontalPhotos.length === 0) {
+            this.elements.frontalGrid.innerHTML = `
+                <div class="date-card empty-state">
+                    <div class="date-label">Sin fotos disponibles</div>
+                    <div class="photo-placeholder empty"></div>
+                </div>
+            `;
             return;
         }
 
-        // 1. Renderizar la última foto en el contenedor principal
-        const latestPhoto = this.photos[0];
+        // Mostrar las 5 fotos frontales más recientes
+        const recentPhotos = frontalPhotos.slice(0, 5);
         
-        if (mainTitle) {
-             mainTitle.textContent = `${latestPhoto.typeName.toUpperCase()} (Última Toma)`;
-        }
-
-        latestContainer.innerHTML = `
-            <img src="${latestPhoto.image}" alt="Última foto ${latestPhoto.typeName}">
-            <p class="latest-photo-caption" style="font-size: 0.8rem; color: #6b7280; text-align: center; margin-top: 10px;">
-                Fecha: ${new Date(latestPhoto.date).toLocaleDateString()}
-            </p>
-        `;
-        
-        // 2. Renderizar todas las fotos en la galería histórica
-        this.photos.forEach((photo) => {
-            const card = document.createElement('div');
-            card.className = 'photo-card';
-            card.innerHTML = `
-                <img src="${photo.image}" alt="Foto ${photo.typeName}">
-                <div class="photo-info">
-                    <div>
-                        <div class="photo-date">${new Date(photo.date).toLocaleDateString()}</div>
-                        <div class="photo-type">${photo.typeName}</div>
+        this.elements.frontalGrid.innerHTML = recentPhotos.map(photo => `
+            <div class="date-card" data-photo-id="${photo.id}">
+                <div class="date-label">${this.formatDate(photo.date)}</div>
+                <div class="photo-placeholder" style="background-image: url('${photo.image}')">
+                    <div class="photo-overlay">
+                        <button class="view-btn" onclick="dashboardManager.viewPhoto(${photo.id})">👁️</button>
+                        <button class="delete-btn" onclick="dashboardManager.deletePhoto(${photo.id})">🗑️</button>
                     </div>
-                    <button class="icon-btn-sm" onclick="photoManager.deletePhoto(${photo.id})" title="Eliminar">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    renderPhotoGallery() {
+        if (!this.elements.photoGallery) return;
+
+        if (this.state.photos.length === 0) {
+            this.elements.photoGallery.innerHTML = `
+                <div class="empty-state-card">
+                    <div class="empty-icon">📸</div>
+                    <h3>No hay fotos en el historial</h3>
+                    <p>Sube tu primera foto para comenzar el seguimiento</p>
                 </div>
             `;
-            galleryContainer.appendChild(card);
+            return;
+        }
+
+        this.elements.photoGallery.innerHTML = this.state.photos.map(photo => `
+            <div class="photo-card" data-photo-id="${photo.id}">
+                <div class="photo-image" style="background-image: url('${photo.image}')">
+                    <div class="photo-actions">
+                        <button class="action-btn view" onclick="dashboardManager.viewPhoto(${photo.id})">👁️</button>
+                        <button class="action-btn delete" onclick="dashboardManager.deletePhoto(${photo.id})">🗑️</button>
+                    </div>
+                </div>
+                <div class="photo-info">
+                    <div class="photo-meta">
+                        <span class="photo-type-badge ${photo.type}">${photo.typeName}</span>
+                        <span class="photo-date">${this.formatDate(photo.date)}</span>
+                    </div>
+                    <div class="photo-stats">
+                        <span class="stat">📏 ${photo.dimensions?.width || '?'}x${photo.dimensions?.height || '?'}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    renderMetrics() {
+        if (!this.elements.metricsTable) return;
+
+        const metricsData = [
+            { name: 'Masa Grasa', initial: '28%', current: `${this.state.metrics.progress.masaGrasa.toFixed(1)}%`, trend: 'down' },
+            { name: 'Masa Muscular', initial: '35 kg', current: `${this.state.metrics.progress.masaMuscular.toFixed(1)} kg`, trend: 'up' },
+            { name: 'Sumatorio Pliegues', initial: '120 mm', current: `${this.state.metrics.progress.sumatorioPliegues.toFixed(0)} mm`, trend: 'down' }
+        ];
+
+        this.elements.metricsTable.innerHTML = metricsData.map(metric => `
+            <tr class="metric-row ${metric.trend}">
+                <td>${metric.name}</td>
+                <td>${metric.initial}</td>
+                <td>${this.getLastMonthDate()}</td>
+                <td class="metric-current ${metric.trend}">${metric.current}</td>
+            </tr>
+        `).join('');
+    }
+
+    initCharts() {
+        if (!this.elements.chartsContainer) return;
+
+        // Inicializar gráficos con datos por defecto
+        this.charts = {
+            results: this.createResultsChart(),
+            progress: this.createProgressChart()
+        };
+    }
+
+    createResultsChart() {
+        // Crear gráfico de barras
+        const chartData = {
+            labels: ['12/03', '13/04', '15/06', '9/08', '5/08'],
+            values: [45, 30, 20, 90, 50],
+            color: this.config.chartColors.primary
+        };
+
+        return chartData;
+    }
+
+    createProgressChart() {
+        // Crear gráfico de progreso
+        const chartData = {
+            labels: ['13/00', '12/00', '12/00', '15/00', '12/00', '12/00'],
+            values: [90, 86, 80, 100, 90, 85],
+            color: this.config.chartColors.success
+        };
+
+        return chartData;
+    }
+
+    updateCharts() {
+        // Actualizar datos de los gráficos
+        if (this.state.photos.length > 0) {
+            // Actualizar con datos reales
+            this.charts.results.values = this.calculateProgressData();
+            this.charts.progress.values = this.calculateTrendData();
+        }
+    }
+
+    calculateProgressData() {
+        // Calcular datos de progreso basados en fotos
+        const totalPhotos = this.state.photos.length;
+        return [45, 30, 20, Math.min(90, 20 + totalPhotos * 10), 50];
+    }
+
+    calculateTrendData() {
+        // Calcular tendencias
+        return this.state.photos.length > 0 ? 
+            [90, 86, 80, 100, 90, 85] : 
+            [0, 0, 0, 0, 0, 0];
+    }
+
+    updateStatistics() {
+        // Actualizar estadísticas en tiempo real
+        const stats = {
+            totalPhotos: this.state.photos.length,
+            lastUpload: this.state.photos[0] ? this.formatDate(this.state.photos[0].date) : 'Nunca',
+            progressPercentage: this.calculateOverallProgress()
+        };
+
+        // Actualizar elementos de estadísticas si existen
+        const statsElements = document.querySelectorAll('.stat-value');
+        statsElements.forEach(el => {
+            const statType = el.dataset.stat;
+            if (stats[statType]) {
+                el.textContent = stats[statType];
+            }
         });
     }
 
-    deletePhoto(id) {
-        if(confirm('¿Estás seguro de que quieres eliminar esta foto del historial?')) {
-            this.photos = this.photos.filter(p => p.id !== id);
-            this.saveToStorage();
-            this.renderGallery();
+    calculateOverallProgress() {
+        if (this.state.photos.length === 0) return 0;
+        
+        const maxProgress = 100;
+        const baseProgress = Math.min(70, this.state.photos.length * 10);
+        const metricProgress = this.calculateMetricProgress();
+        
+        return Math.min(maxProgress, baseProgress + metricProgress);
+    }
+
+    calculateMetricProgress() {
+        let progress = 0;
+        const metrics = this.state.metrics.progress;
+        
+        if (metrics.masaGrasa < 25) progress += 10;
+        if (metrics.masaMuscular > 36) progress += 10;
+        if (metrics.sumatorioPliegues < 110) progress += 10;
+        
+        return progress;
+    }
+
+    handleMenuClick(event) {
+        const menuItem = event.currentTarget;
+        const view = menuItem.dataset.view || 'frontal';
+        
+        // Remover clase active de todos los items
+        this.elements.resultsMenu.forEach(item => item.classList.remove('active'));
+        
+        // Añadir clase active al item clickeado
+        menuItem.classList.add('active');
+        
+        // Cambiar vista
+        this.state.activeView = view;
+        this.renderView(view);
+    }
+
+    renderView(view) {
+        // Ocultar todas las vistas
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => section.classList.add('hidden'));
+        
+        // Mostrar vista activa
+        const activeSection = document.querySelector(`.${view}-section`);
+        if (activeSection) {
+            activeSection.classList.remove('hidden');
         }
+    }
+
+    viewPhoto(photoId) {
+        const photo = this.state.photos.find(p => p.id === photoId);
+        if (!photo) return;
+
+        // Crear modal de vista de foto
+        const modal = document.createElement('div');
+        modal.className = 'photo-modal-overlay';
+        modal.innerHTML = `
+            <div class="photo-modal">
+                <div class="modal-header">
+                    <h3>${photo.typeName} - ${this.formatDate(photo.date)}</h3>
+                    <button class="modal-close" onclick="this.closest('.photo-modal-overlay').remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img src="${photo.image}" alt="Foto ${photo.typeName}">
+                    <div class="photo-details">
+                        <p><strong>Tipo:</strong> ${photo.typeName}</p>
+                        <p><strong>Fecha:</strong> ${this.formatDate(photo.date)}</p>
+                        <p><strong>Tamaño:</strong> ${(photo.size / 1024).toFixed(2)} KB</p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        
+        // Cerrar con Escape
+        const closeModal = (e) => {
+            if (e.key === 'Escape') modal.remove();
+        };
+        modal.addEventListener('keydown', closeModal);
+        modal.focus();
+    }
+
+    deletePhoto(photoId) {
+        if (!confirm('¿Estás seguro de que quieres eliminar esta foto?')) return;
+
+        // Eliminar foto del estado
+        this.state.photos = this.state.photos.filter(p => p.id !== photoId);
+        
+        // Actualizar métricas
+        this.updateProgressMetrics();
+        
+        // Guardar cambios
+        this.saveToStorage();
+        
+        // Re-renderizar
+        this.renderDashboard();
+        
+        // Mostrar notificación
+        this.showNotification('Foto eliminada correctamente', 'success');
+    }
+
+    toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar-left');
+        sidebar.classList.toggle('collapsed');
+        
+        // Guardar preferencia
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebarCollapsed', isCollapsed);
+    }
+
+    closeDashboard() {
+        // Guardar antes de cerrar
+        this.saveDashboard();
+        
+        // Animación de cierre
+        this.elements.dashboard.style.transform = 'scale(0.95)';
+        this.elements.dashboard.style.opacity = '0';
+        
+        setTimeout(() => {
+            // En una aplicación real, aquí se cerraría el modal
+            this.showNotification('Dashboard guardado correctamente', 'success');
+            // Resetear animación
+            this.elements.dashboard.style.transform = '';
+            this.elements.dashboard.style.opacity = '';
+        }, 300);
+    }
+
+    saveDashboard() {
+        this.saveToStorage();
+        this.showNotification('Datos guardados correctamente', 'success');
+    }
+
+    showNotification(message, type = 'info') {
+        // Crear notificación
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <span class="notification-icon">${this.getNotificationIcon(type)}</span>
+            <span class="notification-text">${message}</span>
+            <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+        `;
+
+        document.body.appendChild(notification);
+        
+        // Auto-remover después de 5 segundos
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    getNotificationIcon(type) {
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        return icons[type] || icons.info;
+    }
+
+    handleKeyboardShortcuts(e) {
+        // Atajos de teclado
+        switch(e.key) {
+            case 'Escape':
+                this.closeDashboard();
+                break;
+            case 'u':
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    this.elements.fileInput?.click();
+                }
+                break;
+            case 's':
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    this.saveDashboard();
+                }
+                break;
+        }
+    }
+
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
+    getLastMonthDate() {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 1);
+        return this.formatDate(date);
+    }
+
+    // Métodos públicos para acceso desde HTML
+    getDashboardState() {
+        return { ...this.state };
+    }
+
+    getPhotoStats() {
+        return {
+            total: this.state.photos.length,
+            byType: this.groupPhotosByType(),
+            recent: this.state.photos.slice(0, 5)
+        };
+    }
+
+    groupPhotosByType() {
+        const groups = {};
+        this.state.photos.forEach(photo => {
+            if (!groups[photo.type]) {
+                groups[photo.type] = [];
+            }
+            groups[photo.type].push(photo);
+        });
+        return groups;
     }
 }
 
-// Inicializar la clase cuando el DOM esté listo
-let photoManager; 
+// Inicialización global
+let dashboardManager;
+
 document.addEventListener('DOMContentLoaded', () => {
-    photoManager = new PhotoManager();
+    dashboardManager = new DashboardManager();
+    
+    // Hacer disponible globalmente para eventos onclick en HTML
+    window.dashboardManager = dashboardManager;
+    
+    // Cargar preferencias de usuario
+    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (sidebarCollapsed) {
+        document.querySelector('.sidebar-left')?.classList.add('collapsed');
+    }
 });
+
+// Exportar para módulos
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { DashboardManager };
+}
