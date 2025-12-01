@@ -3483,280 +3483,313 @@ body {
 	<!-- Modal Photos -->
 
 
-<div id="photo-modal-overlay" class="modal-overlay hidden">
-
-    <div class="modal-dashboard-container">
-
-        <header class="dashboard-header">
-
-            <div class="header-title">
-
-                <span class="icon">☰</span>
-
-                <h2>SEGUIMIENTO VISUAL COMPOSICIÓN CORPORAL</h2>
-
-            </div>
-
-            <div class="header-actions">
-
-                <button class="icon-btn">⏱️</button>
-
-                <button class="icon-btn">👤</button>
-
-                <button id="btn-close-modal" class="icon-btn close-btn">&times;</button>
-
-            </div>
-
-        </header>
-
-
-
-        <div class="dashboard-body">
-
-            
-
-            <aside class="dashboard-sidebar">
-
-                <div class="dashboard-card">
-
-                    <h3 class="card-title">VALORACIÓN</h3>
-
-                    <p class="card-subtitle">Vesfotas antropométricas</p>
-
-                    
-
-                    <div class="control-group">
-
-                        <label for="photo-type" class="control-label">Tipo para Fotos</label>
-
-                        <select id="photo-type" class="dashboard-select">
-
-                            <option value="frontal_relajado">Frontal Relajado</option>
-
-                            <option value="perfil_izquierdo">Perfil Izquierdo</option>
-
-                            <option value="espalda">Espalda</option>
-
-                        </select>
-
-                    </div>
-
-
-
-                    <div class="control-group">
-
-                        <label for="photo-date" class="control-label">Fecha de Toma</label>
-
-                        <input type="date" id="photo-date" class="dashboard-input">
-
-                    </div>
-
-
-
-                    <button id="btn-trigger-upload" class="btn-primary-solid">
-
-                        Subir Fotos
-
-                    </button>
-
-
-
-                    <div class="drop-zone hidden" id="drop-zone">
-
-                        <input type="file" id="file-input" accept="image/*" hidden>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="dashboard-menu-card">
-
-                    <h3 class="card-title-sm">RESULTADOS</h3>
-
-                    <ul class="menu-list">
-
-                        <li class="menu-item active">
-
-                            <span class="icon">📄</span> Noticies Fotos <span class="arrow">></span>
-
-                        </li>
-
-                        <li class="menu-item">
-
-                            <span class="icon">📊</span> Sagrected <span class="arrow">></span>
-
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </aside>
-
-
-
-            <main class="dashboard-content">
-
-                
-
-                <section class="dashboard-card photo-section">
-
-                    <div class="card-header-actions">
-
-                        <h3 class="card-title">FRONTAL RELAJADO (Última Toma)</h3>
-
-                        <span class="icon-star">★</span>
-
-                    </div>
-
-                    
-
-                    <div class="latest-photo-container" id="latest-photo-container">
-
-                        <div class="empty-placeholder">
-
-                            <img src="https://via.placeholder.com/400x300?text=Sin+Foto+Reciente" alt="Placeholder">
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-
-                <section class="dashboard-card">
-
-                    <div class="card-header-actions">
-
-                        <h3 class="card-title">HISTORIAL DE FOTOS</h3>
-
-                        <div class="header-icons">
-
-                            <button class="icon-btn-sm primary">+</button>
-
-                            <button class="icon-btn-sm">⬇️</button>
-
-                        </div>
-
-                    </div>
-
-                    
-
-                    <div class="gallery-grid" id="photo-gallery">
-
-                        <div class="empty-state-card">No hay fotos en el historial.</div>
-
-                    </div>
-
-                </section>
-
-
-
-                <section class="dashboard-card">
-
-                    <div class="card-header-actions">
-
-                        <h3 class="card-title">MÉTRICAS CLAVE (MOMANTICNTR)</h3>
-
-                        <span class="icon-star">★</span>
-
-                    </div>
-
-                    
-
-                    <table class="metrics-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>Métrica</th>
-
-                                <th>Valor Inicial</th>
-
-                                <th>Fecha Anterior</th>
-
-                                <th>Valor Actual</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-
-                                <td>Masa Grasa</td>
-
-                                <td>28 %</td>
-
-                                <td>12/01/2024</td>
-
-                                <td class="font-bold">24 %</td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td>Masa Muscular</td>
-
-                                <td>35 kg</td>
-
-                                <td>12/01/2024</td>
-
-                                <td class="font-bold">37 kg</td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td>Sumatorio Pliegues</td>
-
-                                <td>120 mm</td>
-
-                                <td>12/01/2024</td>
-
-                                <td class="font-bold">110 mm</td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </section>
-
-
-
-            </main>
-
+<!-- Dashboard Principal - Seguimiento Visual Composición Corporal -->
+<div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-title-section">
+            <button class="menu-toggle">☰</button>
+            <h1>SEGUIMIENTO VISUAL COMPOSICIÓN CORPORAL</h1>
         </div>
+        <div class="header-controls">
+            <button class="icon-btn">⏱️</button>
+            <button class="icon-btn">👤</button>
+            <button class="icon-btn close-btn">×</button>
+        </div>
+    </header>
 
-
-
-        <footer class="dashboard-footer">
-
-            <div class="footer-info">
-
-                <span class="icon">🔒</span>
-
-                <p>Los datos y fotos están encriptados y son confidenciales.</p>
-
+    <div class="dashboard-body">
+        <!-- Sidebar Izquierda -->
+        <aside class="sidebar-left">
+            <!-- Sección VALORACIÓN -->
+            <div class="card valuation-card">
+                <div class="card-header">
+                    <h2 class="card-title">VALORACIÓN</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-subtitle">Vesíolas antropométricas</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tipo para Fotos</label>
+                        <select class="form-select">
+                            <option value="frontal">Frontal Relajado</option>
+                            <option value="perfil">Perfil</option>
+                            <option value="espalda">Espalda</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn-primary btn-upload">
+                        <span class="btn-icon">↑</span>
+                        Subir Fotos
+                    </button>
+                </div>
             </div>
 
-            <button class="btn-cta-large">
+            <!-- Sección RESULTADOS -->
+            <div class="card results-menu-card">
+                <div class="card-header">
+                    <h2 class="card-title">RESULTADOS</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="results-menu">
+                        <li class="menu-item active">
+                            <span class="menu-icon">📄</span>
+                            <span class="menu-text">Noticies Fotos</span>
+                            <span class="menu-arrow">›</span>
+                        </li>
+                        <li class="menu-item">
+                            <span class="menu-icon">📊</span>
+                            <span class="menu-text">Negociar Fotos</span>
+                            <span class="menu-arrow">›</span>
+                        </li>
+                        <li class="menu-item">
+                            <span class="menu-icon">🔒</span>
+                            <span class="menu-text">Seguridad</span>
+                            <span class="menu-arrow">›</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
 
-                Deska Ginarta Comsuae (Guardar Análisis)
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <!-- Sección FRONTAL RELAJADO -->
+            <section class="section frontal-section">
+                <div class="section-header">
+                    <h2 class="section-title">FRONTAL RELAJADO</h2>
+                    <div class="date-indicator">
+                        Última toma: <span class="date">12/01/2024</span>
+                    </div>
+                </div>
+                
+                <div class="photo-grid dates-grid">
+                    <div class="date-card">
+                        <div class="date-label">12/01/2023</div>
+                        <div class="photo-placeholder empty"></div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">12/01/2021</div>
+                        <div class="photo-placeholder empty"></div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">12/01/2024</div>
+                        <div class="photo-placeholder"></div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">12/01/2024</div>
+                        <div class="photo-placeholder empty"></div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">12/01/2024</div>
+                        <div class="photo-placeholder empty"></div>
+                    </div>
+                </div>
+            </section>
 
-            </button>
+            <!-- Sección RESULTAS -->
+            <section class="section results-section">
+                <div class="section-header">
+                    <h2 class="section-title">RESULTAS</h2>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-icon">📋</div>
+                        <h3 class="result-title">Vilo deemada</h3>
+                        <p class="result-desc">Análisis detallado de composición</p>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-icon">📸</div>
+                        <h3 class="result-title">Toxme fote</h3>
+                        <p class="result-desc">Captura de imágenes para seguimiento</p>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-icon">📈</div>
+                        <h3 class="result-title">Fiosos de triunfo</h3>
+                        <p class="result-desc">Progreso y mejoras visuales</p>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-icon">⚖️</div>
+                        <h3 class="result-title">Inclave la fase a voluma</h3>
+                        <p class="result-desc">Control de volumen y fases</p>
+                    </div>
+                </div>
+            </section>
 
-        </footer>
+            <!-- Sección ALTRAIRS -->
+            <section class="section altrairs-section">
+                <div class="section-header">
+                    <h2 class="section-title">ALTRAIRS</h2>
+                </div>
+                <div class="info-box">
+                    <p>Ve sientieron olor la concescimientos. De pies de feses noépticas oentime flenes levantadas en un exultates.</p>
+                </div>
+            </section>
 
+            <!-- Sección ANES Y PERIL -->
+            <section class="section anes-peril-section">
+                <div class="section-header">
+                    <h2 class="section-title">ANES Y PERIL</h2>
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <h3 class="comparison-title">Frontal relazado de voluma</h3>
+                        <div class="comparison-photo">
+                            <div class="photo-placeholder large"></div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <h3 class="comparison-title">Perfil falante de volurso</h3>
+                        <div class="comparison-photo">
+                            <div class="photo-placeholder large"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección MOMANTICATE -->
+            <section class="section momanticate-section">
+                <div class="section-header">
+                    <h2 class="section-title">MOMANTICATE</h2>
+                </div>
+                
+                <div class="metrics-tags">
+                    <span class="metric-tag">Movilizados</span>
+                    <span class="metric-tag">Mejorables</span>
+                    <span class="metric-tag">Framedonosos</span>
+                    <span class="metric-tag">Fase de pelanillas</span>
+                    <span class="metric-tag">Prometidas de reales</span>
+                </div>
+                
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Nostralía</th>
+                            <th>Platanista</th>
+                            <th>Resulta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>9 %</td>
+                            <td>120/2023</td>
+                            <td>35 %</td>
+                        </tr>
+                        <tr>
+                            <td>28 %</td>
+                            <td>110/2023</td>
+                            <td>50 %</td>
+                        </tr>
+                        <tr>
+                            <td>198 %</td>
+                            <td>120/2023</td>
+                            <td>98 %</td>
+                        </tr>
+                        <tr>
+                            <td>19 %</td>
+                            <td>124/2024</td>
+                            <td>90 %</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Sección de Gráficos -->
+            <div class="charts-grid">
+                <!-- Gráfico RESULTADES -->
+                <section class="section chart-section">
+                    <div class="section-header">
+                        <h2 class="section-title">RESULTADES</h2>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-legend">
+                            <span class="legend-item">Forn dar jóvites</span>
+                        </div>
+                        <div class="chart-bars">
+                            <div class="bar-group">
+                                <div class="bar" style="height: 45%"></div>
+                                <div class="bar-label">12/03</div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 30%"></div>
+                                <div class="bar-label">13/04</div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 20%"></div>
+                                <div class="bar-label">15/06</div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 90%"></div>
+                                <div class="bar-label">9/08</div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar" style="height: 50%"></div>
+                                <div class="bar-label">5/08</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gráfico RESULTAS -->
+                <section class="section chart-section">
+                    <div class="section-header">
+                        <h2 class="section-title">RESULTAS</h2>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-values">
+                            <div class="value-row">
+                                <span class="value-label">13/00</span>
+                                <span class="value">90</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">12/00</span>
+                                <span class="value">86</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">12/00</span>
+                                <span class="value">80</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">15/00</span>
+                                <span class="value">100</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">12/00</span>
+                                <span class="value">90</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">12/00</span>
+                                <span class="value">85</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Sección Términos -->
+            <section class="section terms-section">
+                <div class="info-box">
+                    <h3 class="info-title">Terdes e Pantes</h3>
+                    <p>Emelación de preárea por medallas anteriores que se le deroga en el área de cierre, pero se encuentra en el área de cierre.</p>
+                    
+                    <h3 class="info-title">Lectura luminosa</h3>
+                    <p>Desla dinastía Consuelo</p>
+                </div>
+            </section>
+        </main>
     </div>
 
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="footer-info">
+            <span class="footer-icon">🔒</span>
+            <span>Los datos están protegidos y encriptados</span>
+        </div>
+        <button class="btn-cta">
+            Deska Ginarta Comsuae
+        </button>
+    </footer>
 </div>
 					
 		     <!-- Modal Commit Container -->
@@ -7407,6 +7440,7 @@ function handleSectionTitleClick(event) {
 	<script src="photo-modal.js"></script>
 </body>
 </html>
+
 
 
 
