@@ -1,3 +1,4 @@
+
 /**
  * Módulo de Gestión de Fotos - Diseño Profesional (REVISADO)
  */
@@ -9,6 +10,7 @@ class PhotoManager {
             btnOpen: document.getElementById('btn-open-photo-modal'),
             btnClose: document.getElementById('btn-close-modal'),
             btnTriggerUpload: document.getElementById('btn-trigger-upload'),
+            // Aseguramos que el dropZone y el input file se mapean correctamente
             dropZone: document.getElementById('drop-zone'),
             fileInput: document.getElementById('file-input'), 
             gallery: document.getElementById('photo-gallery'),
@@ -18,7 +20,7 @@ class PhotoManager {
         };
 
         // 2. Estado inicial
-        // Usar una clave de almacenamiento para el diseño profesional
+        // Nota: Si has cambiado la clave de localStorage, las fotos antiguas no se mostrarán
         this.photos = JSON.parse(localStorage.getItem('nutriPlanPhotosProf')) || [];
         this.elements.dateInput.valueAsDate = new Date();
 
@@ -30,7 +32,7 @@ class PhotoManager {
     }
 
     initEventListeners() {
-        // Abrir Modal 
+        // Abrir Modal (Con stopPropagation para evitar interferencias de elementos padres)
         this.elements.btnOpen.addEventListener('click', (e) => {
             e.stopPropagation(); 
             this.toggleModal(true);
@@ -42,16 +44,16 @@ class PhotoManager {
             if (e.target === this.elements.modal) this.toggleModal(false);
         });
 
-        // Trigger del botón "Subir Fotos" 
+        // Trigger del botón "Subir Fotos" al input file oculto (CORRECCIÓN CLAVE AQUÍ)
         this.elements.btnTriggerUpload.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            this.elements.fileInput.click(); 
+            e.stopPropagation(); // Detiene la propagación del evento
+            this.elements.fileInput.click(); // Fuerza la apertura del file picker
         });
 
         // Manejo del archivo seleccionado
         this.elements.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
         
-        // Manejo del Drag & Drop (Si se activa)
+        // Manejo del Drag & Drop (Las funciones preventDefaults están bien implementadas)
         const dz = this.elements.dropZone;
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dz.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
@@ -65,7 +67,6 @@ class PhotoManager {
 
     handleFiles(files) {
         const file = files[0];
-        // 1. Validar que es una imagen y que la fecha está puesta
         if (file && file.type.startsWith('image/')) {
             if (!this.elements.dateInput.value) {
                 alert('Por favor, selecciona la fecha de la toma.');
@@ -73,28 +74,22 @@ class PhotoManager {
             }
             
             const reader = new FileReader();
-            
-            // 2. Ejecutar cuando el archivo se ha cargado en Base64
             reader.onload = (e) => {
                 const newPhoto = {
                     id: Date.now(), 
-                    image: e.target.result, // Base64 de la imagen
+                    image: e.target.result, 
                     date: this.elements.dateInput.value,
                     type: this.elements.typeSelect.value,
-                    // Asegurar que guardamos el texto de la opción seleccionada
                     typeName: this.elements.typeSelect.options[this.elements.typeSelect.selectedIndex].text
                 };
 
                 this.photos.unshift(newPhoto); 
                 this.saveToStorage();
                 this.renderGallery();
-                // Opcional: Limpiar el input para permitir subir el mismo archivo de nuevo
-                this.elements.fileInput.value = '';
             };
-            
-            // 3. Leer el archivo como DataURL (Base64)
             reader.readAsDataURL(file);
         } else {
+            // Se puede mejorar la gestión de errores aquí
             if (files.length > 0) {
                  alert('El archivo seleccionado no es una imagen válida.');
             }
@@ -118,26 +113,17 @@ class PhotoManager {
 
         if (this.photos.length === 0) {
             galleryContainer.innerHTML = `<div class="empty-state-card">No hay fotos en el historial.</div>`;
-            // Mantiene el placeholder si no hay fotos
             latestContainer.innerHTML = `<div class="empty-placeholder"><img src="https://via.placeholder.com/400x300?text=Sin+Foto+Reciente" alt="Placeholder"></div>`;
             return;
         }
 
-        // 1. Renderizar la última foto en el contenedor principal (latestContainer)
+        // Renderizar la última foto en el contenedor principal
         const latestPhoto = this.photos[0];
-        
-        // Actualizar el título de la sección principal
-        const mainTitle = document.querySelector('.photo-section .card-title');
-        if (mainTitle) {
-             mainTitle.textContent = `${latestPhoto.typeName.toUpperCase()} (Última Toma)`;
-        }
-
         latestContainer.innerHTML = `
             <img src="${latestPhoto.image}" alt="Última foto ${latestPhoto.typeName}">
-            <p class="latest-photo-caption">Fecha: ${new Date(latestPhoto.date).toLocaleDateString()}</p>
         `;
-        
-        // 2. Renderizar todas las fotos en la galería (galleryContainer)
+
+        // Renderizar el resto en la galería
         this.photos.forEach((photo) => {
             const card = document.createElement('div');
             card.className = 'photo-card';
