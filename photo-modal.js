@@ -1,4 +1,3 @@
-
 /**
  * Módulo de Gestión de Fotos - Diseño Profesional (REVISADO)
  */
