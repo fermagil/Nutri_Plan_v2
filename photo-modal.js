@@ -1,23 +1,25 @@
 /**
- * Módulo de Gestión de Fotos - Diseño Profesional
+ * Módulo de Gestión de Fotos - Diseño Profesional (REVISADO)
  */
 class PhotoManager {
     constructor() {
-        // 1. Selección de elementos del DOM (IDs actualizados)
+        // 1. Selección de elementos del DOM
         this.elements = {
             modal: document.getElementById('photo-modal-overlay'),
             btnOpen: document.getElementById('btn-open-photo-modal'),
             btnClose: document.getElementById('btn-close-modal'),
-            btnTriggerUpload: document.getElementById('btn-trigger-upload'), // Nuevo botón de trigger
+            btnTriggerUpload: document.getElementById('btn-trigger-upload'),
+            // Aseguramos que el dropZone y el input file se mapean correctamente
             dropZone: document.getElementById('drop-zone'),
-            fileInput: document.getElementById('file-input'),
+            fileInput: document.getElementById('file-input'), 
             gallery: document.getElementById('photo-gallery'),
-            latestContainer: document.getElementById('latest-photo-container'), // Contenedor de última foto
+            latestContainer: document.getElementById('latest-photo-container'),
             dateInput: document.getElementById('photo-date'),
             typeSelect: document.getElementById('photo-type')
         };
 
         // 2. Estado inicial
+        // Nota: Si has cambiado la clave de localStorage, las fotos antiguas no se mostrarán
         this.photos = JSON.parse(localStorage.getItem('nutriPlanPhotosProf')) || [];
         this.elements.dateInput.valueAsDate = new Date();
 
@@ -29,7 +31,7 @@ class PhotoManager {
     }
 
     initEventListeners() {
-        // Abrir Modal
+        // Abrir Modal (Con stopPropagation para evitar interferencias de elementos padres)
         this.elements.btnOpen.addEventListener('click', (e) => {
             e.stopPropagation(); 
             this.toggleModal(true);
@@ -41,15 +43,16 @@ class PhotoManager {
             if (e.target === this.elements.modal) this.toggleModal(false);
         });
 
-        // Trigger del botón "Subir Fotos" al input file oculto
-        this.elements.btnTriggerUpload.addEventListener('click', () => {
-            this.elements.fileInput.click();
+        // Trigger del botón "Subir Fotos" al input file oculto (CORRECCIÓN CLAVE AQUÍ)
+        this.elements.btnTriggerUpload.addEventListener('click', (e) => {
+            e.stopPropagation(); // Detiene la propagación del evento
+            this.elements.fileInput.click(); // Fuerza la apertura del file picker
         });
 
         // Manejo del archivo seleccionado
         this.elements.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
         
-        // Drag & Drop (opcional, la zona está oculta por diseño, pero funcional)
+        // Manejo del Drag & Drop (Las funciones preventDefaults están bien implementadas)
         const dz = this.elements.dropZone;
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dz.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
@@ -85,7 +88,10 @@ class PhotoManager {
             };
             reader.readAsDataURL(file);
         } else {
-            alert('Por favor, sube un archivo de imagen válido.');
+            // Se puede mejorar la gestión de errores aquí
+            if (files.length > 0) {
+                 alert('El archivo seleccionado no es una imagen válida.');
+            }
         }
     }
 
@@ -112,13 +118,12 @@ class PhotoManager {
 
         // Renderizar la última foto en el contenedor principal
         const latestPhoto = this.photos[0];
-        latestContainer.innerHTML = `<img src="${latestPhoto.image}" alt="Última foto ${latestPhoto.typeName}">`;
+        latestContainer.innerHTML = `
+            <img src="${latestPhoto.image}" alt="Última foto ${latestPhoto.typeName}">
+        `;
 
         // Renderizar el resto en la galería
-        this.photos.forEach((photo, index) => {
-            // Opcional: saltar la primera si ya se muestra arriba
-            // if (index === 0) return; 
-            
+        this.photos.forEach((photo) => {
             const card = document.createElement('div');
             card.className = 'photo-card';
             card.innerHTML = `
@@ -136,7 +141,7 @@ class PhotoManager {
     }
 
     deletePhoto(id) {
-        if(confirm('¿Eliminar esta foto?')) {
+        if(confirm('¿Estás seguro de que quieres eliminar esta foto del historial?')) {
             this.photos = this.photos.filter(p => p.id !== id);
             this.saveToStorage();
             this.renderGallery();
