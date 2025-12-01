@@ -2867,8 +2867,11 @@ body {
                                 <input type="number" id="diam_muneca" name="diam_muneca" step="0.1" min="1" placeholder="cm">
                             </div>
                         </div>
-                       
+                       <button id="btn-open-photo-modal" class="btn-primary-nutriplan">
+						    📸 Seguimiento Visual
+						</button>
                     </section>
+					
                    <section class="data-section" id="results-section">
 		    <div class="results-header">
 		        <h2>Resultados</h2>
@@ -3474,6 +3477,47 @@ body {
         </div>
     </div>
 </div>
+
+	<!-- Modal Photos -->
+
+
+<div id="photo-modal-overlay" class="modal-overlay hidden">
+    <div class="modal-container">
+        <header class="modal-header">
+            <h3>Seguimiento de Composición Corporal</h3>
+            <button id="btn-close-modal" class="modal-close">&times;</button>
+        </header>
+
+        <div class="modal-body">
+            
+            <section class="upload-section">
+                <div class="upload-controls">
+                    <input type="date" id="photo-date" class="input-date">
+                    <select id="photo-type" class="input-select">
+                        <option value="frontal">Frontal</option>
+                        <option value="perfil">Perfil</option>
+                        <option value="espalda">Espalda</option>
+                    </select>
+                </div>
+                
+                <div class="drop-zone" id="drop-zone">
+                    <span class="drop-icon">☁️</span>
+                    <p>Arrastra tu foto aquí o haz clic para subir</p>
+                    <input type="file" id="file-input" accept="image/*" hidden>
+                </div>
+            </section>
+
+            <div class="divider"><span>Historial de Evolución</span></div>
+
+            <section class="gallery-section" id="photo-gallery">
+                <div class="empty-state">No hay fotos registradas aún.</div>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+					
 		     <!-- Modal Commit Container -->
 	<!-- Modal Commit Container -->
 <!-- Modal Commit Container -->
@@ -7121,6 +7165,7 @@ function handleSectionTitleClick(event) {
     <script type="module" src="calculations.js"></script>
 </body>
 </html>
+
 
 
 
