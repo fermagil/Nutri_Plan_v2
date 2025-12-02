@@ -297,89 +297,150 @@ class DashboardManager {
         this.renderView(view);
     }
 
-    async handleFileUpload(event) {
-        const files = event.target.files;
-        if (!files || files.length === 0) return;
-
-        const file = files[0];
-        
-        // Validar archivo
-        if (!this.validateFile(file)) {
-            this.showNotification('Formato no válido. Solo imágenes JPG, PNG, WebP hasta 10MB.', 'error');
-            return;
-        }
-
-        // Validar fecha
-        if (!this.elements.photoDateInput?.value) {
-            this.showNotification('Selecciona una fecha de toma', 'warning');
-            return;
-        }
-
-        try {
-            // Mostrar progreso
-            this.showUploadProgress(0, 'Iniciando compresión...');
-            
-            // Comprimir y procesar imagen
-            const imageData = await this.compressAndProcessImage(file);
-            
-            // Validar tamaño después de compresión
-            if (imageData.size > this.config.storageLimits.maxPhotoSize) {
-                this.showNotification('La imagen es demasiado grande después de compresión', 'error');
-                return;
-            }
-
-            // Crear objeto de foto
-            const newPhoto = {
-                id: Date.now(),
-                ...imageData,
-                date: this.elements.photoDateInput.value,
-                type: this.elements.photoTypeSelect?.value || 'frontal',
-                typeName: this.getTypeName(this.elements.photoTypeSelect?.value || 'frontal'),
-                uploadDate: new Date().toISOString(),
-                tags: [],
-                metadata: {
-                    originalName: file.name,
-                    mimeType: file.type,
-                    lastModified: file.lastModified
-                }
-            };
-
-            // Mostrar progreso
-            this.showUploadProgress(50, 'Guardando en base de datos...');
-            
-            // Guardar en IndexedDB
-            if (this.state.dbInitialized) {
-                await this.saveToDB('photos', newPhoto);
-            }
-            
-            // Actualizar estado local
-            this.state.photos.unshift(newPhoto);
-            this.updateMetrics();
-            
-            // Mostrar progreso
-            this.showUploadProgress(80, 'Renderizando vista...');
-            
-            // Renderizar cambios
-            this.renderDashboard();
-            this.setupCharts();
-            
-            // Mostrar notificación de éxito
-            this.showNotification('Foto subida correctamente', 'success');
-            
-            // Resetear formulario
-            event.target.value = '';
-            this.setupDateInput();
-            
-            // Ocultar progreso
-            this.showUploadProgress(100, 'Completado!');
-            setTimeout(() => this.hideUploadProgress(), 1000);
-            
-        } catch (error) {
-            console.error('Error al procesar la imagen:', error);
-            this.showNotification('Error al procesar la imagen: ' + error.message, 'error');
-            this.hideUploadProgress();
-        }
+   async handleFileUpload(event) {
+    const files = event.target.files || (event.dataTransfer ? event.dataTransfer.files : null);
+    if (!files || files.length === 0) {
+        console.warn('No se seleccionaron archivos');
+        return;
     }
+
+    const file = files[0];
+    console.log('📤 Archivo seleccionado:', file.name, file.type, this.formatBytes(file.size));
+
+    // Validar archivo
+    if (!this.validateFile(file)) {
+        this.showNotification(
+            `<i class="fas fa-exclamation-triangle"></i> Formato o tamaño no válido<br>
+             <small>Solo imágenes JPG, PNG, WebP hasta 10MB</small>`,
+            'error'
+        );
+        return;
+    }
+
+    // Validar fecha
+    if (!this.elements.photoDateInput?.value) {
+        this.showNotification(
+            '<i class="fas fa-calendar-alt"></i> Selecciona una fecha de toma',
+            'warning'
+        );
+        return;
+    }
+
+    // Validar límite de fotos
+    if (this.state.photos.length >= this.config.storageLimits.maxPhotos) {
+        this.showNotification(
+            `<i class="fas fa-exclamation-triangle"></i> Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado<br>
+             <small>Elimina algunas fotos para subir nuevas</small>`,
+            'error'
+        );
+        return;
+    }
+
+    try {
+        // Mostrar progreso
+        this.showUploadProgress(0, 'Iniciando compresión...');
+
+        // Comprimir y procesar imagen
+        const imageData = await this.compressAndProcessImage(file);
+        console.log('✅ Imagen comprimida:', {
+            originalSize: this.formatBytes(file.size),
+            compressedSize: this.formatBytes(imageData.size),
+            ratio: imageData.compressionRatio + '%',
+            dimensions: imageData.dimensions
+        });
+
+        // Validar tamaño después de compresión
+        if (imageData.size > this.config.storageLimits.maxPhotoSize) {
+            this.showNotification(
+                `<i class="fas fa-weight-hanging"></i> La imagen es demasiado grande<br>
+                 <small>Tamaño: ${this.formatBytes(imageData.size)} (límite: ${this.formatBytes(this.config.storageLimits.maxPhotoSize)})</small>`,
+                'error'
+            );
+            this.hideUploadProgress();
+            return;
+        }
+
+        // Crear objeto de foto
+        const newPhoto = {
+            id: Date.now() + Math.random(), // ID único
+            ...imageData,
+            date: this.elements.photoDateInput.value,
+            type: this.elements.photoTypeSelect?.value || 'frontal',
+            typeName: this.getTypeName(this.elements.photoTypeSelect?.value || 'frontal'),
+            uploadDate: new Date().toISOString(),
+            tags: [],
+            metadata: {
+                originalName: file.name,
+                originalSize: file.size,
+                mimeType: file.type,
+                lastModified: file.lastModified,
+                uploadedAt: new Date().toISOString()
+            }
+        };
+
+        console.log('📸 Nueva foto creada:', newPhoto);
+
+        // Mostrar progreso
+        this.showUploadProgress(50, 'Guardando en base de datos...');
+
+        // Guardar en IndexedDB
+        if (this.state.dbInitialized) {
+            try {
+                await this.saveToDB('photos', newPhoto);
+                console.log('💾 Foto guardada en IndexedDB');
+            } catch (dbError) {
+                console.error('Error guardando en IndexedDB:', dbError);
+                // Continuar con fallback a localStorage
+            }
+        }
+
+        // Actualizar estado local
+        this.state.photos.unshift(newPhoto); // Agregar al inicio
+        this.updateMetrics();
+
+        // Mostrar progreso
+        this.showUploadProgress(80, 'Actualizando vista...');
+
+        // Renderizar cambios
+        this.renderDashboard();
+        this.setupCharts();
+        this.updateStorageStats();
+        this.updatePhotoStats();
+
+        // Mostrar notificación de éxito
+        this.showNotification(
+            `<i class="fas fa-check-circle"></i> Foto subida correctamente<br>
+             <small>${file.name} (${this.formatBytes(imageData.size)})</small>`,
+            'success'
+        );
+
+        // Resetear formulario
+        if (this.elements.fileInput) {
+            this.elements.fileInput.value = '';
+        }
+        this.setupDateInput();
+
+        // Ocultar progreso con retraso
+        this.showUploadProgress(100, '¡Completado!');
+        setTimeout(() => {
+            this.hideUploadProgress();
+            
+            // Mostrar la última foto en la grid
+            if (this.elements.frontalGrid && newPhoto.type === 'frontal') {
+                setTimeout(() => this.renderFrontalSection(), 100);
+            }
+        }, 1000);
+
+    } catch (error) {
+        console.error('❌ Error al procesar la imagen:', error);
+        this.showNotification(
+            `<i class="fas fa-times-circle"></i> Error al procesar la imagen<br>
+             <small>${error.message || 'Error desconocido'}</small>`,
+            'error'
+        );
+        this.hideUploadProgress();
+    }
+}
 
     async compressAndProcessImage(file) {
         return new Promise((resolve, reject) => {
@@ -715,70 +776,83 @@ class DashboardManager {
     }
 
     renderFrontalSection() {
-        if (!this.elements.frontalGrid) return;
+    if (!this.elements.frontalGrid) {
+        console.error('❌ frontalGrid no encontrado');
+        return;
+    }
 
-        const frontalPhotos = this.state.photos.filter(photo => photo.type === 'frontal');
+    const frontalPhotos = this.state.photos.filter(photo => photo.type === 'frontal');
+    console.log(`📸 Fotos frontales encontradas: ${frontalPhotos.length}`);
+    
+    if (frontalPhotos.length === 0) {
+        this.elements.frontalGrid.innerHTML = `
+            <div class="text-center py-5">
+                <i class="fas fa-images fa-4x text-muted mb-3"></i>
+                <h4>No hay fotos disponibles</h4>
+                <p class="text-muted">Sube tu primera foto frontal para comenzar el seguimiento</p>
+                <button class="btn btn-primary mt-2" onclick="document.getElementById('file-input').click()">
+                    <i class="fas fa-upload"></i> Subir Primera Foto
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    // Ordenar por fecha (más recientes primero)
+    const recentPhotos = frontalPhotos.sort((a, b) => 
+        new Date(b.date) - new Date(a.date)
+    ).slice(0, 6); // Mostrar máximo 6 fotos
+    
+    console.log('🖼️ Renderizando fotos:', recentPhotos.length);
+    
+    this.elements.frontalGrid.innerHTML = recentPhotos.map((photo, index) => {
+        const isLatest = index === 0;
+        const formattedDate = this.formatDate(photo.date);
         
-        if (frontalPhotos.length === 0) {
-            this.elements.frontalGrid.innerHTML = `
-                <div class="date-card empty-state text-center p-4">
-                    <div class="date-label mb-2">
-                        <i class="fas fa-images fa-2x text-muted mb-3"></i>
-                        <h5>No hay fotos disponibles</h5>
-                    </div>
-                    <div class="photo-placeholder empty">
-                        <span class="placeholder-text">
-                            <i class="fas fa-upload"></i><br>
-                            Sube tu primera foto frontal
-                        </span>
+        // Verificar que la imagen existe
+        if (!photo.image) {
+            console.warn(`⚠️ Foto ${photo.id} no tiene imagen`);
+            return '';
+        }
+        
+        return `
+            <div class="date-card" data-photo-id="${photo.id}">
+                <div class="date-label d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <span class="fw-bold">${formattedDate}</span>
+                    ${isLatest ? '<span class="badge bg-success"><i class="fas fa-star"></i> ÚLTIMA</span>' : ''}
+                </div>
+                
+                <div class="photo-placeholder has-image" 
+                     style="background-image: url('${photo.image}'); height: 200px;"
+                     onclick="dashboardManager.viewPhoto(${photo.id})">
+                    <div class="photo-overlay d-flex gap-2">
+                        <button class="btn btn-sm btn-light" 
+                                onclick="dashboardManager.viewPhoto(${photo.id}); event.stopPropagation()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light" 
+                                onclick="dashboardManager.deletePhoto(${photo.id}); event.stopPropagation()">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
-            `;
-            return;
-        }
-
-        const recentPhotos = frontalPhotos.slice(0, 6);
-        
-        this.elements.frontalGrid.innerHTML = recentPhotos.map((photo, index) => {
-            const isLatest = index === 0;
-            const dateLabel = this.formatDate(photo.date);
-            const sizeInfo = photo.compressionRatio ? 
-                `<div class="size-info badge bg-info">
-                    <i class="fas fa-compress-arrows-alt"></i> ${photo.compressionRatio}%
-                </div>` : '';
-            
-            return `
-                <div class="date-card" data-photo-id="${photo.id}">
-                    <div class="date-label d-flex justify-content-between align-items-center">
-                        <span>${dateLabel}</span>
-                        ${isLatest ? '<span class="latest-badge badge bg-success"><i class="fas fa-star"></i> ÚLTIMA</span>' : ''}
-                    </div>
-                    ${sizeInfo}
-                    <div class="photo-placeholder has-image" 
-                         style="background-image: url('${photo.image}')"
-                         onclick="dashboardManager.viewPhoto(${photo.id})">
-                        <div class="photo-overlay">
-                            <button class="view-btn btn btn-sm btn-light" 
-                                    onclick="dashboardManager.viewPhoto(${photo.id}); event.stopPropagation()" 
-                                    title="Ver foto">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="delete-btn btn btn-sm btn-light" 
-                                    onclick="dashboardManager.deletePhoto(${photo.id}); event.stopPropagation()" 
-                                    title="Eliminar foto">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="photo-info mt-2">
+                
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">
-                            <i class="fas fa-ruler-combined"></i> ${photo.dimensions?.width || '?'}×${photo.dimensions?.height || '?'}
+                            <i class="fas fa-ruler-combined"></i> 
+                            ${photo.dimensions?.width || '?'}×${photo.dimensions?.height || '?'}
+                        </small>
+                        <small class="text-muted">
+                            <i class="fas fa-weight-hanging"></i> 
+                            ${this.formatBytes(photo.size)}
                         </small>
                     </div>
                 </div>
-            `;
-        }).join('');
-    }
+            </div>
+        `;
+    }).join('');
+}
 
     renderMetricsTable() {
         if (!this.elements.metricsTableBody) return;
