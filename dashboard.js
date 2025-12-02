@@ -1,6 +1,6 @@
 /**
  * Módulo Principal del Dashboard - Seguimiento Visual Corporal
- * Versión 3.0 - Con IndexedDB para almacenamiento robusto
+ * Versión 3.5 - Con dependencias optimizadas y mejoras de UI
  */
 
 class DashboardManager {
@@ -13,44 +13,57 @@ class DashboardManager {
             isSidebarCollapsed: false,
             isDashboardOpen: false,
             isPhotoModalOpen: false,
-            dbInitialized: false
+            dbInitialized: false,
+            isLoading: false
         };
 
-        // Configuración
+        // Configuración mejorada
         this.config = {
-            maxFileSize: 5 * 1024 * 1024, // 5MB original
-            maxCompressedSize: 1 * 1024 * 1024, // 1MB comprimido
-            supportedFormats: ['image/jpeg', 'image/png', 'image/webp'],
+            maxFileSize: 10 * 1024 * 1024, // 10MB original
+            maxCompressedSize: 1.5 * 1024 * 1024, // 1.5MB comprimido
+            supportedFormats: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
             compression: {
                 maxWidth: 1200,
                 maxHeight: 1200,
-                quality: 0.8,
+                quality: 0.85,
                 type: 'image/jpeg'
             },
             dbName: 'DashboardPhotosDB',
-            dbVersion: 1,
+            dbVersion: 2,
             storageLimits: {
-                maxPhotos: 100,
-                maxPhotoSize: 2 * 1024 * 1024 // 2MB máximo por foto
+                maxPhotos: 200,
+                maxPhotoSize: 2.5 * 1024 * 1024
+            },
+            animations: {
+                duration: 300,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
             }
         };
 
         // Inicializar IndexedDB
         this.db = null;
         
+        // Cache de elementos
+        this.elements = {};
+        
         // Inicializar después de que el DOM esté listo
         this.init();
     }
 
     async init() {
-        await this.initIndexedDB();
-        this.cacheElements();
-        this.setupEventListeners();
-        this.setupInitialState();
-        await this.loadAllData();
-        this.setupCharts();
-        
-        console.log('✅ Dashboard Manager inicializado con IndexedDB');
+        try {
+            await this.initIndexedDB();
+            this.cacheElements();
+            this.setupEventListeners();
+            this.setupInitialState();
+            await this.loadAllData();
+            this.setupCharts();
+            
+            console.log('✅ Dashboard Manager inicializado con éxito');
+        } catch (error) {
+            console.error('❌ Error inicializando Dashboard:', error);
+            this.showNotification('Error al inicializar el dashboard', 'error');
+        }
     }
 
     async initIndexedDB() {
@@ -58,67 +71,95 @@ class DashboardManager {
             const request = indexedDB.open(this.config.dbName, this.config.dbVersion);
             
             request.onerror = (event) => {
-                console.error('Error al abrir IndexedDB:', event.target.error);
-                this.showNotification('Error al inicializar la base de datos', 'error');
-                reject(event.target.error);
+                console.error('Error IndexedDB:', event.target.error);
+                // Fallback a localStorage para datos básicos
+                this.useLocalStorageFallback();
+                resolve();
             };
             
             request.onsuccess = (event) => {
                 this.db = event.target.result;
                 this.state.dbInitialized = true;
-                console.log('📊 IndexedDB inicializado correctamente');
+                
+                // Manejar conexiones cerradas
+                this.db.onclose = () => {
+                    console.warn('IndexedDB connection closed');
+                    this.state.dbInitialized = false;
+                };
+                
                 resolve();
             };
             
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
+                const oldVersion = event.oldVersion;
                 
-                // Crear almacén de fotos
-                if (!db.objectStoreNames.contains('photos')) {
-                    const photosStore = db.createObjectStore('photos', { keyPath: 'id' });
-                    photosStore.createIndex('date', 'date', { unique: false });
-                    photosStore.createIndex('type', 'type', { unique: false });
-                    photosStore.createIndex('uploadDate', 'uploadDate', { unique: false });
+                // Migraciones de versión
+                if (oldVersion < 1) {
+                    // Versión 1: Estructura inicial
+                    if (!db.objectStoreNames.contains('photos')) {
+                        const photosStore = db.createObjectStore('photos', { keyPath: 'id' });
+                        photosStore.createIndex('date', 'date', { unique: false });
+                        photosStore.createIndex('type', 'type', { unique: false });
+                        photosStore.createIndex('uploadDate', 'uploadDate', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('metrics')) {
+                        db.createObjectStore('metrics', { keyPath: 'id' });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('settings')) {
+                        db.createObjectStore('settings', { keyPath: 'key' });
+                    }
                 }
                 
-                // Crear almacén de métricas
-                if (!db.objectStoreNames.contains('metrics')) {
-                    db.createObjectStore('metrics', { keyPath: 'id' });
-                }
-                
-                // Crear almacén de configuración
-                if (!db.objectStoreNames.contains('settings')) {
-                    db.createObjectStore('settings', { keyPath: 'key' });
+                if (oldVersion < 2) {
+                    // Versión 2: Añadir índices adicionales
+                    const transaction = event.currentTarget.transaction;
+                    const photosStore = transaction.objectStore('photos');
+                    
+                    if (!photosStore.indexNames.contains('type_date')) {
+                        photosStore.createIndex('type_date', ['type', 'date'], { unique: false });
+                    }
                 }
             };
         });
     }
 
-    async loadAllData() {
+    useLocalStorageFallback() {
+        console.warn('Usando localStorage como fallback');
+        
+        // Cargar datos básicos de localStorage
         try {
-            // Cargar fotos
-            this.state.photos = await this.getAllPhotos();
-            
-            // Cargar métricas
-            const savedMetrics = await this.getFromDB('metrics', 'dashboard');
-            this.state.metrics = savedMetrics || this.getDefaultMetrics();
-            
-            // Cargar configuración
-            const settings = await this.getFromDB('settings', 'sidebar');
-            if (settings) {
-                this.state.isSidebarCollapsed = settings.collapsed || false;
+            const savedData = localStorage.getItem('dashboard_fallback');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                this.state.photos = data.photos || [];
+                this.state.metrics = data.metrics || this.getDefaultMetrics();
+                this.state.isSidebarCollapsed = data.isSidebarCollapsed || false;
             }
-            
-            console.log(`📸 ${this.state.photos.length} fotos cargadas desde IndexedDB`);
-            
         } catch (error) {
-            console.error('Error cargando datos:', error);
-            this.showNotification('Error al cargar los datos guardados', 'error');
+            console.error('Error cargando fallback:', error);
+        }
+    }
+
+    saveToLocalStorageFallback() {
+        try {
+            const data = {
+                photos: this.state.photos.slice(0, 20), // Limitar para localStorage
+                metrics: this.state.metrics,
+                isSidebarCollapsed: this.state.isSidebarCollapsed,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('dashboard_fallback', JSON.stringify(data));
+        } catch (error) {
+            console.error('Error guardando fallback:', error);
         }
     }
 
     cacheElements() {
-        // Contenedores principales del modal
+        // Contenedores principales
         this.elements = {
             // Dashboard Modal
             dashboardModal: document.getElementById('dashboard-modal'),
@@ -153,7 +194,11 @@ class DashboardManager {
             photoModalImage: document.getElementById('photo-modal-image'),
             photoModalType: document.getElementById('photo-modal-type'),
             photoModalDate: document.getElementById('photo-modal-date'),
-            photoModalDimensions: document.getElementById('photo-modal-dimensions')
+            photoModalDimensions: document.getElementById('photo-modal-dimensions'),
+            
+            // Loading states
+            loadingIndicator: document.getElementById('loading-indicator'),
+            uploadProgress: document.getElementById('upload-progress')
         };
     }
 
@@ -166,16 +211,8 @@ class DashboardManager {
         
         this.elements.closeDashboardBtn?.addEventListener('click', () => this.closeDashboard());
         
-        // Cerrar con Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (this.state.isPhotoModalOpen) {
-                    this.closePhotoModal();
-                } else if (this.state.isDashboardOpen) {
-                    this.closeDashboard();
-                }
-            }
-        });
+        // Atajos de teclado mejorados
+        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
 
         // Sidebar
         this.elements.menuToggle?.addEventListener('click', () => this.toggleSidebar());
@@ -188,7 +225,7 @@ class DashboardManager {
         // Subida de fotos
         this.elements.uploadBtn?.addEventListener('click', () => {
             if (this.state.photos.length >= this.config.storageLimits.maxPhotos) {
-                this.showNotification(`Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado`, 'warning');
+                this.showNotification(`<i class="fas fa-exclamation-triangle"></i> Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado`, 'warning');
                 return;
             }
             this.elements.fileInput?.click();
@@ -196,7 +233,7 @@ class DashboardManager {
         
         this.elements.fileInput?.addEventListener('change', (e) => this.handleFileUpload(e));
         
-        // Drag and drop
+        // Drag and drop mejorado
         this.setupDragAndDrop();
         
         // Guardar dashboard
@@ -206,31 +243,65 @@ class DashboardManager {
         this.elements.closePhotoModalBtn?.addEventListener('click', () => this.closePhotoModal());
         
         // Cerrar modales al hacer clic fuera
+        this.setupModalCloseListeners();
+        
+        // Inicializar fecha
+        this.setupDateInput();
+    }
+
+    handleKeyboardShortcuts(e) {
+        // Ctrl/Cmd + S para guardar
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            this.saveDashboard();
+        }
+        
+        // Ctrl/Cmd + U para subir foto
+        if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+            e.preventDefault();
+            this.elements.fileInput?.click();
+        }
+        
+        // Escape para cerrar modales
+        if (e.key === 'Escape') {
+            if (this.state.isPhotoModalOpen) {
+                this.closePhotoModal();
+            } else if (this.state.isDashboardOpen) {
+                this.closeDashboard();
+            }
+        }
+        
+        // Navegación con flechas en el modal de foto
+        if (this.state.isPhotoModalOpen && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+            this.navigatePhotoModal(e.key);
+        }
+    }
+
+    setupModalCloseListeners() {
+        // Dashboard modal
         this.elements.dashboardModal?.addEventListener('click', (e) => {
-            if (e.target === this.elements.dashboardModal) this.closeDashboard();
+            if (e.target === this.elements.dashboardModal) {
+                this.closeDashboard();
+            }
         });
         
+        // Photo modal
         this.elements.photoModal?.addEventListener('click', (e) => {
-            if (e.target === this.elements.photoModal) this.closePhotoModal();
+            if (e.target === this.elements.photoModal) {
+                this.closePhotoModal();
+            }
         });
-        
-        // Establecer fecha por defecto
+    }
+
+    setupDateInput() {
         if (this.elements.photoDateInput) {
             const today = new Date().toISOString().split('T')[0];
             this.elements.photoDateInput.value = today;
             this.elements.photoDateInput.max = today;
-        }
-    }
-
-    setupInitialState() {
-        // Estado inicial del sidebar
-        if (this.state.isSidebarCollapsed && this.elements.sidebar) {
-            this.elements.sidebar.classList.add('collapsed');
-        }
-        
-        // Inicializar drop zone
-        if (this.elements.dropZone) {
-            this.elements.dropZone.classList.remove('hidden');
+            this.elements.photoDateInput.min = '2000-01-01';
+            
+            // Añadir estilos de Bootstrap
+            this.elements.photoDateInput.classList.add('form-control');
         }
     }
 
@@ -238,35 +309,91 @@ class DashboardManager {
         const dropZone = this.elements.dropZone;
         if (!dropZone) return;
 
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        // Eventos de drag and drop mejorados
+        const dragEvents = ['dragenter', 'dragover', 'dragleave', 'drop'];
+        
+        dragEvents.forEach(eventName => {
             dropZone.addEventListener(eventName, (e) => {
                 e.preventDefault();
                 e.stopPropagation();
             }, false);
         });
 
+        // Resaltar zona
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, () => {
                 dropZone.classList.add('drag-over');
+                dropZone.innerHTML = '<i class="fas fa-cloud-upload-alt fa-2x"></i><br>Suelta la imagen aquí';
             }, false);
         });
 
+        // Quitar resaltado
         ['dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, () => {
                 dropZone.classList.remove('drag-over');
+                dropZone.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Arrastra y suelta la imagen aquí';
             }, false);
         });
 
+        // Manejar drop
         dropZone.addEventListener('drop', async (e) => {
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 if (this.state.photos.length >= this.config.storageLimits.maxPhotos) {
-                    this.showNotification(`Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado`, 'warning');
+                    this.showNotification(`<i class="fas fa-exclamation-triangle"></i> Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado`, 'warning');
                     return;
                 }
                 await this.handleFileUpload({ target: { files } });
             }
-        });
+        }, false);
+    }
+
+    async loadAllData() {
+        this.showLoading(true);
+        
+        try {
+            if (this.state.dbInitialized) {
+                // Cargar desde IndexedDB
+                this.state.photos = await this.getAllPhotos();
+                const savedMetrics = await this.getFromDB('metrics', 'dashboard');
+                this.state.metrics = savedMetrics || this.getDefaultMetrics();
+                
+                const settings = await this.getFromDB('settings', 'sidebar');
+                if (settings) {
+                    this.state.isSidebarCollapsed = settings.collapsed || false;
+                }
+            }
+            
+            console.log(`📸 ${this.state.photos.length} fotos cargadas`);
+            
+            // Actualizar métricas iniciales
+            this.updateMetrics();
+            
+        } catch (error) {
+            console.error('Error cargando datos:', error);
+            this.showNotification('<i class="fas fa-exclamation-circle"></i> Error al cargar datos guardados', 'error');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    showLoading(show) {
+        this.state.isLoading = show;
+        
+        if (this.elements.loadingIndicator) {
+            if (show) {
+                this.elements.loadingIndicator.classList.remove('hidden');
+            } else {
+                this.elements.loadingIndicator.classList.add('hidden');
+            }
+        }
+        
+        // También mostrar/ocultar en el dashboard
+        const dashboardContent = document.querySelector('.dashboard-content');
+        if (dashboardContent) {
+            dashboardContent.style.opacity = show ? '0.5' : '1';
+            dashboardContent.style.pointerEvents = show ? 'none' : 'auto';
+        }
     }
 
     async handleFileUpload(event) {
@@ -277,26 +404,35 @@ class DashboardManager {
         
         // Validar archivo
         if (!this.validateFile(file)) {
-            this.showNotification('Archivo no válido. Solo imágenes JPG, PNG o WebP hasta 5MB.', 'error');
+            this.showNotification(
+                '<i class="fas fa-file-image"></i> Formato no válido. Solo imágenes JPG, PNG, WebP hasta 10MB.', 
+                'error'
+            );
             return;
         }
 
-        // Validar campos requeridos
+        // Validar fecha
         if (!this.elements.photoDateInput?.value) {
-            this.showNotification('Por favor, selecciona una fecha de toma.', 'warning');
+            this.showNotification(
+                '<i class="fas fa-calendar-alt"></i> Selecciona una fecha de toma', 
+                'warning'
+            );
             return;
         }
 
         try {
-            // Mostrar estado de carga
-            this.showNotification('Comprimiendo y procesando imagen...', 'info');
+            // Mostrar progreso
+            this.showUploadProgress(0, 'Iniciando compresión...');
             
             // Comprimir y procesar imagen
             const imageData = await this.compressAndProcessImage(file);
             
             // Validar tamaño después de compresión
             if (imageData.size > this.config.storageLimits.maxPhotoSize) {
-                this.showNotification('La imagen es demasiado grande incluso después de compresión', 'error');
+                this.showNotification(
+                    '<i class="fas fa-weight-hanging"></i> La imagen es demasiado grande', 
+                    'error'
+                );
                 return;
             }
 
@@ -307,29 +443,89 @@ class DashboardManager {
                 date: this.elements.photoDateInput.value,
                 type: this.elements.photoTypeSelect?.value || 'frontal',
                 typeName: this.getTypeName(this.elements.photoTypeSelect?.value || 'frontal'),
-                uploadDate: new Date().toISOString()
+                uploadDate: new Date().toISOString(),
+                tags: [],
+                metadata: {
+                    originalName: file.name,
+                    mimeType: file.type,
+                    lastModified: file.lastModified
+                }
             };
 
+            // Mostrar progreso
+            this.showUploadProgress(50, 'Guardando en base de datos...');
+            
             // Guardar en IndexedDB
-            await this.saveToDB('photos', newPhoto);
+            if (this.state.dbInitialized) {
+                await this.saveToDB('photos', newPhoto);
+            }
             
             // Actualizar estado local
             this.state.photos.unshift(newPhoto);
             this.updateMetrics();
+            
+            // Mostrar progreso
+            this.showUploadProgress(80, 'Renderizando vista...');
             
             // Renderizar cambios
             this.renderDashboard();
             this.setupCharts();
             
             // Mostrar notificación de éxito
-            this.showNotification('✅ Foto subida y comprimida correctamente', 'success');
+            this.showNotification(
+                `<i class="fas fa-check-circle"></i> Foto subida correctamente<br>
+                 <small>${file.name} (${this.formatBytes(imageData.size)})</small>`, 
+                'success'
+            );
             
-            // Limpiar input
+            // Resetear formulario
             event.target.value = '';
+            this.setupDateInput();
+            
+            // Ocultar progreso
+            this.showUploadProgress(100, 'Completado!');
+            setTimeout(() => this.hideUploadProgress(), 1000);
             
         } catch (error) {
             console.error('Error al procesar la imagen:', error);
-            this.showNotification('❌ Error al procesar la imagen', 'error');
+            this.showNotification(
+                `<i class="fas fa-times-circle"></i> Error al procesar la imagen<br>
+                 <small>${error.message}</small>`, 
+                'error'
+            );
+            this.hideUploadProgress();
+        }
+    }
+
+    showUploadProgress(percent, message = '') {
+        if (this.elements.uploadProgress) {
+            const progressBar = this.elements.uploadProgress.querySelector('.progress-bar');
+            const progressText = this.elements.uploadProgress.querySelector('.progress-text');
+            
+            if (progressBar) {
+                progressBar.style.width = `${percent}%`;
+                progressBar.setAttribute('aria-valuenow', percent);
+                
+                if (percent >= 100) {
+                    progressBar.classList.remove('bg-primary');
+                    progressBar.classList.add('bg-success');
+                } else {
+                    progressBar.classList.remove('bg-success');
+                    progressBar.classList.add('bg-primary');
+                }
+            }
+            
+            if (progressText) {
+                progressText.textContent = message;
+            }
+            
+            this.elements.uploadProgress.classList.remove('hidden');
+        }
+    }
+
+    hideUploadProgress() {
+        if (this.elements.uploadProgress) {
+            this.elements.uploadProgress.classList.add('hidden');
         }
     }
 
@@ -340,31 +536,25 @@ class DashboardManager {
             reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
-                    // Calcular nuevas dimensiones manteniendo aspect ratio
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    if (width > this.config.compression.maxWidth) {
-                        height = (this.config.compression.maxWidth / width) * height;
-                        width = this.config.compression.maxWidth;
-                    }
-                    
-                    if (height > this.config.compression.maxHeight) {
-                        width = (this.config.compression.maxHeight / height) * width;
-                        height = this.config.compression.maxHeight;
-                    }
-                    
-                    // Crear canvas para compresión
+                    // Calcular nuevas dimensiones
                     const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Calcular tamaño manteniendo aspect ratio
+                    let { width, height } = this.calculateAspectRatioFit(
+                        img.width, 
+                        img.height, 
+                        this.config.compression.maxWidth, 
+                        this.config.compression.maxHeight
+                    );
+                    
                     canvas.width = width;
                     canvas.height = height;
-                    
-                    const ctx = canvas.getContext('2d');
                     
                     // Dibujar imagen redimensionada
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Comprimir a JPEG con calidad ajustable
+                    // Aplicar compresión
                     canvas.toBlob(
                         (blob) => {
                             const compressedReader = new FileReader();
@@ -373,9 +563,10 @@ class DashboardManager {
                                     image: e.target.result,
                                     size: blob.size,
                                     dimensions: { width, height },
-                                    filename: file.name,
+                                    filename: file.name.replace(/\.[^/.]+$/, ""), // Remover extensión
                                     originalSize: file.size,
-                                    compressionRatio: ((file.size - blob.size) / file.size * 100).toFixed(1)
+                                    compressionRatio: ((file.size - blob.size) / file.size * 100).toFixed(1),
+                                    aspectRatio: (width / height).toFixed(2)
                                 });
                             };
                             compressedReader.readAsDataURL(blob);
@@ -394,13 +585,21 @@ class DashboardManager {
         });
     }
 
+    calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+        const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+        return {
+            width: Math.round(srcWidth * ratio),
+            height: Math.round(srcHeight * ratio)
+        };
+    }
+
     validateFile(file) {
         // Validar formato
         if (!this.config.supportedFormats.includes(file.type)) {
             return false;
         }
 
-        // Validar tamaño original
+        // Validar tamaño
         if (file.size > this.config.maxFileSize) {
             return false;
         }
@@ -410,138 +609,172 @@ class DashboardManager {
 
     getTypeName(type) {
         const types = {
-            'frontal': 'Frontal Relajado',
-            'perfil': 'Perfil',
-            'espalda': 'Espalda'
+            'frontal': '<i class="fas fa-user"></i> Frontal Relajado',
+            'perfil': '<i class="fas fa-user-circle"></i> Perfil',
+            'espalda': '<i class="fas fa-user-md"></i> Espalda'
         };
         return types[type] || 'Desconocido';
     }
 
     updateMetrics() {
-        // Actualizar métricas basadas en las fotos
         const totalPhotos = this.state.photos.length;
         
         this.state.metrics = {
             lastPhotoDate: this.state.photos[0]?.date || null,
             totalPhotos,
             progress: {
-                masaGrasa: Math.max(15, 28 - (totalPhotos * 0.5)),
-                masaMuscular: Math.min(45, 35 + (totalPhotos * 0.3)),
-                sumatorioPliegues: Math.max(90, 120 - (totalPhotos * 2)),
-                consistencyScore: Math.min(100, totalPhotos * 10)
+                masaGrasa: Math.max(12, 28 - (totalPhotos * 0.4)),
+                masaMuscular: Math.min(48, 35 + (totalPhotos * 0.4)),
+                sumatorioPliegues: Math.max(85, 120 - (totalPhotos * 2.5)),
+                consistencyScore: Math.min(100, totalPhotos * 8),
+                progressScore: this.calculateProgressScore(totalPhotos)
             },
             storage: {
                 totalSize: this.calculateTotalSize(),
                 averageSize: this.calculateAverageSize(),
-                photosCount: totalPhotos
-            }
-        };
-    }
-
-    calculateTotalSize() {
-        return this.state.photos.reduce((total, photo) => total + (photo.size || 0), 0);
-    }
-
-    calculateAverageSize() {
-        if (this.state.photos.length === 0) return 0;
-        return this.calculateTotalSize() / this.state.photos.length;
-    }
-
-    getDefaultMetrics() {
-        return {
-            lastPhotoDate: null,
-            totalPhotos: 0,
-            progress: {
-                masaGrasa: 28,
-                masaMuscular: 35,
-                sumatorioPliegues: 120,
-                consistencyScore: 0
+                photosCount: totalPhotos,
+                byType: this.getPhotosByTypeCount()
             },
-            storage: {
-                totalSize: 0,
-                averageSize: 0,
-                photosCount: 0
-            }
+            lastUpdated: new Date().toISOString()
         };
     }
 
+    calculateProgressScore(photoCount) {
+        const baseScore = Math.min(70, photoCount * 8);
+        const consistencyBonus = photoCount > 10 ? 15 : photoCount * 1.5;
+        const recencyBonus = this.calculateRecencyBonus();
+        
+        return Math.min(100, baseScore + consistencyBonus + recencyBonus);
+    }
+
+    calculateRecencyBonus() {
+        if (this.state.photos.length === 0) return 0;
+        
+        const lastPhotoDate = new Date(this.state.photos[0].uploadDate);
+        const daysSince = (Date.now() - lastPhotoDate) / (1000 * 60 * 60 * 24);
+        
+        if (daysSince < 7) return 10;
+        if (daysSince < 14) return 5;
+        if (daysSince < 30) return 2;
+        return 0;
+    }
+
+    getPhotosByTypeCount() {
+        return {
+            frontal: this.state.photos.filter(p => p.type === 'frontal').length,
+            perfil: this.state.photos.filter(p => p.type === 'perfil').length,
+            espalda: this.state.photos.filter(p => p.type === 'espalda').length
+        };
+    }
+
+    // Métodos IndexedDB
     async getAllPhotos() {
         if (!this.state.dbInitialized) {
-            console.warn('IndexedDB no inicializado');
-            return [];
+            console.warn('IndexedDB no inicializado, usando datos locales');
+            return this.state.photos;
         }
 
-        return new Promise((resolve, reject) => {
+        try {
             const transaction = this.db.transaction(['photos'], 'readonly');
             const store = transaction.objectStore('photos');
             const index = store.index('uploadDate');
             const request = index.getAll();
             
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => {
-                // Ordenar por fecha más reciente primero
-                const photos = request.result.sort((a, b) => 
-                    new Date(b.uploadDate) - new Date(a.uploadDate)
-                );
-                resolve(photos);
-            };
-        });
-    }
-
-    async getPhotosByType(type) {
-        const allPhotos = await this.getAllPhotos();
-        return allPhotos.filter(photo => photo.type === type);
+            return new Promise((resolve, reject) => {
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    const photos = request.result.sort((a, b) => 
+                        new Date(b.uploadDate) - new Date(a.uploadDate)
+                    );
+                    resolve(photos);
+                };
+            });
+        } catch (error) {
+            console.error('Error obteniendo fotos:', error);
+            return [];
+        }
     }
 
     async saveToDB(storeName, data) {
         if (!this.state.dbInitialized) {
-            throw new Error('IndexedDB no inicializado');
+            // Fallback a localStorage
+            this.saveToLocalStorageFallback();
+            return;
         }
 
-        return new Promise((resolve, reject) => {
+        try {
             const transaction = this.db.transaction([storeName], 'readwrite');
             const store = transaction.objectStore(storeName);
             const request = store.put(data);
             
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => resolve(request.result);
-        });
+            return new Promise((resolve, reject) => {
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+            });
+        } catch (error) {
+            console.error('Error guardando en IndexedDB:', error);
+            throw error;
+        }
     }
 
     async getFromDB(storeName, key) {
-        if (!this.state.dbInitialized) return null;
+        if (!this.state.dbInitialized) {
+            return null;
+        }
 
-        return new Promise((resolve, reject) => {
+        try {
             const transaction = this.db.transaction([storeName], 'readonly');
             const store = transaction.objectStore(storeName);
             const request = store.get(key);
             
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => resolve(request.result?.value || request.result);
-        });
+            return new Promise((resolve, reject) => {
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result?.value || request.result);
+            });
+        } catch (error) {
+            console.error('Error obteniendo de IndexedDB:', error);
+            return null;
+        }
     }
 
     async deleteFromDB(storeName, key) {
         if (!this.state.dbInitialized) return;
 
-        return new Promise((resolve, reject) => {
+        try {
             const transaction = this.db.transaction([storeName], 'readwrite');
             const store = transaction.objectStore(storeName);
             const request = store.delete(key);
             
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => resolve();
-        });
+            return new Promise((resolve, reject) => {
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve();
+            });
+        } catch (error) {
+            console.error('Error eliminando de IndexedDB:', error);
+            throw error;
+        }
     }
 
     openDashboard() {
         if (!this.elements.dashboardModal) return;
         
+        // Animación de entrada
         this.elements.dashboardModal.classList.remove('hidden');
         this.state.isDashboardOpen = true;
         document.body.style.overflow = 'hidden';
         
-        // Renderizar contenido actualizado
+        // Añadir clase de Bootstrap para backdrop
+        document.body.classList.add('modal-open');
+        
+        // Animar entrada
+        setTimeout(() => {
+            if (this.elements.dashboardContainer) {
+                this.elements.dashboardContainer.style.transform = 'scale(1)';
+                this.elements.dashboardContainer.style.opacity = '1';
+            }
+        }, 10);
+        
+        // Renderizar contenido
         this.renderDashboard();
         
         console.log('📊 Dashboard abierto');
@@ -550,27 +783,46 @@ class DashboardManager {
     closeDashboard() {
         if (!this.elements.dashboardModal) return;
         
-        this.elements.dashboardModal.classList.add('hidden');
-        this.state.isDashboardOpen = false;
-        document.body.style.overflow = '';
+        // Animación de salida
+        if (this.elements.dashboardContainer) {
+            this.elements.dashboardContainer.style.transform = 'scale(0.95)';
+            this.elements.dashboardContainer.style.opacity = '0';
+        }
         
-        // Guardar configuración
-        this.saveSettings();
+        setTimeout(() => {
+            this.elements.dashboardModal.classList.add('hidden');
+            this.state.isDashboardOpen = false;
+            document.body.style.overflow = '';
+            document.body.classList.remove('modal-open');
+            
+            // Guardar configuración
+            this.saveSettings();
+            
+            // Resetear animación
+            if (this.elements.dashboardContainer) {
+                this.elements.dashboardContainer.style.transform = '';
+                this.elements.dashboardContainer.style.opacity = '';
+            }
+        }, this.config.animations.duration);
         
         console.log('📊 Dashboard cerrado');
     }
 
     async saveSettings() {
         try {
-            await this.saveToDB('settings', {
-                key: 'sidebar',
-                value: { collapsed: this.state.isSidebarCollapsed }
-            });
-            
-            await this.saveToDB('metrics', {
-                id: 'dashboard',
-                value: this.state.metrics
-            });
+            if (this.state.dbInitialized) {
+                await this.saveToDB('settings', {
+                    key: 'sidebar',
+                    value: { collapsed: this.state.isSidebarCollapsed }
+                });
+                
+                await this.saveToDB('metrics', {
+                    id: 'dashboard',
+                    value: this.state.metrics
+                });
+            } else {
+                this.saveToLocalStorageFallback();
+            }
         } catch (error) {
             console.error('Error guardando configuración:', error);
         }
@@ -587,6 +839,11 @@ class DashboardManager {
             key: 'sidebar',
             value: { collapsed: this.state.isSidebarCollapsed }
         });
+        
+        this.showNotification(
+            `<i class="fas fa-bars"></i> Sidebar ${this.state.isSidebarCollapsed ? 'contraída' : 'expandida'}`,
+            'info'
+        );
     }
 
     handleMenuClick(event) {
@@ -599,8 +856,13 @@ class DashboardManager {
         this.elements.menuItems?.forEach(item => item.classList.remove('active'));
         menuItem.classList.add('active');
         
-        // Mostrar/ocultar secciones
+        // Mostrar sección
         this.renderView(view);
+        
+        this.showNotification(
+            `<i class="fas fa-eye"></i> Vista cambiada a: ${view}`,
+            'info'
+        );
     }
 
     renderView(view) {
@@ -612,6 +874,12 @@ class DashboardManager {
         const activeSection = document.querySelector(`.${view}-section`);
         if (activeSection) {
             activeSection.classList.add('active-view');
+            
+            // Scroll suave a la sección
+            activeSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         }
     }
 
@@ -620,6 +888,7 @@ class DashboardManager {
         this.renderMetricsTable();
         this.updateLastPhotoDate();
         this.updateStorageStats();
+        this.updatePhotoStats();
         this.setupCharts();
     }
 
@@ -630,45 +899,60 @@ class DashboardManager {
         
         if (frontalPhotos.length === 0) {
             this.elements.frontalGrid.innerHTML = `
-                <div class="date-card empty-state">
-                    <div class="date-label">No hay fotos disponibles</div>
+                <div class="date-card empty-state text-center p-4">
+                    <div class="date-label mb-2">
+                        <i class="fas fa-images fa-2x text-muted mb-3"></i>
+                        <h5>No hay fotos disponibles</h5>
+                    </div>
                     <div class="photo-placeholder empty">
-                        <span class="placeholder-text">Sube tu primera foto frontal</span>
+                        <span class="placeholder-text">
+                            <i class="fas fa-upload"></i><br>
+                            Sube tu primera foto frontal
+                        </span>
                     </div>
                 </div>
             `;
             return;
         }
 
-        // Mostrar las últimas 5 fotos frontales
-        const recentPhotos = frontalPhotos.slice(0, 5);
+        // Mostrar las últimas 6 fotos frontales
+        const recentPhotos = frontalPhotos.slice(0, 6);
         
         this.elements.frontalGrid.innerHTML = recentPhotos.map((photo, index) => {
             const isLatest = index === 0;
             const dateLabel = this.formatDate(photo.date);
             const sizeInfo = photo.compressionRatio ? 
-                `<div class="size-info">Comprimido: ${photo.compressionRatio}%</div>` : '';
+                `<div class="size-info badge bg-info">
+                    <i class="fas fa-compress-arrows-alt"></i> ${photo.compressionRatio}%
+                </div>` : '';
             
             return `
                 <div class="date-card" data-photo-id="${photo.id}">
-                    <div class="date-label">
-                        ${dateLabel}
-                        ${isLatest ? '<span class="latest-badge">ÚLTIMA</span>' : ''}
+                    <div class="date-label d-flex justify-content-between align-items-center">
+                        <span>${dateLabel}</span>
+                        ${isLatest ? '<span class="latest-badge badge bg-success"><i class="fas fa-star"></i> ÚLTIMA</span>' : ''}
                     </div>
                     ${sizeInfo}
                     <div class="photo-placeholder has-image" 
                          style="background-image: url('${photo.image}')"
                          onclick="dashboardManager.viewPhoto(${photo.id})">
                         <div class="photo-overlay">
-                            <button class="view-btn" onclick="dashboardManager.viewPhoto(${photo.id}); event.stopPropagation()" 
+                            <button class="view-btn btn btn-sm btn-light" 
+                                    onclick="dashboardManager.viewPhoto(${photo.id}); event.stopPropagation()" 
                                     title="Ver foto">
-                                👁️
+                                <i class="fas fa-eye"></i>
                             </button>
-                            <button class="delete-btn" onclick="dashboardManager.deletePhoto(${photo.id}); event.stopPropagation()" 
+                            <button class="delete-btn btn btn-sm btn-light" 
+                                    onclick="dashboardManager.deletePhoto(${photo.id}); event.stopPropagation()" 
                                     title="Eliminar foto">
-                                🗑️
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
+                    </div>
+                    <div class="photo-info mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-ruler-combined"></i> ${photo.dimensions?.width || '?'}×${photo.dimensions?.height || '?'}
+                        </small>
                     </div>
                 </div>
             `;
@@ -680,40 +964,52 @@ class DashboardManager {
 
         const metricsData = [
             { 
-                name: 'Masa Grasa', 
+                name: '<i class="fas fa-weight"></i> Masa Grasa', 
                 initial: '28%', 
-                current: `${this.state.metrics.progress?.masaGrasa?.toFixed(1) || 28}%`, 
-                trend: 'down'
+                current: `${(this.state.metrics.progress?.masaGrasa || 28).toFixed(1)}%`, 
+                trend: 'down',
+                icon: 'fas fa-chart-line-down'
             },
             { 
-                name: 'Masa Muscular', 
+                name: '<i class="fas fa-dumbbell"></i> Masa Muscular', 
                 initial: '35 kg', 
-                current: `${this.state.metrics.progress?.masaMuscular?.toFixed(1) || 35} kg`, 
-                trend: 'up'
+                current: `${(this.state.metrics.progress?.masaMuscular || 35).toFixed(1)} kg`, 
+                trend: 'up',
+                icon: 'fas fa-chart-line-up'
             },
             { 
-                name: 'Sumatorio Pliegues', 
+                name: '<i class="fas fa-ruler"></i> Sumatorio Pliegues', 
                 initial: '120 mm', 
-                current: `${this.state.metrics.progress?.sumatorioPliegues?.toFixed(0) || 120} mm`, 
-                trend: 'down'
+                current: `${(this.state.metrics.progress?.sumatorioPliegues || 120).toFixed(0)} mm`, 
+                trend: 'down',
+                icon: 'fas fa-chart-line-down'
             },
             { 
-                name: 'Consistencia', 
+                name: '<i class="fas fa-trophy"></i> Progreso Total', 
                 initial: '0%', 
-                current: `${this.state.metrics.progress?.consistencyScore?.toFixed(0) || 0}%`, 
-                trend: 'up'
+                current: `${(this.state.metrics.progress?.progressScore || 0).toFixed(0)}%`, 
+                trend: 'up',
+                icon: 'fas fa-chart-line-up'
             }
         ];
 
         this.elements.metricsTableBody.innerHTML = metricsData.map(metric => {
-            const trendIcon = metric.trend === 'up' ? '📈' : '📉';
+            const trendClass = metric.trend === 'up' ? 'text-success' : 'text-primary';
+            const trendIcon = metric.trend === 'up' ? 'fas fa-arrow-up' : 'fas fa-arrow-down';
+            
             return `
                 <tr>
-                    <td>${metric.name}</td>
-                    <td>${metric.initial}</td>
-                    <td class="metric-value ${metric.trend}">
-                        ${metric.current}
-                        <span class="trend-indicator">${trendIcon}</span>
+                    <td class="align-middle">${metric.name}</td>
+                    <td class="align-middle">${metric.initial}</td>
+                    <td class="align-middle">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="metric-value ${trendClass} fw-bold">
+                                ${metric.current}
+                            </span>
+                            <span class="${trendClass}">
+                                <i class="${trendIcon}"></i>
+                            </span>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -725,37 +1021,103 @@ class DashboardManager {
         
         if (this.state.photos.length > 0) {
             const lastPhoto = this.state.photos[0];
-            this.elements.lastPhotoDate.textContent = this.formatDate(lastPhoto.date);
+            this.elements.lastPhotoDate.innerHTML = `
+                <i class="fas fa-calendar-check"></i> ${this.formatDate(lastPhoto.date)}
+            `;
         } else {
-            this.elements.lastPhotoDate.textContent = 'Nunca';
+            this.elements.lastPhotoDate.innerHTML = `
+                <i class="fas fa-calendar-times"></i> Nunca
+            `;
         }
     }
 
     updateStorageStats() {
-        // Actualizar información de almacenamiento en la UI
-        const storageElements = document.querySelectorAll('[data-storage]');
-        storageElements.forEach(el => {
-            const stat = el.dataset.storage;
-            let value = '';
-            
-            switch(stat) {
-                case 'totalPhotos':
-                    value = this.state.photos.length;
-                    break;
-                case 'totalSize':
-                    value = this.formatBytes(this.calculateTotalSize());
-                    break;
-                case 'averageSize':
-                    value = this.formatBytes(this.calculateAverageSize());
-                    break;
-                case 'remaining':
-                    const remaining = this.config.storageLimits.maxPhotos - this.state.photos.length;
-                    value = `${remaining} fotos`;
-                    break;
-            }
-            
-            el.textContent = value;
-        });
+        // Actualizar información de almacenamiento
+        const totalSize = this.calculateTotalSize();
+        const avgSize = this.calculateAverageSize();
+        const remaining = this.config.storageLimits.maxPhotos - this.state.photos.length;
+        
+        // Actualizar elementos de estadísticas
+        const statsContainer = document.querySelector('.storage-stats');
+        if (statsContainer) {
+            statsContainer.innerHTML = `
+                <div class="row text-center">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <i class="fas fa-images fa-2x text-primary"></i>
+                            <h4 class="mt-2">${this.state.photos.length}</h4>
+                            <small class="text-muted">Fotos</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <i class="fas fa-hdd fa-2x text-success"></i>
+                            <h4 class="mt-2">${this.formatBytes(totalSize)}</h4>
+                            <small class="text-muted">Total</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <i class="fas fa-weight fa-2x text-warning"></i>
+                            <h4 class="mt-2">${this.formatBytes(avgSize)}</h4>
+                            <small class="text-muted">Promedio</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <i class="fas fa-layer-group fa-2x text-info"></i>
+                            <h4 class="mt-2">${remaining}</h4>
+                            <small class="text-muted">Restantes</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    updatePhotoStats() {
+        const typeCounts = this.getPhotosByTypeCount();
+        
+        const statsContainer = document.querySelector('.photo-type-stats');
+        if (statsContainer) {
+            statsContainer.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-primary me-2">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-0">Frontal</h6>
+                                <small class="text-muted">${typeCounts.frontal} fotos</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-success me-2">
+                                <i class="fas fa-user-circle"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-0">Perfil</h6>
+                                <small class="text-muted">${typeCounts.perfil} fotos</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-warning me-2">
+                                <i class="fas fa-user-md"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-0">Espalda</h6>
+                                <small class="text-muted">${typeCounts.espalda} fotos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
 
     formatBytes(bytes, decimals = 2) {
@@ -778,21 +1140,20 @@ class DashboardManager {
     renderResultsChart() {
         if (!this.elements.resultsChart) return;
 
-        // Actualizar datos basados en fotos
         const photoCount = this.state.photos.length;
         const chartData = [
-            { label: '12/03', value: 45 },
-            { label: '13/04', value: 30 },
-            { label: '15/06', value: 20 },
-            { label: '9/08', value: Math.min(100, 20 + photoCount * 10) },
-            { label: '5/08', value: 50 }
+            { label: '12/03', value: 45, color: '#4f46e5' },
+            { label: '13/04', value: 30, color: '#7c3aed' },
+            { label: '15/06', value: 20, color: '#a855f7' },
+            { label: '9/08', value: Math.min(100, 20 + photoCount * 12), color: '#10b981' },
+            { label: '5/08', value: Math.min(80, 50 + photoCount * 6), color: '#f59e0b' }
         ];
 
         this.elements.resultsChart.innerHTML = chartData.map(item => {
-            const barHeight = Math.max(5, item.value);
+            const barHeight = Math.max(10, item.value);
             return `
-                <div class="bar-group">
-                    <div class="bar" style="height: ${barHeight}%"></div>
+                <div class="bar-group" data-value="${item.value}" data-label="${item.label}">
+                    <div class="bar" style="height: ${barHeight}%; background: ${item.color}"></div>
                     <div class="bar-label">${item.label}</div>
                     <div class="bar-value">${item.value}</div>
                 </div>
@@ -803,23 +1164,23 @@ class DashboardManager {
     renderProgressChart() {
         if (!this.elements.progressChart) return;
 
-        // Actualizar datos basados en progreso
-        const progress = this.calculateOverallProgress();
+        const progress = this.state.metrics.progress?.progressScore || 0;
         const chartData = [
-            { label: '13/00', value: 90 },
-            { label: '12/00', value: 86 },
-            { label: '12/00', value: 80 },
-            { label: '15/00', value: Math.min(100, progress) },
-            { label: '12/00', value: 90 },
-            { label: '12/00', value: 85 }
+            { label: '13/00', value: 90, color: '#10b981' },
+            { label: '12/00', value: 86, color: '#10b981' },
+            { label: '12/00', value: 80, color: '#3b82f6' },
+            { label: '15/00', value: Math.min(100, progress), color: progress >= 70 ? '#10b981' : progress >= 50 ? '#f59e0b' : '#ef4444' },
+            { label: '12/00', value: 90, color: '#10b981' },
+            { label: '12/00', value: 85, color: '#10b981' }
         ];
 
         this.elements.progressChart.innerHTML = chartData.map(item => {
-            const color = this.getProgressColor(item.value);
             return `
-                <div class="value-row">
-                    <span class="value-label">${item.label}</span>
-                    <span class="value" style="background: ${color}">
+                <div class="value-row" data-value="${item.value}" data-label="${item.label}">
+                    <span class="value-label">
+                        <i class="fas fa-chart-bar"></i> ${item.label}
+                    </span>
+                    <span class="value" style="background: ${item.color}">
                         ${item.value}
                     </span>
                 </div>
@@ -827,57 +1188,89 @@ class DashboardManager {
         }).join('');
     }
 
-    getProgressColor(value) {
-        if (value >= 90) return 'var(--success)';
-        if (value >= 70) return 'var(--primary-blue)';
-        if (value >= 50) return 'var(--warning)';
-        return 'var(--danger)';
-    }
-
-    calculateOverallProgress() {
-        if (this.state.photos.length === 0) return 0;
-        
-        const maxProgress = 100;
-        const baseProgress = Math.min(70, this.state.photos.length * 10);
-        const metricProgress = this.calculateMetricProgress();
-        const consistencyBonus = this.state.metrics.progress?.consistencyScore * 0.3 || 0;
-        
-        return Math.min(maxProgress, baseProgress + metricProgress + consistencyBonus);
-    }
-
-    calculateMetricProgress() {
-        let progress = 0;
-        const metrics = this.state.metrics.progress || {};
-        
-        if (metrics.masaGrasa < 25) progress += 15;
-        if (metrics.masaGrasa < 20) progress += 10;
-        
-        if (metrics.masaMuscular > 36) progress += 15;
-        if (metrics.masaMuscular > 40) progress += 10;
-        
-        if (metrics.sumatorioPliegues < 110) progress += 15;
-        if (metrics.sumatorioPliegues < 100) progress += 10;
-        
-        return progress;
-    }
-
     viewPhoto(photoId) {
         const photo = this.state.photos.find(p => p.id === photoId);
         if (!photo) return;
 
         // Actualizar modal
-        this.elements.photoModalTitle.textContent = `${photo.typeName} - ${this.formatDate(photo.date)}`;
+        this.elements.photoModalTitle.innerHTML = `
+            <i class="fas fa-camera"></i> ${photo.typeName} 
+            <small class="text-muted">- ${this.formatDate(photo.date)}</small>
+        `;
+        
         this.elements.photoModalImage.src = photo.image;
         this.elements.photoModalImage.alt = `Foto ${photo.typeName}`;
-        this.elements.photoModalType.textContent = photo.typeName;
+        this.elements.photoModalType.innerHTML = photo.typeName;
         this.elements.photoModalDate.textContent = this.formatDate(photo.date);
-        this.elements.photoModalDimensions.textContent = 
-            `${photo.dimensions?.width || '?'} × ${photo.dimensions?.height || '?'} px`;
+        this.elements.photoModalDimensions.innerHTML = `
+            <i class="fas fa-expand-alt"></i> ${photo.dimensions?.width || '?'} × ${photo.dimensions?.height || '?'} px
+            <br>
+            <i class="fas fa-weight-hanging"></i> ${this.formatBytes(photo.size)}
+            ${photo.compressionRatio ? `<br><i class="fas fa-compress-arrows-alt"></i> Comprimido: ${photo.compressionRatio}%` : ''}
+        `;
+
+        // Añadir botones de navegación
+        this.addPhotoModalNavigation(photoId);
 
         // Mostrar modal
         this.elements.photoModal.classList.remove('hidden');
         this.state.isPhotoModalOpen = true;
         document.body.style.overflow = 'hidden';
+    }
+
+    addPhotoModalNavigation(currentPhotoId) {
+        const modalBody = this.elements.photoModal.querySelector('.modal-body');
+        const existingNav = modalBody.querySelector('.photo-navigation');
+        if (existingNav) existingNav.remove();
+
+        const currentIndex = this.state.photos.findIndex(p => p.id === currentPhotoId);
+        if (currentIndex === -1) return;
+
+        const navHtml = `
+            <div class="photo-navigation d-flex justify-content-between align-items-center mt-3">
+                <button class="btn btn-outline-primary" onclick="dashboardManager.navigatePhoto('prev', ${currentPhotoId})" 
+                        ${currentIndex >= this.state.photos.length - 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <span class="text-muted">${currentIndex + 1} de ${this.state.photos.length}</span>
+                <button class="btn btn-outline-primary" onclick="dashboardManager.navigatePhoto('next', ${currentPhotoId})" 
+                        ${currentIndex <= 0 ? 'disabled' : ''}>
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+
+        modalBody.insertAdjacentHTML('beforeend', navHtml);
+    }
+
+    navigatePhoto(direction, currentPhotoId) {
+        const currentIndex = this.state.photos.findIndex(p => p.id === currentPhotoId);
+        if (currentIndex === -1) return;
+
+        let newIndex;
+        if (direction === 'prev' && currentIndex < this.state.photos.length - 1) {
+            newIndex = currentIndex + 1;
+        } else if (direction === 'next' && currentIndex > 0) {
+            newIndex = currentIndex - 1;
+        } else {
+            return;
+        }
+
+        this.viewPhoto(this.state.photos[newIndex].id);
+    }
+
+    navigatePhotoModal(key) {
+        const currentPhotoId = this.state.photos.find(p => 
+            p.image === this.elements.photoModalImage.src
+        )?.id;
+        
+        if (!currentPhotoId) return;
+
+        if (key === 'ArrowLeft') {
+            this.navigatePhoto('prev', currentPhotoId);
+        } else if (key === 'ArrowRight') {
+            this.navigatePhoto('next', currentPhotoId);
+        }
     }
 
     closePhotoModal() {
@@ -887,13 +1280,18 @@ class DashboardManager {
     }
 
     async deletePhoto(photoId) {
-        if (!confirm('¿Estás seguro de que quieres eliminar esta foto del historial?')) return;
+        if (!confirm('¿Estás seguro de que quieres eliminar esta foto del historial?\nEsta acción no se puede deshacer.')) {
+            return;
+        }
 
         try {
             // Eliminar de IndexedDB
-            await this.deleteFromDB('photos', photoId);
+            if (this.state.dbInitialized) {
+                await this.deleteFromDB('photos', photoId);
+            }
             
             // Eliminar del estado local
+            const deletedPhoto = this.state.photos.find(p => p.id === photoId);
             this.state.photos = this.state.photos.filter(p => p.id !== photoId);
             
             // Actualizar métricas
@@ -904,73 +1302,133 @@ class DashboardManager {
             this.setupCharts();
             
             // Mostrar notificación
-            this.showNotification('🗑️ Foto eliminada correctamente', 'success');
+            this.showNotification(
+                `<i class="fas fa-trash"></i> Foto eliminada<br>
+                 <small>${deletedPhoto?.typeName} del ${this.formatDate(deletedPhoto?.date)}</small>`,
+                'success'
+            );
             
         } catch (error) {
             console.error('Error al eliminar la foto:', error);
-            this.showNotification('❌ Error al eliminar la foto', 'error');
+            this.showNotification(
+                '<i class="fas fa-times-circle"></i> Error al eliminar la foto',
+                'error'
+            );
         }
     }
 
     saveDashboard() {
         this.saveSettings();
-        this.showNotification('✅ Configuración guardada correctamente', 'success');
+        
+        // Animación de confirmación
+        if (this.elements.saveBtn) {
+            const originalHtml = this.elements.saveBtn.innerHTML;
+            this.elements.saveBtn.innerHTML = '<i class="fas fa-check"></i> Guardado!';
+            this.elements.saveBtn.classList.remove('btn-primary');
+            this.elements.saveBtn.classList.add('btn-success');
+            
+            setTimeout(() => {
+                this.elements.saveBtn.innerHTML = originalHtml;
+                this.elements.saveBtn.classList.remove('btn-success');
+                this.elements.saveBtn.classList.add('btn-primary');
+            }, 2000);
+        }
+        
+        this.showNotification(
+            '<i class="fas fa-save"></i> Dashboard guardado correctamente',
+            'success'
+        );
     }
 
     formatDate(dateString) {
         try {
             const date = new Date(dateString);
-            if (isNaN(date.getTime())) {
-                return 'Fecha inválida';
-            }
+            if (isNaN(date.getTime())) return 'Fecha inválida';
+            
             return date.toLocaleDateString('es-ES', {
+                weekday: 'short',
                 day: '2-digit',
-                month: '2-digit',
+                month: 'short',
                 year: 'numeric'
             });
         } catch (error) {
-            console.error('Error al formatear fecha:', error);
             return 'Fecha inválida';
         }
     }
 
     showNotification(message, type = 'info') {
-        // Crear notificación
+        // Eliminar notificaciones antiguas
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+
+        // Iconos por tipo
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-times-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+
+        // Crear notificación con Bootstrap
         const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
+        notification.className = `notification alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideInRight 0.3s ease;
+        `;
+        
         notification.innerHTML = `
-            <span class="notification-icon">${this.getNotificationIcon(type)}</span>
-            <span class="notification-text">${message}</span>
-            <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+            <div class="d-flex align-items-center">
+                <i class="${icons[type] || icons.info} me-2 fa-lg"></i>
+                <div class="flex-grow-1">${message}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         `;
 
         // Añadir al documento
         document.body.appendChild(notification);
-        
-        // Auto-remover después de 5 segundos
+
+        // Auto-remover
         setTimeout(() => {
             if (notification.parentNode) {
-                notification.remove();
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
             }
         }, 5000);
     }
 
-    getNotificationIcon(type) {
-        const icons = {
-            success: '✅',
-            error: '❌',
-            warning: '⚠️',
-            info: 'ℹ️'
+    getDefaultMetrics() {
+        return {
+            lastPhotoDate: null,
+            totalPhotos: 0,
+            progress: {
+                masaGrasa: 28,
+                masaMuscular: 35,
+                sumatorioPliegues: 120,
+                consistencyScore: 0,
+                progressScore: 0
+            },
+            storage: {
+                totalSize: 0,
+                averageSize: 0,
+                photosCount: 0,
+                byType: { frontal: 0, perfil: 0, espalda: 0 }
+            },
+            lastUpdated: new Date().toISOString()
         };
-        return icons[type] || icons.info;
     }
 
-    // Métodos públicos para acceso desde HTML
+    // Métodos públicos
     getStats() {
         return {
             totalPhotos: this.state.photos.length,
             lastUpload: this.state.photos[0] ? this.formatDate(this.state.photos[0].date) : 'Nunca',
-            progress: this.calculateOverallProgress(),
+            progress: this.state.metrics.progress?.progressScore || 0,
             storage: {
                 totalSize: this.formatBytes(this.calculateTotalSize()),
                 averageSize: this.formatBytes(this.calculateAverageSize()),
@@ -978,111 +1436,172 @@ class DashboardManager {
             }
         };
     }
-    
-    // Método para exportar datos
-    async exportData() {
+
+    calculateTotalSize() {
+        return this.state.photos.reduce((total, photo) => total + (photo.size || 0), 0);
+    }
+
+    calculateAverageSize() {
+        return this.state.photos.length > 0 ? 
+            this.calculateTotalSize() / this.state.photos.length : 0;
+    }
+
+    // Método para exportar datos usando SheetJS
+    exportToExcel() {
         try {
-            const allPhotos = await this.getAllPhotos();
-            const metrics = await this.getFromDB('metrics', 'dashboard');
-            
-            const data = {
-                photos: allPhotos,
-                metrics: metrics,
-                exportDate: new Date().toISOString(),
-                version: '3.0-indexeddb'
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `dashboard-export-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            this.showNotification('📁 Datos exportados correctamente', 'success');
-            
+            // Preparar datos
+            const data = [
+                ['Fecha', 'Tipo', 'Tamaño', 'Dimensiones', 'Compresión'],
+                ...this.state.photos.map(photo => [
+                    this.formatDate(photo.date),
+                    photo.typeName.replace(/<[^>]*>/g, ''),
+                    this.formatBytes(photo.size),
+                    `${photo.dimensions?.width || '?'}x${photo.dimensions?.height || '?'}`,
+                    photo.compressionRatio ? `${photo.compressionRatio}%` : 'N/A'
+                ])
+            ];
+
+            // Crear workbook
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Fotos');
+
+            // Exportar
+            const fileName = `dashboard-fotos-${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+
+            this.showNotification(
+                '<i class="fas fa-file-excel"></i> Datos exportados a Excel',
+                'success'
+            );
+
         } catch (error) {
-            console.error('Error exportando datos:', error);
-            this.showNotification('❌ Error al exportar datos', 'error');
+            console.error('Error exportando a Excel:', error);
+            this.showNotification(
+                '<i class="fas fa-times-circle"></i> Error al exportar datos',
+                'error'
+            );
         }
     }
-    
+
+    // Método para capturar dashboard como imagen usando html2canvas
+    captureDashboard() {
+        const dashboard = document.querySelector('.dashboard-container');
+        if (!dashboard) return;
+
+        this.showNotification(
+            '<i class="fas fa-camera"></i> Capturando dashboard...',
+            'info'
+        );
+
+        html2canvas(dashboard, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: null
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `dashboard-captura-${new Date().toISOString().split('T')[0]}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            this.showNotification(
+                '<i class="fas fa-check-circle"></i> Captura guardada',
+                'success'
+            );
+        }).catch(error => {
+            console.error('Error capturando dashboard:', error);
+            this.showNotification(
+                '<i class="fas fa-times-circle"></i> Error al capturar',
+                'error'
+            );
+        });
+    }
+
     // Método para limpiar datos
-    async clearData() {
-        if (!confirm('¿Estás seguro de que quieres eliminar TODAS las fotos y datos? Esta acción no se puede deshacer.')) {
+    async clearAllData() {
+        if (!confirm('⚠️ ¿ESTÁS SEGURO?\n\nEsta acción eliminará TODAS las fotos y datos del dashboard.\n\nEsta acción NO se puede deshacer.')) {
             return;
         }
-        
+
         try {
-            // Limpiar IndexedDB
-            const transaction = this.db.transaction(['photos', 'metrics', 'settings'], 'readwrite');
-            
-            transaction.objectStore('photos').clear();
-            transaction.objectStore('metrics').clear();
-            transaction.objectStore('settings').clear();
-            
+            this.showLoading(true);
+
+            if (this.state.dbInitialized) {
+                const transaction = this.db.transaction(['photos', 'metrics', 'settings'], 'readwrite');
+                transaction.objectStore('photos').clear();
+                transaction.objectStore('metrics').clear();
+                transaction.objectStore('settings').clear();
+            }
+
             // Resetear estado
             this.state.photos = [];
             this.state.metrics = this.getDefaultMetrics();
             this.state.isSidebarCollapsed = false;
-            
+
+            // Limpiar localStorage
+            localStorage.removeItem('dashboard_fallback');
+
             // Renderizar estado vacío
             this.renderDashboard();
             this.setupCharts();
-            
-            this.showNotification('🗑️ Todos los datos han sido eliminados', 'success');
-            
+
+            this.showNotification(
+                '<i class="fas fa-broom"></i> Todos los datos han sido eliminados',
+                'success'
+            );
+
         } catch (error) {
             console.error('Error al limpiar datos:', error);
-            this.showNotification('❌ Error al eliminar datos', 'error');
+            this.showNotification(
+                '<i class="fas fa-times-circle"></i> Error al eliminar datos',
+                'error'
+            );
+        } finally {
+            this.showLoading(false);
         }
     }
 }
 
-// Inicializar cuando el DOM esté listo
+// Inicialización global
 let dashboardManager;
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     try {
         dashboardManager = new DashboardManager();
         window.dashboardManager = dashboardManager;
-        
+
         // Hacer métodos disponibles globalmente
         window.openDashboard = () => dashboardManager.openDashboard();
         window.closeDashboard = () => dashboardManager.closeDashboard();
         window.saveDashboard = () => dashboardManager.saveDashboard();
-        window.exportData = () => dashboardManager.exportData();
-        window.clearData = () => dashboardManager.clearData();
-        
-        console.log('🚀 Dashboard Manager con IndexedDB inicializado');
-        
+        window.exportToExcel = () => dashboardManager.exportToExcel();
+        window.captureDashboard = () => dashboardManager.captureDashboard();
+        window.clearAllData = () => dashboardManager.clearAllData();
+
+        console.log('🚀 Dashboard Manager 3.5 inicializado con éxito');
+
     } catch (error) {
-        console.error('Error al inicializar Dashboard Manager:', error);
+        console.error('Error crítico al inicializar Dashboard Manager:', error);
         
-        // Mostrar error al usuario
-        const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = `
-            position: fixed;
+        // Mostrar error crítico
+        const errorAlert = document.createElement('div');
+        errorAlert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        errorAlert.style.cssText = `
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: #ef4444;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 99999;
+            max-width: 500px;
         `;
-        errorDiv.innerHTML = `
-            <strong>Error al cargar el dashboard:</strong><br>
-            ${error.message}<br>
-            <small>Por favor, recarga la página o usa otro navegador.</small>
+        errorAlert.innerHTML = `
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <h4><i class="fas fa-exclamation-triangle"></i> Error Crítico</h4>
+            <p>No se pudo inicializar el Dashboard de Seguimiento.</p>
+            <p><small>${error.message}</small></p>
+            <button class="btn btn-sm btn-outline-danger mt-2" onclick="location.reload()">
+                <i class="fas fa-redo"></i> Recargar página
+            </button>
         `;
-        document.body.appendChild(errorDiv);
-        
-        setTimeout(() => errorDiv.remove(), 10000);
+        document.body.appendChild(errorAlert);
     }
 });
