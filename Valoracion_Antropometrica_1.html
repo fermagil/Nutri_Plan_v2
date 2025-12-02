@@ -3555,13 +3555,13 @@ body {
                         
                         <input type="file" id="file-input" accept="image/*" hidden>
                         
-                        <div class="drop-zone mt-3" id="drop-zone">
-                            <div class="text-center py-4">
-                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                <p class="mb-0">Arrastra y suelta la imagen aquí</p>
-                                <small class="text-muted">o haz clic para seleccionar</small>
-                            </div>
-                        </div>
+                        <!-- Reemplaza el drop-zone actual con este código: -->
+					<div class="drop-zone mt-3 p-4 text-center border border-dashed rounded" id="drop-zone" style="border-color: #dee2e6; min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer;">
+					    <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: #6c757d;"></i>
+					    <h5 class="mb-1">Arrastra y suelta la imagen aquí</h5>
+					    <p class="text-muted mb-0">o haz clic para seleccionar archivos</p>
+					    <small class="text-muted mt-2">Formatos: JPG, PNG, WebP (máx. 10MB)</small>
+					</div>
                         
                         <!-- Estadísticas de almacenamiento -->
                         <div class="storage-stats mt-4 p-3 bg-light rounded"></div>
@@ -3601,30 +3601,30 @@ body {
             <!-- Contenido Principal -->
             <main class="main-content">
                 <!-- Sección FRONTAL RELAJADO -->
-                <section class="section frontal-section active-view">
-                    <div class="section-header">
-                        <h2 class="section-title">
-                            <i class="fas fa-user"></i> FRONTAL RELAJADO
-                        </h2>
-                        <div class="date-indicator">
-                            <i class="fas fa-clock"></i> Última toma: 
-                            <span class="date fw-bold" id="last-photo-date">-</span>
-                        </div>
-                    </div>
-                    
-                    <div class="photo-grid dates-grid" id="frontal-grid">
-                        <!-- Las fotos se cargarán dinámicamente aquí -->
-                        <div class="date-card empty-state">
-                            <div class="date-label">No hay fotos disponibles</div>
-                            <div class="photo-placeholder empty">
-                                <span class="placeholder-text">
-                                    <i class="fas fa-upload fa-2x mb-2"></i><br>
-                                    Sube tu primera foto
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <!-- Reemplaza el contenido de la sección FRONTAL RELAJADO con este código: -->
+				<section class="section frontal-section active-view">
+				    <div class="section-header d-flex justify-content-between align-items-center mb-4">
+				        <h2 class="section-title mb-0">
+				            <i class="fas fa-user"></i> FRONTAL RELAJADO
+				        </h2>
+				        <div class="date-indicator">
+				            <i class="fas fa-clock"></i> Última toma: 
+				            <span class="date fw-bold" id="last-photo-date">Nunca</span>
+				        </div>
+				    </div>
+				    
+				    <div class="photo-grid" id="frontal-grid">
+				        <!-- Las fotos se cargarán dinámicamente aquí -->
+				        <div class="text-center py-5">
+				            <i class="fas fa-images fa-4x text-muted mb-3"></i>
+				            <h4>No hay fotos disponibles</h4>
+				            <p class="text-muted">Sube tu primera foto frontal para comenzar el seguimiento</p>
+				            <button class="btn btn-primary mt-2" onclick="document.getElementById('file-input').click()">
+				                <i class="fas fa-upload"></i> Subir Primera Foto
+				            </button>
+				        </div>
+				    </div>
+				</section>
 
                 <!-- Sección RESULTAS -->
                 <section class="section results-section">
@@ -7540,6 +7540,7 @@ function handleSectionTitleClick(event) {
 
 </body>
 </html>
+
 
 
 
