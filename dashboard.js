@@ -1184,10 +1184,187 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         dashboardManager = new DashboardManager();
         window.dashboardManager = dashboardManager;
-        
-        console.log('🚀 Dashboard Manager 3.6 inicializado');
-        
+
+        // Hacer métodos disponibles globalmente
+        window.openDashboard = () => dashboardManager.openDashboard();
+        window.closeDashboard = () => dashboardManager.closeDashboard();
+        window.saveDashboard = () => dashboardManager.saveDashboard();
+        window.exportToExcel = () => dashboardManager.exportToExcel();
+        window.captureDashboard = () => dashboardManager.captureDashboard();
+        // window.clearAllData = () => dashboardManager.clearAllData(); // Si no está definido, no lo expongas
+
+        console.log('🚀 Dashboard Manager 3.6 inicializado con éxito');
+
     } catch (error) {
-        console.error('Error al inicializar Dashboard Manager:', error);
+        console.error('Error crítico al inicializar Dashboard Manager:', error);
+        
+        // Mostrar error crítico
+        const errorAlert = document.createElement('div');
+        errorAlert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        errorAlert.style.cssText = `
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            max-width: 500px;
+        `;
+        errorAlert.innerHTML = `
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <h4><i class="fas fa-exclamation-triangle"></i> Error Crítico</h4>
+            <p>No se pudo inicializar el Dashboard de Seguimiento.</p>
+            <p><small>${error.message}</small></p>
+            <button class="btn btn-sm btn-outline-danger mt-2" onclick="location.reload()">
+                <i class="fas fa-redo"></i> Recargar página
+            </button>
+        `;
+        document.body.appendChild(errorAlert);
     }
 });
+
+   // Agrega estos métodos justo antes del cierre de la clase DashboardManager
+// (antes de la línea "}" que cierra la clase)
+
+// Método para exportar datos usando SheetJS
+exportToExcel() {
+    try {
+        // Verificar si SheetJS está disponible
+        if (typeof XLSX === 'undefined') {
+            this.showNotification('La biblioteca de Excel no está cargada', 'error');
+            return;
+        }
+
+        // Preparar datos
+        const data = [
+            ['Fecha', 'Tipo', 'Tamaño', 'Dimensiones', 'Compresión'],
+            ...this.state.photos.map(photo => [
+                this.formatDate(photo.date),
+                photo.typeName,
+                this.formatBytes(photo.size),
+                `${photo.dimensions?.width || '?'}x${photo.dimensions?.height || '?'}`,
+                photo.compressionRatio ? `${photo.compressionRatio}%` : 'N/A'
+            ])
+        ];
+
+        // Crear workbook
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Fotos');
+
+        // Exportar
+        const fileName = `dashboard-fotos-${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+
+        this.showNotification(
+            '<i class="fas fa-file-excel"></i> Datos exportados a Excel',
+            'success'
+        );
+
+    } catch (error) {
+        console.error('Error exportando a Excel:', error);
+        this.showNotification(
+            '<i class="fas fa-times-circle"></i> Error al exportar datos',
+            'error'
+        );
+    }
+}
+
+// Método para capturar dashboard como imagen usando html2canvas
+captureDashboard() {
+    const dashboard = document.querySelector('.dashboard-container');
+    if (!dashboard) {
+        this.showNotification('No se encontró el dashboard para capturar', 'error');
+        return;
+    }
+
+    this.showNotification(
+        '<i class="fas fa-camera"></i> Capturando dashboard...',
+        'info'
+    );
+
+    // Verificar si html2canvas está disponible
+    if (typeof html2canvas === 'undefined') {
+        this.showNotification('La biblioteca de captura no está cargada', 'error');
+        return;
+    }
+
+    html2canvas(dashboard, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `dashboard-captura-${new Date().toISOString().split('T')[0]}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        this.showNotification(
+            '<i class="fas fa-check-circle"></i> Captura guardada',
+            'success'
+        );
+    }).catch(error => {
+        console.error('Error capturando dashboard:', error);
+        this.showNotification(
+            '<i class="fas fa-times-circle"></i> Error al capturar el dashboard',
+            'error'
+        );
+    });
+}
+
+// Método para limpiar todos los datos
+async clearAllData() {
+    if (!confirm('⚠️ ¿ESTÁS SEGURO?\n\nEsta acción eliminará TODAS las fotos y datos del dashboard.\n\nEsta acción NO se puede deshacer.')) {
+        return;
+    }
+
+    try {
+        this.showLoading(true);
+
+        if (this.state.dbInitialized) {
+            const transaction = this.db.transaction(['photos', 'metrics', 'settings'], 'readwrite');
+            transaction.objectStore('photos').clear();
+            transaction.objectStore('metrics').clear();
+            transaction.objectStore('settings').clear();
+        }
+
+        // Resetear estado
+        this.state.photos = [];
+        this.state.metrics = this.getDefaultMetrics();
+        this.state.isSidebarCollapsed = false;
+
+        // Limpiar localStorage
+        localStorage.removeItem('dashboard_fallback');
+
+        // Renderizar estado vacío
+        this.renderDashboard();
+        this.setupCharts();
+
+        this.showNotification(
+            '<i class="fas fa-broom"></i> Todos los datos han sido eliminados',
+            'success'
+        );
+
+    } catch (error) {
+        console.error('Error al limpiar datos:', error);
+        this.showNotification(
+            '<i class="fas fa-times-circle"></i> Error al eliminar datos',
+            'error'
+        );
+    } finally {
+        this.showLoading(false);
+    }
+}
+
+// Método para obtener estadísticas (ya existe en la versión 3.6)
+getStats() {
+    return {
+        totalPhotos: this.state.photos.length,
+        lastUpload: this.state.photos[0] ? this.formatDate(this.state.photos[0].date) : 'Nunca',
+        progress: this.state.metrics.progress?.progressScore || 0,
+        storage: {
+            totalSize: this.formatBytes(this.calculateTotalSize()),
+            averageSize: this.formatBytes(this.calculateAverageSize()),
+            photosCount: this.state.photos.length
+        }
+    };
+}
