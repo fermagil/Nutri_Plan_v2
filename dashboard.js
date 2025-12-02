@@ -776,6 +776,7 @@ class DashboardManager {
     }
 
     renderFrontalSection() {
+		 console.log('🔄 Renderizando sección frontal...');
     if (!this.elements.frontalGrid) {
         console.error('❌ frontalGrid no encontrado');
         return;
