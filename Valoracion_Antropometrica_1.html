@@ -3626,6 +3626,85 @@ body {
 				    </div>
 				</section>
 
+				<!-- Sección PERFIL -->
+				<section class="section perfil-section">
+				    <div class="section-header">
+				        <h2 class="section-title">
+				            <i class="fas fa-user-circle"></i> PERFIL
+				        </h2>
+				        <div class="date-indicator">
+				            <i class="fas fa-clock"></i> Última toma: 
+				            <span class="date fw-bold" id="last-perfil-photo-date">Nunca</span>
+				        </div>
+				    </div>
+				    
+				    <div class="photo-grid" id="perfil-grid">
+				        <div class="text-center w-100 py-5">
+				            <i class="fas fa-user-circle fa-4x text-muted mb-3"></i>
+				            <h4 class="mb-3">No hay fotos de perfil</h4>
+				            <p class="text-muted mb-4">Sube tu primera foto de perfil para comenzar el seguimiento</p>
+				            <button class="btn btn-primary" onclick="document.getElementById('photo-type').value='perfil'; document.getElementById('file-input').click()">
+				                <i class="fas fa-upload me-2"></i>Subir Foto de Perfil
+				            </button>
+				        </div>
+				    </div>
+				</section>
+				
+				<!-- Sección ESPALDA -->
+				<section class="section espalda-section">
+				    <div class="section-header">
+				        <h2 class="section-title">
+				            <i class="fas fa-user-md"></i> ESPALDA
+				        </h2>
+				        <div class="date-indicator">
+				            <i class="fas fa-clock"></i> Última toma: 
+				            <span class="date fw-bold" id="last-espalda-photo-date">Nunca</span>
+				        </div>
+				    </div>
+				    
+				    <div class="photo-grid" id="espalda-grid">
+				        <div class="text-center w-100 py-5">
+				            <i class="fas fa-user-md fa-4x text-muted mb-3"></i>
+				            <h4 class="mb-3">No hay fotos de espalda</h4>
+				            <p class="text-muted mb-4">Sube tu primera foto de espalda para comenzar el seguimiento</p>
+				            <button class="btn btn-primary" onclick="document.getElementById('photo-type').value='espalda'; document.getElementById('file-input').click()">
+				                <i class="fas fa-upload me-2"></i>Subir Foto de Espalda
+				            </button>
+				        </div>
+				    </div>
+				</section>
+				
+				<!-- Sección ANÁLISIS (se agrega dinámicamente) -->
+				
+				<!-- Sección de COMPARACIÓN -->
+				<section class="section comparison-section">
+				    <div class="section-header">
+				        <h2 class="section-title"><i class="fas fa-exchange-alt"></i> COMPARACIÓN ANTERIOR-ACTUAL</h2>
+				        <button class="btn btn-primary compare-btn">
+				            <i class="fas fa-sliders-h me-2"></i>Comparar Fotos
+				        </button>
+				    </div>
+				    
+				    <div class="comparison-grid">
+				        <div class="comparison-item">
+				            <h4 class="comparison-title">Foto Anterior</h4>
+				            <div class="comparison-photo" id="previous-photo"></div>
+				            <small class="text-muted">Selecciona una foto para comparar</small>
+				        </div>
+				        
+				        <div class="comparison-item">
+				            <h4 class="comparison-title">Foto Actual</h4>
+				            <div class="comparison-photo" id="current-photo"></div>
+				            <small class="text-muted">Selecciona una foto para comparar</small>
+				        </div>
+				    </div>
+				</section>
+				
+				<!-- Sección SEGURIDAD -->
+				<section class="section security-section">
+				    <!-- Se llena dinámicamente -->
+				</section>
+
                 <!-- Sección RESULTAS -->
                 <section class="section results-section">
                     <div class="section-header">
@@ -7540,6 +7619,7 @@ function handleSectionTitleClick(event) {
 
 </body>
 </html>
+
 
 
 
