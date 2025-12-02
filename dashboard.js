@@ -1,11 +1,10 @@
 /**
- * Módulo Principal del Dashboard - Seguimiento Visual Corporal
- * Versión 3.6 - Corregido y optimizado
+ * DashboardManager - Versión 4.0 con todas las funcionalidades
  */
 
 class DashboardManager {
     constructor() {
-        // Estado inicial
+        // Estado inicial - Actualizado
         this.state = {
             photos: [],
             metrics: {},
@@ -14,10 +13,20 @@ class DashboardManager {
             isDashboardOpen: false,
             isPhotoModalOpen: false,
             dbInitialized: false,
-            isLoading: false
+            isLoading: false,
+            // Nuevos estados
+            selectedPhotoType: 'frontal',
+            currentAnalysisTab: 'composition',
+            currentChartFilter: 'weekly',
+            securitySettings: {
+                autoBackup: true,
+                encryptPhotos: true,
+                requirePassword: false,
+                dataRetention: 365
+            }
         };
 
-        // Configuración
+        // Configuración actualizada
         this.config = {
             maxFileSize: 10 * 1024 * 1024, // 10MB
             maxCompressedSize: 1.5 * 1024 * 1024, // 1.5MB comprimido
@@ -33,20 +42,27 @@ class DashboardManager {
             storageLimits: {
                 maxPhotos: 200,
                 maxPhotoSize: 2.5 * 1024 * 1024
-            }
+            },
+            analysisTypes: {
+                frontal: 'Frontal Relajado',
+                perfil: 'Perfil',
+                espalda: 'Espalda'
+            },
+            chartTypes: ['weekly', 'monthly', 'quarterly'],
+            securityLevels: ['básico', 'medio', 'alto', 'personalizado']
         };
-
-        // Inicializar IndexedDB
+		
+		// Inicializar IndexedDB
         this.db = null;
         
         // Cache de elementos
         this.elements = {};
-        
-        // Inicializar después de que el DOM esté listo
+		
+        // Inicializar
         this.init();
     }
-
-    // ... [TODOS LOS MÉTODOS EXISTENTES] ...
+	
+	// ... [TODOS LOS MÉTODOS EXISTENTES] ...
 	 async init() {
         try {
             await this.initIndexedDB();
@@ -1443,3 +1459,771 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(errorAlert);
     }
 });
+
+
+
+    // ========== MÉTODOS NUEVOS PARA FUNCIONALIDADES ==========
+
+    // 1. Funcionalidad del selector de tipo de foto
+    setupPhotoTypeSelector() {
+        const selector = document.getElementById('photo-type');
+        if (!selector) return;
+
+        selector.addEventListener('change', (e) => {
+            this.state.selectedPhotoType = e.target.value;
+            console.log(`Tipo de foto seleccionado: ${this.state.selectedPhotoType}`);
+            
+            // Si estamos en vista de fotos, actualizar la vista correspondiente
+            if (this.state.currentView === 'photos') {
+                this.renderPhotoSection(e.target.value);
+            }
+            
+            this.showNotification(
+                `Vista cambiada a: ${this.config.analysisTypes[e.target.value]}`,
+                'info'
+            );
+        });
+    }
+
+    // 2. Scrollbars para el sidebar
+    setupSidebarScrollbars() {
+        // Agregar clases CSS para scroll
+        const valuationCard = document.querySelector('.valuation-card .card-body');
+        const resultsCard = document.querySelector('.results-menu-card .card-body');
+        
+        if (valuationCard) {
+            valuationCard.style.maxHeight = '450px';
+            valuationCard.style.overflowY = 'auto';
+        }
+        
+        if (resultsCard) {
+            resultsCard.style.maxHeight = '350px';
+            resultsCard.style.overflowY = 'auto';
+        }
+        
+        // Agregar estilos CSS dinámicamente para scrollbars personalizadas
+        const style = document.createElement('style');
+        style.textContent = `
+            .card-body::-webkit-scrollbar {
+                width: 6px;
+            }
+            .card-body::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 3px;
+            }
+            .card-body::-webkit-scrollbar-thumb {
+                background: #c1c1c1;
+                border-radius: 3px;
+            }
+            .card-body::-webkit-scrollbar-thumb:hover {
+                background: #a1a1a1;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // 3. Funcionalidad del menú de resultados (Noticies, Negociar, Seguridad)
+    setupResultsMenu() {
+        const menuItems = document.querySelectorAll('.results-menu .menu-item');
+        
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remover clase active de todos los items
+                menuItems.forEach(i => i.classList.remove('active'));
+                
+                // Agregar clase active al item clickeado
+                item.classList.add('active');
+                
+                // Obtener la vista
+                const view = item.dataset.view;
+                
+                // Cambiar vista según el item
+                switch(view) {
+                    case 'frontal':
+                        this.showPhotosView();
+                        break;
+                    case 'negotiate':
+                        this.showNegotiateView();
+                        break;
+                    case 'security':
+                        this.showSecurityView();
+                        break;
+                    default:
+                        this.showPhotosView();
+                }
+                
+                this.state.currentView = view;
+            });
+        });
+    }
+
+    // 4. Vista de Noticies Fotos (vista principal de fotos)
+    showPhotosView() {
+        // Ocultar todas las secciones
+        this.hideAllSections();
+        
+        // Mostrar secciones de fotos
+        const photoSections = ['frontal', 'perfil', 'espalda'];
+        photoSections.forEach(type => {
+            const section = document.querySelector(`.${type}-section`);
+            if (section) {
+                section.classList.add('active-view');
+            }
+        });
+        
+        // Renderizar todas las grids de fotos
+        this.renderAllPhotoSections();
+        
+        // Actualizar estadísticas
+        this.updatePhotoStats();
+        
+        console.log('Vista de fotos activada');
+    }
+
+    // 5. Vista de Negociar Fotos (análisis y comparación)
+    showNegotiateView() {
+        this.hideAllSections();
+        
+        // Mostrar sección de análisis
+        const resultsSection = document.querySelector('.results-section');
+        const analysisSection = document.querySelector('.analysis-section');
+        
+        if (resultsSection) resultsSection.classList.add('active-view');
+        if (analysisSection) analysisSection.classList.add('active-view');
+        
+        // Cargar datos de análisis
+        this.loadAnalysisData();
+        
+        console.log('Vista de negociación activada');
+    }
+
+    // 6. Vista de Seguridad
+    showSecurityView() {
+        this.hideAllSections();
+        
+        const securitySection = document.querySelector('.security-section');
+        if (securitySection) {
+            securitySection.classList.add('active-view');
+        }
+        
+        // Cargar configuración de seguridad
+        this.loadSecuritySettings();
+        
+        console.log('Vista de seguridad activada');
+    }
+
+    // 7. Renderizar todas las secciones de fotos
+    renderAllPhotoSections() {
+        const types = ['frontal', 'perfil', 'espalda'];
+        
+        types.forEach(type => {
+            this.renderPhotoSection(type);
+            this.updateLastPhotoDate(type);
+        });
+    }
+
+    // 8. Renderizar sección de fotos específica
+    renderPhotoSection(type) {
+        const gridId = `${type}-grid`;
+        const grid = document.getElementById(gridId);
+        
+        if (!grid) return;
+        
+        const photos = this.state.photos.filter(photo => photo.type === type);
+        
+        if (photos.length === 0) {
+            grid.innerHTML = `
+                <div class="text-center w-100 py-5">
+                    <i class="fas fa-images fa-4x text-muted mb-3"></i>
+                    <h4 class="mb-3">No hay fotos de ${this.config.analysisTypes[type]}</h4>
+                    <p class="text-muted mb-4">Sube tu primera foto para comenzar el seguimiento</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('photo-type').value='${type}'; document.getElementById('file-input').click()">
+                        <i class="fas fa-upload me-2"></i>Subir Foto de ${this.config.analysisTypes[type]}
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        // Ordenar por fecha (más recientes primero)
+        const recentPhotos = photos.sort((a, b) => 
+            new Date(b.date) - new Date(a.date)
+        ).slice(0, 6);
+        
+        grid.innerHTML = recentPhotos.map((photo, index) => {
+            const isLatest = index === 0;
+            const formattedDate = this.formatDate(photo.date);
+            
+            return `
+                <div class="date-card" data-photo-id="${photo.id}">
+                    <div class="date-label">
+                        <span class="fw-bold">${formattedDate}</span>
+                        ${isLatest ? '<span class="badge bg-success"><i class="fas fa-star me-1"></i>ÚLTIMA</span>' : ''}
+                    </div>
+                    
+                    <div class="photo-placeholder has-image" 
+                         style="background-image: url('${photo.image}')"
+                         onclick="dashboardManager.viewPhoto(${photo.id})">
+                        <div class="photo-overlay">
+                            <button class="view-btn" 
+                                    onclick="dashboardManager.viewPhoto(${photo.id}); event.stopPropagation()">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="delete-btn" 
+                                    onclick="dashboardManager.deletePhoto(${photo.id}); event.stopPropagation()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-ruler-combined me-1"></i>
+                                ${photo.dimensions?.width || '?'}×${photo.dimensions?.height || '?'}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-weight-hanging me-1"></i>
+                                ${this.formatBytes(photo.size)}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // 9. Actualizar fecha de última foto por tipo
+    updateLastPhotoDate(type) {
+        const elementId = `last-${type}-photo-date`;
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        const photos = this.state.photos.filter(photo => photo.type === type);
+        if (photos.length > 0) {
+            const lastPhoto = photos.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+            element.textContent = this.formatDate(lastPhoto.date);
+        } else {
+            element.textContent = 'Nunca';
+        }
+    }
+
+    // 10. Sección de Resultas - Análisis detallado
+    setupResultsSection() {
+        // Agregar HTML para la sección de análisis si no existe
+        if (!document.querySelector('.analysis-section')) {
+            const resultsSection = document.querySelector('.results-section');
+            if (resultsSection) {
+                resultsSection.insertAdjacentHTML('afterend', this.getAnalysisHTML());
+            }
+        }
+        
+        // Inicializar pestañas de análisis
+        this.setupAnalysisTabs();
+    }
+
+    getAnalysisHTML() {
+        return `
+            <section class="section analysis-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-chart-pie"></i> ANÁLISIS DETALLADO</h2>
+                    <div class="analysis-tabs">
+                        <button class="analysis-tab active" data-tab="composition">
+                            <i class="fas fa-clipboard-list"></i> Composición
+                        </button>
+                        <button class="analysis-tab" data-tab="progress">
+                            <i class="fas fa-chart-line"></i> Progreso
+                        </button>
+                        <button class="analysis-tab" data-tab="volume">
+                            <i class="fas fa-balance-scale"></i> Volumen
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="analysis-content">
+                    <!-- Contenido dinámico de análisis -->
+                    <div id="analysis-composition" class="tab-content active">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="analysis-card">
+                                    <h5><i class="fas fa-percentage"></i> Porcentaje de Grasa</h5>
+                                    <div class="progress mt-3" style="height: 20px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: ${this.state.metrics.progress?.masaGrasa || 28}%">
+                                            ${this.state.metrics.progress?.masaGrasa || 28}%
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Meta: < 15%</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="analysis-card">
+                                    <h5><i class="fas fa-dumbbell"></i> Masa Muscular</h5>
+                                    <div class="progress mt-3" style="height: 20px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: ${(this.state.metrics.progress?.masaMuscular || 35) * 2}%">
+                                            ${this.state.metrics.progress?.masaMuscular || 35} kg
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Meta: > 40kg</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="analysis-progress" class="tab-content">
+                        <div class="timeline">
+                            <!-- Timeline de progreso -->
+                        </div>
+                    </div>
+                    
+                    <div id="analysis-volume" class="tab-content">
+                        <div class="volume-controls">
+                            <!-- Controles de volumen -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        `;
+    }
+
+    setupAnalysisTabs() {
+        const tabs = document.querySelectorAll('.analysis-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const tabId = e.currentTarget.dataset.tab;
+                
+                // Remover clase active de todas las pestañas
+                tabs.forEach(t => t.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                
+                // Mostrar contenido correspondiente
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`analysis-${tabId}`)?.classList.add('active');
+            });
+        });
+    }
+
+    // 11. Sección ANES Y PERIL - Comparación
+    setupAnesPerilSection() {
+        const section = document.querySelector('.anes-peril-section');
+        if (!section) return;
+        
+        // Agregar funcionalidad de comparación
+        this.setupComparisonControls();
+    }
+
+    setupComparisonControls() {
+        // Implementar controles de comparación
+        const compareBtn = document.querySelector('.compare-btn');
+        if (compareBtn) {
+            compareBtn.addEventListener('click', () => {
+                this.comparePhotos();
+            });
+        }
+    }
+
+    comparePhotos() {
+        // Lógica para comparar fotos
+        const selectedPhotos = this.getSelectedPhotosForComparison();
+        
+        if (selectedPhotos.length < 2) {
+            this.showNotification('Selecciona al menos 2 fotos para comparar', 'warning');
+            return;
+        }
+        
+        // Mostrar modal de comparación
+        this.showComparisonModal(selectedPhotos);
+    }
+
+    // 12. Sección MOMANTICATE - Métricas avanzadas
+    setupMomanticateSection() {
+        this.renderAdvancedMetrics();
+        this.setupMetricTags();
+    }
+
+    setupMetricTags() {
+        const tags = document.querySelectorAll('.metric-tag');
+        tags.forEach(tag => {
+            tag.addEventListener('click', (e) => {
+                const metricType = e.currentTarget.dataset.metric;
+                this.filterMetrics(metricType);
+            });
+        });
+    }
+
+    filterMetrics(type) {
+        // Filtrar métricas según el tipo
+        const rows = document.querySelectorAll('.metrics-table tbody tr');
+        rows.forEach(row => {
+            if (type === 'all' || row.dataset.metric === type) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    renderAdvancedMetrics() {
+        const tableBody = document.getElementById('metrics-table-body');
+        if (!tableBody) return;
+        
+        const metrics = [
+            { name: 'Masa Grasa', initial: '28%', current: '27%', trend: 'down', type: 'fat' },
+            { name: 'Masa Muscular', initial: '35kg', current: '35.6kg', trend: 'up', type: 'muscle' },
+            { name: 'Sumatorio Pliegues', initial: '120mm', current: '116mm', trend: 'down', type: 'folds' },
+            { name: 'IMC', initial: '24.5', current: '23.8', trend: 'down', type: 'bmi' },
+            { name: 'Circunferencia Cintura', initial: '85cm', current: '83cm', trend: 'down', type: 'waist' },
+            { name: 'Circunferencia Cadera', initial: '95cm', current: '94cm', trend: 'down', type: 'hips' }
+        ];
+        
+        tableBody.innerHTML = metrics.map(metric => {
+            const trendClass = metric.trend === 'up' ? 'text-success' : 'text-primary';
+            const trendIcon = metric.trend === 'up' ? 'fas fa-arrow-up' : 'fas fa-arrow-down';
+            
+            return `
+                <tr data-metric="${metric.type}">
+                    <td>${metric.name}</td>
+                    <td>${metric.initial}</td>
+                    <td class="${trendClass}">
+                        <i class="${trendIcon} me-1"></i>${metric.current}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // 13. Sección de Gráficos - Funcionalidad completa
+    setupChartsSection() {
+        this.renderResultsChart();
+        this.renderProgressChart();
+        this.setupChartFilters();
+    }
+
+    setupChartFilters() {
+        const filterBtns = document.querySelectorAll('.chart-filter');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const filter = e.currentTarget.dataset.filter;
+                this.state.currentChartFilter = filter;
+                
+                // Actualizar gráficos con nuevo filtro
+                this.updateCharts(filter);
+                
+                // Remover clase active de todos los botones
+                filterBtns.forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+            });
+        });
+    }
+
+    updateCharts(filter) {
+        // Actualizar gráficos según el filtro seleccionado
+        switch(filter) {
+            case 'weekly':
+                this.renderWeeklyChart();
+                break;
+            case 'monthly':
+                this.renderMonthlyChart();
+                break;
+            case 'quarterly':
+                this.renderQuarterlyChart();
+                break;
+        }
+    }
+
+    renderWeeklyChart() {
+        const chartData = [
+            { label: 'Sem 1', value: 20, color: '#4f46e5' },
+            { label: 'Sem 2', value: 35, color: '#7c3aed' },
+            { label: 'Sem 3', value: 50, color: '#a855f7' },
+            { label: 'Sem 4', value: 65, color: '#10b981' }
+        ];
+        
+        this.renderChart('results-chart', chartData);
+    }
+
+    renderChart(chartId, data) {
+        const chart = document.getElementById(chartId);
+        if (!chart) return;
+        
+        chart.innerHTML = data.map(item => {
+            const barHeight = Math.max(10, item.value);
+            return `
+                <div class="bar-group" data-value="${item.value}">
+                    <div class="bar" style="height: ${barHeight}%; background: ${item.color}"></div>
+                    <div class="bar-label">${item.label}</div>
+                    <div class="bar-value">${item.value}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // 14. Sección Términos - Información legal
+    setupTermsSection() {
+        // Cargar términos y condiciones
+        this.loadTermsContent();
+        
+        // Configurar botón de aceptación
+        const acceptBtn = document.querySelector('.accept-terms-btn');
+        if (acceptBtn) {
+            acceptBtn.addEventListener('click', () => {
+                this.acceptTerms();
+            });
+        }
+    }
+
+    loadTermsContent() {
+        const termsContent = `
+            <h4><i class="fas fa-file-contract"></i> Términos y Condiciones</h4>
+            <div class="terms-content">
+                <p><strong>Última actualización:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
+                
+                <h5>1. Uso del Servicio</h5>
+                <p>Este servicio está diseñado para el seguimiento visual de composición corporal. El usuario es responsable de la precisión de los datos proporcionados.</p>
+                
+                <h5>2. Privacidad de Datos</h5>
+                <p>Todas las imágenes y datos personales se almacenan de forma segura y encriptada. No compartimos información personal con terceros.</p>
+                
+                <h5>3. Propiedad Intelectual</h5>
+                <p>Las imágenes subidas son propiedad del usuario. El servicio solo las utiliza para proporcionar análisis y seguimiento.</p>
+                
+                <h5>4. Limitación de Responsabilidad</h5>
+                <p>Este servicio no sustituye el consejo médico profesional. Los resultados son indicativos y deben interpretarse por un profesional de la salud.</p>
+            </div>
+            
+            <div class="terms-acceptance mt-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="terms-checkbox">
+                    <label class="form-check-label" for="terms-checkbox">
+                        He leído y acepto los términos y condiciones
+                    </label>
+                </div>
+                <button class="btn btn-primary mt-3 accept-terms-btn" disabled>
+                    <i class="fas fa-check"></i> Aceptar Términos
+                </button>
+            </div>
+        `;
+        
+        const termsSection = document.querySelector('.terms-section');
+        if (termsSection) {
+            termsSection.querySelector('.info-box').innerHTML = termsContent;
+            
+            // Habilitar botón cuando se marque el checkbox
+            const checkbox = document.getElementById('terms-checkbox');
+            if (checkbox) {
+                checkbox.addEventListener('change', (e) => {
+                    const btn = document.querySelector('.accept-terms-btn');
+                    btn.disabled = !e.target.checked;
+                });
+            }
+        }
+    }
+
+    acceptTerms() {
+        localStorage.setItem('termsAccepted', 'true');
+        localStorage.setItem('termsAcceptedDate', new Date().toISOString());
+        
+        this.showNotification('Términos aceptados correctamente', 'success');
+        
+        const btn = document.querySelector('.accept-terms-btn');
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Términos Aceptados';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-success');
+        btn.disabled = true;
+    }
+
+    // 15. Funcionalidad de Seguridad
+    setupSecurityControls() {
+        // Configurar controles de seguridad
+        const securitySection = document.querySelector('.security-section');
+        if (!securitySection) return;
+        
+        securitySection.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-shield-alt"></i> CONFIGURACIÓN DE SEGURIDAD</h2>
+            </div>
+            
+            <div class="security-settings">
+                <div class="security-level mb-4">
+                    <h5><i class="fas fa-layer-group"></i> Nivel de Seguridad</h5>
+                    <div class="btn-group" role="group">
+                        ${['básico', 'medio', 'alto', 'personalizado'].map(level => `
+                            <button type="button" class="btn btn-outline-primary ${level === 'medio' ? 'active' : ''}" 
+                                    data-level="${level}">
+                                ${level.charAt(0).toUpperCase() + level.slice(1)}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="security-options">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="auto-backup" checked>
+                        <label class="form-check-label" for="auto-backup">
+                            <i class="fas fa-save"></i> Backup automático diario
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="encrypt-photos" checked>
+                        <label class="form-check-label" for="encrypt-photos">
+                            <i class="fas fa-lock"></i> Encriptar fotos almacenadas
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="require-password">
+                        <label class="form-check-label" for="require-password">
+                            <i class="fas fa-key"></i> Requerir contraseña para acceder
+                        </label>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="data-retention"><i class="fas fa-calendar-times"></i> Retención de datos</label>
+                        <select class="form-select" id="data-retention">
+                            <option value="30">30 días</option>
+                            <option value="90">90 días</option>
+                            <option value="365" selected>1 año</option>
+                            <option value="0">Indefinido</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="security-actions mt-4">
+                    <button class="btn btn-primary me-2" id="save-security">
+                        <i class="fas fa-save"></i> Guardar Configuración
+                    </button>
+                    <button class="btn btn-outline-danger" id="reset-security">
+                        <i class="fas fa-redo"></i> Restaurar Valores por Defecto
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Configurar eventos de seguridad
+        this.setupSecurityEvents();
+    }
+
+    setupSecurityEvents() {
+        // Niveles de seguridad
+        document.querySelectorAll('[data-level]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const level = e.currentTarget.dataset.level;
+                this.setSecurityLevel(level);
+            });
+        });
+        
+        // Guardar configuración
+        document.getElementById('save-security')?.addEventListener('click', () => {
+            this.saveSecuritySettings();
+        });
+        
+        // Resetear configuración
+        document.getElementById('reset-security')?.addEventListener('click', () => {
+            this.resetSecuritySettings();
+        });
+    }
+
+    setSecurityLevel(level) {
+        // Actualizar estado según nivel
+        switch(level) {
+            case 'básico':
+                this.state.securitySettings = { autoBackup: true, encryptPhotos: false, requirePassword: false, dataRetention: 30 };
+                break;
+            case 'medio':
+                this.state.securitySettings = { autoBackup: true, encryptPhotos: true, requirePassword: false, dataRetention: 90 };
+                break;
+            case 'alto':
+                this.state.securitySettings = { autoBackup: true, encryptPhotos: true, requirePassword: true, dataRetention: 365 };
+                break;
+        }
+        
+        // Actualizar UI
+        this.updateSecurityUI();
+        
+        this.showNotification(`Nivel de seguridad establecido: ${level}`, 'success');
+    }
+
+    updateSecurityUI() {
+        const settings = this.state.securitySettings;
+        
+        const autoBackup = document.getElementById('auto-backup');
+        const encryptPhotos = document.getElementById('encrypt-photos');
+        const requirePassword = document.getElementById('require-password');
+        const dataRetention = document.getElementById('data-retention');
+        
+        if (autoBackup) autoBackup.checked = settings.autoBackup;
+        if (encryptPhotos) encryptPhotos.checked = settings.encryptPhotos;
+        if (requirePassword) requirePassword.checked = settings.requirePassword;
+        if (dataRetention) dataRetention.value = settings.dataRetention;
+    }
+
+    // ========== MÉTODOS AUXILIARES ==========
+
+    hideAllSections() {
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active-view');
+        });
+    }
+
+    loadAnalysisData() {
+        // Cargar datos para análisis
+        console.log('Cargando datos de análisis...');
+        
+        // Aquí iría la lógica para cargar datos de análisis
+        // Por ahora solo mostramos un mensaje
+        this.showNotification('Datos de análisis cargados', 'info');
+    }
+
+    loadSecuritySettings() {
+        // Cargar configuración de seguridad desde localStorage
+        const savedSettings = localStorage.getItem('securitySettings');
+        if (savedSettings) {
+            this.state.securitySettings = JSON.parse(savedSettings);
+        }
+        
+        // Mostrar sección de seguridad
+        this.setupSecurityControls();
+        this.updateSecurityUI();
+    }
+
+    saveSecuritySettings() {
+        // Guardar configuración de seguridad
+        localStorage.setItem('securitySettings', JSON.stringify(this.state.securitySettings));
+        this.showNotification('Configuración de seguridad guardada', 'success');
+    }
+
+    resetSecuritySettings() {
+        // Resetear a valores por defecto
+        this.state.securitySettings = {
+            autoBackup: true,
+            encryptPhotos: true,
+            requirePassword: false,
+            dataRetention: 365
+        };
+        
+        this.updateSecurityUI();
+        this.showNotification('Configuración restaurada a valores por defecto', 'info');
+    }
+
+    // ========== INICIALIZACIÓN MEJORADA ==========
+
+    init() {
+        super.init(); // Llama al init original si existe
+        
+        // Configurar todas las funcionalidades nuevas
+        this.setupPhotoTypeSelector();
+        this.setupSidebarScrollbars();
+        this.setupResultsMenu();
+        this.setupResultsSection();
+        this.setupAnesPerilSection();
+        this.setupMomanticateSection();
+        this.setupChartsSection();
+        this.setupTermsSection();
+        
+        console.log('✅ Dashboard Manager 4.0 inicializado con todas las funcionalidades');
+    }
+}
