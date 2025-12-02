@@ -1,6 +1,6 @@
 /**
  * Módulo Principal del Dashboard - Seguimiento Visual Corporal
- * Versión 3.5 - Con dependencias optimizadas y mejoras de UI
+ * Versión 3.6 - Corregido y optimizado
  */
 
 class DashboardManager {
@@ -17,11 +17,11 @@ class DashboardManager {
             isLoading: false
         };
 
-        // Configuración mejorada
+        // Configuración
         this.config = {
-            maxFileSize: 10 * 1024 * 1024, // 10MB original
+            maxFileSize: 10 * 1024 * 1024, // 10MB
             maxCompressedSize: 1.5 * 1024 * 1024, // 1.5MB comprimido
-            supportedFormats: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+            supportedFormats: ['image/jpeg', 'image/png', 'image/webp'],
             compression: {
                 maxWidth: 1200,
                 maxHeight: 1200,
@@ -33,10 +33,6 @@ class DashboardManager {
             storageLimits: {
                 maxPhotos: 200,
                 maxPhotoSize: 2.5 * 1024 * 1024
-            },
-            animations: {
-                duration: 300,
-                easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
             }
         };
 
@@ -72,7 +68,6 @@ class DashboardManager {
             
             request.onerror = (event) => {
                 console.error('Error IndexedDB:', event.target.error);
-                // Fallback a localStorage para datos básicos
                 this.useLocalStorageFallback();
                 resolve();
             };
@@ -80,86 +75,33 @@ class DashboardManager {
             request.onsuccess = (event) => {
                 this.db = event.target.result;
                 this.state.dbInitialized = true;
-                
-                // Manejar conexiones cerradas
-                this.db.onclose = () => {
-                    console.warn('IndexedDB connection closed');
-                    this.state.dbInitialized = false;
-                };
-                
                 resolve();
             };
             
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
-                const oldVersion = event.oldVersion;
                 
-                // Migraciones de versión
-                if (oldVersion < 1) {
-                    // Versión 1: Estructura inicial
-                    if (!db.objectStoreNames.contains('photos')) {
-                        const photosStore = db.createObjectStore('photos', { keyPath: 'id' });
-                        photosStore.createIndex('date', 'date', { unique: false });
-                        photosStore.createIndex('type', 'type', { unique: false });
-                        photosStore.createIndex('uploadDate', 'uploadDate', { unique: false });
-                    }
-                    
-                    if (!db.objectStoreNames.contains('metrics')) {
-                        db.createObjectStore('metrics', { keyPath: 'id' });
-                    }
-                    
-                    if (!db.objectStoreNames.contains('settings')) {
-                        db.createObjectStore('settings', { keyPath: 'key' });
-                    }
+                // Crear almacenes
+                if (!db.objectStoreNames.contains('photos')) {
+                    const photosStore = db.createObjectStore('photos', { keyPath: 'id' });
+                    photosStore.createIndex('date', 'date', { unique: false });
+                    photosStore.createIndex('type', 'type', { unique: false });
+                    photosStore.createIndex('uploadDate', 'uploadDate', { unique: false });
                 }
                 
-                if (oldVersion < 2) {
-                    // Versión 2: Añadir índices adicionales
-                    const transaction = event.currentTarget.transaction;
-                    const photosStore = transaction.objectStore('photos');
-                    
-                    if (!photosStore.indexNames.contains('type_date')) {
-                        photosStore.createIndex('type_date', ['type', 'date'], { unique: false });
-                    }
+                if (!db.objectStoreNames.contains('metrics')) {
+                    db.createObjectStore('metrics', { keyPath: 'id' });
+                }
+                
+                if (!db.objectStoreNames.contains('settings')) {
+                    db.createObjectStore('settings', { keyPath: 'key' });
                 }
             };
         });
     }
 
-    useLocalStorageFallback() {
-        console.warn('Usando localStorage como fallback');
-        
-        // Cargar datos básicos de localStorage
-        try {
-            const savedData = localStorage.getItem('dashboard_fallback');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                this.state.photos = data.photos || [];
-                this.state.metrics = data.metrics || this.getDefaultMetrics();
-                this.state.isSidebarCollapsed = data.isSidebarCollapsed || false;
-            }
-        } catch (error) {
-            console.error('Error cargando fallback:', error);
-        }
-    }
-
-    saveToLocalStorageFallback() {
-        try {
-            const data = {
-                photos: this.state.photos.slice(0, 20), // Limitar para localStorage
-                metrics: this.state.metrics,
-                isSidebarCollapsed: this.state.isSidebarCollapsed,
-                timestamp: new Date().toISOString()
-            };
-            
-            localStorage.setItem('dashboard_fallback', JSON.stringify(data));
-        } catch (error) {
-            console.error('Error guardando fallback:', error);
-        }
-    }
-
     cacheElements() {
-        // Contenedores principales
+        // Seleccionar elementos del DOM
         this.elements = {
             // Dashboard Modal
             dashboardModal: document.getElementById('dashboard-modal'),
@@ -203,7 +145,7 @@ class DashboardManager {
     }
 
     setupEventListeners() {
-        // Apertura y cierre del dashboard modal
+        // Apertura y cierre del dashboard
         this.elements.openDashboardBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
             this.openDashboard();
@@ -211,13 +153,13 @@ class DashboardManager {
         
         this.elements.closeDashboardBtn?.addEventListener('click', () => this.closeDashboard());
         
-        // Atajos de teclado mejorados
+        // Atajos de teclado
         document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
 
         // Sidebar
         this.elements.menuToggle?.addEventListener('click', () => this.toggleSidebar());
         
-        // Navegación del menú
+        // Menú de navegación
         this.elements.menuItems?.forEach(item => {
             item.addEventListener('click', (e) => this.handleMenuClick(e));
         });
@@ -225,7 +167,7 @@ class DashboardManager {
         // Subida de fotos
         this.elements.uploadBtn?.addEventListener('click', () => {
             if (this.state.photos.length >= this.config.storageLimits.maxPhotos) {
-                this.showNotification(`<i class="fas fa-exclamation-triangle"></i> Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado`, 'warning');
+                this.showNotification(`Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado`, 'warning');
                 return;
             }
             this.elements.fileInput?.click();
@@ -233,7 +175,7 @@ class DashboardManager {
         
         this.elements.fileInput?.addEventListener('change', (e) => this.handleFileUpload(e));
         
-        // Drag and drop mejorado
+        // Drag and drop
         this.setupDragAndDrop();
         
         // Guardar dashboard
@@ -247,6 +189,74 @@ class DashboardManager {
         
         // Inicializar fecha
         this.setupDateInput();
+    }
+
+    setupInitialState() {
+        // Estado inicial del sidebar
+        if (this.state.isSidebarCollapsed && this.elements.sidebar) {
+            this.elements.sidebar.classList.add('collapsed');
+        }
+        
+        // Inicializar drop zone
+        if (this.elements.dropZone) {
+            this.elements.dropZone.classList.remove('hidden');
+        }
+    }
+
+    setupDateInput() {
+        if (this.elements.photoDateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            this.elements.photoDateInput.value = today;
+            this.elements.photoDateInput.max = today;
+            this.elements.photoDateInput.min = '2000-01-01';
+        }
+    }
+
+    setupDragAndDrop() {
+        const dropZone = this.elements.dropZone;
+        if (!dropZone) return;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('drag-over');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('drag-over');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', async (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                await this.handleFileUpload({ target: { files } });
+            }
+        }, false);
+    }
+
+    setupModalCloseListeners() {
+        // Dashboard modal
+        this.elements.dashboardModal?.addEventListener('click', (e) => {
+            if (e.target === this.elements.dashboardModal) {
+                this.closeDashboard();
+            }
+        });
+        
+        // Photo modal
+        this.elements.photoModal?.addEventListener('click', (e) => {
+            if (e.target === this.elements.photoModal) {
+                this.closePhotoModal();
+            }
+        });
     }
 
     handleKeyboardShortcuts(e) {
@@ -270,130 +280,20 @@ class DashboardManager {
                 this.closeDashboard();
             }
         }
-        
-        // Navegación con flechas en el modal de foto
-        if (this.state.isPhotoModalOpen && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-            this.navigatePhotoModal(e.key);
-        }
     }
 
-    setupModalCloseListeners() {
-        // Dashboard modal
-        this.elements.dashboardModal?.addEventListener('click', (e) => {
-            if (e.target === this.elements.dashboardModal) {
-                this.closeDashboard();
-            }
-        });
+    handleMenuClick(event) {
+        const menuItem = event.currentTarget;
+        const view = menuItem.dataset.view;
         
-        // Photo modal
-        this.elements.photoModal?.addEventListener('click', (e) => {
-            if (e.target === this.elements.photoModal) {
-                this.closePhotoModal();
-            }
-        });
-    }
-
-    setupDateInput() {
-        if (this.elements.photoDateInput) {
-            const today = new Date().toISOString().split('T')[0];
-            this.elements.photoDateInput.value = today;
-            this.elements.photoDateInput.max = today;
-            this.elements.photoDateInput.min = '2000-01-01';
-            
-            // Añadir estilos de Bootstrap
-            this.elements.photoDateInput.classList.add('form-control');
-        }
-    }
-
-    setupDragAndDrop() {
-        const dropZone = this.elements.dropZone;
-        if (!dropZone) return;
-
-        // Eventos de drag and drop mejorados
-        const dragEvents = ['dragenter', 'dragover', 'dragleave', 'drop'];
+        if (!view) return;
         
-        dragEvents.forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            }, false);
-        });
-
-        // Resaltar zona
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => {
-                dropZone.classList.add('drag-over');
-                dropZone.innerHTML = '<i class="fas fa-cloud-upload-alt fa-2x"></i><br>Suelta la imagen aquí';
-            }, false);
-        });
-
-        // Quitar resaltado
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => {
-                dropZone.classList.remove('drag-over');
-                dropZone.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Arrastra y suelta la imagen aquí';
-            }, false);
-        });
-
-        // Manejar drop
-        dropZone.addEventListener('drop', async (e) => {
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                if (this.state.photos.length >= this.config.storageLimits.maxPhotos) {
-                    this.showNotification(`<i class="fas fa-exclamation-triangle"></i> Límite de ${this.config.storageLimits.maxPhotos} fotos alcanzado`, 'warning');
-                    return;
-                }
-                await this.handleFileUpload({ target: { files } });
-            }
-        }, false);
-    }
-
-    async loadAllData() {
-        this.showLoading(true);
+        // Actualizar UI
+        this.elements.menuItems?.forEach(item => item.classList.remove('active'));
+        menuItem.classList.add('active');
         
-        try {
-            if (this.state.dbInitialized) {
-                // Cargar desde IndexedDB
-                this.state.photos = await this.getAllPhotos();
-                const savedMetrics = await this.getFromDB('metrics', 'dashboard');
-                this.state.metrics = savedMetrics || this.getDefaultMetrics();
-                
-                const settings = await this.getFromDB('settings', 'sidebar');
-                if (settings) {
-                    this.state.isSidebarCollapsed = settings.collapsed || false;
-                }
-            }
-            
-            console.log(`📸 ${this.state.photos.length} fotos cargadas`);
-            
-            // Actualizar métricas iniciales
-            this.updateMetrics();
-            
-        } catch (error) {
-            console.error('Error cargando datos:', error);
-            this.showNotification('<i class="fas fa-exclamation-circle"></i> Error al cargar datos guardados', 'error');
-        } finally {
-            this.showLoading(false);
-        }
-    }
-
-    showLoading(show) {
-        this.state.isLoading = show;
-        
-        if (this.elements.loadingIndicator) {
-            if (show) {
-                this.elements.loadingIndicator.classList.remove('hidden');
-            } else {
-                this.elements.loadingIndicator.classList.add('hidden');
-            }
-        }
-        
-        // También mostrar/ocultar en el dashboard
-        const dashboardContent = document.querySelector('.dashboard-content');
-        if (dashboardContent) {
-            dashboardContent.style.opacity = show ? '0.5' : '1';
-            dashboardContent.style.pointerEvents = show ? 'none' : 'auto';
-        }
+        // Mostrar sección
+        this.renderView(view);
     }
 
     async handleFileUpload(event) {
@@ -404,19 +304,13 @@ class DashboardManager {
         
         // Validar archivo
         if (!this.validateFile(file)) {
-            this.showNotification(
-                '<i class="fas fa-file-image"></i> Formato no válido. Solo imágenes JPG, PNG, WebP hasta 10MB.', 
-                'error'
-            );
+            this.showNotification('Formato no válido. Solo imágenes JPG, PNG, WebP hasta 10MB.', 'error');
             return;
         }
 
         // Validar fecha
         if (!this.elements.photoDateInput?.value) {
-            this.showNotification(
-                '<i class="fas fa-calendar-alt"></i> Selecciona una fecha de toma', 
-                'warning'
-            );
+            this.showNotification('Selecciona una fecha de toma', 'warning');
             return;
         }
 
@@ -429,10 +323,7 @@ class DashboardManager {
             
             // Validar tamaño después de compresión
             if (imageData.size > this.config.storageLimits.maxPhotoSize) {
-                this.showNotification(
-                    '<i class="fas fa-weight-hanging"></i> La imagen es demasiado grande', 
-                    'error'
-                );
+                this.showNotification('La imagen es demasiado grande después de compresión', 'error');
                 return;
             }
 
@@ -472,11 +363,7 @@ class DashboardManager {
             this.setupCharts();
             
             // Mostrar notificación de éxito
-            this.showNotification(
-                `<i class="fas fa-check-circle"></i> Foto subida correctamente<br>
-                 <small>${file.name} (${this.formatBytes(imageData.size)})</small>`, 
-                'success'
-            );
+            this.showNotification('Foto subida correctamente', 'success');
             
             // Resetear formulario
             event.target.value = '';
@@ -488,44 +375,8 @@ class DashboardManager {
             
         } catch (error) {
             console.error('Error al procesar la imagen:', error);
-            this.showNotification(
-                `<i class="fas fa-times-circle"></i> Error al procesar la imagen<br>
-                 <small>${error.message}</small>`, 
-                'error'
-            );
+            this.showNotification('Error al procesar la imagen: ' + error.message, 'error');
             this.hideUploadProgress();
-        }
-    }
-
-    showUploadProgress(percent, message = '') {
-        if (this.elements.uploadProgress) {
-            const progressBar = this.elements.uploadProgress.querySelector('.progress-bar');
-            const progressText = this.elements.uploadProgress.querySelector('.progress-text');
-            
-            if (progressBar) {
-                progressBar.style.width = `${percent}%`;
-                progressBar.setAttribute('aria-valuenow', percent);
-                
-                if (percent >= 100) {
-                    progressBar.classList.remove('bg-primary');
-                    progressBar.classList.add('bg-success');
-                } else {
-                    progressBar.classList.remove('bg-success');
-                    progressBar.classList.add('bg-primary');
-                }
-            }
-            
-            if (progressText) {
-                progressText.textContent = message;
-            }
-            
-            this.elements.uploadProgress.classList.remove('hidden');
-        }
-    }
-
-    hideUploadProgress() {
-        if (this.elements.uploadProgress) {
-            this.elements.uploadProgress.classList.add('hidden');
         }
     }
 
@@ -536,11 +387,10 @@ class DashboardManager {
             reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
-                    // Calcular nuevas dimensiones
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // Calcular tamaño manteniendo aspect ratio
+                    // Calcular nuevas dimensiones manteniendo aspect ratio
                     let { width, height } = this.calculateAspectRatioFit(
                         img.width, 
                         img.height, 
@@ -563,7 +413,7 @@ class DashboardManager {
                                     image: e.target.result,
                                     size: blob.size,
                                     dimensions: { width, height },
-                                    filename: file.name.replace(/\.[^/.]+$/, ""), // Remover extensión
+                                    filename: file.name.replace(/\.[^/.]+$/, ""),
                                     originalSize: file.size,
                                     compressionRatio: ((file.size - blob.size) / file.size * 100).toFixed(1),
                                     aspectRatio: (width / height).toFixed(2)
@@ -594,12 +444,10 @@ class DashboardManager {
     }
 
     validateFile(file) {
-        // Validar formato
         if (!this.config.supportedFormats.includes(file.type)) {
             return false;
         }
 
-        // Validar tamaño
         if (file.size > this.config.maxFileSize) {
             return false;
         }
@@ -609,11 +457,148 @@ class DashboardManager {
 
     getTypeName(type) {
         const types = {
-            'frontal': '<i class="fas fa-user"></i> Frontal Relajado',
-            'perfil': '<i class="fas fa-user-circle"></i> Perfil',
-            'espalda': '<i class="fas fa-user-md"></i> Espalda'
+            'frontal': 'Frontal Relajado',
+            'perfil': 'Perfil',
+            'espalda': 'Espalda'
         };
         return types[type] || 'Desconocido';
+    }
+
+    showUploadProgress(percent, message = '') {
+        if (this.elements.uploadProgress) {
+            const progressBar = this.elements.uploadProgress.querySelector('.progress-bar');
+            const progressText = this.elements.uploadProgress.querySelector('.progress-text');
+            
+            if (progressBar) {
+                progressBar.style.width = `${percent}%`;
+                progressBar.setAttribute('aria-valuenow', percent);
+            }
+            
+            if (progressText) {
+                progressText.textContent = message;
+            }
+            
+            this.elements.uploadProgress.classList.remove('hidden');
+        }
+    }
+
+    hideUploadProgress() {
+        if (this.elements.uploadProgress) {
+            this.elements.uploadProgress.classList.add('hidden');
+        }
+    }
+
+    showLoading(show) {
+        this.state.isLoading = show;
+        
+        if (this.elements.loadingIndicator) {
+            if (show) {
+                this.elements.loadingIndicator.classList.remove('hidden');
+            } else {
+                this.elements.loadingIndicator.classList.add('hidden');
+            }
+        }
+    }
+
+    async loadAllData() {
+        this.showLoading(true);
+        
+        try {
+            if (this.state.dbInitialized) {
+                // Cargar desde IndexedDB
+                this.state.photos = await this.getAllPhotos();
+                const savedMetrics = await this.getFromDB('metrics', 'dashboard');
+                this.state.metrics = savedMetrics || this.getDefaultMetrics();
+                
+                const settings = await this.getFromDB('settings', 'sidebar');
+                if (settings) {
+                    this.state.isSidebarCollapsed = settings.collapsed || false;
+                }
+            }
+            
+            console.log(`📸 ${this.state.photos.length} fotos cargadas`);
+            
+            // Actualizar métricas
+            this.updateMetrics();
+            
+        } catch (error) {
+            console.error('Error cargando datos:', error);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    useLocalStorageFallback() {
+        console.warn('Usando localStorage como fallback');
+        
+        try {
+            const savedData = localStorage.getItem('dashboard_fallback');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                this.state.photos = data.photos || [];
+                this.state.metrics = data.metrics || this.getDefaultMetrics();
+                this.state.isSidebarCollapsed = data.isSidebarCollapsed || false;
+            }
+        } catch (error) {
+            console.error('Error cargando fallback:', error);
+        }
+    }
+
+    async getAllPhotos() {
+        if (!this.state.dbInitialized) return this.state.photos;
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['photos'], 'readonly');
+            const store = transaction.objectStore('photos');
+            const request = store.getAll();
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                const photos = request.result.sort((a, b) => 
+                    new Date(b.uploadDate) - new Date(a.uploadDate)
+                );
+                resolve(photos);
+            };
+        });
+    }
+
+    async saveToDB(storeName, data) {
+        if (!this.state.dbInitialized) return;
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            const request = store.put(data);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result);
+        });
+    }
+
+    async getFromDB(storeName, key) {
+        if (!this.state.dbInitialized) return null;
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([storeName], 'readonly');
+            const store = transaction.objectStore(storeName);
+            const request = store.get(key);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result?.value || request.result);
+        });
+    }
+
+    async deleteFromDB(storeName, key) {
+        if (!this.state.dbInitialized) return;
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            const request = store.delete(key);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve();
+        });
     }
 
     updateMetrics() {
@@ -667,165 +652,35 @@ class DashboardManager {
         };
     }
 
-    // Métodos IndexedDB
-    async getAllPhotos() {
-        if (!this.state.dbInitialized) {
-            console.warn('IndexedDB no inicializado, usando datos locales');
-            return this.state.photos;
-        }
-
-        try {
-            const transaction = this.db.transaction(['photos'], 'readonly');
-            const store = transaction.objectStore('photos');
-            const index = store.index('uploadDate');
-            const request = index.getAll();
-            
-            return new Promise((resolve, reject) => {
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => {
-                    const photos = request.result.sort((a, b) => 
-                        new Date(b.uploadDate) - new Date(a.uploadDate)
-                    );
-                    resolve(photos);
-                };
-            });
-        } catch (error) {
-            console.error('Error obteniendo fotos:', error);
-            return [];
-        }
+    calculateTotalSize() {
+        return this.state.photos.reduce((total, photo) => total + (photo.size || 0), 0);
     }
 
-    async saveToDB(storeName, data) {
-        if (!this.state.dbInitialized) {
-            // Fallback a localStorage
-            this.saveToLocalStorageFallback();
-            return;
-        }
-
-        try {
-            const transaction = this.db.transaction([storeName], 'readwrite');
-            const store = transaction.objectStore(storeName);
-            const request = store.put(data);
-            
-            return new Promise((resolve, reject) => {
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-            });
-        } catch (error) {
-            console.error('Error guardando en IndexedDB:', error);
-            throw error;
-        }
-    }
-
-    async getFromDB(storeName, key) {
-        if (!this.state.dbInitialized) {
-            return null;
-        }
-
-        try {
-            const transaction = this.db.transaction([storeName], 'readonly');
-            const store = transaction.objectStore(storeName);
-            const request = store.get(key);
-            
-            return new Promise((resolve, reject) => {
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result?.value || request.result);
-            });
-        } catch (error) {
-            console.error('Error obteniendo de IndexedDB:', error);
-            return null;
-        }
-    }
-
-    async deleteFromDB(storeName, key) {
-        if (!this.state.dbInitialized) return;
-
-        try {
-            const transaction = this.db.transaction([storeName], 'readwrite');
-            const store = transaction.objectStore(storeName);
-            const request = store.delete(key);
-            
-            return new Promise((resolve, reject) => {
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve();
-            });
-        } catch (error) {
-            console.error('Error eliminando de IndexedDB:', error);
-            throw error;
-        }
+    calculateAverageSize() {
+        return this.state.photos.length > 0 ? 
+            this.calculateTotalSize() / this.state.photos.length : 0;
     }
 
     openDashboard() {
         if (!this.elements.dashboardModal) return;
         
-        // Animación de entrada
         this.elements.dashboardModal.classList.remove('hidden');
         this.state.isDashboardOpen = true;
         document.body.style.overflow = 'hidden';
         
-        // Añadir clase de Bootstrap para backdrop
-        document.body.classList.add('modal-open');
-        
-        // Animar entrada
-        setTimeout(() => {
-            if (this.elements.dashboardContainer) {
-                this.elements.dashboardContainer.style.transform = 'scale(1)';
-                this.elements.dashboardContainer.style.opacity = '1';
-            }
-        }, 10);
-        
         // Renderizar contenido
         this.renderDashboard();
-        
-        console.log('📊 Dashboard abierto');
     }
 
     closeDashboard() {
         if (!this.elements.dashboardModal) return;
         
-        // Animación de salida
-        if (this.elements.dashboardContainer) {
-            this.elements.dashboardContainer.style.transform = 'scale(0.95)';
-            this.elements.dashboardContainer.style.opacity = '0';
-        }
+        this.elements.dashboardModal.classList.add('hidden');
+        this.state.isDashboardOpen = false;
+        document.body.style.overflow = '';
         
-        setTimeout(() => {
-            this.elements.dashboardModal.classList.add('hidden');
-            this.state.isDashboardOpen = false;
-            document.body.style.overflow = '';
-            document.body.classList.remove('modal-open');
-            
-            // Guardar configuración
-            this.saveSettings();
-            
-            // Resetear animación
-            if (this.elements.dashboardContainer) {
-                this.elements.dashboardContainer.style.transform = '';
-                this.elements.dashboardContainer.style.opacity = '';
-            }
-        }, this.config.animations.duration);
-        
-        console.log('📊 Dashboard cerrado');
-    }
-
-    async saveSettings() {
-        try {
-            if (this.state.dbInitialized) {
-                await this.saveToDB('settings', {
-                    key: 'sidebar',
-                    value: { collapsed: this.state.isSidebarCollapsed }
-                });
-                
-                await this.saveToDB('metrics', {
-                    id: 'dashboard',
-                    value: this.state.metrics
-                });
-            } else {
-                this.saveToLocalStorageFallback();
-            }
-        } catch (error) {
-            console.error('Error guardando configuración:', error);
-        }
+        // Guardar cambios
+        this.saveSettings();
     }
 
     toggleSidebar() {
@@ -833,53 +688,19 @@ class DashboardManager {
         
         this.elements.sidebar.classList.toggle('collapsed');
         this.state.isSidebarCollapsed = this.elements.sidebar.classList.contains('collapsed');
-        
-        // Guardar preferencia
         this.saveToDB('settings', {
             key: 'sidebar',
             value: { collapsed: this.state.isSidebarCollapsed }
         });
-        
-        this.showNotification(
-            `<i class="fas fa-bars"></i> Sidebar ${this.state.isSidebarCollapsed ? 'contraída' : 'expandida'}`,
-            'info'
-        );
-    }
-
-    handleMenuClick(event) {
-        const menuItem = event.currentTarget;
-        const view = menuItem.dataset.view;
-        
-        if (!view) return;
-        
-        // Actualizar UI
-        this.elements.menuItems?.forEach(item => item.classList.remove('active'));
-        menuItem.classList.add('active');
-        
-        // Mostrar sección
-        this.renderView(view);
-        
-        this.showNotification(
-            `<i class="fas fa-eye"></i> Vista cambiada a: ${view}`,
-            'info'
-        );
     }
 
     renderView(view) {
-        // Ocultar todas las secciones
         const sections = document.querySelectorAll('.section');
         sections.forEach(section => section.classList.remove('active-view'));
         
-        // Mostrar sección activa
         const activeSection = document.querySelector(`.${view}-section`);
         if (activeSection) {
             activeSection.classList.add('active-view');
-            
-            // Scroll suave a la sección
-            activeSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
         }
     }
 
@@ -915,7 +736,6 @@ class DashboardManager {
             return;
         }
 
-        // Mostrar las últimas 6 fotos frontales
         const recentPhotos = frontalPhotos.slice(0, 6);
         
         this.elements.frontalGrid.innerHTML = recentPhotos.map((photo, index) => {
@@ -967,29 +787,25 @@ class DashboardManager {
                 name: '<i class="fas fa-weight"></i> Masa Grasa', 
                 initial: '28%', 
                 current: `${(this.state.metrics.progress?.masaGrasa || 28).toFixed(1)}%`, 
-                trend: 'down',
-                icon: 'fas fa-chart-line-down'
+                trend: 'down'
             },
             { 
                 name: '<i class="fas fa-dumbbell"></i> Masa Muscular', 
                 initial: '35 kg', 
                 current: `${(this.state.metrics.progress?.masaMuscular || 35).toFixed(1)} kg`, 
-                trend: 'up',
-                icon: 'fas fa-chart-line-up'
+                trend: 'up'
             },
             { 
                 name: '<i class="fas fa-ruler"></i> Sumatorio Pliegues', 
                 initial: '120 mm', 
                 current: `${(this.state.metrics.progress?.sumatorioPliegues || 120).toFixed(0)} mm`, 
-                trend: 'down',
-                icon: 'fas fa-chart-line-down'
+                trend: 'down'
             },
             { 
                 name: '<i class="fas fa-trophy"></i> Progreso Total', 
                 initial: '0%', 
                 current: `${(this.state.metrics.progress?.progressScore || 0).toFixed(0)}%`, 
-                trend: 'up',
-                icon: 'fas fa-chart-line-up'
+                trend: 'up'
             }
         ];
 
@@ -1032,12 +848,10 @@ class DashboardManager {
     }
 
     updateStorageStats() {
-        // Actualizar información de almacenamiento
         const totalSize = this.calculateTotalSize();
         const avgSize = this.calculateAverageSize();
         const remaining = this.config.storageLimits.maxPhotos - this.state.photos.length;
         
-        // Actualizar elementos de estadísticas
         const statsContainer = document.querySelector('.storage-stats');
         if (statsContainer) {
             statsContainer.innerHTML = `
@@ -1192,7 +1006,6 @@ class DashboardManager {
         const photo = this.state.photos.find(p => p.id === photoId);
         if (!photo) return;
 
-        // Actualizar modal
         this.elements.photoModalTitle.innerHTML = `
             <i class="fas fa-camera"></i> ${photo.typeName} 
             <small class="text-muted">- ${this.formatDate(photo.date)}</small>
@@ -1200,7 +1013,7 @@ class DashboardManager {
         
         this.elements.photoModalImage.src = photo.image;
         this.elements.photoModalImage.alt = `Foto ${photo.typeName}`;
-        this.elements.photoModalType.innerHTML = photo.typeName;
+        this.elements.photoModalType.textContent = photo.typeName;
         this.elements.photoModalDate.textContent = this.formatDate(photo.date);
         this.elements.photoModalDimensions.innerHTML = `
             <i class="fas fa-expand-alt"></i> ${photo.dimensions?.width || '?'} × ${photo.dimensions?.height || '?'} px
@@ -1209,68 +1022,9 @@ class DashboardManager {
             ${photo.compressionRatio ? `<br><i class="fas fa-compress-arrows-alt"></i> Comprimido: ${photo.compressionRatio}%` : ''}
         `;
 
-        // Añadir botones de navegación
-        this.addPhotoModalNavigation(photoId);
-
-        // Mostrar modal
         this.elements.photoModal.classList.remove('hidden');
         this.state.isPhotoModalOpen = true;
         document.body.style.overflow = 'hidden';
-    }
-
-    addPhotoModalNavigation(currentPhotoId) {
-        const modalBody = this.elements.photoModal.querySelector('.modal-body');
-        const existingNav = modalBody.querySelector('.photo-navigation');
-        if (existingNav) existingNav.remove();
-
-        const currentIndex = this.state.photos.findIndex(p => p.id === currentPhotoId);
-        if (currentIndex === -1) return;
-
-        const navHtml = `
-            <div class="photo-navigation d-flex justify-content-between align-items-center mt-3">
-                <button class="btn btn-outline-primary" onclick="dashboardManager.navigatePhoto('prev', ${currentPhotoId})" 
-                        ${currentIndex >= this.state.photos.length - 1 ? 'disabled' : ''}>
-                    <i class="fas fa-chevron-left"></i> Anterior
-                </button>
-                <span class="text-muted">${currentIndex + 1} de ${this.state.photos.length}</span>
-                <button class="btn btn-outline-primary" onclick="dashboardManager.navigatePhoto('next', ${currentPhotoId})" 
-                        ${currentIndex <= 0 ? 'disabled' : ''}>
-                    Siguiente <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        `;
-
-        modalBody.insertAdjacentHTML('beforeend', navHtml);
-    }
-
-    navigatePhoto(direction, currentPhotoId) {
-        const currentIndex = this.state.photos.findIndex(p => p.id === currentPhotoId);
-        if (currentIndex === -1) return;
-
-        let newIndex;
-        if (direction === 'prev' && currentIndex < this.state.photos.length - 1) {
-            newIndex = currentIndex + 1;
-        } else if (direction === 'next' && currentIndex > 0) {
-            newIndex = currentIndex - 1;
-        } else {
-            return;
-        }
-
-        this.viewPhoto(this.state.photos[newIndex].id);
-    }
-
-    navigatePhotoModal(key) {
-        const currentPhotoId = this.state.photos.find(p => 
-            p.image === this.elements.photoModalImage.src
-        )?.id;
-        
-        if (!currentPhotoId) return;
-
-        if (key === 'ArrowLeft') {
-            this.navigatePhoto('prev', currentPhotoId);
-        } else if (key === 'ArrowRight') {
-            this.navigatePhoto('next', currentPhotoId);
-        }
     }
 
     closePhotoModal() {
@@ -1302,18 +1056,11 @@ class DashboardManager {
             this.setupCharts();
             
             // Mostrar notificación
-            this.showNotification(
-                `<i class="fas fa-trash"></i> Foto eliminada<br>
-                 <small>${deletedPhoto?.typeName} del ${this.formatDate(deletedPhoto?.date)}</small>`,
-                'success'
-            );
+            this.showNotification('Foto eliminada correctamente', 'success');
             
         } catch (error) {
             console.error('Error al eliminar la foto:', error);
-            this.showNotification(
-                '<i class="fas fa-times-circle"></i> Error al eliminar la foto',
-                'error'
-            );
+            this.showNotification('Error al eliminar la foto', 'error');
         }
     }
 
@@ -1334,10 +1081,21 @@ class DashboardManager {
             }, 2000);
         }
         
-        this.showNotification(
-            '<i class="fas fa-save"></i> Dashboard guardado correctamente',
-            'success'
-        );
+        this.showNotification('Dashboard guardado correctamente', 'success');
+    }
+
+    saveSettings() {
+        if (this.state.dbInitialized) {
+            this.saveToDB('settings', {
+                key: 'sidebar',
+                value: { collapsed: this.state.isSidebarCollapsed }
+            });
+            
+            this.saveToDB('metrics', {
+                id: 'dashboard',
+                value: this.state.metrics
+            });
+        }
     }
 
     formatDate(dateString) {
@@ -1360,7 +1118,6 @@ class DashboardManager {
         // Eliminar notificaciones antiguas
         document.querySelectorAll('.notification').forEach(n => n.remove());
 
-        // Iconos por tipo
         const icons = {
             success: 'fas fa-check-circle',
             error: 'fas fa-times-circle',
@@ -1368,7 +1125,6 @@ class DashboardManager {
             info: 'fas fa-info-circle'
         };
 
-        // Crear notificación con Bootstrap
         const notification = document.createElement('div');
         notification.className = `notification alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
         notification.style.cssText = `
@@ -1379,7 +1135,6 @@ class DashboardManager {
             min-width: 300px;
             max-width: 400px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            animation: slideInRight 0.3s ease;
         `;
         
         notification.innerHTML = `
@@ -1390,10 +1145,8 @@ class DashboardManager {
             </div>
         `;
 
-        // Añadir al documento
         document.body.appendChild(notification);
 
-        // Auto-remover
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.classList.remove('show');
@@ -1422,144 +1175,6 @@ class DashboardManager {
             lastUpdated: new Date().toISOString()
         };
     }
-
-    // Métodos públicos
-    getStats() {
-        return {
-            totalPhotos: this.state.photos.length,
-            lastUpload: this.state.photos[0] ? this.formatDate(this.state.photos[0].date) : 'Nunca',
-            progress: this.state.metrics.progress?.progressScore || 0,
-            storage: {
-                totalSize: this.formatBytes(this.calculateTotalSize()),
-                averageSize: this.formatBytes(this.calculateAverageSize()),
-                photosCount: this.state.photos.length
-            }
-        };
-    }
-
-    calculateTotalSize() {
-        return this.state.photos.reduce((total, photo) => total + (photo.size || 0), 0);
-    }
-
-    calculateAverageSize() {
-        return this.state.photos.length > 0 ? 
-            this.calculateTotalSize() / this.state.photos.length : 0;
-    }
-
-    // Método para exportar datos usando SheetJS
-    exportToExcel() {
-        try {
-            // Preparar datos
-            const data = [
-                ['Fecha', 'Tipo', 'Tamaño', 'Dimensiones', 'Compresión'],
-                ...this.state.photos.map(photo => [
-                    this.formatDate(photo.date),
-                    photo.typeName.replace(/<[^>]*>/g, ''),
-                    this.formatBytes(photo.size),
-                    `${photo.dimensions?.width || '?'}x${photo.dimensions?.height || '?'}`,
-                    photo.compressionRatio ? `${photo.compressionRatio}%` : 'N/A'
-                ])
-            ];
-
-            // Crear workbook
-            const ws = XLSX.utils.aoa_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Fotos');
-
-            // Exportar
-            const fileName = `dashboard-fotos-${new Date().toISOString().split('T')[0]}.xlsx`;
-            XLSX.writeFile(wb, fileName);
-
-            this.showNotification(
-                '<i class="fas fa-file-excel"></i> Datos exportados a Excel',
-                'success'
-            );
-
-        } catch (error) {
-            console.error('Error exportando a Excel:', error);
-            this.showNotification(
-                '<i class="fas fa-times-circle"></i> Error al exportar datos',
-                'error'
-            );
-        }
-    }
-
-    // Método para capturar dashboard como imagen usando html2canvas
-    captureDashboard() {
-        const dashboard = document.querySelector('.dashboard-container');
-        if (!dashboard) return;
-
-        this.showNotification(
-            '<i class="fas fa-camera"></i> Capturando dashboard...',
-            'info'
-        );
-
-        html2canvas(dashboard, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: null
-        }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `dashboard-captura-${new Date().toISOString().split('T')[0]}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-
-            this.showNotification(
-                '<i class="fas fa-check-circle"></i> Captura guardada',
-                'success'
-            );
-        }).catch(error => {
-            console.error('Error capturando dashboard:', error);
-            this.showNotification(
-                '<i class="fas fa-times-circle"></i> Error al capturar',
-                'error'
-            );
-        });
-    }
-
-    // Método para limpiar datos
-    async clearAllData() {
-        if (!confirm('⚠️ ¿ESTÁS SEGURO?\n\nEsta acción eliminará TODAS las fotos y datos del dashboard.\n\nEsta acción NO se puede deshacer.')) {
-            return;
-        }
-
-        try {
-            this.showLoading(true);
-
-            if (this.state.dbInitialized) {
-                const transaction = this.db.transaction(['photos', 'metrics', 'settings'], 'readwrite');
-                transaction.objectStore('photos').clear();
-                transaction.objectStore('metrics').clear();
-                transaction.objectStore('settings').clear();
-            }
-
-            // Resetear estado
-            this.state.photos = [];
-            this.state.metrics = this.getDefaultMetrics();
-            this.state.isSidebarCollapsed = false;
-
-            // Limpiar localStorage
-            localStorage.removeItem('dashboard_fallback');
-
-            // Renderizar estado vacío
-            this.renderDashboard();
-            this.setupCharts();
-
-            this.showNotification(
-                '<i class="fas fa-broom"></i> Todos los datos han sido eliminados',
-                'success'
-            );
-
-        } catch (error) {
-            console.error('Error al limpiar datos:', error);
-            this.showNotification(
-                '<i class="fas fa-times-circle"></i> Error al eliminar datos',
-                'error'
-            );
-        } finally {
-            this.showLoading(false);
-        }
-    }
 }
 
 // Inicialización global
@@ -1569,39 +1184,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         dashboardManager = new DashboardManager();
         window.dashboardManager = dashboardManager;
-
-        // Hacer métodos disponibles globalmente
-        window.openDashboard = () => dashboardManager.openDashboard();
-        window.closeDashboard = () => dashboardManager.closeDashboard();
-        window.saveDashboard = () => dashboardManager.saveDashboard();
-        window.exportToExcel = () => dashboardManager.exportToExcel();
-        window.captureDashboard = () => dashboardManager.captureDashboard();
-        window.clearAllData = () => dashboardManager.clearAllData();
-
-        console.log('🚀 Dashboard Manager 3.5 inicializado con éxito');
-
-    } catch (error) {
-        console.error('Error crítico al inicializar Dashboard Manager:', error);
         
-        // Mostrar error crítico
-        const errorAlert = document.createElement('div');
-        errorAlert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
-        errorAlert.style.cssText = `
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 99999;
-            max-width: 500px;
-        `;
-        errorAlert.innerHTML = `
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            <h4><i class="fas fa-exclamation-triangle"></i> Error Crítico</h4>
-            <p>No se pudo inicializar el Dashboard de Seguimiento.</p>
-            <p><small>${error.message}</small></p>
-            <button class="btn btn-sm btn-outline-danger mt-2" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Recargar página
-            </button>
-        `;
-        document.body.appendChild(errorAlert);
+        console.log('🚀 Dashboard Manager 3.6 inicializado');
+        
+    } catch (error) {
+        console.error('Error al inicializar Dashboard Manager:', error);
     }
 });
