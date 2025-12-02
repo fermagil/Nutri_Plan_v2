@@ -1431,8 +1431,11 @@ document.addEventListener('DOMContentLoaded', () => {
         window.exportToExcel = () => dashboardManager.exportToExcel();
         window.captureDashboard = () => dashboardManager.captureDashboard();
         window.clearAllData = () => dashboardManager.clearAllData();
-
-        console.log('🚀 Dashboard Manager 3.6 inicializado con éxito');
+		window.showPhotosView = () => dashboardManager.showPhotosView();
+    	window.showNegotiateView = () => dashboardManager.showNegotiateView();
+    	window.showSecurityView = () => dashboardManager.showSecurityView();
+       
+		console.log('🚀 Dashboard Manager 3.6 inicializado con éxito y con todas las funcionalidades');
 
     } catch (error) {
         console.error('Error crítico al inicializar Dashboard Manager:', error);
