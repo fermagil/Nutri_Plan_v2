@@ -3485,6 +3485,27 @@ body {
     </div>
 </div>
 
+<div id="loading-indicator" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <div class="mt-3">Cargando datos...</div>
+</div>
+
+<!-- Upload progress (DEBE estar al final del body, NO dentro del modal) -->
+<div id="upload-progress" class="upload-progress hidden">
+    <div class="card shadow-lg">
+        <div class="card-body text-center">
+            <h5 class="card-title"><i class="fas fa-upload"></i> Subiendo foto...</h5>
+            <div class="progress mt-3" style="height: 20px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                     role="progressbar" 
+                     style="width: 0%"></div>
+            </div>
+            <div class="progress-text text-center mt-2 text-muted"></div>
+        </div>
+    </div>
+
+
+
 
 
 <!-- Modal del Dashboard -->
@@ -3493,13 +3514,21 @@ body {
         <!-- Header -->
         <header class="dashboard-header">
             <div class="header-title-section">
-                <button class="menu-toggle" id="menu-toggle" title="Alternar sidebar">☰</button>
-                <h1>SEGUIMIENTO VISUAL COMPOSICIÓN CORPORAL</h1>
+                <button class="menu-toggle" id="menu-toggle" title="Alternar sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1><i class="fas fa-chart-line"></i> SEGUIMIENTO VISUAL COMPOSICIÓN CORPORAL</h1>
             </div>
             <div class="header-controls">
-                <button class="icon-btn" title="Temporizador">⏱️</button>
-                <button class="icon-btn" title="Perfil">👤</button>
-                <button class="icon-btn close-btn" id="btn-close-dashboard" title="Cerrar dashboard">×</button>
+                <button class="icon-btn" title="Temporizador">
+                    <i class="fas fa-stopwatch"></i>
+                </button>
+                <button class="icon-btn" title="Perfil">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-btn close-btn" id="btn-close-dashboard" title="Cerrar dashboard">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         </header>
 
@@ -3509,13 +3538,17 @@ body {
                 <!-- Sección VALORACIÓN -->
                 <div class="card valuation-card">
                     <div class="card-header">
-                        <h2 class="card-title">VALORACIÓN</h2>
+                        <h2 class="card-title"><i class="fas fa-clipboard-check"></i> VALORACIÓN</h2>
                     </div>
                     <div class="card-body">
-                        <p class="card-subtitle">Vesíolas antropométricas</p>
+                        <p class="card-subtitle text-muted">
+                            <i class="fas fa-ruler-combined"></i> Vesíolas antropométricas
+                        </p>
                         
-                        <div class="form-group">
-                            <label for="photo-type" class="form-label">Tipo para Fotos</label>
+                        <div class="form-group mb-3">
+                            <label for="photo-type" class="form-label">
+                                <i class="fas fa-camera"></i> Tipo para Fotos
+                            </label>
                             <select id="photo-type" class="form-select">
                                 <option value="frontal">Frontal Relajado</option>
                                 <option value="perfil">Perfil</option>
@@ -3523,46 +3556,59 @@ body {
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="photo-date" class="form-label">Fecha de Toma</label>
-                            <input type="date" id="photo-date" class="form-input" value="">
+                        <div class="form-group mb-3">
+                            <label for="photo-date" class="form-label">
+                                <i class="fas fa-calendar-alt"></i> Fecha de Toma
+                            </label>
+                            <input type="date" id="photo-date" class="form-input form-control" value="">
                         </div>
                         
-                        <button id="btn-trigger-upload" class="btn-primary btn-upload">
-                            <span class="btn-icon">↑</span>
+                        <button id="btn-trigger-upload" class="btn-primary btn-upload w-100">
+                            <i class="fas fa-cloud-upload-alt btn-icon"></i>
                             Subir Fotos
                         </button>
                         
                         <input type="file" id="file-input" accept="image/*" hidden>
-                        <div class="drop-zone" id="drop-zone">
-                            Arrastra y suelta la imagen aquí
+                        
+                        <div class="drop-zone mt-3" id="drop-zone">
+                            <div class="text-center py-4">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p class="mb-0">Arrastra y suelta la imagen aquí</p>
+                                <small class="text-muted">o haz clic para seleccionar</small>
+                            </div>
                         </div>
+                        
+                        <!-- Estadísticas de almacenamiento -->
+                        <div class="storage-stats mt-4 p-3 bg-light rounded"></div>
                     </div>
                 </div>
 
                 <!-- Sección RESULTADOS -->
                 <div class="card results-menu-card">
                     <div class="card-header">
-                        <h2 class="card-title">RESULTADOS</h2>
+                        <h2 class="card-title"><i class="fas fa-chart-bar"></i> RESULTADOS</h2>
                     </div>
                     <div class="card-body">
                         <ul class="results-menu">
                             <li class="menu-item active" data-view="frontal">
-                                <span class="menu-icon">📄</span>
+                                <span class="menu-icon"><i class="fas fa-images"></i></span>
                                 <span class="menu-text">Noticies Fotos</span>
-                                <span class="menu-arrow">›</span>
+                                <span class="menu-arrow"><i class="fas fa-chevron-right"></i></span>
                             </li>
                             <li class="menu-item" data-view="negotiate">
-                                <span class="menu-icon">📊</span>
+                                <span class="menu-icon"><i class="fas fa-chart-line"></i></span>
                                 <span class="menu-text">Negociar Fotos</span>
-                                <span class="menu-arrow">›</span>
+                                <span class="menu-arrow"><i class="fas fa-chevron-right"></i></span>
                             </li>
                             <li class="menu-item" data-view="security">
-                                <span class="menu-icon">🔒</span>
+                                <span class="menu-icon"><i class="fas fa-shield-alt"></i></span>
                                 <span class="menu-text">Seguridad</span>
-                                <span class="menu-arrow">›</span>
+                                <span class="menu-arrow"><i class="fas fa-chevron-right"></i></span>
                             </li>
                         </ul>
+                        
+                        <!-- Estadísticas por tipo de foto -->
+                        <div class="photo-type-stats mt-3 p-3 bg-light rounded"></div>
                     </div>
                 </div>
             </aside>
@@ -3572,17 +3618,24 @@ body {
                 <!-- Sección FRONTAL RELAJADO -->
                 <section class="section frontal-section active-view">
                     <div class="section-header">
-                        <h2 class="section-title">FRONTAL RELAJADO</h2>
+                        <h2 class="section-title">
+                            <i class="fas fa-user"></i> FRONTAL RELAJADO
+                        </h2>
                         <div class="date-indicator">
-                            Última toma: <span class="date" id="last-photo-date">-</span>
+                            <i class="fas fa-clock"></i> Última toma: 
+                            <span class="date fw-bold" id="last-photo-date">-</span>
                         </div>
                     </div>
                     
                     <div class="photo-grid dates-grid" id="frontal-grid">
+                        <!-- Las fotos se cargarán dinámicamente aquí -->
                         <div class="date-card empty-state">
-                            <div class="date-label">No hay fotos</div>
+                            <div class="date-label">No hay fotos disponibles</div>
                             <div class="photo-placeholder empty">
-                                <span class="placeholder-text">Sube tu primera foto</span>
+                                <span class="placeholder-text">
+                                    <i class="fas fa-upload fa-2x mb-2"></i><br>
+                                    Sube tu primera foto
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -3591,27 +3644,27 @@ body {
                 <!-- Sección RESULTAS -->
                 <section class="section results-section">
                     <div class="section-header">
-                        <h2 class="section-title">RESULTAS</h2>
+                        <h2 class="section-title"><i class="fas fa-chart-pie"></i> RESULTAS</h2>
                     </div>
                     
                     <div class="results-grid">
                         <div class="result-item">
-                            <div class="result-icon">📋</div>
+                            <div class="result-icon"><i class="fas fa-clipboard-list fa-2x"></i></div>
                             <h3 class="result-title">Vilo deemada</h3>
                             <p class="result-desc">Análisis detallado de composición</p>
                         </div>
                         <div class="result-item">
-                            <div class="result-icon">📸</div>
+                            <div class="result-icon"><i class="fas fa-camera fa-2x"></i></div>
                             <h3 class="result-title">Toxme fote</h3>
                             <p class="result-desc">Captura de imágenes para seguimiento</p>
                         </div>
                         <div class="result-item">
-                            <div class="result-icon">📈</div>
+                            <div class="result-icon"><i class="fas fa-chart-line fa-2x"></i></div>
                             <h3 class="result-title">Fiosos de triunfo</h3>
                             <p class="result-desc">Progreso y mejoras visuales</p>
                         </div>
                         <div class="result-item">
-                            <div class="result-icon">⚖️</div>
+                            <div class="result-icon"><i class="fas fa-balance-scale fa-2x"></i></div>
                             <h3 class="result-title">Inclave la fase a voluma</h3>
                             <p class="result-desc">Control de volumen y fases</p>
                         </div>
@@ -3621,29 +3674,43 @@ body {
                 <!-- Sección ALTRAIRS -->
                 <section class="section altrairs-section">
                     <div class="section-header">
-                        <h2 class="section-title">ALTRAIRS</h2>
+                        <h2 class="section-title"><i class="fas fa-info-circle"></i> ALTRAIRS</h2>
                     </div>
                     <div class="info-box">
-                        <p>Ve sientieron olor la concescimientos. De pies de feses noépticas oentime flenes levantadas en un exultates.</p>
+                        <p class="mb-0">
+                            <i class="fas fa-quote-left text-primary me-2"></i>
+                            Ve sientieron olor la concescimientos. De pies de feses noépticas oentime flenes levantadas en un exultates.
+                            <i class="fas fa-quote-right text-primary ms-2"></i>
+                        </p>
                     </div>
                 </section>
 
                 <!-- Sección ANES Y PERIL -->
                 <section class="section anes-peril-section">
                     <div class="section-header">
-                        <h2 class="section-title">ANES Y PERIL</h2>
+                        <h2 class="section-title"><i class="fas fa-exchange-alt"></i> ANES Y PERIL</h2>
                     </div>
                     <div class="comparison-grid">
                         <div class="comparison-item">
-                            <h3 class="comparison-title">Frontal relazado de voluma</h3>
+                            <h3 class="comparison-title">
+                                <i class="fas fa-user me-2"></i>Frontal relazado de voluma
+                            </h3>
                             <div class="photo-placeholder large">
-                                <span class="placeholder-text">Vista frontal</span>
+                                <span class="placeholder-text">
+                                    <i class="fas fa-user fa-3x mb-3"></i><br>
+                                    Vista frontal
+                                </span>
                             </div>
                         </div>
                         <div class="comparison-item">
-                            <h3 class="comparison-title">Perfil falante de volurso</h3>
+                            <h3 class="comparison-title">
+                                <i class="fas fa-user-circle me-2"></i>Perfil falante de volurso
+                            </h3>
                             <div class="photo-placeholder large">
-                                <span class="placeholder-text">Vista de perfil</span>
+                                <span class="placeholder-text">
+                                    <i class="fas fa-user-circle fa-3x mb-3"></i><br>
+                                    Vista de perfil
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -3652,24 +3719,34 @@ body {
                 <!-- Sección MOMANTICATE -->
                 <section class="section momanticate-section">
                     <div class="section-header">
-                        <h2 class="section-title">MOMANTICATE</h2>
+                        <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> MOMANTICATE</h2>
                     </div>
                     
-                    <div class="metrics-tags">
-                        <span class="metric-tag active">Movilizados</span>
-                        <span class="metric-tag">Mejorables</span>
-                        <span class="metric-tag">Framedonosos</span>
-                        <span class="metric-tag">Fase de pelanillas</span>
-                        <span class="metric-tag">Prometidas de reales</span>
+                    <div class="metrics-tags mb-4">
+                        <span class="metric-tag active">
+                            <i class="fas fa-running me-1"></i> Movilizados
+                        </span>
+                        <span class="metric-tag">
+                            <i class="fas fa-chart-line me-1"></i> Mejorables
+                        </span>
+                        <span class="metric-tag">
+                            <i class="fas fa-star me-1"></i> Framedonosos
+                        </span>
+                        <span class="metric-tag">
+                            <i class="fas fa-layer-group me-1"></i> Fase de pelanillas
+                        </span>
+                        <span class="metric-tag">
+                            <i class="fas fa-check-circle me-1"></i> Prometidas de reales
+                        </span>
                     </div>
                     
-                    <div class="table-container">
-                        <table class="metrics-table">
-                            <thead>
+                    <div class="table-responsive">
+                        <table class="metrics-table table table-hover">
+                            <thead class="table-light">
                                 <tr>
-                                    <th>Nostralía</th>
-                                    <th>Platanista</th>
-                                    <th>Resulta</th>
+                                    <th><i class="fas fa-tag me-2"></i>Nostralía</th>
+                                    <th><i class="fas fa-calendar me-2"></i>Platanista</th>
+                                    <th><i class="fas fa-chart-bar me-2"></i>Resulta</th>
                                 </tr>
                             </thead>
                             <tbody id="metrics-table-body">
@@ -3677,7 +3754,9 @@ body {
                                 <tr>
                                     <td>9 %</td>
                                     <td>120/2023</td>
-                                    <td class="metric-value up">35 %</td>
+                                    <td class="metric-value up">
+                                        <i class="fas fa-arrow-up me-1"></i>35 %
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3689,13 +3768,17 @@ body {
                     <!-- Gráfico RESULTADES -->
                     <section class="section chart-section">
                         <div class="section-header">
-                            <h2 class="section-title">RESULTADES</h2>
+                            <h2 class="section-title">
+                                <i class="fas fa-chart-bar"></i> RESULTADES
+                            </h2>
                         </div>
                         <div class="chart-container">
                             <div class="chart-legend">
-                                <span class="legend-item">Forn dar jóvites</span>
+                                <span class="legend-item badge bg-primary">
+                                    <i class="fas fa-chart-bar me-1"></i> Forn dar jóvites
+                                </span>
                             </div>
-                            <div class="chart-bars" id="results-chart">
+                            <div class="chart-bars mt-4" id="results-chart">
                                 <!-- Barras dinámicas -->
                             </div>
                         </div>
@@ -3704,7 +3787,9 @@ body {
                     <!-- Gráfico RESULTAS -->
                     <section class="section chart-section">
                         <div class="section-header">
-                            <h2 class="section-title">RESULTAS</h2>
+                            <h2 class="section-title">
+                                <i class="fas fa-chart-line"></i> RESULTAS
+                            </h2>
                         </div>
                         <div class="chart-container">
                             <div class="chart-values" id="progress-chart">
@@ -3717,11 +3802,19 @@ body {
                 <!-- Sección Términos -->
                 <section class="section terms-section">
                     <div class="info-box">
-                        <h3 class="info-title">Terdes e Pantes</h3>
-                        <p>Emelación de preárea por medallas anteriores que se le deroga en el área de cierre, pero se encuentra en el área de cierre.</p>
+                        <h3 class="info-title">
+                            <i class="fas fa-file-contract me-2"></i>Terdes e Pantes
+                        </h3>
+                        <p class="mb-4">
+                            Emelación de preárea por medallas anteriores que se le deroga en el área de cierre, pero se encuentra en el área de cierre.
+                        </p>
                         
-                        <h3 class="info-title">Lectura luminosa</h3>
-                        <p>Desla dinastía Consuelo</p>
+                        <h3 class="info-title">
+                            <i class="fas fa-book-reader me-2"></i>Lectura luminosa
+                        </h3>
+                        <p class="mb-0">
+                            Desla dinastía Consuelo
+                        </p>
                     </div>
                 </section>
             </main>
@@ -3730,12 +3823,20 @@ body {
         <!-- Footer -->
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span class="footer-icon">🔒</span>
+                <span class="footer-icon"><i class="fas fa-lock"></i></span>
                 <span>Los datos están protegidos y encriptados</span>
             </div>
-            <button class="btn-cta" id="btn-save-dashboard">
-                Deska Ginarta Comsuae
-            </button>
+            <div class="footer-actions">
+                <button class="btn btn-outline-primary me-2" onclick="dashboardManager.exportToExcel()">
+                    <i class="fas fa-file-excel"></i> Exportar
+                </button>
+                <button class="btn btn-outline-primary me-2" onclick="dashboardManager.captureDashboard()">
+                    <i class="fas fa-camera"></i> Capturar
+                </button>
+                <button class="btn-cta btn btn-primary" id="btn-save-dashboard">
+                    <i class="fas fa-save"></i> Deska Ginarta Comsuae
+                </button>
+            </div>
         </footer>
     </div>
 </div>
@@ -3743,17 +3844,38 @@ body {
 <!-- Modal para vista ampliada de foto -->
 <div id="photo-modal" class="photo-modal-overlay hidden">
     <div class="photo-modal">
-        <div class="modal-header">
-            <h3 id="photo-modal-title">Título de la Foto</h3>
-            <button class="modal-close" id="btn-close-photo-modal">&times;</button>
+        <div class="modal-header bg-primary text-white">
+            <h3 id="photo-modal-title" class="mb-0">
+                <i class="fas fa-image me-2"></i>Título de la Foto
+            </h3>
+            <button class="modal-close btn btn-sm btn-light" id="btn-close-photo-modal">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <div class="modal-body">
-            <img id="photo-modal-image" src="" alt="Foto ampliada">
-            <div class="photo-details">
-                <p><strong>Tipo:</strong> <span id="photo-modal-type">-</span></p>
-                <p><strong>Fecha:</strong> <span id="photo-modal-date">-</span></p>
-                <p><strong>Dimensiones:</strong> <span id="photo-modal-dimensions">-</span></p>
+            <div class="text-center mb-4">
+                <img id="photo-modal-image" src="" 
+                     class="img-fluid rounded shadow" 
+                     alt="Foto ampliada"
+                     style="max-height: 500px;">
             </div>
+            <div class="photo-details card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-tag"></i> Tipo:</strong> <span id="photo-modal-type">-</span></p>
+                            <p><strong><i class="fas fa-calendar"></i> Fecha:</strong> <span id="photo-modal-date">-</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-expand-alt"></i> Dimensiones:</strong> <span id="photo-modal-dimensions">-</span></p>
+                            <p><strong><i class="fas fa-hdd"></i> Tamaño:</strong> <span id="photo-modal-size">-</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navegación entre fotos -->
+            <div class="photo-navigation mt-4"></div>
         </div>
     </div>
 </div>
@@ -7407,8 +7529,12 @@ function handleSectionTitleClick(event) {
     <script type="module" src="app.js"></script>
     <script type="module" src="calculations.js"></script>
 	<script src="dashboard.js"></script>
+	<!-- Loading overlay (DEBE estar al final del body, NO dentro del modal) -->
+
+</div>
 </body>
 </html>
+
 
 
 
