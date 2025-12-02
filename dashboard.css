@@ -1751,3 +1751,468 @@
     justify-content: space-between;
     align-items: center;
 }
+
+/* Estilos para el drop zone */
+#drop-zone {
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#drop-zone.drag-over {
+    border-color: #4f46e5;
+    background-color: rgba(79, 70, 229, 0.05);
+}
+
+#drop-zone i {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+#drop-zone.drag-over i {
+    color: #4f46e5;
+}
+/* ===== CORRECCIONES CRÍTICAS PARA VISUALIZACIÓN ===== */
+
+/* 1. Asegurar que el modal principal sea visible */
+#dashboard-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    overflow-y: auto !important;
+}
+
+#dashboard-modal.hidden {
+    display: none !important;
+}
+
+/* 2. Asegurar que las imágenes se muestren en la grid */
+#frontal-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 20px !important;
+    margin-top: 20px !important;
+}
+
+/* Contenedor de imagen CRÍTICO */
+.photo-placeholder.has-image {
+    width: 100% !important;
+    height: 200px !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    position: relative !important;
+    cursor: pointer !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 8px !important;
+}
+
+.photo-placeholder.has-image:hover {
+    border-color: #4f46e5 !important;
+}
+
+.photo-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    border-radius: 6px !important;
+}
+
+.photo-placeholder.has-image:hover .photo-overlay {
+    opacity: 1 !important;
+}
+
+.view-btn, .delete-btn {
+    background: white !important;
+    border: none !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    color: #333 !important;
+    font-size: 1rem !important;
+    transition: all 0.3s !important;
+}
+
+.view-btn:hover, .delete-btn:hover {
+    background: #4f46e5 !important;
+    color: white !important;
+    transform: scale(1.1) !important;
+}
+
+/* 3. Drop zone - HACERLO VISIBLE */
+#drop-zone {
+    border: 2px dashed #cbd5e1 !important;
+    border-radius: 10px !important;
+    padding: 30px !important;
+    text-align: center !important;
+    background: #f8fafc !important;
+    cursor: pointer !important;
+    transition: all 0.3s !important;
+    margin-top: 20px !important;
+    min-height: 160px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+#drop-zone:hover {
+    border-color: #4f46e5 !important;
+    background: rgba(79, 70, 229, 0.05) !important;
+}
+
+#drop-zone.drag-over {
+    border-color: #4f46e5 !important;
+    background: rgba(79, 70, 229, 0.1) !important;
+}
+
+#drop-zone i {
+    font-size: 2.5rem !important;
+    color: #94a3b8 !important;
+    margin-bottom: 15px !important;
+}
+
+#drop-zone.drag-over i {
+    color: #4f46e5 !important;
+}
+
+/* 4. Secciones de resultados - MEJORAR VISIBILIDAD */
+.section {
+    display: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.5s ease !important;
+}
+
+.section.active-view {
+    display: block !important;
+    opacity: 1 !important;
+    animation: fadeIn 0.5s ease !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 5. Estadísticas de fotos por tipo - MEJORAR */
+.photo-type-stats {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 15px !important;
+    margin-top: 15px !important;
+}
+
+.photo-type-stats .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+}
+
+.photo-type-stats .col-md-4 {
+    flex: 1 !important;
+    min-width: 200px !important;
+}
+
+.photo-type-stats .badge {
+    padding: 8px 12px !important;
+    font-size: 0.9rem !important;
+}
+
+/* 6. Gráficos - MEJORAR VISIBILIDAD */
+.chart-container {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+}
+
+.chart-bars {
+    height: 150px !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: space-around !important;
+    gap: 10px !important;
+    padding: 10px !important;
+}
+
+.bar-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+.bar {
+    width: 30px !important;
+    min-height: 10px !important;
+    border-radius: 4px 4px 0 0 !important;
+    transition: height 0.5s ease !important;
+}
+
+.chart-values {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+}
+
+.value-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 15px !important;
+    background: #f8fafc !important;
+    border-radius: 8px !important;
+    border-left: 4px solid !important;
+    transition: all 0.3s !important;
+}
+
+.value-row:hover {
+    transform: translateX(5px) !important;
+    background: #f1f5f9 !important;
+}
+
+/* 7. Asegurar que las tarjetas de fecha se vean bien */
+.date-card {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.date-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+    border-color: #c7d2fe !important;
+}
+
+.date-label {
+    padding: 15px !important;
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.latest-badge {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: white !important;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+}
+
+/* 8. Estadísticas de almacenamiento */
+.storage-stats {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 15px !important;
+    margin-top: 15px !important;
+}
+
+.storage-stats .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    justify-content: center !important;
+}
+
+.storage-stats .col-6 {
+    flex: 1 !important;
+    min-width: 120px !important;
+}
+
+.stat-box {
+    text-align: center !important;
+    padding: 15px !important;
+    border-radius: 8px !important;
+    background: #f8fafc !important;
+    transition: all 0.3s !important;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+    background: white !important;
+}
+
+.stat-box i {
+    font-size: 2rem !important;
+    margin-bottom: 10px !important;
+}
+
+.stat-box h4 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin: 10px 0 5px !important;
+}
+
+.stat-box small {
+    color: #64748b !important;
+    font-size: 0.85rem !important;
+}
+
+/* 9. Botones de acción en el footer */
+.footer-actions {
+    display: flex !important;
+    gap: 10px !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+}
+
+.footer-actions .btn {
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+/* 10. Asegurar que el modal de foto funcione */
+.photo-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.85) !important;
+    z-index: 10000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+}
+
+.photo-modal-overlay.hidden {
+    display: none !important;
+}
+
+.photo-modal {
+    background: white !important;
+    border-radius: 15px !important;
+    width: 90% !important;
+    max-width: 800px !important;
+    max-height: 90vh !important;
+    overflow: hidden !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 11. Responsividad mejorada */
+@media (max-width: 768px) {
+    #frontal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+        gap: 15px !important;
+    }
+    
+    .photo-placeholder.has-image {
+        height: 150px !important;
+    }
+    
+    .dashboard-body {
+        flex-direction: column !important;
+    }
+    
+    .sidebar-left {
+        width: 100% !important;
+        max-height: 400px !important;
+        overflow-y: auto !important;
+    }
+    
+    .footer-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    .footer-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+/* 12. Forzar visibilidad de elementos críticos */
+#drop-zone,
+#frontal-grid,
+.storage-stats,
+.photo-type-stats {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* 13. Estado vacío para grid */
+#frontal-grid:empty::before,
+#frontal-grid .text-center:only-child {
+    grid-column: 1 / -1 !important;
+    padding: 40px 20px !important;
+    text-align: center !important;
+    background: #f8fafc !important;
+    border-radius: 10px !important;
+    border: 2px dashed #e2e8f0 !important;
+}
+
+/* 14. Asegurar que las secciones se alternen correctamente */
+.dashboard-body .section:not(.active-view) {
+    display: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    opacity: 0 !important;
+}
+
+/* 15. Mejorar la navegación del menú */
+.menu-item {
+    transition: all 0.3s !important;
+    border-left: 3px solid transparent !important;
+}
+
+.menu-item.active {
+    border-left-color: #4f46e5 !important;
+    background: #f1f5f9 !important;
+    color: #4f46e5 !important;
+}
+
+.menu-item.active .menu-icon {
+    color: #4f46e5 !important;
+}
